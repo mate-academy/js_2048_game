@@ -71,6 +71,7 @@ startButton.addEventListener('click', event => {
 // Restart game & reset game field
 
 restartButton.addEventListener('click', event => {
+  loseMessage.classList.add('hidden');
   resetScore();
   createArrField(FIELD_SIZE.rows, FIELD_SIZE.columns);
   createTwoNewItem();
