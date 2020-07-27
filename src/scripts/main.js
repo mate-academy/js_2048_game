@@ -9,18 +9,18 @@ const startMessage = messages.querySelector('.message-start');
 const loseMessage = messages.querySelector('.message-lose');
 const winMessage = messages.querySelector('.message-win');
 const scoreValue = container.querySelector('.game-score');
-const winNumber = 2048;
 let totalScore = 0;
 let arrField = [];
+const WIN_NUMBER = 2048;
 const FIELD_SIZE = {
   rows: 4,
   columns: 4,
 };
 const ARROWS = {
-  'ArrowUp': 'ArrowUp',
-  'ArrowRight': 'ArrowRight',
-  'ArrowDown': 'ArrowDown',
-  'ArrowLeft': 'ArrowLeft',
+  'up': 'ArrowUp',
+  'right': 'ArrowRight',
+  'down': 'ArrowDown',
+  'left': 'ArrowLeft',
 };
 
 // Create array field
@@ -79,19 +79,18 @@ restartButton.addEventListener('click', event => {
   addKeysListener();
 });
 
-// Win message
-
-function checkWin(number) {
-  if (number === winNumber) {
-    winMessage.classList.remove('hidden');
-    removeKeysListener();
-  }
-}
-
 // Lose message
 
-function lose() {
-  loseMessage.classList.remove('hidden');
+function endGame(status) {
+  if (status === 'win') {
+    winMessage.classList.remove('hidden');
+  }
+
+  if (status === 'lose') {
+    loseMessage.classList.remove('hidden');
+  }
+
+  removeKeysListener();
 }
 
 // Build game field
@@ -183,7 +182,10 @@ function sumElement(row, column, newRow, newColumn) {
   arrField[newRow][newColumn] *= 2;
   arrField[row][column] = 0;
   calculateScore(arrField[newRow][newColumn]);
-  checkWin(arrField[newRow][newColumn]);
+
+  if (arrField[newRow][newColumn] === WIN_NUMBER) {
+    endGame('win');
+  }
 }
 
 // Loop array
@@ -398,64 +400,62 @@ function checkRight() {
 
 // Check lose
 
-function checkLose() {
-  if (checkUp() || checkDown() || checkLeft() || checkRight()) {
-    return true;
+function isLose() {
+  if (!(checkUp() || checkDown() || checkLeft() || checkRight())) {
+    endGame('lose');
   }
-  removeKeysListener();
-  lose();
 }
 
 // Press key
 
 const arrUp = function(event) {
   if (controls.querySelector('.start') === null) {
-    if (event.key === ARROWS.ArrowUp && checkUp()) {
+    if (event.key === ARROWS.up && checkUp()) {
       moveUp();
       moveUpSum();
       moveUp();
       newRandomCell();
       processField(buildGameField);
-      checkLose();
+      isLose();
     }
   }
 };
 
 const arrDown = function(event) {
   if (controls.querySelector('.start') === null) {
-    if (event.key === ARROWS.ArrowDown && checkDown()) {
+    if (event.key === ARROWS.down && checkDown()) {
       moveDown();
       moveDownSum();
       moveDown();
       newRandomCell();
       processField(buildGameField);
-      checkLose();
+      isLose();
     }
   }
 };
 
 const arrLeft = function(event) {
   if (controls.querySelector('.start') === null) {
-    if (event.key === ARROWS.ArrowLeft && checkLeft()) {
+    if (event.key === ARROWS.left && checkLeft()) {
       moveLeft();
       moveLeftSum();
       moveLeft();
       newRandomCell();
       processField(buildGameField);
-      checkLose();
+      isLose();
     }
   }
 };
 
 const arrRight = function(event) {
   if (controls.querySelector('.start') === null) {
-    if (event.key === ARROWS.ArrowRight && checkRight()) {
+    if (event.key === ARROWS.right && checkRight()) {
       moveRight();
       moveRightSum();
       moveRight();
       newRandomCell();
       processField(buildGameField);
-      checkLose();
+      isLose();
     }
   }
 };
