@@ -199,82 +199,32 @@ function processField(callback) {
 // Move elements up
 
 function moveUp() {
-  for (let row = arrField.length - 1; row >= 1; row--) {
-    for (let column = 0; column < arrField[row].length; column++) {
-      if (arrField[row][column] > 0 && row - 1 >= 0) {
-        if (arrField[row - 1][column] === 0) {
-          moveElement(row, column, row - 1, column);
+  let count = 0;
 
-          return moveUp();
-        }
-
-        if (arrField[row][column] === arrField[row - 1][column]
-          && row - 1 >= 0) {
-          sumElement(row, column, row - 1, column);
-        }
-      }
-    }
-  }
-}
-
-// Move elements down
-
-function moveDown() {
   for (let row = 0; row < arrField.length - 1; row++) {
     for (let column = 0; column < arrField[row].length; column++) {
-      if (arrField[row][column] > 0 && row + 1 < arrField.length) {
-        if (arrField[row + 1][column] === 0) {
-          moveElement(row, column, row + 1, column);
-
-          return moveDown();
-        }
-
-        if (arrField[row][column] === arrField[row + 1][column]
-          && row + 1 < arrField.length) {
-          sumElement(row, column, row + 1, column);
-        }
+      if (arrField[row + 1][column] > 0
+        && row + 1 < arrField.length
+        && arrField[row][column] === 0) {
+        moveElement(row + 1, column, row, column);
+        count++;
       }
     }
   }
-}
 
-// Move elements left
-
-function moveLeft() {
-  for (let row = 0; row < arrField.length; row++) {
-    for (let column = arrField[row].length - 1; column >= 1; column--) {
-      if (arrField[row][column] > 0 && column - 1 >= 0) {
-        if (arrField[row][column - 1] === 0) {
-          moveElement(row, column, row, column - 1);
-
-          return moveLeft();
-        }
-
-        if (arrField[row][column] === arrField[row][column - 1]
-          && column - 1 >= 0) {
-          sumElement(row, column, row, column - 1);
-        }
-      }
-    }
+  if (count > 0) {
+    return moveUp();
   }
 }
 
-// Move elements right
+// Sum elements up
 
-function moveRight() {
-  for (let row = 0; row < arrField.length; row++) {
-    for (let column = 0; column < arrField[row].length - 1; column++) {
-      if (arrField[row][column] > 0 && column + 1 < arrField[row].length) {
-        if (arrField[row][column + 1] === 0) {
-          moveElement(row, column, row, column + 1);
-
-          return moveRight();
-        }
-
-        if (arrField[row][column] === arrField[row][column + 1]
-          && column + 1 < arrField[row].length) {
-          sumElement(row, column, row, column + 1);
-        }
+function moveUpSum() {
+  for (let row = 0; row < arrField.length - 1; row++) {
+    for (let column = 0; column < arrField[row].length; column++) {
+      if (arrField[row][column] === arrField[row + 1][column]
+        && row + 1 < arrField.length) {
+        sumElement(row + 1, column, row, column);
       }
     }
   }
@@ -283,11 +233,11 @@ function moveRight() {
 // Check up
 
 function checkUp() {
-  for (let row = arrField.length - 1; row >= 1; row--) {
+  for (let row = 0; row < arrField.length - 1; row++) {
     for (let column = 0; column < arrField[row].length; column++) {
-      if (arrField[row][column] > 0
-        && (arrField[row][column] === arrField[row - 1][column]
-          || arrField[row - 1][column] === 0)) {
+      if (arrField[row + 1][column] > 0
+        && (arrField[row][column] === arrField[row + 1][column]
+          || arrField[row][column] === 0)) {
         return true;
       }
     }
@@ -296,30 +246,98 @@ function checkUp() {
   return false;
 }
 
+// Move elements down
+
+function moveDown() {
+  let count = 0;
+
+  for (let row = arrField.length - 1; row > 0; row--) {
+    for (let column = 0; column < arrField[row].length; column++) {
+      if (arrField[row - 1][column] > 0
+        && row - 1 < arrField.length
+        && arrField[row][column] === 0) {
+        moveElement(row - 1, column, row, column);
+        count++;
+      }
+    }
+  }
+
+  if (count > 0) {
+    return moveDown();
+  }
+}
+
+// Sum elements down
+
+function moveDownSum() {
+  for (let row = arrField.length - 1; row > 0; row--) {
+    for (let column = 0; column < arrField[row].length; column++) {
+      if (arrField[row - 1][column] === arrField[row][column]
+        && row < arrField.length) {
+        sumElement(row - 1, column, row, column);
+      }
+    }
+  }
+}
+
 // Check down
 
 function checkDown() {
-  for (let row = 0; row < arrField.length - 1; row++) {
+  for (let row = arrField.length - 1; row > 0; row--) {
     for (let column = 0; column < arrField[row].length; column++) {
-      if (arrField[row][column] > 0
-        && (arrField[row][column] === arrField[row + 1][column]
-          || arrField[row + 1][column] === 0)) {
+      if (arrField[row - 1][column] > 0
+        && (arrField[row][column] === arrField[row - 1][column]
+          || arrField[row][column] === 0)) {
         return true;
       }
     }
   }
 
   return false;
+}
+
+// Move elements left
+
+function moveLeft() {
+  let count = 0;
+
+  for (let row = 0; row < arrField.length; row++) {
+    for (let column = 0; column < arrField[row].length - 1; column++) {
+      if (arrField[row][column + 1] > 0
+        && column + 1 < arrField[row].length
+        && arrField[row][column] === 0) {
+        moveElement(row, column + 1, row, column);
+        count++;
+      }
+    }
+  }
+
+  if (count > 0) {
+    return moveLeft();
+  }
+}
+
+// Sum elements left
+
+function moveLeftSum() {
+  for (let row = 0; row < arrField.length; row++) {
+    for (let column = 0; column < arrField[row].length - 1; column++) {
+      if (arrField[row][column] === arrField[row][column + 1]
+        && column + 1 <= arrField[row].length) {
+        sumElement(row, column + 1, row, column);
+      }
+    }
+  }
 }
 
 // Check Left
 
 function checkLeft() {
   for (let row = 0; row < arrField.length; row++) {
-    for (let column = arrField[row].length - 1; column >= 1; column--) {
-      if (arrField[row][column] > 0
-        && (arrField[row][column] === arrField[row][column - 1]
-          || arrField[row][column - 1] === 0)) {
+    for (let column = 0; column < arrField[row].length - 1; column++) {
+      if (arrField[row][column + 1] > 0
+        && (arrField[row][column] === arrField[row][column + 1]
+          || arrField[row][column] === 0)) {
         return true;
       }
     }
@@ -328,14 +346,48 @@ function checkLeft() {
   return false;
 }
 
+// Move elements right
+
+function moveRight() {
+  let count = 0;
+
+  for (let row = 0; row < arrField.length; row++) {
+    for (let column = arrField[row].length - 1; column > 0; column--) {
+      if (arrField[row][column - 1] > 0
+        && column - 1 < arrField[row].length
+        && arrField[row][column] === 0) {
+        moveElement(row, column - 1, row, column);
+        count++;
+      }
+    }
+  }
+
+  if (count > 0) {
+    return moveRight();
+  }
+}
+
+// Sum elements right
+
+function moveRightSum() {
+  for (let row = 0; row < arrField.length; row++) {
+    for (let column = arrField[row].length - 1; column > 0; column--) {
+      if (arrField[row][column] === arrField[row][column - 1]
+        && column - 1 < arrField[row].length) {
+        sumElement(row, column - 1, row, column);
+      }
+    }
+  }
+}
+
 // Check right
 
 function checkRight() {
   for (let row = 0; row < arrField.length; row++) {
-    for (let column = 0; column < arrField[row].length - 1; column++) {
-      if (arrField[row][column] > 0
-        && (arrField[row][column] === arrField[row][column + 1]
-          || arrField[row][column + 1] === 0)) {
+    for (let column = arrField[row].length - 1; column > 0; column--) {
+      if (arrField[row][column - 1] > 0
+        && (arrField[row][column] === arrField[row][column - 1]
+          || arrField[row][column] === 0)) {
         return true;
       }
     }
@@ -360,6 +412,8 @@ const arrUp = function(event) {
   if (controls.querySelector('.start') === null) {
     if (event.key === ARROWS.ArrowUp && checkUp()) {
       moveUp();
+      moveUpSum();
+      moveUp();
       newRandomCell();
       processField(buildGameField);
       checkLose();
@@ -370,6 +424,8 @@ const arrUp = function(event) {
 const arrDown = function(event) {
   if (controls.querySelector('.start') === null) {
     if (event.key === ARROWS.ArrowDown && checkDown()) {
+      moveDown();
+      moveDownSum();
       moveDown();
       newRandomCell();
       processField(buildGameField);
@@ -382,6 +438,8 @@ const arrLeft = function(event) {
   if (controls.querySelector('.start') === null) {
     if (event.key === ARROWS.ArrowLeft && checkLeft()) {
       moveLeft();
+      moveLeftSum();
+      moveLeft();
       newRandomCell();
       processField(buildGameField);
       checkLose();
@@ -392,6 +450,8 @@ const arrLeft = function(event) {
 const arrRight = function(event) {
   if (controls.querySelector('.start') === null) {
     if (event.key === ARROWS.ArrowRight && checkRight()) {
+      moveRight();
+      moveRightSum();
       moveRight();
       newRandomCell();
       processField(buildGameField);
