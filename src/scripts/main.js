@@ -106,6 +106,10 @@ function buildGameField(row, column) {
     fieldCell.classList = ['field-cell'];
     fieldCell.textContent = '';
   }
+
+  if (arrField[row][column] === WIN_NUMBER) {
+    endGame('win');
+  }
 }
 
 // 10% random
@@ -137,8 +141,8 @@ function calculateScore(cellValue) {
 function randomPosition() {
   const freeArr = [];
 
-  for (let row = 0; row < arrField.length; row++) {
-    for (let column = 0; column < arrField[row].length; column++) {
+  for (let row = 0; row < FIELD_SIZE.rows; row++) {
+    for (let column = 0; column < FIELD_SIZE.columns; column++) {
       if (arrField[row][column] === 0) {
         freeArr.push([row, column]);
       }
@@ -181,18 +185,13 @@ function moveElement(row, column, newRow, newColumn) {
 function sumElement(row, column, newRow, newColumn) {
   arrField[newRow][newColumn] *= 2;
   arrField[row][column] = 0;
-  calculateScore(arrField[newRow][newColumn]);
-
-  if (arrField[newRow][newColumn] === WIN_NUMBER) {
-    endGame('win');
-  }
 }
 
 // Loop array
 
 function processField(callback) {
-  for (let row = 0; row < arrField.length; row++) {
-    for (let column = 0; column < arrField[row].length; column++) {
+  for (let row = 0; row < FIELD_SIZE.rows; row++) {
+    for (let column = 0; column < FIELD_SIZE.columns; column++) {
       callback(row, column);
     }
   }
@@ -201,32 +200,37 @@ function processField(callback) {
 // Move elements up
 
 function moveUp() {
+  for (let column = 0; column < FIELD_SIZE.columns; column++) {
+    moveUpRow(1, column);
+  }
+}
+
+function moveUpRow(startRow, column) {
   let count = 0;
 
-  for (let row = 0; row < arrField.length - 1; row++) {
-    for (let column = 0; column < arrField[row].length; column++) {
-      if (arrField[row + 1][column] > 0
-        && row + 1 < arrField.length
-        && arrField[row][column] === 0) {
-        moveElement(row + 1, column, row, column);
-        count++;
-      }
+  for (let row = startRow; row < FIELD_SIZE.rows; row++) {
+    if (arrField[row - 1][column] === 0
+      && arrField[row][column] > 0) {
+      moveElement(row, column, row - 1, column);
+      count++;
     }
   }
 
   if (count > 0) {
-    return moveUp();
+    return moveUpRow(startRow, column);
   }
 }
 
 // Sum elements up
 
 function moveUpSum() {
-  for (let row = 0; row < arrField.length - 1; row++) {
-    for (let column = 0; column < arrField[row].length; column++) {
-      if (arrField[row][column] === arrField[row + 1][column]
-        && row + 1 < arrField.length) {
-        sumElement(row + 1, column, row, column);
+  for (let column = 0; column < FIELD_SIZE.columns; column++) {
+    for (let row = 1; row < FIELD_SIZE.rows; row++) {
+      if (arrField[row - 1][column] === arrField[row][column]
+        && arrField[row][column] > 0) {
+        sumElement(row, column, row - 1, column);
+        calculateScore(arrField[row - 1][column]);
+        moveUpRow(row, column);
       }
     }
   }
@@ -235,11 +239,11 @@ function moveUpSum() {
 // Check up
 
 function checkUp() {
-  for (let row = 0; row < arrField.length - 1; row++) {
-    for (let column = 0; column < arrField[row].length; column++) {
-      if (arrField[row + 1][column] > 0
-        && (arrField[row][column] === arrField[row + 1][column]
-          || arrField[row][column] === 0)) {
+  for (let column = 0; column < FIELD_SIZE.columns; column++) {
+    for (let row = 1; row < FIELD_SIZE.rows; row++) {
+      if (arrField[row][column] > 0
+        && (arrField[row - 1][column] === arrField[row][column]
+          || arrField[row - 1][column] === 0)) {
         return true;
       }
     }
@@ -251,32 +255,37 @@ function checkUp() {
 // Move elements down
 
 function moveDown() {
+  for (let column = 0; column < FIELD_SIZE.columns; column++) {
+    moveDownRow(FIELD_SIZE.rows - 1, column);
+  }
+}
+
+function moveDownRow(startRow, column) {
   let count = 0;
 
-  for (let row = arrField.length - 1; row > 0; row--) {
-    for (let column = 0; column < arrField[row].length; column++) {
-      if (arrField[row - 1][column] > 0
-        && row - 1 < arrField.length
-        && arrField[row][column] === 0) {
-        moveElement(row - 1, column, row, column);
-        count++;
-      }
+  for (let row = startRow; row >= 1; row--) {
+    if (arrField[row][column] === 0
+      && arrField[row - 1][column] > 0) {
+      moveElement(row - 1, column, row, column);
+      count++;
     }
   }
 
   if (count > 0) {
-    return moveDown();
+    return moveDownRow(startRow, column);
   }
 }
 
 // Sum elements down
 
 function moveDownSum() {
-  for (let row = arrField.length - 1; row > 0; row--) {
-    for (let column = 0; column < arrField[row].length; column++) {
+  for (let column = 0; column < FIELD_SIZE.columns; column++) {
+    for (let row = FIELD_SIZE.rows - 1; row >= 1; row--) {
       if (arrField[row - 1][column] === arrField[row][column]
-        && row < arrField.length) {
-        sumElement(row - 1, column, row, column);
+        && arrField[row][column] > 0) {
+        sumElement(row, column, row - 1, column);
+        calculateScore(arrField[row - 1][column]);
+        moveDownRow(row, column);
       }
     }
   }
@@ -285,8 +294,8 @@ function moveDownSum() {
 // Check down
 
 function checkDown() {
-  for (let row = arrField.length - 1; row > 0; row--) {
-    for (let column = 0; column < arrField[row].length; column++) {
+  for (let column = 0; column < FIELD_SIZE.columns; column++) {
+    for (let row = FIELD_SIZE.rows - 1; row >= 1; row--) {
       if (arrField[row - 1][column] > 0
         && (arrField[row][column] === arrField[row - 1][column]
           || arrField[row][column] === 0)) {
@@ -301,32 +310,37 @@ function checkDown() {
 // Move elements left
 
 function moveLeft() {
+  for (let row = 0; row < FIELD_SIZE.rows; row++) {
+    moveLeftColumn(row, 1);
+  }
+}
+
+function moveLeftColumn(row, startColumn) {
   let count = 0;
 
-  for (let row = 0; row < arrField.length; row++) {
-    for (let column = 0; column < arrField[row].length - 1; column++) {
-      if (arrField[row][column + 1] > 0
-        && column + 1 < arrField[row].length
-        && arrField[row][column] === 0) {
-        moveElement(row, column + 1, row, column);
-        count++;
-      }
+  for (let column = startColumn; column < FIELD_SIZE.rows; column++) {
+    if (arrField[row][column - 1] === 0
+      && arrField[row][column] > 0) {
+      moveElement(row, column, row, column - 1);
+      count++;
     }
   }
 
   if (count > 0) {
-    return moveLeft();
+    return moveLeftColumn(row, startColumn);
   }
 }
 
 // Sum elements left
 
 function moveLeftSum() {
-  for (let row = 0; row < arrField.length; row++) {
-    for (let column = 0; column < arrField[row].length - 1; column++) {
-      if (arrField[row][column] === arrField[row][column + 1]
-        && column + 1 <= arrField[row].length) {
-        sumElement(row, column + 1, row, column);
+  for (let row = 0; row < FIELD_SIZE.rows; row++) {
+    for (let column = 1; column < FIELD_SIZE.columns; column++) {
+      if (arrField[row][column - 1] === arrField[row][column]
+        && arrField[row][column] > 0) {
+        sumElement(row, column, row, column - 1);
+        calculateScore(arrField[row][column - 1]);
+        moveLeftColumn(row, column);
       }
     }
   }
@@ -335,11 +349,11 @@ function moveLeftSum() {
 // Check Left
 
 function checkLeft() {
-  for (let row = 0; row < arrField.length; row++) {
-    for (let column = 0; column < arrField[row].length - 1; column++) {
-      if (arrField[row][column + 1] > 0
-        && (arrField[row][column] === arrField[row][column + 1]
-          || arrField[row][column] === 0)) {
+  for (let row = 0; row < FIELD_SIZE.rows; row++) {
+    for (let column = 1; column < FIELD_SIZE.columns; column++) {
+      if (arrField[row][column] > 0
+        && (arrField[row][column] === arrField[row][column - 1]
+          || arrField[row][column - 1] === 0)) {
         return true;
       }
     }
@@ -351,32 +365,37 @@ function checkLeft() {
 // Move elements right
 
 function moveRight() {
+  for (let row = 0; row < FIELD_SIZE.columns; row++) {
+    moveRightColumn(row, FIELD_SIZE.columns - 1);
+  }
+}
+
+function moveRightColumn(row, startColumn) {
   let count = 0;
 
-  for (let row = 0; row < arrField.length; row++) {
-    for (let column = arrField[row].length - 1; column > 0; column--) {
-      if (arrField[row][column - 1] > 0
-        && column - 1 < arrField[row].length
-        && arrField[row][column] === 0) {
-        moveElement(row, column - 1, row, column);
-        count++;
-      }
+  for (let column = startColumn; column >= 1; column--) {
+    if (arrField[row][column] === 0
+      && arrField[row][column - 1] > 0) {
+      moveElement(row, column - 1, row, column);
+      count++;
     }
   }
 
   if (count > 0) {
-    return moveRight();
+    return moveRightColumn(row, startColumn);
   }
 }
 
 // Sum elements right
 
 function moveRightSum() {
-  for (let row = 0; row < arrField.length; row++) {
-    for (let column = arrField[row].length - 1; column > 0; column--) {
-      if (arrField[row][column] === arrField[row][column - 1]
-        && column - 1 < arrField[row].length) {
-        sumElement(row, column - 1, row, column);
+  for (let row = 0; row < FIELD_SIZE.rows; row++) {
+    for (let column = FIELD_SIZE.columns - 1; column >= 1; column--) {
+      if (arrField[row][column - 1] === arrField[row][column]
+        && arrField[row][column] > 0) {
+        sumElement(row, column, row, column - 1);
+        calculateScore(arrField[row][column - 1]);
+        moveRightColumn(row, column);
       }
     }
   }
@@ -385,8 +404,8 @@ function moveRightSum() {
 // Check right
 
 function checkRight() {
-  for (let row = 0; row < arrField.length; row++) {
-    for (let column = arrField[row].length - 1; column > 0; column--) {
+  for (let row = 0; row < FIELD_SIZE.rows; row++) {
+    for (let column = FIELD_SIZE.columns - 1; column >= 1; column--) {
       if (arrField[row][column - 1] > 0
         && (arrField[row][column] === arrField[row][column - 1]
           || arrField[row][column] === 0)) {
@@ -413,7 +432,6 @@ const arrUp = function(event) {
     if (event.key === ARROWS.up && checkUp()) {
       moveUp();
       moveUpSum();
-      moveUp();
       newRandomCell();
       processField(buildGameField);
       isLose();
@@ -426,7 +444,6 @@ const arrDown = function(event) {
     if (event.key === ARROWS.down && checkDown()) {
       moveDown();
       moveDownSum();
-      moveDown();
       newRandomCell();
       processField(buildGameField);
       isLose();
@@ -439,7 +456,6 @@ const arrLeft = function(event) {
     if (event.key === ARROWS.left && checkLeft()) {
       moveLeft();
       moveLeftSum();
-      moveLeft();
       newRandomCell();
       processField(buildGameField);
       isLose();
@@ -452,7 +468,6 @@ const arrRight = function(event) {
     if (event.key === ARROWS.right && checkRight()) {
       moveRight();
       moveRightSum();
-      moveRight();
       newRandomCell();
       processField(buildGameField);
       isLose();
