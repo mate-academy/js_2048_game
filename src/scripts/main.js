@@ -16,10 +16,18 @@ const gridOfNumber = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
-  [0, 0, 0, 0]];
+  [0, 0, 0, 0],
+];
 
 button.addEventListener('click', (event) => {
-  startGame(event, gridOfNumber, fieldRow, messageLose, messageWin);
+  startGame(
+    event,
+    gridOfNumber,
+    fieldRow,
+    messageLose,
+    messageWin,
+    gameScore,
+  );
   pressStart = true;
 });
 
@@ -31,4 +39,5 @@ document.addEventListener('keyup', (event) =>
     pressStart,
     gameScore,
     messageLose,
-    messageWin));
+    messageWin),
+);

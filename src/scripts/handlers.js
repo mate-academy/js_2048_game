@@ -6,18 +6,18 @@ const {
   finishedGame,
 } = require('./helpers');
 const {
-  moveRight,
-  moveLeft,
-  moveUp,
-  moveDown,
+  mergeNumbers,
 } = require('./move');
+const {
+  TURN_GRID,
+} = require('./constants');
 
 const fieldRow = document.querySelectorAll('.field-row');
 const gameScore = document.querySelector('.game-score');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 
-function startGame(event, grid, trRows, pLose, pWin) {
+function startGame(event, grid, trRows, pLose, pWin, score) {
   const target = event.target.closest('.button');
   const pStart = document.querySelector('.message-start');
 
@@ -29,6 +29,7 @@ function startGame(event, grid, trRows, pLose, pWin) {
     pStart.hidden = true;
   } else {
     resetField(grid, trRows);
+    score.textContent = '0';
 
     if (pWin.classList.length < 3) {
       pWin.classList.add('hidden');
@@ -57,19 +58,19 @@ function keyPressed(
 
   switch (event.code) {
     case 'ArrowRight':
-      moveRight(grid, trRows, score, pLose);
+      mergeNumbers(grid, trRows, score, pLose, TURN_GRID.RIGHT);
       finishedGame(grid, pWin);
       break;
     case 'ArrowLeft':
-      moveLeft(grid, trRows, score, pLose);
+      mergeNumbers(grid, trRows, score, pLose, TURN_GRID.LEFT);
       finishedGame(grid, pWin);
       break;
     case 'ArrowDown':
-      moveDown(grid, trRows, score, pLose);
+      mergeNumbers(grid, trRows, score, pLose, TURN_GRID.DOWN);
       finishedGame(grid, pWin);
       break;
     case 'ArrowUp':
-      moveUp(grid, trRows, score, pLose);
+      mergeNumbers(grid, trRows, score, pLose, TURN_GRID.UP);
       finishedGame(grid, pWin);
       break;
     default:

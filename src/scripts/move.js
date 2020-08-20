@@ -4,100 +4,26 @@ const {
   addRandomTwoOrFour,
 } = require('./helpers');
 
-function moveRight(grid, trRows, score, pLose) {
-  for (let i = 0; i < grid.length; i++) {
-    for (let j = grid.length - 1; j >= 0; j--) {
-      if (grid[i][j]) {
-        let row = j;
+function rotateMatrix(grid, count) {
+  const N = grid.length;
 
-        while (row < grid.length - 1) {
-          if (!grid[i][row + 1]) {
-            grid[i][row + 1] = grid[i][row];
-            grid[i][row] = 0;
-            row++;
-          } else {
-            if (grid[i][row + 1] === grid[i][row]) {
-              grid[i][row + 1] *= 2;
+  for (let k = 0; k < count; k++) {
+    for (let i = 0; i < grid.length / 2; i++) {
+      for (let j = i; j < N - i - 1; j++) {
+        const temp = grid[N - 1 - j][i];
 
-              score.textContent
-                = `${parseFloat(score.textContent) + grid[i][row + 1]}`;
-
-              grid[i][row] = 0;
-              break;
-            } else {
-              break;
-            }
-          }
-        }
+        grid[N - 1 - j][i] = grid[N - 1 - i][N - 1 - j];
+        grid[N - 1 - i][N - 1 - j] = grid[j][N - 1 - i];
+        grid[j][N - 1 - i] = grid[i][j];
+        grid[i][j] = temp;
       }
     }
   }
-  addRandomTwoOrFour(grid, trRows, pLose);
 }
 
-function moveLeft(grid, trRows, score, pLose) {
-  for (let i = 0; i < grid.length; i++) {
-    for (let j = 0; j < grid.length; j++) {
-      if (grid[i][j]) {
-        let row = j;
+function mergeNumbers(grid, trRows, score, pLose, TURN) {
+  rotateMatrix(grid, TURN.FIRST);
 
-        while (row > 0) {
-          if (!grid[i][row - 1]) {
-            grid[i][row - 1] = grid[i][row];
-            grid[i][row] = 0;
-            row--;
-          } else {
-            if (grid[i][row - 1] === grid[i][row]) {
-              grid[i][row - 1] *= 2;
-
-              score.textContent
-                = `${parseFloat(score.textContent) + grid[i][row - 1]}`;
-
-              grid[i][row] = 0;
-              break;
-            } else {
-              break;
-            }
-          }
-        }
-      }
-    }
-  }
-  addRandomTwoOrFour(grid, trRows, pLose);
-}
-
-function moveUp(grid, trRows, score, pLose) {
-  for (let i = 0; i < grid.length; i++) {
-    for (let j = 0; j < grid.length; j++) {
-      if (grid[j][i]) {
-        let cell = j;
-
-        while (cell > 0) {
-          if (!grid[cell - 1][i]) {
-            grid[cell - 1][i] = grid[cell][i];
-            grid[cell][i] = 0;
-            cell--;
-          } else {
-            if (grid[cell - 1][i] === grid[cell][i]) {
-              grid[cell - 1][i] *= 2;
-
-              score.textContent
-                = `${parseFloat(score.textContent) + grid[cell - 1][i]}`;
-
-              grid[cell][i] = 0;
-              break;
-            } else {
-              break;
-            }
-          }
-        }
-      }
-    }
-  }
-  addRandomTwoOrFour(grid, trRows, pLose);
-}
-
-function moveDown(grid, trRows, score, pLose) {
   for (let i = 0; i < grid.length; i++) {
     for (let j = grid.length - 1; j >= 0; j--) {
       if (grid[j][i]) {
@@ -125,12 +51,10 @@ function moveDown(grid, trRows, score, pLose) {
       }
     }
   }
+  rotateMatrix(grid, TURN.SECOND);
   addRandomTwoOrFour(grid, trRows, pLose);
 }
 
 module.exports = {
-  moveRight,
-  moveLeft,
-  moveUp,
-  moveDown,
+  mergeNumbers,
 };
