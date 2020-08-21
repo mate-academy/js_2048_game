@@ -1,9 +1,5 @@
 'use strict';
 
-const {
-  addRandomTwoOrFour,
-} = require('./helpers');
-
 function rotateMatrix(grid, count) {
   const N = grid.length;
 
@@ -21,9 +17,7 @@ function rotateMatrix(grid, count) {
   }
 }
 
-function mergeNumbers(grid, trRows, score, pLose, TURN) {
-  rotateMatrix(grid, TURN.FIRST);
-
+function mergeNumbers(grid, score) {
   for (let i = 0; i < grid.length; i++) {
     for (let j = grid.length - 1; j >= 0; j--) {
       if (grid[j][i]) {
@@ -51,10 +45,9 @@ function mergeNumbers(grid, trRows, score, pLose, TURN) {
       }
     }
   }
-  rotateMatrix(grid, TURN.SECOND);
-  addRandomTwoOrFour(grid, trRows, pLose);
 }
 
 module.exports = {
   mergeNumbers,
+  rotateMatrix,
 };

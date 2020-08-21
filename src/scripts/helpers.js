@@ -20,7 +20,7 @@ function addStyleToField(fieldRow) {
   }
 }
 
-function addRandomTwoOrFour(grid, trRows, pLose) {
+function addRandomTwoOrFour(grid, pLose) {
   const option = getEmptyCells(grid);
 
   if (option.length === 0) {
@@ -33,7 +33,6 @@ function addRandomTwoOrFour(grid, trRows, pLose) {
   const rand = Math.random(1);
 
   grid[option[randomPos].x][option[randomPos].y] = rand > 0.1 ? 2 : 4;
-  renderField(grid, trRows);
 }
 
 function getEmptyCells(grid) {
@@ -72,7 +71,6 @@ function renderField(grid, trRows) {
       }
     }
   }
-  addStyleToField(trRows);
 }
 
 function finishedGame(gid, messageWin) {
@@ -91,4 +89,6 @@ module.exports = {
   addRandomTwoOrFour,
   resetField,
   finishedGame,
+  addStyleToField,
+  renderField,
 };

@@ -4,9 +4,12 @@ const {
   addRandomTwoOrFour,
   resetField,
   finishedGame,
+  addStyleToField,
+  renderField,
 } = require('./helpers');
 const {
   mergeNumbers,
+  rotateMatrix,
 } = require('./move');
 const {
   TURN_GRID,
@@ -40,8 +43,10 @@ function startGame(event, grid, trRows, pLose, pWin, score) {
     }
   }
 
-  addRandomTwoOrFour(grid, trRows, pLose);
-  addRandomTwoOrFour(grid, trRows, pLose);
+  addRandomTwoOrFour(grid, pLose);
+  addRandomTwoOrFour(grid, pLose);
+  renderField(grid, trRows);
+  addStyleToField(trRows);
 };
 
 function keyPressed(
@@ -56,26 +61,41 @@ function keyPressed(
     return;
   }
 
+  if ((event.code !== 'ArrowRight')
+  && (event.code !== 'ArrowLeft')
+  && (event.code !== 'ArrowDown')
+  && (event.code !== 'ArrowUp')) {
+    return;
+  }
+
   switch (event.code) {
     case 'ArrowRight':
-      mergeNumbers(grid, trRows, score, pLose, TURN_GRID.RIGHT);
-      finishedGame(grid, pWin);
+      rotateMatrix(grid, TURN_GRID.RIGHT.FIRST);
+      mergeNumbers(grid, score);
+      rotateMatrix(grid, TURN_GRID.RIGHT.SECOND);
       break;
     case 'ArrowLeft':
-      mergeNumbers(grid, trRows, score, pLose, TURN_GRID.LEFT);
-      finishedGame(grid, pWin);
+      rotateMatrix(grid, TURN_GRID.LEFT.FIRST);
+      mergeNumbers(grid, score);
+      rotateMatrix(grid, TURN_GRID.LEFT.SECOND);
       break;
     case 'ArrowDown':
-      mergeNumbers(grid, trRows, score, pLose, TURN_GRID.DOWN);
-      finishedGame(grid, pWin);
+      rotateMatrix(grid, TURN_GRID.DOWN.FIRST);
+      mergeNumbers(grid, score);
+      rotateMatrix(grid, TURN_GRID.DOWN.SECOND);
       break;
     case 'ArrowUp':
-      mergeNumbers(grid, trRows, score, pLose, TURN_GRID.UP);
-      finishedGame(grid, pWin);
+      rotateMatrix(grid, TURN_GRID.UP.FIRST);
+      mergeNumbers(grid, score);
+      rotateMatrix(grid, TURN_GRID.UP.SECOND);
       break;
     default:
       break;
   }
+  addRandomTwoOrFour(grid, pLose);
+  renderField(grid, trRows);
+  addStyleToField(trRows);
+  finishedGame(grid, pWin);
 }
 
 module.exports = {
