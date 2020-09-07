@@ -5,6 +5,7 @@ const tbody = document.querySelector('tbody');
 const container = document.querySelector('.container');
 const button = document.querySelector('.button');
 const allTd = document.querySelectorAll('td');
+const allTr = document.querySelectorAll('tr');
 const startMessage = document.querySelector('.message-start');
 const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
@@ -99,18 +100,11 @@ container.addEventListener('keydown', (event) => {
           addColorToCell();
         }
         break;
+      default:
+        break;
     }
 
-    let emptyPlaceInTextContent = false;
-
-    for (let u = 0; u < allTd.length; u++) {
-      if (allTd[u].textContent === '') {
-        emptyPlaceInTextContent = true;
-      }
-    }
-
-    if (clickOnRight === clickOnUp === clickOnDown === clickOnLeft
-       === false && !emptyPlaceInTextContent) {
+    if (checkLoseGame()) {
       loseMessage.classList.remove('hidden');
     }
   }
@@ -160,8 +154,6 @@ function arrowLeft() {
   for (let i = 0; i < tbody.rows.length; i++) {
     for (let a = 0; a < tbody.rows[i].cells.length; a++) {
       for (let y = 1; y < tbody.rows[i].cells.length; y++) {
-        clickOnLeft = true;
-
         if (tbody.rows[i].cells[y - 1].textContent === tbody.rows[i].cells[y]
           .textContent && tbody.rows[i].cells[y - 1].textContent !== ''
          && countOfMergeCell === 0) {
@@ -299,4 +291,28 @@ function arrowDown() {
     clickOnDown = true;
   }
   countOfMoveCells = 0;
+}
+
+function checkLoseGame() {
+  for (let u = 0; u < allTd.length; u++) {
+    if (allTd[u].textContent === '') {
+      return false;
+    }
+  }
+
+  for (let i = 0; i < allTr.length; i++) {
+    for (let y = 1; y < allTr[i].cells.length; y++) {
+      if (allTr[i].cells[y].textContent === allTr[i].cells[y - 1].textContent) {
+        return false;
+      }
+    }
+  }
+
+  for (let w = allTd.length - 1; w > 3; w--) {
+    if (allTd[w - tr.cells.length].textContent === allTd[w].textContent) {
+      return false;
+    }
+  }
+
+  return true;
 }
