@@ -44,6 +44,7 @@ container.addEventListener('click', (event) => {
     clickOnRight = true;
     clickOnUp = true;
     clickOnDown = true;
+    score.textContent = 0;
 
     for (let w = 0; w < allTd.length; w++) {
       allTd[w].textContent = '';
@@ -203,8 +204,11 @@ function arrowUp() {
        === allTd[w].textContent && countOfMergeCell === 0) {
           allTd[w - tr.cells.length].textContent
           = Number(allTd[w - tr.cells.length].textContent)
-      + Number(allTd[w].textContent);
+          + Number(allTd[w].textContent);
           allTd[w].textContent = '';
+
+          score.textContent = Number(score.textContent)
+            + Number(allTd[w - tr.cells.length].textContent);
           countOfMergeCell++;
           countOfMoveCells++;
         } else if (allTd[w - tr.cells.length].textContent === ''
@@ -273,6 +277,9 @@ function arrowDown() {
           = Number(allTd[w - tr.cells.length].textContent)
           + Number(allTd[w].textContent);
           allTd[w - tr.cells.length].textContent = '';
+
+          score.textContent = Number(score.textContent)
+          + Number(allTd[w].textContent);
           countOfMergeCell++;
           countOfMoveCells++;
         } else if (allTd[w].textContent === ''
