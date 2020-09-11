@@ -64,7 +64,7 @@ class Game {
    * Get random number (2 or 4)
    */
   getRandomNumber() {
-    return Math.random() > 0.9 ? 4 : 2;
+    return Math.random() >= 0.9 ? 4 : 2;
   }
 
   /**
@@ -120,8 +120,7 @@ class Game {
         if (
           (this.matrix[y][x + 1]
             && this.matrix[y][x] === this.matrix[y][x + 1])
-            || (this.matrix[y + 1]
-              && this.matrix[y][x] === this.matrix[y + 1][x])
+          || (this.matrix[y + 1] && this.matrix[y][x] === this.matrix[y + 1][x])
         ) {
           return true;
         }
@@ -279,17 +278,19 @@ class Game {
   render() {
     const { rows } = this.tableEl;
 
-    this.numberElements.forEach((el) => el.remove());
+    this.numberElements.forEach((el) => {
+      el.textContent = '';
+      el.className = 'field-cell';
+    });
     this.numberElements = [];
 
     this.matrix.forEach((arr, rowIndex) =>
       arr.forEach((val, cellIndex) => {
         if (val) {
-          const field = document.createElement('div');
+          const field = rows[rowIndex].cells[cellIndex];
 
           field.textContent = val;
-          field.classList.add('field-cell', `field-cell--${val}`);
-          rows[rowIndex].cells[cellIndex].append(field);
+          field.classList.add(`field-cell--${val}`);
           this.numberElements.push(field);
           this.scoreEl.textContent = this.score;
         }
@@ -317,4 +318,6 @@ class Game {
   }
 }
 
-new Game(); // eslint-disable-line no-new
+const game = new Game();
+
+game.render();
