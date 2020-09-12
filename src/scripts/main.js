@@ -10,7 +10,6 @@ class Game {
 
     this.initSelectors();
     this.initListeners();
-    this.renderTable();
   }
 
   /**
@@ -31,6 +30,25 @@ class Game {
   initListeners() {
     window.addEventListener('keyup', this.handleMove);
     this.startButtonEl.addEventListener('click', this.start);
+  }
+
+  /**
+   * Dynamically render table with given size
+   */
+  init() {
+    for (let y = 0; y < this.tableSize; y++) {
+      const row = document.createElement('tr');
+
+      row.classList.add('field-row');
+      this.tableEl.append(row);
+
+      for (let x = 0; x < this.tableSize; x++) {
+        const cell = document.createElement('td');
+
+        cell.classList.add('field-cell');
+        row.append(cell);
+      }
+    }
   }
 
   /**
@@ -254,25 +272,6 @@ class Game {
   }
 
   /**
-   * Dynamically render table with given size
-   */
-  renderTable() {
-    for (let y = 0; y < this.tableSize; y++) {
-      const row = document.createElement('tr');
-
-      row.classList.add('field-row');
-      this.tableEl.append(row);
-
-      for (let x = 0; x < this.tableSize; x++) {
-        const cell = document.createElement('td');
-
-        cell.classList.add('field-cell');
-        row.append(cell);
-      }
-    }
-  }
-
-  /**
    * Render the matrix and show win/lose messages when needed
    */
   render() {
@@ -320,4 +319,4 @@ class Game {
 
 const game = new Game();
 
-game.render();
+game.init();
