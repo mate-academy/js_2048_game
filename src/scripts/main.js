@@ -1,7 +1,6 @@
 'use strict';
 
 // write your code here
-const tbody = document.querySelector('tbody');
 const container = document.querySelector('.container');
 const button = document.querySelector('.button');
 const allTd = document.querySelectorAll('td');
@@ -10,12 +9,16 @@ const startMessage = document.querySelector('.message-start');
 const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
 const score = document.querySelector('.game-score');
-const tr = document.querySelector('tr');
-let clickOnLeft;
 let clickOnRight;
-let clickOnUp;
-let clickOnDown;
 let countOfMoveCells = 0;
+let tdElement;
+
+const arrayOfFields = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 
 container.addEventListener('click', (event) => {
   const item = event.target;
@@ -40,16 +43,10 @@ container.addEventListener('click', (event) => {
     button.textContent = 'Start';
     button.classList.remove('restart');
     button.classList.add('start');
-
-    clickOnLeft = true;
     clickOnRight = true;
-    clickOnUp = true;
-    clickOnDown = true;
     score.textContent = 0;
 
-    for (let w = 0; w < allTd.length; w++) {
-      allTd[w].textContent = '';
-    }
+    restartArray();
     addColorToCell();
   }
 });
@@ -63,42 +60,16 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
-let countOfMergeCell = 0;
-
 container.addEventListener('keydown', (event) => {
   if (button.textContent === 'Restart') {
     switch (event.key) {
-      case 'ArrowDown': arrowDown();
-
-        if (clickOnDown) {
-          winConditional();
-          addNumber();
-          addColorToCell();
-        }
+      case 'ArrowDown': render(arrayOfFields, 1);
         break;
-      case 'ArrowRight': arrowRight();
-
-        if (clickOnRight) {
-          winConditional();
-          addNumber();
-          addColorToCell();
-        }
+      case 'ArrowRight': render(arrayOfFields, 4);
         break;
-      case 'ArrowUp': arrowUp();
-
-        if (clickOnUp) {
-          winConditional();
-          addNumber();
-          addColorToCell();
-        }
+      case 'ArrowUp': render(arrayOfFields, 3);
         break;
-      case 'ArrowLeft': arrowLeft();
-
-        if (clickOnLeft) {
-          winConditional();
-          addNumber();
-          addColorToCell();
-        }
+      case 'ArrowLeft': render(arrayOfFields, 2);
         break;
       default:
         break;
@@ -111,28 +82,42 @@ container.addEventListener('keydown', (event) => {
 });
 
 function addNumber() {
-  let tdElement = getRandomInt(0, allTd.length);
   const probabilityToAddFour = getRandomInt(1, 11);
 
   do {
     tdElement = getRandomInt(0, allTd.length);
   }
-  while (allTd[tdElement].textContent !== '');
+  // eslint-disable-next-line max-len
+  while (arrayOfFields[Math.trunc(tdElement / arrayOfFields.length)][tdElement - (Math.trunc(tdElement / arrayOfFields.length)) * arrayOfFields.length] !== 0);
 
   if (probabilityToAddFour === 1) {
-    allTd[tdElement].textContent = '4';
+    // eslint-disable-next-line max-len
+    arrayOfFields[Math.trunc(tdElement / arrayOfFields.length)][tdElement - (Math.trunc(tdElement / arrayOfFields.length)) * arrayOfFields.length] = 4;
   } else if (probabilityToAddFour !== 1) {
-    allTd[tdElement].textContent = '2';
+    // eslint-disable-next-line max-len
+    arrayOfFields[Math.trunc(tdElement / arrayOfFields.length)][tdElement - (Math.trunc(tdElement / arrayOfFields.length)) * arrayOfFields.length] = 2;
   }
+  putNumberFromArrayToTextContent();
   addColorToCell();
 };
 
 function winConditional() {
-  for (let i = 0; i < allTd.length; i++) {
-    if (allTd[i].textContent === '2048') {
-      winMessage.classList.remove('hidden');
+  for (let y = 0; y < arrayOfFields.length; y++) {
+    for (let t = 0; t < arrayOfFields[y].length; t++) {
+      if (arrayOfFields[y][t] === 2048) {
+        winMessage.classList.remove('hidden');
+      }
     }
   }
+}
+
+function restartArray() {
+  for (let i = 0; i < arrayOfFields.length; i++) {
+    for (let y = 0; y < arrayOfFields[i].length; y++) {
+      arrayOfFields[i][y] = 0;
+    }
+  }
+  putNumberFromArrayToTextContent();
 }
 
 function addColorToCell() {
@@ -150,104 +135,71 @@ function addColorToCell() {
   }
 }
 
-function arrowLeft() {
-  for (let i = 0; i < tbody.rows.length; i++) {
-    for (let a = 0; a < tbody.rows[i].cells.length; a++) {
-      for (let y = 1; y < tbody.rows[i].cells.length; y++) {
-        if (tbody.rows[i].cells[y - 1].textContent === tbody.rows[i].cells[y]
-          .textContent && tbody.rows[i].cells[y - 1].textContent !== ''
-         && countOfMergeCell === 0) {
-          tbody.rows[i].cells[y - 1].textContent = Number(tbody.rows[i]
-            .cells[y].textContent)
-           + Number(tbody.rows[i].cells[y - 1].textContent);
-          tbody.rows[i].cells[y].textContent = '';
-          countOfMergeCell++;
-          countOfMoveCells++;
-
-          score.textContent = Number(score.textContent)
-           + Number(tbody.rows[i].cells[y - 1].textContent);
-        } else if (tbody.rows[i].cells[y - 1].textContent === ''
-         && tbody.rows[i].cells[y - 1].textContent
-          !== tbody.rows[i].cells[y].textContent) {
-          tbody.rows[i].cells[y - 1].textContent
-        = tbody.rows[i].cells[y].textContent;
-          tbody.rows[i].cells[y].textContent = '';
-          countOfMoveCells++;
-        }
+function checkLoseGame() {
+  for (let y = 0; y < arrayOfFields.length; y++) {
+    for (let t = 0; t < arrayOfFields[y].length; t++) {
+      if (arrayOfFields[y][t] === 0) {
+        return false;
       }
     }
-    countOfMergeCell = 0;
   }
 
-  if (countOfMoveCells === 0) {
-    clickOnLeft = false;
-  } else {
-    clickOnLeft = true;
+  for (let i = 0; i < arrayOfFields.length; i++) {
+    for (let y = 1; y < arrayOfFields[i].length; y++) {
+      if (arrayOfFields[i][y] === arrayOfFields[i][y - 1]) {
+        return false;
+      }
+    }
   }
-  countOfMoveCells = 0;
+
+  for (let w = 1; w < arrayOfFields.length; w++) {
+    for (let i = 0; i < arrayOfFields[w].length; i++) {
+      if (arrayOfFields[w][i] === arrayOfFields[w - 1][i]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
-function arrowUp() {
-  for (let e = 0; e < tr.cells.length; e++) {
-    for (let a = 0; a < tr.cells.length; a++) {
-      for (let w = tr.cells.length + e; w < allTd.length; w = w + 4) {
-        if (allTd[w - tr.cells.length].textContent !== ''
-         && allTd[w - tr.cells.length].textContent
-       === allTd[w].textContent && countOfMergeCell === 0) {
-          allTd[w - tr.cells.length].textContent
-          = Number(allTd[w - tr.cells.length].textContent)
-          + Number(allTd[w].textContent);
-          allTd[w].textContent = '';
-
-          score.textContent = Number(score.textContent)
-            + Number(allTd[w - tr.cells.length].textContent);
-          countOfMergeCell++;
-          countOfMoveCells++;
-        } else if (allTd[w - tr.cells.length].textContent === ''
-           && allTd[w - tr.cells.length].textContent !== allTd[w].textContent) {
-          allTd[w - tr.cells.length].textContent = allTd[w].textContent;
-          allTd[w].textContent = '';
-          countOfMoveCells++;
-        }
+function putNumberFromArrayToTextContent() {
+  for (let i = 0; i < arrayOfFields.length; i++) {
+    for (let y = 0; y < arrayOfFields[i].length; y++) {
+      if (arrayOfFields[i][y] === 0) {
+        allTr[i].cells[y].textContent = '';
+      } else {
+        allTr[i].cells[y].textContent = arrayOfFields[i][y];
       }
     }
-    countOfMergeCell = 0;
   }
-
-  if (countOfMoveCells === 0) {
-    clickOnUp = false;
-  } else {
-    clickOnUp = true;
-  }
-  countOfMoveCells = 0;
 }
 
 function arrowRight() {
-  for (let i = 0; i < tbody.rows.length; i++) {
-    for (let a = 0; a < tbody.rows[i].cells.length; a++) {
-      for (let y = tbody.rows[i].cells.length - 1; y > 0; y--) {
-        if (tbody.rows[i].cells[y].textContent === tbody.rows[i].cells[y - 1]
-          .textContent && tbody.rows[i].cells[y].textContent !== ''
-         && countOfMergeCell === 0) {
-          tbody.rows[i].cells[y].textContent = Number(tbody.rows[i]
-            .cells[y - 1].textContent)
-           + Number(tbody.rows[i].cells[y].textContent);
-          tbody.rows[i].cells[y - 1].textContent = '';
-          countOfMergeCell++;
+  for (let i = 0; i < arrayOfFields.length; i++) {
+    let r = 0;
+
+    for (let a = 0; a < arrayOfFields[i].length; a++) {
+      for (let y = arrayOfFields[i].length - 1; y > 0; y--) {
+        if (arrayOfFields[i][y] === 0 && arrayOfFields[i][y]
+           !== arrayOfFields[i][y - 1]) {
+          arrayOfFields[i][y] = arrayOfFields[i][y - 1];
+          arrayOfFields[i][y - 1] = 0;
+          countOfMoveCells++;
+        } else if (arrayOfFields[i][y - r] === arrayOfFields[i][y - 1 - r]
+           && arrayOfFields[i][y - r] !== 0) {
+          arrayOfFields[i][y - r] = Number(arrayOfFields[i][y - 1 - r])
+            + Number(arrayOfFields[i][y - r]);
+          arrayOfFields[i][y - 1 - r] = 0;
           countOfMoveCells++;
 
           score.textContent = Number(score.textContent)
-          + Number(tbody.rows[i].cells[y].textContent);
-        } else if (tbody.rows[i].cells[y].textContent === '' && tbody.rows[i]
-          .cells[y].textContent !== tbody.rows[i].cells[y - 1].textContent) {
-          tbody.rows[i].cells[y].textContent
-         = tbody.rows[i].cells[y - 1].textContent;
-          tbody.rows[i].cells[y - 1].textContent = '';
-          countOfMoveCells++;
+          + Number(arrayOfFields[i][y]);
+          r = 4 - y;
         }
       }
     }
-    countOfMergeCell = 0;
+    r = 0;
   }
 
   if (countOfMoveCells === 0) {
@@ -258,61 +210,33 @@ function arrowRight() {
   countOfMoveCells = 0;
 }
 
-function arrowDown() {
-  for (let e = 0; e < tr.cells.length; e++) {
-    for (let a = 0; a < tr.cells.length; a++) {
-      for (let w = allTd.length - 1 - e; w > 3; w = w - 4) {
-        if (allTd[w - tr.cells.length].textContent !== ''
-         && allTd[w - tr.cells.length].textContent
-         === allTd[w].textContent && countOfMergeCell === 0) {
-          allTd[w].textContent
-          = Number(allTd[w - tr.cells.length].textContent)
-          + Number(allTd[w].textContent);
-          allTd[w - tr.cells.length].textContent = '';
+function render(array, numberOfTurn) {
+  for (let z = 0; z < 4; z++) {
+    for (let d = array.length, a = 0; a < d; a++) {
+      for (let c = a + 1; c < d; c++) {
+        const e = array[a][c];
 
-          score.textContent = Number(score.textContent)
-          + Number(allTd[w].textContent);
-          countOfMergeCell++;
-          countOfMoveCells++;
-        } else if (allTd[w].textContent === ''
-         && allTd[w - tr.cells.length].textContent !== allTd[w].textContent) {
-          allTd[w].textContent = allTd[w - tr.cells.length].textContent;
-          allTd[w - tr.cells.length].textContent = '';
-          countOfMoveCells++;
-        }
+        array[a][c] = array[c][a];
+        array[c][a] = e;
       }
     }
-    countOfMergeCell = 0;
-  }
 
-  if (countOfMoveCells === 0) {
-    clickOnDown = false;
-  } else {
-    clickOnDown = true;
-  }
-  countOfMoveCells = 0;
-}
+    for (let q = 0; q < array.length / 2; q++) {
+      const temp = array[q];
 
-function checkLoseGame() {
-  for (let u = 0; u < allTd.length; u++) {
-    if (allTd[u].textContent === '') {
-      return false;
+      array[q] = array[array.length - 1 - q];
+      array[array.length - 1 - q] = temp;
+    }
+
+    if (z === numberOfTurn - 1) {
+      arrowRight();
     }
   }
 
-  for (let i = 0; i < allTr.length; i++) {
-    for (let y = 1; y < allTr[i].cells.length; y++) {
-      if (allTr[i].cells[y].textContent === allTr[i].cells[y - 1].textContent) {
-        return false;
-      }
-    }
+  if (clickOnRight) {
+    winConditional();
+    addNumber();
   }
 
-  for (let w = allTd.length - 1; w > 3; w--) {
-    if (allTd[w - tr.cells.length].textContent === allTd[w].textContent) {
-      return false;
-    }
-  }
-
-  return true;
-}
+  return array;
+};
