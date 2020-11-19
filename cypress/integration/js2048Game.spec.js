@@ -1,45 +1,50 @@
   'use strict';
 
-  describe('Test', () => {
+  describe('2048 game', () => {
     beforeEach('Open site', () => {
-      cy.visit('http://localhost:8080/');
+      cy.visit('https://kshvetsova.github.io/js_2048_game/');
     });
 
     it('should show the score', () => {
       cy.get('button').click();
       cy.get('body').type('{rightArrow}');
       cy.get('body').type('{upArrow}');
-      cy.contains('Score').contains('4');
+      cy.get('body').type('{rightArrow}');
+      cy.contains('Score').should('not.have.value', 0);
     });
 
     it('should show the score', () => {
       cy.get('button').click();
       cy.get('body').type('{leftArrow}');
       cy.get('body').type('{upArrow}');
-      cy.contains('Score').contains('4');
+      cy.get('body').type('{leftArrow}');
+      cy.contains('Score').should('not.have.value', 0);
     });
 
     it('should show the score', () => {
       cy.get('button').click();
       cy.get('body').type('{rightArrow}');
       cy.get('body').type('{downArrow}');
-      cy.contains('Score').contains('4');
+      cy.get('body').type('{rightArrow}');
+      cy.contains('Score').should('not.have.value', 0);
     });
 
     it('should show the score', () => {
       cy.get('button').click();
       cy.get('body').type('{leftArrow}');
       cy.get('body').type('{downArrow}');
-      cy.contains('Score').contains('4');
+      cy.get('body').type('{leftArrow}');
+      cy.contains('Score').should('not.have.value', 0);
     });
 
     it('should reset the score', () => {
       cy.get('button').click();
       cy.get('body').type('{leftArrow}');
       cy.get('body').type('{downArrow}');
-      cy.contains('Score').contains('4');
+      cy.get('body').type('{leftArrow}');
+      cy.get('[class="game-score"]').should('not.have.value', '0');
       cy.get('button').click();
-      cy.contains('Score').contains('0');
+      cy.get('[class="game-score"]').should('have.value', '');
     });
 
     it('game over', () => {
