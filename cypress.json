@@ -1,0 +1,16 @@
+{
+  "baseUrl": "http://localhost:8080",
+  "video": true,
+  "pluginsFile": false,
+  "supportFile": false,
+  "viewportHeight": 1920,
+  "viewportWidth": 1080,
+  "screenshotOnRunFailure": true,
+  "reporter": "mochawesome",
+  "reporterOptions": {
+    "reportDir": "raw_reports",
+    "overwrite": false,
+    "html": false,
+    "json": true
+  }
+}
