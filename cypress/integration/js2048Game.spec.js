@@ -2,7 +2,7 @@
 
   describe('2048 game', () => {
     beforeEach('Open site', () => {
-      cy.visit('https://kshvetsova.github.io/js_2048_game/');
+      cy.visit('/');
     });
 
     it('should show the score', () => {
