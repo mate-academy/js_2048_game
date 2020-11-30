@@ -1,8 +1,9 @@
 1. Replace `<your_account>` with your Github username in the link
     - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
 2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - There are no tests for this task so use `npm run lint` command instead of `npm test`
-    - TODO(ihor): fix me
+    - Run `npm run test` command to test your code;
+    - Run `npm run test:only -- -n` to run fast test ignoring linter;
+    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
 
 ### Task: 2048 game
 
