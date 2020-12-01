@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 'use strict';
 
 Cypress.Commands.add('shuffleBoxes', (arrow1, arrow2, times) => {
@@ -21,29 +20,34 @@ describe('2048 game', () => {
     cy.get('.game-score').should('have.value', '');
   });
 
-  it.only('should show the score', () => {
+  it('should show the score shuffling to the left and up only', () => {
     cy.shuffleBoxes('{leftArrow}', '{upArrow}', 3);
+    cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
   });
 
-  it.only('should show the score', () => {
+  it('should show the score shuffling to the right and up only', () => {
     cy.shuffleBoxes('{rightArrow}', '{upArrow}', 3);
+    cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
   });
 
-  it.only('should show the score', () => {
+  it('should show the score shuffling to the right and down only', () => {
     cy.shuffleBoxes('{rightArrow}', '{downArrow}', 3);
+    cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
   });
 
-  it.only('should show the score', () => {
+  it('should show the score shuffling to the left and down only', () => {
     cy.shuffleBoxes('{leftArrow}', '{downArrow}', 3);
+    cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
   });
 
   it('should reset the score', () => {
     cy.shuffleBoxes('{leftArrow}', '{downArrow}', 3);
+    cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
     cy.get('.button.restart').click();
     cy.get('.game-score').should('have.value', '');
   });
 
-  it('should show message in case of the loss', () => {
+  it.only('should show message in case of the loss', () => {
     cy.get('.button.start').click();
 
     for (let n = 0; n < 100; n++) {
@@ -54,6 +58,6 @@ describe('2048 game', () => {
     }
 
     cy.contains('You lose! Restart the game?')
-      .should('not.have.class', 'hidden');
+      .should('be.visible');
   });
 });
