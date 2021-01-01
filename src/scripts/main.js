@@ -280,12 +280,10 @@ class Game {
 
     toCell.td.style.left = toCell.currentPosition.x + 'px';
     toCell.td.style.top = toCell.currentPosition.y + 'px';
-    toCell.td.innerHTML = toCell.value;
+    toCell.td.innerText = toCell.value;
     fromCell.td = null;
   }
   mergeCells(fromCell, toCell) {
-    const classNameBeforeMerge = cellStyle.get(toCell.value);
-
     toCell.value *= 2;
     this.gameScore += toCell.value;
     this.bonusScore += toCell.value;
@@ -306,7 +304,6 @@ class Game {
     setTimeout(function() {
       if (toCell.td !== null) {
         toCell.td.classList.remove('pulse');
-        toCell.td.classList.remove(classNameBeforeMerge);
       }
     }, 500);
 
