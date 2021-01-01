@@ -297,7 +297,7 @@ class Game {
     toCell.td.style.left = toCell.currentPosition.x + 'px';
     toCell.td.style.top = toCell.currentPosition.y + 'px';
     toCell.td.innerText = toCell.value;
-    toCell.td.classList.add(cellStyle.get(toCell.value));
+    toCell.td.classList.toggle(cellStyle.get(toCell.value));
     toCell.td.classList.remove('animate');
     toCell.td.classList.toggle('pulse');
 
