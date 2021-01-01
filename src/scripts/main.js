@@ -7,6 +7,7 @@ const start = document.querySelector('.start');
 const restart = document.querySelector('.restart');
 const startMessage = document.querySelector('.message-start');
 const gameScore = document.querySelector('.game-score');
+const info = document.querySelector('.info');
 const winMessage = document.querySelector('.message-win');
 const gameOverMessage = document.querySelector('.message-lose');
 const table = document.querySelector('table');
@@ -57,6 +58,8 @@ class Game {
     this.gameScore = 0;
     this.availableCells = 16;
     this.winningNumber = 2048;
+    this.bonusScoreNode = null;
+    this.bonusScore = 0;
   }
   initField(arr, width) {
     if (width === this.width) {
@@ -75,6 +78,15 @@ class Game {
     arr.push(row);
     this.initField(arr, width + 1);
   }
+  initBonusScore() {
+    const bonusScoreNode = document.createElement('div');
+
+    bonusScoreNode.style.position = 'absolute';
+    bonusScoreNode.className = 'score';
+    info.append(bonusScoreNode);
+    bonusScoreNode.classList.add('hidden');
+    this.bonusScoreNode = bonusScoreNode;
+  }
   generateValue() {
     if (this.availableCells === 0) {
       return;
@@ -90,7 +102,7 @@ class Game {
 
         tile.isOccupied = true;
         tile.value = this.getRandom(0, 1);
-        this.renderRandomTile(tile, table);
+        this.renderRandomTile(tile, rowsArray[row].cells[col]);
         this.startCellsNum--;
       }
     }
@@ -107,7 +119,7 @@ class Game {
 
     return parseInt(Math.random() * rest - 0.0001);
   }
-  renderRandomTile(element, gameField) {
+  renderRandomTile(element, gameTile) {
     const style = cellStyle.get(element.value);
 
     element.td = document.createElement('td');
@@ -118,11 +130,24 @@ class Game {
     element.td.style.top = element.currentPosition.y + 'px';
     element.td.innerText = element.value;
     element.td.classList.toggle(style);
+    element.className = style;
     element.td.classList.add('animate');
-    gameField.append(element.td);
+    gameTile.append(element.td);
   }
-  render() {
-    gameScore.innerHTML = this.gameScore;
+  renderScore() {
+    gameScore.innerText = this.gameScore;
+  }
+  updateBonusScore(node) {
+    node.classList.remove('hidden');
+    node.classList.add('move');
+    node.innerText = `+${this.bonusScore}`;
+    gameScore.innerText = this.gameScore;
+
+    setTimeout(function() {
+      node.classList.remove('move');
+      node.classList.add('hidden');
+      this.bonusScore = 0;
+    }.bind(this), 500);
   }
   moveUp() {
     for (let col = 0; col < this.height; col++) {
@@ -241,7 +266,7 @@ class Game {
         break;
       }
     }
-    this.render();
+    this.renderScore();
   }
   shiftNotEmptyCells(fromCell, toCell) {
     toCell.value = fromCell.value;
@@ -259,8 +284,12 @@ class Game {
     fromCell.td = null;
   }
   mergeCells(fromCell, toCell) {
+    const classNameBeforeMerge = cellStyle.get(toCell.value);
+
     toCell.value *= 2;
     this.gameScore += toCell.value;
+    this.bonusScore += toCell.value;
+    this.updateBonusScore(this.bonusScoreNode);
 
     if (toCell.td !== null) {
       toCell.td.remove();
@@ -269,13 +298,16 @@ class Game {
 
     toCell.td.style.left = toCell.currentPosition.x + 'px';
     toCell.td.style.top = toCell.currentPosition.y + 'px';
-    toCell.td.innerHTML = toCell.value;
+    toCell.td.innerText = toCell.value;
     toCell.td.classList.add(cellStyle.get(toCell.value));
     toCell.td.classList.remove('animate');
     toCell.td.classList.toggle('pulse');
 
     setTimeout(function() {
-      toCell.td.classList.remove('pulse');
+      if (toCell.td !== null) {
+        toCell.td.classList.remove('pulse');
+        toCell.td.classList.remove(classNameBeforeMerge);
+      }
     }, 500);
 
     fromCell.value = 0;
@@ -331,20 +363,24 @@ class Game {
   }
   stopGame(message) {
     this.message = message;
-    this.render();
+    this.renderScore();
     message.classList.remove('hidden');
     document.removeEventListener('keydown', kewDownEvent);
   }
   resetGameDependencies() {
     this.field.forEach(element => {
       element.forEach(tile => {
-        tile.td = (tile.td !== null) ? tile.td.remove() : null;
+        if (tile.td != null) {
+          tile.td.remove();
+          tile.td = null;
+        }
         tile.value = 0;
         tile.isOccupied = false;
         this.className = cellStyle.get(0);
       });
     });
     this.gameScore = 0;
+    this.bonusScore = 0;
     this.startCellsNum = 0;
     this.availableCells = 16;
   }
@@ -355,13 +391,14 @@ class Game {
     this.getDirection(e.key);
     this.checkAvailableCells();
     this.generateValue();
-    this.render();
+    this.renderScore();
   }
   start(message) {
     message.classList.add('hidden');
     this.initField(this.field, 0);
     this.generateValue();
-    this.render();
+    this.renderScore();
+    this.initBonusScore();
   }
   restart() {
     if (this.message !== null) {
@@ -369,7 +406,7 @@ class Game {
     }
     this.resetGameDependencies();
     this.generateValue();
-    this.render();
+    this.renderScore();
   }
 };
 
