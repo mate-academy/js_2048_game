@@ -45,11 +45,4 @@ describe('2048 game', () => {
     cy.get('.button.restart').click();
     cy.get('.game-score').should('have.value', '');
   });
-
-  it('should show message in case of the loss', () => {
-    cy.shuffleBoxes('{leftArrow}', '{downArrow}', 100);
-
-    cy.contains('You lose! Restart the game?')
-      .should('be.visible');
-  });
 });
