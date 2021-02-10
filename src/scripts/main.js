@@ -1,415 +1,252 @@
+
 'use strict';
 
-const arrowButtons = [`ArrowUp`, `ArrowDown`,
-  `ArrowLeft`, `ArrowRight`];
-const tr = document.querySelectorAll(`tr`);
 const startButton = document.querySelector(`.start`);
 const startMessage = document.querySelector(`.message-start`);
 const loseMessage = document.querySelector(`.message-lose`);
+const winMessage = document.querySelector(`.message-win`);
 const gameScore = document.querySelector(`.game-score`);
-let mergingHappened;
+const rowsCollection = document.querySelectorAll(`tr`);
+const arrowButtons = [`ArrowUp`, `ArrowDown`,
+  `ArrowLeft`, `ArrowRight`];
 
-const createCell = () => {
-  for (let i = 0; i < 1; i++) {
-    const randomRawIndex = Math.floor(Math.random() * 4);
-    const randomCellIndex = Math.floor(Math.random() * 4);
-    const randomCell = tr[randomRawIndex].children[randomCellIndex];
-
-    randomCell.dataset.rawIndex = randomRawIndex;
-    randomCell.dataset.cellIndex = randomCellIndex;
-
-    if (randomCell.classList.contains(`active`)) {
-      i--;
-      continue;
-    }
-    appearedCellValue(randomCell);
+class Game {
+  constructor() {
+    this.gameField = this.createGameField();
+    this.randomRawIndex = 0;
+    this.randomColumnIndex = 0;
+    this.moveWasPerformed = false;
+    this.mergingHappened = false;
+    this.score = 0;
+    this.loseCheck = false;
+    this.randomCellIndex = 0;
+    this.movesHandler();
   }
-};
 
-const appearedCellValue = (cell) => {
-  const randomValue = Math.ceil(Math.random() * 10);
-  const newCellValue = randomValue === 10 ? 4 : 2;
+  createGameField() {
+    const gameField = [];
 
-  cell.textContent = newCellValue;
-  cell.classList.add(`field-cell--${newCellValue}`, `active`);
-};
+    for (let i = 0; i < 4; i++) {
+      gameField.push(new Array(4).fill(0));
+    }
 
-const startGame = () => {
-  startButton.addEventListener(`click`, () => {
-    const activeCells = document.querySelectorAll(`.active`);
+    return gameField;
+  }
 
-    startButton.className = `button restart`;
-    startButton.textContent = `Restart`;
-    startMessage.classList.add(`hidden`);
-    movesHandler();
-
-    activeCells.forEach(cell => {
-      cell.classList.remove(`field-cell--${cell.textContent}`, `active`);
-      cell.textContent = ``;
+  startGame() {
+    startButton.addEventListener(`click`, () => {
+      startButton.className = `button restart`;
+      startButton.textContent = `Restart`;
+      startMessage.classList.add(`hidden`);
+      loseMessage.classList.add(`hidden`);
+      winMessage.classList.add(`hidden`);
+      this.clearField();
+      this.createCell();
+      this.createCell();
+      this.render();
     });
-    gameScore.textContent = `0`;
-    loseMessage.classList.add(`hidden`);
-    createCell();
-    createCell();
-  });
-};
+  }
 
-const movesHandler = () => {
-  document.addEventListener(`keydown`, (e) => {
-    if (!arrowButtons.includes(e.key)) {
-      return;
+  randomValue() {
+    const random = Math.ceil(Math.random() * 10);
+    const newCellValue = random === 10 ? 4 : 2;
+
+    return newCellValue;
+  }
+
+  createCell() {
+    const emptyCellsArr = [];
+
+    for (let i = 0; i < this.gameField.length; i++) {
+      for (let y = 0; y < this.gameField[i].length; y++) {
+        if (!this.gameField[i][y]) {
+          emptyCellsArr.push([i, y]);
+        }
+      }
     }
+    this.randomCellIndex = Math.floor(Math.random() * emptyCellsArr.length);
 
-    switch (e.key) {
-      case `ArrowUp`:
-        verticalMergeOfCells(`Up`, moveUp, false);
-        break;
-      case `ArrowDown`:
-        verticalMergeOfCells(`Down`, moveDown, false);
-        break;
-      case `ArrowLeft`:
-        horizontalMergeOfCells(`Left`, moveLeft, false);
-        break;
-      case `ArrowRight`:
-        horizontalMergeOfCells(`Right`, moveRight, false);
-        break;
-    }
-    gameLostCheck();
-  });
-};
+    const randomRawIndex = emptyCellsArr[this.randomCellIndex][0];
+    const randomColumnIndex = emptyCellsArr[this.randomCellIndex][1];
 
-const combineCellsInColumns = () => {
-  const activeCells = document.querySelectorAll(`.active`);
-  const activeCellsArr = [...activeCells];
-  const arrOfColumns = [];
+    this.gameField[randomRawIndex][randomColumnIndex] = this.randomValue();
+    this.mergingHappened = false;
+    this.moveWasPerformed = false;
+  }
 
-  for (let i = 0; i < 4; i++) {
-    const column = activeCellsArr.filter(cell => {
-      return +cell.dataset.cellIndex === i;
+  movesHandler() {
+    document.addEventListener(`keydown`, (e) => {
+      if (!arrowButtons.includes(e.key)) {
+        return;
+      }
+
+      switch (e.key) {
+        case `ArrowUp`:
+          this.moveUp();
+          break;
+        case `ArrowRight`:
+          this.rotateMatrix();
+          this.rotateMatrix();
+          this.rotateMatrix();
+          this.moveUp();
+          this.rotateMatrix();
+          break;
+        case `ArrowDown`:
+          this.rotateMatrix();
+          this.rotateMatrix();
+          this.moveUp();
+          this.rotateMatrix();
+          this.rotateMatrix();
+          break;
+        case `ArrowLeft`:
+          this.rotateMatrix();
+          this.moveUp();
+          this.rotateMatrix();
+          this.rotateMatrix();
+          this.rotateMatrix();
+          break;
+      }
+      this.render();
+      this.checkForLose();
     });
-
-    arrOfColumns.push(column);
   }
 
-  return arrOfColumns;
-};
-
-const combineCellsInRaws = () => {
-  const activeCells = document.querySelectorAll(`.active`);
-  const activeCellsArr = [...activeCells];
-  const arrOfRaws = [];
-
-  for (let i = 0; i < 4; i++) {
-    const raw = activeCellsArr.filter(cell => {
-      return +cell.dataset.rawIndex === i;
-    });
-
-    arrOfRaws.push(raw);
-  }
-
-  return arrOfRaws;
-};
-
-const verticalMergeOfCells = (movement, callback, lostGameCheck) => {
-  mergingHappened = false;
-
-  const arrOfColumns = combineCellsInColumns();
-  let checkOfMergeForLostGame = false;
-
-  arrOfColumns.forEach(column => {
-    if (movement === `Up`) {
-      for (let i = 0; i < column.length; i++) {
-        if (i === column.length - 1) {
-          break;
-        }
-
-        if (column[i].textContent !== column[i + 1].textContent) {
+  moveUp() {
+    for (let i = 0; i < this.gameField.length; i++) {
+      for (let y = 0; y < this.gameField[i].length; y++) {
+        if (!this.gameField[i][y]) {
           continue;
         }
 
-        if (lostGameCheck) {
-          checkOfMergeForLostGame = true;
+        for (let newIndex = i + 1; newIndex < 4; newIndex++) {
+          if (this.gameField[i][y] !== this.gameField[newIndex][y]
+             && this.gameField[newIndex][y]) {
+            break;
+          }
 
+          if (this.gameField[i][y] !== this.gameField[newIndex][y]
+             && !this.gameField[newIndex][y]) {
+            continue;
+          }
+
+          this.merge(newIndex, i, y);
           break;
         }
 
-        const mergedCell = column[i];
-        const cellToDelete = column[i + 1];
+        for (let newIndex = 0; newIndex < 4; newIndex++) {
+          if (i <= newIndex) {
+            break;
+          }
 
-        mergingHappened = true;
-        merge(mergedCell, cellToDelete);
-        i++;
+          if (!this.gameField[newIndex][y]) {
+            this.move(newIndex, i, y);
+            break;
+          }
+        }
       }
     }
 
-    if (movement === `Down`) {
-      for (let i = column.length - 1; i >= 0; i--) {
-        if (i === 0) {
-          break;
-        }
-
-        if (column[i].textContent !== column[i - 1].textContent) {
-          continue;
-        }
-
-        if (lostGameCheck) {
-          checkOfMergeForLostGame = true;
-
-          break;
-        }
-
-        const mergedCell = column[i];
-        const cellToDelete = column[i - 1];
-
-        mergingHappened = true;
-        merge(mergedCell, cellToDelete);
-        i++;
-      }
+    if (this.mergingHappened || this.moveWasPerformed) {
+      this.createCell();
     }
-  });
-
-  if (checkOfMergeForLostGame) {
-    return false;
   }
 
-  callback();
+  recordOfScore(value) {
+    this.score += value;
+    gameScore.textContent = this.score;
 
-  return true;
-};
-
-const horizontalMergeOfCells = (movement, callback, lostGameCheck) => {
-  mergingHappened = false;
-
-  const arrOfRaws = combineCellsInRaws();
-  let checkOfMergeForLostGame = false;
-
-  arrOfRaws.forEach(raw => {
-    if (movement === `Left`) {
-      for (let i = 0; i < raw.length; i++) {
-        if (i === raw.length - 1) {
-          break;
-        }
-
-        if (raw[i].textContent !== raw[i + 1].textContent) {
-          continue;
-        }
-
-        if (lostGameCheck) {
-          checkOfMergeForLostGame = true;
-
-          break;
-        }
-
-        const mergedCell = raw[i];
-        const cellToDelete = raw[i + 1];
-
-        mergingHappened = true;
-        merge(mergedCell, cellToDelete);
-        i++;
-      }
+    if (value === 2048) {
+      this.winGameMessage();
     }
-
-    if (movement === `Right`) {
-      for (let i = raw.length - 1; i >= 0; i--) {
-        if (i === 0) {
-          break;
-        }
-
-        if (raw[i].textContent !== raw[i - 1].textContent) {
-          continue;
-        }
-
-        if (lostGameCheck) {
-          checkOfMergeForLostGame = true;
-
-          break;
-        }
-
-        const mergedCell = raw[i];
-        const cellToDelete = raw[i - 1];
-
-        mergingHappened = true;
-        merge(mergedCell, cellToDelete);
-        i++;
-      }
-    }
-  });
-
-  if (checkOfMergeForLostGame) {
-    return false;
   }
 
-  callback();
-
-  return true;
-};
-
-const merge = (mergedCell, cellToDelete) => {
-  mergedCell.classList.remove(`field-cell--${mergedCell.textContent}`);
-  mergedCell.textContent = +mergedCell.textContent * 2;
-  mergedCell.classList.add(`field-cell--${mergedCell.textContent}`);
-
-  cellToDelete.classList.remove(`field-cell--${cellToDelete.textContent}`,
-    `active`);
-  cellToDelete.textContent = ``;
-  recordOfScore(mergedCell.textContent);
-
-  if (mergedCell.textContent === `2048`) {
-    winGameMessage();
-  }
-};
-
-const winGameMessage = () => {
-  const winMessage = document.querySelector(`.message-win`);
-
-  winMessage.classList.remove(`hidden`);
-};
-
-const recordOfScore = (value) => {
-  gameScore.textContent = Number(gameScore.textContent) + Number(value);
-};
-
-const moveUp = () => {
-  let moveWasPerformed = false;
-  const arrOfColumns = combineCellsInColumns();
-
-  arrOfColumns.forEach(column => {
-    for (let i = 0; i < column.length; i++) {
-      for (let newIndex = 0; newIndex < 4; newIndex++) {
-        const cellIndex = +column[i].dataset.cellIndex;
-
-        if (tr[newIndex].children[cellIndex].classList.contains(`active`)
-          || +column[i].dataset.rawIndex < newIndex) {
-          continue;
-        }
-
-        const oldCell = column[i];
-        const newCell = tr[newIndex].children[cellIndex];
-
-        move(newCell, oldCell, cellIndex, newIndex);
-        moveWasPerformed = true;
-        break;
-      }
-    }
-  });
-
-  if (moveWasPerformed || mergingHappened) {
-    createCell();
-  }
-};
-
-const moveDown = () => {
-  let moveWasPerformed = false;
-  const arrOfColumns = combineCellsInColumns();
-
-  arrOfColumns.forEach(column => {
-    for (let i = column.length - 1; i >= 0; i--) {
-      for (let newIndex = 3; newIndex >= 0; newIndex--) {
-        const cellIndex = +column[i].dataset.cellIndex;
-
-        if (tr[newIndex].children[cellIndex].classList.contains(`active`)
-          || +column[i].dataset.rawIndex > newIndex) {
-          continue;
-        }
-
-        const oldCell = column[i];
-        const newCell = tr[newIndex].children[cellIndex];
-
-        move(newCell, oldCell, cellIndex, newIndex);
-        moveWasPerformed = true;
-        break;
-      }
-    }
-  });
-
-  if (moveWasPerformed || mergingHappened) {
-    createCell();
-  }
-};
-
-const moveLeft = () => {
-  let moveWasPerformed = false;
-  const arrOfRaws = combineCellsInRaws();
-
-  arrOfRaws.forEach(raw => {
-    for (let i = 0; i < raw.length; i++) {
-      for (let newIndex = 0; newIndex < 4; newIndex++) {
-        const cellIndex = +raw[i].dataset.rawIndex;
-
-        if (tr[cellIndex].children[newIndex].classList.contains(`active`)
-          || +raw[i].dataset.cellIndex < newIndex) {
-          continue;
-        }
-
-        const oldCell = raw[i];
-        const newCell = tr[cellIndex].children[newIndex];
-
-        move(newCell, oldCell, newIndex, cellIndex);
-        moveWasPerformed = true;
-        break;
-      }
-    }
-  });
-
-  if (moveWasPerformed || mergingHappened) {
-    createCell();
-  }
-};
-
-const moveRight = () => {
-  let moveWasPerformed = false;
-  const arrOfRaws = combineCellsInRaws();
-
-  arrOfRaws.forEach(raw => {
-    for (let i = raw.length - 1; i >= 0; i--) {
-      for (let newIndex = 3; newIndex >= 0; newIndex--) {
-        const cellIndex = +raw[i].dataset.rawIndex;
-
-        if (tr[cellIndex].children[newIndex].classList.contains(`active`)
-          || +raw[i].dataset.cellIndex > newIndex) {
-          continue;
-        }
-
-        const oldCell = raw[i];
-        const newCell = tr[cellIndex].children[newIndex];
-
-        move(newCell, oldCell, newIndex, cellIndex);
-        moveWasPerformed = true;
-        break;
-      }
-    }
-  });
-
-  if (moveWasPerformed || mergingHappened) {
-    createCell();
-  }
-};
-
-const move = (newCell, oldCell, cellIndex, newIndex) => {
-  newCell.textContent = oldCell.textContent;
-  newCell.classList.add(`active`, `field-cell--${newCell.textContent}`);
-  newCell.dataset.rawIndex = newIndex;
-  newCell.dataset.cellIndex = cellIndex;
-  oldCell.classList.remove(`active`);
-  oldCell.classList.remove(`field-cell--${oldCell.textContent}`);
-  oldCell.textContent = ``;
-};
-
-const gameLostCheck = () => {
-  const activeCells = document.querySelectorAll(`.active`);
-
-  if (activeCells.length !== 16) {
-    return;
+  winGameMessage() {
+    winMessage.classList.remove(`hidden`);
   }
 
-  const left = horizontalMergeOfCells(`Left`, moveLeft, true);
-  const right = horizontalMergeOfCells(`Right`, moveRight, true);
-  const up = verticalMergeOfCells(`Up`, moveUp, true);
-  const down = verticalMergeOfCells(`Down`, moveDown, true);
-
-  if (left && right && up && down) {
+  loseGameMessage() {
     loseMessage.classList.remove(`hidden`);
   }
-};
 
-startGame();
+  clearField() {
+    const clearedField = this.gameField.map(row =>
+      row.map(el => {
+        return el * 0;
+      })
+    );
+
+    this.gameField = clearedField;
+    this.score = 0;
+    gameScore.textContent = this.score;
+  }
+
+  move(newIndex, i, y) {
+    this.gameField[newIndex][y] = this.gameField[i][y];
+    this.gameField[i][y] = 0;
+    this.moveWasPerformed = true;
+  }
+
+  merge(newIndex, i, y) {
+    this.gameField[newIndex][y] = 0;
+    this.gameField[i][y] *= 2;
+    this.mergingHappened = true;
+    this.recordOfScore(this.gameField[i][y]);
+  }
+
+  rotateMatrix() {
+    const arrCopy = [];
+
+    for (let i = 0; i < 4; i++) {
+      arrCopy.push(new Array(4).fill(0));
+    }
+
+    for (let i = 0; i < this.gameField.length; i++) {
+      for (let y = 0; y < this.gameField[i].length; y++) {
+        arrCopy[i][y] = this.gameField[arrCopy.length - 1 - y][i];
+      }
+    }
+
+    this.gameField = arrCopy;
+  }
+
+  render() {
+    for (let i = 0; i < this.gameField.length; i++) {
+      for (let y = 0; y < this.gameField[i].length; y++) {
+        const cell = rowsCollection[i].children[y];
+
+        cell.classList.remove(`field-cell--${cell.textContent}`);
+        cell.textContent = ``;
+
+        if (!this.gameField[i][y]) {
+          continue;
+        }
+
+        cell.classList.add(`field-cell--${this.gameField[i][y]}`);
+        cell.textContent = this.gameField[i][y];
+      }
+    }
+  }
+
+  checkForLose() {
+    for (let i = 0; i < this.gameField.length; i++) {
+      for (let y = 0; y < this.gameField[i].length; y++) {
+        if (!this.gameField[i][y]) {
+          return;
+        }
+
+        if (i < 3 && this.gameField[i][y] === this.gameField[i + 1][y]) {
+          return;
+        }
+
+        if (y < 3 && this.gameField[i][y] === this.gameField[i][y + 1]) {
+          return;
+        }
+      }
+    }
+    this.loseGameMessage();
+  }
+}
+
+const obj = new Game();
+
+obj.startGame();
