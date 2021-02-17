@@ -10,294 +10,233 @@ const loseMessage = container.querySelector('.message-lose');
 const winMessage = container.querySelector('.message-win');
 const score = header.querySelector('.game-score');
 
-// <---------- creating a field for the game ----------> \\
-const field = [[], [], [], []];
-const size = 4;
-
-function createField(fieldSize) {
-  for (let i = 0; i < fieldSize; i++) {
-    for (let j = 0; j < 4; j++) {
-      field[i][j] = 0;
-    }
+class Game {
+  constructor() {
+    this.size = 4;
+    this.field = [[], [], [], []];
   }
-}
 
-// <---------- add an event to the start button ----------> \\
-startButton.addEventListener('click', () => {
-  startMessage.classList.add('hidden');
-  loseMessage.classList.add('hidden');
-  winMessage.classList.add('hidden');
-
-  startButton.classList.remove('start');
-  startButton.classList.add('restart');
-  startButton.textContent = 'Restart';
-
-  createField(size);
-  generateRandomNumber();
-  generateRandomNumber();
-  renderField();
-
-  window.addEventListener('keydown', makeMove);
-});
-
-// <---------- render of the field for the game ----------> \\
-function renderField() {
-  for (let row = 0; row < size; row++) {
-    for (let column = 0; column < size; column++) {
-      const fieldCell = gameField.rows[row].cells[column];
-
-      fieldCell.classList = ['field-cell'];
-
-      if (field[row][column] > 0) {
-        fieldCell.classList.add(`field-cell--${field[row][column]}`);
-        fieldCell.textContent = `${field[row][column]}`;
-      } else {
-        fieldCell.textContent = '';
-      }
-
-      if (field[row][column] === 2048) {
-        winMessage.classList.remove('hidden');
-      }
-    }
-  }
-}
-
-// <---------- generate random number for a random free cell ----------> \\
-function generateRandomNumber() {
-  const freeCells = [];
-
-  for (let i = 0; i < size; i++) {
-    for (let j = 0; j < size; j++) {
-      if (field[i][j] === 0) {
-        freeCells.push([i, j]);
+  // <---------- creating a field for the game ----------> \\
+  createMatrix() {
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < 4; j++) {
+        this.field[i][j] = 0;
       }
     }
   }
 
-  const [row, column] = freeCells[Math.floor(Math.random() * freeCells.length)];
+  // <---------- render of the field for the game ----------> \\
+  renderField() {
+    for (let row = 0; row < this.size; row++) {
+      for (let column = 0; column < this.size; column++) {
+        const fieldCell = gameField.rows[row].cells[column];
 
-  field[row][column] = Math.random() <= 0.1 ? 4 : 2;
-}
+        fieldCell.classList = ['field-cell'];
 
-// <---------- function for 'keydown' event to make motion ---------> \\
-function makeMove(e) {
-  e.preventDefault();
+        if (this.field[row][column] > 0) {
+          fieldCell.classList.add(`field-cell--${this.field[row][column]}`);
+          fieldCell.textContent = `${this.field[row][column]}`;
+        } else {
+          fieldCell.textContent = '';
+        }
 
-  if (!canMoveDown() && !canMoveLeft() && !canMoveRight() && !canMoveUp()) {
-    loseMessage.classList.remove('hidden');
+        if (this.field[row][column] === 2048) {
+          winMessage.classList.remove('hidden');
+        }
+      }
+    }
   }
 
-  switch (e.keyCode) {
-    case 38:
-      if (canMoveUp()) {
-        moveUp();
-        mergeUp();
-        generateRandomNumber();
-        renderField();
-      }
-      break;
-    case 40:
-      if (canMoveDown()) {
-        moveDown();
-        mergeDown();
-        generateRandomNumber();
-        renderField();
-      }
-      break;
-    case 37:
-      if (canMoveLeft()) {
-        moveLeft();
-        mergeLeft();
-        generateRandomNumber();
-        renderField();
-      }
-      break;
-    case 39:
-      if (canMoveRight()) {
-        moveRight();
-        mergeRight();
-        generateRandomNumber();
-        renderField();
-      }
-      break;
-  }
-}
+  // <---------- getting empty cells to work with ----------> \\
+  get emptyCell() {
+    const empty = [];
 
-// <---------- movement of elements and their merging up ----------> \\
-function moveUp() {
-  for (let column = 0; column < size; column++) {
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        if (this.field[i][j] === 0) {
+          empty.push([i, j]);
+        }
+      }
+    }
+
+    return empty;
+  }
+
+  // <---------- generate random number for a random free cell ----------> \\
+  generateRandomNumber() {
+    const freeCells = this.emptyCell;
+    const emptyCount = freeCells.length;
+
+    const [row, column] = freeCells[Math.floor(Math.random() * emptyCount)];
+
+    this.field[row][column] = Math.random() <= 0.1 ? 4 : 2;
+  }
+
+  // <---------- add an event to the start button ----------> \\
+  startEvents() {
+    startButton.addEventListener('click', () => {
+      startMessage.classList.add('hidden');
+      loseMessage.classList.add('hidden');
+      winMessage.classList.add('hidden');
+
+      startButton.classList.remove('start');
+      startButton.classList.add('restart');
+      startButton.textContent = 'Restart';
+      score.textContent = 0;
+
+      this.createMatrix(this.size);
+      this.generateRandomNumber();
+      this.generateRandomNumber();
+      this.renderField();
+    });
+  }
+
+  // <---------- creating an event for the arrow keys ----------> \\
+  moveEvents() {
+    window.addEventListener('keydown', (e) => {
+      e.preventDefault();
+
+      switch (e.key) {
+        case 'ArrowUp':
+          this.makeMove(0, 0);
+          break;
+        case 'ArrowLeft':
+          this.makeMove(90, -90);
+          break;
+        case 'ArrowDown':
+          this.makeMove(180, -180);
+          break;
+        case 'ArrowRight':
+          this.makeMove(270, -270);
+          break;
+      }
+    });
+  }
+
+  // <---------- game initialization ----------> \\
+  initGame() {
+    this.startEvents();
+    this.moveEvents();
+  }
+
+  // <-------- method for performing a movement in four directions --------> \\
+  makeMove(rotate, back) {
+    const prev = this.field.map(row => row.concat());
+
+    this.rotateMatrix(rotate);
+    this.moveCell();
+    this.mergeSameCell();
+    this.rotateMatrix(back);
+    this.renderField();
+
+    // <---------- if there are changes add a random number ----------> \\
+    if (this.hasChanges(prev, this.field)) {
+      this.generateRandomNumber();
+      this.renderField();
+    }
+
+    // <------- if there are no moves, show a message about the loss -------> \\
+    if (!this.canMove(0, 0) && !this.canMove(90, -90)
+    && !this.canMove(180, -180) && !this.canMove(270, -270)) {
+      loseMessage.classList.remove('hidden');
+    }
+  }
+
+  // <---------- check if there were any changes ----------> \\
+  hasChanges(prev, curr) {
+    if (prev.join() !== curr.join()) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // <---------- rotate the matrix in the desired direction ----------> \\
+  rotateMatrix(degree) {
+    switch (degree) {
+      case 90:
+      case -270:
+        this.field = this.field.map((_, rowIndex) =>
+          this.field.map((row) => row[rowIndex]).reverse()
+        );
+        break;
+      case 180:
+      case -180:
+        this.field = this.field.map((row) => row.reverse()).reverse();
+        break;
+      case 270:
+      case -90:
+        this.field = this.field.map((_, rowIndex) =>
+          this.field.map((row) => [...row].reverse()[rowIndex])
+        );
+        break;
+      case 0:
+        return this.field;
+    }
+  }
+
+  // <---------- method for merge cell ----------> \\
+  mergeSameCell() {
+    for (let row = 1; row < this.size; row++) {
+      for (let column = 0; column < this.size; column++) {
+        if (this.field[row - 1][column] === this.field[row][column]
+          && this.field[row][column] > 0) {
+          this.field[row - 1][column] += this.field[row][column];
+          this.field[row][column] = 0;
+
+          score.textContent = +score.textContent + this.field[row - 1][column];
+        }
+      }
+    }
+    this.moveCell();
+  }
+
+  // <---------- method for making movement ----------> \\
+  moveCell() {
     let hasMoved = false;
 
-    for (let row = 1; row < size; row++) {
-      hasMoved = moveCell(row - 1, row, column, column) || hasMoved;
+    for (let row = 1; row < this.size; row++) {
+      for (let column = 0; column < this.size; column++) {
+        if (this.field[row - 1][column] === 0
+          && this.field[row][column] > 0) {
+          this.field[row - 1][column] = this.field[row][column];
+          this.field[row][column] = 0;
+
+          hasMoved = true;
+        }
+      }
     }
 
     if (hasMoved) {
-      return moveUp();
+      return this.moveCell();
+    }
+  }
+
+  // <---------- method for checking available movements ----------> \\
+  canMove(rotate, back) {
+    let can = false;
+
+    for (let row = 1; row < this.size; row++) {
+      for (let column = 0; column < this.size; column++) {
+        this.rotateMatrix(rotate);
+
+        if (this.field[row][column] > 0
+          && (this.field[row][column] === this.field[row - 1][column]
+          || this.field[row - 1][column] === 0)) {
+          can = true;
+        }
+        this.rotateMatrix(back);
+      }
+    }
+
+    if (can) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
 
-function mergeUp() {
-  for (let column = 0; column < size; column++) {
-    for (let row = 1; row < size; row++) {
-      mergeSameCell(row - 1, row, column, column);
-      moveUp();
-    }
-  }
-}
+const game = new Game();
 
-function canMoveUp() {
-  let can = false;
-
-  for (let column = 0; column < size; column++) {
-    for (let row = 1; row < size; row++) {
-      can = canMakeMove(row - 1, row, column, column) || can;
-    }
-  }
-
-  return can;
-}
-
-// <---------- movement of elements and their merging down ----------> \\
-function moveDown() {
-  for (let column = 0; column < size; column++) {
-    let hasMoved = false;
-
-    for (let row = size - 1; row >= 1; row--) {
-      hasMoved = moveCell(row, row - 1, column, column) || hasMoved;
-    }
-
-    if (hasMoved) {
-      return moveDown();
-    }
-  }
-}
-
-function mergeDown() {
-  for (let column = 0; column < size; column++) {
-    for (let row = size - 1; row >= 1; row--) {
-      mergeSameCell(row, row - 1, column, column);
-      moveDown();
-    }
-  }
-}
-
-function canMoveDown() {
-  let can = false;
-
-  for (let column = 0; column < size; column++) {
-    for (let row = size - 1; row >= 1; row--) {
-      can = canMakeMove(row, row - 1, column, column) || can;
-    }
-  }
-
-  return can;
-}
-
-// <---------- movement of elements and their merging left ----------> \\
-function moveLeft() {
-  for (let row = 0; row < size; row++) {
-    let hasMoved = false;
-
-    for (let column = 1; column < size; column++) {
-      hasMoved = moveCell(row, row, column - 1, column) || hasMoved;
-    }
-
-    if (hasMoved) {
-      return moveLeft();
-    }
-  }
-}
-
-function mergeLeft() {
-  for (let row = 0; row < size; row++) {
-    for (let column = 1; column < size; column++) {
-      mergeSameCell(row, row, column - 1, column);
-      moveLeft();
-    }
-  }
-}
-
-function canMoveLeft() {
-  let can = false;
-
-  for (let row = 0; row < size; row++) {
-    for (let column = 1; column < size; column++) {
-      can = canMakeMove(row, row, column - 1, column) || can;
-    }
-  }
-
-  return can;
-}
-
-// <---------- movement of elements and their merging right ----------> \\
-function moveRight() {
-  for (let row = 0; row < size; row++) {
-    let hasMoved = false;
-
-    for (let column = size - 1; column >= 1; column--) {
-      hasMoved = moveCell(row, row, column, column - 1) || hasMoved;
-    }
-
-    if (hasMoved) {
-      return moveRight();
-    }
-  }
-}
-
-function mergeRight() {
-  for (let row = 0; row < size; row++) {
-    for (let column = size - 1; column >= 1; column--) {
-      mergeSameCell(row, row, column, column - 1);
-      moveRight();
-    }
-  }
-}
-
-function canMoveRight() {
-  let can = false;
-
-  for (let row = 0; row < size; row++) {
-    for (let column = size - 1; column >= 1; column--) {
-      can = canMakeMove(row, row, column, column - 1) || can;
-    }
-  }
-
-  return can;
-}
-
-// <---------- helper function for making movement ----------> \\
-function moveCell(currentRow, nextRow, currentColumn, nextColumn) {
-  let checkMove = false;
-
-  if (field[currentRow][currentColumn] === 0
-    && field[nextRow][nextColumn] > 0) {
-    field[currentRow][currentColumn] = field[nextRow][nextColumn];
-    field[nextRow][nextColumn] = 0;
-
-    checkMove = true;
-  }
-
-  return checkMove;
-}
-
-// <---------- merge cell helper function ----------> \\
-function mergeSameCell(currentRow, nextRow, currentColumn, nextColumn) {
-  if (field[currentRow][currentColumn] === field[nextRow][nextColumn]
-    && field[nextRow][nextColumn] > 0) {
-    field[currentRow][currentColumn] += field[nextRow][nextColumn];
-    field[nextRow][nextColumn] = 0;
-
-    score.textContent = +score.textContent + field[currentRow][currentColumn];
-  }
-}
-
-// <---------- helper function for checking available movements ----------> \\
-function canMakeMove(currentRow, nextRow, currentColumn, nextColumn) {
-  if (field[nextRow][nextColumn] > 0
-    && (field[nextRow][nextColumn] === field[currentRow][currentColumn]
-    || field[currentRow][currentColumn] === 0)) {
-    return true;
-  }
-}
+game.initGame();
