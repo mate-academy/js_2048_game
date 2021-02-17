@@ -13,8 +13,6 @@ const arrowButtons = [`ArrowUp`, `ArrowDown`,
 class Game {
   constructor() {
     this.gameField = this.createGameField();
-    this.randomRawIndex = 0;
-    this.randomColumnIndex = 0;
     this.moveWasPerformed = false;
     this.mergingHappened = false;
     this.score = 0;
