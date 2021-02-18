@@ -18,11 +18,14 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
+  transition: 0.2s;
 
   &--2 {
     background: #eee4da;
+    width: 75px;
+    height: 75px;
   }
 
   &--4 {
@@ -75,10 +78,93 @@ body {
   }
 }
 
+.pulse {
+
+  animation-duration: 0.5s;
+  animation-name: pulse;
+}
+
+@keyframes pulse {
+  0% {
+
+    transform: scale(1);
+  }
+
+  50% {
+
+    transform: scale(1.2);
+  
+  }
+  
+  100% {
+    
+    transform: scale(1);
+  
+  }
+}
+
+.move {
+  animation-name: mover;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes mover {
+  
+  0% {
+    
+    transform: translateY(0);
+  
+  }
+  
+  100% {
+    
+    transform: translateY(-50px);
+  
+  }
+
+  100% {
+
+    opacity: 0;
+
+  }
+
+  0% {
+
+    opacity: 1;
+
+  }
+}
+
+.animate {
+  animation-name: fade-in;
+  animation-duration: 0.3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes fade-in {
+  0% {
+
+    opacity: 0;
+    
+  }
+
+  100% {
+
+    opacity: 1;
+
+  }
+}
+
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  position: relative;
 }
 
 .game-header {
@@ -117,6 +203,21 @@ h1 {
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+}
+
+.score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  color: rgb(83, 28, 28);
+  box-sizing: border-box;
+  font-size: 18px;
+  margin: 0 8px 0 0;
+  top: 20%;
 }
 
 .controls {
