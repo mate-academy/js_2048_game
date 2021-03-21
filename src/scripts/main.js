@@ -9,7 +9,7 @@ const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 let isWinner;
 
-button.addEventListener('click', (btn) => {
+button.addEventListener('click', () => {
   messageStart.classList.toggle('hidden');
   messageLose.classList.add('hidden');
 
@@ -22,7 +22,7 @@ button.addEventListener('click', (btn) => {
   if (button.innerText !== 'Restart') {
     isWinner = false;
     gameScore.innerText = 0;
-    messageWin.classList.remove('hidden');
+    messageWin.classList.add('hidden');
     switchStyles();
     clearBoard();
 
