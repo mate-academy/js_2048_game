@@ -1,190 +1,101 @@
 'use strict';
 
-const gameField = document.querySelector('.game-field');
-const button = document.querySelector('button');
-const allCells = gameField.querySelectorAll('td');
-const allRows = gameField.querySelectorAll('tr');
-const gameScore = document.querySelector('.game-score');
-const messageBox = document.querySelector('.message-container');
-let movesCheckerFlag;
+const START_BUTTON = document.querySelector('button');
+const MESSAGE_START = document.querySelector('.message-start');
+const MESSAGE_LOSE = document.querySelector('.message-lose');
+const MESSAGE_WIN = document.querySelector('.message-win');
+const SCORE_CELL = document.querySelector('.game-score');
+let IS_MOVES_AVAILABLE = true;
+let IS_MOVE_MADE = true;
+let SCORE_CURRENT = 0;
+const GAME_FIELD = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 
-for (const cell of allCells) {
-  cell.setAttribute('empty', true);
-}
-
-function generateMatrix() {
-  const matrix = [[], [], [], []];
-
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-      matrix[i].push(+allRows[i].children[j].innerText);
-    }
-  }
-
-  return matrix;
-}
-
-function transferMatrixOnField(matrix) {
-  const cells = gameField.querySelectorAll('td');
-  const array = matrix.flat();
+function renderField() {
+  const cells = document.querySelectorAll('td');
+  const array = GAME_FIELD.flat();
 
   for (let i = 0; i < 16; i++) {
     cells[i].innerText = !array[i] ? '' : array[i];
     cells[i].className = '';
     cells[i].classList.add('field-cell', `field-cell--${array[i]}`);
-
-    if (!cells[i].innerText) {
-      cells[i].setAttribute('empty', true);
-    } else {
-      cells[i].setAttribute('empty', false);
-    }
   }
 }
 
+function renderScore() {
+  SCORE_CELL.innerText = SCORE_CURRENT;
+}
+
 function checkWin() {
-  const fieldCells = gameField.querySelectorAll('td');
+  const fieldCells = GAME_FIELD.flat();
 
   for (const cell of fieldCells) {
-    if (cell.innerText === '2048') {
-      messageBox.children[1].classList.remove('hidden');
+    if (cell === 2048) {
+      MESSAGE_WIN.classList.remove('hidden');
       break;
     }
   }
 }
 
 function checkMoves() {
-  const matrix = generateMatrix();
-
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
-      if (matrix[i][j] === 0) {
-        movesCheckerFlag = true; break;
-      } else if (i < 3 && matrix[i][j] === matrix[i + 1][j]) {
-        movesCheckerFlag = true; break;
-      } else if (j < 3 && matrix[i][j] === matrix[i][j + 1]) {
-        movesCheckerFlag = true; break;
+      if (GAME_FIELD[i][j] === 0) {
+        IS_MOVES_AVAILABLE = true; break;
+      } else if (i < 3 && GAME_FIELD[i][j] === GAME_FIELD[i + 1][j]) {
+        IS_MOVES_AVAILABLE = true; break;
+      } else if (j < 3 && GAME_FIELD[i][j] === GAME_FIELD[i][j + 1]) {
+        IS_MOVES_AVAILABLE = true; break;
       } else {
-        movesCheckerFlag = false;
+        IS_MOVES_AVAILABLE = false;
       }
     }
 
-    if (movesCheckerFlag) {
+    if (IS_MOVES_AVAILABLE) {
       break;
     }
   }
 
-  if (!movesCheckerFlag) {
+  if (!IS_MOVES_AVAILABLE) {
     gameOver();
   }
 }
 
 function gameOver() {
-  messageBox.children[0].classList.remove('hidden');
+  MESSAGE_LOSE.classList.remove('hidden');
 }
 
-function generateTwoFour() {
-  const array = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
-  const index = Math.round(Math.random() * 9);
+function createNewRandomCell() {
+  if (IS_MOVE_MADE) {
+    const allEmptyCells = [];
 
-  return array[index];
-}
-
-function findRandomEpmtyCell(epmtyCellsQuantity) {
-  return Math.floor(Math.random() * epmtyCellsQuantity);
-}
-
-function generateNewNumberOnField() {
-  const emptyCells = gameField.querySelectorAll('[empty="true"]');
-
-  if (emptyCells.length === 0) {
-    countScore();
-
-    return;
-  }
-
-  const index = findRandomEpmtyCell(emptyCells.length);
-
-  emptyCells[index].innerText = generateTwoFour();
-  emptyCells[index].setAttribute('empty', false);
-  emptyCells[index].classList.add(`field-cell--${emptyCells[index].innerText}`);
-  countScore();
-}
-
-function countScore() {
-  let sum = 0;
-  const cells = gameField.querySelectorAll('td');
-
-  for (const cell of cells) {
-    sum += !cell.innerText ? 0 : +cell.innerText;
-  }
-  gameScore.innerHTML = `${sum}`;
-}
-
-function sumRight(matrix) {
-  for (const row of matrix) {
-    for (let i = 3; i > 0; i--) {
-      if (row[i] === row[i - 1]) {
-        row[i] += row[i - 1];
-        row[i - 1] = 0;
+    for (let row = 0; row < GAME_FIELD.length; row++) {
+      for (let column = 0; column < GAME_FIELD[row].length; column++) {
+        if (!GAME_FIELD[row][column]) {
+          allEmptyCells.push([row, column]);
+        }
       }
     }
+
+    if (allEmptyCells.length > 0) {
+      const randomCell = Math.floor(Math.random() * allEmptyCells.length);
+      const [randomRow, randomColumn] = allEmptyCells[randomCell];
+
+      GAME_FIELD[randomRow][randomColumn] = Math.random() > 0.1 ? 2 : 4;
+    };
+
+    IS_MOVE_MADE = false;
   }
 }
 
-function sumLeft(matrix) {
-  for (const row of matrix) {
-    for (let i = 0; i < 3; i++) {
-      if (row[i] === row[i + 1]) {
-        row[i] += row[i + 1];
-        row[i + 1] = 0;
-      }
-    }
-  }
-}
+function shiftCells() {
+  const prevField = GAME_FIELD.flat().join('');
 
-function sumUp(matrix) {
-  const columnMatrix = [];
-
-  for (let i = 0; i < 4; i++) {
-    const column = [];
-
-    for (let j = 0; j < 4; j++) {
-      column.unshift(matrix[j][i]);
-    }
-    columnMatrix.push(column);
-  }
-
-  sumRight(columnMatrix);
-
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-      matrix[i][j] = columnMatrix[j][3 - i];
-    }
-  }
-}
-
-function sumDown(matrix) {
-  const columnMatrix = [];
-
-  for (let i = 0; i < 4; i++) {
-    const column = [];
-
-    for (let j = 0; j < 4; j++) {
-      column.unshift(matrix[j][i]);
-    }
-    columnMatrix.push(column);
-  }
-  sumLeft(columnMatrix);
-
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-      matrix[i][j] = columnMatrix[j][3 - i];
-    }
-  }
-}
-
-function slideRight(matrix) {
-  for (const row of matrix) {
+  for (const row of GAME_FIELD) {
     const tempArr = row.filter(el => el > 0);
     const emptyCells = 4 - tempArr.length;
 
@@ -196,129 +107,95 @@ function slideRight(matrix) {
       row[i] = tempArr[i];
     }
   }
-}
 
-function slideLeft(matrix) {
-  for (const row of matrix) {
-    const tempArr = row.filter(el => el > 0);
-    const emptyCells = 4 - tempArr.length;
+  const currentField = GAME_FIELD.flat().join('');
 
-    for (let i = 0; i < emptyCells; i++) {
-      tempArr.push(0);
-    }
-
-    for (let i = 0; i < tempArr.length; i++) {
-      row[i] = tempArr[i];
-    }
+  if (prevField !== currentField) {
+    IS_MOVE_MADE = true;
   }
 }
 
-function slideUp(matrix) {
-  const columnMatrix = [];
-
-  for (let i = 0; i < 4; i++) {
-    const column = [];
-
-    for (let j = 0; j < 4; j++) {
-      column.unshift(matrix[j][i]);
-    }
-    columnMatrix.push(column);
-  }
-
-  slideRight(columnMatrix);
-
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-      matrix[i][j] = columnMatrix[j][3 - i];
+function addUpCells() {
+  for (const row of GAME_FIELD) {
+    for (let i = 3; i > 0; i--) {
+      if (row[i] === row[i - 1]) {
+        SCORE_CURRENT += row[i] * 2;
+        row[i] += row[i - 1];
+        row[i - 1] = 0;
+      }
     }
   }
 }
 
-function slideDown(matrix) {
-  const columnMatrix = [];
+function mergeCells() {
+  shiftCells();
+  addUpCells();
+  shiftCells();
+  renderScore();
+}
 
-  for (let i = 0; i < 4; i++) {
-    const column = [];
+function rotateGameField() {
+  const n = GAME_FIELD.length;
+  const x = Math.floor(n / 2);
+  const y = n - 1;
 
-    for (let j = 0; j < 4; j++) {
-      column.unshift(matrix[j][i]);
-    }
-    columnMatrix.push(column);
-  }
-  slideLeft(columnMatrix);
+  for (let row = 0; row < x; row++) {
+    for (let column = row; column < y - row; column++) {
+      const k = GAME_FIELD[row][column];
 
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-      matrix[i][j] = columnMatrix[j][3 - i];
+      GAME_FIELD[row][column] = GAME_FIELD[y - column][row];
+      GAME_FIELD[y - column][row] = GAME_FIELD[y - row][y - column];
+      GAME_FIELD[y - row][y - column] = GAME_FIELD[column][y - row];
+      GAME_FIELD[column][y - row] = k;
     }
   }
 }
 
 function moveRight() {
-  const fieldMatrix = generateMatrix();
-
-  slideRight(fieldMatrix);
-  sumRight(fieldMatrix);
-  slideRight(fieldMatrix);
-  transferMatrixOnField(fieldMatrix);
-  checkWin();
-  generateNewNumberOnField();
-  checkMoves();
+  mergeCells();
 }
 
 function moveLeft() {
-  const fieldMatrix = generateMatrix();
-
-  slideLeft(fieldMatrix);
-  sumLeft(fieldMatrix);
-  slideLeft(fieldMatrix);
-  transferMatrixOnField(fieldMatrix);
-  checkWin();
-  generateNewNumberOnField();
-  checkMoves();
-}
-
-function moveUp() {
-  const fieldMatrix = generateMatrix();
-
-  slideUp(fieldMatrix);
-  sumUp(fieldMatrix);
-  slideUp(fieldMatrix);
-  transferMatrixOnField(fieldMatrix);
-  checkWin();
-  generateNewNumberOnField();
-  checkMoves();
+  rotateGameField();
+  rotateGameField();
+  mergeCells();
+  rotateGameField();
+  rotateGameField();
 }
 
 function moveDown() {
-  const fieldMatrix = generateMatrix();
-
-  slideDown(fieldMatrix);
-  sumDown(fieldMatrix);
-  slideDown(fieldMatrix);
-  transferMatrixOnField(fieldMatrix);
-  checkWin();
-  generateNewNumberOnField();
-  checkMoves();
+  rotateGameField();
+  rotateGameField();
+  rotateGameField();
+  mergeCells();
+  rotateGameField();
 }
 
-button.addEventListener('click', e => {
-  if (button.className === 'button restart') {
+function moveUp() {
+  rotateGameField();
+  mergeCells();
+  rotateGameField();
+  rotateGameField();
+  rotateGameField();
+}
+
+START_BUTTON.addEventListener('click', e => {
+  if (START_BUTTON.className === 'button restart') {
     window.location.reload();
   }
 
-  button.className = 'button restart';
-  button.innerText = 'Restart';
-  messageBox.children[2].classList.add('hidden');
-  movesCheckerFlag = true;
-  generateNewNumberOnField();
-  countScore();
+  START_BUTTON.className = 'button restart';
+  START_BUTTON.innerText = 'Restart';
+  MESSAGE_START.classList.add('hidden');
+  IS_MOVES_AVAILABLE = true;
+  createNewRandomCell();
+  renderField();
 });
 
 document.addEventListener('keyup', e => {
   e.preventDefault();
 
-  if (!movesCheckerFlag) {
+  if (!IS_MOVES_AVAILABLE) {
     return;
   };
 
@@ -329,4 +206,9 @@ document.addEventListener('keyup', e => {
     case 'ArrowRight': moveRight(); break;
     default: break;
   }
+
+  createNewRandomCell();
+  renderField();
+  checkWin();
+  checkMoves();
 });
