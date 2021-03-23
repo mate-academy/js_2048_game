@@ -232,9 +232,5 @@ function gameOver(board) {
 };
 
 function checkForValue2048(table) {
-  return [...table].some(row => {
-    return [...row.children].some(cell => {
-      return cell.innerText === '2048';
-    });
-  });
+  return [...table].some(row => row.includes(2048));
 };
