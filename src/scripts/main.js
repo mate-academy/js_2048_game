@@ -80,7 +80,7 @@ document.addEventListener('keydown', e => {
     messageLose.classList.remove('hidden');
   }
 
-  if (checkForValue2048(tableRows)) {
+  if (checkForValue2048(matrix)) {
     messageWin.classList.toggle('hidden');
     isWinner = true;
   }
@@ -232,5 +232,5 @@ function gameOver(board) {
 };
 
 function checkForValue2048(table) {
-  return [...table].some(row => row.includes(2048));
+  return [...table].some(row => row.includes(8));
 };
