@@ -232,5 +232,5 @@ function gameOver(board) {
 };
 
 function checkForValue2048(table) {
-  return [...table].some(row => row.includes(8));
+  return [...table].some(row => row.includes(2048));
 };
