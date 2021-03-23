@@ -9,7 +9,9 @@ const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 let isWinner;
 
-button.addEventListener('click', () => {
+const matrix = createTable();
+
+button.addEventListener('click', (btn) => {
   messageStart.classList.toggle('hidden');
   messageLose.classList.add('hidden');
 
@@ -20,24 +22,26 @@ button.addEventListener('click', () => {
   button.classList.toggle('restart', !button.classList.contains('restart'));
 
   if (button.innerText !== 'Restart') {
-    isWinner = false;
     gameScore.innerText = 0;
-    messageWin.classList.add('hidden');
-    switchStyles();
-    clearBoard();
+
+    if (isWinner) {
+      messageWin.classList.add('hidden');
+    };
+
+    clearBoard(tableRows);
+    clearMatrix();
+    isWinner = false;
 
     return;
   };
 
-  setNuberToEmptyCell(tableRows);
-  setNuberToEmptyCell(tableRows);
+  setNuberToEmptyCell(matrix);
+  setNuberToEmptyCell(matrix);
 
-  switchStyles();
+  setValuesToBoard(matrix);
 });
 
 document.addEventListener('keydown', e => {
-  const matrix = getValuesFromBoard(tableRows);
-
   if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)
     || isWinner) {
     return;
@@ -55,7 +59,7 @@ document.addEventListener('keydown', e => {
     return;
   }
 
-  switchStyles();
+  clearBoard(tableRows);
   moveCells(matrix);
   sumSameCells(matrix, gameScore);
   moveCells(matrix);
@@ -67,58 +71,50 @@ document.addEventListener('keydown', e => {
   if (['ArrowDown', 'ArrowUp'].includes(e.key)) {
     groupMatrix(matrix);
   };
+  setNuberToEmptyCell(matrix);
   setValuesToBoard(matrix);
-  setNuberToEmptyCell(tableRows);
-  switchStyles();
 
-  if (gameOver(tableRows)) {
+  addStyles();
+
+  if (gameOver(matrix)) {
     messageLose.classList.remove('hidden');
   }
 
-  if (chekcForValue2048(tableRows)) {
+  if (checkForValue2048(tableRows)) {
     messageWin.classList.toggle('hidden');
     isWinner = true;
   }
 });
 
-function chekcForValue2048(table) {
-  return [...table].some(row => {
-    return [...row.children].some(cell => {
-      return cell.innerText === '2048';
-    });
-  });
+function createTable() {
+  return [...tableRows].reduce((arr, v,) => {
+    arr.push(new Array(v.children.length).fill(false));
+
+    return arr;
+  }, []);
 };
 
-function clearBoard() {
-  tableRows.forEach((row) => {
-    [...row.children].forEach((cell) => {
-      cell.innerText = '';
-    });
-  });
-};
+function setNuberToEmptyCell(board) {
+  const randomNumber = Math.random() > 0.9 ? 4 : 2;
 
-function gameOver(nodeList) {
-  for (let x = 0; x < nodeList.length; x++) {
-    for (let y = 0; y < nodeList.length; y++) {
-      const currentCell = nodeList[x].children[y].innerText;
+  while (true) {
+    const x = parseInt(Math.random() * 4);
+    const y = parseInt(Math.random() * 4);
 
-      if (!currentCell) {
-        return false;
-      };
-
-      if (x !== nodeList.length - 1
-        && nodeList[x + 1].children[y].innerText === currentCell) {
-        return false;
-      };
-
-      if (y !== nodeList.length - 1
-        && nodeList[x].children[y + 1].innerText === currentCell) {
-        return false;
-      };
+    if (!board[x][y]) {
+      board[x][y] = randomNumber;
+      break;
     };
   };
+};
 
-  return true;
+function setValuesToBoard(board) {
+  [...tableRows].forEach((row, x) => {
+    [...row.children].forEach((cell, y) => {
+      cell.innerText = board[x][y] || '';
+      cell.classList.add(`field-cell--${cell.innerText}`);
+    });
+  });
 };
 
 function checkChoseDirection(board) {
@@ -133,24 +129,6 @@ function checkChoseDirection(board) {
       };
     };
   };
-
-  return false;
-};
-
-function getValuesFromBoard(nodeList) {
-  return [...nodeList].map(row => {
-    return [...row.children].map(cell => {
-      return cell.innerText || false;
-    });
-  });
-};
-
-function setValuesToBoard(board) {
-  [...tableRows].forEach((row, x) => {
-    [...row.children].forEach((cell, y) => {
-      cell.innerText = board[x][y] || '';
-    });
-  });
 };
 
 function horizontallyReverse(board) {
@@ -162,19 +140,44 @@ function groupMatrix(board) {
     return row.map((_, y) => board[y][x]);
   });
 
-  tmpBoard.forEach((_, i, arr) => {
+  tmpBoard.forEach((_, i) => {
     board[i] = tmpBoard[i];
   });
 };
 
-function switchStyles() {
-  tableRows.forEach(row => {
-    [...row.children].forEach(cell => {
-      if (cell.innerText) {
-        cell.classList.toggle(`field-cell--${cell.innerText}`);
-      };
+function clearBoard(nodeList) {
+  nodeList.forEach((row, x) => {
+    [...row.children].forEach((cell, y) => {
+      cell.classList.remove(`field-cell--${cell.innerText}`);
+      cell.innerText = '';
     });
   });
+};
+
+function clearMatrix() {
+  matrix.forEach(row => {
+    row.forEach((_, index) => {
+      row[index] = false;
+    });
+  });
+};
+
+function moveCells(board) {
+  for (let x = 0; x < board.length; x++) {
+    let emptyCellsCount = 0;
+
+    for (let y = 3; y >= 0; y--) {
+      if (!board[x][y]) {
+        emptyCellsCount++;
+        continue;
+      };
+
+      if (emptyCellsCount) {
+        board[x][y + emptyCellsCount] = board[x][y];
+        board[x][y] = false;
+      };
+    };
+  };
 };
 
 function sumSameCells(board, score) {
@@ -196,35 +199,42 @@ function sumSameCells(board, score) {
   };
 };
 
-function moveCells(board) {
-  for (let x = 0; x < board.length; x++) {
-    let emptyCellsCount = 0;
-
-    for (let y = 3; y >= 0; y--) {
-      if (!board[x][y]) {
-        emptyCellsCount++;
-        continue;
+function addStyles() {
+  tableRows.forEach(row => {
+    [...row.children].forEach(cell => {
+      if (cell.innerText) {
+        cell.classList.add(`field-cell--${cell.innerText}`);
       };
-
-      if (emptyCellsCount) {
-        board[x][y + emptyCellsCount] = board[x][y];
-        board[x][y] = false;
-      };
-    };
-  };
+    });
+  });
 };
 
-function setNuberToEmptyCell(board) {
-  const randomNumber = Math.random() > 0.9 ? 4 : 2;
+function gameOver(board) {
+  for (let x = 0; x < board.length; x++) {
+    for (let y = 0; y < board.length; y++) {
+      const currentCell = board[x][y];
 
-  while (true) {
-    const x = parseInt(Math.random() * 4);
-    const y = parseInt(Math.random() * 4);
-    const emptyCell = board[x].children[y];
+      if (!currentCell) {
+        return false;
+      };
 
-    if (!emptyCell.innerText) {
-      emptyCell.innerText = randomNumber;
-      break;
+      if (x !== board.length - 1 && board[x + 1][y] === currentCell) {
+        return false;
+      };
+
+      if (y !== board.length - 1 && board[x][y + 1] === currentCell) {
+        return false;
+      };
     };
   };
+
+  return true;
+};
+
+function checkForValue2048(table) {
+  return [...table].some(row => {
+    return [...row.children].some(cell => {
+      return cell.innerText === '2048';
+    });
+  });
 };
