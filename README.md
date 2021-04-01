@@ -15,7 +15,7 @@ Don't play for too long! We need you to write the code!
 
 Okay, what do we have?
 1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Reference.
+2) Reference
 
 That's it!
 
