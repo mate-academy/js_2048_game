@@ -56,6 +56,14 @@ document.addEventListener('keydown', e => {
   };
 
   if (!checkChoseDirection(matrix)) {
+    if (['ArrowLeft', 'ArrowUp'].includes(e.key)) {
+      horizontallyReverse(matrix);
+    };
+
+    if (['ArrowDown', 'ArrowUp'].includes(e.key)) {
+      groupMatrix(matrix);
+    };
+
     return;
   }
 
@@ -98,8 +106,8 @@ function setNuberToEmptyCell(board) {
   const randomNumber = Math.random() > 0.9 ? 4 : 2;
 
   while (true) {
-    const x = parseInt(Math.random() * 4);
-    const y = parseInt(Math.random() * 4);
+    const x = parseInt(Math.random() * board.length);
+    const y = parseInt(Math.random() * board.length);
 
     if (!board[x][y]) {
       board[x][y] = randomNumber;
@@ -118,8 +126,8 @@ function setValuesToBoard(board) {
 };
 
 function checkChoseDirection(board) {
-  for (let x = 0; x < 4; x++) {
-    for (let y = 2; y >= 0; y--) {
+  for (let x = 0; x < board.length; x++) {
+    for (let y = board.length - 2; y >= 0; y--) {
       const currentCell = board[x][y];
       const nextCell = board[x][y + 1];
       const withSameValue = currentCell === nextCell;
@@ -136,14 +144,12 @@ function horizontallyReverse(board) {
 };
 
 function groupMatrix(board) {
-  const tmpBoard = board.map((row, x) => {
-    return row.map((_, y) => board[y][x]);
-  });
-
-  tmpBoard.forEach((_, i) => {
-    board[i] = tmpBoard[i];
-  });
-};
+  for (let x = 0; x < board.length - 1; x++) {
+    for (let y = x + 1; y < board.length; y++) {
+      [board[x][y], board[y][x]] = [board[y][x], board[x][y]];
+    }
+  }
+}
 
 function clearBoard(nodeList) {
   nodeList.forEach((row) => {
@@ -166,7 +172,7 @@ function moveCells(board) {
   for (let x = 0; x < board.length; x++) {
     let emptyCellsCount = 0;
 
-    for (let y = 3; y >= 0; y--) {
+    for (let y = board.length - 1; y >= 0; y--) {
       if (!board[x][y]) {
         emptyCellsCount++;
         continue;
@@ -181,8 +187,8 @@ function moveCells(board) {
 };
 
 function sumSameCells(board, score) {
-  for (let x = 0; x < 4; x++) {
-    for (let y = 2; y >= 0; y--) {
+  for (let x = 0; x < board.length; x++) {
+    for (let y = board.length - 2; y >= 0; y--) {
       const curentCell = board[x][y];
       const adjacentCell = board[x][y + 1];
       const isWithSameValue = adjacentCell === curentCell;
