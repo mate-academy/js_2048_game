@@ -1,5 +1,5 @@
 1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
+    - [DEMO LINK](https://ArtemFedoseev.github.io/js_2048_game/)
 2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
     - Run `npm run test` command to test your code;
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
@@ -15,7 +15,7 @@ Don't play for too long! We need you to write the code!
 
 Okay, what do we have?
 1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Reference.
+2) Reference
 
 That's it!
 
