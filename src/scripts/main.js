@@ -2,7 +2,7 @@
 
 // write your code here
 
-const button = document.querySelector('button');
+const buttonStart = document.querySelector('.start');
 const messageStart = document.querySelector('.message-start');
 const gameScore = document.querySelector('.game-score');
 const messageWiner = document.querySelector('.message-win');
@@ -11,28 +11,27 @@ const tableRow = document.querySelectorAll('tr');
 
 const board = createField();
 
-button.addEventListener('click', () => {
+buttonStart.addEventListener('click', () => {
   messageStart.classList.toggle('hidden');
   messageWiner.classList.add('hidden');
   messageLose.classList.add('hidden');
 
-  button.innerText === 'Start'
-    ? button.innerText = 'Restart'
-    : button.innerText = 'Start';
+  buttonStart.innerText === 'Start'
+    ? buttonStart.innerText = 'Restart'
+    : buttonStart.innerText = 'Start';
 
-  button.classList.toggle('start', !button.matches('.start'));
-  button.classList.toggle('restart', !button.matches('.restart'));
+  buttonStart.classList.toggle('start', !buttonStart.matches('.start'));
+  buttonStart.classList.toggle('restart', !buttonStart.matches('.restart'));
 
-  if (button.innerText === 'Restart') {
-    createRandomNumber();
-    createRandomNumber();
+  if (buttonStart.innerText === 'Restart') {
+    addNumber(2);
 
     addNumbersOnBoard();
   } else {
     gameScore.innerText = 0;
 
-    cleareTableRow();
-    cleareBoard();
+    clearTableRow();
+    clearBoard();
   }
 });
 
@@ -44,6 +43,15 @@ function createField() {
   }
 
   return gameField;
+}
+
+function addNumber(value) {
+  let num = value || 1;
+
+  do {
+    createRandomNumber();
+    num--;
+  } while (num > 0);
 }
 
 function createRandomNumber() {
@@ -72,14 +80,14 @@ function addNumbersOnBoard() {
   }
 }
 
-function cleareTableRow() {
+function clearTableRow() {
   tableRow.forEach(el => [...el.children].forEach(child => {
     child.classList.remove(`field-cell--${child.innerText}`);
     child.innerText = '';
   }));
 }
 
-function cleareBoard() {
+function clearBoard() {
   board.forEach(el => el.fill(0));
 }
 
@@ -88,37 +96,35 @@ document.addEventListener('keydown', (tap) => {
     messageLose.classList.add('hidden');
   }
 
-  if (button.innerText !== 'Restart' || winer() || checkZerosAndCanMove()) {
+  if (buttonStart.innerText !== 'Restart' || winer()
+    || checkZerosAndCanMove()) {
     return;
   }
 
-  let res = wasMoving(board);
+  const res = createCopy(board);
 
-  if (tap.key === 'ArrowRight') {
-    moveRight();
-  }
-
-  if (tap.key === 'ArrowLeft') {
-    moveLeft();
-  }
-
-  if (tap.key === 'ArrowDown') {
-    moveDown();
-  }
-
-  if (tap.key === 'ArrowUp') {
-    moveUp();
+  switch (tap.key) {
+    case 'ArrowRight':
+      moveRight();
+      break;
+    case 'ArrowLeft':
+      moveLeft();
+      break;
+    case 'ArrowDown':
+      moveDown();
+      break;
+    case 'ArrowUp':
+      moveUp();
+      break;
   }
 
   checkBoard(res, board);
 
   addNumbersOnBoard();
   checkZerosAndCanMove();
-
-  res = [];
 });
 
-function moveInRingthDirection() {
+function slideRigth() {
   for (let i = 0; i < tableRow.length; i++) {
     const filterBoard = board[i].filter(num => num);
 
@@ -129,43 +135,43 @@ function moveInRingthDirection() {
 
     board[i] = newRow;
 
-    cleareTableRow();
+    clearTableRow();
   }
 }
 
 function moveRight() {
-  moveInRingthDirection();
+  slideRigth();
   reverseRow();
   sumSameNumbers();
   reverseRow();
-  moveInRingthDirection();
+  slideRigth();
 };
 
 function moveLeft() {
-  moveInRingthDirection();
+  slideRigth();
   sumSameNumbers();
   reverseRow();
-  moveInRingthDirection();
+  slideRigth();
   reverseRow();
 };
 
 function moveDown() {
   expandArray();
-  moveInRingthDirection();
+  slideRigth();
   reverseRow();
   sumSameNumbers();
-  moveInRingthDirection();
+  slideRigth();
   reverseRow();
-  moveInRingthDirection();
+  slideRigth();
   expandArray();
 }
 
 function moveUp() {
   expandArray();
-  moveInRingthDirection();
+  slideRigth();
   sumSameNumbers();
   reverseRow();
-  moveInRingthDirection();
+  slideRigth();
   reverseRow();
   expandArray();
 }
@@ -229,11 +235,11 @@ function findSameNumbers() {
   return false;
 }
 
-function wasMoving(matrix) {
+function createCopy(matrix) {
   const clone = createField();
 
-  for (let i = 0; i < 4; i++) {
-    for (let x = 0; x < 4; x++) {
+  for (let i = 0; i < board.length; i++) {
+    for (let x = 0; x < board.length; x++) {
       clone[i][x] = matrix[i][x];
     }
   }
@@ -245,7 +251,7 @@ function checkBoard(originalArr, modifyArr) {
   for (let x = 0; x < board.length; x++) {
     for (let y = 0; y < board.length; y++) {
       if (originalArr[x][y] !== modifyArr[x][y]) {
-        createRandomNumber();
+        addNumber();
 
         return;
       }
