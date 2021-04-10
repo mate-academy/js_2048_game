@@ -9,12 +9,7 @@ const loseMessage = document.querySelector('.message-lose');
 
 const gameSize = 4;
 const desiredNumber = 2048;
-const gameCells = [...Array(4 ** 2)].map((v, i) => (
-  {
-    index: i,
-    value: -1,
-  }
-));
+const gameCells = [...Array(4 ** 2)].map(v => -1);
 const [Left, Up, Right, Down] = [1, 2, 3, 4];
 const PossibleState = {
   Reset: 0,
@@ -32,23 +27,20 @@ function getRandom() {
   return (num < 0.9) ? 2 : 4;
 }
 
-function getRandomCell() {
-  const emptyCells = gameCells.filter((cell, index) => cell.value === -1);
+function getRandomCellIndex() {
+  const emptyCells = gameCells.filter(cell => cell === -1);
 
   if (emptyCells.length) {
     const index = Math.floor(Math.random() * emptyCells.length);
 
-    return emptyCells[index];
+    return index;
   }
 
-  return null;
+  return -1;
 }
 
 function reset() {
-  for (const cell of gameCells) {
-    cell.value = -1;
-  }
-
+  gameCells.fill(-1);
   gameScore = 0;
   start();
 }
@@ -59,29 +51,22 @@ function start() {
   const testing = false;
 
   if (testing) {
-    const cell1 = gameCells[9];
-
-    cell1.value = 1024;
-
-    const cell2 = gameCells[5];
-
-    cell2.value = 1024;
-
-    const cell3 = gameCells[13];
-
-    cell3.value = 128;
-
-    const cell4 = gameCells[1];
-
-    cell4.value = 8;
+    gameCells[9] = 1024;
+    gameCells[5] = 1024;
+    gameCells[13] = 128;
+    gameCells[1] = 8;
   } else {
-    const cell1 = getRandomCell();
+    const cell1 = getRandomCellIndex();
 
-    cell1.value = getRandom();
+    gameCells[cell1] = getRandom();
 
-    const cell2 = getRandomCell();
+    let cell2 = -1;
 
-    cell2.value = getRandom();
+    do {
+      cell2 = getRandomCellIndex();
+    } while (cell2 === cell1);
+
+    gameCells[cell2] = getRandom();
   }
 }
 
@@ -109,7 +94,7 @@ function render() {
   const rows = game.children;
 
   for (let i = 0; i < gameCells.length; i++) {
-    const cellValue = gameCells[i].value;
+    const cellValue = gameCells[i];
     const rowIndex = Math.floor(i / gameSize);
     const columnIndex = i % gameSize;
     const cell = rows[rowIndex].children[columnIndex];
@@ -130,8 +115,7 @@ function render() {
 
 function combineValues(cells, direction) {
   const values = cells
-    .filter(elem => elem.value !== -1)
-    .map(elem => elem.value);
+    .filter(elem => elem !== -1);
   let comparePos = direction ? 1 : values.length - 2;
   const prevPos = direction ? 0 : values.length - 1;
 
@@ -153,22 +137,24 @@ function combineValues(cells, direction) {
   return values.filter(value => value !== -1);
 }
 
-function fillNewValues(line, newValues, direction) {
+function fillNewValues(indexes, newValues, direction) {
   if (direction) {
     for (let i = 0; i < newValues.length; i++) {
-      line[i].value = newValues[i];
+      gameCells[indexes[i]] = newValues[i];
     }
 
-    for (let i = newValues.length; i < line.length; i++) {
-      line[i].value = -1;
+    for (let i = newValues.length; i < indexes.length; i++) {
+      gameCells[indexes[i]] = -1;
     }
   } else {
-    for (let i = 0; i < line.length - newValues.length; i++) {
-      line[i].value = -1;
+    for (let i = 0; i < indexes.length - newValues.length; i++) {
+      gameCells[indexes[i]] = -1;
     }
 
     for (let i = 0; i < newValues.length; i++) {
-      line[i + line.length - newValues.length].value = newValues[i];
+      const ind = indexes[indexes.length - newValues.length + i];
+
+      gameCells[ind] = newValues[i];
     }
   }
 }
@@ -184,10 +170,10 @@ function move(direction) {
     gameState = PossibleState.InProgress;
   }
 
-  const cell = getRandomCell();
+  const cell = getRandomCellIndex();
 
-  if (cell) {
-    cell.value = getRandom();
+  if (cell >= 0) {
+    gameCells[cell] = getRandom();
   } else {
     gameState = PossibleState.GameOver;
   }
@@ -197,20 +183,32 @@ function move(direction) {
 
 function moveRow(left) {
   for (let i = 0; i < gameSize; i++) {
+    const indexes = [];
+
+    for (let j = i * gameSize; j < i * gameSize + gameSize; j++) {
+      indexes.push(j);
+    }
+
     const row = gameCells.slice(i * gameSize, i * gameSize + gameSize);
     const result = combineValues(row, left);
 
-    fillNewValues(row, result, left);
+    fillNewValues(indexes, result, left);
   }
 }
 
 function moveColumn(up) {
   for (let i = 0; i < gameSize; i++) {
+    const indexes = [];
+
+    for (let j = 0; j < gameSize; j++) {
+      indexes.push(i + j * gameSize);
+    }
+
     const column = gameCells
       .filter((item, index) => (index - i) % gameSize === 0);
     const result = combineValues(column, up);
 
-    fillNewValues(column, result, up);
+    fillNewValues(indexes, result, up);
   }
 }
 
