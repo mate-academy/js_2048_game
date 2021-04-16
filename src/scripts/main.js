@@ -28,12 +28,19 @@ function getRandom() {
 }
 
 function getRandomCellIndex() {
-  const emptyCells = gameCells.filter(cell => cell === -1);
+  const emptyCells = gameCells
+    .map((cell, index) => (
+      {
+        index: index,
+        value: cell,
+      }
+    ))
+    .filter((cell) => cell.value === -1);
 
   if (emptyCells.length) {
     const index = Math.floor(Math.random() * emptyCells.length);
 
-    return index;
+    return emptyCells[index].index;
   }
 
   return -1;
@@ -60,11 +67,7 @@ function start() {
 
     gameCells[cell1] = getRandom();
 
-    let cell2 = -1;
-
-    do {
-      cell2 = getRandomCellIndex();
-    } while (cell2 === cell1);
+    const cell2 = getRandomCellIndex();
 
     gameCells[cell2] = getRandom();
   }
@@ -76,7 +79,6 @@ function updateScore(addScore) {
   if (addScore === desiredNumber) {
     gameState = PossibleState.Win;
   }
-  render();
 }
 
 function render() {
@@ -138,6 +140,8 @@ function combineValues(cells, direction) {
 }
 
 function fillNewValues(indexes, newValues, direction) {
+  const oldValues = indexes.map(index => gameCells[index]);
+
   if (direction) {
     for (let i = 0; i < newValues.length; i++) {
       gameCells[indexes[i]] = newValues[i];
@@ -157,13 +161,27 @@ function fillNewValues(indexes, newValues, direction) {
       gameCells[ind] = newValues[i];
     }
   }
+
+  const refreshedValues = indexes.map(index => gameCells[index]);
+  let haveChanges = false;
+
+  for (let i = 0; i < oldValues.length; i++) {
+    if (oldValues[i] !== refreshedValues[i]) {
+      haveChanges = true;
+      break;
+    }
+  }
+
+  return haveChanges;
 }
 
 function move(direction) {
+  let haveChanges = false;
+
   if (direction % 2 === 1) {
-    moveRow(direction === Left);
+    haveChanges = moveRow(direction === Left);
   } else {
-    moveColumn(direction === Up);
+    haveChanges = moveColumn(direction === Up);
   }
 
   if (gameState === PossibleState.Started) {
@@ -173,7 +191,9 @@ function move(direction) {
   const cell = getRandomCellIndex();
 
   if (cell >= 0) {
-    gameCells[cell] = getRandom();
+    if (haveChanges) {
+      gameCells[cell] = getRandom();
+    }
   } else {
     gameState = PossibleState.GameOver;
   }
@@ -182,6 +202,8 @@ function move(direction) {
 }
 
 function moveRow(left) {
+  let haveChanges = false;
+
   for (let i = 0; i < gameSize; i++) {
     const indexes = [];
 
@@ -192,11 +214,15 @@ function moveRow(left) {
     const row = gameCells.slice(i * gameSize, i * gameSize + gameSize);
     const result = combineValues(row, left);
 
-    fillNewValues(indexes, result, left);
+    haveChanges |= fillNewValues(indexes, result, left);
   }
+
+  return haveChanges;
 }
 
 function moveColumn(up) {
+  let haveChanges = false;
+
   for (let i = 0; i < gameSize; i++) {
     const indexes = [];
 
@@ -208,8 +234,10 @@ function moveColumn(up) {
       .filter((item, index) => (index - i) % gameSize === 0);
     const result = combineValues(column, up);
 
-    fillNewValues(indexes, result, up);
+    haveChanges |= fillNewValues(indexes, result, up);
   }
+
+  return haveChanges;
 }
 
 startButton.addEventListener('click', (_event) => {
@@ -217,8 +245,6 @@ startButton.addEventListener('click', (_event) => {
   render();
 });
 
-// eslint-disable-next-line
-//why could not I add event listener to game?
 document.addEventListener('keyup', (_event) => {
   if (gameState !== PossibleState.Started
     && gameState !== PossibleState.InProgress) {
