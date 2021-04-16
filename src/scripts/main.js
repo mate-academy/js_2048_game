@@ -35,7 +35,9 @@ body.addEventListener('keydown', (e) => {
       init();
       break;
     case 'ArrowDown':
-      moveDown();
+      reverseDeskVertically();
+      moveUp();
+      reverseDeskVertically();
       init();
       break;
     case 'ArrowRight':
@@ -43,7 +45,9 @@ body.addEventListener('keydown', (e) => {
       init();
       break;
     case 'ArrowLeft':
-      moveLeft();
+      reverseDeskHorizonatally();
+      moveRight();
+      reverseDeskHorizonatally();
       init();
       break;
   }
@@ -177,107 +181,6 @@ function moveUp() {
   move();
 }
 
-function moveLeft() {
-  const move = () => {
-    for (let rowIndex = 0; rowIndex < SIZE_OF_DESK; rowIndex++) {
-      for (let cellIndex = 1; cellIndex < SIZE_OF_DESK; cellIndex++) {
-        const currentCellValue = desk[rowIndex][cellIndex];
-        let currentcellIndex = cellIndex;
-
-        if (currentCellValue === null) {
-          continue;
-        }
-
-        while (desk[rowIndex][currentcellIndex - 1] === null) {
-          desk[rowIndex][currentcellIndex - 1] = currentCellValue;
-          desk[rowIndex][currentcellIndex] = null;
-          isDeskMoved = true;
-
-          if (currentcellIndex - 1 > 0) {
-            currentcellIndex--;
-          } else {
-            break;
-          }
-        }
-      }
-    }
-  };
-
-  const merge = () => {
-    for (let rowIndex = 0; rowIndex < SIZE_OF_DESK; rowIndex++) {
-      for (
-        let cellIndex = SIZE_OF_DESK - 1; cellIndex >= 0; cellIndex--) {
-        const currentCell = desk[rowIndex][cellIndex];
-        const farLeftCell = desk[rowIndex][cellIndex - 1];
-
-        if (currentCell === null) {
-          continue;
-        }
-
-        if (farLeftCell === currentCell) {
-          desk[rowIndex][cellIndex] = currentCell * 2;
-          desk[rowIndex][cellIndex - 1] = null;
-          isDeskMoved = true;
-        }
-      }
-    }
-  };
-
-  move();
-  merge();
-  move();
-}
-
-function moveDown() {
-  const move = () => {
-    for (let rowIndex = SIZE_OF_DESK - 2; rowIndex >= 0; rowIndex--) {
-      for (let cellIndex = 0; cellIndex < SIZE_OF_DESK; cellIndex++) {
-        let currentRowIndex = rowIndex;
-        const currentCellValue = desk[rowIndex][cellIndex];
-
-        if (currentCellValue === null) {
-          continue;
-        }
-
-        while (desk[currentRowIndex + 1][cellIndex] === null) {
-          desk[currentRowIndex + 1][cellIndex] = currentCellValue;
-          desk[currentRowIndex][cellIndex] = null;
-          isDeskMoved = true;
-
-          if (currentRowIndex + 1 < SIZE_OF_DESK - 1) {
-            currentRowIndex++;
-          } else {
-            break;
-          }
-        }
-      }
-    }
-  };
-
-  const merge = () => {
-    for (let rowIndex = 1; rowIndex < SIZE_OF_DESK; rowIndex++) {
-      for (let cellIndex = 0; cellIndex < SIZE_OF_DESK; cellIndex++) {
-        const currentCell = desk[rowIndex][cellIndex];
-        const lowerCell = desk[rowIndex - 1][cellIndex];
-
-        if (currentCell === null) {
-          continue;
-        }
-
-        if (lowerCell === currentCell) {
-          desk[rowIndex - 1][cellIndex] = currentCell * 2;
-          desk[rowIndex][cellIndex] = null;
-          isDeskMoved = true;
-        }
-      }
-    }
-  };
-
-  move();
-  merge();
-  move();
-}
-
 function moveRight() {
   const move = () => {
     for (let rowIndex = 0; rowIndex < SIZE_OF_DESK; rowIndex++) {
@@ -351,6 +254,20 @@ function checkPossibilityToMove() {
   }
 
   return false;
+}
+
+function reverseDeskHorizonatally() {
+  desk.forEach(row => row.reverse());
+}
+
+function reverseDeskVertically() {
+  const copyOfDesk = [...desk];
+
+  for (let rowIndex = 0; rowIndex < SIZE_OF_DESK; rowIndex++) {
+    copyOfDesk[SIZE_OF_DESK - rowIndex - 1] = desk[rowIndex];
+  }
+
+  desk = copyOfDesk;
 }
 
 function checkWinSituation() {
