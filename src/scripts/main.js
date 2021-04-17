@@ -1,5 +1,4 @@
 'use strict';
-// debugger;
 
 import { Game, PossibleState, Left, Up, Right, Down } from './game.js';
 
