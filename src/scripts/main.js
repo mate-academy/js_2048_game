@@ -1,6 +1,4 @@
-'use strict';
-
-import { Game, State, left, up, right, down } from './game.js';
+import { Game, State, Left, Up, Right, Down } from './game.js';
 
 const gameField = document.querySelector('.game-field tbody');
 const score = document.querySelector('.game-score');
@@ -64,16 +62,16 @@ document.addEventListener('keyup', (_event) => {
 
   switch (_event.key) {
     case 'ArrowLeft':
-      move(left);
+      move(Left);
       break;
     case 'ArrowRight':
-      move(right);
+      move(Right);
       break;
     case 'ArrowUp':
-      move(up);
+      move(Up);
       break;
     case 'ArrowDown':
-      move(down);
+      move(Down);
       break;
     default:
       break;

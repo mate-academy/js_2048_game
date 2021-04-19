@@ -1,14 +1,12 @@
-'use strict';
-
 const DESIRED_NUMBER = 2048;
 
-export const [left, up, right, down] = [1, 2, 3, 4];
+export const [Left, Up, Right, Down] = [1, 2, 3, 4];
 export const State = Object.freeze({
-  Reset: "Reset",
-  Started: "Started",
-  InProgress: "InProgress",
-  GameOver: "GameOver",
-  Win: "Win",
+  Reset: 'Reset',
+  Started: 'Started',
+  InProgress: 'InProgress',
+  GameOver: 'GameOver',
+  Win: 'Win',
 });
 
 export class Game {
@@ -52,7 +50,7 @@ export class Game {
 
   start() {
     this.gameState = State.Started;
-  
+
     const cell1 = this.getRandomCellIndex();
 
     this.gameCells[cell1] = this.getRandom();
@@ -64,25 +62,26 @@ export class Game {
 
   updateScore(addScore) {
     this.gameScore += addScore;
-  
+
     if (addScore === DESIRED_NUMBER) {
       this.gameState = State.Win;
     }
   }
-  
+
   combineValues(cells, direction) {
     const values = cells
       .filter(elem => elem !== -1);
     let comparePos = direction ? 1 : values.length - 2;
     const prevPos = direction ? 0 : values.length - 1;
-  
+
     let startPos = prevPos;
+
     do {
       if (direction) {
         if (comparePos >= values.length) {
           break;
         }
-      } if (comparePos < 0) {
+      } else if (comparePos < 0) {
         break;
       }
 
@@ -106,20 +105,20 @@ export class Game {
           startPos--;
           comparePos--;
         }
-      }    
-    } while(true);   
-  
+      }
+    } while (true);
+
     return values.filter(value => value !== -1);
   }
-  
+
   fillNewValues(indexes, newValues, direction) {
     const oldValues = indexes.map(index => this.gameCells[index]);
-  
+
     if (direction) {
       for (let i = 0; i < newValues.length; i++) {
         this.gameCells[indexes[i]] = newValues[i];
       }
-  
+
       for (let i = newValues.length; i < indexes.length; i++) {
         this.gameCells[indexes[i]] = -1;
       }
@@ -127,42 +126,42 @@ export class Game {
       for (let i = 0; i < indexes.length - newValues.length; i++) {
         this.gameCells[indexes[i]] = -1;
       }
-  
+
       for (let i = 0; i < newValues.length; i++) {
         const ind = indexes[indexes.length - newValues.length + i];
-  
+
         this.gameCells[ind] = newValues[i];
       }
     }
-  
+
     const refreshedValues = indexes.map(index => this.gameCells[index]);
     let haveChanges = false;
-  
+
     for (let i = 0; i < oldValues.length; i++) {
       if (oldValues[i] !== refreshedValues[i]) {
         haveChanges = true;
         break;
       }
     }
-  
+
     return haveChanges;
   }
-  
+
   move(direction) {
     let haveChanges = false;
-  
+
     if (direction % 2 === 1) {
-      haveChanges = this.moveRow(direction === left);
+      haveChanges = this.moveRow(direction === Left);
     } else {
-      haveChanges = this.moveColumn(direction === up);
+      haveChanges = this.moveColumn(direction === Up);
     }
-  
+
     if (this.gameState === State.Started) {
       this.gameState = State.InProgress;
     }
-  
+
     const cell = this.getRandomCellIndex();
-  
+
     if (cell >= 0) {
       if (haveChanges) {
         this.gameCells[cell] = this.getRandom();
@@ -170,46 +169,49 @@ export class Game {
     } else {
       this.gameState = State.GameOver;
     }
-  
   }
-  
+
   moveRow(left) {
     let haveChanges = false;
-  
+
     for (let i = 0; i < this.gameSize; i++) {
       const indexes = [];
-  
-      for (let j = i * this.gameSize; j < i * this.gameSize + this.gameSize; j++) {
+
+      for (
+        let j = i * this.gameSize;
+        j < i * this.gameSize + this.gameSize;
+        j++
+      ) {
         indexes.push(j);
       }
-  
-      const row = this.gameCells.slice(i * this.gameSize, i * this.gameSize + this.gameSize);
+
+      const row = this.gameCells
+        .slice(i * this.gameSize, i * this.gameSize + this.gameSize);
       const result = this.combineValues(row, left);
-  
+
       haveChanges |= this.fillNewValues(indexes, result, left);
     }
-  
-    return haveChanges;
-  }
-  
-  moveColumn(up) {
-    let haveChanges = false;
-  
-    for (let i = 0; i < this.gameSize; i++) {
-      const indexes = [];
-  
-      for (let j = 0; j < this.gameSize; j++) {
-        indexes.push(i + j * this.gameSize);
-      }
-  
-      const column = this.gameCells
-        .filter((item, index) => (index - i) % this.gameSize === 0);
-      const result = this.combineValues(column, up);
-  
-      haveChanges |= this.fillNewValues(indexes, result, up);
-    }
-  
+
     return haveChanges;
   }
 
+  moveColumn(up) {
+    let haveChanges = false;
+
+    for (let i = 0; i < this.gameSize; i++) {
+      const indexes = [];
+
+      for (let j = 0; j < this.gameSize; j++) {
+        indexes.push(i + j * this.gameSize);
+      }
+
+      const column = this.gameCells
+        .filter((item, index) => (index - i) % this.gameSize === 0);
+      const result = this.combineValues(column, up);
+
+      haveChanges |= this.fillNewValues(indexes, result, up);
+    }
+
+    return haveChanges;
+  }
 }
