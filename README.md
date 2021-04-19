@@ -1,2 +1,2 @@
-    - [DEMO LINK](https://OlenaMelnyk.github.io/js_2048_game/)
-    - Tech stack: HTML5, SASS, JS, DOM tree
+- [DEMO LINK](https://OlenaMelnyk.github.io/js_2048_game/)
+- Tech stack: HTML5, SASS, JS, DOM tree
