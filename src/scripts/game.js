@@ -1,21 +1,21 @@
 'use strict';
 
-const desiredNumber = 2048;
+const DESIRED_NUMBER = 2048;
 
-export const [Left, Up, Right, Down] = [1, 2, 3, 4];
-export const PossibleState = {
-  Reset: 0,
-  Started: 1,
-  InProgress: 2,
-  GameOver: 3,
-  Win: 4,
-};
+export const [left, up, right, down] = [1, 2, 3, 4];
+export const State = Object.freeze({
+  Reset: "Reset",
+  Started: "Started",
+  InProgress: "InProgress",
+  GameOver: "GameOver",
+  Win: "Win",
+});
 
 export class Game {
   constructor(gameSize) {
     this.gameSize = gameSize;
     this.gameCells = [...Array(gameSize ** 2)].map(v => -1);
-    this.gameState = PossibleState.Reset;
+    this.gameState = State.Reset;
     this.gameScore = 0;
   }
 
@@ -51,31 +51,22 @@ export class Game {
   }
 
   start() {
-    this.gameState = PossibleState.Started;
+    this.gameState = State.Started;
   
-    const testing = false;
-  
-    if (testing) {
-      this.gameCells[9] = 1024;
-      this.gameCells[5] = 1024;
-      this.gameCells[13] = 128;
-      this.gameCells[1] = 8;
-    } else {
-      const cell1 = this.getRandomCellIndex();
-  
-      this.gameCells[cell1] = this.getRandom();
-  
-      const cell2 = this.getRandomCellIndex();
-  
-      this.gameCells[cell2] = this.getRandom();
-    }
+    const cell1 = this.getRandomCellIndex();
+
+    this.gameCells[cell1] = this.getRandom();
+
+    const cell2 = this.getRandomCellIndex();
+
+    this.gameCells[cell2] = this.getRandom();
   }
 
   updateScore(addScore) {
     this.gameScore += addScore;
   
-    if (addScore === desiredNumber) {
-      this.gameState = PossibleState.Win;
+    if (addScore === DESIRED_NUMBER) {
+      this.gameState = State.Win;
     }
   }
   
@@ -85,20 +76,38 @@ export class Game {
     let comparePos = direction ? 1 : values.length - 2;
     const prevPos = direction ? 0 : values.length - 1;
   
-    for (let startPos = prevPos;
-      direction ? comparePos < values.length : comparePos >= 0;
-    ) {
+    let startPos = prevPos;
+    do {
+      if (direction) {
+        if (comparePos >= values.length) {
+          break;
+        }
+      } if (comparePos < 0) {
+        break;
+      }
+
       if (values[startPos] === values[comparePos]) {
         this.updateScore(values[startPos] * 2);
         values[direction ? startPos : comparePos] *= 2;
         values[direction ? comparePos : startPos] = -1;
-        direction ? comparePos += 2 : startPos -= 2;
-        direction ? startPos += 2 : comparePos -= 2;
+
+        if (direction) {
+          comparePos += 2;
+          startPos += 2;
+        } else {
+          startPos -= 2;
+          comparePos -= 2;
+        }
       } else {
-        direction ? comparePos++ : startPos--;
-        direction ? startPos++ : comparePos--;
-      }
-    }
+        if (direction) {
+          comparePos++;
+          startPos++;
+        } else {
+          startPos--;
+          comparePos--;
+        }
+      }    
+    } while(true);   
   
     return values.filter(value => value !== -1);
   }
@@ -143,13 +152,13 @@ export class Game {
     let haveChanges = false;
   
     if (direction % 2 === 1) {
-      haveChanges = this.moveRow(direction === Left);
+      haveChanges = this.moveRow(direction === left);
     } else {
-      haveChanges = this.moveColumn(direction === Up);
+      haveChanges = this.moveColumn(direction === up);
     }
   
-    if (this.gameState === PossibleState.Started) {
-      this.gameState = PossibleState.InProgress;
+    if (this.gameState === State.Started) {
+      this.gameState = State.InProgress;
     }
   
     const cell = this.getRandomCellIndex();
@@ -159,7 +168,7 @@ export class Game {
         this.gameCells[cell] = this.getRandom();
       }
     } else {
-      this.gameState = PossibleState.GameOver;
+      this.gameState = State.GameOver;
     }
   
   }

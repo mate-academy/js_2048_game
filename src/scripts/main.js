@@ -1,6 +1,6 @@
 'use strict';
 
-import { Game, PossibleState, Left, Up, Right, Down } from './game.js';
+import { Game, State, left, up, right, down } from './game.js';
 
 const gameField = document.querySelector('.game-field tbody');
 const score = document.querySelector('.game-score');
@@ -12,24 +12,16 @@ const loseMessage = document.querySelector('.message-lose');
 const gameSize = 4;
 const game = new Game(gameSize);
 
-function reset() {
-  game.reset();
-}
-
-function start() {
-  game.start();
-}
-
 function render() {
-  const inProgress = (game.gameState === PossibleState.InProgress);
+  const inProgress = (game.gameState === State.InProgress);
 
-  startMessage.hidden = game.gameState >= PossibleState.Started;
+  startMessage.hidden = game.gameState >= State.Started;
   startButton.classList.remove(inProgress ? 'start' : 'restart');
   startButton.classList.add(inProgress ? 'restart' : 'start');
   startButton.textContent = inProgress ? 'Restart' : 'Start';
 
-  winMessage.classList.toggle('hidden', game.gameState !== PossibleState.Win);
-  loseMessage.classList.toggle('hidden', game.gameState !== PossibleState.GameOver);
+  winMessage.classList.toggle('hidden', game.gameState !== State.Win);
+  loseMessage.classList.toggle('hidden', game.gameState !== State.GameOver);
   score.textContent = game.gameScore;
 
   const rows = gameField.children;
@@ -59,30 +51,29 @@ function move(direction) {
   render();
 }
 
-
 startButton.addEventListener('click', (_event) => {
-  reset();
+  game.reset();
   render();
 });
 
 document.addEventListener('keyup', (_event) => {
-  if (game.gameState !== PossibleState.Started
-    && game.gameState !== PossibleState.InProgress) {
+  if (game.gameState !== State.Started
+    && game.gameState !== State.InProgress) {
     return;
   }
 
   switch (_event.key) {
     case 'ArrowLeft':
-      move(Left);
+      move(left);
       break;
     case 'ArrowRight':
-      move(Right);
+      move(right);
       break;
     case 'ArrowUp':
-      move(Up);
+      move(up);
       break;
     case 'ArrowDown':
-      move(Down);
+      move(down);
       break;
     default:
       break;
