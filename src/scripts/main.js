@@ -35,19 +35,21 @@ body.addEventListener('keydown', (e) => {
       init();
       break;
     case 'ArrowDown':
-      reverseDeskVertically();
+      rotateDesk(2);
       moveUp();
-      reverseDeskVertically();
+      rotateDesk(2);
       init();
       break;
     case 'ArrowRight':
-      moveRight();
+      rotateDesk(3);
+      moveUp();
+      rotateDesk();
       init();
       break;
     case 'ArrowLeft':
-      reverseDeskHorizonatally();
-      moveRight();
-      reverseDeskHorizonatally();
+      rotateDesk();
+      moveUp();
+      rotateDesk(3);
       init();
       break;
   }
@@ -67,6 +69,7 @@ startButton.addEventListener('click', () => {
   startMessage.classList.add('hidden');
   loseMessage.classList.add('hidden');
   winMessage.classList.add('hidden');
+  addRandomValueToDesk();
   init();
 });
 
@@ -181,57 +184,6 @@ function moveUp() {
   move();
 }
 
-function moveRight() {
-  const move = () => {
-    for (let rowIndex = 0; rowIndex < SIZE_OF_DESK; rowIndex++) {
-      for (
-        let cellIndex = SIZE_OF_DESK - 2; cellIndex >= 0; cellIndex--) {
-        const currentCellValue = desk[rowIndex][cellIndex];
-        let currentcellIndex = cellIndex;
-
-        if (currentCellValue === null) {
-          continue;
-        }
-
-        while (desk[rowIndex][currentcellIndex + 1] === null) {
-          desk[rowIndex][currentcellIndex + 1] = currentCellValue;
-          desk[rowIndex][currentcellIndex] = null;
-          isDeskMoved = true;
-
-          if (currentcellIndex + 1 < SIZE_OF_DESK) {
-            currentcellIndex++;
-          } else {
-            break;
-          }
-        }
-      }
-    }
-  };
-
-  const merge = () => {
-    for (let rowIndex = 0; rowIndex < SIZE_OF_DESK; rowIndex++) {
-      for (let cellIndex = SIZE_OF_DESK - 1; cellIndex > 0; cellIndex--) {
-        const currentCell = desk[rowIndex][cellIndex];
-        const farLeftCell = desk[rowIndex][cellIndex - 1];
-
-        if (currentCell === null) {
-          continue;
-        }
-
-        if (farLeftCell === currentCell) {
-          desk[rowIndex][cellIndex] = currentCell * 2;
-          desk[rowIndex][cellIndex - 1] = null;
-          isDeskMoved = true;
-        }
-      }
-    }
-  };
-
-  move();
-  merge();
-  move();
-}
-
 function checkPossibilityToMove() {
   for (let rowIndex = 0; rowIndex < SIZE_OF_DESK; rowIndex++) {
     if (desk[rowIndex].includes(null)) {
@@ -256,18 +208,26 @@ function checkPossibilityToMove() {
   return false;
 }
 
-function reverseDeskHorizonatally() {
-  desk.forEach(row => row.reverse());
-}
+function rotateDesk(times = 1) {
+  const rotate = source => {
+    const destination = new Array(SIZE_OF_DESK);
 
-function reverseDeskVertically() {
-  const copyOfDesk = [...desk];
+    for (let i = 0; i < SIZE_OF_DESK; i++) {
+      destination[i] = new Array(SIZE_OF_DESK);
+    }
 
-  for (let rowIndex = 0; rowIndex < SIZE_OF_DESK; rowIndex++) {
-    copyOfDesk[SIZE_OF_DESK - rowIndex - 1] = desk[rowIndex];
+    for (let i = 0; i < SIZE_OF_DESK; i++) {
+      for (let j = 0; j < SIZE_OF_DESK; j++) {
+        destination[i][j] = source[SIZE_OF_DESK - j - 1][i];
+      }
+    }
+
+    return destination;
+  };
+
+  for (let i = 0; i < times; i++) {
+    desk = rotate(desk);
   }
-
-  desk = copyOfDesk;
 }
 
 function checkWinSituation() {
