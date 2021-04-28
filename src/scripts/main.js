@@ -4,6 +4,64 @@ const button = document.querySelector('button');
 const gameField = document.querySelector('.game-field');
 const cells = [];
 
+const keydownListener = (ev) => {
+  switch (ev.key) {
+    case 'ArrowUp': {
+      for (let i = 1; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+          if (cells[i][j].classList.length > 1) {
+            for (let k = 0; k < i; k++) {
+              if (cells[k][j].classList.length === 1) {
+                const cellClass = cells[i][j].classList.item(1);
+
+                cells[k][j].classList.add(cellClass);
+                cells[i][j].classList.remove(cellClass);
+                cells[k][j].textContent = cells[i][j].textContent;
+                cells[i][j].textContent = '';
+
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      break;
+    }
+
+    case 'ArrowDown': {
+      for (let i = cells.length - 2; i >= 0; i--) {
+        for (let j = 0; j < cells[i].length; j++) {
+          if (cells[i][j].classList.length > 1) {
+            for (let k = cells.length - 1; k > i; k--) {
+              if (cells[k][j].classList.length === 1) {
+                const cellClass = cells[i][j].classList.item(1);
+
+                cells[k][j].classList.add(cellClass);
+                cells[i][j].classList.remove(cellClass);
+                cells[k][j].textContent = cells[i][j].textContent;
+                cells[i][j].textContent = '';
+
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      break;
+    }
+
+    case 'ArrowRight': {
+      break;
+    }
+
+    case 'ArrowLeft': {
+      break;
+    }
+  }
+};
+
 button.addEventListener('click', ev => {
   button.classList.toggle('start');
   button.classList.toggle('restart');
@@ -16,11 +74,15 @@ button.addEventListener('click', ev => {
         cell.classList.remove(cell.classList.item(1));
         cell.textContent = '';
       });
+
+    document.removeEventListener('keydown', keydownListener);
   } else {
     button.textContent = 'Restart';
 
     fillEmptyCell();
     fillEmptyCell();
+
+    document.addEventListener('keydown', keydownListener);
   }
 
   document.querySelector('.message-start')
