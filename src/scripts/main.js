@@ -101,198 +101,269 @@ function onKeyDown(e) {
     return;
   }
 
-  if (!canBeMoved(e.code.replace('Arrow', ''))) {
-    alert(`Cannot move tiles in direction ${e.code}`);
+  const direction = e.code.replace('Arrow', '');
 
-    return;
+  // if (canBeMoved(direction)) {
+  //   moveTiles(direction);
+  //   updateInfo();
+  // }
+
+  if (tryMoveCell(direction)) {
+    updateInfo();
   }
 
-  moveTiles(e.code.replace('Arrow', ''));
-  updateInfo();
   render();
 }
 
-function canBeMoved(direction) {
-  let movePossible = false;
+function tryMoveCell(direction) {
+  switch (direction) {
+    case 'Left':
+    case 'Right':
+      return tryMoveHorizontally(direction);
+    case 'Up':
+    case 'Down':
+      return tryMoveVertically(direction);
+  }
+
+  return false;
+}
+
+function tryMoveHorizontally(direction) {
+  let wasMoved = false;
+
+  for (let i = 0; i < tiles.length; i++) {
+    let row = tiles[i].filter(cell => cell);
+
+    if (direction === 'Right') {
+      row.reverse();
+    }
+
+    for (let j = 0; j < row.length - 1; j++) {
+      if (row[j] === row[j + 1]) {
+        row[j] *= 2;
+        score += row[j];
+        row.splice(j + 1, 1);
+      }
+      // collapseNeighbors(k, j, row);
+    }
+
+    row = row.concat(Array(MAX_COLS - row.length).fill(0));
+
+    if (direction === 'Right') {
+      row.reverse();
+    }
+
+    if (!row.every((cell, idx) => cell === tiles[i][idx])) {
+      wasMoved = true;
+    }
+
+    tiles[i] = row;
+  }
+
+  return wasMoved;
+}
+
+function tryMoveVertically(direction) {
+  const wasMoved = false;
 
   switch (direction) {
     case 'Up':
-      for (let col = 0; col < MAX_COLS; col++) {
-        for (let row = 1; row < MAX_ROWS; row++) {
-          if (
-            (tiles[row - 1][col] === 0 && tiles[row][col] !== 0)
-            || (tiles[row - 1][col] === tiles[row][col] && tiles[row][col] !== 0)
-          ) {
-            movePossible = true;
-            break;
-          }
-        }
-
-        if (movePossible) {
-          break;
-        }
-      }
-
-      break;
-
     case 'Down':
-      for (let col = 0; col < MAX_COLS; col++) {
-        for (let row = MAX_ROWS - 1; row > 0; row--) {
-          if (
-            (tiles[row - 1][col] !== 0 && tiles[row][col] === 0)
-            || (tiles[row - 1][col] === tiles[row][col] && tiles[row][col] !== 0)
-          ) {
-            movePossible = true;
-            break;
-          }
-        }
-
-        if (movePossible) {
-          break;
-        }
-      }
-
-      break;
-
-    case 'Left':
-      tiles.some((row) => {
-        row.slice().reduce((prev, cell, idx, arr) => {
-          if ((prev === 0 && cell !== 0)
-            || (prev === cell && cell !== 0)) {
-            movePossible = true;
-            arr.splice(1);
-          }
-
-          return cell;
-        });
-
-        if (movePossible) {
-          return true;
-        }
-      });
-
-      break;
-
-    case 'Right':
-      tiles.some((row) => {
-        row.slice().reduceRight((prev, cell, idx, arr) => {
-          if ((prev === 0 && cell !== 0)
-            || (prev === cell && cell !== 0)) {
-            movePossible = true;
-            arr.splice(1);
-          }
-
-          return cell;
-        });
-
-        if (movePossible) {
-          return true;
-        }
-      });
 
       break;
   }
 
-  return availableCells.length !== 0 && movePossible;
+  return wasMoved;
 }
 
-function moveTiles(direction) {
-  switch (direction) {
-    case 'Up':
-      for (let col = 0; col < MAX_COLS; col++) {
-        let column = [];
+// function canBeMoved(direction) {
+//   let movePossible = false;
 
-        for (let row = 0; row < MAX_ROWS; row++) {
-          if (tiles[row][col] !== 0) {
-            column.push(tiles[row][col]);
-          }
-        }
+//   switch (direction) {
+//     case 'Up':
+//       for (let col = 0; col < MAX_COLS; col++) {
+//         for (let row = 1; row < MAX_ROWS; row++) {
+//           if (
+//             (tiles[row - 1][col] === 0 && tiles[row][col] !== 0)
+//             || (tiles[row - 1][col] === tiles[row][col]
+//                 && tiles[row][col] !== 0)
+//           ) {
+//             movePossible = true;
+//             break;
+//           }
+//         }
 
-        column = column.concat(Array(MAX_ROWS - column.length).fill(0));
+//         if (movePossible) {
+//           break;
+//         }
+//       }
 
-        for (let k = 0, j = 1; j < column.length; k++, j++) {
-          collapseNeighbors(k, j, column);
-        }
+//       break;
 
-        for (let row = 0; row < MAX_ROWS; row++) {
-          tiles[row][col] = column[row];
-        }
-      }
+//     case 'Down':
+//       for (let col = 0; col < MAX_COLS; col++) {
+//         for (let row = MAX_ROWS - 1; row > 0; row--) {
+//           if (
+//             (tiles[row - 1][col] !== 0 && tiles[row][col] === 0)
+//             || (tiles[row - 1][col] === tiles[row][col]
+//                 && tiles[row][col] !== 0)
+//           ) {
+//             movePossible = true;
+//             break;
+//           }
+//         }
 
-      break;
+//         if (movePossible) {
+//           break;
+//         }
+//       }
 
-    case 'Down':
-      for (let col = 0; col < MAX_COLS; col++) {
-        let column = [];
+//       break;
 
-        for (let row = 0; row < MAX_ROWS; row++) {
-          if (tiles[row][col] !== 0) {
-            column.push(tiles[row][col]);
-          }
-        }
+//     case 'Left':
+//       tiles.some((row) => {
+//         row.slice().reduce((prev, cell, idx, arr) => {
+//           if ((prev === 0 && cell !== 0)
+//             || (prev === cell && cell !== 0)) {
+//             movePossible = true;
+//             arr.splice(1);
+//           }
 
-        column = Array(MAX_ROWS - column.length).fill(0).concat(column);
+//           return cell;
+//         });
 
-        for (let k = column.length - 1, j = k - 1; j >= 0; k--, j--) {
-          if (column[k] === column[j]) {
-            column[k] *= 2;
-            column.splice(j, 1);
-            column.unshift(0);
-          }
-        }
+//         if (movePossible) {
+//           return true;
+//         }
+//       });
 
-        for (let row = 0; row < MAX_ROWS; row++) {
-          tiles[row][col] = column[row];
-        }
-      }
+//       break;
 
-      break;
+//     case 'Right':
+//       tiles.some((row) => {
+//         row.slice().reduceRight((prev, cell, idx, arr) => {
+//           if ((prev === 0 && cell !== 0)
+//             || (prev === cell && cell !== 0)) {
+//             movePossible = true;
+//             arr.splice(1);
+//           }
 
-    case 'Left':
-      for (let i = 0; i < tiles.length; i++) {
-        const newRow = tiles[i].filter(cell => cell);
+//           return cell;
+//         });
 
-        tiles[i] = newRow.concat(Array(MAX_COLS - newRow.length).fill(0));
+//         if (movePossible) {
+//           return true;
+//         }
+//       });
 
-        for (let k = 0, j = 1; j < tiles[i].length; k++, j++) {
-          collapseNeighbors(k, j, tiles[i]);
-        }
-      }
+//       break;
+//   }
 
-      break;
+//   return availableCells.length !== 0 && movePossible;
+// }
 
-    case 'Right':
-      for (let i = 0; i < tiles.length; i++) {
-        const newRow = tiles[i].filter(cell => cell);
+// function moveTiles(direction) {
+//   switch (direction) {
+//     case 'Up':
+//       for (let col = 0; col < MAX_COLS; col++) {
+//         let column = [];
 
-        // move zeros to the front
-        tiles[i] = Array(MAX_COLS - newRow.length).fill(0).concat(newRow);
+//         for (let row = 0; row < MAX_ROWS; row++) {
+//           if (tiles[row][col] !== 0) {
+//             column.push(tiles[row][col]);
+//           }
+//         }
 
-        // collapse neighbors
-        for (let k = tiles[i].length - 1, j = k - 1; j >= 0; k--, j--) {
-          const row = tiles[i];
+//         column = column.concat(Array(MAX_ROWS - column.length).fill(0));
 
-          if (row[k] === row[j]) {
-            row[k] *= 2;
-            row.splice(j, 1);
-            row.unshift(0);
-          }
-        }
-      }
+//         for (let k = 0, j = 1; j < column.length; k++, j++) {
+//           collapseNeighbors(k, j, column);
+//         }
 
-      break;
-  }
-}
+//         for (let row = 0; row < MAX_ROWS; row++) {
+//           tiles[row][col] = column[row];
+//         }
+//       }
 
-function collapseNeighbors(k, j, row) {
-  const collapsedRow = row;
+//       break;
 
-  if (collapsedRow[k] === collapsedRow[j]) {
-    collapsedRow[k] *= 2;
-    collapsedRow.splice(j, 1);
-    collapsedRow.push(0);
-  }
-}
+//     case 'Down':
+//       for (let col = 0; col < MAX_COLS; col++) {
+//         let column = [];
+
+//         for (let row = 0; row < MAX_ROWS; row++) {
+//           if (tiles[row][col] !== 0) {
+//             column.push(tiles[row][col]);
+//           }
+//         }
+
+//         column = Array(MAX_ROWS - column.length).fill(0).concat(column);
+
+//         for (let k = column.length - 1, j = k - 1; j >= 0; k--, j--) {
+//           if (column[k] === column[j]) {
+//             column[k] *= 2;
+//             score += column[k];
+//             column.splice(j, 1);
+//             column.unshift(0);
+//           }
+//         }
+
+//         for (let row = 0; row < MAX_ROWS; row++) {
+//           tiles[row][col] = column[row];
+//         }
+//       }
+
+//       break;
+
+//     case 'Left':
+//       for (let i = 0; i < tiles.length; i++) {
+//         let row = tiles[i].filter(cell => cell);
+
+//         row = row.concat(Array(MAX_COLS - row.length).fill(0));
+
+//         for (let k = 0, j = 1; j < row.length; k++, j++) {
+//           collapseNeighbors(k, j, row);
+//         }
+
+//         tiles[i] = row;
+//       }
+
+//       break;
+
+//     case 'Right':
+//       for (let i = 0; i < tiles.length; i++) {
+//         const newRow = tiles[i].filter(cell => cell);
+
+//         // move zeros to the front
+//         tiles[i] = Array(MAX_COLS - newRow.length).fill(0).concat(newRow);
+
+//         // collapse neighbors
+//         for (let k = tiles[i].length - 1, j = k - 1; j >= 0; k--, j--) {
+//           const row = tiles[i];
+
+//           if (row[k] === row[j]) {
+//             row[k] *= 2;
+//             score += row[k];
+//             row.splice(j, 1);
+//             row.unshift(0);
+//           }
+//         }
+//       }
+
+//       break;
+//   }
+// }
+
+// function collapseNeighbors(k, j, row) {
+//   const collapsedRow = row;
+
+//   if (collapsedRow[k] === collapsedRow[j]) {
+//     collapsedRow[k] *= 2;
+//     score += collapsedRow[k];
+//     collapsedRow.splice(j, 1);
+//     collapsedRow.push(0);
+//   }
+// }
 
 function generateNewCell() {
   const position = Math.floor(Math.random() * availableCells.length);
