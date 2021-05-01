@@ -12,12 +12,7 @@ const keydownListener = (ev) => {
           if (cells[i][j].classList.length > 1) {
             for (let k = 0; k < i; k++) {
               if (cells[k][j].classList.length === 1) {
-                const cellClass = cells[i][j].classList.item(1);
-
-                cells[k][j].classList.add(cellClass);
-                cells[i][j].classList.remove(cellClass);
-                cells[k][j].textContent = cells[i][j].textContent;
-                cells[i][j].textContent = '';
+                swapCells(cells[i][j], cells[k][j]);
 
                 break;
               }
@@ -35,12 +30,7 @@ const keydownListener = (ev) => {
           if (cells[i][j].classList.length > 1) {
             for (let k = cells.length - 1; k > i; k--) {
               if (cells[k][j].classList.length === 1) {
-                const cellClass = cells[i][j].classList.item(1);
-
-                cells[k][j].classList.add(cellClass);
-                cells[i][j].classList.remove(cellClass);
-                cells[k][j].textContent = cells[i][j].textContent;
-                cells[i][j].textContent = '';
+                swapCells(cells[i][j], cells[k][j]);
 
                 break;
               }
@@ -100,6 +90,15 @@ gameField.querySelectorAll('tr')
 
     cells.push(rowOfCells);
   });
+
+function swapCells(first, second) {
+  const cellClass = first.classList.item(1);
+
+  second.classList.add(cellClass);
+  first.classList.remove(cellClass);
+  second.textContent = first.textContent;
+  first.textContent = '';
+}
 
 function fillEmptyCell() {
   const emptyCells = getEmptyCells();
