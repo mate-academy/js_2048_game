@@ -58,6 +58,16 @@ class GameField {
     }
   }
 
+  tryMoveCells(direction) {
+    this.rotate(GameField.ROTATION[direction].to);
+
+    const wasMoved = this.move();
+
+    this.rotate(GameField.ROTATION[direction].from);
+
+    return wasMoved;
+  }
+
   rotate(count = 1) {
     const rotatedField = () => {
       const rotated = [];
@@ -98,32 +108,28 @@ class GameField {
     return wasMoved;
   }
 
-  // TODO: refactor
-  tryMoveCells(direction) {
-    let wasMoved = false;
+  isMovePossible() {
+    const movePossible = () => {
+      return this.cells.some(row => {
+        for (let i = 1; i < row.length; i++) {
+          if (row[i] === row[i - 1]) {
+            return true;
+          }
+        }
 
-    switch (direction) {
-      case 'Left':
-        wasMoved = this.move();
-        break;
-      case 'Down':
-        this.rotate(1);
-        wasMoved = this.move();
-        this.rotate(3);
-        break;
-      case 'Right':
-        this.rotate(2);
-        wasMoved = this.move();
-        this.rotate(2);
-        break;
-      case 'Up':
-        this.rotate(3);
-        wasMoved = this.move();
-        this.rotate(1);
-        break;
-    }
+        return false;
+      });
+    };
 
-    return wasMoved;
+    const movePossibleHorizontal = movePossible();
+
+    this.rotate();
+
+    const movePossibleVertical = movePossible();
+
+    this.rotate(GameField.MAX_ROTATION - 1);
+
+    return movePossibleHorizontal || movePossibleVertical;
   }
 
   collapseCells(row) {
@@ -155,30 +161,6 @@ class GameField {
     scoreHTML.textContent = this.score;
   }
 
-  isMovePossible() {
-    const movePossible = () => {
-      return this.cells.some(row => {
-        for (let i = 1; i < row.length; i++) {
-          if (row[i] === row[i - 1]) {
-            return true;
-          }
-        }
-
-        return false;
-      });
-    };
-
-    const movePossibleHorizontal = movePossible();
-
-    this.rotate(1);
-
-    const movePossibleVertical = movePossible();
-
-    this.rotate(3);
-
-    return movePossibleHorizontal || movePossibleVertical;
-  }
-
   hasWon() {
     return this.cells.some(row => row.includes(GameField.WIN_SCORE));
   }
@@ -196,11 +178,30 @@ GameField.WIN_SCORE = 2048;
 GameField.PROBABILITY = 0.9;
 GameField.INIT_VALUE_HIGH_PROBABILITY = 2;
 GameField.INIT_VALUE_LOW_PROBABILITY = 4;
+GameField.MAX_ROTATION = 4;
+
+GameField.ROTATION = {
+  'Down': {
+    to: 1,
+    from: 3,
+  },
+  'Up': {
+    to: 3,
+    from: 1,
+  },
+  'Left': {
+    to: 0,
+    from: 0,
+  },
+  'Right': {
+    to: 2,
+    from: 2,
+  },
+};
 
 class Game {
   constructor() {
     this.field = new GameField();
-    this.isWin = false;
   }
 
   start() {
