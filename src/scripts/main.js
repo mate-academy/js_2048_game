@@ -5,24 +5,17 @@ const startButton = document.querySelector('.controls .button');
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
-const score = document.querySelector('.game-score');
+const scoreHTML = document.querySelector('.game-score');
 
 class GameField {
   constructor() {
     this.cells = Array.from(
-      Array(Game.MAX_ROWS), () => new Array(Game.MAX_COLS)
+      Array(GameField.MAX_ROWS), () => new Array(GameField.MAX_COLS).fill(0)
     );
-
-    this.reset();
+    this.score = 0;
   }
 
   get availableCells() {
-    // return this.cells.reduce((available, row) => {
-    //   return available.concat(
-    //     row.filter(cell => cell.isEmpty())
-    //   );
-    // }, []);
-
     return this.cells.reduce((available, row, rowIdx) => {
       return available.concat(
         row.map((cell, cellIdx) => {
@@ -38,23 +31,30 @@ class GameField {
 
   reset() {
     this.cells.forEach(row => {
-      row.splice(0, row.length, ...Array(Game.MAX_COLS).fill(0));
+      row.splice(0, row.length, ...Array(GameField.MAX_COLS).fill(0));
     });
+    this.score = 0;
   }
 
-  generateNewCell(count = 1) {
+  generateNewCells(count = 1) {
     const available = this.availableCells;
 
-    for (let i = 0; i < count; i++) {
+    const generate = () => {
       if (!available.length) {
-        break;
+        return;
       }
 
       const index = Math.floor(Math.random() * available.length);
       const [ position ] = available.splice(index, 1);
-      const value = Math.random() < 0.9 ? 2 : 4;
+      const value = Math.random() < GameField.PROBABILITY
+        ? GameField.INIT_VALUE_HIGH_PROBABILITY
+        : GameField.INIT_VALUE_LOW_PROBABILITY;
 
       this.cells[position.row][position.col] = value;
+    };
+
+    for (let i = 0; i < count; i++) {
+      generate();
     }
   }
 
@@ -62,10 +62,10 @@ class GameField {
     const rotatedField = () => {
       const rotated = [];
 
-      for (let col = 0; col < Game.MAX_COLS; col++) {
+      for (let col = 0; col < GameField.MAX_COLS; col++) {
         const rotatedRow = [];
 
-        for (let row = Game.MAX_ROWS - 1; row >= 0; row--) {
+        for (let row = GameField.MAX_ROWS - 1; row >= 0; row--) {
           rotatedRow.push(this.cells[row][col]);
         }
 
@@ -83,12 +83,11 @@ class GameField {
   move() {
     let wasMoved = false;
 
-    for (let idx = 0; idx < Game.MAX_ROWS; idx++) {
+    for (let idx = 0; idx < GameField.MAX_ROWS; idx++) {
       let row = this.cells[idx].filter(cell => cell !== 0);
 
       this.collapseCells(row);
-
-      row = row.concat(Array(Game.MAX_COLS - row.length).fill(0));
+      row = row.concat(Array(GameField.MAX_COLS - row.length).fill(0));
 
       wasMoved = wasMoved
         || row.some((cell, cellIdx) => cell !== this.cells[idx][cellIdx]);
@@ -131,10 +130,8 @@ class GameField {
     for (let j = 0; j < row.length - 1; j++) {
       if (row[j] === row[j + 1]) {
         row[j] *= 2;
-        row.splice(j + 1, 1);
-
-        // row[j] += row.splice(j + 1, 1);
         this.score += row[j];
+        row.splice(j + 1, 1);
       }
     }
   }
@@ -154,31 +151,70 @@ class GameField {
         }
       });
     });
+
+    scoreHTML.textContent = this.score;
+  }
+
+  isMovePossible() {
+    const movePossible = () => {
+      return this.cells.some(row => {
+        for (let i = 1; i < row.length; i++) {
+          if (row[i] === row[i - 1]) {
+            return true;
+          }
+        }
+
+        return false;
+      });
+    };
+
+    const movePossibleHorizontal = movePossible();
+
+    this.rotate(1);
+
+    const movePossibleVertical = movePossible();
+
+    this.rotate(3);
+
+    return movePossibleHorizontal || movePossibleVertical;
+  }
+
+  hasWon() {
+    return this.cells.some(row => row.includes(GameField.WIN_SCORE));
+  }
+
+  hasLost() {
+    const noCellsAvailable = this.availableCells.length === 0;
+
+    return noCellsAvailable && !this.isMovePossible();
   }
 }
+
+GameField.MAX_ROWS = 4;
+GameField.MAX_COLS = 4;
+GameField.WIN_SCORE = 2048;
+GameField.PROBABILITY = 0.9;
+GameField.INIT_VALUE_HIGH_PROBABILITY = 2;
+GameField.INIT_VALUE_LOW_PROBABILITY = 4;
 
 class Game {
   constructor() {
     this.field = new GameField();
-    this.score = 0;
     this.isWin = false;
   }
 
   start() {
     this.reset();
-    this.field.generateNewCell(2);
-    // this.updateInfo();
+    this.field.generateNewCells(2);
     this.render();
   }
 
   render() {
     this.field.render();
-    score.textContent = this.score;
   }
 
   reset() {
     this.field.reset();
-    this.score = 0;
 
     messageLose.classList.add('hidden');
     messageWin.classList.add('hidden');
@@ -186,31 +222,27 @@ class Game {
   }
 
   checkGameOver() {
-    if (this.isWin) {
+    if (this.field.hasWon()) {
       onGameOver();
 
       return;
     }
 
-    // no cells available AND there are no same cells next to each other
-    // so no more moves possible
-    if (this.field.availableCells.length === 0) {
+    if (this.field.hasLost()) {
       onGameOver(true);
     }
   }
 
   handleKeyDown(direction) {
-    if (this.field.tryMoveCells(direction)) {
-      this.field.generateNewCell();
-      this.checkGameOver();
-      this.render();
+    if (!this.field.tryMoveCells(direction)) {
+      return;
     }
+
+    this.field.generateNewCells();
+    this.checkGameOver();
+    this.render();
   }
 }
-
-Game.MAX_ROWS = 4;
-Game.MAX_COLS = 4;
-Game.WIN_SCORE = 2048;
 
 const game = new Game();
 
