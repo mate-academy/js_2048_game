@@ -92,19 +92,23 @@ function merge(first, second) {
   isCellsMoved = true;
 }
 
+function checkMerge(first, second, force) {
+  if (first.textContent === second.textContent
+    && first.textContent !== '') {
+    if (force) {
+      merge(first, second);
+    }
+  }
+}
+
 function mergeUp(force) {
   let isMerged = false;
 
   for (let c = 0; c < cells[0].length; c++) {
     for (let r = 0; r < cells.length - 1; r++) {
-      if (cells[r][c].textContent === cells[r + 1][c].textContent
-        && cells[r][c].textContent !== '') {
-        if (force) {
-          merge(cells[r][c], cells[r + 1][c]);
-        }
+      checkMerge(cells[r][c], cells[r + 1][c], force);
 
-        isMerged = true;
-      }
+      isMerged = true;
     }
   }
 
@@ -116,14 +120,9 @@ function mergeDown(force) {
 
   for (let c = 0; c < cells[0].length; c++) {
     for (let r = cells.length - 1; r > 0; r--) {
-      if (cells[r][c].textContent === cells[r - 1][c].textContent
-        && cells[r][c].textContent !== '') {
-        if (force) {
-          merge(cells[r][c], cells[r - 1][c]);
-        }
+      checkMerge(cells[r][c], cells[r - 1][c], force);
 
-        isMerged = true;
-      }
+      isMerged = true;
     }
   }
 
@@ -135,14 +134,9 @@ function mergeLeft(force) {
 
   for (let r = 0; r < cells.length; r++) {
     for (let c = 0; c < cells[r].length - 1; c++) {
-      if (cells[r][c].textContent === cells[r][c + 1].textContent
-        && cells[r][c].textContent !== '') {
-        if (force) {
-          merge(cells[r][c], cells[r][c + 1]);
-        }
+      checkMerge(cells[r][c], cells[r][c + 1], force);
 
-        isMerged = true;
-      }
+      isMerged = true;
     }
   }
 
@@ -154,14 +148,9 @@ function mergeRight(force) {
 
   for (let r = 0; r < cells.length; r++) {
     for (let c = cells[r].length - 1; c > 0; c--) {
-      if (cells[r][c].textContent === cells[r][c - 1].textContent
-        && cells[r][c].textContent !== '') {
-        if (force) {
-          merge(cells[r][c], cells[r][c - 1]);
-        }
+      checkMerge(cells[r][c], cells[r][c - 1], force);
 
-        isMerged = true;
-      }
+      isMerged = true;
     }
   }
 
