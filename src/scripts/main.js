@@ -2,6 +2,7 @@
 
 const button = document.querySelector('button');
 const gameField = document.querySelector('.game-field');
+const score = document.querySelector('.game-score');
 const cells = [];
 let isCellsMoved = false;
 
@@ -54,19 +55,25 @@ gameField.querySelectorAll('tr')
     cells.push(rowOfCells);
   });
 
+function merge(first, second) {
+  const nextNumber = +first.textContent * 2;
+
+  score.textContent = (+score.textContent + nextNumber).toString();
+
+  first.textContent = nextNumber;
+  first.classList.remove(first.classList.item(1));
+  first.classList.add('field-cell--' + nextNumber);
+
+  second.textContent = '';
+  second.classList.remove(second.classList.item(1));
+}
+
 function mergeUp() {
   for (let c = 0; c < cells[0].length; c++) {
     for (let r = 0; r < cells.length - 1; r++) {
       if (cells[r][c].textContent === cells[r + 1][c].textContent
         && cells[r][c].textContent !== '') {
-        const nextNumber = +cells[r][c].textContent * 2;
-
-        cells[r][c].textContent = nextNumber;
-        cells[r][c].classList.remove(cells[r][c].classList.item(1));
-        cells[r][c].classList.add('field-cell--' + nextNumber);
-
-        cells[r + 1][c].textContent = '';
-        cells[r + 1][c].classList.remove(cells[r + 1][c].classList.item(1));
+        merge(cells[r][c], cells[r + 1][c]);
       }
     }
   }
@@ -77,14 +84,7 @@ function mergeDown() {
     for (let r = cells.length - 1; r > 0; r--) {
       if (cells[r][c].textContent === cells[r - 1][c].textContent
         && cells[r][c].textContent !== '') {
-        const nextNumber = +cells[r][c].textContent * 2;
-
-        cells[r][c].textContent = nextNumber;
-        cells[r][c].classList.remove(cells[r][c].classList.item(1));
-        cells[r][c].classList.add('field-cell--' + nextNumber);
-
-        cells[r - 1][c].textContent = '';
-        cells[r - 1][c].classList.remove(cells[r - 1][c].classList.item(1));
+        merge(cells[r][c], cells[r - 1][c]);
       }
     }
   }
@@ -95,14 +95,7 @@ function mergeLeft() {
     for (let c = 0; c < cells[r].length - 1; c++) {
       if (cells[r][c].textContent === cells[r][c + 1].textContent
         && cells[r][c].textContent !== '') {
-        const nextNumber = +cells[r][c].textContent * 2;
-
-        cells[r][c].textContent = nextNumber;
-        cells[r][c].classList.remove(cells[r][c].classList.item(1));
-        cells[r][c].classList.add('field-cell--' + nextNumber);
-
-        cells[r][c + 1].textContent = '';
-        cells[r][c + 1].classList.remove(cells[r][c + 1].classList.item(1));
+        merge(cells[r][c], cells[r][c + 1]);
       }
     }
   }
@@ -113,14 +106,7 @@ function mergeRight() {
     for (let c = cells[r].length - 1; c > 0; c--) {
       if (cells[r][c].textContent === cells[r][c - 1].textContent
         && cells[r][c].textContent !== '') {
-        const nextNumber = +cells[r][c].textContent * 2;
-
-        cells[r][c].textContent = nextNumber;
-        cells[r][c].classList.remove(cells[r][c].classList.item(1));
-        cells[r][c].classList.add('field-cell--' + nextNumber);
-
-        cells[r][c - 1].textContent = '';
-        cells[r][c - 1].classList.remove(cells[r][c - 1].classList.item(1));
+        merge(cells[r][c], cells[r][c - 1]);
       }
     }
   }
