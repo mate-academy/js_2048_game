@@ -6,31 +6,7 @@ const cells = [];
 let isCellsMoved = false;
 
 const keydownListener = (ev) => {
-  switch (ev.key) {
-    case 'ArrowUp': {
-      moveCellsUp();
-
-      break;
-    }
-
-    case 'ArrowDown': {
-      moveCellsDown();
-
-      break;
-    }
-
-    case 'ArrowRight': {
-      moveCellsRight();
-
-      break;
-    }
-
-    case 'ArrowLeft': {
-      moveCellsLeft();
-
-      break;
-    }
-  }
+  moveCells(ev.key);
 
   if (isCellsMoved) {
     fillEmptyCell();
@@ -39,7 +15,7 @@ const keydownListener = (ev) => {
   }
 };
 
-button.addEventListener('click', ev => {
+button.addEventListener('click', () => {
   button.classList.toggle('start');
   button.classList.toggle('restart');
 
@@ -77,6 +53,114 @@ gameField.querySelectorAll('tr')
 
     cells.push(rowOfCells);
   });
+
+function mergeUp() {
+  for (let c = 0; c < cells[0].length; c++) {
+    for (let r = 0; r < cells.length - 1; r++) {
+      if (cells[r][c].textContent === cells[r + 1][c].textContent
+        && cells[r][c].textContent !== '') {
+        const nextNumber = +cells[r][c].textContent * 2;
+
+        cells[r][c].textContent = nextNumber;
+        cells[r][c].classList.remove(cells[r][c].classList.item(1));
+        cells[r][c].classList.add('field-cell--' + nextNumber);
+
+        cells[r + 1][c].textContent = '';
+        cells[r + 1][c].classList.remove(cells[r + 1][c].classList.item(1));
+      }
+    }
+  }
+}
+
+function mergeDown() {
+  for (let c = 0; c < cells[0].length; c++) {
+    for (let r = cells.length - 1; r > 0; r--) {
+      if (cells[r][c].textContent === cells[r - 1][c].textContent
+        && cells[r][c].textContent !== '') {
+        const nextNumber = +cells[r][c].textContent * 2;
+
+        cells[r][c].textContent = nextNumber;
+        cells[r][c].classList.remove(cells[r][c].classList.item(1));
+        cells[r][c].classList.add('field-cell--' + nextNumber);
+
+        cells[r - 1][c].textContent = '';
+        cells[r - 1][c].classList.remove(cells[r - 1][c].classList.item(1));
+      }
+    }
+  }
+}
+
+function mergeLeft() {
+  for (let r = 0; r < cells.length; r++) {
+    for (let c = 0; c < cells[r].length - 1; c++) {
+      if (cells[r][c].textContent === cells[r][c + 1].textContent
+        && cells[r][c].textContent !== '') {
+        const nextNumber = +cells[r][c].textContent * 2;
+
+        cells[r][c].textContent = nextNumber;
+        cells[r][c].classList.remove(cells[r][c].classList.item(1));
+        cells[r][c].classList.add('field-cell--' + nextNumber);
+
+        cells[r][c + 1].textContent = '';
+        cells[r][c + 1].classList.remove(cells[r][c + 1].classList.item(1));
+      }
+    }
+  }
+}
+
+function mergeRight() {
+  for (let r = 0; r < cells.length; r++) {
+    for (let c = cells[r].length - 1; c > 0; c--) {
+      if (cells[r][c].textContent === cells[r][c - 1].textContent
+        && cells[r][c].textContent !== '') {
+        const nextNumber = +cells[r][c].textContent * 2;
+
+        cells[r][c].textContent = nextNumber;
+        cells[r][c].classList.remove(cells[r][c].classList.item(1));
+        cells[r][c].classList.add('field-cell--' + nextNumber);
+
+        cells[r][c - 1].textContent = '';
+        cells[r][c - 1].classList.remove(cells[r][c - 1].classList.item(1));
+      }
+    }
+  }
+}
+
+function moveCells(key) {
+  switch (key) {
+    case 'ArrowUp': {
+      moveCellsUp();
+      mergeUp();
+      moveCellsUp();
+
+      break;
+    }
+
+    case 'ArrowDown': {
+      moveCellsDown();
+      mergeDown();
+      moveCellsDown();
+
+      break;
+    }
+
+    case 'ArrowRight': {
+      moveCellsRight();
+      mergeRight();
+      moveCellsRight();
+
+      break;
+    }
+
+    case 'ArrowLeft': {
+      moveCellsLeft();
+      mergeLeft();
+      moveCellsLeft();
+
+      break;
+    }
+  }
+}
 
 function moveCellsLeft() {
   for (let c = 1; c < cells[0].length; c++) {
