@@ -14,6 +14,11 @@ const keydownListener = (ev) => {
     fillEmptyCell();
 
     isCellsMoved = false;
+  } else {
+    if (!checkNextMovePossibility()) {
+      document.querySelector('.message-lose')
+        .classList.toggle('hidden', false);
+    }
   }
 };
 
@@ -42,6 +47,12 @@ button.addEventListener('click', () => {
 
   document.querySelector('.message-start')
     .classList.toggle('hidden');
+
+  document.querySelector('.message-lose')
+    .classList.toggle('hidden', true);
+
+  document.querySelector('.message-win')
+    .classList.toggle('hidden', true);
 });
 
 gameField.querySelectorAll('tr')
@@ -55,6 +66,14 @@ gameField.querySelectorAll('tr')
 
     cells.push(rowOfCells);
   });
+
+function checkNextMovePossibility() {
+  return (getEmptyCells().length !== 0)
+    || mergeUp()
+    || mergeLeft()
+    || mergeDown()
+    || mergeRight();
+}
 
 function merge(first, second) {
   const nextNum = +first.textContent * 2;
@@ -71,51 +90,67 @@ function merge(first, second) {
 
   if (nextNum === 2048) {
     document.querySelector('.message-win')
-      .classList.toggle('hidden', true);
+      .classList.toggle('hidden', false);
   }
 
   isCellsMoved = true;
 }
 
-function mergeUp() {
+function mergeUp(force) {
   for (let c = 0; c < cells[0].length; c++) {
     for (let r = 0; r < cells.length - 1; r++) {
       if (cells[r][c].textContent === cells[r + 1][c].textContent
         && cells[r][c].textContent !== '') {
-        merge(cells[r][c], cells[r + 1][c]);
+        if (force) {
+          merge(cells[r][c], cells[r + 1][c]);
+        }
+
+        return true;
       }
     }
   }
 }
 
-function mergeDown() {
+function mergeDown(force) {
   for (let c = 0; c < cells[0].length; c++) {
     for (let r = cells.length - 1; r > 0; r--) {
       if (cells[r][c].textContent === cells[r - 1][c].textContent
         && cells[r][c].textContent !== '') {
-        merge(cells[r][c], cells[r - 1][c]);
+        if (force) {
+          merge(cells[r][c], cells[r - 1][c]);
+        }
+
+        return true;
       }
     }
   }
 }
 
-function mergeLeft() {
+function mergeLeft(force) {
   for (let r = 0; r < cells.length; r++) {
     for (let c = 0; c < cells[r].length - 1; c++) {
       if (cells[r][c].textContent === cells[r][c + 1].textContent
         && cells[r][c].textContent !== '') {
-        merge(cells[r][c], cells[r][c + 1]);
+        if (force) {
+          merge(cells[r][c], cells[r][c + 1]);
+        }
+
+        return true;
       }
     }
   }
 }
 
-function mergeRight() {
+function mergeRight(force) {
   for (let r = 0; r < cells.length; r++) {
     for (let c = cells[r].length - 1; c > 0; c--) {
       if (cells[r][c].textContent === cells[r][c - 1].textContent
         && cells[r][c].textContent !== '') {
-        merge(cells[r][c], cells[r][c - 1]);
+        if (force) {
+          merge(cells[r][c], cells[r][c - 1]);
+        }
+
+        return true;
       }
     }
   }
@@ -125,7 +160,7 @@ function moveCells(key) {
   switch (key) {
     case 'ArrowUp': {
       moveCellsUp();
-      mergeUp();
+      mergeUp(true);
       moveCellsUp();
 
       break;
@@ -133,7 +168,7 @@ function moveCells(key) {
 
     case 'ArrowDown': {
       moveCellsDown();
-      mergeDown();
+      mergeDown(true);
       moveCellsDown();
 
       break;
@@ -141,7 +176,7 @@ function moveCells(key) {
 
     case 'ArrowRight': {
       moveCellsRight();
-      mergeRight();
+      mergeRight(true);
       moveCellsRight();
 
       break;
@@ -149,7 +184,7 @@ function moveCells(key) {
 
     case 'ArrowLeft': {
       moveCellsLeft();
-      mergeLeft();
+      mergeLeft(true);
       moveCellsLeft();
 
       break;
