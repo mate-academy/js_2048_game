@@ -97,6 +97,8 @@ function merge(first, second) {
 }
 
 function mergeUp(force) {
+  let isMerged = false;
+
   for (let c = 0; c < cells[0].length; c++) {
     for (let r = 0; r < cells.length - 1; r++) {
       if (cells[r][c].textContent === cells[r + 1][c].textContent
@@ -105,13 +107,17 @@ function mergeUp(force) {
           merge(cells[r][c], cells[r + 1][c]);
         }
 
-        return true;
+        isMerged = true;
       }
     }
   }
+
+  return isMerged;
 }
 
 function mergeDown(force) {
+  let isMerged = false;
+
   for (let c = 0; c < cells[0].length; c++) {
     for (let r = cells.length - 1; r > 0; r--) {
       if (cells[r][c].textContent === cells[r - 1][c].textContent
@@ -120,13 +126,17 @@ function mergeDown(force) {
           merge(cells[r][c], cells[r - 1][c]);
         }
 
-        return true;
+        isMerged = true;
       }
     }
   }
+
+  return isMerged;
 }
 
 function mergeLeft(force) {
+  let isMerged = false;
+
   for (let r = 0; r < cells.length; r++) {
     for (let c = 0; c < cells[r].length - 1; c++) {
       if (cells[r][c].textContent === cells[r][c + 1].textContent
@@ -135,13 +145,17 @@ function mergeLeft(force) {
           merge(cells[r][c], cells[r][c + 1]);
         }
 
-        return true;
+        isMerged = true;
       }
     }
   }
+
+  return isMerged;
 }
 
 function mergeRight(force) {
+  let isMerged = false;
+
   for (let r = 0; r < cells.length; r++) {
     for (let c = cells[r].length - 1; c > 0; c--) {
       if (cells[r][c].textContent === cells[r][c - 1].textContent
@@ -150,10 +164,12 @@ function mergeRight(force) {
           merge(cells[r][c], cells[r][c - 1]);
         }
 
-        return true;
+        isMerged = true;
       }
     }
   }
+
+  return isMerged;
 }
 
 function moveCells(key) {
