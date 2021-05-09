@@ -2,9 +2,10 @@
 
 const button = document.querySelector('button');
 const gameField = document.querySelector('.game-field');
-const score = document.querySelector('.game-score');
+const scoreElement = document.querySelector('.game-score');
 const cells = [];
 let isCellsMoved = false;
+let score = 0;
 
 const keydownListener = (ev) => {
   moveCells(ev.key);
@@ -56,16 +57,24 @@ gameField.querySelectorAll('tr')
   });
 
 function merge(first, second) {
-  const nextNumber = +first.textContent * 2;
+  const nextNum = +first.textContent * 2;
 
-  score.textContent = (+score.textContent + nextNumber).toString();
+  score += nextNum;
+  scoreElement.textContent = score.toString();
 
-  first.textContent = nextNumber;
+  first.textContent = nextNum;
   first.classList.remove(first.classList.item(1));
-  first.classList.add('field-cell--' + nextNumber);
+  first.classList.add('field-cell--' + nextNum);
 
   second.textContent = '';
   second.classList.remove(second.classList.item(1));
+
+  if (nextNum === 2048) {
+    document.querySelector('.message-win')
+      .classList.toggle('hidden', true);
+  }
+
+  isCellsMoved = true;
 }
 
 function mergeUp() {
@@ -232,8 +241,11 @@ function fillEmptyCell() {
 }
 
 function fillCell2(cell) {
-  cell.classList.toggle('field-cell--2');
-  cell.textContent = 2;
+  const twosAndFour = [4, 2, 2, 2, 2, 2, 2, 2, 2, 2];
+  const randomNumber = twosAndFour[getRandomNumberInRangeInclude(0, 9)];
+
+  cell.classList.toggle('field-cell--' + randomNumber);
+  cell.textContent = randomNumber;
 }
 
 function getEmptyCells() {
