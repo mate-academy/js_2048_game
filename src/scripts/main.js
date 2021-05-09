@@ -3,80 +3,39 @@
 const button = document.querySelector('button');
 const gameField = document.querySelector('.game-field');
 const cells = [];
+let isCellsMoved = false;
 
 const keydownListener = (ev) => {
   switch (ev.key) {
     case 'ArrowUp': {
-      for (let r = 1; r < cells.length; r++) {
-        for (let c = 0; c < cells[r].length; c++) {
-          if (cells[r][c].classList.length > 1) {
-            for (let subR = 0; subR < r; subR++) {
-              if (cells[subR][c].classList.length === 1) {
-                swapCells(cells[r][c], cells[subR][c]);
-
-                break;
-              }
-            }
-          }
-        }
-      }
+      moveCellsUp();
 
       break;
     }
 
     case 'ArrowDown': {
-      for (let r = cells.length - 2; r >= 0; r--) {
-        for (let c = 0; c < cells[r].length; c++) {
-          if (cells[r][c].classList.length > 1) {
-            for (let subR = cells.length - 1; subR > r; subR--) {
-              if (cells[subR][c].classList.length === 1) {
-                swapCells(cells[r][c], cells[subR][c]);
-
-                break;
-              }
-            }
-          }
-        }
-      }
+      moveCellsDown();
 
       break;
     }
 
     case 'ArrowRight': {
-      for (let c = cells[0].length - 2; c >= 0; c--) {
-        for (let r = 0; r < cells.length; r++) {
-          if (cells[r][c].classList.length > 1) {
-            for (let subC = cells[r].length - 1; subC > c; subC--) {
-              if (cells[r][subC].classList.length === 1) {
-                swapCells(cells[r][c], cells[r][subC]);
-
-                break;
-              }
-            }
-          }
-        }
-      }
+      moveCellsRight();
 
       break;
     }
 
     case 'ArrowLeft': {
-      for (let c = 1; c < cells[0].length; c++) {
-        for (let r = 0; r < cells.length; r++) {
-          if (cells[r][c].classList.length > 1) {
-            for (let subC = 0; subC < c; subC++) {
-              if (cells[r][subC].classList.length === 1) {
-                swapCells(cells[r][c], cells[r][subC]);
-
-                break;
-              }
-            }
-          }
-        }
-      }
+      moveCellsLeft();
 
       break;
     }
+  }
+
+  if (isCellsMoved) {
+    fillEmptyCell();
+
+    isCellsMoved = false;
   }
 };
 
@@ -119,6 +78,70 @@ gameField.querySelectorAll('tr')
     cells.push(rowOfCells);
   });
 
+function moveCellsLeft() {
+  for (let c = 1; c < cells[0].length; c++) {
+    for (let r = 0; r < cells.length; r++) {
+      if (cells[r][c].classList.length > 1) {
+        for (let subC = 0; subC < c; subC++) {
+          if (cells[r][subC].classList.length === 1) {
+            swapCells(cells[r][c], cells[r][subC]);
+
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+function moveCellsRight() {
+  for (let c = cells[0].length - 2; c >= 0; c--) {
+    for (let r = 0; r < cells.length; r++) {
+      if (cells[r][c].classList.length > 1) {
+        for (let subC = cells[r].length - 1; subC > c; subC--) {
+          if (cells[r][subC].classList.length === 1) {
+            swapCells(cells[r][c], cells[r][subC]);
+
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+function moveCellsUp() {
+  for (let r = 1; r < cells.length; r++) {
+    for (let c = 0; c < cells[r].length; c++) {
+      if (cells[r][c].classList.length > 1) {
+        for (let subR = 0; subR < r; subR++) {
+          if (cells[subR][c].classList.length === 1) {
+            swapCells(cells[r][c], cells[subR][c]);
+
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+function moveCellsDown() {
+  for (let r = cells.length - 2; r >= 0; r--) {
+    for (let c = 0; c < cells[r].length; c++) {
+      if (cells[r][c].classList.length > 1) {
+        for (let subR = cells.length - 1; subR > r; subR--) {
+          if (cells[subR][c].classList.length === 1) {
+            swapCells(cells[r][c], cells[subR][c]);
+
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
 function swapCells(first, second) {
   const cellClass = first.classList.item(1);
 
@@ -126,6 +149,8 @@ function swapCells(first, second) {
   first.classList.remove(cellClass);
   second.textContent = first.textContent;
   first.textContent = '';
+
+  isCellsMoved = true;
 }
 
 function fillEmptyCell() {
