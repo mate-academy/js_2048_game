@@ -3,6 +3,8 @@
 const button = document.querySelector('button');
 const gameField = document.querySelector('.game-field');
 const scoreElement = document.querySelector('.game-score');
+const loseMessage = document.querySelector('.message-lose');
+const winMessage = document.querySelector('.message-win');
 const cells = [];
 let isCellsMoved = false;
 let score = 0;
@@ -16,8 +18,7 @@ const keydownListener = (ev) => {
     isCellsMoved = false;
   } else {
     if (!checkNextMovePossibility()) {
-      document.querySelector('.message-lose')
-        .classList.toggle('hidden', false);
+      loseMessage.classList.toggle('hidden', false);
     }
   }
 };
@@ -47,12 +48,8 @@ button.addEventListener('click', () => {
 
   document.querySelector('.message-start')
     .classList.toggle('hidden');
-
-  document.querySelector('.message-lose')
-    .classList.toggle('hidden', true);
-
-  document.querySelector('.message-win')
-    .classList.toggle('hidden', true);
+  loseMessage.classList.toggle('hidden', true);
+  winMessage.classList.toggle('hidden', true);
 });
 
 gameField.querySelectorAll('tr')
@@ -89,8 +86,7 @@ function merge(first, second) {
   second.classList.remove(second.classList.item(1));
 
   if (nextNum === 2048) {
-    document.querySelector('.message-win')
-      .classList.toggle('hidden', false);
+    winMessage.classList.toggle('hidden', false);
   }
 
   isCellsMoved = true;
