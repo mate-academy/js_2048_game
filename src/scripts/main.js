@@ -7,12 +7,12 @@ const cells = [];
 const keydownListener = (ev) => {
   switch (ev.key) {
     case 'ArrowUp': {
-      for (let i = 1; i < cells.length; i++) {
-        for (let j = 0; j < cells[i].length; j++) {
-          if (cells[i][j].classList.length > 1) {
-            for (let k = 0; k < i; k++) {
-              if (cells[k][j].classList.length === 1) {
-                swapCells(cells[i][j], cells[k][j]);
+      for (let r = 1; r < cells.length; r++) {
+        for (let c = 0; c < cells[r].length; c++) {
+          if (cells[r][c].classList.length > 1) {
+            for (let subR = 0; subR < r; subR++) {
+              if (cells[subR][c].classList.length === 1) {
+                swapCells(cells[r][c], cells[subR][c]);
 
                 break;
               }
@@ -25,12 +25,12 @@ const keydownListener = (ev) => {
     }
 
     case 'ArrowDown': {
-      for (let i = cells.length - 2; i >= 0; i--) {
-        for (let j = 0; j < cells[i].length; j++) {
-          if (cells[i][j].classList.length > 1) {
-            for (let k = cells.length - 1; k > i; k--) {
-              if (cells[k][j].classList.length === 1) {
-                swapCells(cells[i][j], cells[k][j]);
+      for (let r = cells.length - 2; r >= 0; r--) {
+        for (let c = 0; c < cells[r].length; c++) {
+          if (cells[r][c].classList.length > 1) {
+            for (let subR = cells.length - 1; subR > r; subR--) {
+              if (cells[subR][c].classList.length === 1) {
+                swapCells(cells[r][c], cells[subR][c]);
 
                 break;
               }
@@ -43,10 +43,38 @@ const keydownListener = (ev) => {
     }
 
     case 'ArrowRight': {
+      for (let c = cells[0].length - 2; c >= 0; c--) {
+        for (let r = 0; r < cells.length; r++) {
+          if (cells[r][c].classList.length > 1) {
+            for (let subC = cells[r].length - 1; subC > c; subC--) {
+              if (cells[r][subC].classList.length === 1) {
+                swapCells(cells[r][c], cells[r][subC]);
+
+                break;
+              }
+            }
+          }
+        }
+      }
+
       break;
     }
 
     case 'ArrowLeft': {
+      for (let c = 1; c < cells[0].length; c++) {
+        for (let r = 0; r < cells.length; r++) {
+          if (cells[r][c].classList.length > 1) {
+            for (let subC = 0; subC < c; subC++) {
+              if (cells[r][subC].classList.length === 1) {
+                swapCells(cells[r][c], cells[r][subC]);
+
+                break;
+              }
+            }
+          }
+        }
+      }
+
       break;
     }
   }
