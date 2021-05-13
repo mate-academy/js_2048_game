@@ -5,9 +5,11 @@ const gameField = document.querySelector('.game-field');
 const scoreElement = document.querySelector('.game-score');
 const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
-const cells = [];
+let cells;
 let isCellsMoved = false;
 let score = 0;
+
+initGameField();
 
 const keydownListener = (ev) => {
   moveCells(ev.key);
@@ -21,6 +23,8 @@ const keydownListener = (ev) => {
       loseMessage.classList.toggle('hidden', false);
     }
   }
+
+  updateHtmlGameField();
 };
 
 button.addEventListener('click', () => {
@@ -30,11 +34,10 @@ button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
     button.textContent = 'Start';
 
-    document.querySelectorAll('td')
-      .forEach(cell => {
-        cell.classList.remove(cell.classList.item(1));
-        cell.textContent = '';
-      });
+    initGameField();
+
+    score = 0;
+    scoreElement.textContent = '0';
 
     document.removeEventListener('keydown', keydownListener);
   } else {
@@ -46,23 +49,52 @@ button.addEventListener('click', () => {
     document.addEventListener('keydown', keydownListener);
   }
 
+  updateHtmlGameField();
+
   document.querySelector('.message-start')
     .classList.toggle('hidden');
   loseMessage.classList.toggle('hidden', true);
   winMessage.classList.toggle('hidden', true);
 });
 
-gameField.querySelectorAll('tr')
-  .forEach(row => {
-    const rowOfCells = [];
+function updateHtmlGameField() {
+  const tbody = document.createElement('tbody');
 
-    row.querySelectorAll('td')
-      .forEach(cell => {
-        rowOfCells.push(cell);
-      });
+  for (let i = 0; i < 4; i++) {
+    const tr = document.createElement('tr');
 
-    cells.push(rowOfCells);
-  });
+    tr.classList.add('field-row');
+
+    for (let j = 0; j < 4; j++) {
+      const td = document.createElement('td');
+
+      td.classList.add('field-cell');
+      td.textContent = cells[i][j];
+
+      if (cells[i][j]) {
+        td.classList.add('field-cell--' + cells[i][j]);
+      }
+
+      tr.appendChild(td);
+    }
+
+    tbody.appendChild(tr);
+  }
+
+  gameField.replaceChild(tbody, gameField.firstElementChild);
+}
+
+function initGameField() {
+  cells = [];
+
+  for (let i = 0; i < 4; i++) {
+    cells.push([]);
+
+    for (let j = 0; j < 4; j++) {
+      cells[i][j] = '';
+    }
+  }
+}
 
 function checkNextMovePossibility() {
   return (getEmptyCells().length !== 0)
@@ -72,18 +104,14 @@ function checkNextMovePossibility() {
     || mergeRight();
 }
 
-function merge(first, second) {
-  const nextNum = +first.textContent * 2;
+function merge(i0, j0, i1, j1) {
+  const nextNum = +cells[i0][j0] * 2;
 
   score += nextNum;
   scoreElement.textContent = score.toString();
 
-  first.textContent = nextNum;
-  first.classList.remove(first.classList.item(1));
-  first.classList.add('field-cell--' + nextNum);
-
-  second.textContent = '';
-  second.classList.remove(second.classList.item(1));
+  cells[i0][j0] = nextNum;
+  cells[i1][j1] = '';
 
   if (nextNum === 2048) {
     winMessage.classList.toggle('hidden', false);
@@ -97,10 +125,10 @@ function mergeUp(force) {
 
   for (let c = 0; c < cells[0].length; c++) {
     for (let r = 0; r < cells.length - 1; r++) {
-      if (cells[r][c].textContent === cells[r + 1][c].textContent
-        && cells[r][c].textContent !== '') {
+      if (cells[r][c] === cells[r + 1][c]
+        && cells[r][c] !== '') {
         if (force) {
-          merge(cells[r][c], cells[r + 1][c]);
+          merge(r, c, r + 1, c);
         }
 
         isMerged = true;
@@ -116,10 +144,10 @@ function mergeDown(force) {
 
   for (let c = 0; c < cells[0].length; c++) {
     for (let r = cells.length - 1; r > 0; r--) {
-      if (cells[r][c].textContent === cells[r - 1][c].textContent
-        && cells[r][c].textContent !== '') {
+      if (cells[r][c] === cells[r - 1][c]
+        && cells[r][c] !== '') {
         if (force) {
-          merge(cells[r][c], cells[r - 1][c]);
+          merge(r, c, r - 1, c);
         }
 
         isMerged = true;
@@ -135,10 +163,10 @@ function mergeLeft(force) {
 
   for (let r = 0; r < cells.length; r++) {
     for (let c = 0; c < cells[r].length - 1; c++) {
-      if (cells[r][c].textContent === cells[r][c + 1].textContent
-        && cells[r][c].textContent !== '') {
+      if (cells[r][c] === cells[r][c + 1]
+        && cells[r][c] !== '') {
         if (force) {
-          merge(cells[r][c], cells[r][c + 1]);
+          merge(r, c, r, c + 1);
         }
 
         isMerged = true;
@@ -154,10 +182,10 @@ function mergeRight(force) {
 
   for (let r = 0; r < cells.length; r++) {
     for (let c = cells[r].length - 1; c > 0; c--) {
-      if (cells[r][c].textContent === cells[r][c - 1].textContent
-        && cells[r][c].textContent !== '') {
+      if (cells[r][c] === cells[r][c - 1]
+        && cells[r][c] !== '') {
         if (force) {
-          merge(cells[r][c], cells[r][c - 1]);
+          merge(r, c, r, c - 1);
         }
 
         isMerged = true;
@@ -207,10 +235,10 @@ function moveCells(key) {
 function moveCellsLeft() {
   for (let c = 1; c < cells[0].length; c++) {
     for (let r = 0; r < cells.length; r++) {
-      if (cells[r][c].classList.length > 1) {
+      if (cells[r][c] !== '') {
         for (let subC = 0; subC < c; subC++) {
-          if (cells[r][subC].classList.length === 1) {
-            swapCells(cells[r][c], cells[r][subC]);
+          if (cells[r][subC] === '') {
+            swapCells(r, c, r, subC);
 
             break;
           }
@@ -223,10 +251,10 @@ function moveCellsLeft() {
 function moveCellsRight() {
   for (let c = cells[0].length - 2; c >= 0; c--) {
     for (let r = 0; r < cells.length; r++) {
-      if (cells[r][c].classList.length > 1) {
+      if (cells[r][c] !== '') {
         for (let subC = cells[r].length - 1; subC > c; subC--) {
-          if (cells[r][subC].classList.length === 1) {
-            swapCells(cells[r][c], cells[r][subC]);
+          if (cells[r][subC] === '') {
+            swapCells(r, c, r, subC);
 
             break;
           }
@@ -239,10 +267,10 @@ function moveCellsRight() {
 function moveCellsUp() {
   for (let r = 1; r < cells.length; r++) {
     for (let c = 0; c < cells[r].length; c++) {
-      if (cells[r][c].classList.length > 1) {
+      if (cells[r][c] !== '') {
         for (let subR = 0; subR < r; subR++) {
-          if (cells[subR][c].classList.length === 1) {
-            swapCells(cells[r][c], cells[subR][c]);
+          if (cells[subR][c] === '') {
+            swapCells(r, c, subR, c);
 
             break;
           }
@@ -255,10 +283,10 @@ function moveCellsUp() {
 function moveCellsDown() {
   for (let r = cells.length - 2; r >= 0; r--) {
     for (let c = 0; c < cells[r].length; c++) {
-      if (cells[r][c].classList.length > 1) {
+      if (cells[r][c] !== '') {
         for (let subR = cells.length - 1; subR > r; subR--) {
-          if (cells[subR][c].classList.length === 1) {
-            swapCells(cells[r][c], cells[subR][c]);
+          if (cells[subR][c] === '') {
+            swapCells(r, c, subR, c);
 
             break;
           }
@@ -268,13 +296,11 @@ function moveCellsDown() {
   }
 }
 
-function swapCells(first, second) {
-  const cellClass = first.classList.item(1);
+function swapCells(i0, j0, i1, j1) {
+  const a = cells[i0][j0];
 
-  second.classList.add(cellClass);
-  first.classList.remove(cellClass);
-  second.textContent = first.textContent;
-  first.textContent = '';
+  cells[i0][j0] = cells[i1][j1];
+  cells[i1][j1] = a;
 
   isCellsMoved = true;
 }
@@ -284,26 +310,28 @@ function fillEmptyCell() {
   const numOfCell = getRandomNumberInRangeInclude(0, emptyCells.length - 1);
   const cell = emptyCells[numOfCell];
 
-  fillCell2(cell);
+  cells[cell.row][cell.cell] = get2Or4();
 }
 
-function fillCell2(cell) {
+function get2Or4() {
   const twosAndFour = [4, 2, 2, 2, 2, 2, 2, 2, 2, 2];
-  const randomNumber = twosAndFour[getRandomNumberInRangeInclude(0, 9)];
 
-  cell.classList.toggle('field-cell--' + randomNumber);
-  cell.textContent = randomNumber;
+  return twosAndFour[getRandomNumberInRangeInclude(0, 9)];
 }
 
 function getEmptyCells() {
   const emptyCells = [];
 
-  document.querySelectorAll('td')
-    .forEach(cell => {
-      if (cell.classList.length === 1) {
-        emptyCells.push(cell);
+  for (let i = 0; i < cells.length; i++) {
+    for (let j = 0; j < cells[i].length; j++) {
+      if (cells[i][j] === '') {
+        emptyCells.push({
+          row: i,
+          cell: j,
+        });
       }
-    });
+    }
+  }
 
   return emptyCells;
 }
