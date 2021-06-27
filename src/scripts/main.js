@@ -38,21 +38,16 @@ const changeCellValue = (numberChange,
 };
 
 const loseGame = () => {
-  messageFooter.querySelector('.message-lose').hidden = false;
+  root.querySelector('.message-lose').classList.remove('hidden');
 };
 
-let winner = false;
-
 const winnGame = () => {
-  if (!winner) {
-    messageFooter.querySelector('.message-win').hidden = false;
-    winner = true;
-  }
+  root.querySelector('.message-win').classList.remove('hidden');
 };
 
 const startGame = () => {
   btnStart.textContent = 'Restart';
-  winner = false;
+  btnStart.classList.add('restart');
   gameScore.textContent = 0;
 
   [...allCellField].map(cell => {
@@ -63,81 +58,35 @@ const startGame = () => {
   changeCellValue(2);
 
   [...messageFooter.children].map(message => {
-    message.hidden = true;
+    message.classList.add('hidden');
   });
 };
 
 btnStart.addEventListener('click', () => startGame());
 
-let mergeCells = '';
-
-const validateCells = (prevCell, nextCell) => {
-  return (!prevCell.classList.contains('notFree')
-    && nextCell.classList.contains('notFree'))
-    || (prevCell.textContent === nextCell.textContent
-    && !!prevCell.textContent && prevCell !== mergeCells
-    && nextCell !== mergeCells);
-};
-
-const sortCellssField = (arr) => {
-  mergeCells = '';
-
-  let change = true;
-
-  const changeCellsClass = (giveClassCell, takeClassCell) => {
-    if (giveClassCell.textContent === takeClassCell.textContent) {
-      giveClassCell.textContent = +takeClassCell.textContent * 2;
-
-      gameScore.textContent = +gameScore.textContent
-      + (+giveClassCell.textContent);
-
-      if (giveClassCell.textContent === '2048') {
-        winnGame();
-      }
-
-      giveClassCell.className = `
-      field-cell notFree field-cell--${giveClassCell.textContent}`;
-      mergeCells = giveClassCell;
-    } else {
-      giveClassCell.textContent = takeClassCell.textContent;
-      giveClassCell.className = takeClassCell.className;
-    }
-
-    takeClassCell.textContent = '';
-    takeClassCell.className = 'field-cell';
-  };
-
-  for (; change;) {
-    change = false;
-
-    for (let i = 1; i < arr.length; i++) {
-      if (validateCells(arr[i - 1], arr[i])) {
-        changeCellsClass(arr[i - 1], arr[i]);
-        change = true;
-      }
-    }
-  }
-};
-
-const possibilityMove = (arr) => {
-  for (let i = 1; i < arr.length; i++) {
-    if (validateCells(arr[i - 1], arr[i])) {
+const possibilityMove = () => {
+  for (let i = 0; i < allCellField.length; i++) {
+    if (allCellField[i].textContent === '') {
       return true;
     }
   }
 
-  return false;
-};
-
-const validMove = () => {
   for (let i = 1; i <= allRowsField.length; i++) {
     const arrCellListColumn = root.querySelectorAll(`tr :nth-child(${i})`);
     const arrCellListRows = allRowsField[i - 1].children;
 
-    if (possibilityMove(arrCellListColumn)
-      || possibilityMove([...arrCellListColumn].reverse())
-      || possibilityMove(arrCellListRows)
-      || possibilityMove([...arrCellListRows].reverse())) {
+    const valid = (arr) => {
+      for (let count = 1; i < arr.length; i++) {
+        if (arr[count - 1].textContent === arr[count].textContent
+          && arr[count].textContent) {
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    if (valid(arrCellListColumn) || valid(arrCellListRows)) {
       return true;
     }
   }
@@ -145,10 +94,59 @@ const validMove = () => {
   return false;
 };
 
+let validMove = false;
+
+function move(arrCell) {
+  const newArr = [...arrCell].map((cell) => cell.textContent);
+
+  const arrNotFreeCell = [...arrCell].filter((cell) => {
+    cell.classList.contains('notFree');
+  });
+
+  for (let i = 0; i < arrCell.length; i++) {
+    if (i >= arrNotFreeCell.length) {
+      arrCell[i].textContent = '';
+      arrCell[i].className = 'field-cell';
+      continue;
+    }
+
+    arrCell[i].textContent = arrNotFreeCell[i].textContent;
+    arrCell[i].className = arrNotFreeCell[i].className;
+  }
+
+  [...arrCell].map((cell) => cell.textContent).map((cell, index) => {
+    if (cell !== newArr[index]) {
+      validMove = true;
+    }
+  });
+};
+
+function merge(arrCell) {
+  for (let i = 1; i < arrCell.length; i++) {
+    if (arrCell[i - 1].textContent === arrCell[i].textContent
+      && arrCell[i].textContent) {
+      arrCell[i - 1].textContent = +arrCell[i].textContent * 2;
+
+      gameScore.textContent = +gameScore.textContent
+      + (+arrCell[i - 1].textContent);
+
+      if (arrCell[i - 1].textContent === '2048') {
+        winnGame();
+      }
+
+      arrCell[i - 1].className = `
+            field-cell notFree field-cell--${arrCell[i - 1].textContent}`;
+      arrCell[i].textContent = '';
+      arrCell[i].className = 'field-cell';
+      validMove = true;
+    }
+  }
+}
+
 window.addEventListener('keydown', (e) => {
   if (e.code === 'ArrowUp' || e.code === 'ArrowDown'
   || e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
-    let nextMove = false;
+    validMove = false;
 
     for (let i = 1; i <= allRowsField.length; i++) {
       const arrCellListColumn = root.querySelectorAll(`tr :nth-child(${i})`);
@@ -156,43 +154,37 @@ window.addEventListener('keydown', (e) => {
 
       switch (e.code) {
         case 'ArrowUp':
-          if (possibilityMove(arrCellListColumn)) {
-            sortCellssField(arrCellListColumn);
-            nextMove = true;
-          }
+          move(arrCellListColumn);
+          merge(arrCellListColumn);
+          move(arrCellListColumn);
           break;
 
         case 'ArrowDown':
-          if (possibilityMove([...arrCellListColumn].reverse())) {
-            sortCellssField([...arrCellListColumn].reverse());
-            nextMove = true;
-          }
+          move([...arrCellListColumn].reverse());
+          merge([...arrCellListColumn].reverse());
+          move([...arrCellListColumn].reverse());
           break;
 
         case 'ArrowLeft':
-          if (possibilityMove(arrCellListRows)) {
-            sortCellssField(arrCellListRows);
-            nextMove = true;
-          }
+          move(arrCellListRows);
+          merge(arrCellListRows);
+          move(arrCellListRows);
           break;
 
         case 'ArrowRight':
-          if (possibilityMove([...arrCellListRows].reverse())) {
-            sortCellssField([...arrCellListRows].reverse());
-            nextMove = true;
-          }
+          move([...arrCellListRows].reverse());
+          merge([...arrCellListRows].reverse());
+          move([...arrCellListRows].reverse());
           break;
       }
     }
 
-    if (!validMove()) {
+    if (!possibilityMove()) {
       loseGame();
     }
 
-    if (!nextMove) {
-      return;
+    if (validMove) {
+      changeCellValue(1);
     }
-
-    changeCellValue(1);
   }
 });
