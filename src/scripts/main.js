@@ -100,7 +100,7 @@ function move(arrCell) {
   const newArr = [...arrCell].map((cell) => cell.textContent);
 
   const arrNotFreeCell = [...arrCell].filter((cell) => {
-    cell.classList.contains('notFree');
+    return cell.classList.contains('notFree');
   });
 
   for (let i = 0; i < arrCell.length; i++) {
