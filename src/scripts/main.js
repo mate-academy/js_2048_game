@@ -1,48 +1,90 @@
 'use strict';
 
-// write your code here
 const root = document.querySelector('.container');
 
-const allCellField = root.querySelectorAll('tbody td');
 const allRowsField = root.querySelectorAll('tbody tr');
 const btnStart = root.querySelector('.start');
 const messageFooter = root.querySelector('.message-container');
 const gameScore = root.querySelector('.game-score');
+const widthField = allRowsField[0].children.length;
 
-const randomNumber = (min = 0, max = 15) => {
-  return Math.ceil(Math.random() * (max - min) + min);
-};
+const field = [];
 
-const changeCellValue = (numberChange,
-  cellsField = root.querySelectorAll('tbody td:not(.notFree)')) => {
-  let randomStart = randomNumber();
+const createarrField = (arr, column) => {
+  for (let m = 0; m < column; m++) {
+    arr.push([]);
 
-  for (let i = 0; i < numberChange; i++) {
-    let random = randomNumber(0, cellsField.length - 1);
+    for (let i = 0; i < widthField; i++) {
+      arr[m].push([]);
 
-    for (; random === randomStart;) {
-      random = randomNumber(0, cellsField.length - 1);
+      for (let count = 0; count < widthField; count++) {
+        arr[m][i].push('');
+      }
     }
-
-    if (!cellsField[random]) {
-      return;
-    }
-
-    const valueCell = randomNumber(0, 10) > 9 ? 4 : 2;
-
-    cellsField[random].className = `
-    field-cell field-cell--${valueCell} notFree`;
-    cellsField[random].textContent = valueCell;
-    randomStart = random;
   }
 };
 
-const loseGame = () => {
-  root.querySelector('.message-lose').classList.remove('hidden');
+createarrField(field, 2);
+
+const updateHtml = () => {
+  for (let i = 1; i <= widthField; i++) {
+    [...root.querySelectorAll(`tr :nth-child(${i})`)].map((cell, index) => {
+      cell.textContent = field[1][i - 1][index];
+      cell.className = `field-cell field-cell--${cell.textContent}`;
+    });
+  }
 };
 
-const winnGame = () => {
-  root.querySelector('.message-win').classList.remove('hidden');
+const randomNumber = (min = 0, max = (widthField * widthField)) => {
+  return Math.ceil(Math.random() * (max - min) + min);
+};
+
+const cauntFreeCell = () => {
+  let count = 0;
+
+  for (let i = 0; i < field[1].length; i++) {
+    for (let y = 0; y < field[1][i].length; y++) {
+      if (!field[1][i][y]) {
+        count++;
+      }
+    }
+  }
+
+  return count;
+};
+
+const changeCellValue = (numberChange) => {
+  for (let i = 0; i < numberChange; i++) {
+    const freeCell = cauntFreeCell();
+
+    if (freeCell < 1) {
+      return;
+    }
+
+    const random = randomNumber(0, freeCell);
+
+    const valueCell = randomNumber(0, 10) > 9 ? 4 : 2;
+
+    let count = 0;
+
+    for (let k = 0; k < field[1].length; k++) {
+      for (let y = 0; y < field[1][k].length; y++) {
+        if (!field[1][k][y]) {
+          count++;
+
+          if (count === random) {
+            field[1][k][y] = valueCell;
+            field[0][y][k] = valueCell;
+          }
+        }
+      }
+    }
+    updateHtml();
+  }
+};
+
+const changeHidden = (messegeClass) => {
+  root.querySelector(`.${messegeClass}`).classList.remove('hidden');
 };
 
 const startGame = () => {
@@ -50,11 +92,7 @@ const startGame = () => {
   btnStart.classList.add('restart');
   gameScore.textContent = 0;
 
-  [...allCellField].map(cell => {
-    cell.className = 'field-cell';
-    cell.textContent = '';
-  });
-
+  removeField();
   changeCellValue(2);
 
   [...messageFooter.children].map(message => {
@@ -64,127 +102,130 @@ const startGame = () => {
 
 btnStart.addEventListener('click', () => startGame());
 
-const possibilityMove = () => {
-  for (let i = 0; i < allCellField.length; i++) {
-    if (allCellField[i].textContent === '') {
-      return true;
-    }
+const validTwoRows = (arr, arrNext) => {
+  let valid = false;
+
+  if (arr.some((num, index) => num !== arrNext[index])) {
+    valid = true;
   }
 
-  for (let i = 1; i <= allRowsField.length; i++) {
-    const arrCellListColumn = root.querySelectorAll(`tr :nth-child(${i})`);
-    const arrCellListRows = allRowsField[i - 1].children;
-
-    const valid = (arr) => {
-      for (let count = 1; i < arr.length; i++) {
-        if (arr[count - 1].textContent === arr[count].textContent
-          && arr[count].textContent) {
-          return true;
-        }
-      }
-
-      return false;
-    };
-
-    if (valid(arrCellListColumn) || valid(arrCellListRows)) {
-      return true;
-    }
-  }
-
-  return false;
+  return valid;
 };
 
-let validMove = false;
+const possibilityMove = () => {
+  if (cauntFreeCell() > 0) {
+    return true;
+  }
 
-function move(arrCell) {
-  const newArr = [...arrCell].map((cell) => cell.textContent);
+  for (let i = 1; i <= widthField; i++) {
+    const newArrMergeX = [...field[0][i - 1]];
+    const newArrMergeY = [...field[1][i - 1]];
 
+    merge(newArrMergeX);
+    merge(newArrMergeY);
+
+    if (validTwoRows(newArrMergeX, field[0][i - 1])
+    || validTwoRows(newArrMergeY, field[1][i - 1])) {
+      return true;
+    }
+  }
+  changeHidden('message-lose');
+};
+
+const removeField = () => {
+  for (let i = 0; i < field[1].length; i++) {
+    for (let y = 0; y < field[1][i].length; y++) {
+      field[1][i][y] = '';
+      field[0][y][i] = '';
+    }
+  }
+
+  updateHtml();
+};
+
+function move(arrCell, direction, column) {
   const arrNotFreeCell = [...arrCell].filter((cell) => {
-    return cell.classList.contains('notFree');
+    return cell;
   });
 
   for (let i = 0; i < arrCell.length; i++) {
     if (i >= arrNotFreeCell.length) {
-      arrCell[i].textContent = '';
-      arrCell[i].className = 'field-cell';
+      arrCell[i] = '';
       continue;
     }
 
-    arrCell[i].textContent = arrNotFreeCell[i].textContent;
-    arrCell[i].className = arrNotFreeCell[i].className;
+    arrCell[i] = arrNotFreeCell[i];
   }
 
-  [...arrCell].map((cell) => cell.textContent).map((cell, index) => {
-    if (cell !== newArr[index]) {
-      validMove = true;
-    }
-  });
+  if (direction === 'toRight' || direction === 'toDown') {
+    arrCell.reverse();
+  }
+
+  for (let i = 0; i < 4; i++) {
+    field[column][i].map((num, index) => {
+      field[+!column][index][i] = num;
+    });
+  }
+  updateHtml();
 };
 
 function merge(arrCell) {
   for (let i = 1; i < arrCell.length; i++) {
-    if (arrCell[i - 1].textContent === arrCell[i].textContent
-      && arrCell[i].textContent) {
-      arrCell[i - 1].textContent = +arrCell[i].textContent * 2;
+    if (arrCell[i - 1] === arrCell[i] && arrCell[i]) {
+      arrCell[i - 1] = +arrCell[i - 1] * 2;
+      arrCell[i] = '';
 
-      gameScore.textContent = +gameScore.textContent
-      + (+arrCell[i - 1].textContent);
+      gameScore.textContent = +gameScore.textContent + (+arrCell[i - 1]);
 
-      if (arrCell[i - 1].textContent === '2048') {
-        winnGame();
+      if (arrCell[i - 1] === '2048') {
+        changeHidden('message-win');
       }
-
-      arrCell[i - 1].className = `
-            field-cell notFree field-cell--${arrCell[i - 1].textContent}`;
-      arrCell[i].textContent = '';
-      arrCell[i].className = 'field-cell';
-      validMove = true;
     }
   }
-}
+};
 
 window.addEventListener('keydown', (e) => {
   if (e.code === 'ArrowUp' || e.code === 'ArrowDown'
   || e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
-    validMove = false;
+    let validMove = false;
+    let newArr;
 
-    for (let i = 1; i <= allRowsField.length; i++) {
-      const arrCellListColumn = root.querySelectorAll(`tr :nth-child(${i})`);
-      const arrCellListRows = allRowsField[i - 1].children;
+    const startFuncMove = (row, columnField, direction = '') => {
+      newArr = [...row];
+      move(row, direction, columnField);
+      merge(row);
+      move(row, direction, columnField);
 
+      if (validTwoRows(newArr, row)) {
+        validMove = true;
+      };
+    };
+
+    for (let i = 1; i <= widthField; i++) {
       switch (e.code) {
         case 'ArrowUp':
-          move(arrCellListColumn);
-          merge(arrCellListColumn);
-          move(arrCellListColumn);
+          startFuncMove(field[1][i - 1], 1);
           break;
 
         case 'ArrowDown':
-          move([...arrCellListColumn].reverse());
-          merge([...arrCellListColumn].reverse());
-          move([...arrCellListColumn].reverse());
+          startFuncMove(field[1][i - 1], 1, 'toDown');
           break;
 
         case 'ArrowLeft':
-          move(arrCellListRows);
-          merge(arrCellListRows);
-          move(arrCellListRows);
+          startFuncMove(field[0][i - 1], 0, 'toLeft');
           break;
 
         case 'ArrowRight':
-          move([...arrCellListRows].reverse());
-          merge([...arrCellListRows].reverse());
-          move([...arrCellListRows].reverse());
+          startFuncMove(field[0][i - 1], 0, 'toRight');
           break;
       }
     }
 
-    if (!possibilityMove()) {
-      loseGame();
-    }
+    possibilityMove();
 
     if (validMove) {
       changeCellValue(1);
     }
   }
 });
+
