@@ -227,22 +227,22 @@ const oneSteep = (nameEvent) => {
     };
   };
 
-  for (let i = 1; i <= widthField; i++) {
+  for (let i = 0; i < widthField; i++) {
     switch (nameEvent) {
       case 'ArrowUp':
-        startFuncMove(field[1][i - 1], 1);
+        startFuncMove(field[1][i], 1);
         break;
 
       case 'ArrowDown':
-        startFuncMove(field[1][i - 1], 1, 'toDown');
+        startFuncMove(field[1][i], 1, 'toDown');
         break;
 
       case 'ArrowLeft':
-        startFuncMove(field[0][i - 1], 0, 'toLeft');
+        startFuncMove(field[0][i], 0, 'toLeft');
         break;
 
       case 'ArrowRight':
-        startFuncMove(field[0][i - 1], 0, 'toRight');
+        startFuncMove(field[0][i], 0, 'toRight');
         break;
     }
   }
