@@ -124,8 +124,8 @@ const possibilityMove = () => {
     merge(newArrMergeX);
     merge(newArrMergeY);
 
-    if (validTwoRows(newArrMergeX, field[0][i - 1])
-    || validTwoRows(newArrMergeY, field[1][i - 1])) {
+    if (validTwoRows(newArrMergeX, field[0][i - 1]) ||
+      validTwoRows(newArrMergeY, field[1][i - 1])) {
       return true;
     }
   }
@@ -184,48 +184,79 @@ function merge(arrCell) {
   }
 };
 
-window.addEventListener('keydown', (e) => {
-  if (e.code === 'ArrowUp' || e.code === 'ArrowDown'
-  || e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
-    let validMove = false;
-    let newArr;
+window.addEventListener('touchstart', (e) => {
+  let startY = e.targetTouches['0'].clientY;
+  let startX = e.targetTouches['0'].clientX;
 
-    const startFuncMove = (row, columnField, direction = '') => {
-      newArr = [...row];
-      move(row, direction, columnField);
-      merge(row);
-      move(row, direction, columnField);
+  window.ontouchend =  (event) => {
+    let endX = event.changedTouches['0'].clientX;
+    let endY = event.changedTouches['0'].clientY;
 
-      if (validTwoRows(newArr, row)) {
-        validMove = true;
-      };
-    };
-
-    for (let i = 1; i <= widthField; i++) {
-      switch (e.code) {
-        case 'ArrowUp':
-          startFuncMove(field[1][i - 1], 1);
-          break;
-
-        case 'ArrowDown':
-          startFuncMove(field[1][i - 1], 1, 'toDown');
-          break;
-
-        case 'ArrowLeft':
-          startFuncMove(field[0][i - 1], 0, 'toLeft');
-          break;
-
-        case 'ArrowRight':
-          startFuncMove(field[0][i - 1], 0, 'toRight');
-          break;
-      }
+    if (endY - startY > 130) {
+      oneSteep('ArrowDown')
+    }
+    
+    if (startY - endY > 130) {
+      oneSteep('ArrowUp')
     }
 
-    possibilityMove();
+    if (startX - endX > 130) {
+      oneSteep('ArrowLeft')
+    }
 
-    if (validMove) {
-      changeCellValue(1);
+    if (endX - startX > 130) {
+      oneSteep('ArrowRight')
+    }
+  };
+})
+
+
+const oneSteep = (nameEvent) => {
+
+  let validMove = false;
+  let newArr;
+
+  const startFuncMove = (row, columnField, direction = '') => {
+    newArr = [...row];
+    move(row, direction, columnField);
+    merge(row);
+    move(row, direction, columnField);
+
+    if (validTwoRows(newArr, row)) {
+      validMove = true;
+    };
+  };
+
+  for (let i = 1; i <= widthField; i++) {
+    switch (nameEvent) {
+      case 'ArrowUp':
+        startFuncMove(field[1][i - 1], 1);
+        break;
+
+      case 'ArrowDown':
+        startFuncMove(field[1][i - 1], 1, 'toDown');
+        break;
+
+      case 'ArrowLeft':
+        startFuncMove(field[0][i - 1], 0, 'toLeft');
+        break;
+
+      case 'ArrowRight':
+        startFuncMove(field[0][i - 1], 0, 'toRight');
+        break;
     }
   }
-});
 
+  possibilityMove();
+
+  if (validMove) {
+    changeCellValue(1);
+  }
+};
+
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'ArrowUp' || e.code === 'ArrowDown' ||
+    e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+    oneSteep(e.code)
+  }
+});
