@@ -181,18 +181,6 @@ function move(arrCell, direction, column) {
   updateHtml();
 };
 
-function revMatrix() {
-  let matrix = field[1];
-  const newMatrix = matrix.map((val, index) => matrix.map(row => row[index]).reverse());
-  newMatrix.forEach(row => row.reverse())
-  for (let i = 0; i < 4; i++) {
-    newMatrix[i].map((num, index) => {
-      field[1][index][i] = num;
-    });
-  }
-
-}
-
 function merge(arrCell) {
   for (let i = 1; i < arrCell.length; i++) {
     if (arrCell[i - 1] === arrCell[i] && arrCell[i]) {
