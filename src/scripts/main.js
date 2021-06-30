@@ -8,7 +8,7 @@ const messageFooter = root.querySelector('.message-container');
 const gameScore = root.querySelector('.game-score');
 const widthField = allRowsField[0].children.length;
 
-const field = [];
+let field = [];
 
 const createarrField = (arr, column) => {
   for (let m = 0; m < column; m++) {
@@ -24,9 +24,9 @@ const createarrField = (arr, column) => {
   }
 };
 
-createarrField(field, 2);
-
 const updateHtml = () => {
+  localStorage.setItem('fieldGame2048', JSON.stringify({field:field, score: gameScore.textContent,}));
+
   for (let i = 1; i <= widthField; i++) {
     [...root.querySelectorAll(`tr :nth-child(${i})`)].map((cell, index) => {
       cell.textContent = field[1][i - 1][index];
@@ -87,18 +87,29 @@ const changeHidden = (messegeClass) => {
   root.querySelector(`.${messegeClass}`).classList.remove('hidden');
 };
 
-const startGame = () => {
+const startGame = (newGame = true, startScore = 0) => {
   btnStart.textContent = 'Restart';
   btnStart.classList.add('restart');
-  gameScore.textContent = 0;
+  gameScore.textContent = startScore;
 
-  removeField();
-  changeCellValue(2);
+  if (newGame) {
+    removeField();
+    changeCellValue(2);
+  }
 
   [...messageFooter.children].map(message => {
     message.classList.add('hidden');
   });
 };
+
+if (localStorage.getItem('fieldGame2048')) {
+  const valueJsonCoocie = localStorage.getItem('fieldGame2048');
+  field = JSON.parse(valueJsonCoocie).field;
+  startGame(false, JSON.parse(valueJsonCoocie).score);
+  updateHtml();
+} else {
+  createarrField(field, 2);
+}
 
 btnStart.addEventListener('click', () => startGame());
 
@@ -166,8 +177,21 @@ function move(arrCell, direction, column) {
       field[+!column][index][i] = num;
     });
   }
+
   updateHtml();
 };
+
+function revMatrix() {
+  let matrix = field[1];
+  const newMatrix = matrix.map((val, index) => matrix.map(row => row[index]).reverse());
+  newMatrix.forEach(row => row.reverse())
+  for (let i = 0; i < 4; i++) {
+    newMatrix[i].map((num, index) => {
+      field[1][index][i] = num;
+    });
+  }
+
+}
 
 function merge(arrCell) {
   for (let i = 1; i < arrCell.length; i++) {
@@ -188,14 +212,14 @@ window.addEventListener('touchstart', (e) => {
   let startY = e.targetTouches['0'].clientY;
   let startX = e.targetTouches['0'].clientX;
 
-  window.ontouchend =  (event) => {
+  window.ontouchend = (event) => {
     let endX = event.changedTouches['0'].clientX;
     let endY = event.changedTouches['0'].clientY;
 
     if (endY - startY > 130) {
       oneSteep('ArrowDown')
     }
-    
+
     if (startY - endY > 130) {
       oneSteep('ArrowUp')
     }
@@ -238,6 +262,7 @@ const oneSteep = (nameEvent) => {
         break;
 
       case 'ArrowLeft':
+        revMatrix();
         startFuncMove(field[0][i], 0, 'toLeft');
         break;
 
@@ -260,3 +285,4 @@ window.addEventListener('keydown', (e) => {
     oneSteep(e.code)
   }
 });
+
