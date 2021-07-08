@@ -25,7 +25,7 @@ const createarrField = (arr, column) => {
 };
 
 const updateHtml = () => {
-  localStorage.setItem('fieldGame2048', JSON.stringify({field:field, score: gameScore.textContent,}));
+  localStorage.setItem('fieldGame2048', JSON.stringify({fields:fields, score: gameScore.textContent,}));
 
   for (let i = 1; i <= widthField; i++) {
     [...root.querySelectorAll(`tr :nth-child(${i})`)].map((cell, index) => {
@@ -104,7 +104,7 @@ const startGame = (newGame = true, startScore = 0) => {
 
 if (localStorage.getItem('fieldGame2048')) {
   const valueJsonCoocie = localStorage.getItem('fieldGame2048');
-  field = JSON.parse(valueJsonCoocie).field;
+  field = JSON.parse(valueJsonCoocie).fields;
   startGame(false, JSON.parse(valueJsonCoocie).score);
   updateHtml();
 } else {
