@@ -55,7 +55,7 @@ document.addEventListener('keydown', (e) => {
 
   const mergedCellsArray = [];
 
-  let filledCells = getFilledCells();
+  const filledCells = getFilledCells();
 
   let emptyCells = getEmptyCells();
 
@@ -202,49 +202,10 @@ document.addEventListener('keydown', (e) => {
         break;
     }
   }
-  filledCells = getFilledCells();
-
-  const nextPossibleMove = [...filledCells].find(findNextMove);
-
-  function findNextMove(cell) {
-    emptyCells = getEmptyCells();
-
-    if (emptyCells.length > 0) {
-      return emptyCells[0];
-    } else {
-      return (
-        (cell.innerText === field
-          .rows[cell.parentElement.sectionRowIndex - 1]
-          .cells[cell.cellIndex].innerText)
-        || (cell.innerText === field
-          .rows[cell.parentElement.sectionRowIndex + 1]
-          .cells[cell.cellIndex].innerText)
-        || (cell.innerText === cell
-          .parentElement.cells[cell.cellIndex - 1].innerText)
-        || (cell.innerText === cell
-          .parentElement.cells[cell.cellIndex + 1].innerText)
-      );
-    }
-  }
-
-  if (!nextPossibleMove) {
-    document.querySelector('.message-lose').classList.remove('hidden');
-
-    return;
-  }
 
   if (field.querySelector('.field-cell--2048')) {
     document.querySelector('.message-win').classList.remove('hidden');
   }
-
-  // The move is possible if at least one cell is changed after the move
-  // emptyCells = getEmptyCells();
-
-  // if (emptyCells.length === 0) {
-  //   document.querySelector('.message-lose').classList.remove('hidden');
-
-  //   return;
-  // };
 
   insertRandomNumber();
 
