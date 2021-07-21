@@ -1,50 +1,185 @@
 'use strict';
 
 // write your code here
-const buttonStart = document.querySelector('button.start');
+
 const field = document.querySelector('.game-field').tBodies[0];
 const scoreField = document.querySelector('.controls .game-score');
+const buttonStart = document.querySelector('button.start');
 
-function getEmptyCells() {
-  return field.querySelectorAll('td:not([class*="field-cell--"])');
+class Game {
+  static randomWithProbability() {
+    const numberForRandom = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
+    const index = Math.floor(Math.random() * 10);
+
+    return numberForRandom[index];
+  }
+
+  static insertRandomNumber() {
+    this.findEmptyCells();
+
+    const randomCellIndex = Math.floor(Math.random() * this.emptyCells.length);
+
+    if (this.emptyCells.length === 0) {
+      return;
+    }
+
+    const row = this.emptyCells[randomCellIndex].row;
+    const index = this.emptyCells[randomCellIndex].index;
+
+    this.valuesArray[row][index] = this.randomWithProbability();
+  }
+
+  static findEmptyCells() {
+    this.emptyCells = [];
+
+    this.valuesArray.forEach((item, index, array) => {
+      item.forEach((item2, index2, array2) => {
+        if (item2 === 0) {
+          const emptyCell = {
+            row: index,
+            index: index2,
+          };
+
+          this.emptyCells.push(emptyCell);
+        }
+      });
+    });
+  }
+
+  static findFilledCells() {
+    this.filledCells = [];
+
+    this.valuesArray.forEach((item, index, array) => {
+      item.forEach((item2, index2, array2) => {
+        if (item2 !== 0) {
+          const filledCell = {
+            row: index,
+            index: index2,
+          };
+
+          this.filledCells.push(filledCell);
+        }
+      });
+    });
+  }
+
+  static renderGameField(gameField) {
+    this.valuesArray.forEach((item, index, array) => {
+      item.forEach((item2, index2, array2) => {
+        gameField.rows[index].cells[index2].innerText
+        = (item2 === 0) ? '' : `${item2}`;
+        gameField.rows[index].cells[index2].className = '';
+        gameField.rows[index].cells[index2].classList.add('field-cell');
+
+        if (item2 !== 0) {
+          gameField.rows[index].cells[index2].classList
+            .add(`field-cell--${item2}`);
+        };
+      });
+    });
+  }
+
+  static rotateRight90deg() {
+    this.valuesArray = this.valuesArray[0].map(
+      (val, index) => this.valuesArray.map(row => row[index]).reverse()
+    );
+  };
+
+  static moveUp() {
+    this.findFilledCells();
+
+    this.filledCells.forEach((fCell) => {
+      this.findEmptyCells();
+
+      const availableCellCoords = this.emptyCells.find(
+        (eCell) => eCell.row < fCell.row && eCell.index === fCell.index
+      );
+
+      if (availableCellCoords) {
+        this.valuesArray[availableCellCoords.row][availableCellCoords.index]
+        = this.valuesArray[fCell.row][fCell.index];
+        this.valuesArray[fCell.row][fCell.index] = 0;
+
+        this.mergeDuplicatedCells(
+          availableCellCoords.row, availableCellCoords.index
+        );
+      } else {
+        this.mergeDuplicatedCells(fCell.row, fCell.index);
+      }
+    });
+    this.insertRandomNumber();
+  }
+
+  static mergeDuplicatedCells(row, cell) {
+    if (row > 0) {
+      if (this.valuesArray[row][cell] === this.valuesArray[row - 1][cell]) {
+        this.valuesArray[row - 1][cell] *= 2;
+        this.valuesArray[row][cell] = 0;
+        this.score += this.valuesArray[row - 1][cell];
+
+        if (this.valuesArray[row - 1][cell] === 2048) {
+          this.showWinMessage = true;
+        }
+      }
+    }
+  }
+
+  static checkAvailableMoves() {
+    for (let i = 0; i <= this.valuesArray.length - 1; i++) {
+      for (let j = 0; j <= this.valuesArray[0].length - 1; j++) {
+        if (this.valuesArray[i + 1] === undefined) {
+          if (this.valuesArray[i][j] === this.valuesArray[i][j + 1]) {
+            return true;
+          }
+        } else {
+          if (this.valuesArray[i][j] === this.valuesArray[i][j + 1]
+            || this.valuesArray[i][j] === this.valuesArray[i + 1][j]
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  };
 }
 
-function getFilledCells() {
-  return field.querySelectorAll('td[class*="field-cell--"]');
-}
+Game.emptyCells = [];
+Game.filledCells = [];
 
-function insertRandomNumber() {
-  const emptyCells = getEmptyCells();
-  const randomCell = Math.floor(Math.random() * (emptyCells.length - 1));
-  const randomNumber = randomWithProbability();
-
-  emptyCells[randomCell].innerHTML = `${randomNumber}`;
-  emptyCells[randomCell].classList.add(`field-cell--${randomNumber}`);
-};
-
-function randomWithProbability() {
-  const numberForRandom = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
-  const index = Math.floor(Math.random() * 10);
-
-  return numberForRandom[index];
-}
+Game.valuesArray = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+Game.showWinMessage = false;
+Game.score = 0;
 
 buttonStart.onclick = function() {
-  insertRandomNumber();
+  Game.insertRandomNumber();
   document.querySelector('.message-start').classList.add('hidden');
   buttonStart.classList.remove('start');
   buttonStart.classList.add('restart');
   buttonStart.innerText = 'Restart';
+  Game.renderGameField(field);
 
   buttonStart.onclick = function() {
-    const filledCells = getFilledCells();
+    Game.score = 0;
+    scoreField.innerText = Game.score;
 
-    for (const cell of filledCells) {
-      cell.innerText = '';
-      cell.className = 'field-cell';
-    };
-    scoreField.innerText = '0';
-    insertRandomNumber();
+    Game.valuesArray = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    Game.showWinMessage = false;
+    document.querySelector('.message-win').classList.add('hidden');
+    document.querySelector('.message-lose').classList.add('hidden');
+    Game.insertRandomNumber();
+    Game.renderGameField(field);
   };
 };
 
@@ -53,161 +188,50 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
-  const mergedCellsArray = [];
-
-  const filledCells = getFilledCells();
-
-  let emptyCells = getEmptyCells();
-
   switch (e.code) {
     case 'ArrowUp':
-      for (const cell of filledCells) {
-        const availableCell = [...emptyCells].find(td => {
-          return td.cellIndex === cell.cellIndex
-          && td.parentElement.rowIndex < cell.parentElement.rowIndex;
-        });
-
-        if (availableCell) {
-          moveCell(availableCell, cell);
-          checkIfDuplicates(availableCell);
-        } else {
-          checkIfDuplicates(cell);
-        }
-      };
+      Game.moveUp();
+      Game.renderGameField(field);
       break;
 
     case 'ArrowDown':
-      for (let i = filledCells.length - 1; i >= 0; i--) {
-        const foundCells = [...emptyCells].filter(td => {
-          return td.cellIndex === filledCells[i].cellIndex
-          && td.parentElement.rowIndex > filledCells[i].parentElement.rowIndex;
-        });
-
-        const availableCell = foundCells[foundCells.length - 1];
-
-        if (availableCell) {
-          moveCell(availableCell, filledCells[i]);
-          checkIfDuplicates(availableCell);
-        } else {
-          checkIfDuplicates(filledCells[i]);
-        }
-      };
+      Game.rotateRight90deg();
+      Game.rotateRight90deg();
+      Game.moveUp();
+      Game.rotateRight90deg();
+      Game.rotateRight90deg();
+      Game.renderGameField(field);
       break;
 
     case 'ArrowLeft':
-      for (const cell of filledCells) {
-        const availableCell = [...emptyCells].find(td => {
-          return td.cellIndex < cell.cellIndex
-          && td.parentElement.rowIndex === cell.parentElement.rowIndex;
-        });
-
-        if (availableCell) {
-          moveCell(availableCell, cell);
-          checkIfDuplicates(availableCell);
-        } else {
-          checkIfDuplicates(cell);
-        }
-      };
+      Game.rotateRight90deg();
+      Game.moveUp();
+      Game.rotateRight90deg();
+      Game.rotateRight90deg();
+      Game.rotateRight90deg();
+      Game.renderGameField(field);
       break;
 
     case 'ArrowRight':
-      for (let i = filledCells.length - 1; i >= 0; i--) {
-        const foundCells = [...emptyCells].filter(td => {
-          return (td.cellIndex > filledCells[i].cellIndex)
-          && (
-            td.parentElement.rowIndex === filledCells[i].parentElement.rowIndex
-          );
-        });
-
-        const availableCell = foundCells[foundCells.length - 1];
-
-        if (availableCell) {
-          moveCell(availableCell, filledCells[i]);
-          checkIfDuplicates(availableCell);
-        } else {
-          checkIfDuplicates(filledCells[i]);
-        }
-      };
+      Game.rotateRight90deg();
+      Game.rotateRight90deg();
+      Game.rotateRight90deg();
+      Game.moveUp();
+      Game.rotateRight90deg();
+      Game.renderGameField(field);
       break;
   }
+  Game.findEmptyCells();
 
-  function moveCell(availableCell, cell) {
-    availableCell.innerText = cell.innerText;
-    availableCell.classList.add(`field-cell--${cell.innerText}`);
-    cell.innerText = '';
-    cell.className = 'field-cell';
-    emptyCells = getEmptyCells();
-  }
+  if (!Game.checkAvailableMoves() && Game.emptyCells.length === 0) {
+    document.querySelector('.message-lose').classList.remove('hidden');
+  };
 
-  function mergeCells(duplicateCell, cell) {
-    duplicateCell.classList.remove(`field-cell--${cell.innerText}`);
-    duplicateCell.innerText = `${(+cell.innerText) * 2}`;
-    duplicateCell.classList.add(`field-cell--${duplicateCell.innerText}`);
-    cell.innerText = '';
-    cell.className = 'field-cell';
-
-    scoreField.innerText = `
-    ${+scoreField.innerText + +duplicateCell.innerText}
-    `;
-    mergedCellsArray.push(duplicateCell);
-    emptyCells = getEmptyCells();
-  }
-
-  function checkIfDuplicates(cell) {
-    switch (e.code) {
-      case 'ArrowUp':
-        let rowToCompare = field.rows[cell.parentElement.sectionRowIndex - 1];
-
-        if (rowToCompare) {
-          if (cell.innerText === rowToCompare.cells[cell.cellIndex].innerText
-          && !(mergedCellsArray.includes(rowToCompare.cells[cell.cellIndex]))) {
-            mergeCells(rowToCompare.cells[cell.cellIndex], cell);
-          };
-        }
-        break;
-
-      case 'ArrowDown':
-        rowToCompare = field.rows[cell.parentElement.sectionRowIndex + 1];
-
-        if (rowToCompare) {
-          if (cell.innerText === rowToCompare.cells[cell.cellIndex].innerText
-            && !(
-              mergedCellsArray.includes(rowToCompare.cells[cell.cellIndex]
-              ))) {
-            mergeCells(rowToCompare.cells[cell.cellIndex], cell);
-          };
-        }
-        break;
-
-      case 'ArrowLeft':
-        let cellToCompare = cell.parentElement.cells[cell.cellIndex - 1];
-
-        if (cellToCompare) {
-          if (cell.innerText === cellToCompare.innerText
-            && !(mergedCellsArray.includes(cellToCompare))) {
-            mergeCells(cellToCompare, cell);
-          };
-        }
-        break;
-
-      case 'ArrowRight':
-        cellToCompare = cell.parentElement.cells[cell.cellIndex + 1];
-
-        if (cellToCompare) {
-          if (cell.innerText === cellToCompare.innerText
-            && !(mergedCellsArray.includes(cellToCompare))) {
-            mergeCells(cellToCompare, cell);
-          };
-        }
-        break;
-    }
-  }
-
-  if (field.querySelector('.field-cell--2048')) {
+  if (Game.showWinMessage) {
     document.querySelector('.message-win').classList.remove('hidden');
-  }
+  };
 
-  insertRandomNumber();
+  scoreField.innerText = Game.score;
 
   e.preventDefault();
 });
