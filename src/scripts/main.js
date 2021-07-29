@@ -118,6 +118,7 @@ function win() {
 
 document.body.addEventListener('keydown', () => {
   let moveFlag = false;
+  let isGameOver = true;
 
   switch (event.key) {
     case 'ArrowUp': {
@@ -257,7 +258,28 @@ document.body.addEventListener('keydown', () => {
     spawnCell();
   }
 
-  if (!moveFlag && getFreeCells().length === 0) {
+  // проверка на проигрыш
+  if (getFreeCells().length === 0) {
+    for (let i = 0; i < height; i++) {
+      for (let j = 0; j < width; j++) {
+        if (j < width - 1) {
+          if (rows[i].children[j].textContent
+                === rows[i].children[j + 1].textContent) {
+            isGameOver = false;
+          }
+        }
+
+        if (i < height - 1) {
+          if (rows[i].children[j].textContent
+                === rows[i + 1].children[j].textContent) {
+            isGameOver = false;
+          }
+        }
+      }
+    }
+  }
+
+  if (isGameOver) {
     gameOver();
   }
 });
