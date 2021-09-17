@@ -10,75 +10,31 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  width: 456px;
+  height: 456px;
+  background-color: #bbada0;
+  border: 7px solid #bbada0;
+  border-radius: 6px;
+  margin-top: 20px;
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+.grid div {
+  width: 100px;
+  height: 100px;
+  margin: 7px;
+  border-radius: 3px;
+  background-color: #eee4da;
+  color: #afa192;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: center;
+  font-size: 50px;
+  line-height: 1.6;
+  user-select: none;
+  box-sizing: border-box;
 }
 
 .game-header {
