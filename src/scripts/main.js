@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () =>  {
       winMessage.classList.add('hidden');
       loseMessage.classList.add('hidden');
       countScore = 0;
+      score = 0;
       elementScore.innerHTML = 0;
     }
   
@@ -45,6 +46,8 @@ document.addEventListener('DOMContentLoaded', () =>  {
       e.target.classList.add('restart');
       e.target.textContent = 'Restart';
       startMessage.hidden = true;
+      countScore = 0;
+      score = 0;
       startMessage.classList.add('hidden');
     }
     generate();
@@ -174,23 +177,27 @@ document.addEventListener('DOMContentLoaded', () =>  {
   //assign functions to keyCodes
   
   function control(e) {
-    switch(e.keyCode){
-      case 37:
-        keyLeft();
-        break;
-      case 38:
-        keyUp();
-        break;
-      case 39:
-        keyRight();
-        break;
-      case 40:
-        keyDown();
-        break;
+    if(document.querySelector('.restart')!==null) {
+      switch(e.keyCode){
+        case 37:
+          keyLeft();
+          break;
+        case 38:
+          keyUp();
+          break;
+        case 39:
+          keyRight();
+          break;
+        case 40:
+          keyDown();
+          break;
+      }
     }
+    return;
   }
   document.addEventListener('keyup', control);
 
+  // pressing keys
   function keyRight() {
     moveRight();
     combineRow();

@@ -22,6 +22,9 @@ body {
 }
 
 .grid div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100px;
   height: 100px;
   margin: 7px;
@@ -31,7 +34,7 @@ body {
   font-weight: bold;
   text-align: center;
   vertical-align: center;
-  font-size: 50px;
+  font-size: 40px;
   line-height: 1.6;
   user-select: none;
   box-sizing: border-box;
