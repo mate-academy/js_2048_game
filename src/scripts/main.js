@@ -2,11 +2,12 @@
 
 const button = document.querySelector('.button');
 const messages = document.querySelectorAll('.message');
+const score = document.querySelector('.game-score');
 const directions = ['right', 'left', 'up', 'down'];
 const game = {
   cells: document.querySelectorAll('.field-cell'),
   field: document.querySelector('tbody').children,
-  score: document.querySelector('.game-score'),
+  score: 0,
 
   getRandomNumber(number) {
     return Math.floor(Math.random() * number);
@@ -21,6 +22,8 @@ const game = {
       this.fieldArr[randomRow][randomCell] = (luckyNumber === 4)
         ? 4
         : 2;
+
+      score.textContent = this.score;
 
       for (let i = 0; i < this.fieldArr.length; i++) {
         for (let j = 0; j < this.fieldArr.length; j++) {
@@ -86,7 +89,7 @@ const game = {
         if (row[j] > 0 && row[j] === row[j + 1]) {
           row[j] *= 2;
 
-          this.score.textContent = +this.score.textContent + row[j];
+          this.score += row[j];
           row[j + 1] = '';
         }
       }
@@ -100,8 +103,7 @@ const game = {
             && this.fieldArr[i][j] === this.fieldArr[i + 1][j]) {
           this.fieldArr[i][j] *= 2;
 
-          this.score.textContent = +this.score.textContent
-            + this.fieldArr[i][j];
+          this.score += this.fieldArr[i][j];
           this.fieldArr[i + 1][j] = '';
         }
       }
@@ -247,7 +249,7 @@ button.addEventListener('click', () => {
   button.classList.add('restart');
   button.textContent = 'Restart';
   messages.forEach(message => message.classList.add('hidden'));
-  game.score.textContent = '0';
+  game.score = 0;
   game.generateRandomCell();
   game.generateRandomCell();
 
