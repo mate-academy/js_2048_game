@@ -1,6 +1,5 @@
 'use strict';
 
-const allCells = document.querySelectorAll('td');
 const allRows = document.querySelectorAll('tr');
 const startButton = document.querySelector('button');
 const gameScore = document.querySelector('.game-score');
@@ -9,68 +8,285 @@ const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 let count = 0;
 let moveDetector = false;
+let start = false;
+let indUnate = [];
+const arrAllCells = [[...[...allRows][0].children],
+  [...[...allRows][1].children],
+  [...[...allRows][2].children],
+  [...[...allRows][3].children],
+];
+const field = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 
-// Click button Restart
+// function content from board to dom
 
-startButton.addEventListener('click', () => {
-  if (startButton.classList.contains('restart')) {
-    [...allCells].forEach(cell => {
-      cell.classList = 'field-cell';
-      cell.innerText = '';
-    });
-    gameScore.innerText = 0;
-    getNewSquare();
-    getNewSquare();
+function moveFieldToDOM() {
+  for (let i = 0; i < 4; i++) {
+    for (let ind = 0; ind < 4; ind++) {
+      const numberCell = field[i][ind];
 
-    if (!messageLose.classList.contains('hidden')) {
-      messageLose.classList.add('hidden');
-    }
-    messageStart.classList.remove('hidden');
-  };
-});
-
-// function for changing button Start
-
-function changeButStart() {
-  if (startButton.classList.contains('start')) {
-    startButton.classList.add('restart');
-    startButton.classList.remove('start');
-    startButton.innerText = 'Restart';
-    getNewSquare();
-    getNewSquare();
+      if (numberCell === 0) {
+        arrAllCells[i][ind].innerText = '';
+        arrAllCells[i][ind].classList = 'field-cell';
+      } else {
+        arrAllCells[i][ind].innerText = numberCell;
+        arrAllCells[i][ind].classList = `field-cell field-cell--${numberCell}`;
+      };
+    };
   };
 };
 
 // function for creating new random square
 
-function getNewSquare() {
-  const emptyCell = [...allCells].filter(item => item.classList.length === 1);
-  const numberRandomCell = Math.floor(Math.random() * emptyCell.length);
-  const randomEmptyCell = emptyCell[numberRandomCell];
+function getNewSquare(element) {
+  const nuwRandomNum = Math.floor(Math.random() * 4);
+
+  if (typeof (element[nuwRandomNum]) === 'number') {
+    if (element[nuwRandomNum] === 0) {
+      element[nuwRandomNum] = getNewRandomContent();
+    } else {
+      getNewSquare(element);
+    }
+  } else {
+    if (element[nuwRandomNum].some(cell => cell === 0)) {
+      getNewSquare(element[nuwRandomNum]);
+    } else {
+      getNewSquare(element);
+    }
+  }
+  moveFieldToDOM();
+};
+
+// function for creating new random content
+
+function getNewRandomContent() {
   const randomNum = Math.random();
 
   if (randomNum < 0.1) {
-    randomEmptyCell.classList.add('field-cell--4');
-    randomEmptyCell.innerText = '4';
+    return 4;
   } else {
-    randomEmptyCell.classList.add('field-cell--2');
-    randomEmptyCell.innerText = '2';
-  }
+    return 2;
+  };
 }
+
+// Click button Restart
+
+startButton.addEventListener('click', () => {
+  if (startButton.classList.contains('restart')) {
+    field.forEach(row => {
+      for (let i = 0; i < row.length; i++) {
+        row[i] = 0;
+      }
+    });
+    gameScore.innerText = 0;
+    getNewSquare(field);
+    getNewSquare(field);
+
+    if (!messageLose.classList.contains('hidden')) {
+      messageLose.classList.add('hidden');
+    }
+    messageStart.classList.remove('hidden');
+  } else {
+    start = true;
+
+    field.forEach(row => {
+      for (let i = 0; i < row.length; i++) {
+        row[i] = 0;
+      }
+    });
+    startButton.classList.add('restart');
+    startButton.classList.remove('start');
+    startButton.innerText = 'Restart';
+    getNewSquare(field);
+    getNewSquare(field);
+  }
+});
+
+// function action after move
+
+function actionAfterMove() {
+  youWin();
+
+  if (!youWin()) {
+    if (count !== 12) {
+      getNewSquare(field);
+    };
+    moveDetector = false;
+    count = 0;
+    youLose();
+  };
+};
+
+function moveCellLeft(parentEl, ind, functionTorward) {
+  if (parentEl[ind] === 0) {
+    return (count += 1);
+  } else {
+    if ((ind - 1) < 0) {
+      return;
+    } else if (parentEl[ind - 1] === 0) {
+      moveDetector = true;
+      parentEl[ind - 1] = parentEl[ind];
+      parentEl[ind] = 0;
+      functionTorward(parentEl, ind - 1, functionTorward);
+    } else if (parentEl[ind - 1] === parentEl[ind]
+               & !indUnate.includes((ind - 1))) {
+      const sumNum = parentEl[ind] * 2;
+
+      parentEl[ind - 1] = sumNum;
+      parentEl[ind] = 0;
+      indUnate.push((ind - 1));
+      gameScore.innerText = +gameScore.innerText + sumNum;
+    } else if (parentEl[ind - 1] !== parentEl[ind]) {
+      if (!moveDetector) {
+        count += 1;
+      }
+    };
+  };
+}
+
+function moveCellRight(parentEl, ind, functionTorward) {
+  if (parentEl[ind] === 0) {
+    return (count += 1);
+  } else {
+    if ((ind + 1) > 3) {
+      return;
+    } else if (parentEl[ind + 1] === 0) {
+      moveDetector = true;
+      parentEl[ind + 1] = parentEl[ind];
+      parentEl[ind] = 0;
+      functionTorward(parentEl, ind + 1, functionTorward);
+    } else if (parentEl[ind + 1] === parentEl[ind]
+               & !indUnate.includes((ind + 1))) {
+      const sumNum = parentEl[ind] * 2;
+
+      parentEl[ind + 1] = sumNum;
+      parentEl[ind] = 0;
+      indUnate.push((ind + 1));
+      gameScore.innerText = +gameScore.innerText + sumNum;
+    } else if (parentEl[ind + 1] !== parentEl[ind]) {
+      if (!moveDetector) {
+        count += 1;
+      }
+    };
+  };
+}
+
+function moveCellUp(indRow, ind, functionTorward) {
+  if (field[indRow][ind] === 0) {
+    return (count += 1);
+  } else {
+    if ((indRow - 1) < 0) {
+      return;
+    } else if (field[indRow - 1][ind] === 0) {
+      moveDetector = true;
+      field[indRow - 1][ind] = field[indRow][ind];
+      field[indRow][ind] = 0;
+      functionTorward((indRow - 1), ind, functionTorward);
+    } else if (field[indRow - 1][ind] === field[indRow][ind]
+               & !indUnate.includes(`${indRow - 1}:${ind}`)) {
+      const sumNum = field[indRow][ind] * 2;
+
+      field[indRow - 1][ind] = sumNum;
+      field[indRow][ind] = 0;
+      indUnate.push(`${indRow - 1}:${ind}`);
+      gameScore.innerText = +gameScore.innerText + sumNum;
+    } else if (field[indRow - 1][ind] !== field[indRow][ind]) {
+      if (!moveDetector) {
+        count += 1;
+      }
+    };
+  };
+}
+
+function moveCellDown(indRow, ind, functionTorward) {
+  if (field[indRow][ind] === 0) {
+    return (count += 1);
+  } else {
+    if ((indRow + 1) > 3) {
+      return;
+    } else if (field[indRow + 1][ind] === 0) {
+      moveDetector = true;
+      field[indRow + 1][ind] = field[indRow][ind];
+      field[indRow][ind] = 0;
+      functionTorward((indRow + 1), ind, functionTorward);
+    } else if (field[indRow + 1][ind] === field[indRow][ind]
+               & !indUnate.includes((`${indRow + 1}:${ind}`))) {
+      const sumNum = field[indRow][ind] * 2;
+
+      field[indRow + 1][ind] = sumNum;
+      field[indRow][ind] = 0;
+      indUnate.push((`${indRow + 1}:${ind}`));
+      gameScore.innerText = +gameScore.innerText + sumNum;
+    } else if (field[indRow + 1][ind] !== field[indRow][ind]) {
+      if (!moveDetector) {
+        count += 1;
+      }
+    };
+  };
+}
+
+// EventListener on arrows keys
+
+document.addEventListener('keydown', (e) => {
+  if (start) {
+    switch (e.code) {
+      case 'ArrowLeft':
+        field.forEach(row => {
+          for (let i = 1; i < 4; i++) {
+            moveCellLeft(row, i, moveCellLeft);
+          };
+          indUnate = [];
+        });
+        actionAfterMove();
+        break;
+
+      case 'ArrowRight':
+        field.forEach(row => {
+          for (let i = 2; i >= 0; i--) {
+            moveCellRight(row, i, moveCellRight);
+          };
+          indUnate = [];
+        });
+        actionAfterMove();
+        break;
+
+      case 'ArrowUp':
+        for (let i = 1; i < 4; i++) {
+          for (let index = 0; index < 4; index++) {
+            moveCellUp(i, index, moveCellUp);
+          };
+        };
+        indUnate = [];
+        actionAfterMove();
+        break;
+
+      case 'ArrowDown':
+        for (let i = 2; i >= 0; i--) {
+          for (let index = 0; index < 4; index++) {
+            moveCellDown(i, index, moveCellDown);
+          };
+        };
+        indUnate = [];
+        actionAfterMove();
+        break;
+    }
+  }
+});
 
 // function for message lose
 function youLose() {
-  if ([...allCells].every(item => (item.classList.length > 1))) {
-    let endGame = true;
-    const arrAllCells = [[...[...allRows][0].children],
-      [...[...allRows][1].children],
-      [...[...allRows][2].children],
-      [...[...allRows][3].children],
-    ];
+  const allCellsBoards = [...field[0], ...field[1], ...field[2], ...field[3]];
 
-    arrAllCells.forEach(item => {
+  if (allCellsBoards.every(item => item !== 0)) {
+    let endGame = true;
+
+    field.forEach(item => {
       for (let i = 0; i < 3; i++) {
-        if (item[i].innerText === item[i + 1].innerText) {
+        if (item[i] === item[i + 1]) {
           endGame = false;
 
           return;
@@ -80,9 +296,9 @@ function youLose() {
 
     for (let i = 0; i < 3; i++) {
       for (let ind = 0; ind < 4; ind++) {
-        const thisCell = arrAllCells[i][ind];
+        const thisCell = field[i][ind];
 
-        if (thisCell.innerText === arrAllCells[i + 1][ind].innerText) {
+        if (thisCell === field[i + 1][ind]) {
           endGame = false;
 
           return;
@@ -100,148 +316,16 @@ function youLose() {
 // function you win!
 
 function youWin() {
-  if ([...allCells].some(item => item.classList.contains('field-cell--2048'))) {
+  const allCellsBoards = [...field[0], ...field[1], ...field[2], ...field[3]];
+
+  if (allCellsBoards.some(item => item === 2048)) {
     messageWin.classList.remove('hidden');
     messageStart.classList.add('hidden');
-  }
-}
+    start = false;
+    startButton.classList.add('start');
+    startButton.classList.remove('restart');
+    startButton.innerText = 'Start';
 
-// EventListener on arrows keys
-
-document.addEventListener('keydown', (e) => {
-  switch (e.code) {
-    case 'ArrowLeft':
-      [...allRows].forEach(item => {
-        for (let i = 1; i < 4; i++) {
-          moveCellLeft(item.children[i]);
-        }
-      });
-      actionAfterMove();
-      break;
-
-    case 'ArrowRight':
-      [...allRows].forEach(item => {
-        for (let i = 3; i >= 0; i--) {
-          moveCellRight(item.children[i]);
-        }
-      });
-      actionAfterMove();
-      break;
-
-    case 'ArrowUp':
-      for (let i = 1; i < 4; i++) {
-        const thisRow = [...allRows][i];
-
-        for (let index = 0; index < 4; index++) {
-          const thisCell = [...thisRow.children][index];
-
-          moveCellUp(thisCell, index);
-        }
-      }
-      actionAfterMove();
-      break;
-
-    case 'ArrowDown':
-      for (let i = 2; i >= 0; i--) {
-        const thisRow = [...allRows][i];
-
-        for (let index = 0; index < 4; index++) {
-          const thisCell = [...thisRow.children][index];
-
-          moveCellDown(thisCell, index);
-        }
-      }
-      actionAfterMove();
-      break;
-  }
-});
-
-// function action after move
-
-function actionAfterMove() {
-  changeButStart();
-
-  if (count !== 12) {
-    getNewSquare();
+    return true;
   };
-  moveDetector = false;
-  count = 0;
-  [...allCells].forEach(cell => cell.classList.remove('ready'));
-  youLose();
-  youWin();
-};
-
-// function shift to an empty cell
-function shiftToEmpty(emptyElement, shiftElement) {
-  emptyElement.classList = shiftElement.classList;
-  emptyElement.innerText = shiftElement.innerText;
-  shiftElement.classList = 'field-cell';
-  shiftElement.innerText = '';
-}
-
-// function for unate the cells with the same content
-
-function unateSameCells(moveEl, secondEl) {
-  const sumNum = +moveEl.innerText * 2;
-
-  secondEl.classList = `field-cell field-cell--${sumNum} ready`;
-  secondEl.innerText = sumNum;
-  moveEl.classList = 'field-cell';
-  moveEl.innerText = '';
-  gameScore.innerText = +gameScore.innerText + sumNum;
-}
-
-// function for move any cell
-
-function moveCellSuchWay(element, elementTorward, functionTorward, index) {
-  if (element.classList.length === 1) {
-    return (count += 1);
-  } else {
-    if (!elementTorward) {
-      return;
-    } else if (elementTorward.classList.length === 1) {
-      moveDetector = true;
-      shiftToEmpty(elementTorward, element);
-      functionTorward(elementTorward, index);
-    } else if (elementTorward.innerText === element.innerText
-               & !elementTorward.classList.contains('ready')) {
-      unateSameCells(element, elementTorward);
-    } else if (elementTorward.innerText !== element.innerText) {
-      if (!moveDetector) {
-        count += 1;
-      }
-    };
-  };
-};
-
-// function for moving cells to the left
-
-function moveCellLeft(el) {
-  moveCellSuchWay(el, el.previousElementSibling, moveCellLeft);
-};
-
-// function for moving cells to the right
-
-function moveCellRight(el) {
-  moveCellSuchWay(el, el.nextElementSibling, moveCellRight);
-};
-
-// function for moving cells to the up
-
-function moveCellUp(el, ind) {
-  if (el.parentElement.previousElementSibling) {
-    const previousCell = el.parentElement.previousElementSibling.children[ind];
-
-    moveCellSuchWay(el, previousCell, moveCellUp, ind);
-  };
-};
-
-// function for moving cells to the down
-
-function moveCellDown(el, ind) {
-  if (el.parentElement.nextElementSibling) {
-    const nextCell = el.parentElement.nextElementSibling.children[ind];
-
-    moveCellSuchWay(el, nextCell, moveCellDown, ind);
-  }
 };
