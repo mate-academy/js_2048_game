@@ -283,11 +283,11 @@ function checkPossibilityOfMovement() {
     rowCurrent.push(0);
 
     for (let j = 0; j <= maxColums; j++) {
-      if (rowCurrent[i] === rowCurrent[i + 1]) {
+      if (rowCurrent[j] === rowCurrent[j + 1]) {
         return false;
       };
 
-      if (rowCurrent[i] === rowNext[i]) {
+      if (rowCurrent[j] === rowNext[j]) {
         return false;
       };
     };
