@@ -1,7 +1,7 @@
 'use strict';
 
-let score = 0;
-
+let score;
+let gameField;
 const button = document.querySelector('.button');
 const gameScore = document.querySelector('.game-score');
 const field = document.querySelector('.game-field');
@@ -13,11 +13,9 @@ function startGame() {
   button.classList.add('restart');
   document.querySelector('.message-start').classList.add('hidden');
   button.removeEventListener('click', startGame);
-  button.addEventListener('click', restartGame);
+  button.addEventListener('click', newGame);
   button.innerHTML = 'Restart';
-  randomCell();
-  randomCell();
-  document.addEventListener('keydown', game);
+  newGame();
 }
 
 function game(e) {
@@ -40,23 +38,26 @@ function game(e) {
 
   if (action) {
     randomCell();
+    updateField();
     win();
     lose();
   }
 }
 
-function restartGame() {
-  for (const cell of field.querySelectorAll('.field-cell')) {
-    cell.innerHTML = '';
-    cell.className = 'field-cell';
-  }
-
+function newGame() {
+  gameField = [
+    ['', '', '', ''],
+    ['', '', '', ''],
+    ['', '', '', ''],
+    ['', '', '', ''],
+  ];
   document.querySelector('.message-lose').classList.add('hidden');
   document.querySelector('.message-win').classList.add('hidden');
   score = 0;
   updateScore();
   randomCell();
   randomCell();
+  updateField();
   document.addEventListener('keydown', game);
 }
 
@@ -64,14 +65,26 @@ function updateScore() {
   gameScore.innerHTML = score;
 }
 
+function updateField() {
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      field.rows[i].cells[j].innerHTML = gameField[i][j];
+
+      field.rows[i].cells[j].className
+        = `field-cell field-cell--${gameField[i][j]}`;
+    }
+  }
+}
+
 function randomCell() {
-  let cell;
+  let row;
+  let column;
   let number;
 
   do {
-    cell = field.rows[Math.floor(Math.random() * 4)]
-      .cells[Math.floor(Math.random() * 4)];
-  } while (!isEmptyCell(cell));
+    row = Math.floor(Math.random() * 4);
+    column = Math.floor(Math.random() * 4);
+  } while (!isEmptyCell([row, column]));
 
   if (Math.floor(Math.random() * 10) === 9) {
     number = 4;
@@ -79,13 +92,12 @@ function randomCell() {
     number = 2;
   }
 
-  cell.innerHTML = number;
-  cell.classList.add(`field-cell--${number}`);
+  gameField[row][column] = number;
 }
 
 function win() {
-  for (const cell of field.querySelectorAll('.field-cell')) {
-    if (cell.innerHTML === '2048') {
+  for (const row of gameField) {
+    if (row.includes(2048)) {
       document.removeEventListener('keydown', game);
       document.querySelector('.message-win').classList.remove('hidden');
     }
@@ -93,14 +105,16 @@ function win() {
 }
 
 function lose() {
-  if (hasEmptyCell()) {
-    return;
+  for (const row of gameField) {
+    if (row.includes('')) {
+      return;
+    }
   }
 
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 3; j++) {
-      if (canMerge(field.rows[i].cells[j], field.rows[i].cells[j + 1])
-        || canMerge(field.rows[j].cells[i], field.rows[j + 1].cells[i])) {
+      if (canMerge([i, j], [i, j + 1])
+        || canMerge([j, i], [j + 1, i])) {
         return;
       }
     }
@@ -111,35 +125,21 @@ function lose() {
 }
 
 function mergeCells(prevCell, cell) {
-  const number = cell.innerHTML * 2;
+  const number = gameField[cell[0]][cell[1]] * 2;
 
-  prevCell.innerHTML = number;
-  prevCell.className = `field-cell field-cell--${number}`;
-  cell.innerHTML = '';
-  cell.className = 'field-cell';
+  gameField[prevCell[0]][prevCell[1]] = number;
+  gameField[cell[0]][cell[1]] = '';
   score += number;
   updateScore();
 }
 
 function moveCells(prevCell, cell) {
-  prevCell.innerHTML = cell.innerHTML;
-  cell.innerHTML = '';
-  prevCell.className = cell.className;
-  cell.className = 'field-cell';
-}
-
-function hasEmptyCell() {
-  for (const cell of field.querySelectorAll('.field-cell')) {
-    if (isEmptyCell(cell)) {
-      return true;
-    }
-  }
-
-  return false;
+  gameField[prevCell[0]][prevCell[1]] = gameField[cell[0]][cell[1]];
+  gameField[cell[0]][cell[1]] = '';
 }
 
 function isEmptyCell(cell) {
-  if (cell.innerHTML === '') {
+  if (gameField[cell[0]][cell[1]] === '') {
     return true;
   }
 
@@ -147,7 +147,7 @@ function isEmptyCell(cell) {
 }
 
 function canMerge(prevCell, cell) {
-  if (prevCell.innerHTML === cell.innerHTML) {
+  if (gameField[prevCell[0]][prevCell[1]] === gameField[cell[0]][cell[1]]) {
     return true;
   }
 
@@ -165,10 +165,10 @@ function lines(rows, columns, direction) {
 
       switch (direction) {
         case 'horizontal':
-          cell = field.rows[rows[i]].cells[columns[j]];
+          cell = [rows[i], columns[j]];
           break;
         case 'vertical':
-          cell = field.rows[rows[j]].cells[columns[i]];
+          cell = [rows[j], columns[i]];
           break;
       }
 
