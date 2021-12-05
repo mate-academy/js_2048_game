@@ -50,8 +50,6 @@ const refreshField = () => {
 };
 
 const generate = () => {
-  checkForFreeCell();
-
   const startNumbs = [2, 2, 2, 2, 2, 4, 2, 2, 2, 2];
 
   const randomRow = Math.floor(Math.random() * 4);
@@ -84,6 +82,8 @@ const newGame = () => {
 };
 
 document.addEventListener('keyup', e => {
+  checkForGame();
+
   if (!winMessage.classList.contains('hidden')
     || !loseMessage.classList.contains('hidden')
     || !startMessage.classList.contains('hidden')) {
@@ -91,25 +91,13 @@ document.addEventListener('keyup', e => {
   }
 
   if (e.key === 'ArrowLeft') {
-    moveLeft();
-    combinateRow();
-    moveLeft();
-    generate();
+    moveFunc(moveLeft, combinateRow);
   } else if (e.key === 'ArrowUp') {
-    moveTop();
-    combinateColumn();
-    moveTop();
-    generate();
+    moveFunc(moveTop, combinateColumn);
   } else if (e.key === 'ArrowRight') {
-    moveRight();
-    combinateRow();
-    moveRight();
-    generate();
+    moveFunc(moveRight, combinateRow);
   } else if (e.key === 'ArrowDown') {
-    moveDown();
-    combinateColumn();
-    moveDown();
-    generate();
+    moveFunc(moveDown, combinateColumn);
   }
 
   refreshField();
@@ -197,13 +185,52 @@ const checkForWin = () => {
   }
 };
 
-const checkForFreeCell = () => {
-  if (
-    !gameField[0].includes(0)
+const checkForGame = () => {
+  if (!gameField[0].includes(0)
     && !gameField[1].includes(0)
     && !gameField[2].includes(0)
-    && !gameField[3].includes(0)
-  ) {
+    && !gameField[3].includes(0)) {
+    for (let row = 0; row < 4; row++) {
+      for (let cell = 0; cell < 3; cell++) {
+        if (gameField[row][cell] === gameField[row][cell + 1]) {
+          return;
+        }
+      }
+    }
+    matrixRight();
+
+    for (let row = 0; row < 4; row++) {
+      for (let cell = 0; cell < 3; cell++) {
+        if (gameField[row][cell] === gameField[row][cell + 1]) {
+          matrixLeft();
+
+          return;
+        }
+      }
+    }
+    matrixLeft();
     loseMessage.classList.remove('hidden');
+  }
+};
+
+const moveFunc = (move, combinate) => {
+  const currentField = [...gameField];
+  const currentScore = score;
+
+  move();
+  combinate();
+  move();
+
+  for (let row = 0; row < 4; row++) {
+    for (let cell = 0; cell < 4; cell++) {
+      if (gameField[row][cell] !== currentField[row][cell]
+        || currentScore !== score) {
+        generate();
+
+        return;
+      } else {
+        continue;
+      }
+    }
   }
 };
