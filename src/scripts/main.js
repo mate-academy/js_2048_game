@@ -14,6 +14,7 @@ const loseMessage = document.querySelector('.message-lose');
 const rowField = document.querySelectorAll('.field-row');
 const button = document.querySelector('.button');
 const gameScore = document.querySelector('.game-score');
+const bestScore = document.querySelector('.game-score-best');
 
 let score = 0;
 
@@ -180,6 +181,10 @@ const combinateColumn = () => {
 const checkForWin = () => {
   for (const row of gameField) {
     if (row.includes(2048)) {
+      if (score > bestScore.innerHTML) {
+        bestScore.parentElement.classList.remove('hidden');
+        bestScore.innerHTML = score;
+      }
       winMessage.classList.remove('hidden');
     }
   }
@@ -209,6 +214,11 @@ const checkForGame = () => {
       }
     }
     matrixLeft();
+
+    if (score > bestScore.innerHTML) {
+      bestScore.parentElement.classList.remove('hidden');
+      bestScore.innerHTML = score;
+    }
     loseMessage.classList.remove('hidden');
   }
 };
