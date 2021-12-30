@@ -24,6 +24,14 @@ startBtn.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', e => {
+  if (
+    !messageStart.classList.contains('hidden')
+     || !messageWin.classList.contains('hidden')
+     || !messageLose.classList.contains('hidden')
+  ) {
+    return;
+  }
+
   switch (e.key) {
     case 'ArrowLeft':
       sortFieldGame();
@@ -69,10 +77,6 @@ const updateGame = () => {
 
   score.innerHTML = scoreValue;
 
-  if (scoreValue >= 2048) {
-    messageWin.classList.remove('hidden');
-  }
-
   if (!direction.left && !direction.right && !direction.up && !direction.down) {
     messageLose.classList.remove('hidden');
   }
@@ -89,14 +93,14 @@ const addNumber = (key = 'left') => {
     }
   }
 
-  const randomItem = fieldsKey[Math.floor(Math.random() * fieldsKey.length)];
-
-  if (!randomItem) {
+  if (fieldsKey.length === 0) {
     direction[key] = false;
     updateGame();
 
     return;
   }
+
+  const randomItem = fieldsKey[Math.floor(Math.random() * fieldsKey.length)];
 
   direction = {
     left: true,
@@ -120,6 +124,11 @@ const sortRow = (arr, flip = false) => {
   for (let i = 0; i < 3; i++) {
     if (filtered[i] > 0 && filtered[i] === filtered[i + 1]) {
       filtered[i] = filtered[i] * 2;
+
+      if (filtered[i] === 2048) {
+        messageWin.classList.remove('hidden');
+      }
+
       filtered[i + 1] = 0;
       scoreValue += filtered[i];
     }
