@@ -14,7 +14,6 @@ const score = document.querySelector('.game-score');
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
-let direction = {};
 let scoreValue = 0;
 
 startBtn.addEventListener('click', () => {
@@ -23,11 +22,15 @@ startBtn.addEventListener('click', () => {
   addNumber();
 });
 
+score.addEventListener('click', () => {
+  checkGameOver();
+});
+
 document.addEventListener('keydown', e => {
   if (
     !messageStart.classList.contains('hidden')
-     || !messageWin.classList.contains('hidden')
-     || !messageLose.classList.contains('hidden')
+    || !messageWin.classList.contains('hidden')
+    || !messageLose.classList.contains('hidden')
   ) {
     return;
   }
@@ -35,29 +38,27 @@ document.addEventListener('keydown', e => {
   switch (e.key) {
     case 'ArrowLeft':
       sortFieldGame();
-      addNumber('left');
       break;
 
     case 'ArrowRight':
       sortFieldGame(true);
-      addNumber('right');
       break;
 
     case 'ArrowUp':
       rotateFieldGame();
       sortFieldGame(true);
       rotateFieldGame2();
-      addNumber('up');
       break;
 
     case 'ArrowDown':
       rotateFieldGame();
       sortFieldGame();
       rotateFieldGame2();
-      addNumber('down');
       break;
   }
+  addNumber();
   updateGame();
+  checkGameOver();
 });
 
 const updateGame = () => {
@@ -77,12 +78,9 @@ const updateGame = () => {
 
   score.innerHTML = scoreValue;
 
-  if (!direction.left && !direction.right && !direction.up && !direction.down) {
-    messageLose.classList.remove('hidden');
-  }
 };
 
-const addNumber = (key = 'left') => {
+const addNumber = () => {
   const fieldsKey = [];
 
   for (let row = 0; row < 4; row++) {
@@ -94,20 +92,10 @@ const addNumber = (key = 'left') => {
   }
 
   if (fieldsKey.length === 0) {
-    direction[key] = false;
-    updateGame();
-
     return;
   }
 
   const randomItem = fieldsKey[Math.floor(Math.random() * fieldsKey.length)];
-
-  direction = {
-    left: true,
-    right: true,
-    up: true,
-    down: true,
-  };
 
   const randomItemRow = randomItem[0];
   const randomItemCol = randomItem[1];
@@ -137,6 +125,29 @@ const sortRow = (arr, flip = false) => {
   filtered = sortZero(filtered);
 
   return !flip ? filtered : filtered.reverse();
+};
+
+const checkGameOver = () => {
+  const countZero = fieldGame.some(arr => arr.some(el => el === 0));
+
+  if (countZero) {
+    return;
+  }
+
+  let count = false;
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (fieldGame[i][j] === fieldGame[i][j + 1]
+        || fieldGame[j][i] === fieldGame[j + 1][i]) {
+        count = true;
+      }
+    }
+  }
+
+  if (!count) {
+    messageLose.classList.remove('hidden');
+  }
 };
 
 const sortFieldGame = flip => {
@@ -170,13 +181,6 @@ const resetGame = () => {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
-
-  direction = {
-    left: true,
-    right: true,
-    up: true,
-    down: true,
-  };
 
   scoreValue = 0;
   startBtn.textContent = 'Reset';
