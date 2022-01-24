@@ -16,6 +16,8 @@ const button = document.querySelector('.button');
 const gameScore = document.querySelector('.game-score');
 const bestScore = document.querySelector('.game-score-best');
 
+bestScore.innerHTML = localStorage.getItem('best') || '0';
+
 let score = 0;
 
 button.addEventListener('click', e => {
@@ -51,14 +53,14 @@ const refreshField = () => {
 };
 
 const generate = () => {
-  const startNumbs = [2, 2, 2, 2, 2, 4, 2, 2, 2, 2];
+  const startNumbs = Math.random() > 0.9 ? 4 : 2;
 
   const randomRow = Math.floor(Math.random() * 4);
   const randomColumn = Math.floor(Math.random() * 4);
 
   if (gameField[randomRow][randomColumn] === 0) {
     gameField[randomRow][randomColumn]
-      = startNumbs[Math.floor(Math.random() * 10)];
+      = startNumbs;
   } else {
     generate();
   }
@@ -184,6 +186,7 @@ const checkForWin = () => {
       if (score > bestScore.innerHTML) {
         bestScore.parentElement.classList.remove('hidden');
         bestScore.innerHTML = score;
+        localStorage.setItem('best', score);
       }
       winMessage.classList.remove('hidden');
     }
@@ -215,9 +218,10 @@ const checkForGame = () => {
     }
     matrixLeft();
 
-    if (score > bestScore.innerHTML) {
+    if (score > +bestScore.innerHTML) {
       bestScore.parentElement.classList.remove('hidden');
       bestScore.innerHTML = score;
+      localStorage.setItem('best', score);
     }
     loseMessage.classList.remove('hidden');
   }
