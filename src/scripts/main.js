@@ -433,6 +433,7 @@ startButton.addEventListener('click', (evn) => {
   startMessage.classList.add('hidden');
 
   if (evn.target.classList.contains('start')) {
+    score.textContent = 0;
     emptyField();
     generateNewNumber();
     generateNewNumber();
