@@ -41,10 +41,11 @@ function startMessage() {
 }
 
 function loseMessage() {
+  const filledCells = cells.filter(cell => +cell.textContent > 0);
   if (!nextMove.downMove
     && !nextMove.upMove
     && !nextMove.leftMove
-    && !nextMove.rightMove) {
+    && !nextMove.rightMove && filledCells.length === 16) {
     messageLose.classList.remove('hidden');
   }
 }
@@ -70,6 +71,7 @@ function getTwoRandomNumbers() {
   cells.map((cell, index) => {
     if (index === number1 || index === number2) {
       cell.textContent = getRandomNumber();
+      cell.className = `field-cell field-cell--${+cell.textContent}`;
     }
   });
 
