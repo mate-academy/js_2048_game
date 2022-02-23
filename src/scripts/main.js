@@ -8,6 +8,13 @@ const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
 
+const nextMove = {
+  upMove: true,
+  downMove: true,
+  leftMove: true,
+  rightMove: true,
+}
+
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') {
     leftAction();
@@ -33,6 +40,15 @@ function startMessage() {
   messageStart.classList.add('hidden');
 }
 
+function loseMessage() {
+  if (!nextMove.downMove
+    && !nextMove.upMove
+    && !nextMove.leftMove
+    && !nextMove.rightMove) {
+    messageLose.classList.remove('hidden');
+  }
+}
+
 function getTwoRandomNumbers() {
   startButton.classList.add('restart');
   startButton.textContent = 'Restart';
@@ -52,11 +68,7 @@ function getTwoRandomNumbers() {
   } while (number1 === number2);
 
   cells.map((cell, index) => {
-    if (index === number1) {
-      cell.textContent = getRandomNumber();
-    }
-
-    if (index === number2) {
+    if (index === number1 || index === number2) {
       cell.textContent = getRandomNumber();
     }
   });
@@ -79,16 +91,10 @@ function addNumber() {
   let cellIndex;
 
   cells.map((cell, index) => {
-    if (cell.textContent) {
+    if (+cell.textContent > 0) {
       existingNumbers.push(index);
     }
   });
-
-  if (existingNumbers.length === 16) {
-    messageLose.classList.remove('hidden');
-
-    return;
-  }
 
   do {
     cellIndex = Math.floor(Math.random() * 16);
@@ -101,6 +107,8 @@ function addNumber() {
 }
 
 function leftAction() {
+  let leftChange = false;
+
   for (let i = 0; i < cells.length; i++) {
     if (i % 4 === 0) {
       const cell1 = +cells[i].textContent;
@@ -109,13 +117,10 @@ function leftAction() {
       const cell4 = +cells[i + 3].textContent;
       const row = [cell1, cell2, cell3, cell4];
 
-      const filledCells = row.filter(cell => cell);
-      const emptyCells = new Array(4 - filledCells.length).fill('');
-      const updatedRow = filledCells.concat(emptyCells);
-
-      for (let y = 1; y < updatedRow.length; y++) {
-        if (updatedRow[y] === updatedRow[y - 1]) {
-          const totalNumber = updatedRow[y] + updatedRow[y - 1];
+      const filledCells = row.filter(cell => cell > 0);
+      for (let y = 1; y < filledCells.length; y++) {
+        if (filledCells[y] === filledCells[y - 1]) {
+          const totalNumber = filledCells[y] + filledCells[y - 1];
 
           if (totalNumber === 2048) {
             messageWin.classList.remove('hidden');
@@ -123,12 +128,15 @@ function leftAction() {
             return;
           }
           score.textContent = +score.textContent + totalNumber;
-          updatedRow[y - 1] = totalNumber;
-          updatedRow[y] = '';
-          updatedRow.splice(y, 1);
-          updatedRow.push('');
+          filledCells[y - 1] = totalNumber;
+          filledCells[y] = 0;
+          filledCells.splice(y, 1);
+          filledCells.push(0);
         }
       }
+      const emptyCells = new Array(4 - filledCells.length).fill(0);
+      const updatedRow = filledCells.concat(emptyCells);
+
 
       cells[i].textContent = updatedRow[0];
       cells[i + 1].textContent = updatedRow[1];
@@ -146,12 +154,24 @@ function leftAction() {
 
       cells[i + 3].className
         = `field-cell field-cell--${cells[i + 3].textContent}`;
+
+      if (JSON.stringify(row) !== JSON.stringify(updatedRow)) {
+        leftChange = JSON.stringify(row) !== JSON.stringify(updatedRow);
+      }
     }
   }
-  addNumber();
+
+  if (leftChange) {
+    nextMove.leftMove = true;
+    addNumber();
+  } else {
+    nextMove.leftMove = false;
+    loseMessage();
+  }
 }
 
 function rightAction() {
+  let rightChange = false;
   for (let i = 0; i < cells.length; i++) {
     if (i % 4 === 0) {
       const cell1 = +cells[i].textContent;
@@ -160,13 +180,10 @@ function rightAction() {
       const cell4 = +cells[i + 3].textContent;
       const row = [cell1, cell2, cell3, cell4];
 
-      const filledCells = row.filter(cell => cell);
-      const emptyCells = new Array(4 - filledCells.length).fill('');
-      const updatedRow = emptyCells.concat(filledCells);
-
-      for (let y = updatedRow.length - 1; y > 0; y--) {
-        if (updatedRow[y] === updatedRow[y - 1]) {
-          const totalNumber = updatedRow[y] + updatedRow[y - 1];
+      const filledCells = row.filter(cell => cell > 0);
+      for (let y = filledCells.length - 1; y > 0; y--) {
+        if (filledCells[y] === filledCells[y - 1]) {
+          const totalNumber = filledCells[y] + filledCells[y - 1];
 
           if (totalNumber === 2048) {
             messageWin.classList.remove('hidden');
@@ -174,12 +191,15 @@ function rightAction() {
             return;
           }
           score.textContent = +score.textContent + totalNumber;
-          updatedRow[y] = totalNumber;
-          updatedRow[y - 1] = '';
-          updatedRow.splice([y - 1], 1);
-          updatedRow.unshift('');
+          filledCells[y] = totalNumber;
+          filledCells[y - 1] = 0;
+          filledCells.splice([y - 1], 1);
+          filledCells.unshift(0);
         }
       }
+      const emptyCells = new Array(4 - filledCells.length).fill(0);
+      const updatedRow = emptyCells.concat(filledCells);
+
 
       cells[i].textContent = updatedRow[0];
       cells[i + 1].textContent = updatedRow[1];
@@ -197,12 +217,24 @@ function rightAction() {
 
       cells[i + 3].className
         = `field-cell field-cell--${cells[i + 3].textContent}`;
+
+      if (JSON.stringify(row) !== JSON.stringify(updatedRow)) {
+        rightChange = true;
+      }
     }
   }
-  addNumber();
+
+  if (rightChange) {
+    nextMove.rightMove = true;
+    addNumber();
+  } else {
+    nextMove.rightMove = false;
+    loseMessage();
+  }
 }
 
 function upAction() {
+  let upChange = false;
   for (let i = 3; i >= 0; i--) {
     const cell1 = +cells[i].textContent;
     const cell2 = +cells[i + 4].textContent;
@@ -210,13 +242,10 @@ function upAction() {
     const cell4 = +cells[i + 12].textContent;
     const row = [cell1, cell2, cell3, cell4];
 
-    const filledCells = row.filter(cell => cell);
-    const emptyCells = new Array(4 - filledCells.length).fill('');
-    const updatedRow = filledCells.concat(emptyCells);
-
-    for (let y = 1; y < updatedRow.length; y++) {
-      if (updatedRow[y] === updatedRow[y - 1]) {
-        const totalNumber = updatedRow[y] + updatedRow[y - 1];
+    const filledCells = row.filter(cell => cell > 0);
+    for (let y = 1; y < filledCells.length; y++) {
+      if (filledCells[y] === filledCells[y - 1]) {
+        const totalNumber = filledCells[y] + filledCells[y - 1];
 
         if (totalNumber === 2048) {
           messageWin.classList.remove('hidden');
@@ -224,12 +253,15 @@ function upAction() {
           return;
         }
         score.textContent = +score.textContent + totalNumber;
-        updatedRow[y - 1] = totalNumber;
-        updatedRow[y] = '';
-        updatedRow.splice(y, 1);
-        updatedRow.push('');
+        filledCells[y - 1] = totalNumber;
+        filledCells[y] = 0;
+        filledCells.splice(y, 1);
+        filledCells.push(0);
       }
     }
+    const emptyCells = new Array(4 - filledCells.length).fill(0);
+    const updatedRow = filledCells.concat(emptyCells);
+
 
     cells[i].textContent = updatedRow[0];
     cells[i + 4].textContent = updatedRow[1];
@@ -247,11 +279,24 @@ function upAction() {
 
     cells[i + 12].className
       = `field-cell field-cell--${cells[i + 12].textContent}`;
+
+    if (JSON.stringify(row) !== JSON.stringify(updatedRow)) {
+      upChange = true;
+    }
   }
-  addNumber();
+
+  if (upChange) {
+    nextMove.upMove = true;
+    addNumber();
+  } else {
+    nextMove.upMove = false;
+    loseMessage();
+  }
 }
 
 function downAction() {
+
+  let downChange = false;
   for (let i = 3; i >= 0; i--) {
     const cell1 = +cells[i].textContent;
     const cell2 = +cells[i + 4].textContent;
@@ -259,13 +304,10 @@ function downAction() {
     const cell4 = +cells[i + 12].textContent;
     const row = [cell1, cell2, cell3, cell4];
 
-    const filledCells = row.filter(cell => cell);
-    const emptyCells = new Array(4 - filledCells.length).fill('');
-    const updatedRow = emptyCells.concat(filledCells);
-
-    for (let y = updatedRow.length - 1; y > 0; y--) {
-      if (updatedRow[y] === updatedRow[y - 1]) {
-        const totalNumber = updatedRow[y] + updatedRow[y - 1];
+    const filledCells = row.filter(cell => cell > 0);
+    for (let y = filledCells.length - 1; y > 0; y--) {
+      if (filledCells[y] === filledCells[y - 1]) {
+        const totalNumber = filledCells[y] + filledCells[y - 1];
 
         if (totalNumber === 2048) {
           messageWin.classList.remove('hidden');
@@ -273,12 +315,14 @@ function downAction() {
           return;
         }
         score.textContent = +score.textContent + totalNumber;
-        updatedRow[y] = totalNumber;
-        updatedRow[y - 1] = '';
-        updatedRow.splice([y - 1], 1);
-        updatedRow.unshift('');
+        filledCells[y] = totalNumber;
+        filledCells[y - 1] = 0;
+        filledCells.splice([y - 1], 1);
+        filledCells.unshift(0);
       }
     }
+    const emptyCells = new Array(4 - filledCells.length).fill(0);
+    const updatedRow = emptyCells.concat(filledCells);
 
     cells[i].textContent = updatedRow[0];
     cells[i + 4].textContent = updatedRow[1];
@@ -296,6 +340,17 @@ function downAction() {
 
     cells[i + 12].className
       = `field-cell field-cell--${cells[i + 12].textContent}`;
+
+    if (JSON.stringify(row) !== JSON.stringify(updatedRow)) {
+      downChange = true;
+    }
   }
-  addNumber();
+
+  if (downChange) {
+    nextMove.downMove = true;
+    addNumber();
+  } else {
+    nextMove.downMove = false;
+    loseMessage();
+  }
 }
