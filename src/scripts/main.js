@@ -188,7 +188,10 @@ function horizontalMove(direction) {
 
   if (direction === 'left') {
     if (leftChange) {
+      nextMove.rightMove = true;
       nextMove.leftMove = true;
+      nextMove.upMove = true;
+      nextMove.downMove = true;
       addNumber();
     } else {
       nextMove.leftMove = false;
@@ -197,6 +200,9 @@ function horizontalMove(direction) {
   } else {
     if (rightChange) {
       nextMove.rightMove = true;
+      nextMove.leftMove = true;
+      nextMove.upMove = true;
+      nextMove.downMove = true;
       addNumber();
     } else {
       nextMove.rightMove = false;
@@ -284,7 +290,10 @@ function verticalMove(direction) {
 
   if (direction === 'up') {
     if (upChange) {
+      nextMove.rightMove = true;
+      nextMove.leftMove = true;
       nextMove.upMove = true;
+      nextMove.downMove = true;
       addNumber();
     } else {
       nextMove.upMove = false;
@@ -292,6 +301,9 @@ function verticalMove(direction) {
     }
   } else {
     if (downChange) {
+      nextMove.rightMove = true;
+      nextMove.leftMove = true;
+      nextMove.upMove = true;
       nextMove.downMove = true;
       addNumber();
     } else {
