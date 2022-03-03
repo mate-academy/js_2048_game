@@ -2,11 +2,13 @@
 
 // write your code here
 const cells = Array.from(document.querySelectorAll('.field-cell'));
+const board = new Array(16).fill(0);
 const startButton = document.querySelector('.start');
 const score = document.querySelector('.game-score');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
+let counter = 0;
 
 const nextMove = {
   upMove: true,
@@ -41,7 +43,7 @@ function startMessage() {
 }
 
 function loseMessage() {
-  const filledCells = cells.filter(cell => +cell.textContent > 0);
+  const filledCells = board.filter(cell => cell > 0);
   if (!nextMove.downMove
     && !nextMove.upMove
     && !nextMove.leftMove
@@ -61,6 +63,10 @@ function getTwoRandomNumbers() {
     cell.className = 'field-cell';
   });
 
+  board.fill(0);
+  counter = 0;
+  score.textContent = 0;
+
   const number1 = Math.floor(Math.random() * 16);
   let number2;
 
@@ -70,7 +76,8 @@ function getTwoRandomNumbers() {
 
   cells.map((cell, index) => {
     if (index === number1 || index === number2) {
-      cell.textContent = getRandomNumber();
+      board[index] = getRandomNumber();
+      cells[index].textContent = board[index];
       cell.className = `field-cell field-cell--${+cell.textContent}`;
     }
   });
@@ -92,8 +99,8 @@ function addNumber() {
   const existingNumbers = [];
   let cellIndex;
 
-  cells.map((cell, index) => {
-    if (+cell.textContent > 0) {
+  board.map((cell, index) => {
+    if (cell > 0) {
       existingNumbers.push(index);
     }
   });
@@ -102,10 +109,11 @@ function addNumber() {
     cellIndex = Math.floor(Math.random() * 16);
   } while (existingNumbers.includes(cellIndex));
 
-  cells[cellIndex].textContent = getRandomNumber();
+  board[cellIndex] = getRandomNumber();
+  cells[cellIndex].textContent = board[cellIndex];
 
   cells[cellIndex].className
-    = `field-cell field-cell--${cells[cellIndex].textContent}`;
+    = `field-cell field-cell--${board[cellIndex]}`;
 }
 
 function horizontalMove(direction) {
@@ -113,10 +121,10 @@ function horizontalMove(direction) {
   let leftChange = false;
   for (let i = 0; i < cells.length; i++) {
     if (i % 4 === 0) {
-      const cell1 = +cells[i].textContent;
-      const cell2 = +cells[i + 1].textContent;
-      const cell3 = +cells[i + 2].textContent;
-      const cell4 = +cells[i + 3].textContent;
+      const cell1 = board[i];
+      const cell2 = board[i + 1];
+      const cell3 = board[i + 2];
+      const cell4 = board[i + 3];
       const row = [cell1, cell2, cell3, cell4];
 
       const filledCells = row.filter(cell => cell > 0);
@@ -130,7 +138,8 @@ function horizontalMove(direction) {
 
               return;
             }
-            score.textContent = +score.textContent + totalNumber;
+            counter += totalNumber;
+            score.textContent = counter;
             filledCells[y - 1] = totalNumber;
             filledCells[y] = 0;
             filledCells.splice(y, 1);
@@ -147,7 +156,8 @@ function horizontalMove(direction) {
 
               return;
             }
-            score.textContent = +score.textContent + totalNumber;
+            counter += totalNumber;
+            score.textContent = counter;
             filledCells[y] = totalNumber;
             filledCells[y - 1] = 0;
             filledCells.splice([y - 1], 1);
@@ -159,10 +169,15 @@ function horizontalMove(direction) {
       const updatedRow = direction === 'left' ? filledCells.concat(emptyCells) : emptyCells.concat(filledCells);
 
 
-      cells[i].textContent = updatedRow[0];
-      cells[i + 1].textContent = updatedRow[1];
-      cells[i + 2].textContent = updatedRow[2];
-      cells[i + 3].textContent = updatedRow[3];
+      board[i] = updatedRow[0];
+      board[i + 1] = updatedRow[1];
+      board[i + 2] = updatedRow[2];
+      board[i + 3] = updatedRow[3];
+
+      cells[i].textContent = board[i];
+      cells[i + 1].textContent = board[i + 1];
+      cells[i + 2].textContent = board[i + 2];
+      cells[i + 3].textContent = board[i + 3];
 
       cells[i].className
         = `field-cell field-cell--${cells[i].textContent}`;
@@ -215,10 +230,10 @@ function verticalMove(direction) {
   let upChange = false;
   let downChange = false;
   for (let i = 3; i >= 0; i--) {
-    const cell1 = +cells[i].textContent;
-    const cell2 = +cells[i + 4].textContent;
-    const cell3 = +cells[i + 8].textContent;
-    const cell4 = +cells[i + 12].textContent;
+    const cell1 = board[i];
+    const cell2 = board[i + 4];
+    const cell3 = board[i + 8];
+    const cell4 = board[i + 12];
     const row = [cell1, cell2, cell3, cell4];
 
     const filledCells = row.filter(cell => cell > 0);
@@ -232,7 +247,8 @@ function verticalMove(direction) {
 
             return;
           }
-          score.textContent = +score.textContent + totalNumber;
+          counter += totalNumber;
+          score.textContent = counter;
           filledCells[y - 1] = totalNumber;
           filledCells[y] = 0;
           filledCells.splice(y, 1);
@@ -249,7 +265,8 @@ function verticalMove(direction) {
 
             return;
           }
-          score.textContent = +score.textContent + totalNumber;
+          counter += totalNumber;
+          score.textContent = counter;
           filledCells[y] = totalNumber;
           filledCells[y - 1] = 0;
           filledCells.splice([y - 1], 1);
@@ -261,10 +278,15 @@ function verticalMove(direction) {
     const updatedRow = direction === 'up' ? filledCells.concat(emptyCells) : emptyCells.concat(filledCells);
 
 
-    cells[i].textContent = updatedRow[0];
-    cells[i + 4].textContent = updatedRow[1];
-    cells[i + 8].textContent = updatedRow[2];
-    cells[i + 12].textContent = updatedRow[3];
+    board[i] = updatedRow[0];
+    board[i + 4] = updatedRow[1];
+    board[i + 8] = updatedRow[2];
+    board[i + 12] = updatedRow[3];
+
+    cells[i].textContent = board[i];
+    cells[i + 4].textContent = board[i + 4];
+    cells[i + 8].textContent = board[i + 8];
+    cells[i + 12].textContent = board[i + 12];
 
     cells[i].className
       = `field-cell field-cell--${cells[i].textContent}`;
