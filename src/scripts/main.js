@@ -1,6 +1,5 @@
 'use strict';
 
-// write your code here
 const cells = Array.from(document.querySelectorAll('.field-cell'));
 const board = new Array(16).fill(0);
 const startButton = document.querySelector('.start');
