@@ -6,10 +6,6 @@ const loseMessage = document.querySelector('.message-lose');
 const fieldRows = document.querySelector('.game-field').rows;
 const scoreboard = document.querySelector('.game-score');
 
-// class Game () {
-
-// }
-
 const fieldOfGame = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
