@@ -6,6 +6,10 @@ const loseMessage = document.querySelector('.message-lose');
 const fieldRows = document.querySelector('.game-field').rows;
 const scoreboard = document.querySelector('.game-score');
 
+// class Game () {
+
+// }
+
 const fieldOfGame = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -226,8 +230,8 @@ function moveCells() {
 function mergeCells() {
   for (let i = 0; i < fieldSize - 1; i++) {
     for (let j = 0; j < fieldSize; j++) {
-      if (fieldOfGame[i][j]
-          === fieldOfGame[i + 1][j] && fieldOfGame[i][j] !== 0) {
+      if (fieldOfGame[i][j] === fieldOfGame[i + 1][j]
+          && fieldOfGame[i][j] !== 0) {
         fieldOfGame[i][j] = fieldOfGame[i + 1][j] * 2;
         fieldOfGame[i + 1][j] = 0;
         currentScore += fieldOfGame[i][j];
