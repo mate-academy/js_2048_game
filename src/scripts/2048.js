@@ -150,6 +150,7 @@
 
 //       case 'start':
 //         if (startButton) {
+//           startButton.classList.remove('start');
 //           startButton.classList.add('restart');
 //           startButton.innerText = 'Restart';
 //         }
