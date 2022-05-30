@@ -1,21 +1,8 @@
 'use strict';
 
 const cells = document.querySelectorAll('.field-cell');
-const startButton = document.querySelector('.start');
-const loseMessage = document.querySelector('.message-lose');
-const winMessage = document.querySelector('.message-win');
-const score = document.querySelector('.game-score');
-let emptyCells = [...cells];
-
 const rows = [...document.querySelectorAll('.field-row')];
-const rowCells = [];
-
-rows.forEach(row => {
-  const rCells = [...row.querySelectorAll('.field-cell')];
-
-  rowCells.push(rCells);
-});
-
+const rowCells = rows.map((row) => [...row.querySelectorAll('.field-cell')]);
 const columns = [[], [], [], []];
 
 for (let r = 0; r < 4; r++) {
@@ -24,8 +11,16 @@ for (let r = 0; r < 4; r++) {
   }
 }
 
+const startButton = document.querySelector('.start');
+const startMessage = document.querySelector('.message-start');
+const loseMessage = document.querySelector('.message-lose');
+const winMessage = document.querySelector('.message-win');
+const score = document.querySelector('.game-score');
+// generating values for randomizer below, '4' chance is 10%
+const randomCellValues = new Array(10).fill(2, 0, 9).fill(4, 9);
+let emptyCells = [...cells];
 let started = false;
-const values = new Array(10).fill(2, 0, 9).fill(4, 9);
+let rotated = false;
 
 function fillRandomCell() {
   if (!emptyCells.length) {
@@ -34,7 +29,7 @@ function fillRandomCell() {
 
   const randomizeIndex = (arr) => Math.floor(Math.random() * arr.length);
   const randomCell = emptyCells[randomizeIndex(emptyCells)];
-  const randomValue = values[randomizeIndex(values)];
+  const randomValue = randomCellValues[randomizeIndex(randomCellValues)];
 
   randomCell.classList = (`field-cell field-cell--${randomValue}`);
   randomCell.innerText = randomValue;
@@ -42,68 +37,30 @@ function fillRandomCell() {
   emptyCells.splice(emptyCells.indexOf(randomCell), 1);
 }
 
-startButton.addEventListener('click', () => {
-  const startMessage = document.querySelector('.message-start');
+const start = () => {
+  startMessage.style = 'display: none;';
+  startButton.classList = 'button restart';
+  startButton.innerText = 'Restart';
 
-  const start = () => {
-    startMessage.style = 'display: none;';
-    startButton.classList = 'button restart';
-    startButton.innerText = 'Restart';
+  fillRandomCell();
+  fillRandomCell();
+  started = true;
+};
 
-    fillRandomCell();
-    fillRandomCell();
-    started = true;
-  };
+const restart = () => {
+  loseMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  emptyCells = [...cells];
+  score.innerText = 0;
 
-  const restart = () => {
-    loseMessage.classList.add('hidden');
-    winMessage.classList.add('hidden');
-    emptyCells = [...cells];
-    score.innerText = 0;
+  cells.forEach(cell => {
+    cell.innerText = '';
+    cell.className = 'field-cell';
+  });
 
-    cells.forEach(cell => {
-      cell.innerText = '';
-      cell.className = 'field-cell';
-    });
-
-    fillRandomCell();
-    fillRandomCell();
-  };
-
-  if (!started) {
-    start();
-  } else {
-    restart();
-  }
-});
-
-let rotated = false;
-
-document.addEventListener('keydown', (e) => {
-  const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-
-  if (arrowKeys.includes(e.key)) {
-    e.preventDefault();
-    move(e.key);
-
-    if (rotated) {
-      fillRandomCell();
-      rotated = false;
-    }
-  }
-});
-
-function checkMergePossibility() {
-  const columnsAndRows = [...rowCells, ...columns];
-
-  for (const group of columnsAndRows) {
-    for (let i = 0; i < 3; i++) {
-      if (group[i].innerText === group[i + 1].innerText) {
-        return 1;
-      }
-    }
-  }
-}
+  fillRandomCell();
+  fillRandomCell();
+};
 
 function move(direction) {
   if (!emptyCells.length && !checkMergePossibility()) {
@@ -128,6 +85,18 @@ function move(direction) {
   cells.forEach(cell => {
     cell.removeAttribute('data-blocked');
   });
+}
+
+function checkMergePossibility() {
+  const columnsAndRows = [...rowCells, ...columns];
+
+  for (const group of columnsAndRows) {
+    for (let i = 0; i < 3; i++) {
+      if (group[i].innerText === group[i + 1].innerText) {
+        return true;
+      }
+    }
+  }
 }
 
 function moveRight() {
@@ -207,3 +176,25 @@ function merge(current, prev) {
     winMessage.classList.remove('hidden');
   }
 }
+
+document.addEventListener('keydown', (e) => {
+  const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+
+  if (arrowKeys.includes(e.key)) {
+    e.preventDefault();
+    move(e.key);
+
+    if (rotated) {
+      fillRandomCell();
+      rotated = false;
+    }
+  }
+});
+
+startButton.addEventListener('click', () => {
+  if (!started) {
+    start();
+  } else {
+    restart();
+  }
+});
