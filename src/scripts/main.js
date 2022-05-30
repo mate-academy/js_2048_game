@@ -85,44 +85,29 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-function move(direction) {
-  let movesCount = 0;
-  const cellsBlocked = [];
-
-  function movesLeft() {
-    let count = 0;
-
-    rows.forEach(row => {
-      for (let i = 0; i < 3; i++) {
-        if (row.children[i].innerText === row.children[i + 1].innerText) {
-          count++;
-        }
+function checkMergePossibility() {
+  for (const row of rows) {
+    for (let i = 0; i < 3; i++) {
+      if (row.children[i].innerText === row.children[i + 1].innerText) {
+        return 1;
       }
-    });
-
-    if (count > 0) {
-      return 1;
     }
-
-    columns.forEach(column => {
-      for (let i = 0; i < 3; i++) {
-        if (column[i].innerText === column[i + 1].innerText) {
-          count++;
-        }
-      }
-    });
-
-    if (count > 0) {
-      return 1;
-    }
-
-    return 0;
   }
 
-  if (!emptyCells.length) {
-    if (!movesLeft()) {
-      loseMessage.classList.remove('hidden');
+  for (const column of columns) {
+    for (let i = 0; i < 3; i++) {
+      if (column[i].innerText === column[i + 1].innerText) {
+        return 1;
+      }
     }
+  }
+}
+
+function move(direction) {
+  let movesCount = 0;
+
+  if (!emptyCells.length && !checkMergePossibility()) {
+    loseMessage.classList.remove('hidden');
   }
 
   switch (direction) {
@@ -143,35 +128,6 @@ function move(direction) {
   function rotateCells(group) {
     let rotationsCount = 0;
 
-    const rotate = (current, prev) => {
-      current.innerText = prev.innerText;
-      prev.innerText = '';
-      current.className = prev.className;
-      prev.className = 'field-cell';
-      emptyCells.splice(emptyCells.indexOf(current), 1);
-      emptyCells.push(prev);
-      rotationsCount++;
-    };
-
-    const merge = (current, prev) => {
-      const value = current.innerText * 2;
-
-      current.innerText = value;
-      current.className = `field-cell field-cell--${value}`;
-      prev.innerText = '';
-      prev.className = 'field-cell';
-      emptyCells.push(prev);
-      score.innerText = +score.innerText + value;
-      rotationsCount++;
-
-      if (value === 2048) {
-        winMessage.classList.remove('hidden');
-      }
-
-      current.dataset.blocked = 'true';
-      prev.dataset.blocked = 'true';
-    };
-
     for (let i = 3; i > 0; i--) {
       const isThisCellEmpty = emptyCells.includes(group[i]);
       const isPrevCellEmpty = emptyCells.includes(group[i - 1]);
@@ -183,12 +139,13 @@ function move(direction) {
 
       if (canMerge) {
         merge(group[i], group[i - 1]);
-        cellsBlocked.push(group[i], group[i - 1]);
+        rotationsCount++;
         movesCount++;
       }
 
       if (canMove) {
         rotate(group[i], group[i - 1]);
+        rotationsCount++;
         movesCount++;
       }
     }
@@ -198,19 +155,9 @@ function move(direction) {
     }
   }
 
-  function getChildren(group) {
-    const children = [];
-
-    for (let i = 0; i <= 3; i++) {
-      children.push(group.children[i]);
-    }
-
-    return children;
-  }
-
   function moveRight() {
     rows.forEach(row => {
-      const rowChildren = getChildren(row);
+      const rowChildren = [...row.querySelectorAll('.field-cell')];
 
       rotateCells(rowChildren);
     });
@@ -218,7 +165,7 @@ function move(direction) {
 
   function moveLeft() {
     rows.forEach(row => {
-      const rowChildren = getChildren(row);
+      const rowChildren = [...row.querySelectorAll('.field-cell')];
 
       rotateCells(rowChildren.reverse());
     });
@@ -243,4 +190,33 @@ function move(direction) {
   });
 
   return movesCount;
+}
+
+function removeItem(item) {
+  item.innerText = '';
+  item.className = 'field-cell';
+  emptyCells.push(item);
+}
+
+function rotate(current, prev) {
+  current.innerText = prev.innerText;
+  current.className = prev.className;
+  emptyCells.splice(emptyCells.indexOf(current), 1);
+  removeItem(prev);
+}
+
+function merge(current, prev) {
+  const value = current.innerText * 2;
+
+  current.innerText = value;
+  current.className = `field-cell field-cell--${value}`;
+  score.innerText = +score.innerText + value;
+  removeItem(prev);
+
+  current.dataset.blocked = true;
+  prev.dataset.blocked = true;
+
+  if (value === 2048) {
+    winMessage.classList.remove('hidden');
+  }
 }
