@@ -87,9 +87,7 @@ document.addEventListener('keydown', (e) => {
 
 function move(direction) {
   let movesCount = 0;
-  let cellsBlocked = [];
-
-  // Below I'm checking whether there is at least 1 possible move
+  const cellsBlocked = [];
 
   function movesLeft() {
     let count = 0;
@@ -171,6 +169,7 @@ function move(direction) {
       }
 
       current.dataset.blocked = 'true';
+      prev.dataset.blocked = 'true';
     };
 
     for (let i = 3; i > 0; i--) {
@@ -184,7 +183,7 @@ function move(direction) {
 
       if (canMerge) {
         merge(group[i], group[i - 1]);
-        cellsBlocked.push(group[i]);
+        cellsBlocked.push(group[i], group[i - 1]);
         movesCount++;
       }
 
