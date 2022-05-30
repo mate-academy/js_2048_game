@@ -87,7 +87,9 @@ document.addEventListener('keydown', (e) => {
 
 function move(direction) {
   let movesCount = 0;
-  let cellsMerged = [];
+  let cellsBlocked = [];
+
+  // Below I'm checking whether there is at least 1 possible move
 
   function movesLeft() {
     let count = 0;
@@ -167,6 +169,8 @@ function move(direction) {
       if (value === 2048) {
         winMessage.classList.remove('hidden');
       }
+
+      current.dataset.blocked = 'true';
     };
 
     for (let i = 3; i > 0; i--) {
@@ -176,11 +180,11 @@ function move(direction) {
 
       const canMerge = group[i].innerText === group[i - 1].innerText
         && group[i].innerText.length
-        && !cellsMerged.includes(group[i]);
+        && !group[i - 1].dataset.blocked;
 
       if (canMerge) {
         merge(group[i], group[i - 1]);
-        cellsMerged.push(group[i], group[i - 1]);
+        cellsBlocked.push(group[i]);
         movesCount++;
       }
 
@@ -232,7 +236,12 @@ function move(direction) {
       rotateCells(column);
     });
   }
-  cellsMerged = [];
+
+  const blockedCells = document.querySelectorAll('[data-blocked]');
+
+  blockedCells.forEach(cell => {
+    cell.removeAttribute('data-blocked');
+  });
 
   return movesCount;
 }
