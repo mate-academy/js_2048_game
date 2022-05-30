@@ -177,8 +177,6 @@ function rotateCells(group) {
       rotateCells(group);
     }
   }
-
-  return rotated;
 }
 
 function removeItem(item) {
