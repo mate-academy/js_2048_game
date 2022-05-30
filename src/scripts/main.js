@@ -8,6 +8,14 @@ const score = document.querySelector('.game-score');
 let emptyCells = [...cells];
 
 const rows = [...document.querySelectorAll('.field-row')];
+const rowCells = [];
+
+rows.forEach(row => {
+  const rCells = [...row.querySelectorAll('.field-cell')];
+
+  rowCells.push(rCells);
+});
+
 const columns = [[], [], [], []];
 
 for (let r = 0; r < 4; r++) {
@@ -25,16 +33,13 @@ function fillRandomCell() {
   }
 
   const randomizeIndex = (arr) => Math.floor(Math.random() * arr.length);
-
-  const randomCellIndex = randomizeIndex(emptyCells);
-
-  const randomCell = emptyCells[randomCellIndex];
+  const randomCell = emptyCells[randomizeIndex(emptyCells)];
   const randomValue = values[randomizeIndex(values)];
 
   randomCell.classList = (`field-cell field-cell--${randomValue}`);
   randomCell.innerText = randomValue;
 
-  emptyCells.splice(randomCellIndex, 1);
+  emptyCells.splice(emptyCells.indexOf(randomCell), 1);
 }
 
 startButton.addEventListener('click', () => {
@@ -52,6 +57,7 @@ startButton.addEventListener('click', () => {
 
   const restart = () => {
     loseMessage.classList.add('hidden');
+    winMessage.classList.add('hidden');
     emptyCells = [...cells];
     score.innerText = 0;
 
@@ -71,32 +77,28 @@ startButton.addEventListener('click', () => {
   }
 });
 
+let rotated = false;
+
 document.addEventListener('keydown', (e) => {
   const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
   if (arrowKeys.includes(e.key)) {
     e.preventDefault();
+    move(e.key);
 
-    const changed = move(e.key);
-
-    if (changed) {
+    if (rotated) {
       fillRandomCell();
+      rotated = false;
     }
   }
 });
 
 function checkMergePossibility() {
-  for (const row of rows) {
-    for (let i = 0; i < 3; i++) {
-      if (row.children[i].innerText === row.children[i + 1].innerText) {
-        return 1;
-      }
-    }
-  }
+  const columnsAndRows = [...rowCells, ...columns];
 
-  for (const column of columns) {
+  for (const group of columnsAndRows) {
     for (let i = 0; i < 3; i++) {
-      if (column[i].innerText === column[i + 1].innerText) {
+      if (group[i].innerText === group[i + 1].innerText) {
         return 1;
       }
     }
@@ -104,8 +106,6 @@ function checkMergePossibility() {
 }
 
 function move(direction) {
-  let movesCount = 0;
-
   if (!emptyCells.length && !checkMergePossibility()) {
     loseMessage.classList.remove('hidden');
   }
@@ -125,71 +125,60 @@ function move(direction) {
       break;
   }
 
-  function rotateCells(group) {
-    let rotationsCount = 0;
-
-    for (let i = 3; i > 0; i--) {
-      const isThisCellEmpty = emptyCells.includes(group[i]);
-      const isPrevCellEmpty = emptyCells.includes(group[i - 1]);
-      const canMove = isThisCellEmpty && !isPrevCellEmpty;
-
-      const canMerge = group[i].innerText === group[i - 1].innerText
-        && group[i].innerText.length
-        && !group[i - 1].dataset.blocked;
-
-      if (canMerge) {
-        merge(group[i], group[i - 1]);
-        rotationsCount++;
-        movesCount++;
-      }
-
-      if (canMove) {
-        rotate(group[i], group[i - 1]);
-        rotationsCount++;
-        movesCount++;
-      }
-    }
-
-    if (rotationsCount > 0) {
-      return rotateCells(group);
-    }
-  }
-
-  function moveRight() {
-    rows.forEach(row => {
-      const rowChildren = [...row.querySelectorAll('.field-cell')];
-
-      rotateCells(rowChildren);
-    });
-  }
-
-  function moveLeft() {
-    rows.forEach(row => {
-      const rowChildren = [...row.querySelectorAll('.field-cell')];
-
-      rotateCells(rowChildren.reverse());
-    });
-  }
-
-  function moveUp() {
-    columns.forEach(column => {
-      rotateCells([...column].reverse());
-    });
-  }
-
-  function moveDown() {
-    columns.forEach(column => {
-      rotateCells(column);
-    });
-  }
-
-  const blockedCells = document.querySelectorAll('[data-blocked]');
-
-  blockedCells.forEach(cell => {
+  cells.forEach(cell => {
     cell.removeAttribute('data-blocked');
   });
+}
 
-  return movesCount;
+function moveRight() {
+  for (const row of rowCells) {
+    rotateCells(row);
+  }
+}
+
+function moveLeft() {
+  for (const row of rowCells) {
+    rotateCells([...row].reverse());
+  }
+}
+
+function moveUp() {
+  for (const column of columns) {
+    rotateCells([...column].reverse());
+  }
+}
+
+function moveDown() {
+  for (const column of columns) {
+    rotateCells(column);
+  }
+}
+
+function rotateCells(group) {
+  for (let i = 3; i > 0; i--) {
+    const canMove = emptyCells.includes(group[i])
+      && !emptyCells.includes(group[i - 1]);
+
+    const canMerge = group[i].innerText === group[i - 1].innerText
+      && group[i].innerText.length
+      && !group[i - 1].dataset.blocked;
+
+    if ((canMerge || canMove) && !rotated) {
+      rotated = true;
+    }
+
+    if (canMerge) {
+      merge(group[i], group[i - 1]);
+      rotateCells(group);
+    }
+
+    if (canMove) {
+      rotate(group[i], group[i - 1]);
+      rotateCells(group);
+    }
+  }
+
+  return rotated;
 }
 
 function removeItem(item) {
