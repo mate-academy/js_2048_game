@@ -118,8 +118,8 @@ startButton.addEventListener('click', () => {
   }
 });
 
-document.addEventListener('keyup', (ev) => {
-  if (ev.code === 'ArrowUp') {
+document.addEventListener('keyup', (browserEvent) => {
+  if (browserEvent.code === 'ArrowUp') {
     for (let c = 0; c < columns; c++) {
       let row = board.map(el => el[c]);
 
@@ -134,7 +134,9 @@ document.addEventListener('keyup', (ev) => {
         updateStyle(tile, num);
       }
     }
-  } else if (ev.code === 'ArrowDown') {
+
+    setRandom();
+  } else if (browserEvent.code === 'ArrowDown') {
     for (let c = 0; c < columns; c++) {
       let row = board.map(el => el[c]).reverse();
 
@@ -150,23 +152,26 @@ document.addEventListener('keyup', (ev) => {
         updateStyle(tile, num);
       }
     }
-  } else if (ev.code === 'ArrowRight') {
-    for (let i = 0; i < rows; i++) {
-      let row = board[i];
 
+    setRandom();
+  } else if (browserEvent.code === 'ArrowRight') {
+    for (let r = 0; r < rows; r++) {
+      let row = board[r];
       row.reverse();
       row = merge(row);
       row.reverse();
-      board[i] = row;
+      board[r] = row;
 
       for (let c = 0; c < columns; c++) {
-        const tile = rowsArray[i].children[c];
-        const num = board[i][c];
+        const tile = rowsArray[r].children[c];
+        const num = board[r][c];
 
         updateStyle(tile, num);
       }
     }
-  } else if (ev.code === 'ArrowLeft') {
+
+    setRandom();
+  } else if (browserEvent.code === 'ArrowLeft') {
     for (let r = 0; r < rows; r++) {
       let row = board[r];
 
@@ -180,9 +185,9 @@ document.addEventListener('keyup', (ev) => {
         updateStyle(tile, num);
       }
     }
-  }
 
-  setRandom();
+    setRandom();
+  }
 
   if (!mergePossible() && !hasEmpty()) {
     messageLoss.style.display = 'block';
