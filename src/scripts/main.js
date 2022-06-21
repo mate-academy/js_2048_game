@@ -54,8 +54,6 @@ function hasEmpty() {
 
 function setRandom() {
   if (!hasEmpty()) {
-    messageLoss.style.display = 'block';
-
     return;
   }
 
@@ -92,6 +90,7 @@ function merge(row) {
       score += filteredRow[i];
     }
   }
+
   scoreElement.innerHTML = score;
   filteredRow = filteredRow.filter(n => n !== 0);
 
@@ -111,7 +110,10 @@ startButton.addEventListener('click', () => {
     setGame();
   } else if (startButton.classList.contains('restart')) {
     cellsArray.forEach(a => updateStyle(a, 0));
-    scoreElement.innerHTML = 0;
+    score = 0;
+    scoreElement.innerHTML = score;
+    messageLoss.style.display = 'none';
+    messageWin.style.display = 'none';
     setGame();
   }
 });
@@ -132,8 +134,6 @@ document.addEventListener('keyup', (ev) => {
         updateStyle(tile, num);
       }
     }
-
-    setRandom();
   } else if (ev.code === 'ArrowDown') {
     for (let c = 0; c < columns; c++) {
       let row = board.map(el => el[c]).reverse();
@@ -150,8 +150,6 @@ document.addEventListener('keyup', (ev) => {
         updateStyle(tile, num);
       }
     }
-
-    setRandom();
   } else if (ev.code === 'ArrowRight') {
     for (let i = 0; i < rows; i++) {
       let row = board[i];
@@ -168,8 +166,6 @@ document.addEventListener('keyup', (ev) => {
         updateStyle(tile, num);
       }
     }
-
-    setRandom();
   } else if (ev.code === 'ArrowLeft') {
     for (let r = 0; r < rows; r++) {
       let row = board[r];
@@ -184,7 +180,23 @@ document.addEventListener('keyup', (ev) => {
         updateStyle(tile, num);
       }
     }
-
-    setRandom();
   }
+
+  if (!mergePossible() && !hasEmpty()) {
+    messageLoss.style.display = 'block';
+  }
+
+  setRandom();
 });
+
+function mergePossible() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns - 1; c++) {
+      if (board[r][c] === board[r][c + 1] || board[c][r] === board[c + 1][r]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
