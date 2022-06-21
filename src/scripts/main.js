@@ -182,11 +182,11 @@ document.addEventListener('keyup', (ev) => {
     }
   }
 
+  setRandom();
+
   if (!mergePossible() && !hasEmpty()) {
     messageLoss.style.display = 'block';
   }
-
-  setRandom();
 });
 
 function mergePossible() {
