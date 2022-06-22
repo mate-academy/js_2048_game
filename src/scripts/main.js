@@ -5,13 +5,17 @@ let score = 0;
 const rows = 4;
 const columns = 4;
 const winLimit = 2048;
+let startedGame = false
 
 createMessage('Press "Start" to begin game. Good luck!', 'message-start');
 
 function startGame() {
+  if (startedGame) {
+    return;
+  }
   setGame();
   createMessage('', 'hidden');
-  createButton('Reset', 'restart');
+  startedGame = true;
 };
 
 function resetGame() {
@@ -25,6 +29,7 @@ function resetGame() {
 
   createMessage('Press "Start" to begin game. Good luck!', 'message-start');
   createButton('Start', 'start');
+  startedGame = false;
 }
 
 document.querySelector('.start').addEventListener('click', () => {
@@ -128,6 +133,10 @@ function updateCell(cell, num) {
 }
 
 document.addEventListener('keyup', (e) => {
+  if (score === 0) {
+    createButton('Restart', 'restart');
+  }
+
   if (score >= winLimit) {
     createMessage('Winner! Congrats! You did it!', 'message-win');
 
