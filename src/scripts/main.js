@@ -5,7 +5,7 @@ let score = 0;
 const rows = 4;
 const columns = 4;
 const winLimit = 2048;
-let startedGame = false
+let startedGame = false;
 
 createMessage('Press "Start" to begin game. Good luck!', 'message-start');
 
@@ -137,12 +137,6 @@ document.addEventListener('keyup', (e) => {
     createButton('Restart', 'restart');
   }
 
-  if (score >= winLimit) {
-    createMessage('Winner! Congrats! You did it!', 'message-win');
-
-    return;
-  }
-
   setTwo();
 
   if (e.code === 'ArrowLeft') {
@@ -153,6 +147,12 @@ document.addEventListener('keyup', (e) => {
     slideUp();
   } else if (e.code === 'ArrowDown') {
     slideDown();
+  }
+
+  if (isWinner(2048)) {
+    createMessage('Winner! Congrats! You did it!', 'message-win');
+
+    return;
   }
 
   if (!canBeMergedVerticaly() && !canBeMergedHorisontaly() && !hasEmptyCell()) {
@@ -299,4 +299,8 @@ function createMessage(title, className) {
   message.innerText = title;
   message.classList.add(className);
   document.querySelector('.message-container').append(message);
+}
+
+function isWinner(value) {
+  return board.map(b => b.some(el => el === value)).some(w => w)
 }
