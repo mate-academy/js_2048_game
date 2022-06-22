@@ -119,74 +119,80 @@ startButton.addEventListener('click', () => {
 });
 
 document.addEventListener('keyup', (browserEvent) => {
-  if (browserEvent.code === 'ArrowUp') {
-    for (let c = 0; c < columns; c++) {
-      let row = board.map(el => el[c]);
-
-      row = merge(row);
-
-      for (let r = 0; r < rows; r++) {
-        board[r][c] = row[r];
-
-        const tile = rowsArray[r].children[c];
-        const num = board[r][c];
-
-        updateStyle(tile, num);
-      }
-    }
-
-    setRandom();
-  } else if (browserEvent.code === 'ArrowDown') {
-    for (let c = 0; c < columns; c++) {
-      let row = board.map(el => el[c]).reverse();
-
-      row = merge(row);
-      row.reverse();
-
-      for (let r = 0; r < rows; r++) {
-        board[r][c] = row[r];
-
-        const tile = rowsArray[r].children[c];
-        const num = board[r][c];
-
-        updateStyle(tile, num);
-      }
-    }
-
-    setRandom();
-  } else if (browserEvent.code === 'ArrowRight') {
-    for (let r = 0; r < rows; r++) {
-      let row = board[r];
-      row.reverse();
-      row = merge(row);
-      row.reverse();
-      board[r] = row;
-
+  switch (browserEvent.code) {
+    case 'ArrowUp':
       for (let c = 0; c < columns; c++) {
-        const tile = rowsArray[r].children[c];
-        const num = board[r][c];
+        let row = board.map(el => el[c]);
 
-        updateStyle(tile, num);
+        row = merge(row);
+
+        for (let r = 0; r < rows; r++) {
+          board[r][c] = row[r];
+
+          const tile = rowsArray[r].children[c];
+          const num = board[r][c];
+
+          updateStyle(tile, num);
+        }
       }
-    }
 
-    setRandom();
-  } else if (browserEvent.code === 'ArrowLeft') {
-    for (let r = 0; r < rows; r++) {
-      let row = board[r];
-
-      row = merge(row);
-      board[r] = row;
-
+      setRandom();
+      break;
+    case 'ArrowDown':
       for (let c = 0; c < columns; c++) {
-        const tile = rowsArray[r].children[c];
-        const num = board[r][c];
+        let row = board.map(el => el[c]).reverse();
 
-        updateStyle(tile, num);
+        row = merge(row);
+        row.reverse();
+
+        for (let r = 0; r < rows; r++) {
+          board[r][c] = row[r];
+
+          const tile = rowsArray[r].children[c];
+          const num = board[r][c];
+
+          updateStyle(tile, num);
+        }
       }
-    }
 
-    setRandom();
+      setRandom();
+      break;
+    case 'ArrowRight':
+      for (let r = 0; r < rows; r++) {
+        let row = board[r];
+
+        row.reverse();
+        row = merge(row);
+        row.reverse();
+        board[r] = row;
+
+        for (let c = 0; c < columns; c++) {
+          const tile = rowsArray[r].children[c];
+          const num = board[r][c];
+
+          updateStyle(tile, num);
+        }
+      }
+
+      setRandom();
+      break;
+    case 'ArrowLeft':
+      for (let r = 0; r < rows; r++) {
+        let row = board[r];
+
+        row = merge(row);
+        board[r] = row;
+
+        for (let c = 0; c < columns; c++) {
+          const tile = rowsArray[r].children[c];
+          const num = board[r][c];
+
+          updateStyle(tile, num);
+        }
+      }
+
+      setRandom();
+      break;
   }
 
   if (!mergePossible() && !hasEmpty()) {
