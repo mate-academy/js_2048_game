@@ -141,6 +141,7 @@ const gameWin = () => {
 };
 
 btnStart.addEventListener(`click`, function(e) {
+  btnStart.innerHTML = 'Restart';
   btnStart.classList.add(`restart`);
   btnStart.classList.remove(`start`);
   gamePlay = true;
