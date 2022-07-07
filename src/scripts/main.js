@@ -1,4 +1,5 @@
 // write your code here
+
 import
 { toRowArray, toColumnArray, rowToSingleArray, columnsToSingleArray }
   from './functions.js';
@@ -10,10 +11,16 @@ const messageLose = document.querySelector(`.message-lose`);
 const btnStart = document.querySelector(`.start`);
 const gameScore = document.querySelector(`.game-score`);
 
+let singleArray = new Array(16).fill('');
+let rowsArray = toRowArray(singleArray);
+let columnArray = toColumnArray(singleArray);
+
 messageLose.hidden = true;
 messageWin.hidden = true;
 
-const rerender = (singleArray) => {
+let gamePlay = false;
+
+const rerender = () => {
   tbody.innerHTML = ``;
 
   for (let i = 0; i < 4; i++) {
@@ -36,7 +43,7 @@ const rerender = (singleArray) => {
   }
 };
 
-const randomCell = (singleArray) => {
+const randomCell = () => {
   const emptyArray = singleArray
     .map((el, index) => {
       if (el === '') {
@@ -93,7 +100,7 @@ const combine = (array) => {
   return combinedArray;
 };
 
-const gameOverCheck = (singleArray, rowsArray, columnsArray) => {
+const gameOverCheck = () => {
   const emptyArray = singleArray.filter(el => el === '');
 
   if (emptyArray.length > 0) {
@@ -114,15 +121,17 @@ const gameOverCheck = (singleArray, rowsArray, columnsArray) => {
     return possibleMoves;
   };
 
-  if (!sameValue(rowsArray) && !sameValue(columnsArray)) {
+  if (!sameValue(rowsArray) && !sameValue(columnArray)) {
     messageLose.hidden = false;
+    gamePlay = false;
   }
 };
 
-const gameWin = (singleArray) => {
+const gameWin = () => {
   for (const el of singleArray) {
     if (el === 2048) {
       messageWin.hidden = false;
+      gamePlay = false;
 
       return true;
     }
@@ -131,77 +140,64 @@ const gameWin = (singleArray) => {
   return false;
 };
 
-const gameLoop = () => {
-  let singleArray = new Array(16).fill('');
-  let winCondition = false;
+btnStart.addEventListener(`click`, function(e) {
+  btnStart.classList.add(`restart`);
+  btnStart.classList.remove(`start`);
+  gamePlay = true;
+  gameScore.innerHTML = '0';
+  singleArray = new Array(16).fill('');
 
-  randomCell(singleArray);
-  randomCell(singleArray);
-  rerender(singleArray);
+  messageLose.hidden = true;
+  messageWin.hidden = true;
+  messageStart.hidden = true;
+  randomCell();
+  randomCell();
+  rerender();
+  rowsArray = toRowArray(singleArray);
+  columnArray = toColumnArray(singleArray);
+});
 
-  let rowsArray = toRowArray(singleArray);
-  let columnsArray = toColumnArray(singleArray);
+document.addEventListener(`keydown`, function(e) {
+  if (!gamePlay) {
+    return;
+  }
 
-  const control = (e) => {
-    const move = (condition, axis) => {
-      let pushedArray = [];
-
-      if (axis === 'Horizontal') {
-        pushedArray = push(rowsArray, condition);
-      } else {
-        pushedArray = push(columnsArray, condition);
-      };
-
-      const combinedArray = combine(pushedArray);
-
-      pushedArray = push(combinedArray, condition);
-
-      if (axis === 'Horizontal') {
-        singleArray = rowToSingleArray(pushedArray);
-      } else {
-        singleArray = columnsToSingleArray(pushedArray);
-      }
-      randomCell(singleArray);
-      rerender(singleArray);
-      rowsArray = toRowArray(singleArray);
-      columnsArray = toColumnArray(singleArray);
-      winCondition = gameWin(singleArray);
-
-      if (!winCondition) {
-        gameOverCheck(singleArray, rowsArray, columnsArray);
-      } else {
-        document.removeEventListener(`keydown`, control);
-      }
-    };
-
-    if (e.key === 'ArrowLeft') {
-      move('Left', 'Horizontal');
+  const move = (condition, side) => {
+    if (side === 'Horizontal') {
+      rowsArray = push(rowsArray, condition);
+      rowsArray = combine(rowsArray);
+      rowsArray = push(rowsArray, condition);
+      singleArray = rowToSingleArray(rowsArray);
+    } else {
+      columnArray = push(columnArray, condition);
+      columnArray = combine(columnArray);
+      columnArray = push(columnArray, condition);
+      singleArray = columnsToSingleArray(columnArray);
     }
 
-    if (e.key === 'ArrowRight') {
-      move('Right', 'Horizontal');
-    }
+    randomCell();
+    rerender();
+    rowsArray = toRowArray(singleArray);
+    columnArray = toColumnArray(singleArray);
 
-    if (e.key === 'ArrowUp') {
-      move('Up', 'Vertical');
-    }
-
-    if (e.key === 'ArrowDown') {
-      move('Down', 'Vertical');
+    if (!gameWin()) {
+      gameOverCheck();
     }
   };
 
-  document.addEventListener(`keydown`, control);
-};
+  if (e.key === 'ArrowLeft') {
+    move('Left', 'Horizontal');
+  }
 
-btnStart.addEventListener(`click`, function(e) {
-  gameLoop();
+  if (e.key === 'ArrowRight') {
+    move('Right', 'Horizontal');
+  }
 
-  btnStart.innerHTML = 'Restart';
-  btnStart.classList.remove('start');
-  btnStart.classList.add('restart');
+  if (e.key === 'ArrowUp') {
+    move('Up', 'Vertical');
+  }
 
-  messageStart.hidden = true;
-  messageLose.hidden = true;
-  messageWin.hidden = true;
+  if (e.key === 'ArrowDown') {
+    move('Down', 'Vertical');
+  }
 });
