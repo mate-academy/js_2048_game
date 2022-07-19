@@ -9,7 +9,7 @@ const msgWin = document.querySelector('.message-win');
 const msgLoss = document.querySelector('.message-lose');
 
 const rowsCount = gameRows.length;
-const winCondition = 16;
+const winCondition = 2048;
 
 let gameField;
 let score;
@@ -120,6 +120,25 @@ const sortCol = (reversed = false) => {
   setRandom();
 };
 
+const checkForLose = () => {
+  const hasEmpty = gameField.some(arr => arr.some(el => el === 0));
+
+  if (hasEmpty) {
+    return;
+  }
+
+  for (let row = 0; row < rowsCount; row++) {
+    for (let col = 0; col < rowsCount - 1; col++) {
+      if (gameField[row][col] === gameField[row][col + 1]
+        || gameField[col][row] === gameField[col + 1][row]) {
+        return;
+      }
+    }
+  }
+
+  return true;
+};
+
 const gameHandler = (keyEvent) => {
   switch (keyEvent.key) {
     case 'ArrowUp':
@@ -140,6 +159,13 @@ const gameHandler = (keyEvent) => {
 
     default:
       break;
+  }
+
+  const lose = checkForLose();
+
+  if (lose) {
+    msgLoss.classList.remove('hidden');
+    document.removeEventListener('keydown', gameHandler);
   }
 };
 
