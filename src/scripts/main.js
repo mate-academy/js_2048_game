@@ -9,6 +9,7 @@ const msgWin = document.querySelector('.message-win');
 const msgLoss = document.querySelector('.message-lose');
 
 const rowsCount = gameRows.length;
+const winCondition = 16;
 
 let gameField;
 let score;
@@ -33,6 +34,11 @@ const updateUI = (elem, number = 0) => {
   element.innerText = number > 0 ? number : '';
   element.classList.value = '';
   element.classList.add(`field-cell--${number}`, 'field-cell');
+
+  if (number === winCondition) {
+    msgWin.classList.remove('hidden');
+    document.removeEventListener('keydown', gameHandler);
+  }
 };
 
 const setRandom = () => {
@@ -57,16 +63,6 @@ const setRandom = () => {
     updateUI(randomElement, randomNum);
   }
 };
-
-startBtn.addEventListener('click', () => {
-  startBtn.innerText = 'Reset';
-  startBtn.classList.toggle('start');
-  startBtn.classList.toggle('restart');
-  gameCells.forEach(cell => updateUI(cell));
-  resetGame();
-  setRandom();
-  setRandom();
-});
 
 const merge = (row, reversed = false) => {
   const prepared = reversed ? row.reverse() : row;
@@ -102,9 +98,29 @@ const sortRow = (reversed = false) => {
       updateUI(elem, num);
     }
   }
+
+  setRandom();
 };
 
-document.addEventListener('keydown', (keyEvent) => {
+const sortCol = (reversed = false) => {
+  for (let row = 0; row < rowsCount; row++) {
+    const currentRow = gameField[row];
+    const mergedRow = merge(currentRow, reversed);
+
+    gameField[row] = mergedRow;
+
+    for (let col = 0; col < rowsCount; col++) {
+      const elem = gameRows[row].children[col];
+      const num = gameField[row][col];
+
+      updateUI(elem, num);
+    }
+  }
+
+  setRandom();
+};
+
+const gameHandler = (keyEvent) => {
   switch (keyEvent.key) {
     case 'ArrowUp':
       sortRow();
@@ -114,15 +130,27 @@ document.addEventListener('keydown', (keyEvent) => {
       sortRow(true);
       break;
 
-    case 'ArrowRight':
+    case 'ArrowLeft':
+      sortCol();
       break;
 
-    case 'ArrowLeft':
+    case 'ArrowRight':
+      sortCol(true);
       break;
 
     default:
       break;
   }
+};
 
+startBtn.addEventListener('click', () => {
+  startBtn.innerText = 'Reset';
+  startBtn.classList.remove('start');
+  startBtn.classList.add('restart');
+  gameCells.forEach(cell => updateUI(cell));
+  resetGame();
   setRandom();
+  setRandom();
+
+  document.addEventListener('keydown', gameHandler);
 });
