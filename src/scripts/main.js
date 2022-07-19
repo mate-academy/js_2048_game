@@ -41,7 +41,7 @@ const resetGame = () => {
   msgLoss.classList.add('hidden');
 
   gameField.forEach((row, rowIndex) => {
-    row.forEach((col, colIndex) => updateUI(rowIndex, colIndex));
+    row.forEach((_, colIndex) => updateUI(rowIndex, colIndex));
   });
 };
 
@@ -69,7 +69,7 @@ const setRandom = () => {
 
 const merge = (row, reversed = false) => {
   const prepared = reversed ? row.reverse() : row;
-  const filtered = prepared.filter(n => n !== 0);
+  let filtered = prepared.filter(n => n !== 0);
 
   for (let i = 0; i < filtered.length - 1; i++) {
     if (filtered[i] === filtered[i + 1]) {
@@ -79,9 +79,10 @@ const merge = (row, reversed = false) => {
     }
   }
 
-  const resRow = filtered.concat(Array(rowsCount - filtered.length).fill(0));
-
+  filtered = filtered.filter(n => n !== 0);
   scoreElem.innerText = score;
+
+  const resRow = filtered.concat(Array(rowsCount - filtered.length).fill(0));
 
   return reversed ? resRow.reverse() : resRow;
 };
@@ -89,7 +90,6 @@ const merge = (row, reversed = false) => {
 const sortRow = (reversed = false) => {
   for (let col = 0; col < rowsCount; col++) {
     const mappedRow = gameField.map(el => el[col]);
-
     const mergedRow = merge(mappedRow, reversed);
 
     for (let row = 0; row < rowsCount; row++) {
