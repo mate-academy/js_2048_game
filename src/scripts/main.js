@@ -36,6 +36,7 @@ const resetGame = () => {
   ];
 
   score = 0;
+  scoreElem.innerText = 0;
   msgStart.classList.add('hidden');
   msgWin.classList.add('hidden');
   msgLoss.classList.add('hidden');
