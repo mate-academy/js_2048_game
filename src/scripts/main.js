@@ -68,6 +68,7 @@ function resetGame() {
   spawn();
 
   started = true;
+  score.innerText = 0;
 }
 
 function winGame(i, j) {
