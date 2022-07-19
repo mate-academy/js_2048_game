@@ -136,7 +136,8 @@ const checkForLose = () => {
     }
   }
 
-  return true;
+  msgLoss.classList.remove('hidden');
+  document.removeEventListener('keydown', gameHandler);
 };
 
 const gameHandler = (keyEvent) => {
@@ -161,12 +162,7 @@ const gameHandler = (keyEvent) => {
       break;
   }
 
-  const lose = checkForLose();
-
-  if (lose) {
-    msgLoss.classList.remove('hidden');
-    document.removeEventListener('keydown', gameHandler);
-  }
+  checkForLose();
 };
 
 startBtn.addEventListener('click', () => {
