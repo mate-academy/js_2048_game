@@ -1,7 +1,6 @@
 'use strict';
 
 const gameRows = document.querySelectorAll('.field-row');
-const gameCells = document.querySelectorAll('.field-cell');
 const startBtn = document.querySelector('.start');
 const scoreElem = document.querySelector('.game-score');
 const msgStart = document.querySelector('.message-start');
@@ -13,6 +12,20 @@ const winCondition = 2048;
 
 let gameField;
 let score;
+
+const updateUI = (row, col, num) => {
+  const element = gameRows[row].children[col];
+  const number = num || gameField[row][col];
+
+  element.innerText = number > 0 ? number : '';
+  element.classList.value = '';
+  element.classList.add(`field-cell--${number}`, 'field-cell');
+
+  if (number === winCondition) {
+    msgWin.classList.remove('hidden');
+    document.removeEventListener('keydown', gameHandler);
+  }
+};
 
 const resetGame = () => {
   gameField = [
@@ -26,19 +39,10 @@ const resetGame = () => {
   msgStart.classList.add('hidden');
   msgWin.classList.add('hidden');
   msgLoss.classList.add('hidden');
-};
 
-const updateUI = (elem, number = 0) => {
-  const element = elem;
-
-  element.innerText = number > 0 ? number : '';
-  element.classList.value = '';
-  element.classList.add(`field-cell--${number}`, 'field-cell');
-
-  if (number === winCondition) {
-    msgWin.classList.remove('hidden');
-    document.removeEventListener('keydown', gameHandler);
-  }
+  gameField.forEach((row, rowIndex) => {
+    row.forEach((col, colIndex) => updateUI(rowIndex, colIndex));
+  });
 };
 
 const setRandom = () => {
@@ -56,11 +60,10 @@ const setRandom = () => {
     // eslint-disable-next-line
     const [row, col] = emptyFields[Math.trunc(Math.random() * emptyFields.length)];
     const randomNum = Math.random() <= 0.1 ? 4 : 2;
-    const randomElement = gameRows[row].children[col];
 
     gameField[row][col] = randomNum;
 
-    updateUI(randomElement, randomNum);
+    updateUI(row, col, randomNum);
   }
 };
 
@@ -92,10 +95,7 @@ const sortRow = (reversed = false) => {
     for (let row = 0; row < rowsCount; row++) {
       gameField[row][col] = mergedRow[row];
 
-      const elem = gameRows[row].children[col];
-      const num = gameField[row][col];
-
-      updateUI(elem, num);
+      updateUI(row, col);
     }
   }
 
@@ -110,10 +110,7 @@ const sortCol = (reversed = false) => {
     gameField[row] = mergedRow;
 
     for (let col = 0; col < rowsCount; col++) {
-      const elem = gameRows[row].children[col];
-      const num = gameField[row][col];
-
-      updateUI(elem, num);
+      updateUI(row, col);
     }
   }
 
@@ -169,7 +166,6 @@ startBtn.addEventListener('click', () => {
   startBtn.innerText = 'Reset';
   startBtn.classList.remove('start');
   startBtn.classList.add('restart');
-  gameCells.forEach(cell => updateUI(cell));
   resetGame();
   setRandom();
   setRandom();
