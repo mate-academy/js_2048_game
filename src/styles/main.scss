@@ -14,12 +14,14 @@ body {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
+  line-height: 75px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  
 
   &--2 {
     background: #eee4da;
@@ -79,6 +81,14 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 10px;
+  border: 10px solid #bbada0;
 }
 
 .game-header {
