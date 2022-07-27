@@ -15,37 +15,12 @@ body {
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  // color: #776e65;
-  box-sizing: border-box;
-  // text-align: center;
-  // line-height: 75px;
-  // vertical-align: center;
-  // user-select: none;
-}
-
-.cell {
-  position: absolute;
   color: #776e65;
-  width: 75px;
-  height: 75px;
-  // box-sizing: border-box;
+  box-sizing: border-box;
   text-align: center;
   line-height: 75px;
-  border-radius: 5px;
-
-  &-new {
-    animation: scale;
-  
-    @keyframes scale {
-      from {
-        transform: scale(0.5);
-      }
-  
-      to {
-        transform: scale(1);
-      }
-    }
-  }
+  // vertical-align: center;
+  // user-select: none;
 
   &--2 {
     background: #eee4da;
@@ -98,6 +73,31 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+  }
+}
+
+.cell {
+  position: absolute;
+  color: #776e65;
+  width: 75px;
+  height: 75px;
+  // box-sizing: border-box;
+  text-align: center;
+  line-height: 75px;
+  border-radius: 5px;
+
+  &-new {
+    animation: scale;
+  
+    @keyframes scale {
+      from {
+        transform: scale(0.5);
+      }
+  
+      to {
+        transform: scale(1);
+      }
+    }
   }
 }
 
