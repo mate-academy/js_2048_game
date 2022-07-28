@@ -19,9 +19,11 @@ body {
   box-sizing: border-box;
   text-align: center;
   line-height: 75px;
+  transition: 0.25s ease background;
 
   &--2 {
     background: #eee4da;
+    
   }
 
   &--4 {

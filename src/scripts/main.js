@@ -166,13 +166,13 @@ function moveHandler(e) {
 
     moveColumn('up', 'check');
 
-    if (needNewValue) {
+    if (!needNewValue) {
       moveColumn('down', 'check');
 
-      if (needNewValue) {
+      if (!needNewValue) {
         moveColumn('right', 'check');
 
-        if (needNewValue) {
+        if (!needNewValue) {
           moveColumn('left', 'check');
         }
       }
