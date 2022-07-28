@@ -165,16 +165,60 @@ function moveHandler(e) {
     const prevValues = values.map(row => row.slice());
 
     moveColumn('up', 'check');
-    moveColumn('down', 'check');
-    moveColumn('right', 'check');
-    moveColumn('left', 'check');
+
+    if (needNewValue) {
+      moveColumn('down', 'check');
+
+      if (needNewValue) {
+        moveColumn('right', 'check');
+
+        if (needNewValue) {
+          moveColumn('left', 'check');
+        }
+      }
+    }
 
     if (needNewValue) {
       needNewValue = false;
       values = prevValues;
     } else {
       document.removeEventListener('keydown', moveHandler);
+      document.removeEventListener('touchmove', touchMoveHandler);
+      document.removeEventListener('touchstart', touchStartHandler);
+      document.removeEventListener('touchend', touchEndHandler);
       messages.querySelector('.message-lose').classList.remove('hidden');
+    }
+  }
+}
+
+function touchMoveHandler(e) {
+  e.preventDefault();
+}
+
+function touchStartHandler(e) {
+  touchStart = [e.changedTouches[0].clientX, e.changedTouches[0].clientY];
+}
+
+function touchEndHandler(e) {
+  touchEnd = [e.changedTouches[0].clientX, e.changedTouches[0].clientY];
+
+  const direction = touchEnd.map((item, index) => item - touchStart[index]);
+
+  if (direction[0] === 0 && direction[1] === 0) {
+    return;
+  }
+
+  if (Math.abs(direction[0]) > Math.abs(direction[1])) {
+    if (direction[0] > 0) {
+      moveHandler({ key: 'ArrowRight' });
+    } else {
+      moveHandler({ key: 'ArrowLeft' });
+    }
+  } else {
+    if (direction[1] > 0) {
+      moveHandler({ key: 'ArrowDown' });
+    } else {
+      moveHandler({ key: 'ArrowUp' });
     }
   }
 }
@@ -253,36 +297,7 @@ button.addEventListener('click', click => {
   generate();
 
   document.addEventListener('keydown', moveHandler);
-
-  document.addEventListener('touchmove', e => {
-    e.preventDefault();
-  }, { passive: false });
-
-  document.addEventListener('touchstart', e => {
-    touchStart = [e.changedTouches[0].clientX, e.changedTouches[0].clientY];
-  });
-
-  document.addEventListener('touchend', e => {
-    touchEnd = [e.changedTouches[0].clientX, e.changedTouches[0].clientY];
-
-    const direction = touchEnd.map((item, index) => item - touchStart[index]);
-
-    if (direction[0] === 0 && direction[1] === 0) {
-      return;
-    }
-
-    if (Math.abs(direction[0]) > Math.abs(direction[1])) {
-      if (direction[0] > 0) {
-        moveHandler({ key: 'ArrowRight' });
-      } else {
-        moveHandler({ key: 'ArrowLeft' });
-      }
-    } else {
-      if (direction[1] > 0) {
-        moveHandler({ key: 'ArrowDown' });
-      } else {
-        moveHandler({ key: 'ArrowUp' });
-      }
-    }
-  });
+  document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+  document.addEventListener('touchstart', touchStartHandler);
+  document.addEventListener('touchend', touchEndHandler);
 });
