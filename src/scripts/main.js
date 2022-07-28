@@ -159,7 +159,7 @@ function moveHandler(e) {
 
   if (needNewValue) {
     generate();
-  } else if (values.some(row => row.some(cell => cell !== 0))) {
+  } else if (values.some(row => row.some(cell => cell === 0))) {
     return 0;
   } else {
     const prevValues = values.map(row => row.slice());
