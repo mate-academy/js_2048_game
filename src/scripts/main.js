@@ -142,8 +142,6 @@ function slide(row, check) {
 }
 
 function moveHandler(e) {
-  e.preventDefault();
-
   switch (e.key) {
     case 'ArrowLeft':
       moveRow('left');
@@ -184,16 +182,20 @@ function moveHandler(e) {
 const button = document.querySelector('.start');
 const messages = document.querySelector('.message-container');
 const levels = document.querySelector('.levels');
-let isStarted = false;
-let square = 4;
+const scoreElement = document.querySelector('.game-score');
+const root = document.querySelector('.container');
+
 const cellSize = 75;
 const gapSize = 10;
-let score = 0;
-let needNewValue;
-const scoreElement = document.querySelector('.game-score');
-let values = Array(square).fill([]).map(row => Array(square).fill(0));
 
-const root = document.querySelector('.container');
+let isStarted = false;
+let square = 4;
+let score = 0;
+let needNewValue = false;
+let values = Array(square).fill([]).map(row => Array(square).fill(0));
+let touchStart = [];
+let touchEnd = [];
+
 const gameBoard = document.createElement('div');
 
 gameBoard.className = 'game-field';
@@ -201,6 +203,10 @@ gameBoard.className = 'game-field';
 createBoard();
 
 levels.addEventListener('click', click => {
+  if (!click.target.matches('.level')) {
+    return;
+  }
+
   if (square !== +click.target.value) {
     square = +click.target.value;
     click.target.classList.add('selected');
@@ -211,11 +217,15 @@ levels.addEventListener('click', click => {
       click.target.previousElementSibling.classList.remove('selected');
     }
 
+    values = Array(square).fill([]).map(row => Array(square).fill(0));
+
     createBoard();
 
-    const newEvent = new MouseEvent('click');
+    if (isStarted) {
+      const newEvent = new MouseEvent('click');
 
-    button.dispatchEvent(newEvent);
+      button.dispatchEvent(newEvent);
+    }
   }
 });
 
@@ -234,7 +244,6 @@ button.addEventListener('click', click => {
   }
 
   click.currentTarget.blur();
-  document.addEventListener('keydown', moveHandler);
 
   [...messages.children].forEach(message => {
     message.classList.add('hidden');
@@ -242,31 +251,38 @@ button.addEventListener('click', click => {
 
   generate();
   generate();
-});
 
-let touchStart = [];
-let touchEnd = [];
+  document.addEventListener('keydown', moveHandler);
 
-document.addEventListener('touchstart', e => {
-  touchStart = [e.touches[0].clientX, e.touches[0].clientY];
-});
+  document.addEventListener('touchmove', e => {
+    e.preventDefault();
+  }, { passive: false });
 
-document.addEventListener('touchend', e => {
-  touchEnd = [e.touches[0].clientX, e.touches[0].clientY];
+  document.addEventListener('touchstart', e => {
+    touchStart = [e.changedTouches[0].clientX, e.changedTouches[0].clientY];
+  });
 
-  const direction = touchEnd.map((item, index) => item - touchStart[index]);
+  document.addEventListener('touchend', e => {
+    touchEnd = [e.changedTouches[0].clientX, e.changedTouches[0].clientY];
 
-  if (Math.abs(direction[0]) > Math.abs(direction[1])) {
-    if (direction[0] > 0) {
-      moveHandler({ key: 'ArrowRight' });
-    } else {
-      moveHandler({ key: 'ArrowLeft' });
+    const direction = touchEnd.map((item, index) => item - touchStart[index]);
+
+    if (direction[0] === 0 && direction[1] === 0) {
+      return;
     }
-  } else {
-    if (direction[1] > 0) {
-      moveHandler({ key: 'ArrowDown' });
+
+    if (Math.abs(direction[0]) > Math.abs(direction[1])) {
+      if (direction[0] > 0) {
+        moveHandler({ key: 'ArrowRight' });
+      } else {
+        moveHandler({ key: 'ArrowLeft' });
+      }
     } else {
-      moveHandler({ key: 'ArrowUp' });
+      if (direction[1] > 0) {
+        moveHandler({ key: 'ArrowDown' });
+      } else {
+        moveHandler({ key: 'ArrowUp' });
+      }
     }
-  }
+  });
 });
