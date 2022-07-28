@@ -19,8 +19,6 @@ body {
   box-sizing: border-box;
   text-align: center;
   line-height: 75px;
-  // vertical-align: center;
-  // user-select: none;
 
   &--2 {
     background: #eee4da;
@@ -76,31 +74,6 @@ body {
   }
 }
 
-.cell {
-  position: absolute;
-  color: #776e65;
-  width: 75px;
-  height: 75px;
-  // box-sizing: border-box;
-  text-align: center;
-  line-height: 75px;
-  border-radius: 5px;
-
-  &-new {
-    animation: scale;
-  
-    @keyframes scale {
-      from {
-        transform: scale(0.5);
-      }
-  
-      to {
-        transform: scale(1);
-      }
-    }
-  }
-}
-
 .game-field {
   display: grid;
   grid-template-columns: repeat(auto-fill, 75px);
@@ -114,7 +87,7 @@ body {
 
 .game-header {
   display: flex;
-  width: 100%;
+  width: 110%;
   justify-content: space-between;
   margin-bottom: 24px;
   padding: 10px;
@@ -166,6 +139,20 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+}
+
+.level {
+  font-size: 14px;
+  background-color: #edc22e;
+  width: 100%;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 0;
+  cursor: pointer;
+}
+
+.selected {
+  border: 3px solid #708090;
 }
 
 .start {

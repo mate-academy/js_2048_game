@@ -1,31 +1,20 @@
 'use strict';
 
-const square = 4;
-const cellSize = 75;
-const gapSize = 10;
-let score = 0;
-const values = [[0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0]];
+function createBoard() {
+  gameBoard.innerHTML = '';
 
-const root = document.querySelector('.container');
-const gameBoard = document.createElement('div');
+  for (let i = 0; i < square; i++) {
+    for (let j = 0; j < square; j++) {
+      const cell = document.createElement('div');
 
-gameBoard.className = 'game-field';
-root.firstElementChild.after(gameBoard);
-
-for (let i = 0; i < square; i++) {
-  for (let j = 0; j < square; j++) {
-    const cell = document.createElement('div');
-
-    cell.className = 'field-cell';
-    cell.id = `${i + '-' + j}`;
-    gameBoard.append(cell);
+      cell.className = 'field-cell';
+      cell.id = `${i + '-' + j}`;
+      gameBoard.append(cell);
+    }
   }
+  root.firstElementChild.after(gameBoard);
+  root.style.width = square * cellSize + (square - 1) * gapSize + 'px';
 }
-
-root.style.width = square * cellSize + (square - 1) * gapSize + 'px';
 
 function generate() {
   const probability = Math.random();
@@ -36,9 +25,6 @@ function generate() {
   if (probability <= 0.1) {
     newValue = 4;
   }
-
-  // cell.classList.add('cell-new');
-  // cell.style.animationDuration = '0.3s';
 
   if (values[rowIndex][columnIndex] === 0) {
     values[rowIndex][columnIndex] = newValue;
@@ -51,9 +37,6 @@ function generate() {
   }
 }
 
-generate();
-generate();
-
 function updateBoard(cell, value) {
   cell.innerText = value === 0 ? '' : value;
   cell.className = '';
@@ -61,7 +44,69 @@ function updateBoard(cell, value) {
   cell.classList.add(`field-cell--${value}`);
 }
 
-function slide(row) {
+function moveRow(direction, check) {
+  needNewValue = false;
+
+  for (let rowIndex = 0; rowIndex < square; rowIndex++) {
+    let row = values[rowIndex];
+
+    if (direction === 'right') {
+      row.reverse();
+    }
+
+    row = slide(row, check);
+
+    if (direction === 'right') {
+      row.reverse();
+    }
+
+    values[rowIndex] = row;
+
+    if (!check) {
+      for (let columnIndex = 0; columnIndex < square; columnIndex++) {
+        const cell = document.getElementById(`${rowIndex + '-' + columnIndex}`);
+        const value = values[rowIndex][columnIndex];
+
+        updateBoard(cell, value);
+      }
+    }
+  }
+}
+
+function moveColumn(direction, check) {
+  needNewValue = false;
+
+  for (let columnIndex = 0; columnIndex < square; columnIndex++) {
+    let row = [];
+
+    for (let rowIndex = 0; rowIndex < square; rowIndex++) {
+      row.push(values[rowIndex][columnIndex]);
+    }
+
+    if (direction === 'down') {
+      row.reverse();
+    }
+
+    row = slide(row, check);
+
+    if (direction === 'down') {
+      row.reverse();
+    }
+
+    if (!check) {
+      for (let rowIndex = 0; rowIndex < square; rowIndex++) {
+        values[rowIndex][columnIndex] = row[rowIndex];
+
+        const cell = document.getElementById(`${rowIndex + '-' + columnIndex}`);
+        const value = values[rowIndex][columnIndex];
+
+        updateBoard(cell, value);
+      }
+    }
+  }
+}
+
+function slide(row, check) {
   let newRow = row.filter(num => num !== 0);
 
   for (let i = 0; i < newRow.length - 1; i++) {
@@ -69,7 +114,15 @@ function slide(row) {
       newRow[i] *= 2;
       newRow[i + 1] = 0;
 
-      score += newRow[i];
+      if (!check) {
+        score += newRow[i];
+        scoreElement.innerText = score;
+      }
+
+      if (newRow[i] === 2048) {
+        messages.querySelector('.message-win').classList.remove('hidden');
+        document.removeEventListener('keydown', moveHandler);
+      }
     }
   }
   newRow = newRow.filter(num => num !== 0);
@@ -78,61 +131,19 @@ function slide(row) {
     newRow.push(0);
   }
 
+  for (let i = 0; i < square; i++) {
+    if (newRow[i] !== row[i]) {
+      needNewValue = true;
+      break;
+    }
+  }
+
   return newRow;
 }
 
-function moveRow(direction) {
-  for (let rowIndex = 0; rowIndex < square; rowIndex++) {
-    let row = values[rowIndex];
+function moveHandler(e) {
+  e.preventDefault();
 
-    if (direction === 'right') {
-      row.reverse();
-    }
-
-    row = slide(row);
-
-    if (direction === 'right') {
-      row.reverse();
-    }
-
-    values[rowIndex] = row;
-
-    for (let columnIndex = 0; columnIndex < square; columnIndex++) {
-      const cell = document.getElementById(`${rowIndex + '-' + columnIndex}`);
-      const value = values[rowIndex][columnIndex];
-
-      updateBoard(cell, value);
-    }
-  }
-}
-
-function moveColumn(direction) {
-  for (let columnIndex = 0; columnIndex < square; columnIndex++) {
-    let row = [values[0][columnIndex], values[1][columnIndex],
-      values[2][columnIndex], values[3][columnIndex]];
-
-    if (direction === 'down') {
-      row.reverse();
-    }
-
-    row = slide(row);
-
-    if (direction === 'down') {
-      row.reverse();
-    }
-
-    for (let rowIndex = 0; rowIndex < square; rowIndex++) {
-      values[rowIndex][columnIndex] = row[rowIndex];
-
-      const cell = document.getElementById(`${rowIndex + '-' + columnIndex}`);
-      const value = values[rowIndex][columnIndex];
-
-      updateBoard(cell, value);
-    }
-  }
-}
-
-document.addEventListener('keyup', (e) => {
   switch (e.key) {
     case 'ArrowLeft':
       moveRow('left');
@@ -148,6 +159,87 @@ document.addEventListener('keyup', (e) => {
       break;
   }
 
+  if (needNewValue) {
+    generate();
+  } else if (values.some(row => row.some(cell => cell !== 0))) {
+    return 0;
+  } else {
+    const prevValues = values.map(row => row.slice());
+
+    moveColumn('up', 'check');
+    moveColumn('down', 'check');
+    moveColumn('right', 'check');
+    moveColumn('left', 'check');
+
+    if (needNewValue) {
+      needNewValue = false;
+      values = prevValues;
+    } else {
+      document.removeEventListener('keydown', moveHandler);
+      messages.querySelector('.message-lose').classList.remove('hidden');
+    }
+  }
+}
+
+const button = document.querySelector('.start');
+const messages = document.querySelector('.message-container');
+const levels = document.querySelector('.levels');
+let isStarted = false;
+let square = 4;
+const cellSize = 75;
+const gapSize = 10;
+let score = 0;
+let needNewValue;
+const scoreElement = document.querySelector('.game-score');
+let values = Array(square).fill([]).map(row => Array(square).fill(0));
+
+const root = document.querySelector('.container');
+const gameBoard = document.createElement('div');
+
+gameBoard.className = 'game-field';
+
+createBoard();
+
+levels.addEventListener('click', click => {
+  if (square !== +click.target.value) {
+    square = +click.target.value;
+    click.target.classList.add('selected');
+
+    if (click.target.nextElementSibling) {
+      click.target.nextElementSibling.classList.remove('selected');
+    } else {
+      click.target.previousElementSibling.classList.remove('selected');
+    }
+
+    createBoard();
+
+    const newEvent = new MouseEvent('click');
+
+    button.dispatchEvent(newEvent);
+  }
+});
+
+button.addEventListener('click', click => {
+  if (!isStarted) {
+    click.currentTarget.innerText = 'Restart';
+    click.currentTarget.className = 'button restart';
+    isStarted = true;
+  } else {
+    values = Array(square).fill([]).map(row => Array(square).fill(0));
+    score = 0;
+
+    [...gameBoard.children].forEach(cell => {
+      updateBoard(cell, 0);
+    });
+  }
+
+  click.currentTarget.blur();
+  document.addEventListener('keydown', moveHandler);
+
+  [...messages.children].forEach(message => {
+    message.classList.add('hidden');
+  });
+
   generate();
-  alert(score);
+  generate();
 });
