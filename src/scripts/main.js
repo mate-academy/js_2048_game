@@ -243,3 +243,30 @@ button.addEventListener('click', click => {
   generate();
   generate();
 });
+
+let touchStart = [];
+let touchEnd = [];
+
+document.addEventListener('touchstart', e => {
+  touchStart = [e.touches[0].clientX, e.touches[0].clientY];
+});
+
+document.addEventListener('touchend', e => {
+  touchEnd = [e.touches[0].clientX, e.touches[0].clientY];
+
+  const direction = touchEnd.map((item, index) => item - touchStart[index]);
+
+  if (Math.abs(direction[0]) > Math.abs(direction[1])) {
+    if (direction[0] > 0) {
+      moveHandler({ key: 'ArrowRight' });
+    } else {
+      moveHandler({ key: 'ArrowLeft' });
+    }
+  } else {
+    if (direction[1] > 0) {
+      moveHandler({ key: 'ArrowDown' });
+    } else {
+      moveHandler({ key: 'ArrowUp' });
+    }
+  }
+});
