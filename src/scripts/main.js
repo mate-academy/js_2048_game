@@ -6,21 +6,15 @@ const button = document.querySelector('.button');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
+
 let board;
 const rows = 4;
 const columns = 4;
 
 button.addEventListener('click', () => {
-  // if (button.textContent === 'Start') {
   button.classList.remove('start');
   button.classList.add('restart');
   button.textContent = 'Restart';
-  // } else {
-  //   button.classList.remove('restart');
-  //   button.classList.add('start');
-  //   button.textContent = 'Start';
-  // }
-
   score.textContent = '0';
   messageStart.classList.add('hidden');
   messageLose.classList.add('hidden');
@@ -37,7 +31,7 @@ function setGame() {
     [0, 0, 0, 0],
   ];
 
-  let i = 0; // i equal index of cells children
+  let i = 0;
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
@@ -125,7 +119,6 @@ function slide(row) {
 
   roww = filterZero(roww);
 
-  // add zeroes
   while (roww.length < columns) {
     roww.push(0);
   }
