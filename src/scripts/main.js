@@ -36,12 +36,36 @@ document.addEventListener('keyup', (e) => {
 
   if (e.code === 'ArrowLeft') {
     slideLeft();
+
+    if (isEmptyCell) {
+      newFieldGeneretion();
+    } else {
+      isLose();
+    }
   } else if (e.code === 'ArrowRight') {
     slideRight();
+
+    if (isEmptyCell) {
+      newFieldGeneretion();
+    } else {
+      isLose();
+    }
   } else if (e.code === 'ArrowUp') {
     slideUp();
+
+    if (isEmptyCell) {
+      newFieldGeneretion();
+    } else {
+      isLose();
+    }
   } else if (e.code === 'ArrowDown') {
     slideDown();
+
+    if (isEmptyCell) {
+      newFieldGeneretion();
+    } else {
+      isLose();
+    }
   }
 
   gameScore.innerText = score;
@@ -75,11 +99,7 @@ function newFieldGeneretion() {
     // eslint-disable-next-line no-useless-return
     return;
   } else {
-    if (isEmptyCell()) {
-      newFieldGeneretion();
-    } else {
-      isLose();
-    }
+    newFieldGeneretion();
   }
 }
 
@@ -117,7 +137,6 @@ function slideUp() {
       updateCell(cell, num);
     }
   }
-  newFieldGeneretion();
 }
 
 function slideDown() {
@@ -138,7 +157,6 @@ function slideDown() {
       updateCell(cell, num);
     }
   }
-  newFieldGeneretion();
 }
 
 function slideRight() {
@@ -157,7 +175,6 @@ function slideRight() {
       updateCell(cell, num);
     }
   }
-  newFieldGeneretion();
 }
 
 function slideLeft() {
@@ -174,7 +191,6 @@ function slideLeft() {
       updateCell(cell, num);
     }
   }
-  newFieldGeneretion();
 }
 
 function shift(r) {
