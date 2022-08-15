@@ -12,13 +12,6 @@ function equals(arr1, arr2) {
 
 const fieldWidth = 4;
 
-const rows = document.querySelector('.game-field>tbody').children;
-const gameField = [];
-
-for (let i = 0; i < fieldWidth; i++) {
-  gameField.push(rows[i].children);
-}
-
 let arrayField = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -26,28 +19,92 @@ let arrayField = [
   [0, 0, 0, 0],
 ];
 
-spawn();
-spawn();
-render();
+const rows = document.querySelector('.game-field>tbody').children;
+const score = document.querySelector('.game-score');
+const start = document.querySelector('.button');
 
-function spawn() {
+const messageStart = document.querySelector('.message-start');
+const messageWin = document.querySelector('.message-win');
+const messageLoose = document.querySelector('.message-lose');
+
+const gameField = [];
+
+messageWin.hidden = true;
+messageLoose.hidden = true;
+
+for (let i = 0; i < fieldWidth; i++) {
+  gameField.push(rows[i].children);
+}
+
+start.addEventListener('click', () => {
+  arrayField = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
+  spawn(2);
+  render();
+
+  start.classList.remove('start');
+  start.classList.add('restart');
+  start.textContent = 'Restart';
+
+  messageStart.hidden = true;
+  messageWin.hidden = true;
+  messageLoose.hidden = true;
+
+  score.textContent = '0';
+});
+
+function isGameOver() {
+  if (arrayField.some(row => row.includes(0))) {
+    return;
+  }
+
+  let cantMove = true;
+
+  function canMerge() {
+    arrayField.forEach(row => {
+      for (let i = 0; i < row.length; i++) {
+        if (row[i] === row[i + 1]) {
+          cantMove = false;
+        }
+      }
+    });
+  }
+
+  canMerge();
+  rotateLeft();
+  canMerge();
+  rotateRight();
+
+  if (cantMove) {
+    messageLoose.hidden = false;
+  }
+}
+
+function spawn(count = 1) {
   function randomValue() {
     return Math.random() > 0.9 ? 4 : 2;
   }
 
-  const empties = [];
+  for (let q = 0; q < count; q++) {
+    const empties = [];
 
-  arrayField.forEach((row, i) => {
-    row.forEach((num, j) => {
-      if (num === 0) {
-        empties.push([i, j]);
-      }
+    arrayField.forEach((row, i) => {
+      row.forEach((num, j) => {
+        if (num === 0) {
+          empties.push([i, j]);
+        }
+      });
     });
-  });
 
-  const position = empties[Math.floor(Math.random() * empties.length)];
+    const position = empties[Math.floor(Math.random() * empties.length)];
 
-  arrayField[position[0]][position[1]] = randomValue();
+    arrayField[position[0]][position[1]] = randomValue();
+  }
 }
 
 function render() {
@@ -75,13 +132,18 @@ function move(field) {
     const noZeroRow = row.filter(el => el !== 0);
 
     for (let i = 0; i < noZeroRow.length; i++) {
-      for (let j = i + 1; j < noZeroRow.length; j++) {
-        if (noZeroRow[j] !== noZeroRow[i]) {
-          break;
+      const current = noZeroRow[i];
+      const next = noZeroRow[i + 1];
+
+      if (next === current) {
+        noZeroRow[i] *= 2;
+        score.textContent = +score.textContent + noZeroRow[i];
+
+        if (noZeroRow[i] === 2048) {
+          messageWin.hidden = false;
         }
 
-        noZeroRow[i] *= 2;
-        noZeroRow.splice(j, 1);
+        noZeroRow.splice(i + 1, 1);
         break;
       }
     }
@@ -109,6 +171,7 @@ function moveRight() {
   }
 
   render();
+  isGameOver();
 }
 
 function moveLeft() {
@@ -119,6 +182,7 @@ function moveLeft() {
   }
 
   render();
+  isGameOver();
 }
 
 function moveUp() {
@@ -126,6 +190,7 @@ function moveUp() {
   moveLeft();
   rotateRight();
   render();
+  isGameOver();
 }
 
 function moveDown() {
@@ -133,6 +198,7 @@ function moveDown() {
   moveRight();
   rotateRight();
   render();
+  isGameOver();
 }
 
 function rotateRight() {
