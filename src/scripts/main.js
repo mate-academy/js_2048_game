@@ -144,7 +144,6 @@ function move(field) {
         }
 
         noZeroRow.splice(i + 1, 1);
-        break;
       }
     }
 
