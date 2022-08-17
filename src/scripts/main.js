@@ -12,6 +12,7 @@ const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 const gameScore = document.querySelector('.game-score');
 
+/* event for start or restart button */
 startButton.addEventListener('click', () => {
   if (startButton.innerHTML === 'Start') {
     messageStart.classList.add('hidden');
@@ -28,6 +29,7 @@ startButton.addEventListener('click', () => {
   }
 });
 
+/* events for arrow buttons */
 document.addEventListener('keyup', (e) => {
   if (score === 0) {
     startButton.classList.replace('start', 'restart');
@@ -36,39 +38,27 @@ document.addEventListener('keyup', (e) => {
 
   if (e.code === 'ArrowLeft') {
     slideLeft();
-
-    if (isEmptyCell) {
-      newFieldGeneretion();
-    } else {
-      isLose();
-    }
+    newFieldGeneretion();
   } else if (e.code === 'ArrowRight') {
     slideRight();
-
-    if (isEmptyCell) {
-      newFieldGeneretion();
-    } else {
-      isLose();
-    }
+    newFieldGeneretion();
   } else if (e.code === 'ArrowUp') {
     slideUp();
-
-    if (isEmptyCell) {
-      newFieldGeneretion();
-    } else {
-      isLose();
-    }
+    newFieldGeneretion();
   } else if (e.code === 'ArrowDown') {
+
     slideDown();
-
-    if (isEmptyCell) {
-      newFieldGeneretion();
-    } else {
-      isLose();
-    }
+    newFieldGeneretion();
   }
-
   gameScore.innerText = score;
+
+  if (!checkPossibleMovVerticaly() && !checkPossibleMovHorizontaly()
+   && !isEmptyCell()) {
+    isLose();
+
+    // eslint-disable-next-line no-useless-return
+    return;
+  }
 });
 
 /* set new game */
@@ -99,6 +89,10 @@ function newFieldGeneretion() {
     // eslint-disable-next-line no-useless-return
     return;
   } else {
+    if (!isEmptyCell()) {
+      return;
+    }
+
     newFieldGeneretion();
   }
 }
@@ -121,6 +115,7 @@ function resetGameField() {
   }
 }
 
+/* directions of moving for game field */
 function slideUp() {
   for (let c = 0; c < columns; c++) {
     let row = [gameField[0][c], gameField[1][c],
@@ -193,6 +188,7 @@ function slideLeft() {
   }
 }
 
+/* moving of game field */
 function shift(r) {
   let row = filterZero(r);
 
@@ -212,6 +208,7 @@ function shift(r) {
   return row;
 }
 
+/* changes game field after each moving */
 function updateCell(cell, num) {
   cell.innerText = '';
   cell.classList.value = '';
@@ -233,6 +230,7 @@ function filterZero(row) {
   return row.filter(r => r);
 }
 
+/* check game field for empty cells */
 function isEmptyCell() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
@@ -245,10 +243,53 @@ function isEmptyCell() {
   return false;
 }
 
+/* appear winner message */
 function isWinner() {
   winMessage.classList.remove('hidden');
 }
 
+/* appear lose message */
 function isLose() {
   loseMessage.classList.remove('hidden');
+}
+
+/* check possible of horizontal moving */
+function checkPossibleMovHorizontaly() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (gameField[r][c] === gameField[r][c + 1]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+/* merging of two rows */
+function isMergingRow(r) {
+  const row = filterZero(r);
+
+  for (let i = 0; i < row.length - 1; i++) {
+    if (row[i] === row[i + 1]) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/* check possible of vertical moving */
+function checkPossibleMovVerticaly() {
+  const arr = [];
+  const result = [];
+
+  for (let c = 0; c < columns; c++) {
+    arr.push([gameField[0][c], gameField[1][c],
+      gameField[2][c], gameField[3][c]]);
+  }
+
+  arr.forEach(b => result.push(isMergingRow(b)));
+
+  return result.some(el => el);
 }
