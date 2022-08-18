@@ -1,0 +1,71 @@
+.field {
+  background: #bbada0;
+  border-spacing: 10px;
+  border-radius: 5px;
+
+  &__cell {
+    width: 75px;
+    height: 75px;
+
+    text-align: center;
+    vertical-align: center;
+    border-radius: 5px;
+    color: #776e65;
+    background: #d6cdc4;
+    
+    user-select: none;
+
+    &--2 {
+      background: #eee4da;
+    }
+
+    &--4 {
+      background: #ede0c8;
+    }
+
+    &--8 {
+      background: #f2b179;
+      color: #f9f6f2;
+    }
+
+    &--16 {
+      background: #f59563;
+      color: #f9f6f2;
+    }
+
+    &--32 {
+      background: #f67c5f;
+      color: #f9f6f2;
+    }
+
+    &--64 {
+      background: #f65e3b;
+      color: #f9f6f2;
+    }
+
+    &--128 {
+      background: #edcf72;
+      color: #f9f6f2;
+    }
+
+    &--256 {
+      background: #edcc61;
+      color: #f9f6f2;
+    }
+
+    &--512 {
+      background: #edc850;
+      color: #f9f6f2;
+    }
+
+    &--1024 {
+      background: #edc53f;
+      color: #f9f6f2;
+    }
+
+    &--2048 {
+      background: #edc22e;
+      color: #f9f6f2;
+    }
+  }
+}
