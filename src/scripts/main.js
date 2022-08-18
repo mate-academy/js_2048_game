@@ -22,27 +22,25 @@ function gameOver() {
   });
 
   // if every row.indexOf(0) === -1, count would be -4;
-  if (count === -4) {
-    for (let i = 0; i < board.length; i++) {
-      for (let k = 0; k < board.length - 1; k++) {
-        const current = board[i][k];
-        const next = board[i][k + 1];
-  
-        const rotated = rotateClockWise(board.map(row => [...row]));
-        const currentRotated = rotated[i][k];
-        const nextRotated = rotated[i][k + 1];
-  
-        if (current === next) {
-          return;
-        }
+  for (let i = 0; i < board.length; i++) {
+    for (let k = 0; k < board.length - 1; k++) {
+      const current = board[i][k];
+      const next = board[i][k + 1];
 
-        if (currentRotated === nextRotated) {
-          return;
-        }
+      const rotated = rotateClockWise(board.map(row => [...row]));
+      const currentRotated = rotated[i][k];
+      const nextRotated = rotated[i][k + 1];
+
+      if (current === next) {
+        return;
+      }
+
+      if (currentRotated === nextRotated) {
+        return;
       }
     }
-    loseMessage.classList.remove('hidden');
   }
+  loseMessage.classList.remove('hidden');
 }
 
 const rotateClockWise = (matrix) => {
@@ -76,7 +74,7 @@ function renderTable() {
   
       currentCell.innerHTML = currentValue === 0 ? '' : currentValue;
       currentCell.className = '';
-      currentCell.classList.add('field-cell')
+      currentCell.classList.add('field-cell');
       currentCell.classList.add(`field-cell--${currentValue}`);
 
       if (currentCell.innerHTML === '2048') {
@@ -88,12 +86,16 @@ function renderTable() {
 renderTable();
 
 const moveLeft = () => {
+  const boardBefore = board.toString();
   moveLeftForBoth();
+
   score.innerHTML = gameScore;
-  renderTable()
+  renderTable();
+  
 };
 
 const moveRight = () => {
+  const boardBefore = board.toString();
   board = board.map(row => {
     const noZeroRow = row.filter(cell => cell !== 0);
 
@@ -105,6 +107,7 @@ const moveRight = () => {
         gameScore += currentCell + nextCell;
         noZeroRow[i] += nextCell;
         noZeroRow.splice(i + 1, 1);
+        // addOne();
       }
     };
 
@@ -117,8 +120,12 @@ const moveRight = () => {
     return noZeroRow;
   });
   score.innerHTML = gameScore;
-  addOne();
+  
   renderTable();
+
+  if (board.toString() !== boardBefore) {
+    addOne();
+  }
 };
 
 const moveUp = () => {
@@ -176,6 +183,8 @@ const moveDown = () => {
 // циклы
 
 function moveLeftForBoth() {
+  const boardBefore = board.toString();
+
   board = board.map(row => {
     const noZeroRow = row.filter(cell => cell !== 0);
 
@@ -191,14 +200,17 @@ function moveLeftForBoth() {
     };
 
     const amountOfNeededZeros = 4 - noZeroRow.length;
-
+    
     for (let i = 0; i < amountOfNeededZeros; i++) {
       noZeroRow.push(0);
     }
-
+    
     return noZeroRow;
   });
-  addOne();
+
+  if (board.toString() !== boardBefore) {
+    addOne();
+  }
 };
 
 function addOne() {
