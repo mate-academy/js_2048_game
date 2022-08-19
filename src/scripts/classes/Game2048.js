@@ -250,6 +250,8 @@ class Game2048 {
     this._dom.controls.start.classList.add('restart');
     this._dom.controls.start.innerText = 'Reset';
 
+    this._dom.messages.start.classList.toggle('hidden');
+
     this._isPlaying = true;
 
     this._insertRandomCell();
@@ -266,6 +268,10 @@ class Game2048 {
     this._dom.controls.start.classList.remove('restart');
     this._dom.controls.start.classList.add('start');
     this._dom.controls.start.innerText = 'Start';
+
+    this._dom.messages.start.classList.toggle('hidden');
+    this._dom.messages.win.classList.toggle('hidden', true);
+    this._dom.messages.lose.classList.toggle('hidden', true);
 
     this._isPlaying = false;
     this.score = 0;
