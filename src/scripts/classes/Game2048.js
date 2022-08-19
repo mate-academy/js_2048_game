@@ -168,6 +168,15 @@ class Game2048 {
     freeCells[randomIndex].value = randomValue;
   }
 
+  _activateGame() {
+    if (this.active) {
+      return;
+    }
+
+    Game2048._deactivateGames();
+    this.active = true;
+  }
+
   start() {
     if (this._isPlaying) {
       return;
