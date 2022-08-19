@@ -58,6 +58,7 @@ class Game2048 {
     this._score = 0;
     this._field = [];
 
+    this._dom = {};
 
     window.game2048 = window.game2048 || {
       games: [],
@@ -166,13 +167,11 @@ class Game2048 {
   _initField() {
     this._field = [];
 
-    if (!this.dom.field) {
+    if (!this._dom.field) {
       return;
     }
 
-    const rows = this.dom.field.querySelectorAll('.field__row');
-
-    [...rows].forEach(row => {
+    [...this._dom.rows].forEach(row => {
       const cellsRow = [];
       const cells = row.querySelectorAll('.field__cell');
 
