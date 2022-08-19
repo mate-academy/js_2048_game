@@ -98,6 +98,37 @@ class Game2048 {
       this._field.push(cellsRow);
     });
   }
+  start() {
+    if (this._isPlaying) {
+      return;
+    }
+
+    this._activateGame();
+
+    this._dom.controls.start.classList.remove('start');
+    this._dom.controls.start.classList.add('restart');
+    this._dom.controls.start.innerText = 'Reset';
+
+    this._isPlaying = true;
+
+    this._insertRandomCell();
+  }
+
+  restart() {
+    if (!this._isPlaying) {
+      return;
+    }
+
+    this._clearField();
+    this._activateGame();
+
+    this._dom.controls.start.classList.remove('restart');
+    this._dom.controls.start.classList.add('start');
+    this._dom.controls.start.innerText = 'Start';
+
+    this._isPlaying = false;
+    this.score = 0;
+  }
 }
 
 module.exports = Game2048;
