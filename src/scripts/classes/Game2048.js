@@ -3,6 +3,41 @@
 const Cell = require('./Cell');
 
 class Game2048 {
+  static _keyboardHandler(event) {
+    const activeGame = window.game2048
+      && window.game2048.games.find(game => game.active);
+
+    if (!activeGame) {
+      return;
+    }
+
+    switch (event.code) {
+      case 'ArrowLeft':
+      case 'Numpad4':
+        activeGame.moveLeft();
+        break;
+      case 'ArrowRight':
+      case 'Numpad6':
+        activeGame.moveRight();
+        break;
+      case 'ArrowUp':
+      case 'Numpad8':
+        activeGame.moveUp();
+        break;
+      case 'ArrowDown':
+      case 'Numpad2':
+        activeGame.moveDown();
+        break;
+      case 'Enter':
+      case 'NumpadEnter':
+        activeGame.start();
+        break;
+      case 'KeyR':
+        activeGame.restart();
+        break;
+    };
+  }
+
   static _deactivateGames() {
     if (!window.game2048) {
       return;
