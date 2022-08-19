@@ -98,6 +98,21 @@ class Game2048 {
       this._field.push(cellsRow);
     });
   }
+
+  _insertRandomCell() {
+    const getRandomInt = max => {
+      return Math.floor(Math.random() * max);
+    };
+
+    const freeCells = this._field
+      .flat()
+      .filter(cell => cell.value === 0);
+    const randomIndex = getRandomInt(freeCells.length);
+    const randomValue = Math.random() < 0.1 ? 4 : 2;
+
+    freeCells[randomIndex].value = randomValue;
+  }
+
   start() {
     if (this._isPlaying) {
       return;
