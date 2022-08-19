@@ -67,8 +67,6 @@ class Game2048 {
       keyboardHandler: null,
     };
     window.game2048.games.push(this);
-
-    this._initGame();
   }
 
   get score() {
@@ -482,6 +480,10 @@ class Game2048 {
     if (hasBeenChanged) {
       this._insertRandomCell();
     }
+  }
+
+  create() {
+    this._initGame();
   }
 
   start() {
