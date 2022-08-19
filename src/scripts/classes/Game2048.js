@@ -154,6 +154,28 @@ class Game2048 {
   }
 
   _initHandlers() {
+    if (!window.game2048.keyboardHandler) {
+      // Global event
+      // Prevents miltiple keyboard handlers to be attached to the document
+      window.game2048.keyboardHandler = Game2048._keyboardHandler;
+    }
+
+    document.body
+      .addEventListener('keydown', window.game2048.keyboardHandler);
+
+    const startClickHandler = (event) => {
+      this._isPlaying
+        ? this.restart()
+        : this.start();
+    };
+
+    this._dom.controls.start
+      .addEventListener('click', startClickHandler.bind(this));
+
+    this._dom.gameContainer
+      .addEventListener('click', this._activateGame.bind(this));
+  }
+
   _insertRandomCell() {
     const getRandomInt = max => {
       return Math.floor(Math.random() * max);
