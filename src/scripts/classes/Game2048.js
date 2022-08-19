@@ -15,7 +15,12 @@ class Game2048 {
     this._score = 0;
     this._field = [];
 
-    this.dom = {};
+
+    window.game2048 = window.game2048 || {
+      games: [],
+      keyboardHandler: null,
+    };
+    window.game2048.games.push(this);
   }
 
   _initGame() {
