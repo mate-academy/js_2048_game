@@ -131,6 +131,13 @@ class Game2048 {
     });
   }
 
+  _clearField() {
+    this._field.forEach(row => {
+      row.forEach(cell => (cell.value = 0));
+    });
+  }
+
+  _initHandlers() {
   _insertRandomCell() {
     const getRandomInt = max => {
       return Math.floor(Math.random() * max);
