@@ -1,4 +1,6 @@
 .game {
+  $root: &;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,10 +12,32 @@
   font-weight: 900;
   background: #fbf8ef;
 
+  &.active {
+    #{$root}__container {
+      background: #fff8de;
+      box-shadow: 0 0 10px #edc22e;
+    }
+  }
+
+  &:not(.active) {
+    #{$root}__container:hover {
+      background: #fff8de;
+      box-shadow: 0 0 10px #edc22e;
+    }
+  }
+
   &__container {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    padding: 20px;
+
+    border-radius: 10px;
+    cursor: pointer;
+
+    transition-duration: 300ms;
+    transition-property: background, box-shadow;
   }
 
   &__title {
@@ -95,6 +119,5 @@
 
   &__messages {
     width: 100%;
-    height: 150px;
   }
 }
