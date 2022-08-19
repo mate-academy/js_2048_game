@@ -38,6 +38,14 @@ class Game2048 {
     this._score = value || 0;
     this._dom.score.innerText = this._score;
   }
+
+  get active() {
+    return this._isActive;
+  }
+
+  set active(state) {
+    this._isActive = state;
+    this._dom.game.classList.toggle('active', state);
   }
 
   _initGame() {
