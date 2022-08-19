@@ -20,9 +20,13 @@
   }
 
   &:not(.active) {
-    #{$root}__container:hover {
-      background: #fff8de;
-      box-shadow: 0 0 10px #edc22e;
+    #{$root}__container {
+      cursor: pointer;
+
+      &:hover {
+        background: #fff8de;
+        box-shadow: 0 0 10px #edc22e;
+      }
     }
   }
 
@@ -34,7 +38,6 @@
     padding: 20px;
 
     border-radius: 10px;
-    cursor: pointer;
 
     transition-duration: 300ms;
     transition-property: background, box-shadow;
