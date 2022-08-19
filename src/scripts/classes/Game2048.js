@@ -21,6 +21,15 @@ class Game2048 {
       keyboardHandler: null,
     };
     window.game2048.games.push(this);
+
+  get score() {
+    return this._score;
+  }
+
+  set score(value) {
+    this._score = value || 0;
+    this._dom.score.innerText = this._score;
+  }
   }
 
   _initGame() {
