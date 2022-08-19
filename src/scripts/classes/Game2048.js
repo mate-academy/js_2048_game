@@ -3,6 +3,14 @@
 const Cell = require('./Cell');
 
 class Game2048 {
+  static _deactivateGames() {
+    if (!window.game2048) {
+      return;
+    }
+
+    window.game2048.games.forEach(game => (game.active = false));
+  }
+
   constructor(container, fieldSize) {
     this._fieldSize = !fieldSize || fieldSize < 4
       ? 4
