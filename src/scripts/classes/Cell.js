@@ -15,8 +15,8 @@ class Cell {
     this._element.innerText = number || ''; // ignore zero
 
     this._element.className = this._element.className
-      .replace(/( ?field-cell--\d+)/, '');
-    this._element.classList.add(`field-cell--${number}`);
+      .replace(/( ?field__cell--\d+)/, '');
+    this._element.classList.add(`field__cell--${number}`);
   }
 }
 
