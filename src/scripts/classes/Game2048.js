@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 'use strict';
 
 const Cell = require('./Cell');
@@ -67,6 +68,9 @@ class Game2048 {
     };
     window.game2048.games.push(this);
 
+    this._initGame();
+  }
+
   get score() {
     return this._score;
   }
@@ -88,6 +92,7 @@ class Game2048 {
   _initGame() {
     this._renderGame();
     this._initField();
+    this._initHandlers();
   }
 
   _renderGame() {
