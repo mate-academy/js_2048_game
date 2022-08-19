@@ -256,6 +256,234 @@ class Game2048 {
     this.active = true;
   }
 
+  _moveCells(direction) {
+    if (!this._isPlaying) {
+      return;
+    }
+
+    const newFieldData = [];
+
+    switch (direction) {
+      case 'left': {
+        for (let i = 0; i < this._fieldSize; i++) {
+          const row = this._field[i];
+          const rowData = [];
+
+          for (let j = 0; j < this._fieldSize; j++) {
+            const cell = row[j];
+
+            if (!cell.value) {
+              continue;
+            }
+
+            const previousCell = rowData.length
+              && rowData[rowData.length - 1];
+
+            if (
+              previousCell
+              && !previousCell.isMerged
+              && previousCell.value === cell.value
+            ) {
+              previousCell.value += cell.value;
+              previousCell.isMerged = true;
+              this.score += previousCell.value;
+
+              continue;
+            }
+
+            rowData.push({
+              value: cell.value,
+              isMerged: false,
+            });
+          }
+
+          const cellsCount = rowData.length;
+
+          if (cellsCount < this._fieldSize) {
+            for (let i = 1; i <= this._fieldSize - cellsCount; i++) {
+              rowData.push({
+                value: 0,
+              });
+            }
+          }
+
+          newFieldData.push(rowData);
+        }
+
+        break;
+      }
+
+      case 'right': {
+        for (let i = 0; i < this._fieldSize; i++) {
+          const row = this._field[i];
+          const rowData = [];
+
+          for (let j = this._fieldSize - 1; j >= 0; j--) {
+            const cell = row[j];
+
+            if (!cell.value) {
+              continue;
+            }
+
+            const previousCell = rowData.length
+              && rowData[0];
+
+            if (
+              previousCell
+              && !previousCell.isMerged
+              && previousCell.value === cell.value
+            ) {
+              previousCell.value += cell.value;
+              previousCell.isMerged = true;
+              this.score += previousCell.value;
+
+              continue;
+            }
+
+            rowData.unshift({
+              value: cell.value,
+              isMerged: false,
+            });
+          }
+
+          const cellsCount = rowData.length;
+
+          if (cellsCount < this._fieldSize) {
+            for (let i = 1; i <= this._fieldSize - cellsCount; i++) {
+              rowData.unshift({
+                value: 0,
+              });
+            }
+          }
+
+          newFieldData.push(rowData);
+        }
+
+        break;
+      }
+
+      case 'up': {
+        const colsData = [];
+
+        for (let i = 0; i < this._fieldSize; i++) {
+          const colData = [];
+
+          for (let j = 0; j < this._fieldSize; j++) {
+            const cell = this._field[j][i];
+
+            if (!cell.value) {
+              continue;
+            }
+
+            const previousCell = colData.length
+              && colData[colData.length - 1];
+
+            if (
+              previousCell
+              && !previousCell.isMerged
+              && previousCell.value === cell.value
+            ) {
+              previousCell.value += cell.value;
+              previousCell.isMerged = true;
+              this.score += previousCell.value;
+
+              continue;
+            }
+
+            colData.push({
+              value: cell.value,
+              isMerged: false,
+            });
+          }
+
+          const cellsCount = colData.length;
+
+          if (cellsCount < this._fieldSize) {
+            for (let i = 1; i <= this._fieldSize - cellsCount; i++) {
+              colData.push({
+                value: 0,
+              });
+            }
+          }
+
+          colsData.push(colData);
+        }
+
+        for (let i = 0; i < this._fieldSize; i++) {
+          for (let j = 0; j < this._fieldSize; j++) {
+            newFieldData[j] = newFieldData[j] || [];
+            newFieldData[j].push(colsData[i][j]);
+          }
+        }
+
+        break;
+      }
+
+      case 'down': {
+        const colsData = [];
+
+        for (let i = 0; i < this._fieldSize; i++) {
+          const colData = [];
+
+          for (let j = this._fieldSize - 1; j >= 0; j--) {
+            const cell = this._field[j][i];
+
+            if (!cell.value) {
+              continue;
+            }
+
+            const previousCell = colData.length
+              && colData[0];
+
+            if (
+              previousCell
+              && !previousCell.isMerged
+              && previousCell.value === cell.value
+            ) {
+              previousCell.value += cell.value;
+              previousCell.isMerged = true;
+              this.score += previousCell.value;
+
+              continue;
+            }
+
+            colData.unshift({
+              value: cell.value,
+              isMerged: false,
+            });
+          }
+
+          const cellsCount = colData.length;
+
+          if (cellsCount < this._fieldSize) {
+            for (let i = 1; i <= this._fieldSize - cellsCount; i++) {
+              colData.unshift({
+                value: 0,
+              });
+            }
+          }
+
+          colsData.push(colData);
+        }
+
+        for (let i = 0; i < this._fieldSize; i++) {
+          for (let j = 0; j < this._fieldSize; j++) {
+            newFieldData[j] = newFieldData[j] || [];
+            newFieldData[j].push(colsData[i][j]);
+          }
+        }
+
+        break;
+      }
+    }
+
+    const hasBeenChanged = this._fillField(newFieldData);
+
+    if (hasBeenChanged) {
+      this._insertRandomCell();
+    }
+  }
+
   start() {
     if (this._isPlaying) {
       return;
@@ -292,6 +520,22 @@ class Game2048 {
 
     this._isPlaying = false;
     this.score = 0;
+  }
+
+  moveLeft() {
+    this._moveCells('left');
+  }
+
+  moveRight() {
+    this._moveCells('right');
+  }
+
+  moveUp() {
+    this._moveCells('up');
+  }
+
+  moveDown() {
+    this._moveCells('down');
   }
 }
 
