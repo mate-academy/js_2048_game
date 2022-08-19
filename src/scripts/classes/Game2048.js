@@ -193,6 +193,23 @@ class Game2048 {
     });
   }
 
+  _fillField(fieldData) {
+    let hasBeenChanged = false;
+
+    for (let i = 0; i < this._fieldSize; i++) {
+      for (let j = 0; j < this._fieldSize; j++) {
+        if (this._field[i][j].value === fieldData[i][j].value) {
+          continue;
+        }
+
+        this._field[i][j].value = fieldData[i][j].value;
+        hasBeenChanged = true;
+      }
+    }
+
+    return hasBeenChanged;
+  }
+
   _initHandlers() {
     if (!window.game2048.keyboardHandler) {
       // Global event
