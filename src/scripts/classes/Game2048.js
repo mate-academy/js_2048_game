@@ -75,9 +75,23 @@ class Game2048 {
           </div>
         </div>
       </div>
-    `);
 
-    this.dom.field = this.dom.container.querySelector('.field');
+    this._dom.game = this._dom.container.querySelector('.game');
+    this._dom.gameContainer = this._dom.game.querySelector('.game__container');
+    this._dom.field = this._dom.game.querySelector('.field');
+    this._dom.score = this._dom.game.querySelector('.game-score');
+
+    this._dom.controls = {
+      start: this._dom.game.querySelector('.game__controls-button-start'),
+    };
+
+    this._dom.rows = this._dom.field.querySelectorAll('.field__row');
+
+    this._dom.messages = {
+      start: this._dom.game.querySelector('.message-start'),
+      win: this._dom.game.querySelector('.message-win'),
+      lose: this._dom.game.querySelector('.message-lose'),
+    };
   }
 
   _initField() {
