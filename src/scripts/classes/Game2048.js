@@ -25,9 +25,9 @@ class Game2048 {
 
   _renderGame() {
     if (this._container instanceof Element) {
-      this.dom.container = this._container;
+      this._dom.container = this._container;
     } else if (typeof this._container === 'string') {
-      this.dom.container = document
+      this._dom.container = document
         .querySelector(this._container);
     } else {
       throw new TypeError(
@@ -35,14 +35,14 @@ class Game2048 {
       );
     }
 
-    if (!this.dom.container) {
+    if (!this._dom.container) {
       throw new Error(
         'Game container not found!'
       );
     }
 
-    this.dom.container.insertAdjacentHTML('afterbegin', `
-      <div class="game">
+    this._dom.container.innerHTML = `
+      <div class="game active">
         <div class="game__container">
           <div class="game__header">
             <h1 class="game__title">2048</h1>
@@ -50,7 +50,10 @@ class Game2048 {
               <p class="game__controls-info">
                 Score: <span class="game-score">0</span>
               </p>
-              <button class="game__controls-button button start">Start</button>
+              <button class="
+                game__controls-button-start
+                button start"
+              >Start</button>
             </div>
           </div>
           <table class="game__field field">
@@ -75,6 +78,7 @@ class Game2048 {
           </div>
         </div>
       </div>
+    `;
 
     this._dom.game = this._dom.container.querySelector('.game');
     this._dom.gameContainer = this._dom.game.querySelector('.game__container');
