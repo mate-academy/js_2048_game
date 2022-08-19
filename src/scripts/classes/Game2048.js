@@ -55,6 +55,7 @@ class Game2048 {
 
     this._container = container || 'body';
     this._isPlaying = false;
+    this._isActive = true;
     this._score = 0;
     this._field = [];
 
