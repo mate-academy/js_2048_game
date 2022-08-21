@@ -58,6 +58,7 @@ class Game2048 {
     this._isPlaying = false;
     this._isActive = true;
     this._score = 0;
+    this._maxValue = 0;
     this._field = [];
 
     this._dom = {};
@@ -76,6 +77,18 @@ class Game2048 {
   set score(value) {
     this._score = value || 0;
     this._dom.score.innerText = this._score;
+  }
+
+  get maxValue() {
+    return this._maxValue;
+  }
+
+  set maxValue(value) {
+    if (this._maxValue >= value) {
+      return;
+    }
+
+    this._maxValue = value;
   }
 
   get active() {
@@ -201,6 +214,7 @@ class Game2048 {
         }
 
         this._field[i][j].value = fieldData[i][j].value;
+        this.maxValue = fieldData[i][j].value;
         hasBeenChanged = true;
       }
     }
@@ -243,6 +257,7 @@ class Game2048 {
     const randomValue = Math.random() < 0.1 ? 4 : 2;
 
     freeCells[randomIndex].value = randomValue;
+    this.maxValue = randomValue;
   }
 
   _activateGame() {
@@ -522,6 +537,7 @@ class Game2048 {
 
     this._isPlaying = false;
     this.score = 0;
+    this._maxValue = 0;
   }
 
   moveLeft() {
