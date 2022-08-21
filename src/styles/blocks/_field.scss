@@ -3,6 +3,8 @@
   border-spacing: 1rem;
   border-radius: 0.5rem;
 
+  touch-action: none;
+
   &__cell {
     min-width: 7.5rem;
     height: 7.5rem;

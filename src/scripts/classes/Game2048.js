@@ -308,6 +308,8 @@ class Game2048 {
         return;
       }
 
+      event.preventDefault();
+
       const xMoved = xStart - event.touches[0].clientX;
       const yMoved = yStart - event.touches[0].clientY;
 
