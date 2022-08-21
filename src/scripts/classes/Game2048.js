@@ -246,6 +246,10 @@ class Game2048 {
   }
 
   _insertRandomCell() {
+    if (!this._isPlaying) {
+      return;
+    }
+
     const getRandomInt = max => {
       return Math.floor(Math.random() * max);
     };
@@ -493,8 +497,27 @@ class Game2048 {
     const hasBeenChanged = this._fillField(newFieldData);
 
     if (hasBeenChanged) {
+      this._checkGameResult();
       this._insertRandomCell();
     }
+  }
+
+  _checkGameResult() {
+    if (this.maxValue === 2048) {
+      this._userHasWon();
+    }
+  }
+
+  _userHasWon() {
+    this._isPlaying = false;
+
+    this._dom.controls.start.classList.remove('restart');
+    this._dom.controls.start.classList.add('start');
+    this._dom.controls.start.innerText = 'Start';
+
+    this._dom.messages.start.classList.toggle('hidden', true);
+    this._dom.messages.win.classList.toggle('hidden', false);
+    this._dom.messages.lose.classList.toggle('hidden', true);
   }
 
   create() {
