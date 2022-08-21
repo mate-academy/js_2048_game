@@ -138,16 +138,39 @@ class Game2048 {
         <div class="game__container">
           <div class="game__header">
             <h1 class="game__title">2048</h1>
+
             <div class="game__controls">
+              <div class="game__controls-size">
+                <span
+                  class="game__controls-size-smaller"
+                  ${this._fieldSize === 4 ? 'disabled' : ''}
+                >-</span>
+
+                <div class="game__controls-size-block">
+                  <span>Size:</span>
+
+                  <span class="game__controls-size-value">
+                    ${this._fieldSize}
+                  </span>
+                </div>
+
+                <span
+                  class="game__controls-size-bigger"
+                  ${this._fieldSize === 10 ? 'disabled' : ''}
+                >+</span>
+              </div>
+
               <p class="game__controls-info">
                 Score: <span class="game-score">0</span>
               </p>
+
               <button class="
                 game__controls-button-start
                 button start"
               >Start</button>
             </div>
           </div>
+
           <table class="game__field field">
             <tbody>
               ${`
@@ -157,13 +180,16 @@ class Game2048 {
                 `.repeat(this._fieldSize)}
             </tbody>
           </table>
+
           <div class="game__messages">
             <p class="message message-lose hidden">
               You lose! Restart the game?
             </p>
+
             <p class="message message-win hidden">
               Winner! Congrats! You did it!
             </p>
+
             <p class="message message-start">
               Press "Start" to begin game. Good luck!
             </p>
@@ -176,9 +202,12 @@ class Game2048 {
     this._dom.gameContainer = this._dom.game.querySelector('.game__container');
     this._dom.field = this._dom.game.querySelector('.field');
     this._dom.score = this._dom.game.querySelector('.game-score');
+    this._dom.size = this._dom.game.querySelector('.game__controls-size');
 
     this._dom.controls = {
       start: this._dom.game.querySelector('.game__controls-button-start'),
+      smaller: this._dom.game.querySelector('.game__controls-size-smaller'),
+      bigger: this._dom.game.querySelector('.game__controls-size-bigger'),
     };
 
     this._dom.rows = this._dom.field.querySelectorAll('.field__row');
@@ -242,14 +271,38 @@ class Game2048 {
         .addEventListener('keydown', window.game2048.keyboardHandler);
     }
 
-    const startClickHandler = (event) => {
+    const startClickHandler = () => {
       this._isPlaying
         ? this.restart()
         : this.start();
     };
 
+    const sizeSmallerClickHandler = () => {
+      if (this._isPlaying || this._fieldSize === 4) {
+        return;
+      }
+
+      this._fieldSize--;
+      this._initGame();
+    };
+
+    const sizeBiggerClickHandler = () => {
+      if (this._isPlaying || this._fieldSize === 10) {
+        return;
+      }
+
+      this._fieldSize++;
+      this._initGame();
+    };
+
     this._dom.controls.start
-      .addEventListener('click', startClickHandler.bind(this));
+      .addEventListener('click', startClickHandler);
+
+    this._dom.controls.smaller
+      .addEventListener('click', sizeSmallerClickHandler.bind(this));
+
+    this._dom.controls.bigger
+      .addEventListener('click', sizeBiggerClickHandler.bind(this));
 
     this._dom.gameContainer
       .addEventListener('click', this._activateGame.bind(this));
@@ -280,10 +333,6 @@ class Game2048 {
   }
 
   _activateGame() {
-    if (this.active) {
-      return;
-    }
-
     Game2048._deactivateGames();
     this.active = true;
 
@@ -606,6 +655,8 @@ class Game2048 {
 
     this._dom.messages.start.classList.toggle('hidden', true);
 
+    this._dom.size.setAttribute('disabled', true);
+
     this._isPlaying = true;
 
     this._insertRandomCell();
@@ -626,6 +677,8 @@ class Game2048 {
     this._dom.messages.start.classList.toggle('hidden', false);
     this._dom.messages.win.classList.toggle('hidden', true);
     this._dom.messages.lose.classList.toggle('hidden', true);
+
+    this._dom.size.removeAttribute('disabled');
 
     this._isPlaying = false;
     this.score = 0;
