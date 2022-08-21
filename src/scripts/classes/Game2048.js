@@ -501,8 +501,11 @@ class Game2048 {
     const hasBeenChanged = this._fillField(newFieldData);
 
     if (hasBeenChanged) {
-      this._checkGameResult();
+      this._checkGameWin();
       this._insertRandomCell();
+      this._checkGameLose();
+    }
+  }
 
   _isNextMovementPossible() {
     if (this._getFreeCells().length > 0) {
@@ -531,14 +534,21 @@ class Game2048 {
           hasTwoSameCellsInACol = true;
           break;
         }
+      }
     }
-  }
 
     return hasTwoSameCellsInARow || hasTwoSameCellsInACol;
   }
 
+  _checkGameWin() {
     if (this.maxValue === 2048) {
       this._userHasWon();
+    }
+  }
+
+  _checkGameLose() {
+    if (!this._isNextMovementPossible()) {
+      this._userHasLost();
     }
   }
 
@@ -552,6 +562,18 @@ class Game2048 {
     this._dom.messages.start.classList.toggle('hidden', true);
     this._dom.messages.win.classList.toggle('hidden', false);
     this._dom.messages.lose.classList.toggle('hidden', true);
+  }
+
+  _userHasLost() {
+    this._isPlaying = false;
+
+    this._dom.controls.start.classList.remove('restart');
+    this._dom.controls.start.classList.add('start');
+    this._dom.controls.start.innerText = 'Start';
+
+    this._dom.messages.start.classList.toggle('hidden', true);
+    this._dom.messages.win.classList.toggle('hidden', true);
+    this._dom.messages.lose.classList.toggle('hidden', false);
   }
 
   create() {
@@ -569,7 +591,7 @@ class Game2048 {
     this._dom.controls.start.classList.add('restart');
     this._dom.controls.start.innerText = 'Reset';
 
-    this._dom.messages.start.classList.toggle('hidden');
+    this._dom.messages.start.classList.toggle('hidden', false);
 
     this._isPlaying = true;
 
@@ -588,7 +610,7 @@ class Game2048 {
     this._dom.controls.start.classList.add('start');
     this._dom.controls.start.innerText = 'Start';
 
-    this._dom.messages.start.classList.toggle('hidden');
+    this._dom.messages.start.classList.toggle('hidden', false);
     this._dom.messages.win.classList.toggle('hidden', true);
     this._dom.messages.lose.classList.toggle('hidden', true);
 
