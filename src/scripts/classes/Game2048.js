@@ -503,10 +503,40 @@ class Game2048 {
     if (hasBeenChanged) {
       this._checkGameResult();
       this._insertRandomCell();
+
+  _isNextMovementPossible() {
+    if (this._getFreeCells().length > 0) {
+      return true;
+    }
+
+    const hasTwoSameCellsInARow = this._field.some(row => {
+      for (let i = 0; i < this._fieldSize - 1; i++) {
+        if (row[i].value === row[i + 1].value) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    let hasTwoSameCellsInACol = false;
+
+    for (let i = 0; i < this._fieldSize; i++) {
+      if (hasTwoSameCellsInACol) {
+        break;
+      }
+
+      for (let j = 0; j < this._fieldSize - 1; j++) {
+        if (this._field[j][i].value === this._field[j + 1][i].value) {
+          hasTwoSameCellsInACol = true;
+          break;
+        }
     }
   }
 
-  _checkGameResult() {
+    return hasTwoSameCellsInARow || hasTwoSameCellsInACol;
+  }
+
     if (this.maxValue === 2048) {
       this._userHasWon();
     }
