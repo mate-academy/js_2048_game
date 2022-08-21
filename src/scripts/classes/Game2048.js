@@ -223,6 +223,7 @@ class Game2048 {
         }
 
         this._field[i][j].value = fieldData[i][j].value;
+        this._field[i][j].state = fieldData[i][j].isMerged ? 'merged' : '';
         this.maxValue = fieldData[i][j].value;
         hasBeenChanged = true;
       }
@@ -268,6 +269,7 @@ class Game2048 {
     const randomValue = Math.random() < 0.1 ? 4 : 2;
 
     freeCells[randomIndex].value = randomValue;
+    freeCells[randomIndex].state = 'new';
     this.maxValue = randomValue;
   }
 
