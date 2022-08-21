@@ -213,10 +213,10 @@ class Game2048 {
       // Global event
       // Prevents miltiple keyboard handlers to be attached to the document
       window.game2048.keyboardHandler = Game2048._keyboardHandler;
-    }
 
-    document.body
-      .addEventListener('keydown', window.game2048.keyboardHandler);
+      document.body
+        .addEventListener('keydown', window.game2048.keyboardHandler);
+    }
 
     const startClickHandler = (event) => {
       this._isPlaying
