@@ -60,6 +60,7 @@
   &__header {
     display: flex;
     justify-content: space-between;
+    gap: 20px;
 
     width: 100%;
     margin-bottom: 24px;
@@ -85,6 +86,44 @@
       color: #776e65;
     }
 
+    &-size {
+      $parent: &;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+
+      width: 150px;
+      height: 75px;
+      margin: 0 8px 0 0;
+
+      font-size: 16px;
+      border-radius: 5px;
+      background: #776e65;
+      color: #d6cdc4;
+
+      &[disabled] {
+        cursor: not-allowed;
+      }
+
+      &:not([disabled]) {
+        #{$parent}-smaller:not([disabled]),
+        #{$parent}-bigger:not([disabled]) {
+          cursor: pointer;
+
+          &:hover {
+            color: #edc22e;
+          }
+        }
+      }
+
+      &-smaller,
+      &-bigger {
+        font-size: 32px;
+      }
+    }
+
     &-button-start {
       width: 75px;
       height: 75px;
@@ -97,6 +136,8 @@
       border-radius: 5px;
 
       cursor: pointer;
+      outline: none;
+      
       transition: 0.25s ease background;
     }
 
