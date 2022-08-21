@@ -5,12 +5,9 @@
   align-items: center;
   justify-content: center;
 
-  min-height: 100vh;
-
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
-  background: #fbf8ef;
 
   &.active {
     #{$root}__container {
