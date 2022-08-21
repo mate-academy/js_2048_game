@@ -617,25 +617,37 @@ class Game2048 {
   _userHasWon() {
     this._isPlaying = false;
 
-    this._dom.controls.start.classList.remove('restart');
-    this._dom.controls.start.classList.add('start');
-    this._dom.controls.start.innerText = 'Start';
+    this._toggleStartControl();
 
-    this._dom.messages.start.classList.toggle('hidden', true);
-    this._dom.messages.win.classList.toggle('hidden', false);
-    this._dom.messages.lose.classList.toggle('hidden', true);
+    this._hideMessages({
+      start: true,
+      win: false,
+      lose: true,
+    });
   }
 
   _userHasLost() {
     this._isPlaying = false;
 
-    this._dom.controls.start.classList.remove('restart');
-    this._dom.controls.start.classList.add('start');
-    this._dom.controls.start.innerText = 'Start';
+    this._toggleStartControl();
 
-    this._dom.messages.start.classList.toggle('hidden', true);
-    this._dom.messages.win.classList.toggle('hidden', true);
-    this._dom.messages.lose.classList.toggle('hidden', false);
+    this._hideMessages({
+      start: true,
+      win: true,
+      lose: false,
+    });
+  }
+
+  _hideMessages(messages = {}) {
+    for (const key in messages) {
+      this._dom.messages[key].classList.toggle('hidden', messages[key]);
+    }
+  }
+
+  _toggleStartControl(isStart = true) {
+    this._dom.controls.start.classList.remove(isStart ? 'restart' : 'start');
+    this._dom.controls.start.classList.add(isStart ? 'start' : 'restart');
+    this._dom.controls.start.innerText = isStart ? 'Start' : 'Reset';
   }
 
   create() {
@@ -649,11 +661,9 @@ class Game2048 {
 
     this._activateGame();
 
-    this._dom.controls.start.classList.remove('start');
-    this._dom.controls.start.classList.add('restart');
-    this._dom.controls.start.innerText = 'Reset';
+    this._toggleStartControl(false);
 
-    this._dom.messages.start.classList.toggle('hidden', true);
+    this._hideMessages({ start: true });
 
     this._dom.size.setAttribute('disabled', true);
 
@@ -670,13 +680,13 @@ class Game2048 {
     this._clearField();
     this._activateGame();
 
-    this._dom.controls.start.classList.remove('restart');
-    this._dom.controls.start.classList.add('start');
-    this._dom.controls.start.innerText = 'Start';
+    this._toggleStartControl();
 
-    this._dom.messages.start.classList.toggle('hidden', false);
-    this._dom.messages.win.classList.toggle('hidden', true);
-    this._dom.messages.lose.classList.toggle('hidden', true);
+    this._hideMessages({
+      start: false,
+      win: true,
+      lose: true,
+    });
 
     this._dom.size.removeAttribute('disabled');
 
