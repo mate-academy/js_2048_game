@@ -254,14 +254,18 @@ class Game2048 {
       return Math.floor(Math.random() * max);
     };
 
-    const freeCells = this._field
-      .flat()
-      .filter(cell => cell.value === 0);
+    const freeCells = this._getFreeCells();
     const randomIndex = getRandomInt(freeCells.length);
     const randomValue = Math.random() < 0.1 ? 4 : 2;
 
     freeCells[randomIndex].value = randomValue;
     this.maxValue = randomValue;
+  }
+
+  _getFreeCells() {
+    return this._field
+      .flat()
+      .filter(cell => cell.value === 0);
   }
 
   _activateGame() {
