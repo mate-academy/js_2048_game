@@ -295,6 +295,40 @@ class Game2048 {
       this._initGame();
     };
 
+    let xStart;
+    let yStart;
+
+    const touchStartHandler = event => {
+      xStart = event.touches[0].clientX;
+      yStart = event.touches[0].clientY;
+    };
+
+    const touchMoveHandler = event => {
+      if (!xStart || !yStart) {
+        return;
+      }
+
+      const xMoved = xStart - event.touches[0].clientX;
+      const yMoved = yStart - event.touches[0].clientY;
+
+      if (Math.abs(xMoved) > Math.abs(yMoved)) {
+        if (xMoved > 0) {
+          this.moveLeft();
+        } else {
+          this.moveRight();
+        };
+      } else {
+        if (yMoved > 0) {
+          this.moveUp();
+        } else {
+          this.moveDown();
+        }
+      }
+
+      xStart = null;
+      yStart = null;
+    };
+
     this._dom.controls.start
       .addEventListener('click', startClickHandler);
 
@@ -306,6 +340,10 @@ class Game2048 {
 
     this._dom.gameContainer
       .addEventListener('click', this._activateGame.bind(this));
+
+    this._dom.field.addEventListener('touchstart', touchStartHandler, false);
+
+    this._dom.field.addEventListener('touchmove', touchMoveHandler, false);
   }
 
   _insertRandomCell() {
