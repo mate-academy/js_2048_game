@@ -1,15 +1,15 @@
 .field {
   background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+  border-spacing: 1rem;
+  border-radius: 0.5rem;
 
   &__cell {
-    min-width: 75px;
-    height: 75px;
+    min-width: 7.5rem;
+    height: 7.5rem;
 
     text-align: center;
     vertical-align: middle;
-    border-radius: 5px;
+    border-radius: 0.5rem;
     color: #776e65;
     background: #d6cdc4;
 
