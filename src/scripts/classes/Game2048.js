@@ -56,7 +56,7 @@ class Game2048 {
 
     this._container = container || 'body';
     this._isPlaying = false;
-    this._isActive = true;
+    this._isActive = false;
     this._score = 0;
     this._maxValue = 0;
     this._field = [];
@@ -96,6 +96,10 @@ class Game2048 {
   }
 
   set active(state) {
+    if (!this._dom.game) {
+      return;
+    }
+
     this._isActive = state;
     this._dom.game.classList.toggle('active', state);
   }
@@ -104,6 +108,7 @@ class Game2048 {
     this._renderGame();
     this._initField();
     this._initHandlers();
+    this._activateGame();
   }
 
   _renderGame() {
@@ -125,7 +130,7 @@ class Game2048 {
     }
 
     this._dom.container.innerHTML = `
-      <div class="game active">
+      <div class="game">
         <div class="game__container">
           <div class="game__header">
             <h1 class="game__title">2048</h1>
