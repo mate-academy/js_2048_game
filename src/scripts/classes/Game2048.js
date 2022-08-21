@@ -284,6 +284,8 @@ class Game2048 {
 
     Game2048._deactivateGames();
     this.active = true;
+
+    this._dom.game.scrollIntoView();
   }
 
   _moveCells(direction) {
