@@ -164,9 +164,12 @@ class Game2048 {
                 Score: <span class="game-score">0</span>
               </p>
 
-              <button class="
-                game__controls-button-start
-                button start"
+              <button
+                class="
+                  game__controls-button-start
+                  button start
+                "
+                title = "Press Enter to start the game"
               >Start</button>
             </div>
           </div>
@@ -193,6 +196,10 @@ class Game2048 {
             <p class="message message-start">
               Press "Start" to begin game. Good luck!
             </p>
+
+            <p class="message message-hint hidden">
+              Press ← ↑ → ↓ or swipe to move blocks.
+            </p>
           </div>
         </div>
       </div>
@@ -216,6 +223,7 @@ class Game2048 {
       start: this._dom.game.querySelector('.message-start'),
       win: this._dom.game.querySelector('.message-win'),
       lose: this._dom.game.querySelector('.message-lose'),
+      hint: this._dom.game.querySelector('.message-hint'),
     };
   }
 
@@ -663,6 +671,7 @@ class Game2048 {
       start: true,
       win: false,
       lose: true,
+      hint: true,
     });
   }
 
@@ -675,6 +684,7 @@ class Game2048 {
       start: true,
       win: true,
       lose: false,
+      hint: true,
     });
   }
 
@@ -688,6 +698,11 @@ class Game2048 {
     this._dom.controls.start.classList.remove(isStart ? 'restart' : 'start');
     this._dom.controls.start.classList.add(isStart ? 'start' : 'restart');
     this._dom.controls.start.innerText = isStart ? 'Start' : 'Reset';
+
+    this._dom.controls.start.setAttribute(
+      'title',
+      isStart ? 'Press R to reset the game' : 'Press Enter to start the game',
+    );
   }
 
   create() {
@@ -699,7 +714,12 @@ class Game2048 {
 
     this._toggleStartControl(false);
 
-    this._hideMessages({ start: true });
+    this._hideMessages({
+      start: true,
+      win: true,
+      lose: true,
+      hint: false,
+    });
 
     this._dom.size.setAttribute('disabled', true);
 
@@ -718,6 +738,7 @@ class Game2048 {
       start: false,
       win: true,
       lose: true,
+      hint: true,
     });
 
     this._dom.size.removeAttribute('disabled');
