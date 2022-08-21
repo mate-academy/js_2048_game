@@ -12,6 +12,10 @@ class Game2048 {
       return;
     }
 
+    if (activeGame._isPlaying) {
+      event.preventDefault();
+    }
+
     switch (event.code) {
       case 'ArrowLeft':
       case 'Numpad4':
