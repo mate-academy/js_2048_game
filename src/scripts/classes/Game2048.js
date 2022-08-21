@@ -2,6 +2,7 @@
 'use strict';
 
 const Cell = require('./Cell');
+const party = require('party-js');
 
 class Game2048 {
   static _keyboardHandler(event) {
@@ -674,6 +675,11 @@ class Game2048 {
       win: false,
       lose: true,
       hint: true,
+    });
+
+    party.confetti(this._dom.field, {
+      count: party.variation.range(50, 100),
+      shapes: ['roundedRectangle'],
     });
   }
 

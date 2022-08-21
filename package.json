@@ -44,5 +44,7 @@
   "mateAcademy": {
     "projectType": "layoutDOM"
   },
-  "dependencies": {}
+  "dependencies": {
+    "party-js": "^2.2.0"
+  }
 }
