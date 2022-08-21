@@ -591,7 +591,7 @@ class Game2048 {
     this._dom.controls.start.classList.add('restart');
     this._dom.controls.start.innerText = 'Reset';
 
-    this._dom.messages.start.classList.toggle('hidden', false);
+    this._dom.messages.start.classList.toggle('hidden', true);
 
     this._isPlaying = true;
 
