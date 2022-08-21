@@ -695,10 +695,6 @@ class Game2048 {
   }
 
   start() {
-    if (this._isPlaying) {
-      return;
-    }
-
     this._activateGame();
 
     this._toggleStartControl(false);
@@ -713,10 +709,6 @@ class Game2048 {
   }
 
   restart() {
-    if (!this._isPlaying) {
-      return;
-    }
-
     this._clearField();
     this._activateGame();
 
