@@ -17,6 +17,12 @@ class Cell {
     this._element.className = this._element.className
       .replace(/( ?field__cell--\d+)/, '');
     this._element.classList.add(`field__cell--${number}`);
+    this.state = '';
+  }
+
+  set state(state = '') {
+    void this._element.offsetWidth; // trick to restart animation
+    this._element.dataset.state = state;
   }
 }
 
