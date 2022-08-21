@@ -356,22 +356,24 @@ class Game2048 {
     this._dom.field.addEventListener('touchmove', touchMoveHandler, false);
   }
 
-  _insertRandomCell() {
+  _getRandomInt(min, max) {
+    return Math.floor(Math.random() * max) + min;
+  };
+
+  _insertRandomCells(count = 1) {
     if (!this._isPlaying) {
       return;
     }
 
-    const getRandomInt = max => {
-      return Math.floor(Math.random() * max);
-    };
+    for (let i = 1; i <= count; i++) {
+      const freeCells = this._getFreeCells();
+      const randomIndex = this._getRandomInt(0, freeCells.length);
+      const randomValue = Math.random() < 0.1 ? 4 : 2;
 
-    const freeCells = this._getFreeCells();
-    const randomIndex = getRandomInt(freeCells.length);
-    const randomValue = Math.random() < 0.1 ? 4 : 2;
-
-    freeCells[randomIndex].value = randomValue;
-    freeCells[randomIndex].state = 'new';
-    this.maxValue = randomValue;
+      freeCells[randomIndex].value = randomValue;
+      freeCells[randomIndex].state = 'new';
+      this.maxValue = randomValue;
+    }
   }
 
   _getFreeCells() {
@@ -612,7 +614,7 @@ class Game2048 {
 
     if (hasBeenChanged) {
       this._checkGameWin();
-      this._insertRandomCell();
+      this._insertRandomCells();
       this._checkGameLose();
     }
   }
@@ -725,7 +727,9 @@ class Game2048 {
 
     this._isPlaying = true;
 
-    this._insertRandomCell();
+    this._insertRandomCells(
+      this._getRandomInt(1, Math.ceil(this._fieldSize / 2))
+    );
   }
 
   restart() {
