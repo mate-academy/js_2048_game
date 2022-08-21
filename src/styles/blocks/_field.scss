@@ -67,5 +67,17 @@
       background: #edc22e;
       color: #f9f6f2;
     }
+
+    &[data-state=""] {
+      animation: none;
+    }
+
+    &[data-state="new"] {
+      animation: scale-in-center 300ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    }
+
+    &[data-state="merged"] {
+      animation: jello-horizontal 450ms both;
+    }
   }
 }
