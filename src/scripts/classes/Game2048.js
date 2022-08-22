@@ -730,6 +730,7 @@ class Game2048 {
   }
 
   start() {
+    this._clearField();
     this._activateGame();
 
     this._toggleStartControl(false);
