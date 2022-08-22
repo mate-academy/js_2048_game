@@ -709,7 +709,7 @@ class Game2048 {
 
     this._dom.controls.start.setAttribute(
       'title',
-      isStart ? 'Press R to reset the game' : 'Press Enter to start the game',
+      isStart ? 'Press Enter to start the game' : 'Press R to reset the game',
     );
   }
 
