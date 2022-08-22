@@ -41,6 +41,18 @@ class Game2048 {
       case 'KeyR':
         activeGame.restart();
         break;
+      case 'Tab':
+        let index = window.game2048.games
+          .findIndex(game => game === activeGame);
+
+        if (index === window.game2048.games.length - 1) {
+          index = -1;
+        }
+
+        const nextGame = window.game2048.games[index + 1];
+
+        nextGame._activateGame();
+        break;
     };
   }
 
