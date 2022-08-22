@@ -1,0 +1,25 @@
+.message {
+  width: 100%;
+  padding: 1rem;
+  margin: 2rem 0 0;
+
+  font-size: 2rem;
+  text-align: center;
+  border-radius: 0.5rem;
+  background: #d6cdc4;
+  color: #776e65;
+
+  &-win {
+    background: #edc22e;
+    color: #f9f6f2;
+  }
+
+  &-lose {
+    background: #f87474;
+    color: #fff;
+  }
+
+  &.hidden {
+    display: none;
+  }
+}

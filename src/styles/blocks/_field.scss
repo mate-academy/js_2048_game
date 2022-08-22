@@ -1,0 +1,86 @@
+.field {
+  background: #bbada0;
+  border-spacing: 1rem;
+  border-radius: 0.5rem;
+
+  touch-action: none;
+
+  &__cell {
+    min-width: 7.5rem;
+    height: 7.5rem;
+
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 0.5rem;
+    color: #776e65;
+    background: #d6cdc4;
+
+    user-select: none;
+
+    &--2 {
+      background: #eee4da;
+    }
+
+    &--4 {
+      background: #ede0c8;
+    }
+
+    &--8 {
+      background: #f2b179;
+      color: #f9f6f2;
+    }
+
+    &--16 {
+      background: #f59563;
+      color: #f9f6f2;
+    }
+
+    &--32 {
+      background: #f67c5f;
+      color: #f9f6f2;
+    }
+
+    &--64 {
+      background: #f65e3b;
+      color: #f9f6f2;
+    }
+
+    &--128 {
+      background: #edcf72;
+      color: #f9f6f2;
+    }
+
+    &--256 {
+      background: #edcc61;
+      color: #f9f6f2;
+    }
+
+    &--512 {
+      background: #edc850;
+      color: #f9f6f2;
+    }
+
+    &--1024 {
+      background: #edc53f;
+      color: #f9f6f2;
+    }
+
+    &--2048 {
+      background: #edc22e;
+      color: #f9f6f2;
+    }
+
+    &[data-state=""] {
+      animation: none;
+    }
+
+    &[data-state="new"] {
+      animation: scale-in-center
+        300ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    }
+
+    &[data-state="merged"] {
+      animation: jello-horizontal 450ms both;
+    }
+  }
+}
