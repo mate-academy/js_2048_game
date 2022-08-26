@@ -21,26 +21,27 @@ function gameOver() {
     count += row.indexOf(0);
   });
 
-  // if every row.indexOf(0) === -1, count would be -4;
-  for (let i = 0; i < board.length; i++) {
-    for (let k = 0; k < board.length - 1; k++) {
-      const current = board[i][k];
-      const next = board[i][k + 1];
-
-      const rotated = rotateClockWise(board.map(row => [...row]));
-      const currentRotated = rotated[i][k];
-      const nextRotated = rotated[i][k + 1];
-
-      if (current === next) {
-        return;
-      }
-
-      if (currentRotated === nextRotated) {
-        return;
+  if (count === -4) {
+    for (let i = 0; i < board.length; i++) {
+      for (let k = 0; k < board.length - 1; k++) {
+        const current = board[i][k];
+        const next = board[i][k + 1];
+  
+        const rotated = rotateClockWise(board.map(row => [...row]));
+        const currentRotated = rotated[i][k];
+        const nextRotated = rotated[i][k + 1];
+  
+        if (current === next) {
+          return;
+        }
+  
+        if (currentRotated === nextRotated) {
+          return;
+        }
       }
     }
+    loseMessage.classList.remove('hidden');
   }
-  loseMessage.classList.remove('hidden');
 }
 
 const rotateClockWise = (matrix) => {
@@ -65,8 +66,6 @@ function makeHtmlBoard() {
 makeHtmlBoard();
 
 function renderTable() {
-  gameOver();
-
   for (let i = 0; i < board.length; i++) {
     for (let k = 0; k < board.length; k++) {
       const currentCell = tableHtml[i][k];
@@ -82,32 +81,33 @@ function renderTable() {
       }
     }
   }
+  gameOver();
 }
 renderTable();
 
 const moveLeft = () => {
   const boardBefore = board.toString();
+
   moveLeftForBoth();
 
-  score.innerHTML = gameScore;
   renderTable();
-  
+  score.innerHTML = gameScore;
 };
 
 const moveRight = () => {
   const boardBefore = board.toString();
+
   board = board.map(row => {
     const noZeroRow = row.filter(cell => cell !== 0);
 
     for (let i = 0; i < noZeroRow.length; i++) {
       const currentCell = noZeroRow[i];
       const nextCell = noZeroRow[i + 1];
-      
+
       if (currentCell === nextCell) {
         gameScore += currentCell + nextCell;
         noZeroRow[i] += nextCell;
         noZeroRow.splice(i + 1, 1);
-        // addOne();
       }
     };
 
@@ -120,7 +120,7 @@ const moveRight = () => {
     return noZeroRow;
   });
   score.innerHTML = gameScore;
-  
+
   renderTable();
 
   if (board.toString() !== boardBefore) {
@@ -148,40 +148,6 @@ const moveDown = () => {
   renderTable();
 };
 
-// циклы
-// const rotateClockWise = (matrix) => {
-//   const rotated = [];
-
-//   for (let i = 0; i <= matrix.length - 1; i++) {
-//     const column = [];
-
-//     for (let j = matrix.length - 1; j >= 0; j--) {
-//       column.push(matrix[j][i]);
-//     }
-
-//     rotated.push(column);
-//   };
-
-//   return rotated;
-// };
-
-// const rotateAntiClockWise = (matrix) => {
-//   const rotated = [];
-
-//   for (let i = matrix.length - 1; i >= 0; i--) {
-//     const column = [];
-
-//     for (let j = 0; j < matrix.length; j++) {
-//       column.push(matrix[j][i]);
-//     }
-
-//     rotated.push(column);
-//   };
-
-//   return rotated;
-// };
-// циклы
-
 function moveLeftForBoth() {
   const boardBefore = board.toString();
 
@@ -191,7 +157,7 @@ function moveLeftForBoth() {
     for (let i = 0; i < noZeroRow.length; i++) {
       const currentCell = noZeroRow[i];
       const nextCell = noZeroRow[i + 1];
-      
+
       if (currentCell === nextCell) {
         gameScore += currentCell + nextCell;
         noZeroRow[i] += nextCell;
@@ -200,17 +166,18 @@ function moveLeftForBoth() {
     };
 
     const amountOfNeededZeros = 4 - noZeroRow.length;
-    
+
     for (let i = 0; i < amountOfNeededZeros; i++) {
       noZeroRow.push(0);
     }
-    
+
     return noZeroRow;
   });
 
   if (board.toString() !== boardBefore) {
     addOne();
-  }
+  };
+  gameOver();
 };
 
 function addOne() {
@@ -279,7 +246,8 @@ startBtn.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (event) => {
- if (winMessage.classList.contains('hidden') && loseMessage.classList.contains('hidden')) {
+  if (winMessage.classList.contains('hidden')
+  && loseMessage.classList.contains('hidden')) {
     switch (event.key) {
       case 'ArrowLeft':
         moveLeft();
