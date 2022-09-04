@@ -10,10 +10,14 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
-  background: #d6cdc4;
+td {
+  text-align: center;
   width: 75px;
   height: 75px;
+}
+
+.field-cell {
+  background: #d6cdc4;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
@@ -79,6 +83,8 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  width: 350px;
+  height: 350px;
 }
 
 .game-header {
