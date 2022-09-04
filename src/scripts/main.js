@@ -133,7 +133,7 @@ function pushElement(sideTo) {
   switch (sideTo) {
     case 'ArrowUp':
       massLine.forEach((lineElement, index) => {
-        const resultMass = []; 
+        const resultMass = [];
         // здесь храняться результаты вычислений + значения большие от 0
 
         for (let i = 0; i < lineElement.length; i++) {
@@ -170,7 +170,7 @@ function pushElement(sideTo) {
       break;
     case 'ArrowDown':
       massLine.forEach((lineElement, index) => {
-        const resultMass = []; 
+        const resultMass = [];
         // здесь храняться результаты вычислений + значения большие от 0
 
         for (let i = lineElement.length - 1; i >= 0; i--) {
@@ -276,4 +276,3 @@ function pushElement(sideTo) {
       break;
   }
 } // сумирование и размещение после нажатия кнопки
-// pushElement('up')
