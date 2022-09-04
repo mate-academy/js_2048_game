@@ -129,23 +129,23 @@ function handlerMoveCells(e) {
     return;
   }
 
-  switch (true) {
-    case (e.code === 'ArrowLeft'):
+  switch (e.code) {
+    case 'ArrowLeft':
       slideLeft();
       setNewNumber();
       break;
 
-    case (e.code === 'ArrowRight'):
+    case 'ArrowRight':
       slideRight();
       setNewNumber();
       break;
 
-    case (e.code === 'ArrowUp'):
+    case 'ArrowUp':
       slideUp();
       setNewNumber();
       break;
 
-    case (e.code === 'ArrowDown'):
+    case 'ArrowDown':
       slideDown();
       setNewNumber();
       break;
