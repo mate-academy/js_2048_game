@@ -42,14 +42,7 @@ function randomStand(freePosition) {
 
   changeElement(freePosition[randomElement], randomCount);
 }
-
 // создание рандомных значений
-function fmove(keyEvent) {
-  const freePosition = [];
-
-  pushElement(keyEvent.key);
-  randomStand(freePosition);
-}
 
 function gameStart() {
   const message = document.body.querySelector('.message-start');
@@ -60,7 +53,7 @@ function gameStart() {
 
   randomStand(freePosition);
 
-  document.addEventListener('keydown', fmove);
+  document.addEventListener('keydown', pushElement);
 } // основа для запуска
 
 function gameFinish() {
@@ -114,7 +107,7 @@ function changeElement(htmlItem, value) {
   htmlItem.textContent = value !== 0 ? value : null;
 } // меняет фон и значение
 
-function pushElement(sideTo) {
+function pushElement(keyEvent) {
   const lineOne = [];
   const lineTwo = [];
   const lineThree = [];
@@ -130,7 +123,7 @@ function pushElement(sideTo) {
     lineFour.push(element.children[3]);
   });
 
-  switch (sideTo) {
+  switch (keyEvent.key) {
     case 'ArrowUp':
       massLine.forEach((lineElement, index) => {
         const resultMass = [];
@@ -275,4 +268,6 @@ function pushElement(sideTo) {
       });
       break;
   }
+  const freePosition = [];
+  randomStand(freePosition);
 } // сумирование и размещение после нажатия кнопки
