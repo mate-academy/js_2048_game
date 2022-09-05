@@ -113,7 +113,7 @@ function pushElement(keyEvent) {
   const lineThree = [];
   const lineFour = [];
   const massLine = [lineOne, lineTwo, lineThree, lineFour];
-
+  const freePosition = [];
   // massLine - масив с блоками со всеми
   // (как одинаковыми, так и одиночными) значениями, с пробелами
   line.forEach((element) => {
@@ -159,7 +159,7 @@ function pushElement(keyEvent) {
           }
         });
       });
-
+      randomStand(freePosition);
       break;
     case 'ArrowDown':
       massLine.forEach((lineElement, index) => {
@@ -196,6 +196,7 @@ function pushElement(keyEvent) {
           indexElement++;
         }
       });
+      randomStand(freePosition);
       break;
     case 'ArrowLeft':
       line.forEach((element, index) => {
@@ -232,6 +233,7 @@ function pushElement(keyEvent) {
           indexElement++;
         }
       });
+      randomStand(freePosition);
       break;
     case 'ArrowRight':
       line.forEach((element, index) => {
@@ -266,8 +268,9 @@ function pushElement(keyEvent) {
           indexElement++;
         }
       });
+      randomStand(freePosition);
       break;
   }
-  const freePosition = [];
-  randomStand(freePosition);
+
+
 } // сумирование и размещение после нажатия кнопки
