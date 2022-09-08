@@ -70,7 +70,7 @@ function gameFinish() {
   if (parseInt(score.textContent, 10) > resultScore) {
     messageWin.classList.add('hidden');
     messageLose.classList.remove('hidden');
-  } else if (parseInt(score.textContent, 10) < resultScore) {
+  } else {
     score.textContent = resultScore;
     messageLose.classList.add('hidden');
     messageWin.classList.remove('hidden');
@@ -78,18 +78,21 @@ function gameFinish() {
 } // основа для завершения
 
 function resetAll(pos = 'all', index) {
-  if (pos === 'horizont') {
-    for (const element of line[index].children) {
-      changeElement(element, 0);
-    }
-  } else if (pos === 'vertical') {
-    line.forEach((element) => {
-      changeElement(element.children[index], 0);
-    });
-  } else if (pos === 'all') {
-    eachTd.forEach((item) => {
-      changeElement(item, 0);
-    });
+  switch (pos) {
+    case 'horizont':
+      for (const element of line[index].children) {
+        changeElement(element, 0);
+      }
+      break;
+    case 'vertical':
+      line.forEach((element) => {
+        changeElement(element.children[index], 0);
+      });
+      break;
+    case 'all':
+      eachTd.forEach((item) => {
+        changeElement(item, 0);
+      });
   }
 } // сброс всех елементов на линии
 
@@ -114,6 +117,7 @@ function pushElement(keyEvent) {
   const lineFour = [];
   const massLine = [lineOne, lineTwo, lineThree, lineFour];
   const freePosition = [];
+
   // massLine - масив с блоками со всеми
   // (как одинаковыми, так и одиночными) значениями, с пробелами
   line.forEach((element) => {
@@ -271,6 +275,4 @@ function pushElement(keyEvent) {
       randomStand(freePosition);
       break;
   }
-
-
 } // сумирование и размещение после нажатия кнопки
