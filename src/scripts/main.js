@@ -106,18 +106,14 @@ document.addEventListener('keydown', e => {
 
   if (e.key === 'ArrowRight') {
     scoreIncrease = right();
-  }
-
-  if (e.key === 'ArrowLeft') {
+  } else if (e.key === 'ArrowLeft') {
     scoreIncrease = left();
-  }
-
-  if (e.key === 'ArrowUp') {
+  } else if (e.key === 'ArrowUp') {
     scoreIncrease = moveUp();
-  }
-
-  if (e.key === 'ArrowDown') {
+  } else if (e.key === 'ArrowDown') {
     scoreIncrease = moveDown();
+  } else {
+    return;
   }
 
   score += scoreIncrease;
