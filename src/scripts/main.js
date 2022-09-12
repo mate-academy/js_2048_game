@@ -263,11 +263,15 @@ function addCell() {
     .filter(cell => !cell.hasAttribute('data-number'));
   const randomCell = Math.floor(Math.random() * emptyCells.length);
 
-  emptyCells[randomCell].dataset.number = probability(0.1) ? '4' : '2';
+  if (emptyCells.length !== 0) {
+    emptyCells[randomCell].dataset.number = probability(0.1) ? '4' : '2';
 
-  emptyCells[randomCell].classList
-    .add(`field-cell--${emptyCells[randomCell].dataset.number}`);
-  emptyCells[randomCell].innerHTML = `${emptyCells[randomCell].dataset.number}`;
+    emptyCells[randomCell].classList
+      .add(`field-cell--${emptyCells[randomCell].dataset.number}`);
+
+    emptyCells[randomCell].innerHTML
+      = `${emptyCells[randomCell].dataset.number}`;
+  }
 }
 
 function deleteEmptySpaces(direction) {
@@ -334,10 +338,10 @@ function deleteEmptySpaces(direction) {
   }
 }
 
-window.addEventListener('unhandledrejection', (e) => {
-  e.preventDefault();
+// window.addEventListener('unhandledrejection', (e) => {
+//   e.preventDefault();
 
-  const messageLose = document.querySelector('.message-lose');
+//   const messageLose = document.querySelector('.message-lose');
 
-  messageLose.classList.remove('hidden');
-});
+//   messageLose.classList.remove('hidden');
+// });
