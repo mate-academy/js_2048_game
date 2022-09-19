@@ -337,11 +337,3 @@ function deleteEmptySpaces(direction) {
     });
   }
 }
-
-// window.addEventListener('unhandledrejection', (e) => {
-//   e.preventDefault();
-
-//   const messageLose = document.querySelector('.message-lose');
-
-//   messageLose.classList.remove('hidden');
-// });
