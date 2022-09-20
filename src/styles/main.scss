@@ -119,6 +119,22 @@ h1 {
   margin: 0 8px 0 0;
 }
 
+.best-game {
+  width: 75px;
+  height: 75px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  background: #d6cdc4;
+  border-radius: 5px;
+  color: #5a544e;
+  font-size: 16px;
+  margin: 0 8px 0 0;
+}
+
 .controls {
   display: flex;
 }
