@@ -48,7 +48,7 @@ function setRandomCell() {
   ];
 
   if (!gameBoard[x][y]) {
-    gameBoard[x][y] = Math.random() >= 0.5 ? 4 : 2;
+    gameBoard[x][y] = Math.random() === 1 ? 4 : 2;
     gameChek();
   } else {
     setRandomCell();
@@ -56,7 +56,7 @@ function setRandomCell() {
 }
 
 function getRandomNumber() {
-  return Math.floor(Math.random() * 4);
+  return Math.floor(Math.random() * 2);
 }
 
 function gameChek() {
