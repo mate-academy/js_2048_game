@@ -1,9 +1,9 @@
 'use strict';
 
-// write your code here
-
 const button = document.querySelector('.button');
 const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const messageLose = document.querySelector('.message-lose');
 
 button.addEventListener('click', e => {
   const cells = document.querySelectorAll('.field-cell');
@@ -21,6 +21,8 @@ button.addEventListener('click', e => {
       cell.removeAttribute('data-number');
     });
     gameScore.innerHTML = '0';
+    winMessage.classList.add('hidden');
+    messageLose.classList.add('hidden');
   }
 
   addStartCells(cells);
@@ -227,8 +229,6 @@ function left() {
 
 function updateCells() {
   const cells = document.querySelectorAll('.field-cell');
-  const winMessage = document.querySelector('.message-win');
-  const messageLose = document.querySelector('.message-lose');
   const emptyCells = [...cells]
     .filter(cell => !cell.hasAttribute('data-number'));
 
