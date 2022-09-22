@@ -2,18 +2,16 @@
 
 const button = document.querySelector('.button');
 const startMessage = document.querySelector('.message-start');
-const winMessage = document.querySelector('.message-win');
-const messageLose = document.querySelector('.message-lose');
 
 button.addEventListener('click', e => {
   const cells = document.querySelectorAll('.field-cell');
   const gameScore = document.querySelector('.game-score');
+  const messages = document.querySelectorAll('.message');
 
   if (e.target.matches('.start')) {
     e.target.innerHTML = 'Restart';
     e.target.classList.remove('start');
     e.target.classList.add('restart');
-    startMessage.classList.add('hidden');
   }
 
   if (e.target.matches('.restart')) {
@@ -21,12 +19,14 @@ button.addEventListener('click', e => {
       cell.removeAttribute('data-number');
     });
     gameScore.innerHTML = '0';
-    winMessage.classList.add('hidden');
-    messageLose.classList.add('hidden');
   }
 
+  [...messages].forEach(message => {
+    message.classList.add('hidden');
+  });
+
   addStartCells(cells);
-  updateCells();
+  // updateCells();
 });
 
 function probability(n) {
@@ -68,7 +68,7 @@ function availibleMoves() {
   ];
 
   [...rows].forEach(row => {
-    const cells = document.querySelectorAll('.field-cell');
+    const cells = row.querySelectorAll('.field-cell');
 
     for (let i = 0; i < cells.length - 1; i++) {
       if (cells[i].dataset.number === cells[i + 1].dataset.number) {
@@ -229,6 +229,8 @@ function left() {
 
 function updateCells() {
   const cells = document.querySelectorAll('.field-cell');
+  const winMessage = document.querySelector('.message-win');
+  const messageLose = document.querySelector('.message-lose');
   const emptyCells = [...cells]
     .filter(cell => !cell.hasAttribute('data-number'));
 
