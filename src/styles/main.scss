@@ -15,62 +15,63 @@ body {
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #7c7b77;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #ffe373;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #a66900;
+    color: #f9f6f2;
   }
 
   &--8 {
-    background: #f2b179;
+    background: #ee9802;
     color: #f9f6f2;
   }
 
   &--16 {
-    background: #f59563;
+    background: #bfa330;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #866c01;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
+    background: #a63f00;
     color: #f9f6f2;
   }
 
   &--128 {
-    background: #edcf72;
+    background: #ff6200;
     color: #f9f6f2;
   }
 
   &--256 {
-    background: #edcc61;
+    background: #ec2e15;
     color: #f9f6f2;
   }
 
   &--512 {
-    background: #edc850;
+    background: #da2303;
     color: #f9f6f2;
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #f30a0a;
     color: #f9f6f2;
   }
 
   &--2048 {
-    background: #edc22e;
+    background: #bd0101;
     color: #f9f6f2;
   }
 }
