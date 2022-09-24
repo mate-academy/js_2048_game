@@ -1,6 +1,6 @@
 'use strict';
 
-// import
+// import:
 const {
   mobileSwipes,
 } = require('./mobile');
@@ -10,14 +10,14 @@ const {
   createItemInRandomEmptyField,
 } = require('./move');
 
-// vars
+// vars:
 const gameScore = document.querySelector('.game-score');
 const gameField = document.querySelector('.game-field');
 const allCells = gameField.querySelectorAll('.field-cell');
 const startBtn = document.querySelector('.button');
 const highestScore = document.querySelector('.highest-score');
 
-// main
+// main function:
 function gameInit() {
   highestScore.innerText = localStorage.getItem('score') || 0;
 
@@ -56,4 +56,5 @@ function gameInit() {
   });
 }
 
+// Game init:
 gameInit();

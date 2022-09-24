@@ -23,6 +23,7 @@ function createItemInRandomEmptyField() {
     }
   }
 
+  // create new item:
   if (emptyFields.length > 0) {
     const randomIndex = randomField(0, emptyFields.length - 1);
     const randomValue = randomField(0, values.length - 1);
@@ -32,6 +33,8 @@ function createItemInRandomEmptyField() {
 
     emptyFields[randomIndex]
       .innerText = values[randomValue];
+
+  // if its impossible to create a new item:
   } else {
     document.querySelector('.message-lose').classList.remove('hidden');
     document.querySelector('.message-play').classList.add('hidden');
@@ -46,6 +49,7 @@ function createItemInRandomEmptyField() {
   }
 }
 
+// Main movement algorithm:
 const arrowsPlayHandler = (e) => {
   let isMoved = false;
 
@@ -204,6 +208,7 @@ const arrowsPlayHandler = (e) => {
   }
 };
 
+// function to marge 2 cells in one:
 function margeCells(curr, target) {
   target.classList.remove(`field-cell--${curr.innerText}`);
   target.classList.add(`field-cell--${Number(curr.innerText) * 2}`);
@@ -228,6 +233,7 @@ function margeCells(curr, target) {
   }
 }
 
+// function to move a cell into the free field:
 function moveCell(curr, target) {
   target.classList.add(`field-cell--${curr.innerText}`);
   target.innerText = curr.innerText;

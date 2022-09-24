@@ -1,5 +1,8 @@
 'use strict';
 
+// - utils module:
+// |-- with functions like get random field,
+// |-- get non empty fields, check if something between etc.
 function getNotEmptyFields(cells) {
   const AllNotEmptyFields = [];
 
