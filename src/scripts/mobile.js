@@ -1,4 +1,5 @@
 'use strict';
+/* eslint-disable */
 
 function checkDirection(startX, endX, startY, endY) {
   const e = new Event('keyup');

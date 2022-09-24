@@ -27,14 +27,12 @@ function getNotEmptyFieldsCoords(cells) {
 function checkBetween(currPos, targetPos, allPos, dir, revert = false) {
   if (revert) {
     for (const pos of allPos) {
-      // c = 4  \ b=2 \ t = 1
       if (pos[dir] < currPos[dir] && pos[dir] > targetPos[dir]) {
         return false;
       }
     }
   } else {
     for (const pos of allPos) {
-      // c = 1  \ b=2 \ t = 4
       if (pos[dir] > currPos[dir] && pos[dir] < targetPos[dir]) {
         return false;
       }
