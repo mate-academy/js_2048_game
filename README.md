@@ -1,4 +1,6 @@
-[DEMO LINK](https://DariaVeretyak.github.io/js_2048_game/)
+[DEMO LINK] 
+(https://DariaVeretyak.github.io/js_2048_game/)
+<br/>
 Implemented the 2048 game like in [this reference](https://play2048.co/)
 Rules:
 1) The game field is 4 x 4
