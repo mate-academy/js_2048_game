@@ -1,3 +1,11 @@
+html,
+body {
+  overflow: hidden;
+  position: relative;
+  touch-action: none;
+  -ms-touch-action: none;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -8,7 +16,6 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
-  overflow: hidden;
 }
 
 .field-cell {

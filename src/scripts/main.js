@@ -17,6 +17,7 @@ const allCells = gameField.querySelectorAll('.field-cell');
 const startBtn = document.querySelector('.button');
 const highestScore = document.querySelector('.highest-score');
 
+// main
 function gameInit() {
   highestScore.innerText = localStorage.getItem('score') || 0;
 
