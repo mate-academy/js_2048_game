@@ -1,0 +1,56 @@
+'use strict';
+
+function getNotEmptyFields(cells) {
+  const AllNotEmptyFields = [];
+
+  for (const cell of cells) {
+    if (cell.classList.length !== 1) {
+      AllNotEmptyFields.push(cell);
+    }
+  }
+
+  return AllNotEmptyFields;
+}
+
+function getNotEmptyFieldsCoords(cells) {
+  const notEmptyFieldsCoorsds = [];
+
+  for (const cell of cells) {
+    if (cell.classList.length !== 1) {
+      notEmptyFieldsCoorsds.push(cell.id.split('-').slice(1));
+    }
+  }
+
+  return notEmptyFieldsCoorsds;
+}
+
+function checkBetween(currPos, targetPos, allPos, dir, revert = false) {
+  if (revert) {
+    for (const pos of allPos) {
+      // c = 4  \ b=2 \ t = 1
+      if (pos[dir] < currPos[dir] && pos[dir] > targetPos[dir]) {
+        return false;
+      }
+    }
+  } else {
+    for (const pos of allPos) {
+      // c = 1  \ b=2 \ t = 4
+      if (pos[dir] > currPos[dir] && pos[dir] < targetPos[dir]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function randomField(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+module.exports = {
+  getNotEmptyFields,
+  getNotEmptyFieldsCoords,
+  checkBetween,
+  randomField,
+};
