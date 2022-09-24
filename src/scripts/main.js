@@ -6,14 +6,28 @@ const tRows = tbody.rows;
 const controls = document.querySelector('.controls');
 const maxCellValue = 2048;
 
-const field = [
-  ['', '', '', ''],
-  ['', '', '', ''],
-  ['', '', '', ''],
-  ['', '', '', ''],
-];
+const field = [];
 
-const classes = [2, 4, 6, 8, 16, 32, 64, 128, 256, 512, 1024, 2048];
+// cоздаем пустой массив field
+const createNewField = () => {
+  for (let i = 0; i < tRows.length; i++) {
+    field[i] = [];
+
+    for (let j = 0; j < tRows.length; j++) {
+      const id = (i + 1) * 10 + j + 1;
+
+      field[i][j] = {
+        id: id, value: 0,
+      };
+    }
+  }
+};
+
+const arrValues = [];
+
+for (let n = 1; 2 ** n <= maxCellValue; n++) {
+  arrValues.push(2 ** n);
+};
 
 controls.insertAdjacentHTML('beforeend', `
   <button class="button restart hidden">Restart</button>
@@ -28,320 +42,329 @@ const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 
-let counter;
-
 // переносим все данные с массива field
-const getValueField = function() {
+const letFillCells = function() {
   for (let i = 0; i <= 3; i++) {
     for (let j = 0; j <= 3; j++) {
-      tRows[i].cells[j].innerText = field[i][j];
+      if (field[i][j].value !== 0) {
+        tRows[i].cells[j].innerText = field[i][j].value;
+      } else {
+        tRows[i].cells[j].innerText = '';
+      }
     }
   }
+  addClassCell();
 };
 
-// посчитать сумму всех значений
-const getScoreValue = function() {
-  const scoreValue = filledCellsArr.reduce((sum, current) => sum + current, 0);
-
-  gameScore.textContent = scoreValue;
-
-  return gameScore.textContent;
-};
-
-// добавляем свойства ячейкам
+// добавляем классы ячейкам
 const addClassCell = function() {
-  let cellField;
-
   for (let i = 0; i <= 3; i++) {
     for (let j = 0; j <= 3; j++) {
-      for (const newClass of classes) {
+      for (const newClass of arrValues) {
         tRows[i].cells[j].classList.remove(`field-cell--${newClass}`);
       }
 
-      if (field[i][j] !== '') {
-        cellField = field[i][j];
-        tRows[i].cells[j].classList.add(`field-cell--${cellField}`);
+      if (field[i][j] !== 0) {
+        tRows[i].cells[j].classList.add(`field-cell--${field[i][j].value}`);
       }
     }
   }
 };
 
-// обнуляем field
-const getEmptyField = () => {
-  for (let i = 0; i <= 3; i++) {
-    for (let j = 0; j <= 3; j++) {
-      field[i][j] = '';
-    }
-  }
-};
-
-// очищаем страницу (рестарт)
+// очищаем страницу
 const resetInfo = function() {
   gameScore.textContent = 0;
   restart.classList.add('hidden');
   start.classList.remove('hidden');
-
-  getEmptyField();
-
   messageStart.classList.remove('hidden');
-  filledCellsArr = [];
 };
 
-let randomValue;
-// выбираем пустую ячейку для заполнения
-const getRandomCell = function(min, max) {
-  counter = 0;
-  randomValue = Math.floor(Math.random() * (max - min)) + min;
+// coздаем массив пустых ячеек
+let emptyCellsArr = [];
+const getEmptyCellsArr = function() {
+  emptyCellsArr = [];
 
-  // проверяем наличие пустых ячейки
-  for (let i = 0; i <= 3; i++) {
-    for (let j = 0; j <= 3; j++) {
-      if (field[i][j] === '') {
-        counter++;
-      };
+  for (let i = 0; i < tRows.length; i++) {
+    for (let j = 0; j < tRows.length; j++) {
+      if (field[i][j].value === 0) {
+        emptyCellsArr.push(field[i][j].id);
+      }
     }
   }
 
-  return randomValue;
-};
+  if (emptyCellsArr.length === 0) {
+    let numberMoves = 0;
 
-let newValue;
-
-function getRandomValue() {
-  const mathNumber = Math.random();
-
-  if (mathNumber < 0.1) {
-    newValue = 4;
-  } else {
-    newValue = 2;
-  }
-}
-
-let row;
-let column;
-// проверяем на пустоту
-const selectEmptyCell = () => {
-  row = getRandomCell(0, field.length);
-  column = getRandomCell(0, field.length);
-
-  if (counter !== 0) {
-    while (field[row][column] !== '') {
-      row = getRandomCell(0, field.length);
-      column = getRandomCell(0, field.length);
-    }
-  } else {
-    for (let i = 1; i < 3; i++) {
-      for (let j = 1; j < 3; j++) {
-        if (field[i][j + 1] !== field[i][j]
-          && field[i][j - 1] !== field[i][j]
-          && field[i + 1][j] !== field[i][j]
-          && field[i - 1][j] !== field[i][j]) {
-          messageLose.classList.remove('hidden');
+    for (let i = 3; i > 0; i--) {
+      for (let j = 3; j > 0; j--) {
+        if (
+          field[i][j].value === field[i - 1][j].value
+          || field[i][j].value === field[i][j - 1].value
+          || field[0][j].value === field[0][j - 1].value
+          || field[i][0].value === field[i - 1][0].value
+        ) {
+          numberMoves++;
         }
       }
     }
-  }
-};
 
-let filledCellsArr;
-// создаем массив заполненных ячеек
-const getFilledCells = function() {
-  filledCellsArr = [];
-
-  for (const filledСell of field) {
-    for (let i = 0; i <= 3; i++) {
-      if (filledСell[i] !== '') {
-        filledCellsArr.push(filledСell[i]);
-      }
+    if (numberMoves === 0) {
+      messageLose.classList.remove('hidden');
     }
   }
 
-  return filledCellsArr;
+  return emptyCellsArr;
+};
+
+// считаем score
+const getScoreValue = function() {
+  let scoreValue = 0;
+
+  for (let i = 0; i < tRows.length; i++) {
+    for (let j = 0; j < tRows.length; j++) {
+      scoreValue += field[i][j].value;
+    }
+  }
+  gameScore.textContent = scoreValue;
+
+  return scoreValue;
+};
+
+// выбираем пустую ячейку для заполнения
+let randomCell = 0;
+const getRandomCell = function() {
+  const randomValue = Math.floor(Math.random() * emptyCellsArr.length);
+
+  randomCell = emptyCellsArr[randomValue];
+
+  return randomCell;
+};
+
+// выбираем случайное значение для заполнения
+const getRandomValue = function() {
+  const mathNumber = Math.random();
+
+  return mathNumber < 0.1
+    ? 4 : 2;
 };
 
 // добавляем новое значение в ячейку
 const addNewValue = () => {
-  getRandomValue();
-  selectEmptyCell();
+  getEmptyCellsArr();
+  getRandomCell();
 
-  field[row][column] = newValue;
-  addClassCell();
-};
-
-let fieldCopy;
-// копируем field
-const getCloneField = () => {
-  fieldCopy = [];
-
-  for (let i = 0; i < field.length; i++) {
-    fieldCopy.push(field[i].slice());
-  };
-};
-
-// нажатие start
-start.addEventListener('click', (ev) => {
-  addNewValue();
-  addNewValue();
-  getValueField();
-  getFilledCells();
-
-  if (filledCellsArr.length >= 1) {
-    start.classList.add('hidden');
-    restart.classList.remove('hidden');
-  }
-
-  getScoreValue();
-
-  messageStart.classList.add('hidden');
-});
-
-// нажатие restart
-restart.addEventListener('click', (ev) => {
-  for (let i = 0; i <= 3; i++) {
-    for (let j = 0; j <= 3; j++) {
-      for (const newClass of classes) {
-        tRows[i].cells[j].classList.remove(`field-cell--${newClass}`);
+  for (let i = 0; i < tRows.length; i++) {
+    for (let j = 0; j < tRows.length; j++) {
+      if (field[i][j].id === randomCell) {
+        field[i][j].value = getRandomValue();
       }
     }
   }
+  letFillCells();
+  addClassCell();
+};
 
+// нажатие start
+start.addEventListener('click', () => {
+  createNewField();
+  start.classList.add('hidden');
+  restart.classList.remove('hidden');
+  messageStart.classList.add('hidden');
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  addNewValue();
+  addNewValue();
+  getScoreValue();
+});
+
+// нажатие restart
+restart.addEventListener('click', () => {
+  createNewField();
   messageLose.classList.add('hidden');
   resetInfo();
-  getValueField();
+  letFillCells();
 });
+
+const moveRight = function() {
+  let checkRight = 0;
+
+  do {
+    for (let i = 0; i <= 3; i++) {
+      for (let j = 2; j >= 0; j--) {
+        // проверяем на наличие значения
+        if (field[i][j].value !== 0) {
+          const prevValue = field[i][j].value;
+
+          // если следующий пустой - сдвигаем, переносим значение
+          if (field[i][j + 1].value === 0) {
+            field[i][j].value = 0;
+            field[i][j + 1].value = prevValue;
+          }
+        }
+      }
+    }
+    checkRight++;
+  } while (checkRight < 3);
+};
+
+const moveLeft = function() {
+  let checkLeft = 0;
+
+  do {
+    for (let i = 0; i <= 3; i++) {
+      for (let j = 1; j <= 3; j++) {
+        // проверяем на наличие значения
+        if (field[i][j].value !== 0) {
+          // если следующий пустой - сдвигаем, переносим значение
+          if (field[i][j - 1].value === 0) {
+            const prevValue = field[i][j].value;
+
+            field[i][j].value = 0;
+            field[i][j - 1].value = prevValue;
+          }
+        }
+      }
+    }
+    checkLeft++;
+  } while (checkLeft < 3);
+};
+
+const moveDown = function() {
+  let checkDown = 0;
+
+  do {
+    for (let i = 2; i >= 0; i--) {
+      for (let j = 0; j <= 3; j++) {
+        // проверяем на наличие значения
+        if (field[i][j].value !== 0) {
+          // если следующий пустой - сдвигаем, переносим значение
+          const prevValue = field[i][j].value;
+
+          if (field[i + 1][j].value === 0) {
+            field[i][j].value = 0;
+            field[i + 1][j].value = prevValue;
+          }
+        }
+      }
+    }
+    checkDown++;
+  } while (checkDown < 3);
+};
+
+const moveUp = function() {
+  let checkUp = 0;
+
+  do {
+    for (let i = 1; i <= 3; i++) {
+      for (let j = 0; j <= 3; j++) {
+        // проверяем на наличие значения
+        if (field[i][j].value !== 0) {
+          // если следующий пустой - сдвигаем, переносим значение
+          if (field[i - 1][j].value === 0) {
+            const prevValue = field[i][j].value;
+
+            field[i][j].value = 0;
+            field[i - 1][j].value = prevValue;
+          }
+        }
+      }
+    }
+    checkUp++;
+  } while (checkUp < 3);
+};
 
 // нажатие клавиш
 body.addEventListener('keydown', (evKey) => {
-  if (!filledCellsArr.length || !messageLose.classList.contains('hidden')) {
+  if (!messageLose.classList.contains('hidden')) {
     return;
   };
 
-  // проверка на выиграш
-  for (const cellValue of filledCellsArr) {
-    if (cellValue === maxCellValue) {
-      messageWin.classList.remove('hidden');
-      resetInfo();
-    }
+  if (
+    evKey.code !== 'ArrowRight'
+    && evKey.code !== 'ArrowLeft'
+    && evKey.code !== 'ArrowDown'
+    && evKey.code !== 'ArrowUp'
+  ) {
+    return;
   }
 
   switch (evKey.code) {
     case 'ArrowRight':
-      let checkRight = 0;
+      moveRight();
 
-      do {
-        for (let i = 0; i <= 3; i++) {
-          for (let j = 2; j >= 0; j--) {
-            // проверяем на наличие значения
-            if (field[i][j] !== '') {
-              const cellInfo = field[i][j];
-
-              // если следующий пустой - сдвигаем, переносим значение
-              if (field[i][j + 1] === '') {
-                field[i][j] = '';
-                field[i][j + 1] = cellInfo;
-              } else if (field[i][j + 1] === cellInfo) {
-                // если с одинаковым значением - сверяем не был ли удвоен
-                if (field[i][j + 1] === fieldCopy[i][j + 1]) {
-                  field[i][j] = '';
-                  field[i][j + 1] += cellInfo;
-                }
-              }
-            }
+      // плюсуем
+      for (let i = 0; i <= 3; i++) {
+        for (let j = 3; j > 0; j--) {
+          if (field[i][j].value === field[i][j - 1].value) {
+            field[i][j].value *= 2;
+            field[i][j - 1].value = 0;
           }
         }
-        checkRight++;
-      } while (checkRight < 3);
-
+      };
+      moveRight();
       break;
 
     case 'ArrowLeft':
-      let checkLeft = 0;
+      moveLeft();
 
-      do {
-        for (let i = 0; i <= 3; i++) {
-          for (let j = 1; j <= 3; j++) {
-            // проверяем на наличие значения
-            if (field[i][j] !== '') {
-              const cellInfo = field[i][j];
-
-              // если следующий пустой - сдвигаем, переносим значение
-              if (field[i][j - 1] === '') {
-                field[i][j] = '';
-                field[i][j - 1] = cellInfo;
-              } else if (field[i][j - 1] === cellInfo) {
-                // если одинаковое значение, сверяем не был ли удвоен
-                if (field[i][j - 1] === fieldCopy[i][j - 1]) {
-                  field[i][j] = '';
-                  field[i][j - 1] += cellInfo;
-                }
-              }
-            }
+      // плюсуем
+      for (let i = 0; i <= 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (field[i][j].value === field[i][j + 1].value) {
+            field[i][j].value *= 2;
+            field[i][j + 1].value = 0;
           }
         }
-        checkLeft++;
-      } while (checkLeft < 3);
+      };
+      moveLeft();
       break;
 
     case 'ArrowDown':
-      let checkDown = 0;
+      moveDown();
 
-      do {
-        for (let i = 2; i >= 0; i--) {
-          for (let j = 0; j <= 3; j++) {
-            // проверяем на наличие значения
-            if (field[i][j] !== '') {
-              const cellInfo = field[i][j];
-
-              // если следующий пустой - сдвигаем, переносим значение
-              if (field[i + 1][j] === '') {
-                field[i][j] = '';
-                field[i + 1][j] = cellInfo;
-              } else if (field[i + 1][j] === cellInfo) {
-              // если с одинаковым значением - сверяем не был ли удвоен
-                if (field[i + 1][j] === fieldCopy[i + 1][j]) {
-                  field[i][j] = '';
-                  field[i + 1][j] += cellInfo;
-                }
-              }
-            }
+      // плюсуем
+      for (let i = 3; i > 0; i--) {
+        for (let j = 0; j <= 3; j++) {
+          if (field[i][j].value === field[i - 1][j].value) {
+            field[i][j].value *= 2;
+            field[i - 1][j].value = 0;
           }
         }
-        checkDown++;
-      } while (checkDown < 3);
+      };
+      moveDown();
       break;
 
     case 'ArrowUp':
-      let checkUp = 0;
+      moveUp();
 
-      do {
-        for (let i = 1; i <= 3; i++) {
-          for (let j = 0; j <= 3; j++) {
-            // проверяем на наличие значения
-            if (field[i][j] !== '') {
-              const cellInfo = field[i][j];
-
-              // если следующий пустой - сдвигаем, переносим значение
-              if (field[i - 1][j] === '') {
-                field[i][j] = '';
-                field[i - 1][j] = cellInfo;
-              // если с одинаковым значением - сверяем не был ли удвоен
-              } else if (field[i - 1][j] === cellInfo) {
-                if (field[i - 1][j] === fieldCopy[i - 1][j]) {
-                  field[i][j] = '';
-                  field[i - 1][j] += cellInfo;
-                }
-              }
-            }
+      // плюсуем
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j <= 3; j++) {
+          if (field[i][j].value === field[i + 1][j].value) {
+            field[i][j].value *= 2;
+            field[i + 1][j].value = 0;
           }
         }
-        checkUp++;
-      } while (checkUp < 3);
+      };
+      moveUp();
       break;
   }
 
-  addNewValue();
-  getFilledCells();
+  // проверка на выиграш
+  for (let i = 0; i <= 3; i++) {
+    for (let j = 0; j <= 3; j++) {
+      if (field[i][j].value === maxCellValue) {
+        messageWin.classList.remove('hidden');
+        resetInfo();
+      }
+    }
+  };
+
+  letFillCells();
+
+  if (emptyCellsArr.length > 0) {
+    addNewValue();
+  };
   getScoreValue();
-  getValueField();
-  getCloneField();
+  getEmptyCellsArr();
 });
