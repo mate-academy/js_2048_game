@@ -238,31 +238,24 @@ function showWinMessage() {
 }
 
 function showLoseMessage() {
-  let count = 0;
-  let stopGame = '';
-
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-      if (+field.rows[i].cells[j].innerHTML === 0) {
-        count++;
-      }
-    }
-  }
+  let isGameStopped = false;
 
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 3; j++) {
       if (+field.rows[j].cells[i].innerHTML
-        === +field.rows[j + 1].cells[i].innerHTML
+          === +field.rows[j + 1].cells[i].innerHTML
         || +field.rows[i].cells[j].innerHTML
-        === +field.rows[i].cells[j + 1].innerHTML) {
+          === +field.rows[i].cells[j + 1].innerHTML
+        || +field.rows[i].cells[j].innerHTML === 0
+      ) {
         return;
       } else {
-        stopGame = 'stop';
+        isGameStopped = true;
       }
     }
   }
 
-  if (count === 0 && stopGame === 'stop') {
+  if (isGameStopped) {
     messageLose.classList.toggle('hidden');
   }
 }
