@@ -25,17 +25,15 @@ function checkDirection(startX, endX, startY, endY) {
 
   if (endX < startX && startX - endX >= 100) {
     e.key = 'ArrowLeft';
-    document.body.dispatchEvent(e);
   } else if (endX > startX && endX - startX >= 100) {
     e.key = 'ArrowRight';
-    document.body.dispatchEvent(e);
   } else if (endY < startY && startY - endY >= 100) {
     e.key = 'ArrowUp';
-    document.body.dispatchEvent(e);
   } else if (endY > startY && endY - startY >= 100) {
     e.key = 'ArrowDown';
-    document.body.dispatchEvent(e);
   }
+
+  document.body.dispatchEvent(e);
 }
 
 module.exports = {

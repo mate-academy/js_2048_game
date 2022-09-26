@@ -6,16 +6,21 @@ const {
 } = require('./mobile');
 
 const {
+  gameScore,
+  gameField,
+  allCells,
+  highestScore,
+  startBtn,
+  messageBeforeStart,
+  messageDuringTheGame,
+  messageAfterLose,
+  messageAfterWin,
+} = require('./variables');
+
+const {
   arrowsPlayHandler,
   createItemInRandomEmptyField,
 } = require('./move');
-
-// vars:
-const gameScore = document.querySelector('.game-score');
-const gameField = document.querySelector('.game-field');
-const allCells = gameField.querySelectorAll('.field-cell');
-const startBtn = document.querySelector('.button');
-const highestScore = document.querySelector('.highest-score');
 
 // main function:
 function gameInit() {
@@ -27,8 +32,8 @@ function gameInit() {
       startBtn.classList.remove(`start`);
       startBtn.classList.add(`restart`);
 
-      document.querySelector('.message-play').classList.remove('hidden');
-      document.querySelector('.message-start').classList.add('hidden');
+      messageDuringTheGame.classList.remove('hidden');
+      messageBeforeStart.classList.add('hidden');
 
       createItemInRandomEmptyField();
       createItemInRandomEmptyField();
@@ -43,9 +48,9 @@ function gameInit() {
         }
       }
 
-      document.querySelector('.message-play').classList.remove('hidden');
-      document.querySelector('.message-lose').classList.add('hidden');
-      document.querySelector('.message-win').classList.add('hidden');
+      messageDuringTheGame.classList.remove('hidden');
+      messageAfterLose.classList.add('hidden');
+      messageAfterWin.classList.add('hidden');
       gameScore.innerText = 0;
 
       createItemInRandomEmptyField();

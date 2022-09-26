@@ -6,13 +6,22 @@ const {
   getNotEmptyFieldsCoords,
   checkBetween,
   randomField,
+  mergeCells,
+  moveCell,
+  checkForMerge,
+  checkForMove,
+  setNewHighestScore,
 } = require('./utils');
 
-const gameScore = document.querySelector('.game-score');
-const gameField = document.querySelector('.game-field');
-const allCells = gameField.querySelectorAll('.field-cell');
-const highestScore = document.querySelector('.highest-score');
-const values = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
+const {
+  totalCountOfCells,
+  gameScore,
+  allCells,
+  highestScore,
+  values,
+  messageDuringTheGame,
+  messageAfterLose,
+} = require('./variables');
 
 function createItemInRandomEmptyField() {
   const emptyFields = [];
@@ -36,14 +45,10 @@ function createItemInRandomEmptyField() {
 
   // if its impossible to create a new item:
   } else {
-    document.querySelector('.message-lose').classList.remove('hidden');
-    document.querySelector('.message-play').classList.add('hidden');
+    messageAfterLose.classList.remove('hidden');
+    messageDuringTheGame.classList.add('hidden');
 
-    if (Number(localStorage.getItem('score')) < Number(gameScore.innerText)) {
-      localStorage.setItem('score', gameScore.innerText);
-
-      highestScore.innerText = localStorage.getItem('score');
-    }
+    setNewHighestScore(gameScore, highestScore);
 
     document.body.removeEventListener('keyup', arrowsPlayHandler);
   }
@@ -52,194 +57,123 @@ function createItemInRandomEmptyField() {
 // Main movement algorithm:
 const arrowsPlayHandler = (e) => {
   let isMoved = false;
+  const notEmptyFields = getNotEmptyFields(allCells);
+  const notEmptyFieldsPositions = getNotEmptyFieldsCoords(allCells);
 
-  if (e.key === 'ArrowDown') {
-    // MOVE DOWN:
-    // console.log('DOWN');
+  switch (e.key) {
+    case 'ArrowDown':
+      for (const field of notEmptyFields.reverse()) {
+        const fieldPos = field.id.split('-').slice(1);
 
-    const notEmptyFields = getNotEmptyFields(allCells);
-    const notEmptyFieldsPositions = getNotEmptyFieldsCoords(allCells);
+        for (const cell of [...allCells].reverse()) {
+          const cellPos = cell.id.split('-').slice(1);
 
-    for (const field of notEmptyFields.reverse()) {
-      const fieldPos = field.id.split('-').slice(1);
-
-      for (const cell of [...allCells].reverse()) {
-        const cellPos = cell.id.split('-').slice(1);
-
-        if (fieldPos[0] < cellPos[0]
-          && fieldPos[1] === cellPos[1]
-          && cell.classList.length === 1
-          && cell.id !== field.id
-        ) {
-          moveCell(field, cell);
-          isMoved = true;
-          break;
-        } else if (fieldPos[0] < cellPos[0]
-          && fieldPos[1] === cellPos[1]
-          && cell.classList.length !== 1
-          && cell.id !== field.id
-          && field.innerText === cell.innerText
-          && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 0)
-        ) {
-          margeCells(field, cell);
-          isMoved = true;
-          break;
+          if (
+            checkForMove(field, cell, fieldPos, cellPos, 0, 1)
+          ) {
+            moveCell(field, cell);
+            isMoved = true;
+            break;
+          } else if (
+            checkForMerge(field, cell, fieldPos, cellPos, 0, 1)
+            && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 0)
+          ) {
+            mergeCells(field, cell);
+            isMoved = true;
+            break;
+          }
         }
       }
-    }
 
-    if (isMoved || notEmptyFields.length === 16) {
-      createItemInRandomEmptyField();
-    }
-  } else if (e.key === 'ArrowUp') {
-    // MOVE UP:
-    // console.log('UP');
+      if (isMoved || notEmptyFields.length === totalCountOfCells) {
+        createItemInRandomEmptyField();
+      }
+      break;
 
-    const notEmptyFields = getNotEmptyFields(allCells);
-    const notEmptyFieldsPositions = getNotEmptyFieldsCoords(allCells);
+    case 'ArrowUp':
+      for (const field of notEmptyFields) {
+        const fieldPos = field.id.split('-').slice(1);
 
-    for (const field of notEmptyFields) {
-      const fieldPos = field.id.split('-').slice(1);
+        for (const cell of [...allCells]) {
+          const cellPos = cell.id.split('-').slice(1);
 
-      for (const cell of [...allCells]) {
-        const cellPos = cell.id.split('-').slice(1);
-
-        if (fieldPos[0] > cellPos[0]
-          && fieldPos[1] === cellPos[1]
-          && cell.classList.length === 1
-          && cell.id !== field.id
-        ) {
-          moveCell(field, cell);
-          isMoved = true;
-          break;
-        } else if (fieldPos[0] > cellPos[0]
-          && fieldPos[1] === cellPos[1]
-          && cell.classList.length !== 1
-          && cell.id !== field.id
-          && field.innerText === cell.innerText
-          && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 0, true)
-        ) {
-          margeCells(field, cell);
-          isMoved = true;
-          break;
+          if (
+            checkForMove(field, cell, fieldPos, cellPos, 0, 1, true)
+          ) {
+            moveCell(field, cell);
+            isMoved = true;
+            break;
+          } else if (
+            checkForMerge(field, cell, fieldPos, cellPos, 0, 1, true)
+            && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 0, true)
+          ) {
+            mergeCells(field, cell);
+            isMoved = true;
+            break;
+          }
         }
       }
-    }
 
-    if (isMoved || notEmptyFields.length === 16) {
-      createItemInRandomEmptyField();
-    }
-  } else if (e.key === 'ArrowLeft') {
-    // MOVE LEFT:
-    // console.log('LEFT');
+      if (isMoved || notEmptyFields.length === totalCountOfCells) {
+        createItemInRandomEmptyField();
+      }
+      break;
 
-    const notEmptyFields = getNotEmptyFields(allCells);
-    const notEmptyFieldsPositions = getNotEmptyFieldsCoords(allCells);
+    case 'ArrowLeft':
+      for (const field of notEmptyFields) {
+        const fieldPos = field.id.split('-').slice(1);
 
-    for (const field of notEmptyFields) {
-      const fieldPos = field.id.split('-').slice(1);
+        for (const cell of [...allCells]) {
+          const cellPos = cell.id.split('-').slice(1);
 
-      for (const cell of [...allCells]) {
-        const cellPos = cell.id.split('-').slice(1);
-
-        if (fieldPos[1] > cellPos[1]
-          && fieldPos[0] === cellPos[0]
-          && cell.classList.length === 1
-          && cell.id !== field.id
-        ) {
-          moveCell(field, cell);
-          isMoved = true;
-          break;
-        } else if (fieldPos[1] > cellPos[1]
-          && fieldPos[0] === cellPos[0]
-          && cell.classList.length !== 1
-          && cell.id !== field.id
-          && field.innerText === cell.innerText
-          && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 1, true)
-        ) {
-          margeCells(field, cell);
-          isMoved = true;
-          break;
+          if (checkForMove(field, cell, fieldPos, cellPos, 1, 0, true)) {
+            moveCell(field, cell);
+            isMoved = true;
+            break;
+          } else if (
+            checkForMerge(field, cell, fieldPos, cellPos, 1, 0, true)
+            && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 1, true)
+          ) {
+            mergeCells(field, cell);
+            isMoved = true;
+            break;
+          }
         }
       }
-    }
 
-    if (isMoved || notEmptyFields.length === 16) {
-      createItemInRandomEmptyField();
-    }
-  } else if (e.key === 'ArrowRight') {
-    // MOVE RIGHT:
-    // console.log('RIGHT');
+      if (isMoved || notEmptyFields.length === totalCountOfCells) {
+        createItemInRandomEmptyField();
+      }
+      break;
 
-    const notEmptyFields = getNotEmptyFields(allCells);
-    const notEmptyFieldsPositions = getNotEmptyFieldsCoords(allCells);
+    case 'ArrowRight':
+      for (const field of notEmptyFields.reverse()) {
+        const fieldPos = field.id.split('-').slice(1);
 
-    for (const field of notEmptyFields.reverse()) {
-      const fieldPos = field.id.split('-').slice(1);
+        for (const cell of [...allCells].reverse()) {
+          const cellPos = cell.id.split('-').slice(1);
 
-      for (const cell of [...allCells].reverse()) {
-        const cellPos = cell.id.split('-').slice(1);
-
-        if (fieldPos[1] < cellPos[1]
-          && fieldPos[0] === cellPos[0]
-          && cell.classList.length === 1
-          && cell.id !== field.id
-        ) {
-          moveCell(field, cell);
-          isMoved = true;
-          break;
-        } else if (fieldPos[1] < cellPos[1]
-          && fieldPos[0] === cellPos[0]
-          && cell.classList.length !== 1
-          && cell.id !== field.id
-          && field.innerText === cell.innerText
-          && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 1)
-        ) {
-          margeCells(field, cell);
-          isMoved = true;
-          break;
+          if (checkForMove(field, cell, fieldPos, cellPos, 1, 0)) {
+            moveCell(field, cell);
+            isMoved = true;
+            break;
+          } else if (
+            checkForMerge(field, cell, fieldPos, cellPos, 1, 0)
+            && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 1)
+          ) {
+            mergeCells(field, cell);
+            isMoved = true;
+            break;
+          }
         }
       }
-    }
 
-    if (isMoved || notEmptyFields.length === 16) {
-      createItemInRandomEmptyField();
-    }
+      if (isMoved || notEmptyFields.length === totalCountOfCells) {
+        createItemInRandomEmptyField();
+      }
+      break;
   }
 };
-
-// function to marge 2 cells in one:
-function margeCells(curr, target) {
-  target.classList.remove(`field-cell--${curr.innerText}`);
-  target.classList.add(`field-cell--${Number(curr.innerText) * 2}`);
-  target.innerText = Number(curr.innerText) * 2;
-  curr.classList.remove(`field-cell--${curr.innerText}`);
-
-  gameScore.innerText = Number(gameScore.innerText)
-    + Number(curr.innerText) * 2;
-  curr.innerText = '';
-
-  if (target.innerText === '2048') {
-    document.querySelector('.message-win').classList.remove('hidden');
-    document.querySelector('.message-play').classList.add('hidden');
-
-    if (Number(localStorage.getItem('score')) < Number(gameScore.innerText)) {
-      localStorage.setItem('score', gameScore.innerText);
-
-      highestScore.innerText = localStorage.getItem('score');
-    }
-
-    document.body.removeEventListener('keyup', arrowsPlayHandler);
-  }
-}
-
-// function to move a cell into the free field:
-function moveCell(curr, target) {
-  target.classList.add(`field-cell--${curr.innerText}`);
-  target.innerText = curr.innerText;
-  curr.classList.remove(`field-cell--${curr.innerText}`);
-  curr.innerText = '';
-}
 
 module.exports = {
   arrowsPlayHandler,
