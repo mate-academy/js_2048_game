@@ -4,6 +4,7 @@
 const totalCountOfCells = 16;
 const winCondition = '2048';
 const values = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
+const moveCellColor = '#776e65';
 
 // Fields and buttons:
 const gameScore = document.querySelector('.game-score');
@@ -31,4 +32,5 @@ module.exports = {
   messageDuringTheGame,
   messageAfterLose,
   messageAfterWin,
+  moveCellColor,
 };

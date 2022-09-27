@@ -1,12 +1,8 @@
 'use strict';
 
 const {
-  winCondition,
   gameScore,
-  highestScore,
 } = require('./variables');
-
-const { arrowsPlayHandler } = require('./move');
 
 // - utils module:
 // |-- with functions like get random field,
@@ -85,35 +81,6 @@ function checkForMerge(
     && target.innerText === curr.innerText;
 }
 
-// function to merge 2 cells in one:
-function mergeCells(curr, target) {
-  target.classList.remove(`field-cell--${curr.innerText}`);
-  target.classList.add(`field-cell--${Number(curr.innerText) * 2}`);
-  target.innerText = Number(curr.innerText) * 2;
-  curr.classList.remove(`field-cell--${curr.innerText}`);
-
-  gameScore.innerText = Number(gameScore.innerText)
-    + Number(curr.innerText) * 2;
-  curr.innerText = '';
-
-  if (target.innerText === winCondition) {
-    document.querySelector('.message-win').classList.remove('hidden');
-    document.querySelector('.message-play').classList.add('hidden');
-
-    setNewHighestScore(gameScore, highestScore);
-
-    document.body.removeEventListener('keyup', arrowsPlayHandler);
-  }
-}
-
-// function to move a cell into the free field:
-function moveCell(curr, target) {
-  target.classList.add(`field-cell--${curr.innerText}`);
-  target.innerText = curr.innerText;
-  curr.classList.remove(`field-cell--${curr.innerText}`);
-  curr.innerText = '';
-}
-
 function setNewHighestScore(currentScore, currentHighestScore) {
   if (Number(localStorage.getItem('score')) < Number(currentScore.innerText)) {
     localStorage.setItem('score', gameScore.innerText);
@@ -129,7 +96,5 @@ module.exports = {
   randomField,
   checkForMove,
   checkForMerge,
-  mergeCells,
-  moveCell,
   setNewHighestScore,
 };
