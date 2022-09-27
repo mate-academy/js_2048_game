@@ -20,7 +20,6 @@ const {
   messageDuringTheGame,
   messageAfterLose,
   winCondition,
-  moveCellColor,
 } = require('./variables');
 
 function mainListenerRemover() {
@@ -192,24 +191,15 @@ function arrowsPlayHandler(e) {
 function mergeCells(curr, target, currCoords, targetCoords, axis) {
   const transformAxis = axis ? 'X' : 'Y';
   const value = curr.innerText;
+  const cssColor = getComputedStyle(target).backgroundColor;
 
   curr.style.transition = 'all 0.3s';
-  curr.style.backgroundColor = moveCellColor;
+  curr.style.backgroundColor = cssColor;
+  curr.style.color = cssColor;
 
   curr.style.transform = `
     translate${transformAxis}(${(targetCoords[axis] - currCoords[axis]) * 85}px)
   `;
-
-  // As it was before:
-  // curr.classList.remove(`field-cell--${curr.innerText}`);
-  // target.classList.remove(`field-cell--${curr.innerText}`);
-  // target.classList.add(`field-cell--${Number(curr.innerText) * 2}`);
-  // target.innerText = Number(curr.innerText) * 2;
-  //
-  // gameScore.innerText = Number(gameScore.innerText)
-  //   + Number(curr.innerText) * 2;
-  // curr.innerText = '';
-
   curr.classList.remove(`field-cell--${value}`);
   target.classList.remove(`field-cell--${value}`);
   target.classList.add(`field-cell--${Number(value) * 2}`);
@@ -239,19 +229,16 @@ function mergeCells(curr, target, currCoords, targetCoords, axis) {
 function moveCell(curr, target, currCoords, targetCoords, axis) {
   const transformAxis = axis === 0 ? 'Y' : 'X';
   const value = curr.innerText;
+  const cssColor = getComputedStyle(curr).backgroundColor;
 
   curr.style.transition = 'all 0.3s';
-  curr.style.backgroundColor = moveCellColor;
+  // curr.style.backgroundColor = moveCellColor;
+  curr.style.backgroundColor = cssColor;
+  curr.style.color = cssColor;
 
   curr.style.transform = `
     translate${transformAxis}(${(targetCoords[axis] - currCoords[axis]) * 85}px)
   `;
-
-  // As it was before:
-  // target.classList.add(`field-cell--${curr.innerText}`);
-  // target.innerText = curr.innerText;
-  // curr.classList.remove(`field-cell--${curr.innerText}`);
-  // curr.innerText = '';
 
   target.classList.add(`field-cell--${value}`);
   target.innerText = value;
