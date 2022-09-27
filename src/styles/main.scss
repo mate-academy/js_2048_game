@@ -133,8 +133,12 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-
   transition: 0.25s ease background;
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 }
 
 .start {
