@@ -17,15 +17,22 @@
 
 // write your code here
 class Game {
-  constructor(gameSelector) {
-    this.score = 0;
-    this.game = gameSelector;
-    this.scoreSelector = this.game.querySelector('.header__score');
-    this.playBtn = this.game.querySelector('.header__button');
-    this.messageSelector = this.game.querySelector('.message');
+  constructor(gameElement) {
+    this.gameElement = gameElement;
+    this.scoreElement = this.gameElement.querySelector('.header__score');
+    this.playBtn = this.gameElement.querySelector('.header__button');
+    this.messageElement = this.gameElement.querySelector('.message');
+    this.fieldBody = this.gameElement.querySelector('.field');
+
     this.fieldSize = 4;
-    this.fieldBody = this.game.querySelector('.field');
+    this.fieldState = [];
+
+    this.score = 0;
     this.gameOver = false;
+
+    this.keyUpHandler = this.keyUpHandler.bind(this);
+    this.pressHandler = this.pressHandler.bind(this);
+    this.unpressHandler = this.unpressHandler.bind(this);
 
     this.mouseMoves = {
       start: {
@@ -37,119 +44,54 @@ class Game {
         y: 0,
       },
     };
-
-    this.playBtn.addEventListener('click', () => {
-      this.init();
-      this.playBtn.textContent = 'Restart';
-      this.playBtn.classList.remove('header__button--start');
-      this.playBtn.classList.add('header__button--restart');
-
-      this.hideMessage();
-    });
   }
 
   init() {
+    this.playBtn.addEventListener('click', () => {
+      this.startGame();
+      this.changePlayButtonToRestart();
+      this.hidePromptMessage();
+    });
+  }
+
+  startGame() {
     this.gameOver = false;
 
     this.fieldState = [
-      [2, 4, 128, 2],
-      [8, 32, 4, 8],
-      [2, 256, 16, 4],
-      [128, 4, 2, 2],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
     ];
 
     this.generateMarkup();
-    this.setTwo();
-    this.setTwo();
+    this.generateTileInRandomPlace();
+    this.generateTileInRandomPlace();
+    this.setFieldOpacity();
+    this.setScore(0);
 
-    const keyupHandler = (e) => {
-      const key = e.code;
+    document.addEventListener('keyup', this.keyUpHandler);
 
-      console.log(key);
+    document.addEventListener('mousedown', this.pressHandler);
+    document.addEventListener('mouseup', this.unpressHandler);
 
+    document.addEventListener('touchstart', this.pressHandler);
+    document.addEventListener('touchend', this.unpressHandler);
+  }
 
-      if (!this.gameOver) {
-        switch (key) {
-          case 'ArrowLeft':
-            this.slideLeft();
-            break;
+  finishGame() {
+    this.gameOver = true;
+    this.removeEventsListeners();
 
-          case 'ArrowRight':
-            this.slideRight();
-            break;
+    if (this.isGameWon()) {
+      this.showPromptMessage('Winner! Congrats! You did it!', 'win');
+      this.setFieldOpacity('0.8');
 
-          case 'ArrowUp':
-            this.slideUp();
+      return;
+    }
 
-            break;
-
-          case 'ArrowDown':
-            this.slideDown();
-            break;
-
-          default:
-            return;
-        }
-
-        if (this.isGameWon()) {
-          this.gameOver = true;
-          this.showMessage('Winner! Congrats! You did it!', 'win');
-          document.removeEventListener('keyup', keyupHandler);
-        }
-
-        if (this.isGameLosed()) {
-          this.gameOver = true;
-          this.showMessage('You lose! Restart the game?');
-          document.removeEventListener('keyup', keyupHandler);
-        }
-
-        this.setTwo();
-      }
-    };
-
-    const mouseupHandler = (e) => {
-      if (!this.gameOver) {
-        this.mouseMoves.end.x = e.screenX;
-        this.mouseMoves.end.y = e.screenY;
-
-        const xDiference = this.mouseMoves.end.x - this.mouseMoves.start.x;
-        const yDiference = this.mouseMoves.end.y - this.mouseMoves.start.y;
-
-        if (xDiference === 0 && yDiference === 0) {
-          return;
-        }
-
-        if (Math.abs(xDiference) > Math.abs(yDiference)) {
-          xDiference > 0 ? this.slideRight() : this.slideLeft();
-        } else {
-          yDiference > 0 ? this.slideDown() : this.slideUp();
-        }
-
-        if (this.isGameWon()) {
-          this.gameOver = true;
-          this.showMessage('Winner! Congrats! You did it!', 'win');
-          document.removeEventListener('mouseup', mouseupHandler);
-        }
-
-        if (this.isGameLosed()) {
-          this.gameOver = true;
-          this.showMessage('You lose! Restart the game?');
-          document.removeEventListener('mouseup', mouseupHandler);
-        }
-
-        this.setTwo();
-      }
-    };
-
-    document.addEventListener('keyup', keyupHandler);
-
-    document.addEventListener('mousedown', (e) => {
-      this.mouseMoves.start.x = e.screenX;
-      this.mouseMoves.start.y = e.screenY;
-    });
-
-    // With this listener keyup make twice event
-    document.addEventListener('mouseup', mouseupHandler);
+    this.showPromptMessage('You lose! Restart the game?');
+    this.setFieldOpacity('0.5');
   }
 
   // Moves
@@ -164,9 +106,7 @@ class Game {
     return filtredLine;
   }
 
-  slide(isReversed = false, isRow = true) {
-    this.sameLinesAmount = 0;
-
+  slide(isReversed, isRow) {
     for (let i = 0; i < this.fieldSize; i++) {
       let line = isRow
         ? this.fieldState[i]
@@ -178,22 +118,22 @@ class Game {
         ];
 
       line = this.reverseLineBy(isReversed, line);
-
       line = this.slideCurrentLine(line);
-
       line = this.reverseLineBy(isReversed, line);
 
-      if (isRow) {
-        this.fieldState[i] = line;
-      }
+      // if (isRow) {
+      //   this.fieldState[i] = line;
+      // }
 
       for (let j = 0; j < this.fieldSize; j++) {
-        if (!isRow) {
-          this.fieldState[j][i] = line[j];
-        }
+        // if (!isRow) {
+        //   this.fieldState[j][i] = line[j];
+        // }
 
         const rowIndex = isRow ? i : j;
         const columnIndex = isRow ? j : i;
+
+        this.fieldState[rowIndex][columnIndex] = line[j];
 
         this.updateTileByPosition(rowIndex, columnIndex);
       }
@@ -216,50 +156,117 @@ class Game {
     this.slide(true, false);
   }
 
-  // Utils
-  showMessage(text, type) {
-    this.messageSelector.textContent = text;
-    this.messageSelector.classList.value = 'message';
+  // Listeners
+  getPressEventProperties(e) {
+    let eventProperties = e;
+
+    if (e.changedTouches) {
+      eventProperties = eventProperties.changedTouches[0];
+    }
+
+    return eventProperties;
+  }
+
+  keyUpHandler(e) {
+    const key = e.code;
+
+    if (!this.gameOver) {
+      switch (key) {
+        case 'ArrowLeft':
+          this.slideLeft();
+          break;
+
+        case 'ArrowRight':
+          this.slideRight();
+          break;
+
+        case 'ArrowUp':
+          this.slideUp();
+
+          break;
+
+        case 'ArrowDown':
+          this.slideDown();
+          break;
+
+        default:
+          return;
+      }
+
+      if (this.isGameWon() || this.isGameLosed()) {
+        this.finishGame();
+      }
+
+      this.generateTileInRandomPlace();
+    }
+  }
+
+  pressHandler(e) {
+    const currentEvent = this.getPressEventProperties(e);
+
+    this.mouseMoves.start.x = currentEvent.screenX;
+    this.mouseMoves.start.y = currentEvent.screenY;
+  }
+
+  unpressHandler(e) {
+    if (!this.gameOver) {
+      const currentEvent = this.getPressEventProperties(e);
+
+      this.mouseMoves.end.x = currentEvent.screenX;
+      this.mouseMoves.end.y = currentEvent.screenY;
+
+      const xDiference = this.mouseMoves.end.x - this.mouseMoves.start.x;
+      const yDiference = this.mouseMoves.end.y - this.mouseMoves.start.y;
+
+      const xAbsDiference = Math.abs(xDiference);
+      const yAbsDiference = Math.abs(yDiference);
+
+      if (xAbsDiference < 50 && yAbsDiference < 50) {
+        return;
+      }
+
+      if (xAbsDiference > yAbsDiference) {
+        xDiference > 0 ? this.slideRight() : this.slideLeft();
+      } else {
+        yDiference > 0 ? this.slideDown() : this.slideUp();
+      }
+
+      if (this.isGameWon() || this.isGameLosed()) {
+        this.finishGame();
+      }
+
+      this.generateTileInRandomPlace();
+    }
+  }
+
+  removeEventsListeners() {
+    document.removeEventListener('keyup', this.keyupHandler);
+    document.removeEventListener('mousedown', this.pressHandler);
+    document.removeEventListener('mouseup', this.unpressHandler);
+  }
+
+  // Markup
+  changePlayButtonToRestart() {
+    this.playBtn.textContent = 'Restart';
+    this.playBtn.classList.remove('header__button--start');
+    this.playBtn.classList.add('header__button--restart');
+  }
+
+  showPromptMessage(text, type) {
+    this.messageElement.textContent = text;
+    this.messageElement.classList.value = 'message';
 
     if (type) {
-      this.messageSelector.classList.add(`message--${type}`);
+      this.messageElement.classList.add(`message--${type}`);
     }
   }
 
-  hideMessage() {
-    this.messageSelector.classList.add('message--hidden');
+  setFieldOpacity(opacity = null) {
+    this.fieldBody.style.opacity = opacity;
   }
 
-  isGameWon() {
-    return this.fieldState.flat().includes(2048);
-  }
-
-  isGameLosed() {
-    if (this.stateHasEmptyTile()) {
-      return false;
-    }
-
-    for (let i = 0; i < this.fieldSize; i++) {
-      for (let j = 0; j < this.fieldSize; j++) {
-        const cell = this.fieldState[i][j];
-
-        const cellUnderCurrCell = this.fieldState[i + 1]
-          ? this.fieldState[i + 1][j]
-          : null;
-
-        const rightCellOfCurrCell = this.fieldState[i][j + 1] || null;
-
-        if (cell !== 0) {
-          if (cell === cellUnderCurrCell || cell === rightCellOfCurrCell) {
-            return false;
-          }
-        }
-      }
-    }
-
-    this.gameEnded = true;
-
-    return true;
+  hidePromptMessage() {
+    this.messageElement.classList.add('message--hidden');
   }
 
   generateMarkup() {
@@ -294,40 +301,85 @@ class Game {
   }
 
   setScore(value = 0) {
-    this.score += value;
-    this.scoreSelector.textContent = this.score;
+    this.score = value;
+    this.scoreElement.textContent = this.score;
+    this.animate(this.scoreElement);
   }
 
-  setTwo() {
+  // Utils
+  isGameWon() {
+    return this.fieldState.flat().includes(2048);
+  }
+
+  isGameLosed() {
+    if (this.stateHasEmptyTile()) {
+      return false;
+    }
+
+    for (let i = 0; i < this.fieldSize; i++) {
+      for (let j = 0; j < this.fieldSize; j++) {
+        const cell = this.fieldState[i][j];
+
+        const cellUnderCurrCell = this.fieldState[i + 1]
+          ? this.fieldState[i + 1][j]
+          : null;
+
+        const rightCellOfCurrCell = this.fieldState[i][j + 1] || null;
+
+        if (cell !== 0) {
+          if (cell === cellUnderCurrCell || cell === rightCellOfCurrCell) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
+  }
+
+  generateNewTileValue() {
+    return Math.random() >= 0.9 ? 4 : 2;
+  }
+
+  generateRandomTileIndex() {
+    return Math.floor(Math.random() * this.fieldSize);
+  }
+
+  generateRandomTilePosition() {
+    return [this.generateRandomTileIndex(), this.generateRandomTileIndex()];
+  }
+
+  getTileElementByPosition(rowIndex, columnIndex) {
+    return document.querySelector(
+      `[data-position = '${rowIndex + '-' + columnIndex}']`
+    );
+  }
+
+  generateTileInRandomPlace() {
     if (!this.stateHasEmptyTile()) {
       return;
     }
 
-    let found = false;
+    let emptyTileFound = false;
 
-    while (!found) {
-      // find random row and column to place a 2 in
-      const rowIndex = Math.floor(Math.random() * this.fieldSize);
-      const columnIndex = Math.floor(Math.random() * this.fieldSize);
+    while (!emptyTileFound) {
+      const [rowIndex, columnIndex] = this.generateRandomTilePosition();
 
       if (this.fieldState[rowIndex][columnIndex] === 0) {
-        this.fieldState[rowIndex][columnIndex] = 2;
+        const tile = this.getTileElementByPosition(rowIndex, columnIndex);
+        const tileValue = this.generateNewTileValue();
 
-        const tile = document.querySelector(
-          `[data-position = '${rowIndex + '-' + columnIndex}']`
-        );
-
-        tile.textContent = '2';
-        tile.classList.add('field__cell--2');
-        found = true;
+        this.fieldState[rowIndex][columnIndex] = tileValue;
+        tile.textContent = tileValue;
+        tile.classList.add(`field__cell--${tileValue}`);
+        this.animate(tile);
+        emptyTileFound = true;
       }
     }
   }
 
   updateTileByPosition(rowIndex, columnIndex) {
-    const tile = document.querySelector(
-      `[data-position = '${rowIndex + '-' + columnIndex}']`
-    );
+    const tile = this.getTileElementByPosition(rowIndex, columnIndex);
     const tileValue = this.fieldState[rowIndex][columnIndex];
 
     tile.textContent = '';
@@ -337,6 +389,16 @@ class Game {
       tile.textContent = tileValue;
       tile.classList.add('field__cell--' + tileValue);
     }
+  }
+
+  animate(element) {
+    element.animate(
+      [{ transform: 'scale(0.5)' }, { transform: 'scale(1)' }],
+      {
+        duration: 400,
+        easing: 'cubic-bezier(0.42, 0.97, 0.52, 1.2)',
+      }
+    );
   }
 
   fillLineByZeros(line) {
@@ -354,7 +416,7 @@ class Game {
       if (line[i] === line[i + 1]) {
         line[i] *= 2;
         line[i + 1] = 0;
-        this.setScore(line[i]);
+        this.setScore(this.score + line[i]);
       }
     }
   }
@@ -378,3 +440,5 @@ class Game {
 
 const gameSlector = document.querySelector('.game');
 const game = new Game(gameSlector);
+
+game.init();

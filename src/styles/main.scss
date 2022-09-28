@@ -62,6 +62,7 @@ h1 {
     border-radius: 5px;
     background-color: #edc22e;
     color: #f9f6f2;
+    will-change: transform;
 
     font-size: 24px;
   }
@@ -128,10 +129,12 @@ h1 {
   border-spacing: 10px;
   border-radius: 5px;
 
-  &__row {
-  }
+  transition: opacity 0.3s ease;
 
   &__cell {
+    position: relative;
+    z-index: 1;
+
     width: 75px;
     height: 75px;
 
@@ -140,7 +143,6 @@ h1 {
     color: #776e65;
 
     text-align: center;
-    vertical-align: center;
 
     transition: transform 0.3s ease;
 
@@ -200,6 +202,12 @@ h1 {
 }
 
 .message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 80px;
+
   padding: 10px;
 
   border-radius: 5px;
