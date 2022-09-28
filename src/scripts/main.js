@@ -28,8 +28,6 @@ function setGameField() {
       };
     }
   }
-
-  return gameField;
 };
 
 function hasEmptyCell() {
@@ -44,8 +42,23 @@ function hasEmptyCell() {
   return false;
 }
 
+function canMove() {
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 3; c++) {
+      if (gameField[c][r] === gameField[c + 1][r]
+        || gameField[r][c] === gameField[r][c + 1]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 function setTwoOrFour() {
-  if (!hasEmptyCell()) {
+  canMove();
+
+  if (!canMove() && !hasEmptyCell()) {
     messageLose.classList.remove('hidden');
 
     return;
@@ -54,9 +67,11 @@ function setTwoOrFour() {
   const row = Math.floor(Math.random() * 4);
   const cell = Math.floor(Math.random() * 4);
 
-  (gameField[row][cell] === 0)
-    ? gameField[row][cell] = Math.floor(Math.random() >= 0.9 ? 4 : 2)
-    : setTwoOrFour();
+  if (hasEmptyCell()) {
+    (gameField[row][cell] === 0)
+      ? gameField[row][cell] = Math.floor(Math.random() >= 0.9 ? 4 : 2)
+      : setTwoOrFour();
+  }
 
   setGameField();
 }
