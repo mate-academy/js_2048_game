@@ -85,6 +85,10 @@ h1 {
     font-size: 16px;
   }
 
+  &__score {
+    will-change: transform;
+  }
+
   &__controls {
     display: flex;
   }

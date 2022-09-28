@@ -1,19 +1,4 @@
 'use strict';
-/*
-  [
-      [2, 4, 128, 2],
-      [8, 32, 4, 8],
-      [2, 256, 16, 4],
-      [128, 4, 2, 2],
-    ]
-
-    this.fieldState = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ]
-*/
 
 // write your code here
 class Game {
@@ -44,6 +29,27 @@ class Game {
         y: 0,
       },
     };
+
+    this.tileAppearanceAnimation = {
+      keyframes: [
+        { transform: 'scale(0.5)' }, { transform: 'scale(1)' },
+      ],
+      options: {
+        duration: 400,
+        easing: 'cubic-bezier(0.42, 0.97, 0.52, 1.2)',
+      },
+    };
+
+    this.scoreRefreshAnimation = {
+      keyframes: [
+        { transform: 'scale(0.8)' },
+        { transform: 'scale(1)' },
+      ],
+      options: {
+        duration: 300,
+        easing: 'cubic-bezier(0.42, 0.97, 0.52, 1.1)',
+      },
+    };
   }
 
   init() {
@@ -64,7 +70,7 @@ class Game {
       [0, 0, 0, 0],
     ];
 
-    this.generateMarkup();
+    this.generateFieldMarkup();
     this.generateTileInRandomPlace();
     this.generateTileInRandomPlace();
     this.setFieldOpacity();
@@ -94,7 +100,7 @@ class Game {
     this.setFieldOpacity('0.5');
   }
 
-  // Moves
+  // Slides
   slideCurrentLine(line) {
     let filtredLine = this.removeZerosInLine(line);
 
@@ -106,30 +112,17 @@ class Game {
     return filtredLine;
   }
 
-  slide(isReversed, isRow) {
+  slideWholeField(isReversed, isRow) {
     for (let i = 0; i < this.fieldSize; i++) {
       let line = isRow
         ? this.fieldState[i]
-        : [
-          this.fieldState[0][i],
-          this.fieldState[1][i],
-          this.fieldState[2][i],
-          this.fieldState[3][i],
-        ];
+        : this.getColumnLine(i);
 
       line = this.reverseLineBy(isReversed, line);
       line = this.slideCurrentLine(line);
       line = this.reverseLineBy(isReversed, line);
 
-      // if (isRow) {
-      //   this.fieldState[i] = line;
-      // }
-
       for (let j = 0; j < this.fieldSize; j++) {
-        // if (!isRow) {
-        //   this.fieldState[j][i] = line[j];
-        // }
-
         const rowIndex = isRow ? i : j;
         const columnIndex = isRow ? j : i;
 
@@ -141,20 +134,21 @@ class Game {
   }
 
   slideLeft() {
-    this.slide(false, true);
+    this.slideWholeField(false, true);
   }
 
   slideRight() {
-    this.slide(true, true);
+    this.slideWholeField(true, true);
   }
 
   slideUp() {
-    this.slide(false, false);
+    this.slideWholeField(false, false);
   }
 
   slideDown() {
-    this.slide(true, false);
+    this.slideWholeField(true, false);
   }
+  // -- //
 
   // Listeners
   getPressEventProperties(e) {
@@ -243,7 +237,10 @@ class Game {
     document.removeEventListener('keyup', this.keyupHandler);
     document.removeEventListener('mousedown', this.pressHandler);
     document.removeEventListener('mouseup', this.unpressHandler);
+    document.addEventListener('touchstart', this.pressHandler);
+    document.addEventListener('touchend', this.unpressHandler);
   }
+  // -- //
 
   // Markup
   changePlayButtonToRestart() {
@@ -261,15 +258,15 @@ class Game {
     }
   }
 
-  setFieldOpacity(opacity = null) {
-    this.fieldBody.style.opacity = opacity;
-  }
-
   hidePromptMessage() {
     this.messageElement.classList.add('message--hidden');
   }
 
-  generateMarkup() {
+  setFieldOpacity(opacity = null) {
+    this.fieldBody.style.opacity = opacity;
+  }
+
+  generateFieldMarkup() {
     this.fieldBody.innerHTML = '';
 
     let fieldMarkup = '';
@@ -299,12 +296,45 @@ class Game {
 
     return tile;
   }
+  // -- //
 
-  setScore(value = 0) {
-    this.score = value;
-    this.scoreElement.textContent = this.score;
-    this.animate(this.scoreElement);
+  // New Tile Generation
+  generateNewTileValue() {
+    return Math.random() >= 0.9 ? 4 : 2;
   }
+
+  generateRandomTileIndex() {
+    return Math.floor(Math.random() * this.fieldSize);
+  }
+
+  generateRandomTilePosition() {
+    return [this.generateRandomTileIndex(), this.generateRandomTileIndex()];
+  }
+
+  generateTileInRandomPlace() {
+    if (!this.stateHasEmptyTile()) {
+      return;
+    }
+
+    let emptyTileFound = false;
+
+    while (!emptyTileFound) {
+      const [rowIndex, columnIndex] = this.generateRandomTilePosition();
+
+      if (this.fieldState[rowIndex][columnIndex] === 0) {
+        const tile = this.getTileElementByPosition(rowIndex, columnIndex);
+        const tileValue = this.generateNewTileValue();
+        const { keyframes, options } = this.tileAppearanceAnimation;
+
+        this.fieldState[rowIndex][columnIndex] = tileValue;
+        tile.textContent = tileValue;
+        tile.classList.add(`field__cell--${tileValue}`);
+        tile.animate(keyframes, options);
+        emptyTileFound = true;
+      }
+    }
+  }
+  // -- //
 
   // Utils
   isGameWon() {
@@ -337,45 +367,10 @@ class Game {
     return true;
   }
 
-  generateNewTileValue() {
-    return Math.random() >= 0.9 ? 4 : 2;
-  }
-
-  generateRandomTileIndex() {
-    return Math.floor(Math.random() * this.fieldSize);
-  }
-
-  generateRandomTilePosition() {
-    return [this.generateRandomTileIndex(), this.generateRandomTileIndex()];
-  }
-
   getTileElementByPosition(rowIndex, columnIndex) {
     return document.querySelector(
       `[data-position = '${rowIndex + '-' + columnIndex}']`
     );
-  }
-
-  generateTileInRandomPlace() {
-    if (!this.stateHasEmptyTile()) {
-      return;
-    }
-
-    let emptyTileFound = false;
-
-    while (!emptyTileFound) {
-      const [rowIndex, columnIndex] = this.generateRandomTilePosition();
-
-      if (this.fieldState[rowIndex][columnIndex] === 0) {
-        const tile = this.getTileElementByPosition(rowIndex, columnIndex);
-        const tileValue = this.generateNewTileValue();
-
-        this.fieldState[rowIndex][columnIndex] = tileValue;
-        tile.textContent = tileValue;
-        tile.classList.add(`field__cell--${tileValue}`);
-        this.animate(tile);
-        emptyTileFound = true;
-      }
-    }
   }
 
   updateTileByPosition(rowIndex, columnIndex) {
@@ -391,14 +386,21 @@ class Game {
     }
   }
 
-  animate(element) {
-    element.animate(
-      [{ transform: 'scale(0.5)' }, { transform: 'scale(1)' }],
-      {
-        duration: 400,
-        easing: 'cubic-bezier(0.42, 0.97, 0.52, 1.2)',
-      }
-    );
+  setScore(value = 0) {
+    const { keyframes, options } = this.scoreRefreshAnimation;
+
+    this.score = value;
+    this.scoreElement.textContent = this.score;
+    this.scoreElement.animate(keyframes, options);
+  }
+
+  getColumnLine(columnIndex) {
+    return [
+      this.fieldState[0][columnIndex],
+      this.fieldState[1][columnIndex],
+      this.fieldState[2][columnIndex],
+      this.fieldState[3][columnIndex],
+    ];
   }
 
   fillLineByZeros(line) {
