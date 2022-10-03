@@ -2,7 +2,7 @@
 
 // write your code here
 const button = document.querySelector('.button');
-const messeageStart = document.querySelector('.message-start');
+const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const gameScore = document.querySelector('.game-score');
@@ -43,10 +43,10 @@ function hasEmptyCell() {
 }
 
 function canMove() {
-  for (let r = 0; r < 4; r++) {
-    for (let c = 0; c < 3; c++) {
-      if (gameField[c][r] === gameField[c + 1][r]
-        || gameField[r][c] === gameField[r][c + 1]) {
+  for (let row = 0; row < 4; row++) {
+    for (let cell = 0; cell < 3; cell++) {
+      if (gameField[cell][row] === gameField[cell + 1][row]
+        || gameField[row][cell] === gameField[row][cell + 1]) {
         return true;
       }
     }
@@ -56,8 +56,6 @@ function canMove() {
 }
 
 function setTwoOrFour() {
-  canMove();
-
   if (!canMove() && !hasEmptyCell()) {
     messageLose.classList.remove('hidden');
 
@@ -67,10 +65,8 @@ function setTwoOrFour() {
   const row = Math.floor(Math.random() * 4);
   const cell = Math.floor(Math.random() * 4);
 
-  if (hasEmptyCell()) {
-    (gameField[row][cell] === 0)
-      ? gameField[row][cell] = Math.floor(Math.random() >= 0.9 ? 4 : 2)
-      : setTwoOrFour();
+  if (hasEmptyCell() && gameField[row][cell] === 0) {
+    gameField[row][cell] = Math.floor(Math.random() >= 0.9 ? 4 : 2);
   }
 
   setGameField();
@@ -161,28 +157,36 @@ function slideDown() {
   setGameField();
 }
 
+function srartGame() {
+  button.textContent = 'Restart';
+  button.classList.replace('start', 'restart');
+  messageStart.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
+  setTwoOrFour();
+  setTwoOrFour();
+};
+
+function restartGame() {
+  gameField = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+  score = 0;
+  gameScore.textContent = score;
+  messageLose.classList.add('hidden');
+
+  setTwoOrFour();
+  setTwoOrFour();
+};
+
 button.addEventListener('click', () => {
   if (button.textContent === 'Start') {
-    button.textContent = 'Restart';
-    button.classList.replace('start', 'restart');
-    messeageStart.classList.add('hidden');
-    messageWin.classList.add('hidden');
-    messageLose.classList.add('hidden');
-    setTwoOrFour();
-    setTwoOrFour();
+    srartGame();
   } else if (button.textContent === 'Restart') {
-    gameField = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    score = 0;
-    gameScore.textContent = score;
-    messageLose.classList.add('hidden');
-
-    setTwoOrFour();
-    setTwoOrFour();
+    restartGame();
   };
   score = 0;
 });
