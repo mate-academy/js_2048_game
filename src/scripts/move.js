@@ -40,11 +40,19 @@ function createItemInRandomEmptyField() {
     const randomIndex = randomField(0, emptyFields.length - 1);
     const randomValue = randomField(0, values.length - 1);
 
+    emptyFields[randomIndex].style.opacity = '0';
+    emptyFields[randomIndex].style.transition = 'opacity 0.2s';
+
     emptyFields[randomIndex]
       .classList.add('field-cell--' + values[randomValue]);
 
     emptyFields[randomIndex]
       .innerText = values[randomValue];
+
+    setTimeout(() => {
+      emptyFields[randomIndex].style.opacity = '1';
+      emptyFields[randomIndex].removeAttribute('style');
+    }, 100);
 
   // if its impossible to create a new item:
   } else {
@@ -58,132 +66,98 @@ function createItemInRandomEmptyField() {
   }
 }
 
-// Main movement algorithm:
+// Main movement Handler:
 function arrowsPlayHandler(e) {
-  let isMoved = false;
-  const notEmptyFields = getNotEmptyFields(allCells);
-  const notEmptyFieldsPositions = getNotEmptyFieldsCoords(allCells);
-
   switch (e.key) {
     case 'ArrowDown':
-      for (const field of notEmptyFields.reverse()) {
-        const fieldPos = field.id.split('-').slice(1);
-
-        for (const cell of [...allCells].reverse()) {
-          const cellPos = cell.id.split('-').slice(1);
-
-          if (
-            checkForMove(field, cell, fieldPos, cellPos, 0, 1)
-          ) {
-            moveCell(field, cell, fieldPos, cellPos, 0);
-            isMoved = true;
-            break;
-          } else if (
-            checkForMerge(field, cell, fieldPos, cellPos, 0, 1)
-            && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 0)
-          ) {
-            mergeCells(field, cell, fieldPos, cellPos, 0);
-            isMoved = true;
-            break;
-          }
-        }
-      }
-
-      if (isMoved || notEmptyFields.length === totalCountOfCells) {
-        setTimeout(() => {
-          createItemInRandomEmptyField();
-        }, 301);
-      }
+      mainMove({
+        mainAxis: 0,
+        staticAxis: 1,
+        revert: false,
+        shouldReverse: true,
+      });
       break;
 
     case 'ArrowUp':
-      for (const field of notEmptyFields) {
-        const fieldPos = field.id.split('-').slice(1);
-
-        for (const cell of [...allCells]) {
-          const cellPos = cell.id.split('-').slice(1);
-
-          if (
-            checkForMove(field, cell, fieldPos, cellPos, 0, 1, true)
-          ) {
-            moveCell(field, cell, fieldPos, cellPos, 0);
-            isMoved = true;
-            break;
-          } else if (
-            checkForMerge(field, cell, fieldPos, cellPos, 0, 1, true)
-            && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 0, true)
-          ) {
-            mergeCells(field, cell, fieldPos, cellPos, 0);
-            isMoved = true;
-            break;
-          }
-        }
-      }
-
-      if (isMoved || notEmptyFields.length === totalCountOfCells) {
-        setTimeout(() => {
-          createItemInRandomEmptyField();
-        }, 301);
-      }
+      mainMove({
+        mainAxis: 0,
+        staticAxis: 1,
+        revert: true,
+        shouldReverse: false,
+      });
       break;
 
     case 'ArrowLeft':
-      for (const field of notEmptyFields) {
-        const fieldPos = field.id.split('-').slice(1);
-
-        for (const cell of [...allCells]) {
-          const cellPos = cell.id.split('-').slice(1);
-
-          if (checkForMove(field, cell, fieldPos, cellPos, 1, 0, true)) {
-            moveCell(field, cell, fieldPos, cellPos, 1);
-            isMoved = true;
-            break;
-          } else if (
-            checkForMerge(field, cell, fieldPos, cellPos, 1, 0, true)
-            && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 1, true)
-          ) {
-            mergeCells(field, cell, fieldPos, cellPos, 1);
-            isMoved = true;
-            break;
-          }
-        }
-      }
-
-      if (isMoved || notEmptyFields.length === totalCountOfCells) {
-        setTimeout(() => {
-          createItemInRandomEmptyField();
-        }, 301);
-      }
+      mainMove({
+        mainAxis: 1,
+        staticAxis: 0,
+        revert: true,
+        shouldReverse: false,
+      });
       break;
 
     case 'ArrowRight':
-      for (const field of notEmptyFields.reverse()) {
-        const fieldPos = field.id.split('-').slice(1);
-
-        for (const cell of [...allCells].reverse()) {
-          const cellPos = cell.id.split('-').slice(1);
-
-          if (checkForMove(field, cell, fieldPos, cellPos, 1, 0)) {
-            moveCell(field, cell, fieldPos, cellPos, 1);
-            isMoved = true;
-            break;
-          } else if (
-            checkForMerge(field, cell, fieldPos, cellPos, 1, 0)
-            && checkBetween(fieldPos, cellPos, notEmptyFieldsPositions, 1)
-          ) {
-            mergeCells(field, cell, fieldPos, cellPos, 1);
-            isMoved = true;
-            break;
-          }
-        }
-      }
-
-      if (isMoved || notEmptyFields.length === totalCountOfCells) {
-        setTimeout(() => {
-          createItemInRandomEmptyField();
-        }, 301);
-      }
+      mainMove({
+        mainAxis: 1,
+        staticAxis: 0,
+        revert: false,
+        shouldReverse: true,
+      });
       break;
+  }
+}
+
+// Main movement algorithm
+function mainMove({
+  mainAxis,
+  staticAxis,
+  revert,
+  shouldReverse,
+}) {
+  let isMoved = false;
+  const notEmptyFields = getNotEmptyFields(allCells);
+  const notEmptyFieldsPositions = getNotEmptyFieldsCoords(allCells);
+  const allGameCells = [...allCells];
+
+  if (shouldReverse) {
+    notEmptyFields.reverse();
+    allGameCells.reverse();
+  }
+
+  for (const field of notEmptyFields) {
+    const fieldPos = field.id.split('-').slice(1);
+
+    for (const cell of allGameCells) {
+      const cellPos = cell.id.split('-').slice(1);
+
+      if (checkForMove(
+        field, cell, fieldPos, cellPos,
+        mainAxis, staticAxis, revert
+      )) {
+        moveCell(field, cell, fieldPos, cellPos, mainAxis);
+        isMoved = true;
+        break;
+      } else if (
+        checkForMerge(
+          field, cell, fieldPos, cellPos,
+          mainAxis, staticAxis, revert
+        )
+        && checkBetween(
+          fieldPos, cellPos, notEmptyFieldsPositions,
+          mainAxis, revert
+        )
+      ) {
+        mergeCells(field, cell, fieldPos, cellPos, mainAxis);
+        isMoved = true;
+        break;
+      }
+    }
+  }
+
+  if (isMoved || notEmptyFields.length === totalCountOfCells) {
+    setTimeout(() => {
+      createItemInRandomEmptyField();
+    }, 301);
   }
 }
 
@@ -232,7 +206,6 @@ function moveCell(curr, target, currCoords, targetCoords, axis) {
   const cssColor = getComputedStyle(curr).backgroundColor;
 
   curr.style.transition = 'all 0.3s';
-  // curr.style.backgroundColor = moveCellColor;
   curr.style.backgroundColor = cssColor;
   curr.style.color = cssColor;
 
