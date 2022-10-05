@@ -2,12 +2,14 @@
 
 // write your code here
 class Game {
-  constructor(gameElement) {
-    this.gameElement = gameElement;
-    this.scoreElement = this.gameElement.querySelector('.header__score');
-    this.playBtn = this.gameElement.querySelector('.header__button');
-    this.messageElement = this.gameElement.querySelector('.message');
-    this.fieldBody = this.gameElement.querySelector('.field');
+  constructor(gameEl) {
+    this.gameEl = gameEl;
+    this.scoreEl = this.gameEl.querySelector('.header__score');
+    this.scoreInfoEl = this.scoreEl.closest('.header__info');
+    this.highestScoreEl = this.gameEl.querySelector('.header__highest-score');
+    this.playBtn = this.gameEl.querySelector('.header__button');
+    this.messageEl = this.gameEl.querySelector('.message');
+    this.fieldBody = this.gameEl.querySelector('.field');
 
     this.fieldSize = 4;
     this.fieldState = [];
@@ -53,6 +55,12 @@ class Game {
   }
 
   init() {
+    const highestScore = this.getRecordFromLocaleStorage()
+      ? this.getRecordFromLocaleStorage()
+      : 0;
+
+    this.setHighestScoreToMarkup(highestScore);
+
     this.playBtn.addEventListener('click', () => {
       this.startGame();
       this.changePlayButtonToRestart();
@@ -76,6 +84,10 @@ class Game {
     this.setFieldOpacity();
     this.setScore(0);
 
+    if (this.scoreInfoEl.classList.contains('header__info--active')) {
+      this.scoreInfoEl.classList.remove('header__info--active');
+    };
+
     document.addEventListener('keyup', this.keyUpHandler);
 
     document.addEventListener('mousedown', this.pressHandler);
@@ -88,6 +100,11 @@ class Game {
   finishGame() {
     this.gameOver = true;
     this.removeEventsListeners();
+
+    if (this.isScoreHigherThanRecord()) {
+      this.setRecordToLocaleStorage(this.score);
+      this.setHighestScoreToMarkup(this.score);
+    }
 
     if (this.isGameWon()) {
       this.showPromptMessage('Winner! Congrats! You did it!', 'win');
@@ -191,6 +208,7 @@ class Game {
         this.finishGame();
       }
 
+      this.addActiveToScoreBy(this.isScoreHigherThanRecord());
       this.generateTileInRandomPlace();
     }
   }
@@ -229,6 +247,7 @@ class Game {
         this.finishGame();
       }
 
+      this.addActiveToScoreBy(this.isScoreHigherThanRecord());
       this.generateTileInRandomPlace();
     }
   }
@@ -250,16 +269,34 @@ class Game {
   }
 
   showPromptMessage(text, type) {
-    this.messageElement.textContent = text;
-    this.messageElement.classList.value = 'message';
+    this.messageEl.textContent = text;
+    this.messageEl.classList.value = 'message';
 
     if (type) {
-      this.messageElement.classList.add(`message--${type}`);
+      this.messageEl.classList.add(`message--${type}`);
     }
   }
 
   hidePromptMessage() {
-    this.messageElement.classList.add('message--hidden');
+    this.messageEl.classList.add('message--hidden');
+  }
+
+  addActiveToScoreBy(condition) {
+    if (condition) {
+      this.scoreInfoEl.classList.add('header__info--active');
+    }
+  }
+
+  setScore(value = 0) {
+    const { keyframes, options } = this.scoreRefreshAnimation;
+
+    this.score = value;
+    this.scoreEl.textContent = this.score;
+    this.scoreEl.animate(keyframes, options);
+  }
+
+  setHighestScoreToMarkup(highestScore = 0) {
+    this.highestScoreEl.textContent = highestScore;
   }
 
   setFieldOpacity(opacity = null) {
@@ -297,6 +334,15 @@ class Game {
     return tile;
   }
   // -- //
+
+  // localeStorage
+  getRecordFromLocaleStorage() {
+    return localStorage.getItem('best-score');
+  }
+
+  setRecordToLocaleStorage(score) {
+    localStorage.setItem('best-score', score);
+  }
 
   // New Tile Generation
   generateNewTileValue() {
@@ -356,15 +402,20 @@ class Game {
 
         const rightCellOfCurrCell = this.fieldState[i][j + 1] || null;
 
-        if (cell !== 0) {
-          if (cell === cellUnderCurrCell || cell === rightCellOfCurrCell) {
-            return false;
-          }
+        if (
+          cell !== 0
+          && (cell === cellUnderCurrCell || cell === rightCellOfCurrCell)
+        ) {
+          return false;
         }
       }
     }
 
     return true;
+  }
+
+  isScoreHigherThanRecord() {
+    return this.score > +this.getRecordFromLocaleStorage();
   }
 
   getTileElementByPosition(rowIndex, columnIndex) {
@@ -386,21 +437,14 @@ class Game {
     }
   }
 
-  setScore(value = 0) {
-    const { keyframes, options } = this.scoreRefreshAnimation;
-
-    this.score = value;
-    this.scoreElement.textContent = this.score;
-    this.scoreElement.animate(keyframes, options);
-  }
-
   getColumnLine(columnIndex) {
-    return [
-      this.fieldState[0][columnIndex],
-      this.fieldState[1][columnIndex],
-      this.fieldState[2][columnIndex],
-      this.fieldState[3][columnIndex],
-    ];
+    const columnLine = [];
+
+    for (let i = 0; i < this.fieldSize; i++) {
+      columnLine.push(this.fieldState[i][columnIndex]);
+    }
+
+    return columnLine;
   }
 
   fillLineByZeros(line) {
