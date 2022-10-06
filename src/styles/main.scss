@@ -4,79 +4,79 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #505375;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #505375;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #f9f6f2;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #A7AEEC;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #969FF3;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #7982F2;
+    color: #2B2A5F;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: #6367F5;
+    color: #2B2A5F;
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    background: #564DDE;
+    color: #2B2A5F;
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    background: #583BF6;
+    color: #2B2A5F;
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    background: #729EED;
+    color: #2B2A5F;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: #6163ED;
+    color: #2B2A5F;
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    background: #5062ED;
+    color: #2B2A5F;
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    background: #3F3FED;
+    color: #2B2A5F;
   }
 
   &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    background: #382EED;
+    color: #2B2A5F;
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: #313150;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -91,7 +91,7 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background: #313150;
   color: #f9f6f2;
   width: 75px;
   height: 75px;
@@ -109,11 +109,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #888EB3;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: white;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -157,8 +157,8 @@ h1 {
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #888EB3;
+  color: white;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
@@ -177,7 +177,7 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
+  background: #888EB3;
   color: #f9f6f2;
 }
 
