@@ -4,9 +4,11 @@ const gameField = document.querySelector('.game-field');
 const start = document.querySelector('.start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
-const messageStart = document.querySelector('.message-start');
+const messageRestart = document.querySelector('.message-restart');
 const gameScore = document.querySelector('.game-score');
 const gameBestScore = document.querySelector('.game-score--best');
+const messageStart = document.querySelector('.message-start');
+const messageWinner = document.querySelector('.message-winner');
 
 const arrayField = [
   [0, 0, 0, 0],
@@ -34,7 +36,8 @@ start.addEventListener('click', () => {
   gameScore.innerText = 0;
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
-  messageStart.classList.add('hidden');
+  messageRestart.classList.add('hidden');
+  messageWinner.classList.add('hidden');
 
   clearGameField(arrayField);
   addNumbersIntoGameField(arrayField, gameOver);
@@ -202,11 +205,13 @@ function convertColumnToRow(array) {
 
 function isGameOver(original, clone) {
   const compare = [];
+  let winner = false;
 
   for (let i = 0; i < original.length; i++) {
     for (let j = 0; j < original.length; j++) {
       if (original[i][j] === 2048) {
         messageWin.classList.remove('hidden');
+        winner = true;
       }
 
       let isSame = false;
@@ -229,9 +234,18 @@ function isGameOver(original, clone) {
     }
   }
 
-  if (compare.every(item => item === true)) {
+  const end = compare.every(item => item === true);
+
+  if (end && winner) {
+    messageWinner.classList.remove('hidden');
+    messageRestart.classList.remove('hidden');
+
+    return true;
+  }
+
+  if (end) {
     messageLose.classList.remove('hidden');
-    messageStart.classList.remove('hidden');
+    messageRestart.classList.remove('hidden');
 
     return true;
   }
@@ -310,3 +324,24 @@ function moveDown(array) {
 
   convertColumnToRow(array);
 }
+
+const restart = new Promise((resolve) => {
+  window.addEventListener('keydown', (e) => {
+    if (
+      e.code === 'ArrowRight'
+      || e.code === 'ArrowLeft'
+      || e.code === 'ArrowUp'
+      || e.code === 'ArrowDown'
+    ) {
+      resolve();
+    }
+  });
+});
+
+restart
+  .then(() => {
+    messageStart.classList.add('hidden');
+    start.classList.remove('start');
+    start.classList.add('restart');
+    start.innerText = 'Restart';
+  });
