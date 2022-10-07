@@ -270,11 +270,7 @@ function moveRight(row) {
       row[i] = 0;
     }
 
-    if (
-      row[i]
-      && lastFullCell !== null
-      && !row[lastFullCell - 1]
-    ) {
+    if (row[i] && lastFullCell && !row[lastFullCell - 1]) {
       row[lastFullCell - 1] = row[i];
       isMultiplied = false;
       row[i] = 0;
