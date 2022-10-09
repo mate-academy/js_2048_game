@@ -29,20 +29,7 @@ addNumbersIntoGameField(arrayField, gameOver);
 setGameField(arrayField, gameField);
 
 start.addEventListener('click', () => {
-  gameOver = [];
-  gameOver.length = arrayField.length;
-  gameOver.fill([]);
-  score = 0;
-  gameScore.innerText = 0;
-  messageLose.classList.add('hidden');
-  messageWin.classList.add('hidden');
-  messageRestart.classList.add('hidden');
-  messageWinner.classList.add('hidden');
-
-  clearGameField(arrayField);
-  addNumbersIntoGameField(arrayField, gameOver);
-  addNumbersIntoGameField(arrayField, gameOver);
-  setGameField(arrayField, gameField);
+  startGame();
 });
 
 window.addEventListener('keydown', (e) => {
@@ -79,6 +66,23 @@ window.addEventListener('keydown', (e) => {
 
 function deepClone(array) {
   return JSON.parse(JSON.stringify(array));
+}
+
+function startGame() {
+  gameOver = [];
+  gameOver.length = arrayField.length;
+  gameOver.fill([]);
+  score = 0;
+  gameScore.innerText = 0;
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  messageRestart.classList.add('hidden');
+  messageWinner.classList.add('hidden');
+
+  clearGameField(arrayField);
+  addNumbersIntoGameField(arrayField, gameOver);
+  addNumbersIntoGameField(arrayField, gameOver);
+  setGameField(arrayField, gameField);
 }
 
 function randomizerCoords(field) {
