@@ -100,6 +100,16 @@ page.addEventListener('keydown', () => {
             element.className = 'field-cell';
           }
 
+          if (element.innerHTML === rowOfCurrentElement[j].innerHTML) {
+            rowOfCurrentElement[j].innerHTML
+            = +`${rowOfCurrentElement[j].innerHTML}` + +`${element.innerHTML}`;
+
+            element.innerHTML = '';
+            element.className = 'field-cell';
+
+            classAdder(tableCells);
+          }
+
           if (rowOfCurrentElement[j].innerHTML !== '') {
             rowOfCurrentElement[j - 1].innerHTML = element.innerHTML;
             rowOfCurrentElement[j - 1].className = element.className;
