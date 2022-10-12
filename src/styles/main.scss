@@ -73,6 +73,21 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  &--4096 {
+    background: #2eed47;
+    color: #f9f6f2;
+  }
+
+  &--8192 {
+    background: #57ed2e73;
+    color: #f9f6f2;
+  }
+
+  &--16384 {
+    background: #57ed2e23;
+    color: #f9f6f2;
+  }
 }
 
 .game-field {
@@ -117,6 +132,10 @@ h1 {
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+
+  &--best {
+    background: #ff8569;
+  }
 }
 
 .controls {
@@ -178,6 +197,16 @@ h1 {
 
 .message-win {
   background: #edc22e;
+  color: #f9f6f2;
+}
+
+.message-restart {
+  background: #f1b2b2;
+  color: #f9f6f2;
+}
+
+.message-start {
+  background: #1dae28;
   color: #f9f6f2;
 }
 
