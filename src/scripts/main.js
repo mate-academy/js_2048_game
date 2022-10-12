@@ -151,22 +151,19 @@ function setGameField(from, to) {
 }
 
 function isMoveRowsRight(array) {
-  const isMoveAll = [];
+  return array
+    .map(row => {
+      for (let i = 0; i < row.length; i++) {
+        if ((row[i + 1] === 0 || row[i] === row[i + 1]) && row[i] !== 0) {
+          i = row.length;
 
-  array.forEach(row => {
-    let isMove = false;
+          return true;
+        }
+      };
 
-    for (let i = 0; i < row.length; i++) {
-      if ((row[i + 1] === 0 || row[i] === row[i + 1]) && row[i] !== 0) {
-        isMove = true;
-        i = row.length;
-      }
-    };
-
-    isMoveAll.push(isMove);
-  });
-
-  return isMoveAll.includes(true);
+      return false;
+    })
+    .includes(true);
 }
 
 function isMoveRowsLeft(array) {
