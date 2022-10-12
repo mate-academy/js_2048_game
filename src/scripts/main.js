@@ -81,27 +81,38 @@ function classAdder(cells) {
 
 page.addEventListener('keydown', () => {
   if (event.key === 'ArrowRight') {
-    [...tableCells].forEach(element => {
-      if (element.innerText !== '') {
-        const postionOfElement = element.cellIndex;
+    const array = [...tableCells];
+
+    for (let i = 15; i >= 0; i--) {
+      if (array[i].innerHTML !== '') {
+        const element = array[i];
         const elementParent = element.parentElement;
         const rowOfCurrentElement = [...elementParent.children];
+        const positionOfElementInItRow = rowOfCurrentElement
+          .find(result => result === element).cellIndex;
 
-        for (let i = postionOfElement + 1; i < 4; i++) {
-          // console.log(i);
-
-          if (rowOfCurrentElement[i].innerHTML !== ''
-          || rowOfCurrentElement[i].innerHTML !== undefined) {
-            const freeCell = rowOfCurrentElement[i - 1];
-
-            freeCell.innerHTML = element.innerHTML;
-            freeCell.className = element.className;
+        for (let j = positionOfElementInItRow + 1; j < 4; j++) {
+          if (j === 3 && rowOfCurrentElement[j].innerHTML === '') {
+            rowOfCurrentElement[j].innerHTML = element.innerHTML;
+            rowOfCurrentElement[j].className = element.className;
 
             element.innerHTML = '';
             element.className = 'field-cell';
           }
+
+          if (rowOfCurrentElement[j].innerHTML !== '') {
+            rowOfCurrentElement[j - 1].innerHTML = element.innerHTML;
+            rowOfCurrentElement[j - 1].className = element.className;
+
+            element.innerHTML = '';
+            element.className = 'field-cell';
+          } else {
+            continue;
+          }
         }
+      } else {
+        continue;
       }
-    });
+    }
   }
 });
