@@ -16,22 +16,23 @@ const columnsArray = createColumns();
 function appearCell() {
   const myArray = [...cells];
 
-  const freeCells = myArray.filter(cell => cell.textContent === '');
+  const freeCells = myArray.filter(cell => !cell.textContent);
 
   const randomItem = freeCells[Math.floor(Math.random() * freeCells.length)];
   const x = Math.random(1 - 4);
 
-  if (freeCells.length === 0) {
+  if (!freeCells.length) {
     return;
   }
 
   if (x < 0.1) {
     randomItem.textContent = '4';
     randomItem.classList.add('field-cell--4');
-  } else {
-    randomItem.textContent = '2';
-    randomItem.classList.add('field-cell--2');
-  }
+
+    return;
+  };
+  randomItem.textContent = '2';
+  randomItem.classList.add('field-cell--2');
 }
 
 function scoreCounter(sum) {
@@ -47,8 +48,7 @@ startButton.addEventListener('click', () => {
 
   const restartButton = document.createElement('button');
 
-  restartButton.classList.add('button');
-  restartButton.classList.add('restart');
+  restartButton.classList.add('button', 'restart');
   restartButton.id = 'restart';
   restartButton.textContent = 'restart';
   controls.append(restartButton);
@@ -63,41 +63,44 @@ startButton.addEventListener('click', () => {
     };
     appearCell();
     appearCell();
+    score.textContent = '';
   });
 
   messangeStart.classList.add('hidden');
 });
 
-document.addEventListener('keydown', function(ev) {
-  const key = ev.key;
+document.addEventListener('keydown', function(e) {
+  const key = e.key;
   const button = document.querySelector('button');
 
-  if (key === 'ArrowRight') {
-    moveRight();
-    toRight();
-    moveRight();
-    moveRight();
-  }
+  switch (key) {
+    case 'ArrowRight':
+      moveRight();
+      toRight();
+      moveRight();
+      moveRight();
+      break;
 
-  if (key === 'ArrowLeft') {
-    moveLeft();
-    toLeft();
-    moveLeft();
-    moveLeft();
-  }
+    case 'ArrowLeft':
+      moveLeft();
+      toLeft();
+      moveLeft();
+      moveLeft();
+      break;
 
-  if (key === 'ArrowUp') {
-    moveUp();
-    toUp();
-    moveUp();
-    moveUp();
-  }
+    case 'ArrowUp':
+      moveUp();
+      toUp();
+      moveUp();
+      moveUp();
+      break;
 
-  if (key === 'ArrowDown') {
-    moveDown();
-    toDown();
-    moveDown();
-    moveDown();
+    case 'ArrowDown':
+      moveDown();
+      toDown();
+      moveDown();
+      moveDown();
+      break;
   }
 
   if (button.className.includes('restart')) {
@@ -113,10 +116,9 @@ function toRight() {
     for (let i = 3; i >= 0; i--) {
       const rowCells = el.children;
 
-      const theCell = rowCells[i];
-      const prevCell = rowCells[i - 1];
+      const [prevCell, currentCell] = [rowCells[i - 1], rowCells[i]];
 
-      adder(prevCell, theCell);
+      adder(prevCell, currentCell);
     };
   });
 };
@@ -126,10 +128,9 @@ function moveRight() {
     for (let i = 3; i >= 0; i--) {
       const rowCells = el.children;
 
-      const theCell = rowCells[i];
-      const prevCell = rowCells[i - 1];
+      const [prevCell, currentCell] = [rowCells[i - 1], rowCells[i]];
 
-      mover(prevCell, theCell);
+      mover(prevCell, currentCell);
     };
   });
 };
@@ -139,10 +140,9 @@ function toLeft() {
     for (let i = 0; i <= 3; i++) {
       const rowCells = el.children;
 
-      const theCell = rowCells[i];
-      const prevCell = rowCells[i + 1];
+      const [prevCell, currentCell] = [rowCells[i + 1], rowCells[i]];
 
-      adder(prevCell, theCell);
+      adder(prevCell, currentCell);
     };
   });
 };
@@ -152,41 +152,31 @@ function moveLeft() {
     for (let i = 0; i <= 3; i++) {
       const rowCells = el.children;
 
-      const theCell = rowCells[i];
-      const prevCell = rowCells[i + 1];
+      const [prevCell, currentCell] = [rowCells[i + 1], rowCells[i]];
 
-      mover(prevCell, theCell);
+      mover(prevCell, currentCell);
     };
   });
 };
 
 function createColumns() {
-  const column1 = [];
-  const column2 = [];
-  const column3 = [];
-  const column4 = [];
+  const board = [[], [], [], []];
 
   arrayRows.forEach((row) => {
     const rowCells = row.children;
 
-    column1.push(rowCells[0]);
-    column2.push(rowCells[1]);
-    column3.push(rowCells[2]);
-    column4.push(rowCells[3]);
+    [...rowCells].forEach((_, i) => board[i].push(rowCells[i]));
   });
 
-  const array = [column1, column2, column3, column4];
-
-  return (array);
+  return (board);
 };
 
 function moveUp() {
   columnsArray.forEach((el) => {
     for (let i = 0; i <= 3; i++) {
-      const theCell = el[i];
-      const prevCell = el[i + 1];
+      const [prevCell, currentCell] = [el[i + 1], el[i]];
 
-      mover(prevCell, theCell);
+      mover(prevCell, currentCell);
     };
   });
 };
@@ -194,10 +184,9 @@ function moveUp() {
 function toUp() {
   columnsArray.forEach((el) => {
     for (let i = 0; i <= 3; i++) {
-      const theCell = el[i];
-      const prevCell = el[i + 1];
+      const [prevCell, currentCell] = [el[i + 1], el[i]];
 
-      adder(prevCell, theCell);
+      adder(prevCell, currentCell);
     };
   });
 };
@@ -205,10 +194,9 @@ function toUp() {
 function moveDown() {
   columnsArray.forEach((el) => {
     for (let i = 3; i >= 0; i--) {
-      const theCell = el[i];
-      const prevCell = el[i - 1];
+      const [prevCell, currentCell] = [el[i - 1], el[i]];
 
-      mover(prevCell, theCell);
+      mover(prevCell, currentCell);
     };
   });
 };
@@ -216,10 +204,9 @@ function moveDown() {
 function toDown() {
   columnsArray.forEach((el) => {
     for (let i = 3; i >= 0; i--) {
-      const theCell = el[i];
-      const prevCell = el[i - 1];
+      const [prevCell, currentCell] = [el[i - 1], el[i]];
 
-      adder(prevCell, theCell);
+      adder(prevCell, currentCell);
     };
   });
 };
@@ -235,29 +222,27 @@ function winMessange() {
 };
 
 function loseMessange() {
-  const can = canMove();
-
-  if (can === false) {
+  if (!canMove()) {
     messangeLose.classList.remove('hidden');
   }
 };
 
 function canMove() {
   const myArray = [...cells];
-  const freeCells = myArray.filter(cell => cell.textContent === '');
+  const freeCells = myArray.filter(cell => !cell.textContent);
 
   let can = 'yes';
 
-  if (freeCells.length <= 0) {
+  if (!freeCells.length) {
     arrayRows.forEach((el) => {
       for (let i = 0; i <= 3; i++) {
         const rowCells = el.children;
 
-        const theCell = rowCells[i];
+        const currentCell = rowCells[i];
         const prevCell = rowCells[i + 1];
 
         if (prevCell) {
-          if (theCell.textContent === prevCell.textContent) {
+          if (currentCell.textContent === prevCell.textContent) {
             can = true;
           }
         }
@@ -266,11 +251,11 @@ function canMove() {
 
     columnsArray.forEach((el) => {
       for (let i = 3; i >= 0; i--) {
-        const theCell = el[i];
+        const currentCell = el[i];
         const prevCell = el[i - 1];
 
         if (prevCell) {
-          if (theCell.textContent === prevCell.textContent) {
+          if (currentCell.textContent === prevCell.textContent) {
             can = true;
           }
         }
@@ -285,11 +270,11 @@ function canMove() {
   return can;
 };
 
-function mover(prevCell, theCell) {
+function mover(prevCell, currentCell) {
   if (prevCell) {
-    if (theCell.textContent === '') {
-      theCell.textContent = prevCell.textContent;
-      theCell.classList = prevCell.classList;
+    if (!currentCell.textContent) {
+      currentCell.textContent = prevCell.textContent;
+      currentCell.classList = prevCell.classList;
 
       prevCell.textContent = '';
       prevCell.className = 'field-cell';
@@ -297,17 +282,17 @@ function mover(prevCell, theCell) {
   }
 };
 
-function adder(prevCell, theCell) {
+function adder(prevCell, currentCell) {
   if (prevCell) {
-    if (prevCell.textContent === theCell.textContent
+    if (prevCell.textContent === currentCell.textContent
       && prevCell.textContent !== '') {
-      const sum = `${+prevCell.textContent + +theCell.textContent}`;
+      const sum = `${+prevCell.textContent + +currentCell.textContent}`;
 
-      theCell.textContent = sum;
-      theCell.classList = '';
-      theCell.className = 'field-cell';
+      currentCell.textContent = sum;
+      currentCell.classList = '';
+      currentCell.className = 'field-cell';
 
-      theCell.classList.add(`field-cell--${theCell.textContent}`);
+      currentCell.classList.add(`field-cell--${currentCell.textContent}`);
 
       prevCell.textContent = '';
       prevCell.className = 'field-cell';
