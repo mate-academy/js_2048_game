@@ -106,14 +106,25 @@ class Game {
     this.startCoords.x = e.screenX;
     this.startCoords.y = e.screenY;
 
+    if (e.changedTouches) {
+      this.startCoords.x = e.changedTouches[0].screenX;
+      this.startCoords.y = e.changedTouches[0].screenY;
+    }
+
     return this.startCoords;
   }
 
   touchEndHandler(e) {
     e.preventDefault();
 
-    const mouseUpX = e.screenX;
-    const mouseUpY = e.screenY;
+    let mouseUpX = e.screenX;
+    let mouseUpY = e.screenY;
+
+    if (e.changedTouches) {
+      mouseUpX = e.changedTouches[0].screenX;
+      mouseUpY = e.changedTouches[0].screenY;
+    }
+
     const deltaX = this.startCoords.x - mouseUpX;
     const deltaY = this.startCoords.y - mouseUpY;
 
