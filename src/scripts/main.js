@@ -118,6 +118,8 @@ class Game {
   touchEndHandler(e) {
     e.preventDefault();
 
+    const copyField = [...this.field].flat();
+
     let mouseUpX = e.screenX;
     let mouseUpY = e.screenY;
 
@@ -143,7 +145,14 @@ class Game {
       }
     }
 
-    this.addNumber();
+    const fieldAfterMove = [...this.field].flat();
+
+    for (let i = 0; i < copyField.length; i++) {
+      if (copyField[i] !== fieldAfterMove[i]) {
+        this.addNumber();
+        break;
+      }
+    }
 
     const currentScore = this.calculateScore();
 
@@ -153,6 +162,8 @@ class Game {
   }
 
   keyHandler(e) {
+    const copyField = [...this.field].flat();
+
     if (e.key === 'ArrowUp') {
       this.verticalUp();
     } else if (e.key === 'ArrowDown') {
@@ -165,7 +176,14 @@ class Game {
       return;
     }
 
-    this.addNumber();
+    const fieldAfterMove = [...this.field].flat();
+
+    for (let i = 0; i < copyField.length; i++) {
+      if (copyField[i] !== fieldAfterMove[i]) {
+        this.addNumber();
+        break;
+      }
+    }
 
     const currentScore = this.calculateScore();
 
