@@ -103,8 +103,8 @@ class Game {
   touchStartHandler(e) {
     e.preventDefault();
 
-    this.startCoords.x = e.clientX;
-    this.startCoords.y = e.clientY;
+    this.startCoords.x = e.screenX;
+    this.startCoords.y = e.screenY;
 
     return this.startCoords;
   }
@@ -112,8 +112,8 @@ class Game {
   touchEndHandler(e) {
     e.preventDefault();
 
-    const mouseUpX = e.clientX;
-    const mouseUpY = e.clientY;
+    const mouseUpX = e.screenX;
+    const mouseUpY = e.screenY;
     const deltaX = this.startCoords.x - mouseUpX;
     const deltaY = this.startCoords.y - mouseUpY;
 
