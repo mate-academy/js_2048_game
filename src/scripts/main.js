@@ -8,7 +8,9 @@ class Game {
     this.highScoreValue = 0;
     this.bestScore = document.querySelector('.best-score');
     this.gameScore = document.querySelector('.game-score');
-    this.gameInfo = document.querySelector('.message-container');
+    this.gameStartMessage = document.querySelector('.message-start');
+    this.gameLoseMessage = document.querySelector('.message-lose');
+    this.gameWinMessage = document.querySelector('.message-win');
     this.score = 0;
     this.gameOver = false;
     this.restartHandler = this.restartHandler.bind(this);
@@ -37,9 +39,7 @@ class Game {
   }
 
   start() {
-    this.startButton.removeEventListener('click', this.restartHandler);
     this.startButton.addEventListener('click', this.startHandler);
-    this.startButton.removeEventListener('touchend', this.restartHandler);
     this.startButton.addEventListener('touchend', this.startHandler);
   }
 
@@ -49,7 +49,7 @@ class Game {
 
     this.startButton.removeEventListener('click', this.startHandler);
     this.startButton.removeEventListener('touchend', this.startHandler);
-    this.gameInfo.classList.add('hidden');
+    this.gameStartMessage.classList.add('hidden');
 
     document.addEventListener('keyup', this.keyHandler);
     document.addEventListener('mousedown', this.touchStartHandler);
@@ -65,15 +65,13 @@ class Game {
     this.startButton.classList.remove('start');
     this.startButton.classList.add('restart');
     this.startButton.innerText = 'Restart';
+    this.gameWinMessage.classList.add('hidden');
+    this.gameLoseMessage.classList.add('hidden');
 
     this.play();
   }
 
   restartHandler() {
-    this.startButton.classList.remove('restart');
-    this.startButton.classList.add('start');
-    this.startButton.innerText = 'Start';
-
     const currentScore = this.calculateScore();
 
     if (this.highScoreValue < currentScore) {
@@ -94,15 +92,13 @@ class Game {
       }
     }
 
-    document.removeEventListener('keyup', this.keyHandler);
-    document.removeEventListener('mousedown', this.touchStartHandler);
-    document.removeEventListener('mouseup', this.touchEndHandler);
-    document.removeEventListener('touchstart', this.touchStartHandler);
-    document.removeEventListener('touchend', this.touchEndHandler);
+    this.addNumber();
+    this.addNumber();
+
     this.startButton.removeEventListener('click', this.startHandler);
     this.startButton.removeEventListener('touchend', this.startHandler);
-
-    this.start();
+    this.gameWinMessage.classList.add('hidden');
+    this.gameLoseMessage.classList.add('hidden');
   }
 
   touchStartHandler(e) {
@@ -152,6 +148,8 @@ class Game {
     const currentScore = this.calculateScore();
 
     this.setScore(currentScore);
+    this.checkOnLose();
+    this.checkOnWin();
   }
 
   keyHandler(e) {
@@ -172,6 +170,8 @@ class Game {
     const currentScore = this.calculateScore();
 
     this.setScore(currentScore);
+    this.checkOnLose();
+    this.checkOnWin();
   }
 
   horizontalLeft() {
@@ -327,24 +327,54 @@ class Game {
       do {
         posX = this.findEmpty();
       } while (!(this.field[posX].some(elem => elem === 0)));
-    }
 
-    if (this.haveZero()) {
       do {
         posY = this.findEmpty();
       } while (!(this.field[posX][posY] === 0));
+
+      const newNumber = this.calculateChance();
+      const cellToAdd = this.fieldRows[posX].children[posY];
+
+      cellToAdd.classList.add(`field-cell--${newNumber}`);
+      cellToAdd.innerText = newNumber;
+      this.field[posX][posY] = newNumber;
     }
-
-    const newNumber = this.calculateChance();
-    const cellToAdd = this.fieldRows[posX].children[posY];
-
-    cellToAdd.classList.add(`field-cell--${newNumber}`);
-    cellToAdd.innerText = newNumber;
-    this.field[posX][posY] = newNumber;
   }
 
   calculateChance() {
     return Math.random() > 0.1 ? 2 : 4;
+  }
+
+  checkOnWin() {
+    if (this.field.flat().includes(2048)) {
+      this.gameWinMessage.classList.remove('hidden');
+    }
+  }
+
+  checkOnLose() {
+    if (!this.haveZero() && this.checkOnConnect()) {
+      this.gameLoseMessage.classList.remove('hidden');
+    }
+  }
+
+  checkOnConnect() {
+    for (let j = 0; j < this.field.length; j++) {
+      for (let i = 0; i < this.field[j].length; i++) {
+        const currentCell = this.field[j][i];
+        const cellDown = j < this.field.length - 1
+          ? this.field[j + 1][i]
+          : null;
+        const cellRight = i < this.field[j].length - 1
+          ? this.field[j][i + 1]
+          : null;
+
+        if (currentCell === cellDown || currentCell === cellRight) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   haveZero() {
