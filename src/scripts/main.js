@@ -42,7 +42,10 @@ class Game {
   }
 
   play() {
-    this.setScore(0);
+    this.addNumber();
+    this.addNumber();
+
+    this.startButton.removeEventListener('click', this.startHandler);
     this.gameInfo.classList.add('hidden');
 
     document.addEventListener('keyup', this.keyHandler);
