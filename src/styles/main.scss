@@ -20,6 +20,12 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: transform 0.3s ease;
+
+  @media (max-width: 360px) {
+    width: 60px;
+    height: 60px;
+  }
 
   &--2 {
     background: #eee4da;
@@ -88,6 +94,10 @@ body {
   margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
+
+  @media (max-width: 360px) {
+    justify-content: space-evenly;
+  }
 }
 
 h1 {
@@ -102,6 +112,11 @@ h1 {
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+
+  @media (max-width: 360px) {
+    width: 60px;
+    height: 60px;
+  }
 }
 
 .info {
@@ -117,6 +132,11 @@ h1 {
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+
+  @media (max-width: 360px) {
+    width: 60px;
+    height: 60px;
+  }
 }
 
 .controls {
@@ -134,39 +154,42 @@ h1 {
   width: 75px;
   height: 75px;
 
-  transition: 0.25s ease background;
+  transition: 0.25s ease background-color;
+
 }
 
+
 .start {
-  background: #1dae28;
+  background-color: #1dae28;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background-color: #179921;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background-color: #f1b2b2;
 
   &:hover {
-    background: #f87474;
+    background-color: #f87474;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
+  background-color: #d6cdc4;
   color: #776e65;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+  position: absolute;
 }
 
 .hidden {
-  display: none;
+  opacity: 0;
 }
 
 .container {
@@ -177,11 +200,12 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
+  background-color: #edc22e;
   color: #f9f6f2;
 }
 
 .message-container {
+  position: relative;
   width: 100%;
   height: 150px;
 }
