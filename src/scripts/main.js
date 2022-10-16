@@ -39,8 +39,8 @@ class Game {
   start() {
     this.startButton.removeEventListener('click', this.restartHandler);
     this.startButton.addEventListener('click', this.startHandler);
-    this.startButton.removeEventListener('touch', this.restartHandler);
-    this.startButton.addEventListener('touch', this.startHandler);
+    this.startButton.removeEventListener('touchend', this.restartHandler);
+    this.startButton.addEventListener('touchend', this.startHandler);
   }
 
   play() {
@@ -48,7 +48,7 @@ class Game {
     this.addNumber();
 
     this.startButton.removeEventListener('click', this.startHandler);
-    this.startButton.removeEventListener('touch', this.startHandler);
+    this.startButton.removeEventListener('touchend', this.startHandler);
     this.gameInfo.classList.add('hidden');
 
     document.addEventListener('keyup', this.keyHandler);
@@ -58,7 +58,7 @@ class Game {
     document.addEventListener('touchend', this.touchEndHandler);
 
     this.startButton.addEventListener('click', this.restartHandler);
-    this.startButton.addEventListener('touch', this.restartHandler);
+    this.startButton.addEventListener('touchend', this.restartHandler);
   }
 
   startHandler() {
@@ -100,7 +100,7 @@ class Game {
     document.removeEventListener('touchstart', this.touchStartHandler);
     document.removeEventListener('touchend', this.touchEndHandler);
     this.startButton.removeEventListener('click', this.startHandler);
-    this.startButton.removeEventListener('touch', this.startHandler);
+    this.startButton.removeEventListener('touchend', this.startHandler);
 
     this.start();
   }
