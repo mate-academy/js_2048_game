@@ -207,9 +207,10 @@ class Game {
         }
 
         if (cellLeft !== 0 && cellLeft === cellRight) {
-          this.field[j][i - 1] = cellLeft + cellRight;
-          this.field[j][i] = 0;
-          actions++;
+          if (actions === 0) {
+            this.field[j][i - 1] = cellLeft + cellRight;
+            this.field[j][i] = 0;
+          }
         }
       }
 
@@ -238,9 +239,10 @@ class Game {
         }
 
         if (cellRight !== 0 && cellLeft === cellRight) {
-          this.field[j][i] = cellLeft + cellRight;
-          this.field[j][i - 1] = 0;
-          actions++;
+          if (actions === 0) {
+            this.field[j][i] = cellLeft + cellRight;
+            this.field[j][i - 1] = 0;
+          }
         }
       }
 
@@ -269,9 +271,10 @@ class Game {
         }
 
         if (cellUp !== 0 && cellUp === cellDown) {
-          this.field[j - 1][i] = cellUp + cellDown;
-          this.field[j][i] = 0;
-          actions++;
+          if (actions === 0) {
+            this.field[j - 1][i] = cellUp + cellDown;
+            this.field[j][i] = 0;
+          }
         }
       }
 
@@ -300,9 +303,10 @@ class Game {
         }
 
         if (cellDown !== 0 && cellUp === cellDown) {
-          this.field[j][i] = cellUp + cellDown;
-          this.field[j - 1][i] = 0;
-          actions++;
+          if (actions === 0) {
+            this.field[j][i] = cellUp + cellDown;
+            this.field[j - 1][i] = 0;
+          }
         }
       }
 
