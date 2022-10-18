@@ -64,6 +64,7 @@ startButton.addEventListener('click', () => {
     appearCell();
     appearCell();
     score.textContent = '';
+    messangeLose.classList.add('hidden');
   });
 
   messangeStart.classList.add('hidden');
