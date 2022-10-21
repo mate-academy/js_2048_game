@@ -72,7 +72,7 @@ class Game {
   }
 
   restartHandler() {
-    const currentScore = this.calculateScore();
+    let currentScore = this.calculateScore();
 
     if (this.highScoreValue < currentScore) {
       this.highScoreValue = currentScore;
@@ -95,8 +95,10 @@ class Game {
     this.addNumber();
     this.addNumber();
 
-    this.startButton.removeEventListener('click', this.startHandler);
-    this.startButton.removeEventListener('touchend', this.startHandler);
+    currentScore = this.calculateScore();
+
+    this.setScore(currentScore);
+
     this.gameWinMessage.classList.add('hidden');
     this.gameLoseMessage.classList.add('hidden');
   }
@@ -130,6 +132,10 @@ class Game {
 
     const deltaX = this.startCoords.x - mouseUpX;
     const deltaY = this.startCoords.y - mouseUpY;
+
+    if (Math.abs(deltaX) < 30 && Math.abs(deltaY) < 30) {
+      return;
+    }
 
     if (Math.abs(deltaY) > Math.abs(deltaX)) {
       if (deltaY > 0) {
