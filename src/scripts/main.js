@@ -47,6 +47,10 @@ class Game {
     this.addNumber();
     this.addNumber();
 
+    const currentScore = this.calculateScore();
+
+    this.setScore(currentScore);
+
     this.startButton.removeEventListener('click', this.startHandler);
     this.startButton.removeEventListener('touchend', this.startHandler);
     this.gameStartMessage.classList.add('hidden');
