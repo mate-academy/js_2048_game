@@ -11,6 +11,33 @@ body {
   overflow: hidden;
 }
 
+.how-to-play {
+  &__input {
+    display: none;
+
+    &:checked ~ .how-to-play__label::after {
+      content: '\2193'
+    }
+
+    &:checked ~ .how-to-play__description {
+      opacity: 1;
+    }
+  }
+
+  &__label {
+    &::after {
+      content: '\27F6';
+    }
+  }
+
+  &__description {
+    opacity: 0;
+    font-size: 16px;
+    text-align: justify;
+    font-weight: 500;
+  }
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;

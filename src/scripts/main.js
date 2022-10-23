@@ -47,10 +47,6 @@ class Game {
     this.addNumber();
     this.addNumber();
 
-    const currentScore = this.calculateScore();
-
-    this.setScore(currentScore);
-
     this.startButton.removeEventListener('click', this.startHandler);
     this.startButton.removeEventListener('touchend', this.startHandler);
     this.gameStartMessage.classList.add('hidden');
@@ -76,10 +72,8 @@ class Game {
   }
 
   restartHandler() {
-    let currentScore = this.calculateScore();
-
-    if (this.highScoreValue < currentScore) {
-      this.highScoreValue = currentScore;
+    if (this.highScoreValue < this.score) {
+      this.highScoreValue = this.score;
       this.bestScore.innerText = `${this.highScoreValue}`;
     }
 
@@ -96,12 +90,12 @@ class Game {
       }
     }
 
+    this.score = 0;
+
+    this.setScore(this.score);
+
     this.addNumber();
     this.addNumber();
-
-    currentScore = this.calculateScore();
-
-    this.setScore(currentScore);
 
     this.gameWinMessage.classList.add('hidden');
     this.gameLoseMessage.classList.add('hidden');
@@ -164,9 +158,7 @@ class Game {
       }
     }
 
-    const currentScore = this.calculateScore();
-
-    this.setScore(currentScore);
+    this.setScore(this.score);
     this.checkOnLose();
     this.checkOnWin();
   }
@@ -195,14 +187,14 @@ class Game {
       }
     }
 
-    const currentScore = this.calculateScore();
-
-    this.setScore(currentScore);
+    this.setScore(this.score);
     this.checkOnLose();
     this.checkOnWin();
   }
 
   horizontalLeft() {
+    let currentScore = this.score;
+
     for (let j = 0; j < this.field.length;) {
       let actions = 0;
 
@@ -219,6 +211,7 @@ class Game {
         if (cellLeft !== 0 && cellLeft === cellRight) {
           if (actions === 0) {
             this.field[j][i - 1] = cellLeft + cellRight;
+            currentScore += this.field[j][i - 1];
             this.field[j][i] = 0;
           }
         }
@@ -231,10 +224,14 @@ class Game {
 
         j++;
       }
+
+      this.score = currentScore;
     }
   }
 
   horizontalRight() {
+    let currentScore = this.score;
+
     for (let j = 0; j < this.field.length;) {
       let actions = 0;
 
@@ -251,6 +248,7 @@ class Game {
         if (cellRight !== 0 && cellLeft === cellRight) {
           if (actions === 0) {
             this.field[j][i] = cellLeft + cellRight;
+            currentScore += this.field[j][i];
             this.field[j][i - 1] = 0;
           }
         }
@@ -263,10 +261,14 @@ class Game {
 
         j++;
       }
+
+      this.score = currentScore;
     }
   }
 
   verticalUp() {
+    let currentScore = this.score;
+
     for (let i = 0; i < this.field[0].length;) {
       let actions = 0;
 
@@ -283,6 +285,7 @@ class Game {
         if (cellUp !== 0 && cellUp === cellDown) {
           if (actions === 0) {
             this.field[j - 1][i] = cellUp + cellDown;
+            currentScore += this.field[j - 1][i];
             this.field[j][i] = 0;
           }
         }
@@ -295,10 +298,14 @@ class Game {
 
         i++;
       }
+
+      this.score = currentScore;
     }
   }
 
   verticalDown() {
+    let currentScore = this.score;
+
     for (let i = this.field[0].length - 1; i >= 0;) {
       let actions = 0;
 
@@ -315,6 +322,7 @@ class Game {
         if (cellDown !== 0 && cellUp === cellDown) {
           if (actions === 0) {
             this.field[j][i] = cellUp + cellDown;
+            currentScore += this.field[j][i];
             this.field[j - 1][i] = 0;
           }
         }
@@ -327,6 +335,8 @@ class Game {
 
         i--;
       }
+
+      this.score = currentScore;
     }
   }
 
