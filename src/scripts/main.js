@@ -2,6 +2,9 @@
 
 const gameButton = document.querySelector('button');
 const startText = document.querySelector('.message-start');
+const messageLose = document.querySelector('.message-lose');
+const messageLose2 = document.querySelector('.message-lose2');
+const messageWin = document.querySelector('.message-win');
 const tableCells = document.getElementsByClassName('field-cell');
 const page = document.querySelector('html');
 const score = document.getElementsByClassName('game-score')[0];
@@ -13,6 +16,18 @@ gameButton.addEventListener('click', () => {
     gameButton.innerText = 'Start';
     startText.classList.remove('hidden');
     score.innerText = 0;
+
+    if (!messageLose.classList.contains('hidden')) {
+      messageLose.classList.add('hidden');
+    }
+
+    if (!messageLose2.classList.contains('hidden')) {
+      messageLose2.classList.add('hidden');
+    }
+
+    if (!messageWin.classList.contains('hidden')) {
+      messageLose.classList.add('hidden');
+    }
 
     [...tableCells].forEach(element => {
       element.innerText = '';
@@ -104,6 +119,51 @@ function numberAdder() {
   }
 }
 
+function checker() {
+  const array = [...tableCells];
+
+  const fillCells = [];
+
+  array.forEach(element => {
+    if (element.innerText === '2048') {
+      messageWin.classList.remove('hidden');
+    }
+  });
+
+  array.forEach((element, index) => {
+    if (element.innerHTML !== '') {
+      fillCells.push(index);
+    }
+  });
+
+  if (fillCells.length === 16) {
+    for (let i = 0; i < 12; i++) {
+      if (array[i].innerText === array[i + 4].innerText) {
+        return;
+      } else {
+        continue;
+      }
+    }
+
+    for (let i = 0; i < 15; i++) {
+      const parentElement = array[i].parentElement;
+
+      if (array[i].innerText === array[i + 1].innerText
+        && parentElement.lastElementChild !== array[i]) {
+        return;
+      } else {
+        continue;
+      }
+    }
+
+    if (messageWin.classList.contains('hidden')) {
+      messageLose.classList.remove('hidden');
+    } else {
+      messageLose2.classList.remove('hidden');
+    }
+  }
+}
+
 page.addEventListener('keydown', () => {
   if (event.key === 'ArrowRight'
   && gameButton.dataset.condition === 'restart') {
@@ -147,6 +207,7 @@ page.addEventListener('keydown', () => {
       numberAdder();
     }
     classAdder(tableCells);
+    checker();
   }
 });
 
@@ -193,6 +254,7 @@ page.addEventListener('keydown', () => {
       numberAdder();
     }
     classAdder(tableCells);
+    checker();
   }
 });
 
@@ -233,6 +295,7 @@ page.addEventListener('keydown', () => {
       numberAdder();
     }
     classAdder(tableCells);
+    checker();
   }
 });
 
@@ -273,5 +336,6 @@ page.addEventListener('keydown', () => {
       numberAdder();
     }
     classAdder(tableCells);
+    checker();
   }
 });
