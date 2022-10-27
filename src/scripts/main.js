@@ -33,6 +33,7 @@ startGameButton.addEventListener('click', () => {
   startGameButton.classList.add('restart');
 
   messageStart.classList.add('hidden');
+  messageLose.classList.add('hidden');
 
   addNumber();
   addNumber();
@@ -202,8 +203,8 @@ function updateCells() {
   let valueIndex = 0;
 
   for (const cell of cells) {
-    cellValues[valueIndex] === '0' ? 
-        cell.innerText = '' : cell.innerText = cellValues[valueIndex];
+    cellValues[valueIndex] === '0'
+      ? cell.innerText = '' : cell.innerText = cellValues[valueIndex];
     valueIndex++;
 
     cell.classList = '';
