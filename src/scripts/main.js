@@ -54,6 +54,7 @@ function setGame() {
 
   setRandom();
   setRandom();
+  document.addEventListener('keyup', handler);
 }
 
 function hasEmptyTile() {
@@ -136,8 +137,6 @@ const handler = (e) => {
   lose();
   win();
 };
-
-document.addEventListener('keyup', handler);
 
 function filterZero(row) {
   return row.filter(num => num !== 0);
@@ -242,6 +241,7 @@ function lose() {
     for (let c = 0; c < columns - 1; c++) {
       if (board[c][r] === board[c + 1][r] || board[r][c] === board[r][c + 1]) {
         messageLose.classList.remove('hidden');
+        document.removeEventListener('keyup', handler);
       }
     }
   }
