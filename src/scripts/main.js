@@ -241,12 +241,10 @@ function lose() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns - 1; c++) {
       if (board[c][r] === board[c + 1][r] || board[r][c] === board[r][c + 1]) {
-        return;
+        messageLose.classList.remove('hidden');
       }
     }
   }
-
-  messageLose.classList.remove('hidden');
 }
 
 function win() {
