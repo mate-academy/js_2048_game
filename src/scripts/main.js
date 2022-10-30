@@ -40,11 +40,11 @@ function setGame() {
 
   let i = 0;
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      cells[i].id = `${r}-${c}`;
+  for (let row = 0; row < rows; row++) {
+    for (let column = 0; column < columns; column++) {
+      cells[i].id = `${row}-${column}`;
 
-      const num = board[r][c];
+      const num = board[row][column];
 
       updateTile(cells[i], num);
 
@@ -58,9 +58,9 @@ function setGame() {
 }
 
 function hasEmptyTile() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      if (board[r][c] === 0) {
+  for (let row = 0; row < rows; row++) {
+    for (let column = 0; column < columns; column++) {
+      if (board[row][column] === 0) {
         return true;
       }
     }
@@ -106,28 +106,28 @@ function updateTile(tile, num) {
 const handler = (e) => {
   switch (e.code) {
     case 'ArrowLeft': {
-      slideLeft();
+      slideLeftAndRight(true);
       setRandom();
 
       break;
     }
 
     case 'ArrowRight': {
-      slideRight();
+      slideLeftAndRight(false);
       setRandom();
 
       break;
     }
 
     case 'ArrowUp': {
-      slideUp();
+      slideUpAndDown(true);
       setRandom();
 
       break;
     }
 
     case 'ArrowDown': {
-      slideDown();
+      slideUpAndDown(false);
       setRandom();
 
       break;
@@ -162,70 +162,49 @@ function slide(row) {
   return newRow;
 }
 
-function slideLeft() {
-  for (let r = 0; r < rows; r++) {
-    let row = board[r];
+function slideLeftAndRight(left) {
+  for (let amazingRow = 0; amazingRow < rows; amazingRow++) {
+    let row = board[amazingRow];
 
-    row = slide(row);
-    board[r] = row;
+    if (left) {
+      row = slide(row);
+      board[amazingRow] = row;
+    } else {
+      row.reverse();
+      row = slide(row);
+      row.reverse();
+      board[amazingRow] = row;
+    }
 
-    for (let c = 0; c < columns; c++) {
-      const tile = document.getElementById(`${r}-${c}`);
-      const num = board[r][c];
+    for (let column = 0; column < columns; column++) {
+      const tile = document.getElementById(`${amazingRow}-${column}`);
+      const num = board[amazingRow][column];
 
       updateTile(tile, num);
     }
   }
 }
 
-function slideRight() {
-  for (let r = 0; r < rows; r++) {
-    let row = board[r];
+function slideUpAndDown(up) {
+  for (let column = 0; column < columns; column++) {
+    let row = [board[0][column],
+      board[1][column],
+      board[2][column],
+      board[3][column]];
 
-    row.reverse();
-    row = slide(row);
-    row.reverse();
-    board[r] = row;
-
-    for (let c = 0; c < columns; c++) {
-      const tile = document.getElementById(`${r}-${c}`);
-      const num = board[r][c];
-
-      updateTile(tile, num);
+    if (up) {
+      row = slide(row);
+    } else {
+      row.reverse();
+      row = slide(row);
+      row.reverse();
     }
-  }
-}
 
-function slideUp() {
-  for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+    for (let amazingRow = 0; amazingRow < columns; amazingRow++) {
+      board[amazingRow][column] = row[amazingRow];
 
-    row = slide(row);
-
-    for (let r = 0; r < columns; r++) {
-      board[r][c] = row[r];
-
-      const tile = document.getElementById(`${r}-${c}`);
-      const num = board[r][c];
-
-      updateTile(tile, num);
-    }
-  }
-}
-
-function slideDown() {
-  for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
-
-    row.reverse();
-    row = slide(row);
-    row.reverse();
-
-    for (let r = 0; r < columns; r++) {
-      board[r][c] = row[r];
-
-      const tile = document.getElementById(`${r}-${c}`);
-      const num = board[r][c];
+      const tile = document.getElementById(`${amazingRow}-${column}`);
+      const num = board[amazingRow][column];
 
       updateTile(tile, num);
     }
@@ -237,9 +216,10 @@ function lose() {
     return;
   }
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns - 1; c++) {
-      if (board[c][r] === board[c + 1][r] || board[r][c] === board[r][c + 1]) {
+  for (let row = 0; row < rows; row++) {
+    for (let column = 0; column < columns - 1; column++) {
+      if (board[column][row] === board[column + 1][row]
+        || board[row][column] === board[row][column + 1]) {
         messageLose.classList.remove('hidden');
         document.removeEventListener('keyup', handler);
       }
@@ -248,9 +228,9 @@ function lose() {
 }
 
 function win() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      if (board[r][c] === 2048) {
+  for (let row = 0; row < rows; row++) {
+    for (let column = 0; column < columns; column++) {
+      if (board[row][column] === 2048) {
         messageWin.classList.remove('hidden');
       }
     }
