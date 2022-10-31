@@ -1,4 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+
 body {
+  font-family: "Ubuntu", sans-serif;
   display: flex;
   justify-content: center;
 }
@@ -29,7 +32,6 @@ body {
   align-items: center;
   width: var(--cell-size);
   height: var(--cell-size);
-  background-color: red;
   border-radius: 1vmin;
   top: calc(var(--y) * (var(--cell-size) + var(--cell-gap)) + var(--cell-gap));
   left: calc(var(--x) * (var(--cell-size) + var(--cell-gap)) + var(--cell-gap));
@@ -42,7 +44,7 @@ body {
 
 @keyframes show {
   0% {
-    opacity: .5;
+    opacity: 0.5;
     transform: scale(0);
   }
 }
