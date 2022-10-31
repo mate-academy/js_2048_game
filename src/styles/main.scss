@@ -4,6 +4,10 @@ body {
   font-family: "Ubuntu", sans-serif;
   display: flex;
   justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overscroll-behavior: none;
+  // overscroll-behavior-y: none;
 }
 
 #game-board {
