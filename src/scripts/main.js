@@ -26,7 +26,7 @@ gameButton.addEventListener('click', () => {
     }
 
     if (!messageWin.classList.contains('hidden')) {
-      messageLose.classList.add('hidden');
+      messageWin.classList.add('hidden');
     }
 
     [...tableCells].forEach(element => {
@@ -82,8 +82,8 @@ function starter(start, end) {
   }
 };
 
-function classAdder(cells) {
-  const arr = [...cells];
+function classAdder() {
+  const arr = [...tableCells];
 
   arr.forEach(element => {
     if (element.innerText !== '') {
@@ -94,7 +94,7 @@ function classAdder(cells) {
   });
 }
 
-function numberAdder() {
+function arrayOfFillCells() {
   const array = [...tableCells];
 
   const fillCells = [];
@@ -105,40 +105,32 @@ function numberAdder() {
     }
   });
 
-  if (fillCells.length === 16) {
-    return;
-  }
+  return fillCells;
+}
+
+function numberAdderAndCheck() {
+  const fillCells1 = arrayOfFillCells();
 
   for (let i = 0; ; i++) {
     const freeCell = getRandomIntInclusive(0, 15);
 
-    if (fillCells.indexOf(freeCell) === -1) {
-      array[freeCell].innerText = `${numberMaker()}`;
+    if (fillCells1.indexOf(freeCell) === -1) {
+      tableCells[freeCell].innerText = `${numberMaker()}`;
       break;
     }
   }
-}
 
-function checker() {
-  const array = [...tableCells];
-
-  const fillCells = [];
-
-  array.forEach(element => {
+  [...tableCells].forEach(element => {
     if (element.innerText === '2048') {
       messageWin.classList.remove('hidden');
     }
   });
 
-  array.forEach((element, index) => {
-    if (element.innerHTML !== '') {
-      fillCells.push(index);
-    }
-  });
+  const fillCells2 = arrayOfFillCells();
 
-  if (fillCells.length === 16) {
+  if (fillCells2.length === 16) {
     for (let i = 0; i < 12; i++) {
-      if (array[i].innerText === array[i + 4].innerText) {
+      if (tableCells[i].innerText === tableCells[i + 4].innerText) {
         return;
       } else {
         continue;
@@ -146,10 +138,10 @@ function checker() {
     }
 
     for (let i = 0; i < 15; i++) {
-      const parentElement = array[i].parentElement;
+      const parentElement = tableCells[i].parentElement;
 
-      if (array[i].innerText === array[i + 1].innerText
-        && parentElement.lastElementChild !== array[i]) {
+      if (tableCells[i].innerText === tableCells[i + 1].innerText
+        && parentElement.lastElementChild !== tableCells[i]) {
         return;
       } else {
         continue;
@@ -165,11 +157,11 @@ function checker() {
 }
 
 page.addEventListener('keydown', () => {
+  let changes;
+
   if (event.key === 'ArrowRight'
   && gameButton.dataset.condition === 'restart') {
     const array = [...tableCells];
-
-    let changes;
 
     for (let i = 15; i >= 0; i--) {
       if (array[i].innerHTML !== '') {
@@ -202,21 +194,11 @@ page.addEventListener('keydown', () => {
         continue;
       }
     }
-
-    if (changes) {
-      numberAdder();
-    }
-    classAdder(tableCells);
-    checker();
   }
-});
 
-page.addEventListener('keydown', () => {
   if (event.key === 'ArrowLeft'
   && gameButton.dataset.condition === 'restart') {
     const array = [...tableCells];
-
-    let changes;
 
     for (let i = 0; i < 16; i++) {
       if (array[i].innerHTML !== '') {
@@ -249,21 +231,11 @@ page.addEventListener('keydown', () => {
         continue;
       }
     }
-
-    if (changes) {
-      numberAdder();
-    }
-    classAdder(tableCells);
-    checker();
   }
-});
 
-page.addEventListener('keydown', () => {
   if (event.key === 'ArrowDown'
   && gameButton.dataset.condition === 'restart') {
     const array = [...tableCells];
-
-    let changes;
 
     for (let i = 15; i >= 0; i--) {
       if (array[i].innerHTML !== '') {
@@ -290,21 +262,11 @@ page.addEventListener('keydown', () => {
         continue;
       }
     }
-
-    if (changes) {
-      numberAdder();
-    }
-    classAdder(tableCells);
-    checker();
   }
-});
 
-page.addEventListener('keydown', () => {
   if (event.key === 'ArrowUp'
   && gameButton.dataset.condition === 'restart') {
     const array = [...tableCells];
-
-    let changes;
 
     for (let i = 0; i < 16; i++) {
       if (array[i].innerHTML !== '') {
@@ -331,11 +293,10 @@ page.addEventListener('keydown', () => {
         continue;
       }
     }
+  }
 
-    if (changes) {
-      numberAdder();
-    }
-    classAdder(tableCells);
-    checker();
+  if (changes) {
+    numberAdderAndCheck();
+    classAdder();
   }
 });
