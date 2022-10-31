@@ -6,7 +6,8 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  overscroll-behavior: none;
+  overflow-y: hidden;
+  // overscroll-behavior: none;
   // overscroll-behavior-y: none;
 }
 
