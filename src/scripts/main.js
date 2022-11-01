@@ -1,6 +1,6 @@
 import Grid from './Grid.js';
 import Tile from './Tile.js';
-import { moveDown, moveLeft, moveRight, moveUp } from './move.js';
+import { canMove, slideTiles } from './slideTiles.js';
 
 const gridSize = 4;
 const cellSize = 20;
@@ -20,19 +20,31 @@ function handleInput(e) {
   switch (e.key) {
     case 'ArrowUp':
     case 'w':
-      moveUp(grid.cellsByColumn);
+      if (!canMove(grid.cellsByColumn)) {
+        return;
+      }
+      slideTiles(grid.cellsByColumn);
       break;
     case 'ArrowDown':
     case 's':
-      moveDown(grid.cellsByColumn.map(column => [...column].reverse()));
+      if (!canMove(grid.cellsByColumn.map(column => [...column].reverse()))) {
+        return;
+      }
+      slideTiles(grid.cellsByColumn.map(column => [...column].reverse()));
       break;
     case 'ArrowLeft':
     case 'a':
-      moveLeft(grid.cellsByRow);
+      if (!canMove(grid.cellsByRow)) {
+        return;
+      }
+      slideTiles(grid.cellsByRow);
       break;
     case 'ArrowRight':
     case 'd':
-      moveRight(grid.cellsByRow.map(row => [...row].reverse()));
+      if (!canMove(grid.cellsByRow.map(row => [...row].reverse()))) {
+        return;
+      }
+      slideTiles(grid.cellsByRow.map(row => [...row].reverse()));
       break;
   }
 
@@ -71,15 +83,27 @@ function handleTouchMove(evt) {
 
   if (Math.abs(xDiff) > Math.abs(yDiff)) {
     if (xDiff > 0) {
-      moveLeft(grid.cellsByRow);
+      if (!canMove(grid.cellsByRow)) {
+        return;
+      }
+      slideTiles(grid.cellsByRow);
     } else {
-      moveRight(grid.cellsByRow.map(row => [...row].reverse()));
+      if (!canMove(grid.cellsByRow.map(row => [...row].reverse()))) {
+        return;
+      }
+      slideTiles(grid.cellsByRow.map(row => [...row].reverse()));
     }
   } else {
     if (yDiff > 0) {
-      moveUp(grid.cellsByColumn);
+      if (!canMove(grid.cellsByColumn)) {
+        return;
+      }
+      slideTiles(grid.cellsByColumn);
     } else {
-      moveDown(grid.cellsByColumn.map(column => [...column].reverse()));
+      if (!canMove(grid.cellsByColumn.map(column => [...column].reverse()))) {
+        return;
+      }
+      slideTiles(grid.cellsByColumn.map(column => [...column].reverse()));
     }
   }
 
@@ -91,7 +115,9 @@ function handleTouchMove(evt) {
 
 function mergeAndAddRandom() {
   grid.cells.forEach(cell => {
-    cell.mergeTiles();
+    setTimeout(() => {
+      cell.mergeTiles();
+    }, 100);
   });
 
   grid.randomEmptyCell().tile = new Tile(gameBoard);
