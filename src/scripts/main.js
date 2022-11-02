@@ -2,17 +2,41 @@ import Grid from './Grid.js';
 import Tile from './Tile.js';
 import { canMove, slideTiles } from './slideTiles.js';
 
-const gridSize = 4;
-const cellSize = 20;
-const cellGap = 1.5;
-const fontSize = 7.5;
-
 const gameBoard = document.querySelector('#game-board');
 
-const grid = new Grid(gameBoard, gridSize, cellSize, cellGap, fontSize);
+const fieldSize = [4, 5, 6, 7];
 
-grid.randomEmptyCell().tile = new Tile(gameBoard);
-grid.randomEmptyCell().tile = new Tile(gameBoard);
+const selectFieldSize = `
+  <label for="select-size" style="text-align: center">
+    In original game, you played on a 4x4 field,
+    but in this version the field can be increased. ${'&#128521;'} Try it!!!
+  </label>
+  <select class="select-size">
+      ${fieldSize.map(size =>
+    `<option value="${size}">${size} x ${size}</option>`).join('')}
+  </select>
+`;
+
+document.body.insertAdjacentHTML('afterbegin', selectFieldSize);
+
+const selectElement = document.querySelector('.select-size');
+
+let grid;
+let gridSize = 4;
+let cellSize = 20;
+let cellGap = 1.5;
+let fontSize = 7.5;
+
+selectElement.addEventListener('change', (e) => {
+  gridSize = +e.target.value;
+  cellSize = gridSize === 4 ? 20 : 20 - gridSize;
+  cellGap = gridSize === 4 ? 1.5 : 0.75;
+  fontSize = gridSize === 4 ? 7.5 : 7.5 - gridSize + 4;
+  grid = new Grid(gameBoard, gridSize, cellSize, cellGap, fontSize);
+  grid.randomEmptyCell().tile = new Tile(gameBoard);
+  grid.randomEmptyCell().tile = new Tile(gameBoard);
+  selectElement.disabled = true;
+});
 
 window.addEventListener('keydown', handleInput);
 
@@ -117,7 +141,7 @@ function mergeAndAddRandom() {
   grid.cells.forEach(cell => {
     setTimeout(() => {
       cell.mergeTiles();
-    }, 100);
+    }, 150);
   });
 
   grid.randomEmptyCell().tile = new Tile(gameBoard);

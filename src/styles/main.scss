@@ -3,12 +3,11 @@
 body {
   font-family: "Ubuntu", sans-serif;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-evenly;
   align-items: center;
   height: 100vh;
-  overflow-y: hidden;
-  // overscroll-behavior: none;
-  // overscroll-behavior-y: none;
+  overflow: hidden;
 }
 
 #game-board {
@@ -44,7 +43,7 @@ body {
   background-color: hsl(25, 50%, var(--bg-color));
   color: hsl(25, 25%, var(--text-color));
   animation: show 200ms ease-in-out;
-  transition: 100ms ease-in-out;
+  transition: 150ms ease-in-out;
 }
 
 @keyframes show {
