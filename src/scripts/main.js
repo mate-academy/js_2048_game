@@ -31,6 +31,7 @@ button.addEventListener('click', e => {
   }
 
   addNewNumber();
+  addNewNumber();
   render();
 });
 
