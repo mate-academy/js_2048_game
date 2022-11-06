@@ -166,16 +166,25 @@ class Game {
   keyHandler(e) {
     const copyField = [...this.field].flat();
 
-    if (e.key === 'ArrowUp') {
-      this.verticalUp();
-    } else if (e.key === 'ArrowDown') {
-      this.verticalDown();
-    } else if (e.key === 'ArrowLeft') {
-      this.horizontalLeft();
-    } else if (e.key === 'ArrowRight') {
-      this.horizontalRight();
-    } else {
-      return;
+    switch (e.key) {
+      case 'ArrowUp':
+        this.verticalUp();
+        break;
+
+      case 'ArrowDown':
+        this.verticalDown();
+        break;
+
+      case 'ArrowLeft':
+        this.horizontalLeft();
+        break;
+
+      case 'ArrowRight':
+        this.horizontalRight();
+        break;
+
+      default:
+        return;
     }
 
     const fieldAfterMove = [...this.field].flat();
