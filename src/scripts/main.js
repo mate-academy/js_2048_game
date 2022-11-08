@@ -3,43 +3,59 @@ import Tile from './Tile.js';
 import { canMove, slideTiles } from './slideTiles.js';
 
 const gameBoard = document.querySelector('#game-board');
-
-const fieldSize = [4, 5, 6, 7];
-
-const selectFieldSize = `
-  <label for="select-size" style="text-align: center">
-    In original game, you played on a 4x4 field,
-    but in this version the field can be increased. ${'&#128521;'} Try it!!!
-  </label>
-  <select class="select-size">
-      ${fieldSize.map(size =>
-    `<option value="${size}">${size} x ${size}</option>`).join('')}
-  </select>
-`;
-
-document.body.insertAdjacentHTML('afterbegin', selectFieldSize);
-
 const selectElement = document.querySelector('.select-size');
+const scoreCurrentContainer = document.querySelector('.score--current');
+const scoreBestContainer = document.querySelector('.score--best');
+
+const modal = document.querySelector('.modal-container');
+const lose = document.querySelector('.modal-lose');
+const win = document.querySelector('.modal-win');
+
+// restart button & modal button
+const buttons = document.querySelectorAll('.button');
+
+// starting values for game board
+
+let score = 0;
+let bestScore = 0;
 
 let grid;
 let gridSize = 4;
 let cellSize = 20;
 let cellGap = 1.5;
-let fontSize = 7.5;
+let fontSize = 7;
 
-selectElement.addEventListener('change', (e) => {
-  gridSize = +e.target.value;
-  cellSize = gridSize === 4 ? 20 : 20 - gridSize;
-  cellGap = gridSize === 4 ? 1.5 : 0.75;
-  fontSize = gridSize === 4 ? 7.5 : 7.5 - gridSize + 4;
+// innitial game board on page
+function loadGame() {
+  while (gameBoard.firstChild) {
+    gameBoard.removeChild(gameBoard.firstChild);
+  }
   grid = new Grid(gameBoard, gridSize, cellSize, cellGap, fontSize);
   grid.randomEmptyCell().tile = new Tile(gameBoard);
   grid.randomEmptyCell().tile = new Tile(gameBoard);
-  selectElement.disabled = true;
+  gameBoard.style.opacity = 1;
+  score = 0;
+  scoreCurrentContainer.textContent = 0;
+  modal.style.display = 'none';
+  document.addEventListener('keydown', handleInput); // keyboard event
+  document.addEventListener('touchmove', handleTouchMove, false); // touch event
+};
+
+loadGame();
+
+// adding events on reloading buttons
+buttons.forEach(button => button.addEventListener('click', loadGame));
+
+// user can select another field for the game
+selectElement.addEventListener('change', (e) => {
+  gridSize = +e.target.value;
+  cellSize = gridSize === 4 ? 20 : 20 - gridSize;
+  cellGap = gridSize < 6 ? 1.5 : 0.75;
+  fontSize = gridSize < 6 ? 7 : 5;
+  loadGame();
 });
 
-window.addEventListener('keydown', handleInput);
-
+// function for keyboard events
 function handleInput(e) {
   switch (e.key) {
     case 'ArrowUp':
@@ -70,21 +86,25 @@ function handleInput(e) {
       }
       slideTiles(grid.cellsByRow.map(row => [...row].reverse()));
       break;
+    default:
+      return;
   }
 
   mergeAndAddRandom();
+
+  if (checkLose()) {
+    openModal();
+  }
 }
 
-// ------------- for swiping ----------- //
-
+// functions for touch events
 document.addEventListener('touchstart', handleTouchStart, false);
-document.addEventListener('touchmove', handleTouchMove, false);
 
 let xDown = null;
 let yDown = null;
 
 function getTouches(evt) {
-  return evt.touches || evt.originalEvent.touches; // browser API || jQuery
+  return evt.touches;
 }
 
 function handleTouchStart(evt) {
@@ -132,17 +152,51 @@ function handleTouchMove(evt) {
   }
 
   mergeAndAddRandom();
-  /* reset values */
+
+  if (checkLose()) {
+    openModal();
+  }
+
   xDown = null;
   yDown = null;
 };
 
+// function to merge tile and add random tiles to the gameboard
+
 function mergeAndAddRandom() {
   grid.cells.forEach(cell => {
     setTimeout(() => {
-      cell.mergeTiles();
+      const scoreCurrent = cell.mergeTiles();
+
+      if (scoreCurrent === 2048) {
+        openModal(scoreCurrent);
+      }
+
+      score += scoreCurrent;
+      scoreCurrentContainer.textContent = score;
+      bestScore = bestScore <= score ? score : bestScore;
+      scoreBestContainer.textContent = bestScore;
     }, 150);
   });
 
   grid.randomEmptyCell().tile = new Tile(gameBoard);
+}
+
+// check for lose
+function checkLose() {
+  return !canMove(grid.cellsByRow)
+    && !canMove(grid.cellsByRow.map(row => [...row].reverse()))
+    && !canMove(grid.cellsByColumn)
+    && !canMove(grid.cellsByColumn.map(column => [...column].reverse()));
+}
+
+// opening modal with win or lose text
+function openModal(boolean) {
+  const box = boolean ? win : lose;
+
+  modal.style.display = 'flex';
+  box.style.display = 'block';
+  gameBoard.style.opacity = 0.2;
+  document.removeEventListener('keydown', handleInput);
+  document.removeEventListener('touchmove', handleTouchMove, false);
 }

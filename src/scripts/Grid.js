@@ -6,6 +6,7 @@ export default class Grid {
     gridElement.style.setProperty('--cell-size', `${cellSize}vmin`);
     gridElement.style.setProperty('--cell-gap', `${cellGap}vmin`);
     gridElement.style.setProperty('--font-size', `${fontSize}vmin`);
+    // gridElement.style.setProperty('--animation', 'show');
 
     const allCells = [];
 

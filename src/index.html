@@ -7,7 +7,56 @@
     <link rel="stylesheet" href="./styles/main.scss">
   </head>
   <body>
-    <div id="game-board"></div>
+    <div class="main">
+      <div class="side">
+        <p for="select-size">
+          In original
+          <a
+            class="title"
+            href="https://play2048.co/"
+            target="_blank"
+            rel="noopener"
+          >
+            2048
+          </a>
+          game, you played on a 4x4 field, but in this version the field can be increased. &#128521; Try it!!!
+        </p>
+        <br>
+        <select
+          class="select-size"
+          name="select-size"
+          id="select-size"
+        >
+          <option value="">Choose a field size:</option>
+          <option value="4">4 x 4</option>
+          <option value="5">5 x 5</option>
+          <option value="6">6 x 6</option>
+          <option value="7">7 x 7</option>
+        </select>
+      </div>
+      <div class="game-container">
+        <div id="game-board"></div>
+      </div>
+      <div class="side">
+        <div class="score-container">
+          <div class="score score--current">0</div>
+          <div class="score score--best">0</div>
+          <a class="button">New Game</a>
+        </div>
+        <p><strong>HOW TO PLAY:</strong> Use your arrow keys (or W, A, S, D) to move the tiles. Tiles with the same number merge into one when they touch. Add them up to reach 2048!</p>
+      </div>
+    </div>
+    <div class="modal-container">
+      <div class="modal-lose">
+        <p>Sorry... You lose :((</p>
+        <p>One more time...? ;)</p>
+      </div>
+      <div class="modal-win">
+        <p>Hura!!! You are the best!!!</p>
+        <p>One more time...? ;)</p>
+      </div>
+      <a class="button">Start ;)</a>
+    </div>
     <script type="module" src="scripts/main.js"></script>
   </body>
 </html>

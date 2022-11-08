@@ -41,10 +41,15 @@ export default class Cell {
 
   mergeTiles() {
     if (!this._tile || !this._mergeTile) {
-      return;
+      return 0;
     }
     this._tile.value = this._tile.value + this._mergeTile.value;
+
+    const scoreDef = this._tile.value;
+
     this._mergeTile.remove();
     this._mergeTile = null;
+
+    return scoreDef;
   }
 }
