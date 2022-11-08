@@ -25,7 +25,8 @@ function gameBeginning() {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
-  startWithRandom();
+  launchingRandom();
+  launchingRandom();
 }
 
 function empty() {
@@ -54,7 +55,7 @@ function squareValue(square, num) {
   }
 }
 
-function startWithRandom() {
+function launchingRandom() {
   if (!empty()) {
     return;
   }
@@ -118,81 +119,81 @@ function checkConnection() {
 document.addEventListener('keydown', (e) => {
   switch (e.key) {
     case 'ArrowUp':
-      for (let c = 0; c < columns; c++) {
-        let row = field.map(el => el[c]);
+      for (let j = 0; j < columns; j++) {
+        let row = field.map(item => item[j]);
 
         row = connect(row);
 
-        for (let r = 0; r < rows; r++) {
-          field[r][c] = row[r];
+        for (let i = 0; i < rows; i++) {
+          field[i][j] = row[i];
 
-          const quadrate = rowsArr[r].children[c];
-          const number = field[r][c];
+          const quadrate = rowsArr[i].children[j];
+          const number = field[i][j];
 
           squareValue(quadrate, number);
         }
       }
 
-      startWithRandom();
+      launchingRandom();
       break;
     case 'ArrowDown':
-      for (let c = 0; c < columns; c++) {
-        let row = field.map(el => el[c]).reverse();
+      for (let j = 0; j < columns; j++) {
+        let row = field.map(item => item[j]).reverse();
 
         row = connect(row);
         row.reverse();
 
-        for (let r = 0; r < rows; r++) {
-          field[r][c] = row[r];
+        for (let i = 0; i < rows; i++) {
+          field[i][j] = row[i];
 
-          const quadrate = rowsArr[r].children[c];
-          const number = field[r][c];
+          const quadrate = rowsArr[i].children[j];
+          const number = field[i][j];
 
           squareValue(quadrate, number);
         }
       }
 
-      startWithRandom();
+      launchingRandom();
       break;
     case 'ArrowRight':
-      for (let r = 0; r < rows; r++) {
-        let row = field[r];
+      for (let i = 0; i < rows; i++) {
+        let row = field[i];
 
         row.reverse();
         row = connect(row);
         row.reverse();
-        field[r] = row;
+        field[i] = row;
 
-        for (let c = 0; c < columns; c++) {
-          const quadrate = rowsArr[r].children[c];
-          const number = field[r][c];
+        for (let j = 0; j < columns; j++) {
+          const quadrate = rowsArr[i].children[j];
+          const number = field[i][j];
 
           squareValue(quadrate, number);
         }
       }
 
-      startWithRandom();
+      launchingRandom();
       break;
     case 'ArrowLeft':
-      for (let r = 0; r < rows; r++) {
-        let row = field[r];
+      for (let i = 0; i < rows; i++) {
+        let row = field[i];
 
         row = connect(row);
-        field[r] = row;
+        field[i] = row;
 
-        for (let c = 0; c < columns; c++) {
-          const quadrate = rowsArr[r].children[c];
-          const number = field[r][c];
+        for (let j = 0; j < columns; j++) {
+          const quadrate = rowsArr[i].children[j];
+          const number = field[i][j];
 
           squareValue(quadrate, number);
         }
       }
 
-      startWithRandom();
+      launchingRandom();
       break;
   }
 
-  if (!checkConnection() && empty()) {
+  if (!checkConnection() && !empty()) {
     messageLose.style.display = 'block';
   }
 });
