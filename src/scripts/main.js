@@ -14,8 +14,8 @@ const messageStart = document.querySelector('.message-start');
 const rowsArr = [...document.querySelectorAll('.field-row')];
 const cellsArr = [...document.querySelectorAll('.field-cell')];
 const gameScore = document.querySelector('.game-score');
-const rows = 4;
-const columns = 4;
+
+const width = 4;
 let result = 0;
 
 function gameBeginning() {
@@ -29,19 +29,19 @@ function gameBeginning() {
   launchingRandom();
 }
 
-function empty() {
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < columns; j++) {
-      if (field[i][j] === 0) {
+const empty = () => {
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < width; y++) {
+      if (field[x][y] === 0) {
         return true;
       }
     }
   }
 
   return false;
-}
+};
 
-function squareValue(square, num) {
+const squareValue = (square, num) => {
   square.innerText = '';
   square.classList.value = '';
   square.classList.add(`field-cell--${num}`, 'field-cell');
@@ -51,11 +51,11 @@ function squareValue(square, num) {
   }
 
   if (square === 2048) {
-    messageWin.style.display = 'block';
+    messageWin.classList.remove('hidden');
   }
-}
+};
 
-function launchingRandom() {
+const launchingRandom = () => {
   if (!empty()) {
     return;
   }
@@ -65,12 +65,11 @@ function launchingRandom() {
   while (!detected) {
     const x = Math.floor(Math.random() * 4);
     const y = Math.floor(Math.random() * 4);
-    const random = Math.random() * 100;
 
     if (field[x][y] === 0) {
       const square = rowsArr[x].children[y];
 
-      if (random < 10) {
+      if (Math.random() > 0.9) {
         field[x][y] = 4;
         squareValue(square, 4);
       } else {
@@ -81,33 +80,33 @@ function launchingRandom() {
       detected = true;
     }
   }
-}
+};
 
-function connect(array) {
-  let rowFilter = array.filter(item => item !== 0);
+function connect(quadrates) {
+  let el = quadrates.filter(item => item !== 0);
 
-  for (let i = 0; i < rowFilter.length - 1; i++) {
-    if (rowFilter[i] === rowFilter[i + 1]) {
-      rowFilter[i] *= 2;
-      rowFilter[i + 1] = 0;
-      result += rowFilter[i];
+  for (let i = 0; i < el.length - 1; i++) {
+    if (el[i] === el[i + 1]) {
+      el[i] = el[i] * 2;
+      el[i + 1] = 0;
+      result += el[i];
     }
   }
 
   gameScore.innerHTML = result;
-  rowFilter = rowFilter.filter(item => item !== 0);
+  el = el.filter(item => item !== 0);
 
-  while (rowFilter.length < columns) {
-    rowFilter.push(0);
+  while (el.length < width) {
+    el.push(0);
   }
 
-  return rowFilter;
+  return el;
 }
 
 function checkConnection() {
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < columns - 1; j++) {
-      if (field[i][j] === field[i][j + 1] || field[j][i] === field[j + 1][i]) {
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < width - 1; y++) {
+      if (field[x][y] === field[x][y + 1] || field[y][x] === field[y + 1][x]) {
         return true;
       }
     }
@@ -119,16 +118,16 @@ function checkConnection() {
 document.addEventListener('keydown', (e) => {
   switch (e.key) {
     case 'ArrowUp':
-      for (let j = 0; j < columns; j++) {
-        let row = field.map(item => item[j]);
+      for (let y = 0; y < width; y++) {
+        let el = field.map(item => item[y]);
 
-        row = connect(row);
+        el = connect(el);
 
-        for (let i = 0; i < rows; i++) {
-          field[i][j] = row[i];
+        for (let x = 0; x < width; x++) {
+          field[x][y] = el[x];
 
-          const quadrate = rowsArr[i].children[j];
-          const number = field[i][j];
+          const quadrate = rowsArr[x].children[y];
+          const number = field[x][y];
 
           squareValue(quadrate, number);
         }
@@ -137,17 +136,17 @@ document.addEventListener('keydown', (e) => {
       launchingRandom();
       break;
     case 'ArrowDown':
-      for (let j = 0; j < columns; j++) {
-        let row = field.map(item => item[j]).reverse();
+      for (let y = 0; y < width; y++) {
+        let el = field.map(item => item[y]).reverse();
 
-        row = connect(row);
-        row.reverse();
+        el = connect(el);
+        el.reverse();
 
-        for (let i = 0; i < rows; i++) {
-          field[i][j] = row[i];
+        for (let x = 0; x < width; x++) {
+          field[x][y] = el[x];
 
-          const quadrate = rowsArr[i].children[j];
-          const number = field[i][j];
+          const quadrate = rowsArr[x].children[y];
+          const number = field[x][y];
 
           squareValue(quadrate, number);
         }
@@ -156,17 +155,17 @@ document.addEventListener('keydown', (e) => {
       launchingRandom();
       break;
     case 'ArrowRight':
-      for (let i = 0; i < rows; i++) {
-        let row = field[i];
+      for (let x = 0; x < width; x++) {
+        let el = field[x];
 
-        row.reverse();
-        row = connect(row);
-        row.reverse();
-        field[i] = row;
+        el.reverse();
+        el = connect(el);
+        el.reverse();
+        field[x] = el;
 
-        for (let j = 0; j < columns; j++) {
-          const quadrate = rowsArr[i].children[j];
-          const number = field[i][j];
+        for (let y = 0; y < width; y++) {
+          const quadrate = rowsArr[x].children[y];
+          const number = field[x][y];
 
           squareValue(quadrate, number);
         }
@@ -175,15 +174,15 @@ document.addEventListener('keydown', (e) => {
       launchingRandom();
       break;
     case 'ArrowLeft':
-      for (let i = 0; i < rows; i++) {
-        let row = field[i];
+      for (let x = 0; x < width; x++) {
+        let el = field[x];
 
-        row = connect(row);
-        field[i] = row;
+        el = connect(el);
+        field[x] = el;
 
-        for (let j = 0; j < columns; j++) {
-          const quadrate = rowsArr[i].children[j];
-          const number = field[i][j];
+        for (let y = 0; y < width; y++) {
+          const quadrate = rowsArr[x].children[y];
+          const number = field[x][y];
 
           squareValue(quadrate, number);
         }
@@ -194,7 +193,7 @@ document.addEventListener('keydown', (e) => {
   }
 
   if (!checkConnection() && !empty()) {
-    messageLose.style.display = 'block';
+    messageLose.classList.remove('hidden');
   }
 });
 
@@ -211,8 +210,6 @@ start.addEventListener('click', () => {
     cellsArr.forEach(i => squareValue(i, 0));
     result = 0;
     gameScore.innerHTML = result;
-    messageLose.style.display = 'none';
-    messageWin.style.display = 'none';
     gameBeginning();
   }
 });
