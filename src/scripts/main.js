@@ -11,8 +11,8 @@ const start = document.querySelector('.start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
-const rowsArr = [...document.querySelectorAll('.field-row')];
-const cellsArr = [...document.querySelectorAll('.field-cell')];
+const rowsArr = document.querySelectorAll('.field-row');
+const cellsArr = document.querySelectorAll('.field-cell');
 const gameScore = document.querySelector('.game-score');
 const pointsToWin = 2048;
 const width = 4;
@@ -47,7 +47,10 @@ function withoutZero(quadrates) {
 
 const squareValue = (place, num) => {
   place.classList = `field-cell--${num} field-cell`;
-  place.innerText = '';
+
+  if (num === 0) {
+    place.innerText = '';
+  }
 
   if (num > 0) {
     place.innerText = num;
@@ -59,7 +62,7 @@ const squareValue = (place, num) => {
 };
 
 function launchingRandom() {
-  if (!empty()) {
+  if (empty() === false) {
     return;
   }
 
@@ -130,9 +133,10 @@ function moveRight() {
     let el = field[row].reverse();
 
     el = connection(el).reverse();
-    field[row] = el;
 
     for (let cell = 0; cell < width; cell++) {
+      field[row] = el;
+
       const place = rowsArr[row].children[cell];
       const number = field[row][cell];
 
@@ -146,9 +150,10 @@ function moveLeft() {
     let el = field[row];
 
     el = connection(el);
-    field[row] = el;
 
     for (let cell = 0; cell < width; cell++) {
+      field[row] = el;
+
       const place = rowsArr[row].children[cell];
       const number = field[row][cell];
 
