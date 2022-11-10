@@ -63,9 +63,9 @@ function launchingRandom() {
     return;
   }
 
-  let notEmptyPlace = false;
+  let noEmptySpaces = false;
 
-  while (notEmptyPlace === false) {
+  while (noEmptySpaces === false) {
     const x = Math.floor(Math.random() * width);
     const y = Math.floor(Math.random() * width);
 
@@ -80,7 +80,7 @@ function launchingRandom() {
         squareValue(place, 2);
       }
 
-      notEmptyPlace = true;
+      noEmptySpaces = true;
     }
   }
 }
