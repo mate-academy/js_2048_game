@@ -39,6 +39,7 @@ function loadGame() {
   modal.style.display = 'none';
   document.addEventListener('keydown', handleInput); // keyboard event
   document.addEventListener('touchmove', handleTouchMove, false); // touch event
+  document.activeElement.blur();
 };
 
 loadGame();
@@ -153,12 +154,12 @@ function handleTouchMove(evt) {
 
   mergeAndAddRandom();
 
+  xDown = null;
+  yDown = null;
+
   if (checkLose()) {
     openModal();
   }
-
-  xDown = null;
-  yDown = null;
 };
 
 // function to merge tile and add random tiles to the gameboard
