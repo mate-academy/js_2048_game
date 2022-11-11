@@ -1,9 +1,8 @@
 'use strict';
 
-const tableBody = document.querySelector('.game-field').firstElementChild;
 const buttonStart = document.querySelector('.start');
 const gameScore = document.querySelector('.game-score');
-const rows = [...tableBody.rows];
+const rows = document.querySelectorAll('.field-row');
 const cells = [];
 let filledCells;
 let epmtyCells;
