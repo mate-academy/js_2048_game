@@ -10,6 +10,8 @@ const rows = gameField.rows;
 const button = document.querySelector('.button');
 const scoreField = document.querySelector('.game-score');
 let score = +scoreField.innerText;
+const highScoreField = document.querySelector('.high-score');
+let highScore = +highScoreField.innerText;
 
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
@@ -262,6 +264,9 @@ function merge(queue, { code }, justCheck = false) {
 
       score += newNum;
       scoreField.innerText = score;
+
+      highScore = highScore < score ? score : highScore;
+      highScoreField.innerText = highScore;
       i++;
     } else {
       continue;

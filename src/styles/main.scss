@@ -85,6 +85,7 @@ body {
   display: flex;
   width: 100%;
   justify-content: space-between;
+  gap: 40px;
   margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
@@ -110,17 +111,19 @@ h1 {
   align-items: center;
   justify-content: center;
   background: #d6cdc4;
-  width: 75px;
+  min-width: 75px;
   height: 75px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
-  margin: 0 8px 0 0;
+  padding: 0 8px;
+  margin: 0;
 }
 
 .controls {
   display: flex;
+  gap: 8px;
 }
 
 .button {
@@ -133,6 +136,7 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
+  outline: none;
 
   transition: 0.25s ease background;
 }
@@ -147,10 +151,10 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
-
+  background: #f87474;
+  
   &:hover {
-    background: #f87474;
+    background: #f58888;
   }
 }
 
@@ -173,7 +177,6 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
 }
 
 .message-win {
