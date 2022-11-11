@@ -130,12 +130,12 @@ function checkConnection() {
 
 function moveRight() {
   for (let row = 0; row < width; row++) {
-    let el = field[row].reverse();
+    const el = field[row].reverse();
 
-    el = connection(el).reverse();
+    const elAfterInvert = connection(el).reverse();
 
     for (let cell = 0; cell < width; cell++) {
-      field[row] = el;
+      field[row] = elAfterInvert;
 
       const place = rowsArr[row].children[cell];
       const number = field[row][cell];
@@ -147,12 +147,12 @@ function moveRight() {
 
 function moveLeft() {
   for (let row = 0; row < width; row++) {
-    let el = field[row];
+    const el = field[row];
 
-    el = connection(el);
+    const elAfterInvert = connection(el);
 
     for (let cell = 0; cell < width; cell++) {
-      field[row] = el;
+      field[row] = elAfterInvert;
 
       const place = rowsArr[row].children[cell];
       const number = field[row][cell];
@@ -164,12 +164,11 @@ function moveLeft() {
 
 function moveUp() {
   for (let cell = 0; cell < width; cell++) {
-    let el = field.map(item => item[cell]);
-
-    el = connection(el);
+    const el = field.map(item => item[cell]);
+    const elAfterInvert = connection(el);
 
     for (let row = 0; row < width; row++) {
-      field[row][cell] = el[row];
+      field[row][cell] = elAfterInvert[row];
 
       const place = rowsArr[row].children[cell];
       const number = field[row][cell];
@@ -181,12 +180,11 @@ function moveUp() {
 
 function moveDown() {
   for (let cell = 0; cell < width; cell++) {
-    let el = field.map(item => item[cell]).reverse();
-
-    el = connection(el).reverse();
+    const el = field.map(item => item[cell]).reverse();
+    const elAfterInvert = connection(el).reverse();
 
     for (let row = 0; row < width; row++) {
-      field[row][cell] = el[row];
+      field[row][cell] = elAfterInvert[row];
 
       const place = rowsArr[row].children[cell];
       const number = field[row][cell];
