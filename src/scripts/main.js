@@ -1,6 +1,6 @@
 'use strict';
 
-const cells = document.querySelectorAll('.field-cell');
+const cells = findAllCells(document);
 const table = document.querySelector('.game-field');
 const start = document.querySelector('.start');
 const messegeStart = document.querySelector('.message-start');
@@ -9,18 +9,22 @@ const messegeWin = document.querySelector('.message-win');
 let score = 0;
 const scoreInGame = document.querySelector('.game-score');
 
+function findAllCells(element) {
+  return element.querySelectorAll('td');
+};
+
+function random(minNumber, maxNumber) {
+  const min = Math.ceil(minNumber);
+  const max = Math.floor(maxNumber);
+
+  return Math.floor(
+    Math.random() * (max - min + 1)
+  ) + min;
+};
+
 function createNumber() {
-  const emptyCells
-    = [...document.querySelectorAll('.field-cell')]
-      .filter(cell => !cell.innerText);
-
-  function random(minNumber, maxNumber) {
-    const min = Math.ceil(minNumber);
-    const max = Math.floor(maxNumber);
-
-    return Math.floor(Math.random()
-      * (max - min + 1)) + min; // Максимум и минимум включаются
-  };
+  const emptyCells = [...findAllCells(document)]
+    .filter(cell => !cell.innerText);
 
   const randomCellIndex = random(0, [...emptyCells].length - 1);
   let number;
@@ -62,15 +66,15 @@ const tbodyVertical = document.createElement('tbody');
 
 tbodyVertical.classList.add('tbody-columns');
 
-// розворот таблиці
 function turnTheTable(tableBody, type) {
   tableBody.innerHTML = '';
 
-  for (let i = 0; i < document.querySelector('tbody').children.length; i++) {
-    // отримую колонку
-    const cellsInColumn = [...document.querySelectorAll('td')]
+  const rowsCount = document.querySelector('tbody').children.length;
+
+  for (let i = 0; i < rowsCount; i++) {
+    const cellsInColumn = [...findAllCells(document)]
       .filter(cell => cell.cellIndex === i);
-    // створюю таблицю де стовпці це рядки
+
     const newLine = document.createElement('tr');
 
     newLine.classList.add(`field-${type}`);
@@ -78,26 +82,26 @@ function turnTheTable(tableBody, type) {
     newLine.innerHTML = `${cellsInColumn.map(cell => {
       return `<td class="field-cell field-cell-${type}">${cell.innerText}</td>`;
     }).join('')}`;
+
     tableBody.append(newLine);
   };
 
-  addClass([...tableBody.querySelectorAll('td')]);
+  addClass([...findAllCells(tableBody)]);
 };
 
 function rowsRewriteToLeft() {
   const rows = document.querySelectorAll('tr');
+  const columnsCount = document.querySelector('tr').children.length;
 
-  for (let i = 0; i < document.querySelector('tr').children.length; i++) {
+  for (let i = 0; i < columnsCount; i++) {
     const cellsInCollumn = rows[i].children;
 
-    // переставляю пусті комірки в кінець
     [...cellsInCollumn].forEach(cell => {
       if (cell.innerText === '') {
         cell.parentElement.append(cell);
       }
     });
 
-    // додаю однакові числа
     for (let j = 0; j < cellsInCollumn.length; j++) {
       if (cellsInCollumn[j]
           && cellsInCollumn[j + 1]
@@ -106,7 +110,6 @@ function rowsRewriteToLeft() {
         cellsInCollumn[j].innerText = cellsInCollumn[j].innerText * 2;
         score += +cellsInCollumn[j].innerText;
 
-        /// ///////////////////////////////////
         cellsInCollumn[j].setAttribute('scale', '1');
 
         setTimeout(() => {
@@ -122,17 +125,15 @@ function rowsRewriteToLeft() {
 function rowsRewriteToRight() {
   const rows = document.querySelectorAll('tr');
 
-  for (let i = 0; i < [...document.querySelectorAll('tr')].length; i++) {
+  for (let i = 0; i < [...rows].length; i++) {
     const cellsInRow = rows[i].children;
 
-    // переставляю пусті комірки в кінець
     [...cellsInRow].forEach(cell => {
       if (cell.innerText === '') {
         cell.parentElement.prepend(cell);
       }
     });
 
-    // додаю однакові числа
     for (let j = cellsInRow.length - 1; j >= 0; j--) {
       if (cellsInRow[j]
           && cellsInRow[j - 1]
@@ -141,7 +142,6 @@ function rowsRewriteToRight() {
         cellsInRow[j].innerText = cellsInRow[j].innerText * 2;
         score += +cellsInRow[j].innerText;
 
-        /// /////////////////////////////////////////////////////////////
         cellsInRow[j].setAttribute('scale', '1');
 
         setTimeout(() => {
@@ -152,109 +152,115 @@ function rowsRewriteToRight() {
       };
     };
   };
-}
+};
 
-function keydownListener(e) {
-  // масив зі значеннями в комірках для того щоб порівняти з масивом в кінці
-  const cellsArr = [];
+function createArrWithAllNumbers(arrForPush) {
+  const verticalTable = document.querySelector('tbody')
+    .classList.contains('tbody-columns');
 
-  [...document.querySelectorAll('td')].forEach(cell => {
-    cellsArr.push(cell.innerText);
-  });
+  if (verticalTable) {
+    const allCells = [...document.querySelectorAll('td')];
 
-  /// ///////ArrowUp
-  if (e.key === 'ArrowUp') {
-    if (!document.querySelector('tbody').classList.contains('tbody-columns')) {
-      // розворот таблиці
-      turnTheTable(tbodyVertical, 'column');
-      tbodyHorisontal.remove(); // ховаю правильну таблицю
-      table.append(tbodyVertical); // вставляю таблицю з колонками
+    for (let i = 0; i < [...document.querySelectorAll('tr')].length; i++) {
+      const row = allCells.filter(cell => cell.cellIndex === i);
+      const rowNumbers = row.map(cell => cell.innerText);
+
+      arrForPush.push(...rowNumbers);
     };
+  } else {
+    const allCells = [...findAllCells(document)];
 
-    rowsRewriteToLeft();
+    allCells.map(cell => arrForPush.push(cell.innerText));
   };
+};
 
-  /// ///////ArrowDown
-  if (e.key === 'ArrowDown') {
-    if (!document.querySelector('tbody').classList.contains('tbody-columns')) {
-      // розворот таблиці
-      turnTheTable(tbodyVertical, 'column');
-      tbodyHorisontal.remove(); // ховаю правильну таблицю
-      table.append(tbodyVertical); // вставляю таблицю з колонками
-    };
-
-    rowsRewriteToRight();
-  };
-
-  /// ///////ArrowLeft
-  if (e.key === 'ArrowLeft') {
-    if (document.querySelector('tbody').classList.contains('tbody-columns')) {
-      turnTheTable(tbodyHorisontal, 'row');
-      tbodyVertical.remove(); // ховаю вертикальну таблицю
-      table.append(tbodyHorisontal); // вставляю таблицю з рядками
-    };
-
-    rowsRewriteToLeft();
-  };
-
-  /// ///////ArrowRight
-  if (e.key === 'ArrowRight') {
-    if (document.querySelector('tbody').classList.contains('tbody-columns')) {
-      turnTheTable(tbodyHorisontal, 'row');
-      tbodyVertical.remove(); // ховаю вертикальну таблицю
-      table.append(tbodyHorisontal); // вставляю таблицю з рядками
-    };
-
-    rowsRewriteToRight();
-  };
-
-  // порівнюю попередні значення в комірках з новими
-  // (якщо відрізняються то створюю нове число)
-  const newCellArr = [];
-
-  [...document.querySelectorAll('td')].forEach(cell => {
-    newCellArr.push(cell.innerText);
-  });
-
-  for (let i = 0; i < newCellArr.length; i++) {
-    if (newCellArr[i] !== cellsArr[i]) {
+function arrIsChanged(arrBefore, arrAfter) {
+  for (let i = 0; i < arrAfter.length; i++) {
+    if (arrAfter[i] !== arrBefore[i]) {
       createNumber();
       break;
     };
   };
+};
 
-  // Умова для перемоги
+function insertTable(toTableType, fromTableType) {
+  if (toTableType === 'vetical') {
+    if (fromTableType) {
+      turnTheTable(tbodyVertical, 'column');
+      tbodyHorisontal.remove();
+      table.append(tbodyVertical);
+    };
+  }
+
+  if (toTableType === 'horisontal') {
+    if (!fromTableType) {
+      turnTheTable(tbodyHorisontal, 'row');
+      tbodyVertical.remove();
+      table.append(tbodyHorisontal);
+    };
+  }
+};
+
+function keydownListener(e) {
+  const cellsArr = [];
+
+  createArrWithAllNumbers(cellsArr);
+
+  const horisontalTable = !document.querySelector('tbody')
+    .classList.contains('tbody-columns');
+
+  if (e.key === 'ArrowUp') {
+    insertTable('vetical', horisontalTable);
+    rowsRewriteToLeft();
+  };
+
+  if (e.key === 'ArrowDown') {
+    insertTable('vetical', horisontalTable);
+    rowsRewriteToRight();
+  };
+
+  if (e.key === 'ArrowLeft') {
+    insertTable('horisontal', horisontalTable);
+    rowsRewriteToLeft();
+  };
+
+  if (e.key === 'ArrowRight') {
+    insertTable('horisontal', horisontalTable);
+    rowsRewriteToRight();
+  };
+
+  const newCellArr = [];
+
+  createArrWithAllNumbers(newCellArr);
+
+  arrIsChanged(cellsArr, newCellArr);
+
   victory(newCellArr);
 
-  // Умова для програшу
-  loss(newCellArr);
+  loss(newCellArr, horisontalTable);
 
-  addClass([...document.querySelectorAll('.field-cell')]);
+  addClass([...findAllCells(document)]);
   scoreInGame.innerText = score;
 };
 
-// перемога
 function victory(valuesInCells) {
   if (valuesInCells.find(cell => cell === '2048')) {
-    messegeStart.classList.add('hidden');
-    messegeLose.classList.add('hidden');
-    messegeWin.classList.remove('hidden');
+    changeMessage('win');
 
     document.removeEventListener('keydown', keydownListener);
   };
-}
+};
 
-// програш
-function loss(valuesInCells) {
+function loss(valuesInCells, tableType) {
   const emptyCells = valuesInCells.filter(cell => cell === '');
 
   if (emptyCells.length === 0) {
     const horisontalNembers = {};
     const verticalNumbers = {};
 
-    const allCells = document.querySelectorAll('td');
+    const allCells = findAllCells(document);
 
-    if (document.querySelector('tbody').classList.contains('tbody-columns')) {
+    if (!tableType) {
       for (let i = 0; i < [...allCells].length; i++) {
         if (!horisontalNembers[allCells[i].cellIndex]) {
           horisontalNembers[allCells[i].cellIndex] = [];
@@ -305,24 +311,19 @@ function loss(valuesInCells) {
     };
 
     if (possibleNextStep === 0) {
-      messegeLose.classList.remove('hidden');
-      messegeStart.classList.add('hidden');
-      messegeWin.classList.add('hidden');
+      changeMessage('loss');
       document.removeEventListener('keydown', keydownListener);
     }
   };
-}
+};
 
-// Кнопка start
 start.addEventListener('click', (e) => {
   document.addEventListener('keydown', keydownListener);
-  messegeStart.classList.add('hidden');
-  messegeLose.classList.add('hidden');
-  messegeWin.classList.add('hidden');
+  changeMessage();
   score = 0;
   scoreInGame.innerText = 0;
 
-  const allCells = document.querySelectorAll('td');
+  const allCells = findAllCells(document);
 
   if ([...allCells].find(cell => cell.innerText !== '')) {
     allCells.forEach(cell => {
@@ -332,9 +333,23 @@ start.addEventListener('click', (e) => {
   };
   createNumber();
   createNumber();
-  addClass([...document.querySelectorAll('.field-cell')]);
+  addClass([...findAllCells(document)]);
 
   start.innerText = 'Restart';
   start.classList.remove('start');
   start.classList.add('restart');
 });
+
+function changeMessage(gameResult) {
+  messegeStart.classList.add('hidden');
+  messegeLose.classList.add('hidden');
+  messegeWin.classList.add('hidden');
+
+  if (gameResult === 'win') {
+    messegeWin.classList.remove('hidden');
+  }
+
+  if (gameResult === 'loss') {
+    messegeLose.classList.remove('hidden');
+  }
+};
