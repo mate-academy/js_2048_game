@@ -47,18 +47,28 @@ button.addEventListener('click', (e) => {
 });
 
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft') {
-    slideLeft();
-    setNumbers();
-  } else if (e.code === 'ArrowRight') {
-    slideRight();
-    setNumbers();
-  } else if (e.code === 'ArrowUp') {
-    slideUp();
-    setNumbers();
-  } else if (e.code === 'ArrowDown') {
-    slideDown();
-    setNumbers();
+  if (button.innerText === 'Reset') {
+    switch (e.code) {
+      case 'ArrowLeft':
+        slideLeft();
+        setNumbers();
+        break;
+
+      case 'ArrowRight':
+        slideRight();
+        setNumbers();
+        break;
+
+      case 'ArrowUp':
+        slideUp();
+        setNumbers();
+        break;
+
+      case 'ArrowDown':
+        slideDown();
+        setNumbers();
+        break;
+    }
   }
 });
 
@@ -104,7 +114,9 @@ function hasEmptyCell() {
 
 function setNumbers() {
   if (!hasEmptyCell()) {
-    messageLose.classList.remove('hidden');
+    if (!checkStep()) {
+      messageLose.classList.remove('hidden');
+    }
 
     return;
   }
@@ -205,3 +217,19 @@ function slideDown() {
     setGame();
   }
 };
+
+function checkStep() {
+  for (let i = 1; i < rowsTable; i++) {
+    for (let k = 1; k < columnsTable; k++) {
+      if (table[i - 1][k - 1] === table[i - 1][k]) {
+        return true;
+      };
+
+      if (table[k - 1][i - 1] === table[k][i - 1]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
