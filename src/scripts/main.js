@@ -21,7 +21,7 @@ const styleCells = () => {
   });
 };
 
-const animateCells = (item, animate) => {
+const animateCells = (item, animate, newOne = false) => {
   const scaleTo = 'scale(1.2,1.2)';
   const defaultScale = 'scale(1,1)';
   const transition = '.3s transform';
@@ -57,7 +57,30 @@ const addCellNumber = () => {
       }
     }
     cells[index].innerText = number;
-  } else {
+  }
+};
+
+const gameOver = () => {
+  let canMove = false;
+
+  [...row].forEach((item, index, arr) => {
+    for (let i = 0; i <= 3; i++) {
+      if (!arr[index].children[i + 1] || !arr[i + 1]) {
+        break;
+      }
+
+      if (arr[index].children[i].innerText
+        === arr[index].children[i + 1].innerText
+        || arr[i].children[index].innerText
+        === arr[i + 1].children[index].innerText) {
+        canMove = true;
+
+        return;
+      }
+    }
+  });
+
+  if (!canMove) {
     message.children[0].classList.remove('hidden');
   }
 };
@@ -116,6 +139,7 @@ const cellsSorting = (direction) => {
       }
     });
   }
+
   gameArr.splice(0, 4);
 };
 
@@ -231,32 +255,38 @@ start.addEventListener('click', () => {
 document.addEventListener('keydown', (e) => {
   e.preventDefault();
 
-  switch (e.key) {
-    case 'ArrowUp':
-      cellsSorting('up');
-      moveUp();
-      cellsSorting('up');
-      break;
+  if (start.classList.contains('restart')) {
+    switch (e.key) {
+      case 'ArrowUp':
+        cellsSorting('up');
+        moveUp();
+        cellsSorting('up');
+        break;
 
-    case 'ArrowDown':
-      cellsSorting('down');
-      moveDown();
-      cellsSorting('down');
-      break;
+      case 'ArrowDown':
+        cellsSorting('down');
+        moveDown();
+        cellsSorting('down');
+        break;
 
-    case 'ArrowRight':
-      cellsSorting('right');
-      moveRight();
-      cellsSorting('right');
-      break;
+      case 'ArrowRight':
+        cellsSorting('right');
+        moveRight();
+        cellsSorting('right');
+        break;
 
-    case 'ArrowLeft':
-      cellsSorting('left');
-      moveLeft();
-      cellsSorting('left');
-      break;
+      case 'ArrowLeft':
+        cellsSorting('left');
+        moveLeft();
+        cellsSorting('left');
+        break;
+    }
+    addCellNumber();
+    styleCells();
+    congratulation();
+
+    if (finish() === true) {
+      gameOver();
+    }
   }
-  addCellNumber();
-  styleCells();
-  congratulation();
 });
