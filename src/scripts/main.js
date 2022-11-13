@@ -30,6 +30,8 @@ button.addEventListener('click', (e) => {
     e.target.innerText = 'Reset';
     e.target.classList.replace('start', 'restart');
   } else if (e.target.innerText === 'Reset') {
+    score = 0;
+
     table = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
