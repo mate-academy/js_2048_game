@@ -91,6 +91,7 @@ button.addEventListener('click', () => {
   button.classList.add('restart');
 
   messageStart.classList.add('hidden');
+  messageGameOver.classList.add('hidden');
 
   if (button.classList.contains('restart')) {
     button.textContent = 'Restart';
