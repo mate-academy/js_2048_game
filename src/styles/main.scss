@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: background ease-in 0.2s;
 
   &--2 {
     background: #eee4da;

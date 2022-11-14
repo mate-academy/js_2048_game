@@ -36,25 +36,27 @@ document.addEventListener('keyup', (e) => {
     case 'ArrowLeft':
       shift('left');
       checkEndOfGame();
+      generate();
       break;
 
     case 'ArrowRight':
       shift('right');
       checkEndOfGame();
+      generate();
       break;
 
     case 'ArrowUp':
       shift('up');
       checkEndOfGame();
+      generate();
       break;
 
     case 'ArrowDown':
       shift('down');
       checkEndOfGame();
+      generate();
       break;
   }
-
-  generate();
 });
 
 function reset() {
