@@ -152,18 +152,22 @@ buttonStart.addEventListener('click', () => {
 
 document.addEventListener('keyup', (key) => {
   if (buttonStart.classList.contains('restart')) {
-    if (key.code === 'ArrowRight') {
-      moveMix(moveRight, combineRow);
-      randomize();
-    } else if (key.code === 'ArrowLeft') {
-      moveMix(moveLeft, combineRow);
-      randomize();
-    } else if (key.code === 'ArrowUp') {
-      moveMix(moveUp, combineColumn);
-      randomize();
-    } else if (key.code === 'ArrowDown') {
-      moveMix(moveDown, combineColumn);
-      randomize();
+    switch (key.code) {
+      case 'ArrowRight':
+        moveMix(moveRight, combineRow);
+        randomize();
+        break;
+      case 'ArrowLeft':
+        moveMix(moveLeft, combineRow);
+        randomize();
+        break;
+      case 'ArrowUp':
+        moveMix(moveUp, combineColumn);
+        randomize();
+        break;
+      case 'ArrowDown':
+        moveMix(moveDown, combineColumn);
+        randomize();
     }
   }
   checkForWin();
