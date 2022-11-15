@@ -168,6 +168,9 @@ document.addEventListener('keyup', (key) => {
       case 'ArrowDown':
         moveMix(moveDown, combineColumn);
         randomize();
+        break;
+      default:
+        return;
     }
   }
   checkForWin();
