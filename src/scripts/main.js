@@ -3,9 +3,9 @@
 const cells = findAllCells(document);
 const table = document.querySelector('.game-field');
 const start = document.querySelector('.start');
-const messegeStart = document.querySelector('.message-start');
-const messegeLose = document.querySelector('.message-lose');
-const messegeWin = document.querySelector('.message-win');
+const messageStart = document.querySelector('.message-start');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
 let score = 0;
 const scoreInGame = document.querySelector('.game-score');
 
@@ -209,24 +209,23 @@ function keydownListener(e) {
   const horisontalTable = !document.querySelector('tbody')
     .classList.contains('tbody-columns');
 
-  if (e.key === 'ArrowUp') {
-    insertTable('vetical', horisontalTable);
-    rowsRewriteToLeft();
-  };
-
-  if (e.key === 'ArrowDown') {
-    insertTable('vetical', horisontalTable);
-    rowsRewriteToRight();
-  };
-
-  if (e.key === 'ArrowLeft') {
-    insertTable('horisontal', horisontalTable);
-    rowsRewriteToLeft();
-  };
-
-  if (e.key === 'ArrowRight') {
-    insertTable('horisontal', horisontalTable);
-    rowsRewriteToRight();
+  switch (e.key) {
+    case 'ArrowUp':
+      insertTable('vetical', horisontalTable);
+      rowsRewriteToLeft();
+      break;
+    case 'ArrowDown':
+      insertTable('vetical', horisontalTable);
+      rowsRewriteToRight();
+      break;
+    case 'ArrowLeft':
+      insertTable('horisontal', horisontalTable);
+      rowsRewriteToLeft();
+      break;
+    case 'ArrowRight':
+      insertTable('horisontal', horisontalTable);
+      rowsRewriteToRight();
+      break;
   };
 
   const newCellArr = [];
@@ -251,7 +250,31 @@ function victory(valuesInCells) {
   };
 };
 
-function loss(valuesInCells, tableType) {
+function createObjNumgbers(
+  allCells,
+  horisontalNembers,
+  verticalNumbers,
+  horisontalIndex,
+  verticalIndex
+) {
+  for (let i = 0; i < [...allCells].length; i++) {
+    if (!horisontalNembers[allCells[i][horisontalIndex]]) {
+      horisontalNembers[allCells[i][horisontalIndex]] = [];
+    }
+
+    horisontalNembers[allCells[i][horisontalIndex]]
+      .push(allCells[i].innerText);
+
+    if (!verticalNumbers[allCells[i][verticalIndex]]) {
+      verticalNumbers[allCells[i][verticalIndex]] = [];
+    };
+
+    verticalNumbers[allCells[i][verticalIndex]]
+      .push(allCells[i].innerText);
+  };
+};
+
+function loss(valuesInCells, horisontalType) {
   const emptyCells = valuesInCells.filter(cell => cell === '');
 
   if (emptyCells.length === 0) {
@@ -260,35 +283,23 @@ function loss(valuesInCells, tableType) {
 
     const allCells = findAllCells(document);
 
-    if (!tableType) {
-      for (let i = 0; i < [...allCells].length; i++) {
-        if (!horisontalNembers[allCells[i].cellIndex]) {
-          horisontalNembers[allCells[i].cellIndex] = [];
-        }
-        horisontalNembers[allCells[i].cellIndex].push(allCells[i].innerText);
-
-        if (!verticalNumbers[allCells[i].parentElement.rowIndex]) {
-          verticalNumbers[allCells[i].parentElement.rowIndex] = [];
-        };
-
-        verticalNumbers[allCells[i].parentElement.rowIndex]
-          .push(allCells[i].innerText);
-      };
+    if (!horisontalType) {
+      createObjNumgbers(
+        allCells,
+        horisontalNembers,
+        verticalNumbers,
+        'cellIndex',
+        'parentElement.rowIndex'
+      );
     } else {
-      for (let i = 0; i < [...allCells].length; i++) {
-        if (!verticalNumbers[allCells[i].cellIndex]) {
-          verticalNumbers[allCells[i].cellIndex] = [];
-        };
-        verticalNumbers[allCells[i].cellIndex].push(allCells[i].innerText);
-
-        if (!horisontalNembers[allCells[i].parentElement.rowIndex]) {
-          horisontalNembers[allCells[i].parentElement.rowIndex] = [];
-        };
-
-        horisontalNembers[allCells[i].parentElement.rowIndex]
-          .push(allCells[i].innerText);
-      };
-    }
+      createObjNumgbers(
+        allCells,
+        horisontalNembers,
+        verticalNumbers,
+        'parentElement.rowIndex',
+        'cellIndex'
+      );
+    };
 
     let possibleNextStep = 0;
 
@@ -299,7 +310,7 @@ function loss(valuesInCells, tableType) {
           possibleNextStep++;
         }
       }
-    }
+    };
 
     for (const row in verticalNumbers) {
       for (let i = 1; i < verticalNumbers[row].length - 1; i++) {
@@ -341,15 +352,15 @@ start.addEventListener('click', (e) => {
 });
 
 function changeMessage(gameResult) {
-  messegeStart.classList.add('hidden');
-  messegeLose.classList.add('hidden');
-  messegeWin.classList.add('hidden');
+  messageStart.classList.add('hidden');
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
 
   if (gameResult === 'win') {
-    messegeWin.classList.remove('hidden');
+    messageWin.classList.remove('hidden');
   }
 
   if (gameResult === 'loss') {
-    messegeLose.classList.remove('hidden');
+    messageLose.classList.remove('hidden');
   }
 };
