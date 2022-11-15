@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 'use strict';
 
-// FIELD SIZE
 const size = 4;
 const min = 0;
 const max = size - 1;
@@ -22,7 +21,7 @@ function getId() {
   const i = getRandom();
   const j = getRandom();
 
-  return i + '' + j;
+  return `${i}${j}`;
 }
 
 function load() {
@@ -37,8 +36,6 @@ function load() {
     }
   }
 
-  // SETTING INITIAL TWO VALUES
-
   document.getElementById(id1).innerHTML = '2';
   document.getElementById(id2).innerHTML = '2';
 
@@ -51,13 +48,35 @@ function load() {
   return false;
 }
 
+function combineCells(newId, element, elemValue, newElement, newElemValue) {
+  if (elemValue === newElemValue) {
+    if (excludeIds.indexOf(newId) === -1) {
+      excludeIds.push(newId);
+      newElement.innerHTML = (elemValue + newElemValue);
+      newElement.classList.replace(`field-cell--${newElemValue}`, `field-cell--${elemValue + newElemValue}`);
+      element.innerHTML = '';
+      element.classList.remove(`field-cell--${elemValue}`);
+      isMoved = true;
+      score += (elemValue + newElemValue);
+    }
+  }
+}
+
+function moveToEmptyCell(newId, value, elemValue) {
+  document.getElementById(newId).innerHTML = value.innerHTML;
+  document.getElementById(newId).classList.add(`field-cell--${elemValue}`);
+  value.innerHTML = '';
+  value.classList.remove(`field-cell--${elemValue}`);
+  isMoved = true;
+}
+
 function up() {
   isMoved = false;
   excludeIds = [];
 
   for (let j = min; j <= max; j++) {
     for (let i = min; i <= max; i++) {
-      const id = i + '' + j;
+      const id = `${i}${j}`;
 
       if (document.getElementById(id).innerHTML !== '') {
         moveUp(id);
@@ -79,30 +98,19 @@ function moveUp(id) {
     const j = parseInt(arr[1]);
 
     for (let k = (i - 1); k >= min; k--) {
-      const nId = k + '' + j;
+      const nId = `${k}${j}`;
+      const elem = document.getElementById(`${k + 1}${j}`);
+      const newElem = document.getElementById(nId);
 
-      const val = parseInt(document.getElementById((k + 1) + '' + j).innerHTML);
-      const nVal = parseInt(document.getElementById(nId).innerHTML);
+      const elValue = parseInt(elem.innerHTML);
+      const newElValue = parseInt(newElem.innerHTML);
 
-      if (document.getElementById(nId).innerHTML !== '') {
-        if (val === nVal) {
-          if (excludeIds.indexOf(nId) === -1) {
-            excludeIds.push(nId);
-            document.getElementById(nId).innerHTML = (val + nVal);
-            document.getElementById(nId).classList.replace(`field-cell--${nVal}`, `field-cell--${val + nVal}`);
-            document.getElementById((k + 1) + '' + j).innerHTML = '';
-            document.getElementById((k + 1) + '' + j).classList.remove(`field-cell--${val}`);
-            isMoved = true;
-            score += (val + nVal);
-          }
-        }
+      if (newElem.innerHTML !== '') {
+        combineCells(nId, elem, elValue, newElem, newElValue);
+
         break;
       } else {
-        document.getElementById(nId).innerHTML = document.getElementById((k + 1) + '' + j).innerHTML;
-        document.getElementById(nId).classList.add(`field-cell--${val}`);
-        document.getElementById((k + 1) + '' + j).innerHTML = '';
-        document.getElementById((k + 1) + '' + j).classList.remove(`field-cell--${val}`);
-        isMoved = true;
+        moveToEmptyCell(nId, elem, elValue);
       }
     }
   }
@@ -116,7 +124,7 @@ function left() {
 
   for (let i = min; i <= max; i++) {
     for (let j = min; j <= max; j++) {
-      const id = i + '' + j;
+      const id = `${i}${j}`;
 
       if (document.getElementById(id).innerHTML !== '') {
         moveLeft(id);
@@ -138,30 +146,19 @@ function moveLeft(id) {
     const j = parseInt(arr[1]);
 
     for (let k = (j - 1); k >= min; k--) {
-      const nId = i + '' + k;
+      const nId = `${i}${k}`;
+      const elem = document.getElementById(`${i}${k + 1}`);
+      const newElem = document.getElementById(nId);
 
-      const val = parseInt(document.getElementById(i + '' + (k + 1)).innerHTML);
-      const nVal = parseInt(document.getElementById(nId).innerHTML);
+      const elValue = parseInt(elem.innerHTML);
+      const newElValue = parseInt(newElem.innerHTML);
 
-      if (document.getElementById(nId).innerHTML !== '') {
-        if (val === nVal) {
-          if (excludeIds.indexOf(nId) === -1) {
-            excludeIds.push(nId);
-            document.getElementById(nId).innerHTML = (val + nVal);
-            document.getElementById(nId).classList.replace(`field-cell--${nVal}`, `field-cell--${val + nVal}`);
-            document.getElementById(i + '' + (k + 1)).innerHTML = '';
-            document.getElementById(i + '' + (k + 1)).classList.remove(`field-cell--${val}`);
-            isMoved = true;
-            score += (val + nVal);
-          }
-        }
+      if (newElem.innerHTML !== '') {
+        combineCells(nId, elem, elValue, newElem, newElValue);
+
         break;
       } else {
-        document.getElementById(nId).innerHTML = document.getElementById(i + '' + (k + 1)).innerHTML;
-        document.getElementById(nId).classList.add(`field-cell--${val}`);
-        document.getElementById(i + '' + (k + 1)).innerHTML = '';
-        document.getElementById(i + '' + (k + 1)).classList.remove(`field-cell--${val}`);
-        isMoved = true;
+        moveToEmptyCell(nId, elem, elValue);
       }
     }
   }
@@ -175,7 +172,7 @@ function down() {
 
   for (let j = min; j <= max; j++) {
     for (let i = max; i >= min; i--) {
-      const id = i + '' + j;
+      const id = `${i}${j}`;
 
       if (document.getElementById(id).innerHTML !== '') {
         moveDown(id);
@@ -197,30 +194,19 @@ function moveDown(id) {
     const j = parseInt(arr[1]);
 
     for (let k = (i + 1); k <= max; k++) {
-      const nId = k + '' + j;
+      const nId = `${k}${j}`;
+      const elem = document.getElementById(`${k - 1}${j}`);
+      const newElem = document.getElementById(nId);
 
-      const val = parseInt(document.getElementById((k - 1) + '' + j).innerHTML);
-      const nVal = parseInt(document.getElementById(nId).innerHTML);
+      const elValue = parseInt(elem.innerHTML);
+      const newElValue = parseInt(newElem.innerHTML);
 
-      if (document.getElementById(nId).innerHTML !== '') {
-        if (val === nVal) {
-          if (excludeIds.indexOf(nId) === -1) {
-            excludeIds.push(nId);
-            document.getElementById(nId).innerHTML = (val + nVal);
-            document.getElementById(nId).classList.replace(`field-cell--${nVal}`, `field-cell--${val + nVal}`);
-            document.getElementById((k - 1) + '' + j).innerHTML = '';
-            document.getElementById((k - 1) + '' + j).classList.remove(`field-cell--${val}`);
-            isMoved = true;
-            score += (val + nVal);
-          }
-        }
+      if (newElem.innerHTML !== '') {
+        combineCells(nId, elem, elValue, newElem, newElValue);
+
         break;
       } else {
-        document.getElementById(nId).innerHTML = document.getElementById((k - 1) + '' + j).innerHTML;
-        document.getElementById(nId).classList.add(`field-cell--${val}`);
-        document.getElementById((k - 1) + '' + j).innerHTML = '';
-        document.getElementById((k - 1) + '' + j).classList.remove(`field-cell--${val}`);
-        isMoved = true;
+        moveToEmptyCell(nId, elem, elValue);
       }
     }
   }
@@ -234,7 +220,7 @@ function right() {
 
   for (let i = min; i <= max; i++) {
     for (let j = max; j >= min; j--) {
-      const id = i + '' + j;
+      const id = `${i}${j}`;
 
       if (document.getElementById(id).innerHTML !== '') {
         moveRight(id);
@@ -256,30 +242,19 @@ function moveRight(id) {
     const j = parseInt(arr[1]);
 
     for (let k = (j + 1); k <= max; k++) {
-      const nId = i + '' + k;
+      const nId = `${i}${k}`;
+      const elem = document.getElementById(`${i}${k - 1}`);
+      const newElem = document.getElementById(nId);
 
-      const val = parseInt(document.getElementById(i + '' + (k - 1)).innerHTML);
-      const nVal = parseInt(document.getElementById(nId).innerHTML);
+      const elValue = parseInt(elem.innerHTML);
+      const newElValue = parseInt(newElem.innerHTML);
 
-      if (document.getElementById(nId).innerHTML !== '') {
-        if (val === nVal) {
-          if (excludeIds.indexOf(nId) === -1) {
-            excludeIds.push(nId);
-            document.getElementById(nId).innerHTML = (val + nVal);
-            document.getElementById(nId).classList.replace(`field-cell--${nVal}`, `field-cell--${val + nVal}`);
-            document.getElementById(i + '' + (k - 1)).innerHTML = '';
-            document.getElementById(i + '' + (k - 1)).classList.remove(`field-cell--${val}`);
-            isMoved = true;
-            score += (val + nVal);
-          }
-        }
+      if (newElem.innerHTML !== '') {
+        combineCells(nId, elem, elValue, newElem, newElValue);
+
         break;
       } else {
-        document.getElementById(nId).innerHTML = document.getElementById(i + '' + (k - 1)).innerHTML;
-        document.getElementById(nId).classList.add(`field-cell--${val}`);
-        document.getElementById(i + '' + (k - 1)).innerHTML = '';
-        document.getElementById(i + '' + (k - 1)).classList.remove(`field-cell--${val}`);
-        isMoved = true;
+        moveToEmptyCell(nId, elem, elValue);
       }
     }
   }
@@ -287,12 +262,8 @@ function moveRight(id) {
   return false;
 }
 
-// ADDING NEW VALUE
-
 function update() {
-// WINNER CHECK
-
-  if (score === 8) {
+  if (score === 2048) {
     winMsg.classList.remove('hidden');
   }
 
@@ -300,7 +271,7 @@ function update() {
 
   for (let i = min; i <= max; i++) {
     for (let j = min; j <= max; j++) {
-      const idNew = i + '' + j;
+      const idNew = `${i}${j}`;
 
       if (document.getElementById(idNew).innerHTML === '') {
         ids.push(idNew);
@@ -313,13 +284,11 @@ function update() {
   document.getElementById(id).innerHTML = '2';
   document.getElementById(id).classList.add('field-cell--2');
 
-  // FULL FIELD CHECK
-
   let allFilled = true;
 
   for (let i = min; i <= max; i++) {
     for (let j = min; j <= max; j++) {
-      const idCheck = i + '' + j;
+      const idCheck = `${i}${j}`;
 
       if (document.getElementById(idCheck).innerHTML === '') {
         allFilled = false;
@@ -340,10 +309,10 @@ function checkGameOver() {
 
   for (let j = min; j <= max; j++) {
     for (let i = min; i <= (max - 1); i++) {
-      const val = parseInt(document.getElementById(i + '' + j).innerHTML);
-      const nVal = parseInt(document.getElementById((i + 1) + '' + j).innerHTML);
+      const value = parseInt(document.getElementById(`${i}${j}`).innerHTML);
+      const newValue = parseInt(document.getElementById(`${i + 1}${j}`).innerHTML);
 
-      if (val === nVal) {
+      if (value === newValue) {
         isOver = false;
         break;
       }
@@ -353,10 +322,10 @@ function checkGameOver() {
   if (isOver === true) {
     for (let i = min; i <= max; i++) {
       for (let j = min; j <= (max - 1); j++) {
-        const val = parseInt(document.getElementById(i + '' + j).innerHTML);
-        const nVal = parseInt(document.getElementById(i + '' + (j + 1)).innerHTML);
+        const value = parseInt(document.getElementById(`${i}${j}`).innerHTML);
+        const newValue = parseInt(document.getElementById(`${i}${j + 1}`).innerHTML);
 
-        if (val === nVal) {
+        if (value === newValue) {
           isOver = false;
           break;
         }
@@ -370,8 +339,6 @@ function checkGameOver() {
 
   return false;
 }
-
-// CONTROLS
 
 document.body.addEventListener('keydown', (e) => {
   e.preventDefault();
@@ -391,8 +358,6 @@ document.body.addEventListener('keydown', (e) => {
       break;
   }
 });
-
-// BUTTON
 
 const start = document.querySelector('.button');
 
@@ -416,7 +381,7 @@ function first() {
 
     for (let i = min; i <= max; i++) {
       for (let j = min; j <= max; j++) {
-        const id = i + '' + j;
+        const id = `${i}${j}`;
 
         document.getElementById(id).innerHTML = '';
         document.getElementById(id).className = 'field-cell';
