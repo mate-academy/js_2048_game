@@ -1,5 +1,6 @@
 'use strict';
 
+const gameField = document.querySelector('.game-field');
 const fieldRows = document.querySelectorAll('.field-row');
 const button = document.querySelector('button');
 const score = document.querySelector('.game-score');
@@ -12,18 +13,54 @@ const cellsCoords = {
   2: [0, 0, 0, 0],
   3: [0, 0, 0, 0],
 };
+let startTouchX;
+let startTouchY;
+let endTouchX;
+let endTouchY;
 
 button.addEventListener('click', (e) => {
   if (e.target.classList.contains('start')) {
     e.target.classList = 'button restart';
     e.target.innerText = 'Restart';
     messageStart.hidden = true;
-    generate();
-    generate();
   } else {
     reset();
-    e.target.classList = 'button start';
-    e.target.innerText = 'Start';
+  }
+  generate();
+  generate();
+});
+
+gameField.addEventListener('touchstart', (e) => {
+  startTouchX = e.changedTouches[0].clientX;
+  startTouchY = e.changedTouches[0].clientY;
+});
+
+gameField.addEventListener('touchend', (e) => {
+  if (!button.classList.contains('restart')) {
+    return;
+  }
+
+  endTouchX = e.changedTouches[0].clientX;
+  endTouchY = e.changedTouches[0].clientY;
+
+  const directionX = startTouchX - endTouchX;
+  const directionY = startTouchY - endTouchY;
+  const minSwipe = 20;
+
+  if (directionX > minSwipe && directionX > directionY) {
+    return actionMix('left');
+  }
+
+  if (directionX < -minSwipe && directionX < directionY) {
+    return actionMix('right');
+  }
+
+  if (directionY > minSwipe) {
+    return actionMix('up');
+  }
+
+  if (directionY < -minSwipe) {
+    return actionMix('down');
   }
 });
 
@@ -34,30 +71,28 @@ document.addEventListener('keyup', (e) => {
 
   switch (e.key) {
     case 'ArrowLeft':
-      shift('left');
-      checkEndOfGame();
-      generate();
+      actionMix('left');
       break;
 
     case 'ArrowRight':
-      shift('right');
-      checkEndOfGame();
-      generate();
+      actionMix('right');
       break;
 
     case 'ArrowUp':
-      shift('up');
-      checkEndOfGame();
-      generate();
+      actionMix('up');
       break;
 
     case 'ArrowDown':
-      shift('down');
-      checkEndOfGame();
-      generate();
+      actionMix('down');
       break;
   }
 });
+
+function actionMix(direction) {
+  shift(direction);
+  checkEndOfGame();
+  generate();
+}
 
 function reset() {
   for (const row in cellsCoords) {
@@ -65,7 +100,6 @@ function reset() {
       cellsCoords[row][i] = 0;
     }
   }
-  messageStart.hidden = false;
   messageWin.hidden = true;
   messageLose.hidden = true;
   score.innerText = 0;
@@ -211,10 +245,12 @@ function checkEndOfGame() {
     }
 
     for (let i = 0; i < cellsCoords[row].length - 1; i++) {
-      if (
-        cellsCoords[row][i] === cellsCoords[row][i + 1]
-        || cellsCoords[i][row] === cellsCoords[i + 1][row]
-      ) {
+      const cellX = cellsCoords[row][i];
+      const nextCellX = cellsCoords[row][i + 1];
+      const cellY = cellsCoords[i][row];
+      const nextCellY = cellsCoords[i + 1][row];
+
+      if (cellX === nextCellX || cellY === nextCellY) {
         lose = false;
       }
     }
