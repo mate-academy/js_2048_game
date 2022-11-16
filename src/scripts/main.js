@@ -113,6 +113,7 @@ function createCell(firstCell) {
 
 function hideMessages() {
   messageStart.classList.add('hidden');
+  messageStart.setAttribute('active', '');
   messageWin.classList.add('hidden');
   messageLose.classList.add('hidden');
 }
@@ -192,8 +193,9 @@ function createCombo(startValue, endValue, distance, option) {
       && !thisCell.classList.contains('active-combo')) {
       targetCell.classList.remove(`field-cell--${targetCell.textContent}`);
       targetCell.textContent *= 2;
-      targetCell.classList.add(`field-cell--${targetCell.textContent}`);
-      targetCell.classList.add('active-combo');
+
+      targetCell.classList.add(`field-cell--${targetCell.textContent}`,
+        'active-combo');
 
       removeExtra(thisCell);
       updateScore(targetCell);
