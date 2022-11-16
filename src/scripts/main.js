@@ -18,16 +18,18 @@ function generateEven() {
   return num <= 0.1 ? 4 : 2;
 }
 
+const generateRandomNumber = () => Math.ceil(Math.random() * 16);
+
 function generateCellNoRepeated() {
   const randomArr = [];
-  const number1 = Math.ceil(Math.random() * 16);
+  const number1 = generateRandomNumber();
 
   randomArr.push(number1);
 
-  let number2 = Math.ceil(Math.random() * 16);
+  let number2 = generateRandomNumber();
 
   while (randomArr.includes(number2)) {
-    number2 = Math.ceil(Math.random() * 16);
+    number2 = generateRandomNumber();
   }
 
   randomArr.push(number2);
@@ -87,17 +89,19 @@ function generateFreePlace() {
 
 function mergeCells() {
   for (let n = 1; n <= 12; n++) {
-    const valueUp = cellNo(n).innerText;
+    const qurrentCell = cellNo(n);
+    const previousCell = cellNo(n + 4);
+    const valueUp = qurrentCell.innerText;
 
-    if (cellNo(n).className === cellNo(n + 4).className
+    if (qurrentCell.className === previousCell.className
       && valueUp.length) {
-      cellNo(n).innerText = `${2 * valueUp}`;
+      qurrentCell.innerText = `${2 * valueUp}`;
       score.innerText = `${Number(score.innerText) + 2 * valueUp}`;
 
-      cellNo(n).className
-      = `field-cell field-cell--${cellNo(n).innerText}`;
-      cellNo(n + 4).innerText = '';
-      cellNo(n + 4).className = 'field-cell';
+      qurrentCell.className
+      = `field-cell field-cell--${qurrentCell.innerText}`;
+      previousCell.innerText = '';
+      previousCell.className = 'field-cell';
     }
   }
 }
@@ -109,12 +113,15 @@ function moveCells() {
     count = 0;
 
     for (let n = 1; n <= 12; n++) {
-      if (cellNo(n).innerText === ''
-      && cellNo(n + 4).innerText.length !== 0) {
-        cellNo(n).className = `${cellNo(n + 4).classList}`;
-        cellNo(n).innerText = `${cellNo(n + 4).innerText}`;
-        cellNo(n + 4).innerText = '';
-        cellNo(n + 4).className = 'field-cell';
+      const qurrentCell = cellNo(n);
+      const previousCell = cellNo(n + 4);
+
+      if (qurrentCell.innerText === ''
+      && previousCell.innerText.length !== 0) {
+        qurrentCell.className = `${previousCell.classList}`;
+        qurrentCell.innerText = `${previousCell.innerText}`;
+        previousCell.innerText = '';
+        previousCell.className = 'field-cell';
         count++;
       }
     }
@@ -158,28 +165,27 @@ function rightCellsNum() {
 document.addEventListener('keydown', (e) => {
   const dataBeforeClick = cells.map(cell => cell.innerText).toString();
 
-  if (e.code === 'ArrowDown') {
-    downCellsNum();
-    moveCells();
-    mergeCells();
-  }
-
-  if (e.code === 'ArrowUp') {
-    upCellsNum();
-    moveCells();
-    mergeCells();
-  }
-
-  if (e.code === 'ArrowLeft') {
-    leftCellsNum();
-    moveCells();
-    mergeCells();
-  }
-
-  if (e.code === 'ArrowRight') {
-    rightCellsNum();
-    moveCells();
-    mergeCells();
+  switch (e.code) {
+    case 'ArrowDown':
+      downCellsNum();
+      moveCells();
+      mergeCells();
+      break;
+    case 'ArrowUp':
+      upCellsNum();
+      moveCells();
+      mergeCells();
+      break;
+    case 'ArrowLeft':
+      leftCellsNum();
+      moveCells();
+      mergeCells();
+      break;
+    case 'ArrowRight':
+      rightCellsNum();
+      moveCells();
+      mergeCells();
+      break;
   }
 
   const dataAfterClick = cells.map(cell => cell.innerText).toString();
