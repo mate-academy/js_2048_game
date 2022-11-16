@@ -33,6 +33,21 @@ function udateGameField() {
     udateGameField();
     checkforfGameOver();
   }
+
+  const arrOfNumbers = [];
+
+  for (const arr of gameField) {
+    for (const num of arr) {
+      arrOfNumbers.push(num)
+    }
+  }
+
+  let maxCellNum = Math.max(...arrOfNumbers);
+
+  if (maxCellNum === 2048) {
+    messageWin.classList.remove('hidden');
+  }
+
 };
 
 function updeteInfo() {
@@ -92,6 +107,7 @@ button.addEventListener('click', () => {
 
   messageStart.classList.add('hidden');
   messageGameOver.classList.add('hidden');
+  messageWin.classList.add('hidden');
 
   if (button.classList.contains('restart')) {
     button.textContent = 'Restart';
@@ -206,9 +222,10 @@ const slide = (gameFieldRow) => {
     numbers.push(0);
   }
 
-  if (totalScore === 2048) {
-    messageWin.classList.remove('hidden');
-  }
-
   return numbers;
 };
+
+
+  // if (totalScore === 8) {
+  //   messageWin.classList.remove('hidden');
+  // }
