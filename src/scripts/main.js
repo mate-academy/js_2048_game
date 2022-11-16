@@ -31,6 +31,7 @@ button.addEventListener('click', (e) => {
 });
 
 gameField.addEventListener('touchstart', (e) => {
+  e.preventDefault();
   startTouchX = e.changedTouches[0].clientX;
   startTouchY = e.changedTouches[0].clientY;
 });
@@ -45,7 +46,7 @@ gameField.addEventListener('touchend', (e) => {
 
   const directionX = startTouchX - endTouchX;
   const directionY = startTouchY - endTouchY;
-  const minSwipe = 20;
+  const minSwipe = 50;
 
   if (directionX > minSwipe && directionX > directionY) {
     return actionMix('left');
