@@ -22,7 +22,7 @@ document.addEventListener('keydown', (ev) => {
 
   if (pressedLeft) {
     const roundPerformed = shiftTheCell(1, 0, 1, 'minus', 'stay-in-parent-row');
-    const comboPerformed = createCombo(1, 0, 1);
+    const comboPerformed = createCombo(1, 0, 1, 'minus', 'stay-in-parent-row');
 
     removeActiveCombo();
 
@@ -39,7 +39,7 @@ document.addEventListener('keydown', (ev) => {
 
   if (pressedRight) {
     const roundPerformed = shiftTheCell(0, 1, 1, 'add', 'stay-in-parent-row');
-    const comboPerformed = createCombo(0, 1, 1, 'add');
+    const comboPerformed = createCombo(0, 1, 1, 'add', 'stay-in-parent-row');
 
     removeActiveCombo();
 
@@ -184,8 +184,9 @@ function checkIfShifted() {
   }
 }
 
-function createCombo(startValue, endValue, distance, option) {
+function createCombo(startValue, endValue, distance, option, rowExtra) {
   let comboCreated = false;
+  let stayInParentRow;
 
   for (let i = startValue; i < allCells.length - endValue; i++) {
     const thisCell = allCells[i];
@@ -195,9 +196,16 @@ function createCombo(startValue, endValue, distance, option) {
       targetCell = allCells[i + distance];
     }
 
+    if (rowExtra) {
+      stayInParentRow = targetCell.parentElement === thisCell.parentElement;
+    } else {
+      stayInParentRow = true;
+    }
+
     if (thisCell.textContent
       && thisCell.textContent === targetCell.textContent
-      && !thisCell.classList.contains('active-combo')) {
+      && !thisCell.classList.contains('active-combo')
+      && stayInParentRow) {
       targetCell.classList.remove(`field-cell--${targetCell.textContent}`);
       targetCell.textContent *= 2;
 
