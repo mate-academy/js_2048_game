@@ -27,7 +27,7 @@ document.addEventListener('keydown', (ev) => {
     removeActiveCombo();
 
     if (roundPerformed || comboPerformed) {
-      setTimeout(() => createCell(), 300);
+      createCell();
     }
 
     checkIfGameOver();
@@ -44,7 +44,7 @@ document.addEventListener('keydown', (ev) => {
     removeActiveCombo();
 
     if (roundPerformed || comboPerformed) {
-      setTimeout(() => createCell(), 300);
+      createCell();
     }
 
     checkIfGameOver();
@@ -61,7 +61,7 @@ document.addEventListener('keydown', (ev) => {
     removeActiveCombo();
 
     if (roundPerformed || comboPerformed) {
-      setTimeout(() => createCell(), 300);
+      createCell();
     }
 
     checkIfGameOver();
@@ -78,7 +78,7 @@ document.addEventListener('keydown', (ev) => {
     removeActiveCombo();
 
     if (roundPerformed || comboPerformed) {
-      setTimeout(() => createCell(), 300);
+      createCell();
     }
 
     checkIfGameOver();
@@ -106,9 +106,16 @@ function createCell(firstCell) {
   }
 
   const randomNumber = drop2or4();
+  const newCell = availableCells[randomCell];
 
-  availableCells[randomCell].textContent = randomNumber;
-  availableCells[randomCell].classList.add(`field-cell--${randomNumber}`);
+  newCell.textContent = randomNumber;
+  newCell.classList.add(`field-cell--${randomNumber}`);
+
+  newCell.style = `transform: scale(80%); transition: 0.1s`;
+
+  setTimeout(() => {
+    newCell.style = '';
+  }, 100);
 };
 
 function hideMessages() {
@@ -196,6 +203,12 @@ function createCombo(startValue, endValue, distance, option) {
 
       targetCell.classList.add(`field-cell--${targetCell.textContent}`,
         'active-combo');
+
+      targetCell.style = ' background-color: #deeaee';
+
+      setTimeout(() => {
+        targetCell.style = '';
+      }, 100);
 
       removeExtra(thisCell);
       updateScore(targetCell);
