@@ -2,7 +2,7 @@
 
 const cells = [...document.querySelectorAll('.field-cell')];
 const start = document.querySelector('.start');
-const rowsCollection = document.querySelectorAll('.field-row');
+const rowsCollection = [...document.querySelectorAll('.field-row')];
 const score = document.querySelector('.game-score');
 const messages = document.querySelectorAll('.message');
 const messageLose = document.querySelector('.message-lose');
@@ -91,12 +91,12 @@ function mergeCells() {
   for (let n = 1; n <= 12; n++) {
     const qurrentCell = cellNo(n);
     const previousCell = cellNo(n + 4);
-    const valueUp = qurrentCell.innerText;
+    const qurrentCellValue = qurrentCell.innerText;
 
     if (qurrentCell.className === previousCell.className
-      && valueUp.length) {
-      qurrentCell.innerText = `${2 * valueUp}`;
-      score.innerText = `${Number(score.innerText) + 2 * valueUp}`;
+      && qurrentCellValue.length) {
+      qurrentCell.innerText = `${2 * qurrentCellValue}`;
+      score.innerText = `${Number(score.innerText) + 2 * qurrentCellValue}`;
 
       qurrentCell.className
       = `field-cell field-cell--${qurrentCell.innerText}`;
@@ -162,6 +162,23 @@ function rightCellsNum() {
   }
 }
 
+function theEnd() {
+  const rows = rowsCollection.map(row => [...row.children]);
+  const compareCells = [];
+
+  for (let i = 0; i < 3; i++) {
+    compareCells.push(rows[i].every((cell, index) =>
+      cell.innerText !== rows[i + 1][index].innerText));
+  }
+
+  for (let i = 0; i < 4; i++) {
+    compareCells.push(rows[i].slice(0, -1).every((cell, index) =>
+      cell.innerText !== rows[i].slice(1)[index].innerText));
+  }
+
+  return compareCells.every(item => item === true);
+}
+
 document.addEventListener('keydown', (e) => {
   const dataBeforeClick = cells.map(cell => cell.innerText).toString();
 
@@ -194,8 +211,8 @@ document.addEventListener('keydown', (e) => {
     generateFreePlace();
   }
 
-  if (dataAfterClick === dataBeforeClick
-    && cells.every(cell => cell.innerText !== '')) {
+  if (cells.every(cell => cell.innerText !== '')
+  && theEnd()) {
     messageLose.className = 'message message-lose';
   }
 
