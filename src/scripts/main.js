@@ -38,30 +38,32 @@ function udateGameField() {
 
   for (const arr of gameField) {
     for (const num of arr) {
-      arrOfNumbers.push(num)
+      arrOfNumbers.push(num);
     }
   }
 
-  let maxCellNum = Math.max(...arrOfNumbers);
+  const maxCellNum = Math.max(...arrOfNumbers);
 
   if (maxCellNum === 2048) {
     messageWin.classList.remove('hidden');
   }
-
 };
 
 function updeteInfo() {
   for (let row = 0; row < rows; row++) {
     for (let cell = 0; cell < columns; cell++) {
-      if (gameField[row][cell] === 0) {
-        fieldRow[row].children[cell].textContent = '';
-        fieldRow[row].children[cell].className = 'field-cell';
-      } else {
-        fieldRow[row].children[cell].textContent = gameField[row][cell];
-        fieldRow[row].children[cell].className = 'field-cell';
+      const gameCell = gameField[row][cell];
+      const fieldCell = fieldRow[row].children[cell];
 
-        fieldRow[row].children[cell]
-          .classList.add(`field-cell--${gameField[row][cell]}`);
+      if (gameCell === 0) {
+        fieldCell.textContent = '';
+        fieldCell.className = 'field-cell';
+      } else {
+        fieldCell.textContent = gameCell;
+        fieldCell.className = 'field-cell';
+
+        fieldCell
+          .classList.add(`field-cell--${gameCell}`);
       }
     }
   }
@@ -108,6 +110,8 @@ button.addEventListener('click', () => {
   messageStart.classList.add('hidden');
   messageGameOver.classList.add('hidden');
   messageWin.classList.add('hidden');
+  totalScore = 0;
+  score.textContent = 0;
 
   if (button.classList.contains('restart')) {
     button.textContent = 'Restart';
@@ -135,14 +139,17 @@ document.addEventListener('keydown', function(ev) {
         moveCells('left');
         udateGameField();
         break;
+
       case 'ArrowRight':
         moveCells('right');
         udateGameField();
         break;
+
       case 'ArrowUp':
         moveCells('up');
         udateGameField();
         break;
+
       case 'ArrowDown':
         moveCells('down');
         udateGameField();
@@ -172,6 +179,7 @@ function moveCells(direction) {
         row = slide(row);
         gameField[r] = row;
         break;
+
       case 'right':
         row.reverse();
         row = gameField[r];
@@ -179,11 +187,13 @@ function moveCells(direction) {
         row.reverse();
         gameField[r] = row;
         break;
+
       case 'up':
         row = gameFieldReversed[r];
         row = slide(row);
         gameFieldReversed[r] = row;
         break;
+
       case 'down':
         row = gameFieldReversed[r];
         row.reverse();
@@ -224,8 +234,3 @@ const slide = (gameFieldRow) => {
 
   return numbers;
 };
-
-
-  // if (totalScore === 8) {
-  //   messageWin.classList.remove('hidden');
-  // }
