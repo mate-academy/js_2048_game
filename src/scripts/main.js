@@ -38,68 +38,50 @@ startGameButton.addEventListener('click', () => {
   addNumber();
   addNumber();
   updateCells();
+});
 
-  document.addEventListener('keydown', () => {
-    const startCellValues = getValues([...document.querySelectorAll('td')]);
+document.addEventListener('keyup', () => {
+  const startCellValues = getValues([...document.querySelectorAll('td')]);
 
-    if (event.key === 'ArrowLeft') {
-      for (let r = 0; r < rows; r++) {
-        const row = moveLeft(board[r]);
+  if (event.key === 'ArrowLeft') {
+    moveNumbers(board, moveLeft);
+  }
 
-        board[r] = row;
+  if (event.key === 'ArrowRight') {
+    moveNumbers(board, moveRight);
+  }
+
+  if (event.key === 'ArrowUp') {
+    const reversedBoard = reverseBoard(board);
+
+    moveNumbers(reversedBoard, moveLeft);
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < columns; c++) {
+        board[c][r] = reversedBoard[r][c];
       }
     }
 
-    if (event.key === 'ArrowRight') {
-      for (let r = 0; r < rows; r++) {
-        const row = moveRight(board[r]);
+    board = reverseBoard(reversedBoard);
+  }
 
-        board[r] = row;
-      }
-    }
+  if (event.key === '1') {
+    const reversedBoard = reverseBoard(board);
 
-    if (event.key === 'ArrowUp') {
-      const reversedBoard = reverseBoard(board);
+    moveNumbers(reversedBoard, moveRight);
 
-      for (let r = 0; r < rows; r++) {
-        const row = moveLeft(reversedBoard[r]);
+    board = reverseBoard(reversedBoard);
+  }
 
-        reversedBoard[r] = row;
-      }
+  if (checkDifference(startCellValues, board)) {
+    addNumber();
+  }
 
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < columns; c++) {
-          board[c][r] = reversedBoard[r][c];
-        }
-      }
-    }
+  updateCells();
 
-    if (event.key === 'ArrowDown') {
-      const reversedBoard = reverseBoard(board);
-
-      for (let r = 0; r < rows; r++) {
-        const row = moveRight(reversedBoard[r]);
-
-        reversedBoard[r] = row;
-      }
-
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < columns; c++) {
-          board[c][r] = reversedBoard[r][c];
-        }
-      }
-    }
-
-    if (!findMove() && freeCells === 0) {
-      messageLose.classList.remove('hidden');
-    }
-
-    if (checkDifference(startCellValues, board)) {
-      addNumber();
-    }
-
-    updateCells();
-  });
+  if (!checkAvailableMoves()) {
+    messageLose.classList.remove('hidden');
+  }
 });
 
 // functions
@@ -157,10 +139,10 @@ function checkDifference(first, second) {
 }
 
 function getValues(a) {
-  return a.map(el => +el.innerText).map(el => el === '' ? 0 : el);
+  return a.map(el => el.innerText).map(el => el === '' ? 0 : el);
 }
 
-function findMove() {
+function checkAvailableMoves() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns - 1; c++) {
       if (board[r][c] === board[r][c + 1]) {
@@ -169,27 +151,19 @@ function findMove() {
     }
   }
 
-  const reversedBoard = [];
-
   for (let c = 0; c < columns; c++) {
-    const row = [];
-
-    for (let r = 0; r < rows; r++) {
-      row.push(board[r][c]);
-    }
-
-    reversedBoard.push(row);
-  }
-
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns - 1; c++) {
-      if (reversedBoard[r][c] === reversedBoard[r][c + 1]) {
+    for (let r = 0; r < rows - 1; r++) {
+      if (board[r][c] === board[r + 1][c]) {
         return true;
       }
     }
   }
 
-  return false;
+  if (freeCells === 0) {
+    return false;
+  }
+
+  return true;
 }
 
 function updateCells() {
@@ -204,7 +178,8 @@ function updateCells() {
 
   for (const cell of cells) {
     cellValues[valueIndex] === '0'
-      ? cell.innerText = '' : cell.innerText = cellValues[valueIndex];
+      ? cell.innerText = ''
+      : cell.innerText = cellValues[valueIndex];
     valueIndex++;
 
     cell.classList = '';
@@ -257,4 +232,12 @@ function moveRight(r) {
   row.reverse();
 
   return row;
+}
+
+function moveNumbers(source, method) {
+  for (let r = 0; r < rows; r++) {
+    const row = method(source[r]);
+
+    source[r] = row;
+  }
 }
