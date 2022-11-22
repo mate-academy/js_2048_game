@@ -65,7 +65,7 @@ document.addEventListener('keyup', () => {
     board = reverseBoard(reversedBoard);
   }
 
-  if (event.key === '1') {
+  if (event.key === 'ArrowDown') {
     const reversedBoard = reverseBoard(board);
 
     moveNumbers(reversedBoard, moveRight);
