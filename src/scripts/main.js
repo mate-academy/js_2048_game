@@ -131,6 +131,7 @@ function slide(array, size) {
       if (newArray[i] === newArray[i + 1]) {
         newArray[i] *= 2;
         newArray[i + 1] = 0;
+        gameScore += newArray[i];
       }
     }
   }
