@@ -7,6 +7,8 @@ let board = [
   [0, 0, 0, 0],
 ];
 
+let reversedBoard = reverseBoard(board);
+
 const rows = 4;
 const columns = 4;
 const score = document.querySelector('.game-score');
@@ -43,34 +45,29 @@ startGameButton.addEventListener('click', () => {
 document.addEventListener('keyup', () => {
   const startCellValues = getValues([...document.querySelectorAll('td')]);
 
-  if (event.key === 'ArrowLeft') {
-    moveNumbers(board, moveLeft);
-  }
+  switch (event.key) {
+    case 'ArrowLeft':
+      moveNumbers(board, moveLeft);
+      break;
+    case 'ArrowRight':
+      moveNumbers(board, moveRight);
+      break;
+    case 'ArrowUp':
+      reversedBoard = reverseBoard(board);
 
-  if (event.key === 'ArrowRight') {
-    moveNumbers(board, moveRight);
-  }
+      moveNumbers(reversedBoard, moveLeft);
 
-  if (event.key === 'ArrowUp') {
-    const reversedBoard = reverseBoard(board);
+      board = reverseBoard(reversedBoard);
+      break;
+    case '1':
+      reversedBoard = reverseBoard(board);
 
-    moveNumbers(reversedBoard, moveLeft);
+      moveNumbers(reversedBoard, moveRight);
 
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < columns; c++) {
-        board[c][r] = reversedBoard[r][c];
-      }
-    }
-
-    board = reverseBoard(reversedBoard);
-  }
-
-  if (event.key === 'ArrowDown') {
-    const reversedBoard = reverseBoard(board);
-
-    moveNumbers(reversedBoard, moveRight);
-
-    board = reverseBoard(reversedBoard);
+      board = reverseBoard(reversedBoard);
+      break;
+    default:
+      break;
   }
 
   if (checkDifference(startCellValues, board)) {
@@ -83,8 +80,6 @@ document.addEventListener('keyup', () => {
     messageLose.classList.remove('hidden');
   }
 });
-
-// functions
 
 function addNumber() {
   const r = Math.floor(Math.random() * rows);
