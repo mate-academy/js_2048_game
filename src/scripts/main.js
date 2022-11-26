@@ -48,25 +48,19 @@ const startMessage = document.querySelector('.message-start');
 
 startButton.addEventListener('click', () => {
   score.innerText = 0;
-  startButton.classList.toggle('restart');
 
-  startButton.innerText = startButton.classList.contains('restart')
-    ? 'Restart'
-    : 'Start';
+  cells.forEach(el => {
+    el.innerText = '';
+    el.classList = 'field-cell';
+  });
+  startButton.classList.add('restart');
 
-  startButton.classList.toggle('start');
-  startMessage.hidden = !startMessage.hidden;
+  startButton.innerText = 'Restart';
+  startButton.classList.remove('start');
+  startMessage.hidden = true;
   vinMessage.classList.add('hidden');
   loseMessage.classList.add('hidden');
 
-  if (!startButton.classList.contains('restart')) {
-    cells.forEach(el => {
-      el.innerText = '';
-      el.classList = 'field-cell';
-    });
-
-    return;
-  }
   getRandomCell();
   getRandomCell();
 });
@@ -142,8 +136,7 @@ document.addEventListener('keydown', (ev) => {
 });
 
 function getRandomCell() {
-  // eslint-disable-next-line max-len
-  const cell = horizontalMapArray[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)];
+  const cell = horizontalMapArray[getRandomIndex()][getRandomIndex()];
 
   if (cell.innerText === '') {
     const valueCell = addValues[getRandomInt(10)];
@@ -158,6 +151,10 @@ function getRandomCell() {
     return;
   }
   getRandomCell();
+
+  function getRandomIndex() {
+    return Math.floor(Math.random() * 4);
+  }
 }
 
 function getRandomInt(max) {
