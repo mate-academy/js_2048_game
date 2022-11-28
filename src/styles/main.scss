@@ -1,3 +1,6 @@
+$cell-indent: 10px;
+$step-for-change-cell-position: 85px;
+
 body {
   margin: 0;
   display: flex;
@@ -10,14 +13,20 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
-  background: #d6cdc4;
+.cells-field {
+  position: absolute;
+  z-index: 10;
+  padding: 10px;
+}
+
+.cell {
+  position: absolute;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
   box-sizing: border-box;
   text-align: center;
+  line-height: 75px;
   vertical-align: center;
   user-select: none;
 
@@ -75,7 +84,103 @@ body {
   }
 }
 
+.cell-position {
+  &--1 {
+    top: $cell-indent;
+    left: $cell-indent;
+  }
+
+  &--2 {
+    top: $cell-indent;
+    left: $step-for-change-cell-position + $cell-indent;
+  }
+
+  &--3 {
+    top: $cell-indent;
+    left: 2 * $step-for-change-cell-position + $cell-indent;
+  }
+
+  &--4 {
+    top: $cell-indent;
+    left: 3 * $step-for-change-cell-position + $cell-indent;
+  }
+
+  &--5 {
+    top: $step-for-change-cell-position + $cell-indent;
+    left: $cell-indent;
+  }
+
+  &--6 {
+    top: $step-for-change-cell-position + $cell-indent;
+    left: $step-for-change-cell-position + $cell-indent;
+  }
+
+  &--7 {
+    top: $step-for-change-cell-position + $cell-indent;
+    left: 2 * $step-for-change-cell-position + $cell-indent;
+  }
+
+  &--8 {
+    top: $step-for-change-cell-position + $cell-indent;
+    left: 3 * $step-for-change-cell-position + $cell-indent;
+  }
+
+  &--9 {
+    top: 2 * $step-for-change-cell-position + $cell-indent;
+    left: $cell-indent;
+  }
+
+  &--10 {
+    top: 2 * $step-for-change-cell-position + $cell-indent;
+    left: $step-for-change-cell-position + $cell-indent;
+  }
+
+  &--11 {
+    top: 2 * $step-for-change-cell-position + $cell-indent;
+    left: 2 * $step-for-change-cell-position + $cell-indent;
+  }
+
+  &--12 {
+    top: 2 * $step-for-change-cell-position + $cell-indent;
+    left: 3 * $step-for-change-cell-position + $cell-indent;
+  }
+
+  &--13 {
+    top: 3 * $step-for-change-cell-position + $cell-indent;
+    left: $cell-indent;
+  }
+
+  &--14 {
+    top: 3 * $step-for-change-cell-position + $cell-indent;
+    left: $step-for-change-cell-position + $cell-indent;
+  }
+
+  &--15 {
+    top: 3 * $step-for-change-cell-position + $cell-indent;
+    left: 2 * $step-for-change-cell-position + $cell-indent;
+  }
+
+  &--16 {
+    top: 3 * $step-for-change-cell-position + $cell-indent;
+    left: 3 * $step-for-change-cell-position + $cell-indent;
+  }
+}
+
+.field-cell {
+  background: #d6cdc4;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  color: #776e65;
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: center;
+  user-select: none;
+}
+
 .game-field {
+  width: 350px;
+  height: 350px;
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
