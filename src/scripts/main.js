@@ -68,11 +68,9 @@ function resetInfo() {
 }
 
 function updateInfo(item) {
-  if (item.innerHTML !== '') {
-    item.className = `field-cell field-cell--${item.innerHTML}`;
-  } else {
-    item.className = 'field-cell';
-  }
+  (item.innerHTML !== '')
+    ? item.className = `field-cell field-cell--${item.innerHTML}`
+    : item.className = 'field-cell';
 
   gameScore.innerHTML = score;
 }
