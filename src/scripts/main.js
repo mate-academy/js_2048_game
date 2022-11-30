@@ -26,6 +26,9 @@ document.querySelector('.button').addEventListener('click', () => {
     document.querySelector('.button').blur();
     [...document.querySelectorAll('.cell-position')].map(cell => cell.remove());
     gameScore.textContent = 0;
+    lose = false;
+    messageLose.classList.add('hidden');
+    start = true;
     createNewCell();
     createNewCell();
   }
