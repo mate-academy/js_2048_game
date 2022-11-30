@@ -31,30 +31,41 @@ startButton.addEventListener('click', e => {
     e.target.innerHTML = 'Restart';
     messageStart.classList.add('hidden');
     isStartButton = false;
+
+    for (const cell of cells) {
+      square = cell;
+
+      for (let i = 0; i < 16; i++) {
+        square.innerHTML = '';
+      }
+    }
+
+    generateNewCell(cells);
+    generateNewCell(cells);
+    cells.forEach(cell => updateInfo(cell));
   } else {
     e.target.className = 'button start';
     e.target.innerHTML = 'Start';
     messageStart.classList.remove('hidden');
     messageLose.classList.add('hidden');
     isStartButton = true;
+    resetInfo();
   }
-
-  score = 0;
-
-  for (const cell of cells) {
-    square = cell;
-
-    for (let i = 0; i < 16; i++) {
-      square.innerHTML = '';
-    }
-  }
-
-  generateNewCell(cells);
-  generateNewCell(cells);
-  cells.forEach(cell => updateInfo(cell));
 });
 
 move();
+
+function resetInfo() {
+  const existedCells = document.querySelectorAll('[class*="field-cell--"]');
+
+  existedCells.forEach(cell => {
+    const lastClass = cell.classList[cell.classList.length - 1];
+
+    cell.classList.remove(lastClass);
+    cell.innerHTML = '';
+    gameScore.innerHTML = 0;
+  });
+}
 
 function updateInfo(item) {
   if (item.innerHTML !== '') {
