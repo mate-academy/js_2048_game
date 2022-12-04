@@ -37,9 +37,10 @@ function loadGame() {
   score = 0;
   scoreCurrentContainer.textContent = 0;
   modal.style.display = 'none';
-  document.addEventListener('keydown', handleInput); // keyboard event
+  keyDown();// keyboard event
   document.addEventListener('touchmove', handleTouchMove, false); // touch event
   document.activeElement.blur();
+  gameBoard.focus();
 };
 
 loadGame();
@@ -56,49 +57,121 @@ selectElement.addEventListener('change', (e) => {
   loadGame();
 });
 
+function getCol() {
+  return grid.cellsByColumn;
+}
+
+function getColReverse() {
+  return grid.cellsByColumn.map(column => [...column].reverse());
+}
+
+function getRow() {
+  return grid.cellsByRow;
+};
+
+function getRowReverse() {
+  return grid.cellsByRow.map(row => [...row].reverse());
+};
+
 // function for keyboard events
-function handleInput(e) {
+function handleKeyDown(e) {
+  document.removeEventListener('keydown', handleKeyDown);
+
   switch (e.key) {
     case 'ArrowUp':
     case 'w':
-      if (!canMove(grid.cellsByColumn)) {
+      if (!canMove(getCol())) {
+        keyDown();
+
         return;
       }
-      slideTiles(grid.cellsByColumn);
+      slideTiles(getCol());
       break;
     case 'ArrowDown':
     case 's':
-      if (!canMove(grid.cellsByColumn.map(column => [...column].reverse()))) {
+      if (!canMove(getColReverse())) {
+        keyDown();
+
         return;
       }
-      slideTiles(grid.cellsByColumn.map(column => [...column].reverse()));
+      slideTiles(getColReverse());
       break;
     case 'ArrowLeft':
     case 'a':
-      if (!canMove(grid.cellsByRow)) {
+      if (!canMove(getRow())) {
+        keyDown();
+
         return;
       }
-      slideTiles(grid.cellsByRow);
+      slideTiles(getRow());
       break;
     case 'ArrowRight':
     case 'd':
-      if (!canMove(grid.cellsByRow.map(row => [...row].reverse()))) {
+      if (!canMove(getRowReverse())) {
+        keyDown();
+
         return;
       }
-      slideTiles(grid.cellsByRow.map(row => [...row].reverse()));
+      slideTiles(getRowReverse());
       break;
     default:
       return;
   }
 
-  mergeAndAddRandom();
+  setTimeout(() => {
+    mergeAndAddRandom();
 
-  if (checkLose()) {
-    openModal();
-  }
+    if (checkLose()) {
+      openModal();
+    }
+
+    keyDown();
+  }, 100);
 }
 
-// functions for touch events
+// function to add key down event
+function keyDown() {
+  return document.addEventListener('keydown', handleKeyDown);
+}
+
+// function to merge tile and add random tiles to the gameboard
+function mergeAndAddRandom() {
+  grid.cells.forEach(cell => {
+    const scoreCurrent = cell.mergeTiles();
+
+    if (scoreCurrent === 2048) {
+      openModal(scoreCurrent);
+    }
+
+    score += scoreCurrent;
+    scoreCurrentContainer.textContent = score;
+    bestScore = bestScore <= score ? score : bestScore;
+    scoreBestContainer.textContent = bestScore;
+  });
+
+  grid.randomEmptyCell().tile = new Tile(gameBoard);
+}
+
+// check for lose
+function checkLose() {
+  return !canMove(getRow())
+    && !canMove(getRowReverse())
+    && !canMove(getCol())
+    && !canMove(getColReverse());
+}
+
+// opening modal with win or lose text
+function openModal(boolean) {
+  const box = boolean ? win : lose;
+
+  modal.style.display = 'flex';
+  box.style.display = 'block';
+  gameBoard.style.opacity = 0.2;
+  document.removeEventListener('keydown', handleKeyDown);
+  document.removeEventListener('touchmove', handleTouchMove, false);
+}
+
+// functions to handle touch events
 document.addEventListener('touchstart', handleTouchStart, false);
 
 let xDown = null;
@@ -128,76 +201,38 @@ function handleTouchMove(evt) {
 
   if (Math.abs(xDiff) > Math.abs(yDiff)) {
     if (xDiff > 0) {
-      if (!canMove(grid.cellsByRow)) {
+      if (!canMove(getRow())) {
         return;
       }
-      slideTiles(grid.cellsByRow);
+      slideTiles(getRow());
     } else {
-      if (!canMove(grid.cellsByRow.map(row => [...row].reverse()))) {
+      if (!canMove(getRowReverse())) {
         return;
       }
-      slideTiles(grid.cellsByRow.map(row => [...row].reverse()));
+      slideTiles(getRowReverse());
     }
   } else {
     if (yDiff > 0) {
-      if (!canMove(grid.cellsByColumn)) {
+      if (!canMove(getCol())) {
         return;
       }
-      slideTiles(grid.cellsByColumn);
+      slideTiles(getCol());
     } else {
-      if (!canMove(grid.cellsByColumn.map(column => [...column].reverse()))) {
+      if (!canMove(getColReverse())) {
         return;
       }
-      slideTiles(grid.cellsByColumn.map(column => [...column].reverse()));
+      slideTiles(getColReverse());
     }
   }
 
-  mergeAndAddRandom();
+  setTimeout(() => {
+    mergeAndAddRandom();
+
+    if (checkLose()) {
+      openModal();
+    }
+  }, 100);
 
   xDown = null;
   yDown = null;
-
-  if (checkLose()) {
-    openModal();
-  }
 };
-
-// function to merge tile and add random tiles to the gameboard
-
-function mergeAndAddRandom() {
-  grid.cells.forEach(cell => {
-    setTimeout(() => {
-      const scoreCurrent = cell.mergeTiles();
-
-      if (scoreCurrent === 2048) {
-        openModal(scoreCurrent);
-      }
-
-      score += scoreCurrent;
-      scoreCurrentContainer.textContent = score;
-      bestScore = bestScore <= score ? score : bestScore;
-      scoreBestContainer.textContent = bestScore;
-    }, 150);
-  });
-
-  grid.randomEmptyCell().tile = new Tile(gameBoard);
-}
-
-// check for lose
-function checkLose() {
-  return !canMove(grid.cellsByRow)
-    && !canMove(grid.cellsByRow.map(row => [...row].reverse()))
-    && !canMove(grid.cellsByColumn)
-    && !canMove(grid.cellsByColumn.map(column => [...column].reverse()));
-}
-
-// opening modal with win or lose text
-function openModal(boolean) {
-  const box = boolean ? win : lose;
-
-  modal.style.display = 'flex';
-  box.style.display = 'block';
-  gameBoard.style.opacity = 0.2;
-  document.removeEventListener('keydown', handleInput);
-  document.removeEventListener('touchmove', handleTouchMove, false);
-}
