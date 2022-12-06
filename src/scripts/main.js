@@ -15,6 +15,23 @@ const scoreElement = document.querySelector('.game-score');
 const rowsArray = [...document.querySelectorAll('tr')];
 const cellsArray = [...document.querySelectorAll('.field-cell')];
 
+startButton.addEventListener('click', () => {
+  if (startButton.classList.contains('start')) {
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+    startButton.innerHTML = 'Restart';
+    messageStart.classList.add('hidden');
+    setGame();
+  } else if (startButton.classList.contains('restart')) {
+    cellsArray.forEach(a => updateStyle(a, 0));
+    score = 0;
+    scoreElement.innerHTML = score;
+    messageLoss.style.display = 'none';
+    messageWin.style.display = 'none';
+    setGame();
+  }
+});
+
 function setGame() {
   board = [
     [0, 0, 0, 0],
@@ -28,6 +45,9 @@ function setGame() {
 }
 
 function updateStyle(tile, number) {
+
+  const finishnumber = 2048;
+
   tile.innerText = '';
   tile.classList.value = '';
   tile.classList.add(`field-cell--${number}`, 'field-cell');
@@ -36,7 +56,7 @@ function updateStyle(tile, number) {
     tile.innerText = number;
   }
 
-  if (number === 2048) {
+  if (number === finishnumber) {
     messageWin.style.display = 'block';
   }
 }
@@ -101,23 +121,6 @@ function merge(row) {
 
   return filteredRow;
 }
-
-startButton.addEventListener('click', () => {
-  if (startButton.classList.contains('start')) {
-    startButton.classList.remove('start');
-    startButton.classList.add('restart');
-    startButton.innerHTML = 'Restart';
-    messageStart.classList.add('hidden');
-    setGame();
-  } else if (startButton.classList.contains('restart')) {
-    cellsArray.forEach(a => updateStyle(a, 0));
-    score = 0;
-    scoreElement.innerHTML = score;
-    messageLoss.style.display = 'none';
-    messageWin.style.display = 'none';
-    setGame();
-  }
-});
 
 document.addEventListener('keyup', (browserEvent) => {
   switch (browserEvent.code) {
