@@ -118,7 +118,7 @@ function mergeInColumn() {
   isWinner();
 }
 
-function isPossibleToMove() {
+function checkMovePossibility() {
   for (let i = 0; i < cells.length - 4; i++) {
     if (cells[i].innerHTML === cells[i + boardSideSize].innerHTML) {
       return true;
@@ -141,7 +141,7 @@ function boardShot() {
   }
 }
 
-function wasMoved() {
+function checkMovingDone() {
   for (let i = 0; i < cells.length; i++) {
     if (board[i] !== cells[i].innerHTML) {
       return true;
@@ -157,7 +157,7 @@ function moveRight() {
   mergeInRow();
   moveHorisontal(true);
 
-  if (wasMoved()) {
+  if (checkMovingDone()) {
     addNewTile();
   }
 }
@@ -168,7 +168,7 @@ function moveLeft() {
   mergeInRow();
   moveHorisontal(false);
 
-  if (wasMoved()) {
+  if (checkMovingDone()) {
     addNewTile();
   }
 }
@@ -179,7 +179,7 @@ function moveDown() {
   mergeInColumn();
   moveVertical(true);
 
-  if (wasMoved()) {
+  if (checkMovingDone()) {
     addNewTile();
   }
 }
@@ -190,7 +190,7 @@ function moveUp() {
   mergeInColumn();
   moveVertical(false);
 
-  if (wasMoved()) {
+  if (checkMovingDone()) {
     addNewTile();
   }
 }
@@ -280,7 +280,7 @@ function isGameOver() {
     }
   }
 
-  if (!emptyCells && !isPossibleToMove()) {
+  if (!emptyCells && !checkMovePossibility()) {
     messageLose.classList.remove('hidden');
     messageWin.classList.add('hidden');
     messageStart.classList.add('hidden');
