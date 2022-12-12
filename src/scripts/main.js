@@ -43,6 +43,7 @@ buttonStart.addEventListener('click', e => {
     e.target.innerHTML = 'Start';
     messageStart.classList.remove('hidden');
     messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
     isButtonStart = true;
     resetBoard();
   }
