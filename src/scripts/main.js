@@ -42,7 +42,7 @@ function resetCell(cell, number) {
   }
 }
 
-function isEmpty() {
+function checkIfEmpty() {
   for (let i = 0; i < rowsQuantity; i++) {
     for (let j = 0; j < cellsQuantity; j++) {
       if (initialBoard[i][j] === 0) {
@@ -54,7 +54,7 @@ function isEmpty() {
   return false;
 }
 
-function canSlide() {
+function checkIfSlide() {
   for (let i = 0; i < rowsQuantity; i++) {
     for (let j = 0; j < cellsQuantity - 1; j++) {
       if (initialBoard[i][j] === initialBoard[i][j + 1]
@@ -67,8 +67,8 @@ function canSlide() {
   return false;
 }
 
-function randomCell() {
-  if (!isEmpty()) {
+function getRandomCell() {
+  if (!checkIfEmpty()) {
     return;
   }
 
@@ -183,56 +183,65 @@ function goDown() {
   updateBoard();
 }
 
-start.addEventListener('click', e => {
-  if (start.innerText === 'Start') {
-    isWin = false;
-    score = 0;
-    start.innerText = 'Restart';
-    start.classList.replace('start', 'restart');
-    messageStart.classList.add('hidden');
-    messageWin.classList.add('hidden');
-    messageStart.classList.add('hidden');
-    messageLose.classList.add('hidden');
-    setUpBoard();
-    randomCell();
-    randomCell();
-  } else {
-    start.innerText = 'Start';
-    start.classList.replace('restart', 'start');
-    messageStart.classList.remove('hidden');
-    setUpBoard();
-  }
-});
+function handleStartGame() {
+  start.addEventListener('click', e => {
+    if (start.innerText === 'Start') {
+      isWin = false;
+      score = 0;
+      start.innerText = 'Restart';
+      start.classList.replace('start', 'restart');
+      messageStart.classList.add('hidden');
+      messageWin.classList.add('hidden');
+      messageStart.classList.add('hidden');
+      messageLose.classList.add('hidden');
+      setUpBoard();
+      getRandomCell();
+      getRandomCell();
+    } else {
+      start.innerText = 'Start';
+      start.classList.replace('restart', 'start');
+      messageStart.classList.remove('hidden');
+      setUpBoard();
+    }
+  });
+}
 
-document.addEventListener('keyup', e => {
-  switch (e.key) {
-    case 'ArrowLeft':
-      goLeft();
-      randomCell();
-      break;
-    case 'ArrowRight':
-      goRight();
-      randomCell();
-      break;
-    case 'ArrowUp':
-      goUp();
-      randomCell();
-      break;
-    case 'ArrowDown':
-      goDown();
-      randomCell();
-      break;
-  }
+function handleKeyControl() {
+  document.addEventListener('keyup', e => {
+    switch (e.key) {
+      case 'ArrowLeft':
+        goLeft();
+        getRandomCell();
+        break;
+      case 'ArrowRight':
+        goRight();
+        getRandomCell();
+        break;
+      case 'ArrowUp':
+        goUp();
+        getRandomCell();
+        break;
+      case 'ArrowDown':
+        goDown();
+        getRandomCell();
+        break;
+      default:
+        break;
+    }
 
-  if (isWin) {
-    messageWin.classList.remove('hidden');
-    start.innerText = 'Start';
-    start.classList.replace('restart', 'start');
-  }
+    if (isWin) {
+      messageWin.classList.remove('hidden');
+      start.innerText = 'Start';
+      start.classList.replace('restart', 'start');
+    }
 
-  if (!isEmpty() && !canSlide()) {
-    messageLose.classList.remove('hidden');
-    start.innerText = 'Start';
-    start.classList.replace('restart', 'start');
-  }
-});
+    if (!checkIfEmpty() && !checkIfSlide()) {
+      messageLose.classList.remove('hidden');
+      start.innerText = 'Start';
+      start.classList.replace('restart', 'start');
+    }
+  });
+}
+
+handleStartGame();
+handleKeyControl();
