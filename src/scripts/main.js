@@ -28,11 +28,11 @@ buttonStart.addEventListener('click', (e) => {
       return false;
     }
 
-    if (e.keyCode < 37 && e.keyCode > 40) {
+    if (eventObj.keyCode < 37 && eventObj.keyCode > 40) {
       return false;
     }
 
-    const direction = e.code.toLowerCase().slice(5);
+    const direction = eventObj.code.toLowerCase().slice(5);
 
     if (move(direction, rows)) {
       counterMove++;
