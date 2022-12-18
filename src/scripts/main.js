@@ -223,9 +223,12 @@ function addNumber() {
   const cells = rows[randomData[0]].cells;
   const randomCeil = cells[randomData[1]];
 
+  const rand = Math.floor(Math.random() * 10) + 1;
+  const number = (rand > 1) ? 2 : 4;
+
   if (randomCeil.textContent === '') {
-    randomCeil.textContent = 2;
-    randomCeil.classList.add('field-cell--2');
+    randomCeil.textContent = number;
+    randomCeil.classList.add('field-cell--' + number);
   } else {
     addNumber();
   }
