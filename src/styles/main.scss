@@ -22,56 +22,77 @@ body {
   user-select: none;
 
   &--2 {
+    animation: moving 0.3s forwards;
     background: #eee4da;
   }
 
   &--4 {
+    animation: moving 0.3s forwards;
     background: #ede0c8;
   }
 
   &--8 {
+    animation: moving 0.3s forwards;
     background: #f2b179;
     color: #f9f6f2;
   }
 
   &--16 {
+    animation: moving 0.3s forwards;
     background: #f59563;
     color: #f9f6f2;
   }
 
   &--32 {
+    animation: moving 0.3s forwards;
     background: #f67c5f;
     color: #f9f6f2;
   }
 
   &--64 {
+    animation: moving 0.3s forwards;
     background: #f65e3b;
     color: #f9f6f2;
   }
 
   &--128 {
+    animation: moving 0.3s forwards;
     background: #edcf72;
     color: #f9f6f2;
   }
 
   &--256 {
+    animation: moving 0.3s forwards;
     background: #edcc61;
     color: #f9f6f2;
   }
 
   &--512 {
+    animation: moving 0.3s forwards;
     background: #edc850;
     color: #f9f6f2;
   }
 
   &--1024 {
+    animation: moving 0.3s forwards;
     background: #edc53f;
     color: #f9f6f2;
   }
 
   &--2048 {
+    animation: moving 0.3s forwards;
     background: #edc22e;
     color: #f9f6f2;
+  }
+
+  @keyframes moving {
+    0% {
+      transform: scale(1.2);
+    }
+
+    100% {
+      transform: scale(1);
+    }
   }
 }
 
