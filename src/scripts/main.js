@@ -43,6 +43,7 @@ function addNumber() {
   game.board[coords[0]][coords[1]] = value;
 
   [...rows][coords[0]].children[coords[1]].innerHTML = value;
+
   [...rows][coords[0]].children[coords[1]].classList
     .add(`field-cell--${value}`);
 };
@@ -105,54 +106,35 @@ function move(codeOfEvent) {
     switch (codeOfEvent) {
       case 'ArrowUp':
         moveUpOrDown('up');
-
-        if (!areAllCellsFull) {
-          setTimeout(addNumber, '200');
-        }
-
-        verifyStatusGame();
         break;
 
       case 'ArrowDown':
         moveUpOrDown('down');
-
-        if (!areAllCellsFull) {
-          setTimeout(addNumber, '200');
-        }
-
-        verifyStatusGame();
         break;
 
       case 'ArrowLeft':
         moveLeftOrRight('left');
-
-        if (!areAllCellsFull) {
-          setTimeout(addNumber, '200');
-        }
-
-        verifyStatusGame();
         break;
 
       case 'ArrowRight':
         moveLeftOrRight('right');
-
-        if (!areAllCellsFull) {
-          setTimeout(addNumber, '200');
-        }
-
-        verifyStatusGame();
         break;
 
       default:
         break;
     }
+
+    if (!areAllCellsFull) {
+      setTimeout(addNumber, '200');
+    }
+
+    verifyStatusGame();
   }
 };
 
 function moveUpOrDown(direction) {
   for (let j = 0; j < game.board.length; j++) {
     let column = [];
-    let isMerged = false;
 
     for (let i = 0; i < game.board.length; i++) {
       column.push(game.board[i][j]);
@@ -162,46 +144,11 @@ function moveUpOrDown(direction) {
       ? column.filter(cell => cell !== 0)
       : column.filter(cell => cell !== 0).reverse();
 
-    // часть которая мержит
-    for (let i = 0; i < column.length - 1; i++) {
-      if (column[i] === 0) {
-        column[i] = column[i + 1];
-        column[i + 1] = 0;
-      } else {
-        if (column[i] === column[i + 1] && isMerged === false) {
-          column[i] *= 2;
-          game.totalScore += column[i];
-          gameScoreForUser.innerHTML = game.totalScore;
-          column[i + 1] = 0;
-          isMerged = true;
-        }
-      }
-    }
+    mergeRowsAndColumns(column);
 
-    let columnWithoutZeros = column.filter(cell => cell !== 0);
+    const preparedColumn = getPreparedRowsAndColumns(column, direction);
 
-    while (columnWithoutZeros.length < 4) {
-      columnWithoutZeros.push(0);
-    }
-
-    columnWithoutZeros = (direction === 'up')
-      ? columnWithoutZeros
-      : columnWithoutZeros.reverse();
-
-    for (let i = 0; i < columnWithoutZeros.length; i++) {
-      game.board[i][j] = columnWithoutZeros[i];
-
-      const targetCell = [...rows][i].children[j];
-
-      if (game.board[i][j] !== 0) {
-        targetCell.classList.remove(`field-cell--${targetCell.textContent}`);
-        targetCell.innerHTML = columnWithoutZeros[i];
-        targetCell.classList.add(`field-cell--${targetCell.textContent}`);
-      } else {
-        targetCell.classList.remove(`field-cell--${targetCell.textContent}`);
-        targetCell.innerHTML = '';
-      }
-    }
+    fillTheBoardByColumns(j, preparedColumn);
 
     column.length = 0;
   }
@@ -215,46 +162,11 @@ function moveLeftOrRight(direction) {
       ? dataToMerge[j].filter(cell => cell !== 0)
       : dataToMerge[j].filter(cell => cell !== 0).reverse();
 
-    let isMerged = false;
+    mergeRowsAndColumns(row);
 
-    // часть которая мержит
-    for (let i = 0; i < row.length - 1; i++) {
-      if (row[i] === 0) {
-        row[i] = row[i + 1];
-        row[i + 1] = 0;
-      } else {
-        if (row[i] === row[i + 1] && isMerged === false) {
-          row[i] *= 2;
-          game.totalScore += row[i];
-          gameScoreForUser.innerHTML = game.totalScore;
-          row[i + 1] = 0;
-          isMerged = true;
-        }
-      }
-    }
+    game.board[j] = getPreparedRowsAndColumns(row, direction);
 
-    const rowWithoutZeros = row.filter(cell => cell !== 0);
-
-    while (rowWithoutZeros.length < 4) {
-      rowWithoutZeros.push(0);
-    }
-
-    game.board[j] = (direction === 'left')
-      ? rowWithoutZeros
-      : rowWithoutZeros.reverse();
-
-    for (let i = 0; i < game.board[j].length; i++) {
-      const targetCell = [...rows][j].children[i];
-
-      if (game.board[j][i] !== 0) {
-        targetCell.classList.remove(`field-cell--${targetCell.textContent}`);
-        targetCell.innerHTML = game.board[j][i];
-        targetCell.classList.add(`field-cell--${targetCell.textContent}`);
-      } else {
-        targetCell.classList.remove(`field-cell--${targetCell.textContent}`);
-        targetCell.innerHTML = '';
-      }
-    }
+    fillTheBoardByRows(j);
   };
 };
 
@@ -295,3 +207,66 @@ function verifyStatusGame() {
   checkIfUserWon();
   checkIfGameOver();
 };
+
+function mergeRowsAndColumns(line) {
+  let isMerged = false;
+
+  for (let i = 0; i < line.length - 1; i++) {
+    if (line[i] === 0) {
+      line[i] = line[i + 1];
+      line[i + 1] = 0;
+    } else {
+      if (line[i] === line[i + 1] && isMerged === false) {
+        line[i] *= 2;
+        game.totalScore += line[i];
+        gameScoreForUser.innerHTML = game.totalScore;
+        line[i + 1] = 0;
+        isMerged = true;
+      }
+    }
+  }
+}
+
+function getPreparedRowsAndColumns(line, direction) {
+  const lineWithoutZeros = line.filter(cell => cell !== 0);
+
+  while (lineWithoutZeros.length < game.board.length) {
+    lineWithoutZeros.push(0);
+  }
+
+  return (direction === 'left' || direction === 'up')
+    ? lineWithoutZeros
+    : lineWithoutZeros.reverse();
+};
+
+function fillTheBoardByRows(j) {
+  for (let i = 0; i < game.board[j].length; i++) {
+    const targetCell = [...rows][j].children[i];
+
+    if (game.board[j][i] !== 0) {
+      targetCell.classList.remove(`field-cell--${targetCell.textContent}`);
+      targetCell.innerHTML = game.board[j][i];
+      targetCell.classList.add(`field-cell--${targetCell.textContent}`);
+    } else {
+      targetCell.classList.remove(`field-cell--${targetCell.textContent}`);
+      targetCell.innerHTML = '';
+    }
+  }
+};
+
+function fillTheBoardByColumns(j, columnWithoutZeros) {
+  for (let i = 0; i < columnWithoutZeros.length; i++) {
+    game.board[i][j] = columnWithoutZeros[i];
+
+    const targetCell = [...rows][i].children[j];
+
+    if (game.board[i][j] !== 0) {
+      targetCell.classList.remove(`field-cell--${targetCell.textContent}`);
+      targetCell.innerHTML = columnWithoutZeros[i];
+      targetCell.classList.add(`field-cell--${targetCell.textContent}`);
+    } else {
+      targetCell.classList.remove(`field-cell--${targetCell.textContent}`);
+      targetCell.innerHTML = '';
+    }
+  }
+}
