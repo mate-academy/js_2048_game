@@ -14,7 +14,7 @@ const initialBoard = [
   [0, 0, 0, 0],
 ];
 
-let gameBoard = JSON.parse(JSON.stringify(initialBoard));
+let gameBoard = _.cloneDeep(initialBoard);
 
 const gameTable = document.querySelector('.game-field');
 const scoreInfo = document.querySelector('.game-score');
@@ -168,13 +168,11 @@ const slideDown = (currentBoard) => {
 const getNewCell = () => {
   const percent = Math.floor(Math.random() * 100) + 1;
 
-  switch (true) {
-    case percent <= 10:
-      return 4;
-
-    default:
-      return 2;
+  if (percent <= 10) {
+    return 4;
   }
+
+  return 2;
 };
 
 const addNewCell = () => {
@@ -197,7 +195,7 @@ const prepareStart = () => {
 };
 
 const restartGame = () => {
-  gameBoard = JSON.parse(JSON.stringify(initialBoard));
+  gameBoard = _.cloneDeep(initialBoard);
   messageWin.classList.add('hidden');
   messageLose.classList.add('hidden');
   score = 0;
@@ -207,8 +205,8 @@ const restartGame = () => {
 };
 
 const checkMerges = () => {
-  const gameBoardPrevState = JSON.parse(JSON.stringify(gameBoard));
-  const gameBoardWillModified = JSON.parse(JSON.stringify(gameBoard));
+  const gameBoardPrevState = _.cloneDeep(gameBoard);
+  const gameBoardWillModified = _.cloneDeep(gameBoard);
 
   const actions = [slideLeft, slideRight, slideUp, slideDown];
 
@@ -224,7 +222,7 @@ const checkMerges = () => {
 };
 
 const gameControl = (e) => {
-  const prevGameBoard = JSON.parse(JSON.stringify(gameBoard));
+  const prevGameBoard = _.cloneDeep(gameBoard);
 
   switch (e.key) {
     case 'ArrowLeft':
