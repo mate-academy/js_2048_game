@@ -5,7 +5,6 @@ const COLUMNS = 4;
 const WINNING_RESULT = 2048;
 
 let isWon = false;
-let isLose = false;
 let score = 0;
 
 const initialBoard = [
@@ -114,45 +113,45 @@ const slide = (row) => {
   return rowResult;
 };
 
-const slideLeft = () => {
+const slideLeft = (currentBoard) => {
   for (let i = 0; i < ROWS; i++) {
-    let row = gameBoard[i];
+    let row = currentBoard[i];
 
     row = slide(row);
-    gameBoard[i] = row;
+    currentBoard[i] = row;
   }
 };
 
-const slideRight = () => {
+const slideRight = (currentBoard) => {
   for (let i = 0; i < ROWS; i++) {
-    let row = gameBoard[i];
+    let row = currentBoard[i];
 
     row = slide(row.reverse());
-    gameBoard[i] = row.reverse();
+    currentBoard[i] = row.reverse();
   }
 };
 
-const slideUp = () => {
+const slideUp = (currentBoard) => {
   for (let i = 0; i < ROWS; i++) {
     const verticalRow = [];
 
-    for (const arr of gameBoard) {
+    for (const arr of currentBoard) {
       verticalRow.push(arr[i]);
     }
 
     const row = slide(verticalRow);
 
-    for (let k = 0; k < gameBoard.length; k++) {
-      gameBoard[k][i] = row[k];
+    for (let k = 0; k < currentBoard.length; k++) {
+      currentBoard[k][i] = row[k];
     }
   }
 };
 
-const slideDown = () => {
+const slideDown = (currentBoard) => {
   for (let i = 0; i < ROWS; i++) {
     const verticalRow = [];
 
-    for (const arr of gameBoard) {
+    for (const arr of currentBoard) {
       verticalRow.push(arr[i]);
     }
 
@@ -160,8 +159,8 @@ const slideDown = () => {
 
     row.reverse();
 
-    for (let k = 0; k < gameBoard.length; k++) {
-      gameBoard[k][i] = row[k];
+    for (let k = 0; k < currentBoard.length; k++) {
+      currentBoard[k][i] = row[k];
     }
   }
 };
@@ -181,12 +180,6 @@ const getNewCell = () => {
 const addNewCell = () => {
   const emptyCells = getEmptyCells();
   const newCellValue = getNewCell();
-
-  if (!emptyCells.length) {
-    isLose = true;
-
-    return;
-  }
 
   const randomEmptyCell = _.sample(emptyCells);
 
@@ -209,33 +202,54 @@ const restartGame = () => {
   messageLose.classList.add('hidden');
   score = 0;
   isWon = false;
-  isLose = false;
   document.removeEventListener('keyup', gameControl);
   document.addEventListener('keyup', gameControl);
 };
 
+const checkMerges = () => {
+  const gameBoardPrevState = JSON.parse(JSON.stringify(gameBoard));
+  const gameBoardWillModified = JSON.parse(JSON.stringify(gameBoard));
+
+  const actions = [slideLeft, slideRight, slideUp, slideDown];
+
+  for (const action of actions) {
+    action(gameBoardWillModified);
+
+    if (gameBoardPrevState.toString() !== gameBoardWillModified.toString()) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 const gameControl = (e) => {
+  const prevGameBoard = JSON.parse(JSON.stringify(gameBoard));
+
   switch (e.key) {
     case 'ArrowLeft':
-      slideLeft();
+      slideLeft(gameBoard);
       break;
 
     case 'ArrowRight':
-      slideRight();
+      slideRight(gameBoard);
       break;
 
     case 'ArrowUp':
-      slideUp();
+      slideUp(gameBoard);
       break;
 
     case 'ArrowDown':
-      slideDown();
+      slideDown(gameBoard);
       break;
   }
-  addNewCell();
-  updateGame();
 
-  if (isLose) {
+  if (prevGameBoard.toString() !== gameBoard.toString()) {
+    addNewCell();
+    updateGame();
+  }
+
+  if (!checkMerges()) {
     gameOver();
     showLossMessage();
   }
