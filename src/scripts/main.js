@@ -1,8 +1,8 @@
 'use strict';
 
 let board;
-const rows = 4;
-const columns = 4;
+const rowsCount = 4;
+const columnsCount = 4;
 const score = document.querySelector('.game-score');
 const cell = document.querySelectorAll('.field-cell');
 const button = document.querySelector('.button');
@@ -40,8 +40,8 @@ function setGame() {
 
   let i = 0;
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
+  for (let r = 0; r < rowsCount; r++) {
+    for (let c = 0; c < columnsCount; c++) {
       cell[i].id = `${r}-${c}`;
 
       const num = board[r][c];
@@ -57,8 +57,8 @@ function setGame() {
 }
 
 function hasEmptyTile() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
+  for (let r = 0; r < rowsCount; r++) {
+    for (let c = 0; c < columnsCount; c++) {
       if (board[r][c] === 0) {
         return true;
       }
@@ -76,8 +76,8 @@ function setRandom() {
   let isFound = false;
 
   while (!isFound) {
-    const r = Math.floor(Math.random() * rows);
-    const c = Math.floor(Math.random() * columns);
+    const r = Math.floor(Math.random() * rowsCount);
+    const c = Math.floor(Math.random() * columnsCount);
 
     if (board[r][c] === 0) {
       board[r][c] = Math.random() < 0.1 ? 4 : 2;
@@ -154,7 +154,7 @@ function slide(row) {
 
   newRow = filterZero(newRow);
 
-  while (newRow.length < columns) {
+  while (newRow.length < columnsCount) {
     newRow.push(0);
   }
 
@@ -162,7 +162,7 @@ function slide(row) {
 }
 
 function slideLeftAndRight(left) {
-  for (let r = 0; r < rows; r++) {
+  for (let r = 0; r < rowsCount; r++) {
     let row = board[r];
 
     if (left) {
@@ -175,7 +175,7 @@ function slideLeftAndRight(left) {
       board[r] = row;
     }
 
-    for (let c = 0; c < columns; c++) {
+    for (let c = 0; c < columnsCount; c++) {
       const tile = document.getElementById(`${r}-${c}`);
       const num = board[r][c];
 
@@ -185,7 +185,7 @@ function slideLeftAndRight(left) {
 }
 
 function slideUpAndDown(up) {
-  for (let c = 0; c < columns; c++) {
+  for (let c = 0; c < columnsCount; c++) {
     let row = [board[0][c],
       board[1][c],
       board[2][c],
@@ -199,7 +199,7 @@ function slideUpAndDown(up) {
       row.reverse();
     }
 
-    for (let r = 0; r < columns; r++) {
+    for (let r = 0; r < columnsCount; r++) {
       board[r][c] = row[r];
 
       const tile = document.getElementById(`${r}-${c}`);
@@ -211,24 +211,47 @@ function slideUpAndDown(up) {
 };
 
 function gameLose() {
-  if (hasEmptyTile()) {
+  if (
+    hasEmptyTile()
+    || isHorizontalMoveAvailable()
+    || isVerticalMoveAvailable()
+  ) {
     return;
   }
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns - 1; c++) {
-      if (board[c][r] === board[c + 1][r]
-        || board[r][c] === board[r][c + 1]) {
-        loseMessage.classList.remove('hidden');
-        document.removeEventListener('keyup', handleChange);
+  loseMessage.classList.remove('hidden');
+  document.removeEventListener('keyup', handleChange);
+}
+
+function isHorizontalMoveAvailable() {
+  for (let r = 0; r < rowsCount; r++) {
+    const row = board[r];
+
+    for (let c = 0; c < columnsCount - 1; c++) {
+      if (row[c] === row[c + 1]) {
+        return true;
       }
     }
   }
+
+  return false;
+}
+
+function isVerticalMoveAvailable() {
+  for (let r = 0; r < rowsCount - 1; r++) {
+    for (let c = 0; c < columnsCount; c++) {
+      if (board[r][c] === board[r + 1][c]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 function gameWin() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
+  for (let r = 0; r < rowsCount; r++) {
+    for (let c = 0; c < columnsCount; c++) {
       if (board[r][c] === 2048) {
         winMessage.classList.remove('hidden');
       }
