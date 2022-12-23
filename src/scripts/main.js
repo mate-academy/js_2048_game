@@ -148,7 +148,7 @@ function slide(row) {
     if (newRow[i] === newRow[i + 1]) {
       newRow[i] *= 2;
       newRow[i + 1] = 0;
-      score.textContext = `${+score.textContext + newRow[i]}`;
+      score.textContent = `${+score.textContent + newRow[i]}`;
     }
   }
 
