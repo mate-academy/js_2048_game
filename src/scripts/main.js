@@ -41,7 +41,7 @@ const game = {
       scoreElement.textContent = this.score;
     });
 
-    if (this.firstMove === true) {
+    if (this.firstMove) {
       buttonElement.classList.remove('start');
       buttonElement.classList.add('restart');
       buttonElement.textContent = 'Restart';
@@ -50,13 +50,13 @@ const game = {
       this.firstMove = false;
     }
 
-    if (this.win === true) {
+    if (this.win) {
       winMessage.classList.remove('hidden');
     } else {
       winMessage.classList.add('hidden');
     }
 
-    if (this.lose === true) {
+    if (this.lose) {
       loseMessage.classList.remove('hidden');
       loseMessage.classList.add('restart');
     } else {
@@ -108,8 +108,8 @@ const game = {
   },
   losing() {
     if (this.freeCells < 1) {
-      if (this.findPair(this.gameField) === false
-        && this.findPair(this.transpose(this.gameField)) === false) {
+      if (!this.findPair(this.gameField)
+        && !this.findPair(this.transpose(this.gameField))) {
         this.lose = true;
       }
     }
@@ -181,8 +181,7 @@ body.addEventListener('click', action => {
 });
 
 body.addEventListener('keydown', action => {
-  if (action.key !== 'ArrowRight' || game.process !== true
-    || game.win === true || game.lose === true) {
+  if (action.key !== 'ArrowRight' || !game.process || game.win || game.lose) {
     return;
   }
 
@@ -194,8 +193,7 @@ body.addEventListener('keydown', action => {
 });
 
 body.addEventListener('keydown', action => {
-  if (action.key !== 'ArrowLeft' || game.process !== true
-    || game.win === true || game.lose === true) {
+  if (action.key !== 'ArrowLeft' || !game.process || game.win || game.lose) {
     return;
   }
 
@@ -207,8 +205,7 @@ body.addEventListener('keydown', action => {
 });
 
 body.addEventListener('keydown', action => {
-  if (action.key !== 'ArrowUp' || game.process !== true
-    || game.win === true || game.lose === true) {
+  if (action.key !== 'ArrowUp' || !game.process || game.win || game.lose) {
     return;
   }
 
@@ -222,8 +219,7 @@ body.addEventListener('keydown', action => {
 });
 
 body.addEventListener('keydown', action => {
-  if (action.key !== 'ArrowDown' || game.process !== true
-    || game.win === true || game.lose === true) {
+  if (action.key !== 'ArrowDown' || !game.process || game.win || game.lose) {
     return;
   }
 
