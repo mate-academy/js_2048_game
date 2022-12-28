@@ -121,7 +121,7 @@ const game = {
       for (let i = row.length - 1; i > 0; i--) {
         row.sort((current, prev) => current - 1);
 
-        if (row[i] === row[i - 1] && mergedCells[i] === false) {
+        if (row[i] === row[i - 1] && !mergedCells[i]) {
           row[i] = row[i - 1] + row[i];
           row[i - 1] = 0;
           mergedCells[i] = true;
@@ -137,7 +137,7 @@ const game = {
       for (let i = 1; i < row.length; i++) {
         row.sort((current, prev) => prev - 1);
 
-        if (row[i] === row[i - 1] && mergedСells[i - 1] === false) {
+        if (row[i] === row[i - 1] && !mergedСells[i - 1]) {
           row[i - 1] = row[i - 1] + row[i];
           row[i] = 0;
           mergedСells[i - 1] = true;
