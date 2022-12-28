@@ -62,45 +62,50 @@ document.body.addEventListener('keydown', (e) => {
     line4.push(lineCell[3]);
   }
 
+  const newCells = [];
+
+  cells.forEach(element => {
+    newCells.push({ textContent: element.textContent });
+  });
+
   switch (e.key) {
     case 'ArrowLeft':
       MoveLeft();
-      randomizer();
       break;
     case 'ArrowRight':
       MoveRight();
-      randomizer();
       break;
     case 'ArrowUp':
       MoveUp(line1);
       MoveUp(line2);
       MoveUp(line3);
       MoveUp(line4);
-      randomizer();
       break;
     case 'ArrowDown':
       MoveDown(line1);
       MoveDown(line2);
       MoveDown(line3);
       MoveDown(line4);
-      randomizer();
-      break;
-    default:
       break;
   }
 
-  const [...cellsAll] = document.querySelectorAll('td');
-
-  cellsAll.forEach((element) => {
-    if (element.textContent === '2048') {
+  for (let i = 0; i < cells.length; i++) {
+    if (cells[i].textContent === '2048') {
       messageWin.classList.remove('hidden');
     }
-  });
+
+    const emptyArray = emptyCellIndex(cells).length;
+
+    if (cells[i].textContent !== newCells[i].textContent || !emptyArray) {
+      randomizer();
+
+      return;
+    }
+  }
 });
 
 function randomizer() {
-  const [...tdCells] = document.querySelectorAll('td');
-  const emptyCellArray = emptyCellIndex(tdCells);
+  const emptyCellArray = emptyCellIndex(cells);
 
   if (!emptyCellArray.length) {
     messageLose.classList.remove('hidden');
