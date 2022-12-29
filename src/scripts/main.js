@@ -89,14 +89,16 @@ document.body.addEventListener('keydown', (e) => {
       break;
   }
 
+  if (checkLoseColumn(lines) && checkLoseRow(lines)) {
+    messageLose.classList.remove('hidden');
+  }
+
   for (let i = 0; i < cells.length; i++) {
     if (cells[i].textContent === '2048') {
       messageWin.classList.remove('hidden');
     }
 
-    const emptyArray = emptyCellIndex(cells).length;
-
-    if (cells[i].textContent !== newCells[i].textContent || !emptyArray) {
+    if (cells[i].textContent !== newCells[i].textContent) {
       randomizer();
 
       return;
@@ -106,12 +108,6 @@ document.body.addEventListener('keydown', (e) => {
 
 function randomizer() {
   const emptyCellArray = emptyCellIndex(cells);
-
-  if (!emptyCellArray.length) {
-    messageLose.classList.remove('hidden');
-
-    return;
-  }
 
   let valueCell = Math.random();
 
@@ -207,5 +203,68 @@ function addCells(line) {
         score.textContent = `${+score.textContent + (+line[i].textContent)}`;
       }
     }
+  }
+}
+
+function checkLoseRow(array) {
+  let count = 0;
+  const emptyCellArray = emptyCellIndex(cells);
+
+  for (let i = 0; i < array.length; i++) {
+    const [...row] = array[i].querySelectorAll('td');
+
+    for (let k = 0; k < row.length; k++) {
+      if (k < row.length - 1) {
+        if (row[k].textContent === row[k + 1].textContent) {
+          count++;
+        }
+      }
+    }
+  }
+
+  if (count === 0 & !emptyCellArray.length) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function checkLoseColumn(array) {
+  let count = 0;
+  const emptyCellArray = emptyCellIndex(cells);
+  const newTable = [];
+
+  const line1 = [];
+  const line2 = [];
+  const line3 = [];
+  const line4 = [];
+
+  for (let i = 0; i < array.length; i++) {
+    const [...lineCell] = array[i].querySelectorAll('td');
+
+    line1.push(lineCell[0]);
+    line2.push(lineCell[1]);
+    line3.push(lineCell[2]);
+    line4.push(lineCell[3]);
+  }
+
+  newTable.unshift(line1, line2, line3, line4);
+
+  for (let i = 0; i < newTable.length; i++) {
+    const [...column] = newTable[i];
+
+    for (let k = 0; k < column.length; k++) {
+      if (k < column.length - 1) {
+        if (column[k].textContent === column[k + 1].textContent) {
+          count++;
+        }
+      }
+    }
+  }
+
+  if (count === 0 & !emptyCellArray.length) {
+    return true;
+  } else {
+    return false;
   }
 }
