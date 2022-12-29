@@ -20,8 +20,6 @@ button.addEventListener('click', () => {
     button.innerText = 'Restart';
 
     messageStart.classList.add('hidden');
-    setGame();
-    setGame();
   } else if (button.classList.contains('restart')) {
     board = new Array(4).fill([0, 0, 0, 0]);
 
@@ -29,6 +27,7 @@ button.addEventListener('click', () => {
     messageWin.classList.add('hidden');
     score = 0;
   }
+  setGame();
   updateGame();
 });
 
