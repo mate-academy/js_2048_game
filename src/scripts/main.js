@@ -3,12 +3,7 @@
 const table = document.querySelector('table');
 let score = 0;
 
-let board = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
+let board = new Array(4).fill([0, 0, 0, 0]);
 
 const rows = 4;
 const columns = 4;
@@ -27,28 +22,19 @@ button.addEventListener('click', () => {
     messageStart.classList.add('hidden');
     setGame();
     setGame();
-    updateGame();
-  } else {
-    if (button.classList.contains('restart')) {
-      button.classList.remove('restart');
-      button.classList.add('start');
-      messageStart.classList.remove('hidden');
-      button.innerText = 'Start';
+  } else if (button.classList.contains('restart')) {
+    // button.classList.remove('restart');
+    // button.classList.add('start');
+    // messageStart.classList.remove('hidden');
+    // button.innerText = 'Start';
 
-      board = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ];
+    board = new Array(4).fill([0, 0, 0, 0]);
 
-      messageLose.classList.add('hidden');
-      messageWin.classList.add('hidden');
-      score = 0;
-
-      updateGame();
-    }
-  };
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
+    score = 0;
+  }
+  updateGame();
 });
 
 function setGame() {
@@ -71,6 +57,8 @@ function setGame() {
         = emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
 
   board[rowI][cellI] = randomizer;
+
+  isGameOver();
 }
 
 function isGameOver() {
@@ -81,13 +69,14 @@ function isGameOver() {
   }
 
   for (let r = 0; r < rows; r++) {
-    for (let c = 1; c < columns; c++) {
+    for (let c = 0; c < columns - 1; c++) {
       if (board[r][c] === board[r][c + 1]
                 || board[c][r] === board[c + 1][r]) {
         return;
       }
     }
   }
+
   messageLose.classList.remove('hidden');
 }
 
