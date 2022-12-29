@@ -23,11 +23,6 @@ button.addEventListener('click', () => {
     setGame();
     setGame();
   } else if (button.classList.contains('restart')) {
-    // button.classList.remove('restart');
-    // button.classList.add('start');
-    // messageStart.classList.remove('hidden');
-    // button.innerText = 'Start';
-
     board = new Array(4).fill([0, 0, 0, 0]);
 
     messageLose.classList.add('hidden');
