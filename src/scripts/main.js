@@ -222,11 +222,7 @@ function checkLoseRow(array) {
     }
   }
 
-  if (count === 0 & !emptyCellArray.length) {
-    return true;
-  } else {
-    return false;
-  }
+  return count === 0 && !emptyCellArray.length;
 }
 
 function checkLoseColumn(array) {
@@ -262,9 +258,5 @@ function checkLoseColumn(array) {
     }
   }
 
-  if (count === 0 & !emptyCellArray.length) {
-    return true;
-  } else {
-    return false;
-  }
+  return count === 0 && !emptyCellArray.length;
 }
