@@ -89,7 +89,9 @@ document.body.addEventListener('keydown', (e) => {
       break;
   }
 
-  if (checkLoseColumn(lines) && checkLoseRow(lines)) {
+  const emptyCellArray = emptyCellIndex(cells);
+
+  if (checkLose(lines) && !emptyCellArray.length) {
     messageLose.classList.remove('hidden');
   }
 
@@ -206,57 +208,27 @@ function addCells(line) {
   }
 }
 
-function checkLoseRow(array) {
-  let count = 0;
-  const emptyCellArray = emptyCellIndex(cells);
+function checkLose(array) {
+  const arrayRows = [];
 
-  for (let i = 0; i < array.length; i++) {
-    const [...row] = array[i].querySelectorAll('td');
+  array.forEach((element) =>
+    arrayRows.push([...element.querySelectorAll('td')]));
 
-    for (let k = 0; k < row.length; k++) {
-      if (k < row.length - 1) {
-        if (row[k].textContent === row[k + 1].textContent) {
-          count++;
+  for (let i = 0; i < arrayRows.length; i++) {
+    for (let k = 0; k < arrayRows[i].length; k++) {
+      if (arrayRows[i + 1]) {
+        if (arrayRows[i][k].textContent === arrayRows[i + 1][k].textContent) {
+          return false;
+        }
+      }
+
+      if (arrayRows[i][k + 1]) {
+        if (arrayRows[i][k].textContent === arrayRows[i][k + 1].textContent) {
+          return false;
         }
       }
     }
   }
 
-  return count === 0 && !emptyCellArray.length;
-}
-
-function checkLoseColumn(array) {
-  let count = 0;
-  const emptyCellArray = emptyCellIndex(cells);
-  const newTable = [];
-
-  const line1 = [];
-  const line2 = [];
-  const line3 = [];
-  const line4 = [];
-
-  for (let i = 0; i < array.length; i++) {
-    const [...lineCell] = array[i].querySelectorAll('td');
-
-    line1.push(lineCell[0]);
-    line2.push(lineCell[1]);
-    line3.push(lineCell[2]);
-    line4.push(lineCell[3]);
-  }
-
-  newTable.unshift(line1, line2, line3, line4);
-
-  for (let i = 0; i < newTable.length; i++) {
-    const [...column] = newTable[i];
-
-    for (let k = 0; k < column.length; k++) {
-      if (k < column.length - 1) {
-        if (column[k].textContent === column[k + 1].textContent) {
-          count++;
-        }
-      }
-    }
-  }
-
-  return count === 0 && !emptyCellArray.length;
+  return true;
 }
