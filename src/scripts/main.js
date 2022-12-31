@@ -3,7 +3,9 @@
 const table = document.querySelector('table');
 let score = 0;
 
-let board = new Array(4).fill([0, 0, 0, 0]);
+let board = new Array(4)
+  .fill(null)
+  .map(el => [0, 0, 0, 0]);
 
 const rows = 4;
 const columns = 4;
@@ -27,6 +29,7 @@ button.addEventListener('click', () => {
     messageWin.classList.add('hidden');
     score = 0;
   }
+  setGame();
   setGame();
   updateGame();
 });
@@ -118,59 +121,77 @@ function slide(row) {
 document.addEventListener('keyup', (e) => {
   switch (e.code) {
     case 'ArrowLeft':
-      for (let i = 0; i < rows; i++) {
-        let row = board[i];
-
-        row = slide(row);
-        board[i] = row;
-      }
+      moveLeft();
       break;
 
     case 'ArrowRight':
-      for (let i = 0; i < rows; i++) {
-        let row = board[i];
-
-        row.reverse();
-        row = slide(row);
-        board[i] = row.reverse();
-      }
+      moveRight();
       break;
 
     case 'ArrowUp':
-      for (let c = 0; c < columns; c++) {
-        let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+      moveUp();
 
-        row = slide(row);
-        board[0][c] = row[0];
-        board[1][c] = row[1];
-        board[2][c] = row[2];
-        board[3][c] = row[3];
-
-        for (let i = 0; i < rows; i++) {
-          board[i][c] = row[i];
-        }
-      }
       break;
 
     case 'ArrowDown':
-      for (let c = 0; c < columns; c++) {
-        let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
-
-        row.reverse();
-        row = slide(row);
-        row.reverse();
-        board[0][c] = row[0];
-        board[1][c] = row[1];
-        board[2][c] = row[2];
-        board[3][c] = row[3];
-
-        for (let i = 0; i < rows; i++) {
-          board[i][c] = row[i];
-        };
-      }
+      moveDown();
       break;
   }
 
   setGame();
+  setGame();
   updateGame();
 });
+
+function moveLeft() {
+  for (let i = 0; i < rows; i++) {
+    let row = board[i];
+
+    row = slide(row);
+    board[i] = row;
+  }
+};
+
+function moveRight() {
+  for (let i = 0; i < rows; i++) {
+    let row = board[i];
+
+    row.reverse();
+    row = slide(row);
+    board[i] = row.reverse();
+  }
+};
+
+function moveDown() {
+  for (let c = 0; c < columns; c++) {
+    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+
+    row.reverse();
+    row = slide(row);
+    row.reverse();
+    board[0][c] = row[0];
+    board[1][c] = row[1];
+    board[2][c] = row[2];
+    board[3][c] = row[3];
+
+    for (let i = 0; i < rows; i++) {
+      board[i][c] = row[i];
+    };
+  }
+};
+
+function moveUp() {
+  for (let c = 0; c < columns; c++) {
+    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+
+    row = slide(row);
+    board[0][c] = row[0];
+    board[1][c] = row[1];
+    board[2][c] = row[2];
+    board[3][c] = row[3];
+
+    for (let i = 0; i < rows; i++) {
+      board[i][c] = row[i];
+    }
+  }
+};
