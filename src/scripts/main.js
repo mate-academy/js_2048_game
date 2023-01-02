@@ -23,7 +23,9 @@ button.addEventListener('click', () => {
 
     messageStart.classList.add('hidden');
   } else if (button.classList.contains('restart')) {
-    board = new Array(4).fill([0, 0, 0, 0]);
+    board = new Array(4)
+      .fill(null)
+      .map(el => [0, 0, 0, 0]);
 
     messageLose.classList.add('hidden');
     messageWin.classList.add('hidden');
@@ -121,20 +123,20 @@ function slide(row) {
 document.addEventListener('keyup', (e) => {
   switch (e.code) {
     case 'ArrowLeft':
-      moveLeft();
+      moveHorizontal(false);
       break;
 
     case 'ArrowRight':
-      moveRight();
+      moveHorizontal(true);
       break;
 
     case 'ArrowUp':
-      moveUp();
+      moveVertical(false);
 
       break;
 
     case 'ArrowDown':
-      moveDown();
+      moveVertical(true);
       break;
   }
 
@@ -143,32 +145,34 @@ document.addEventListener('keyup', (e) => {
   updateGame();
 });
 
-function moveLeft() {
+function moveHorizontal(isItRight) {
   for (let i = 0; i < rows; i++) {
     let row = board[i];
 
+    if (isItRight) {
+      row.reverse();
+    }
     row = slide(row);
-    board[i] = row;
+
+    if (isItRight) {
+      board[i] = row.reverse();
+    } else {
+      board[i] = row;
+    }
   }
 };
 
-function moveRight() {
-  for (let i = 0; i < rows; i++) {
-    let row = board[i];
-
-    row.reverse();
-    row = slide(row);
-    board[i] = row.reverse();
-  }
-};
-
-function moveDown() {
+function moveVertical(isItDown) {
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
 
-    row.reverse();
-    row = slide(row);
-    row.reverse();
+    if (isItDown) {
+      row.reverse();
+      row = slide(row);
+      row.reverse();
+    } else {
+      row = slide(row);
+    }
     board[0][c] = row[0];
     board[1][c] = row[1];
     board[2][c] = row[2];
@@ -177,21 +181,5 @@ function moveDown() {
     for (let i = 0; i < rows; i++) {
       board[i][c] = row[i];
     };
-  }
-};
-
-function moveUp() {
-  for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
-
-    row = slide(row);
-    board[0][c] = row[0];
-    board[1][c] = row[1];
-    board[2][c] = row[2];
-    board[3][c] = row[3];
-
-    for (let i = 0; i < rows; i++) {
-      board[i][c] = row[i];
-    }
   }
 };
