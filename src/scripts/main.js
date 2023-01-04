@@ -86,7 +86,9 @@ const gameOver = () => {
 };
 
 const congratulation = () => {
-  if (score.innerText >= 2048) {
+  const winner = [...cells].some(item => item.innerText >= 2048);
+
+  if (winner) {
     message.children[1].classList.remove('hidden');
   }
 };
@@ -143,96 +145,113 @@ const cellsSorting = (direction) => {
   gameArr.splice(0, 4);
 };
 
+const movingDirection = (direction, of, to) => {
+  let next;
+  let prev;
+
+  if (direction === 'UP' || direction === 'RIGHT') {
+    next = to + 1;
+    prev = to - 1;
+  }
+
+  if (direction === 'DOWN' || direction === 'LEFT') {
+    next = to - 1;
+    prev = to + 1;
+  }
+
+  if (direction === 'UP' || direction === 'DOWN') {
+    if (row[to].children[of].innerText.length
+      && row[to].children[of].innerText === row[next].children[of].innerText) {
+      row[to].children[of].innerText = row[to].children[of].innerText * 2;
+      row[next].children[of].innerText = '';
+      score.innerText = +score.innerText + +row[to].children[of].innerText;
+      animateCells(row[to].children[of], true);
+
+      if (row[prev] && row[prev].children[of].innerText === '') {
+        animateCells(row[to].children[of], false);
+        animateCells(row[prev].children[of], true);
+      }
+    }
+  }
+
+  if (direction === 'LEFT' || direction === 'RIGHT') {
+    if (row[of].children[to].innerText.length
+      && row[of].children[to].innerText === row[of].children[next].innerText) {
+      row[of].children[to].innerText = row[of].children[to].innerText * 2;
+      row[of].children[next].innerText = '';
+      score.innerText = +score.innerText + +row[of].children[to].innerText;
+      animateCells(row[of].children[to], true);
+
+      if (row[of].children[next].innerText === '') {
+        animateCells(row[of].children[to], false);
+        animateCells(row[of].children[next], true);
+      }
+    }
+  }
+};
+
 const moveUp = () => {
+  cellsSorting('up');
+
   for (let i = 0; i <= 3; i++) {
     for (let k = 0; k <= 3; k++) {
       if (!row[k + 1]) {
         break;
       };
 
-      if (row[k].children[i].innerText.length
-        && row[k].children[i].innerText === row[k + 1].children[i].innerText) {
-        row[k].children[i].innerText = row[k].children[i].innerText * 2;
-        row[k + 1].children[i].innerText = '';
-        score.innerText = +score.innerText + +row[k].children[i].innerText;
-        animateCells(row[k].children[i], true);
-
-        if (row[k - 1] && row[k - 1].children[i].innerText === '') {
-          animateCells(row[k].children[i], false);
-          animateCells(row[k - 1].children[i], true);
-        }
-      }
+      movingDirection('UP', i, k);
     }
   }
+
+  cellsSorting('up');
 };
 
 const moveDown = () => {
+  cellsSorting('down');
+
   for (let i = 3; i >= 0; i--) {
     for (let k = 3; k >= 0; k--) {
       if (!row[k - 1]) {
         break;
       };
 
-      if (row[k].children[i].innerText.length
-        && row[k].children[i].innerText === row[k - 1].children[i].innerText) {
-        row[k].children[i].innerText = row[k].children[i].innerText * 2;
-        row[k - 1].children[i].innerText = '';
-        score.innerText = +score.innerText + +row[k].children[i].innerText;
-        animateCells(row[k].children[i], true);
-
-        if (row[k + 1] && row[k + 1].children[i].innerText === '') {
-          animateCells(row[k].children[i], false);
-          animateCells(row[k + 1].children[i], true);
-        }
-      }
+      movingDirection('DOWN', i, k);
     }
   }
+
+  cellsSorting('down');
 };
 
 const moveLeft = () => {
+  cellsSorting('left');
+
   for (let i = 0; i <= 3; i++) {
     for (let k = 3; k >= 0; k--) {
       if (!row[i].children[k - 1]) {
         break;
       };
 
-      if (row[i].children[k].innerText.length
-        && row[i].children[k].innerText === row[i].children[k - 1].innerText) {
-        row[i].children[k].innerText = row[i].children[k].innerText * 2;
-        row[i].children[k - 1].innerText = '';
-        score.innerText = +score.innerText + +row[i].children[k].innerText;
-        animateCells(row[i].children[k], true);
-
-        if (row[i].children[k - 1].innerText === '') {
-          animateCells(row[i].children[k], false);
-          animateCells(row[i].children[k - 1], true);
-        }
-      }
+      movingDirection('LEFT', i, k);
     }
   }
+
+  cellsSorting('left');
 };
 
 const moveRight = () => {
+  cellsSorting('right');
+
   for (let i = 0; i <= 3; i++) {
     for (let k = 0; k <= 3; k++) {
       if (!row[i].children[k + 1]) {
         break;
       };
 
-      if (row[i].children[k].innerText.length
-        && row[i].children[k].innerText === row[i].children[k + 1].innerText) {
-        row[i].children[k].innerText = row[i].children[k].innerText * 2;
-        row[i].children[k + 1].innerText = '';
-        score.innerText = +score.innerText + +row[i].children[k].innerText;
-        animateCells(row[i].children[k], true);
-
-        if (row[i].children[k + 1].innerText === '') {
-          animateCells(row[i].children[k], false);
-          animateCells(row[i].children[k + 1], true);
-        }
-      }
+      movingDirection('RIGHT', i, k);
     }
   }
+
+  cellsSorting('right');
 };
 
 start.addEventListener('click', () => {
@@ -258,27 +277,19 @@ document.addEventListener('keydown', (e) => {
   if (start.classList.contains('restart')) {
     switch (e.key) {
       case 'ArrowUp':
-        cellsSorting('up');
         moveUp();
-        cellsSorting('up');
         break;
 
       case 'ArrowDown':
-        cellsSorting('down');
         moveDown();
-        cellsSorting('down');
         break;
 
       case 'ArrowRight':
-        cellsSorting('right');
         moveRight();
-        cellsSorting('right');
         break;
 
       case 'ArrowLeft':
-        cellsSorting('left');
         moveLeft();
-        cellsSorting('left');
         break;
     }
     addCellNumber();
