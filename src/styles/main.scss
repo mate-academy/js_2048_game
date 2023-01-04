@@ -10,77 +10,157 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
+// .field-cell {
+  // background: #d6cdc4;
+  // width: 75px;
+  // height: 75px;
+  // border-radius: 5px;
+  // color: #776e65;
+  // box-sizing: border-box;
+  // text-align: center;
+  // vertical-align: center;
+  // user-select: none;
 
-  &--2 {
-    background: #eee4da;
-  }
+  // &--2 {
+  //   background: #eee4da;
+  // }
 
-  &--4 {
-    background: #ede0c8;
-  }
+  // &--4 {
+  //   background: #ede0c8;
+  // }
 
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
+  // &--8 {
+  //   background: #f2b179;
+  //   color: #f9f6f2;
+  // }
 
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
+  // &--16 {
+  //   background: #f59563;
+  //   color: #f9f6f2;
+  // }
 
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
+  // &--32 {
+  //   background: #f67c5f;
+  //   color: #f9f6f2;
+  // }
 
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
+  // &--64 {
+  //   background: #f65e3b;
+  //   color: #f9f6f2;
+  // }
 
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
+  // &--128 {
+  //   background: #edcf72;
+  //   color: #f9f6f2;
+  // }
 
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
+  // &--256 {
+  //   background: #edcc61;
+  //   color: #f9f6f2;
+  // }
 
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
+  // &--512 {
+  //   background: #edc850;
+  //   color: #f9f6f2;
+  // }
 
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
+  // &--1024 {
+  //   background: #edc53f;
+  //   color: #f9f6f2;
+  // }
 
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
-}
+  // &--2048 {
+  //   background: #edc22e;
+  //   color: #f9f6f2;
+  // }
+// }
 
 .game-field {
   background: #bbada0;
-  border-spacing: 10px;
+  // border-spacing: 10px;
   border-radius: 5px;
+
+  // extra mine
+// -------------------------------------
+  display: flex;
+  flex-wrap: wrap;
+  width: 330px;
+  height: 330px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  justify-content: center;
 }
 
+  // extra mine
+.field-cell {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  border: 2px solid #bbada0;
+
+  width: 80px;
+  height: 80px;
+  background: #d6cdc4;
+  border-radius: 5px;
+  color: #776e65;
+  justify-content: center;
+  user-select: none;
+}
+
+.x2 {
+  background-color: #eee4da;
+}
+
+.field-cell.x4 {
+  background: #ede0c8;
+}
+
+.field-cell.x8 {
+  background: #f2b179;
+  color: #f9f6f2;
+}
+
+.x16 {
+  background: #f59563;
+  color: #f9f6f2;
+}
+
+.x32 {
+  background: #f67c5f;
+  color: #f9f6f2;
+}
+
+.x64 {
+  background: #f65e3b;
+  color: #f9f6f2;
+}
+
+.x128 {
+  background: #edcf72;
+  color: #f9f6f2;
+}
+
+.x256 {
+  background: #edcc61;
+  color: #f9f6f2;
+}
+
+.x512 {
+  background: #edc850;
+  color: #f9f6f2;
+}
+.x1024 {
+  background: #edc53f;
+  color: #f9f6f2;
+}
+
+.x2048 {
+  background: #edc22e;
+  color: #f9f6f2;
+}
+
+
+// ------------------------------------
 .game-header {
   display: flex;
   width: 100%;
