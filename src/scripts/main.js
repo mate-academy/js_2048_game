@@ -150,20 +150,15 @@ function setCell() {
 function handleInput(e) {
   switch (e.key) {
     case 'ArrowUp':
-      moveY('ArrowUp');
-      break;
     case 'ArrowDown':
-      moveY('ArrowDown');
+      moveY(e.key);
       break;
     case 'ArrowLeft':
-      moveX('ArrowLeft');
-      break;
     case 'ArrowRight':
-      moveX('ArrowRight');
+      moveX(e.key);
       break;
     default:
-      setInput();
-      break;
+      return;
   }
 
   setCell();
@@ -198,12 +193,10 @@ function moveX(side) {
 
     if (side === 'ArrowRight') {
       row.reverse();
-    }
-
-    row = move(row);
-
-    if (side === 'ArrowRight') {
+      row = move(row);
       row.reverse();
+    } else {
+      row = move(row);
     }
 
     field[r] = row;
@@ -222,12 +215,10 @@ function moveY(side) {
 
     if (side === 'ArrowDown') {
       row.reverse();
-    }
-
-    row = move(row);
-
-    if (side === 'ArrowDown') {
+      row = move(row);
       row.reverse();
+    } else {
+      row = move(row);
     }
 
     for (let r = 0; r < field[c].length; r++) {
