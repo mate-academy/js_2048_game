@@ -127,30 +127,31 @@ function clickArrowDown() {
   field = transpose(field);
 }
 
+function fillFieldCells() {
+  fillRandomCell();
+  fillGameField();
+}
+
 function handleArrows(e) {
   switch (e.key) {
     case 'ArrowLeft':
       clickArrowLeft();
-      fillRandomCell();
-      fillGameField();
+      fillFieldCells();
       break;
 
     case 'ArrowRight':
       clickArrowRight();
-      fillRandomCell();
-      fillGameField();
+      fillFieldCells();
       break;
 
     case 'ArrowUp':
       clickArrowUp();
-      fillRandomCell();
-      fillGameField();
+      fillFieldCells();
       break;
 
     case 'ArrowDown':
       clickArrowDown();
-      fillRandomCell();
-      fillGameField();
+      fillFieldCells();
       break;
   }
 }
@@ -170,6 +171,5 @@ startButton.addEventListener('click', () => {
   }
 
   fillRandomCell();
-  fillRandomCell();
-  fillGameField();
+  fillFieldCells();
 });
