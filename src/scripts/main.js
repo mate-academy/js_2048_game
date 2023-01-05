@@ -25,7 +25,7 @@ function styleUpdater() {
   score.innerText = `${total}`;
 };
 
-styleUpdater();
+styleUpdater(); //later to delete
 
 function zeroRemover(row) {
   for (let c = 0; c < row.length; c++) {
@@ -84,35 +84,60 @@ function moveRight() {
 }
 
 function moveUp() {
-  const tempRow = document.createElement('tr');
-
   for (let i = 0; i < rows.length; i++) {
-    tempRow.append(rows[i].firstElementChild.cloneNode(true));
+    const tempRow = document.createElement('tr');
+
+    tempRow.append(rows[0].children[i].cloneNode(true));
+    tempRow.append(rows[1].children[i].cloneNode(true));
+    tempRow.append(rows[2].children[i].cloneNode(true));
+    tempRow.append(rows[3].children[i].cloneNode(true));
+
+    move(tempRow);
+
+    rows[0].children[i].innerText = `${tempRow.children[0].innerText}`;
+    rows[1].children[i].innerText = `${tempRow.children[1].innerText}`;
+    rows[2].children[i].innerText = `${tempRow.children[2].innerText}`;
+    rows[3].children[i].innerText = `${tempRow.children[3].innerText}`;
+
+    styleUpdater();
   };
+};
 
-  move(tempRow);
+function moveDown() {
+  for (let i = 0; i < rows.length; i++) {
+    const tempRow = document.createElement('tr');
 
-  for (let i = 0; i < tempRow.children.length; i++) {
-    rows[i].firstElementChild.innerText = `${tempRow.children[i].innerText}`;
+    tempRow.append(rows[0].children[i].cloneNode(true));
+    tempRow.append(rows[1].children[i].cloneNode(true));
+    tempRow.append(rows[2].children[i].cloneNode(true));
+    tempRow.append(rows[3].children[i].cloneNode(true));
+
+    reverser(tempRow);
+    move(tempRow);
+    reverser(tempRow);
+
+    rows[0].children[i].innerText = `${tempRow.children[0].innerText}`;
+    rows[1].children[i].innerText = `${tempRow.children[1].innerText}`;
+    rows[2].children[i].innerText = `${tempRow.children[2].innerText}`;
+    rows[3].children[i].innerText = `${tempRow.children[3].innerText}`;
+
+    styleUpdater();
   };
-
-  styleUpdater();
 }
 
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft') {
-    moveLeft();
-  }
-});
-
-document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowRight') {
-    moveRight();
-  }
-});
-
-document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowUp') {
-    moveUp();
-  }
+  switch (e.code) {
+    case 'ArrowLeft':
+      moveLeft();
+      break;
+    case 'ArrowRight':
+      moveRight();
+      break;
+    case 'ArrowUp':
+      moveUp();
+      break;
+    case 'ArrowDown':
+      moveDown();
+      break;
+  };
 });
