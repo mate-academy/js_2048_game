@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       generateNumber();
     }
+    // --------------------------
 
     // if (cells[randomNumber].innerHTML > 0) {
     //   cells[randomNumber].classList.add(`x${randomNumber}`);
@@ -68,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // }
 
     // console.log(cells[randomNumber]);
+    // ---------------------------
 
     // if (cells[randomNumber].innerHTML == 2) {
     //   cells[randomNumber].classList.add(`x${2}`);
@@ -110,14 +112,32 @@ document.addEventListener('DOMContentLoaded', () => {
         cells[i + 1].innerHTML = newRow[1];
         cells[i + 2].innerHTML = newRow[2];
         cells[i + 3].innerHTML = newRow[3];
+
+        // ----------------------------
+
+        const number = cells[i].innerHTML;
+        const cellElement = cells[i];
+
+        addClassColor(cellElement, number);
+        // ---------------------------
+
+        // console.log(number);
+
+        // if (cells[i].innerHTML > 0) {
+        //   cells[i].className = '';
+        //   cells[i].className = `field-cell x${number}`;
+        // } else if (cells[i].innerHTML == 2048) {
+        //   cells[i].classList.add('2048');
+        // }
+
+        // console.log(cells[i]);
+
+        // ----------------------------
       }
     }
   }
 
-  // moveRight();
-
   // swipe left
-
   function moveLeft() {
     for (let i = 0; i < 16; i++) {
       if (i % 4 === 0) {
@@ -137,12 +157,34 @@ document.addEventListener('DOMContentLoaded', () => {
         cells[i + 1].innerHTML = newRow[1];
         cells[i + 2].innerHTML = newRow[2];
         cells[i + 3].innerHTML = newRow[3];
+
+        // ----------------------------
+
+        // const number = cells[i].innerHTML;
+        // const cellElement = cells[i];
+
+        // addClassColor(cellElement, number);
+        // --------------------------
+
+        // console.log(number);
+
+        // if (cells[i].innerHTML > 0) {
+        //   cells[i].className = '';
+        //   cells[i].className = `field-cell x${number}`;
+        // } else if (cells[i].innerHTML == 2048) {
+        //   cells[i].classList.add('2048');
+        // }
+
+        // console.log(cells[i]);
+
+        // ----------------------------
       }
     }
   }
 
-  // swipe down
+  moveLeft();
 
+  // swipe down
   function moveDown() {
     for (let i = 0; i < 4; i++) {
       const totalOne = cells[i].innerHTML;
@@ -162,11 +204,31 @@ document.addEventListener('DOMContentLoaded', () => {
       cells[i + width].innerHTML = newColumn[1];
       cells[i + width * 2].innerHTML = newColumn[2];
       cells[i + width * 3].innerHTML = newColumn[3];
+
+      // ----------------------------
+
+      // const number = cells[i].innerHTML;
+      // const cellElement = cells[i];
+
+      // addClassColor(cellElement, number);
+      // -----------------------------
+
+      // console.log(number);
+
+      // if (cells[i].innerHTML > 0) {
+      //   cells[i].className = '';
+      //   cells[i].className = `field-cell x${number}`;
+      // } else if (cells[i].innerHTML == 2048) {
+      //   cells[i].classList.add('2048');
+      // }
+
+      // console.log(cells[i]);
+
+      // ----------------------------
     }
   }
 
   // swipe up
-
   function moveUp() {
     for (let i = 0; i < 4; i++) {
       const totalOne = cells[i].innerHTML;
@@ -186,6 +248,27 @@ document.addEventListener('DOMContentLoaded', () => {
       cells[i + width].innerHTML = newColumn[1];
       cells[i + width * 2].innerHTML = newColumn[2];
       cells[i + width * 3].innerHTML = newColumn[3];
+
+      // ----------------------------
+
+      // const number = cells[i].innerHTML;
+      // const cellElement = cells[i];
+
+      // addClassColor(cellElement, number);
+      // --------------------------
+
+      // console.log(number);
+
+      // if (cells[i].innerHTML > 0) {
+      //   cells[i].className = '';
+      //   cells[i].className = `field-cell x${number}`;
+      // } else if (cells[i].innerHTML == 2048) {
+      //   cells[i].classList.add('2048');
+      // }
+
+      // console.log(cells[i]);
+
+      // ----------------------------
     }
   }
 
@@ -199,6 +282,12 @@ document.addEventListener('DOMContentLoaded', () => {
         cells[i].innerHTML = 0;
         score += combinedTotal;
         scores.innerHTML = score;
+        // -----------------------------
+
+        const number = cells[i].innerHTML;
+        const cellElement = cells[i];
+
+        addClassColor(cellElement, number);
       }
     }
     win();
@@ -214,6 +303,12 @@ document.addEventListener('DOMContentLoaded', () => {
         cells[i + width].innerHTML = 0;
         score += combinedTotal;
         scores.innerHTML = score;
+
+        // ------------------------
+        const number = cells[i].innerHTML;
+        const cellElement = cells[i];
+
+        addClassColor(cellElement, number);
       }
     }
     win();
@@ -275,11 +370,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // function addClassColor(num) {
-  //   for (let i = 0; i < cells.length; i++) {
-  //     if (cells[i].innerHTML === num || num > 0) {
-  //       // cells[i].className = `field-cell x${num}`;
-  //       cells[i].classList.add(`field-cell x${num}`);
-  //     }
+  //      if (cells[i].innerHTML > 0) {
+  //     // cells[i].classList.add(`x${cells[i]}`);
+  //     cells[i].className = `field-cell x${num}`;
+  //   } else if (cells[i].innerHTML == 2048) {
+  //     cells[i].classList.add('2048');
   //   }
   // }
 
@@ -307,4 +402,16 @@ document.addEventListener('DOMContentLoaded', () => {
   //       } else if (cells[i].innerHTML == 2048) {
   //         cells[i].classList.add('2048');
   //       }
+
+  function addClassColor(cellElement, number) {
+    console.log(number);
+    console.log(cellElement);
+
+    if (number > 0) {
+      cellElement.className = '';
+      cellElement.className = `field-cell x${number}`;
+    } else if (cellElement.innerHTML == 2048) {
+      cellElement.classList.add('2048');
+    }
+  }
 });
