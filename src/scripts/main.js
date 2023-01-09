@@ -8,14 +8,16 @@ const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
 
-let desk = [
+const defaultDesk = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
 
+let desk = defaultDesk;
 let newDesk;
+const winningValue = 2048;
 let scoreNum = 0;
 const cellsInLine = 4;
 let winSituation = false;
@@ -155,7 +157,7 @@ function left() {
         newRow.splice(cellIndex + 1, 1);
         scoreNum += newRow[cellIndex];
 
-        if (newRow[cellIndex] === 2048) {
+        if (newRow[cellIndex] === winningValue) {
           winSituation = true;
         }
       }
@@ -196,8 +198,10 @@ function isCellMove() {
 
 function checkRows() {
   for (let i = 0; i < cellsInLine; i++) {
-    if (newDesk[i].some(cell => cell === 0)
-      || newDesk[i].some((a, b) => a === newDesk[i][b + 1])) {
+    const checkZero = newDesk[i].some(cell => cell === 0);
+    const checkInd = newDesk[i].some((a, b) => a === newDesk[i][b + 1]);
+
+    if (checkZero || checkInd) {
       return true;
     }
   }
@@ -207,9 +211,7 @@ function checkRows() {
 
 function checkColumns() {
   for (let i = 0; i < cellsInLine; i++) {
-    if (newDesk[i].some((a, b) => a === newDesk[i][b + 1])) {
-      return true;
-    }
+    return newDesk[i].some((a, b) => a === newDesk[i][b + 1]);
   }
 
   return false;
