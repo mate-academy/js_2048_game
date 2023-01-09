@@ -1,143 +1,315 @@
 'use strict';
 
 const table = document.querySelector('tbody');
+const button = document.querySelector('.button');
+const cells = table.querySelectorAll('td');
+const messageWin = document.querySelector('.message-win');
+const messageLose = document.querySelector('.message-lose');
+const messageStart = document.querySelector('.message-start');
 const rows = table.rows;
-const rowsQnt = 4;
 const columnsQnt = 4;
 let total = 0;
 
-function styleUpdater() {
-  const cells = table.querySelectorAll('td');
-  const score = document.querySelector('.game-score');
+function looser() {
+  let result = false;
 
-  for (const cell of cells) {
-    const num = cell.innerText;
+  for (let r = 0; r < rows.length; r++) {
+    const temp = rowArrayer(rows[r]);
 
-    cell.classList.value = '';
-    cell.classList.add('field-cell');
-
-    if (num > 0) {
-      cell.innerText = num;
-      cell.classList.add(`field-cell--${num}`);
-    }
+    temp.forEach((el, ind, arr) => {
+      if (el === arr[ind + 1]) {
+        result = true;
+      }
+    });
   };
 
-  score.innerText = `${total}`;
-};
+  for (let i = 0; i < columnsQnt; i++) {
+    const arr = [
+      +rows[0].children[i].innerText,
+      +rows[1].children[i].innerText,
+      +rows[2].children[i].innerText,
+      +rows[3].children[i].innerText,
+    ];
 
-styleUpdater(); //later to delete
-
-function zeroRemover(row) {
-  for (let c = 0; c < row.length; c++) {
-    if (row[c].innerText === '') {
-      row[c].remove();
-    }
+    arr.forEach((el, ind, ar) => {
+      if (el === ar[ind + 1]) {
+        result = true;
+      };
+    });
   }
 
-  return row;
+  if (!hasEmptyCells() && result === false) {
+    messageLose.classList.remove('hidden');
+  };
 };
 
-function reverser(row) {
-  const orderToInsert = [...row.children].reverse();
+function rowArrayer(row) {
+  const result = [];
 
-  orderToInsert.forEach(el => row.append(el));
-}
-
-function move(row) {
-  let cells = zeroRemover(row.children);
-
-  for (let c = 0; c < cells.length - 1; c++) {
-    if (cells[c].innerText && cells[c + 1].innerText
-        && cells[c].innerText === cells[c + 1].innerText) {
-      const value = cells[c].innerText * 2;
-
-      total += value;
-
-      cells[c].innerText = value;
-      cells[c + 1].innerText = '';
+  for (const ch of row.children) {
+    if (ch.innerText === '') {
+      result.push(0);
+      continue;
     }
+    result.push(Number(ch.innerText));
   };
 
-  cells = zeroRemover(cells);
+  return result;
+};
 
-  while (cells.length < columnsQnt) {
-    row.insertAdjacentHTML('beforeend', `
-      <td class="field-cell"></td>
-    `);
+function rowReverseArrayer(arr, row) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === 0) {
+      row.children[i].innerHTML = '';
+      continue;
+    };
+
+    row.children[i].innerText = arr[i];
   }
 
   styleUpdater();
 }
 
+function move(row) {
+  let filtered = row.filter(el => el > 0);
+
+  for (let i = 0; i < filtered.length - 1; i++) {
+    if (filtered[i] === filtered[i + 1]) {
+      const value = filtered[i] * 2;
+
+      total += value;
+      filtered[i] = value;
+      filtered[i + 1] = 0;
+    };
+  };
+
+  filtered = filtered.filter(el => el > 0);
+
+  while (filtered.length < columnsQnt) {
+    filtered.push(0);
+  };
+
+  return filtered;
+};
+
+function styleUpdater() {
+  const score = document.querySelector('.game-score');
+
+  score.innerText = `${total}`;
+
+  for (let r = 0; r < rows.length; r++) {
+    for (let c = 0; c < columnsQnt; c++) {
+      const num = rows[r].children[c].innerText;
+
+      rows[r].children[c].classList.value = '';
+      rows[r].children[c].classList.add('field-cell');
+
+      if (num !== '') {
+        rows[r].children[c].classList.add(`field-cell--${num}`);
+      }
+    }
+  };
+};
+
 function moveLeft() {
-  for (let row = 0; row < rowsQnt; row++) {
-    move(rows[row]);
-  }
+  for (const row of rows) {
+    let temp = rowArrayer(row);
+
+    temp = move(temp);
+    rowReverseArrayer(temp, row);
+  };
+
+  cellsAdder();
 };
 
 function moveRight() {
-  for (let row = 0; row < rowsQnt; row++) {
-    reverser(rows[row]);
-    move(rows[row]);
-    reverser(rows[row]);
+  for (const row of rows) {
+    let temp = rowArrayer(row);
+
+    temp.reverse();
+    temp = move(temp);
+    temp.reverse();
+    rowReverseArrayer(temp, row);
   }
+  cellsAdder();
 }
 
 function moveUp() {
-  for (let i = 0; i < rows.length; i++) {
-    const tempRow = document.createElement('tr');
+  for (let i = 0; i < columnsQnt; i++) {
+    const arr = [
+      +rows[0].children[i].innerText,
+      +rows[1].children[i].innerText,
+      +rows[2].children[i].innerText,
+      +rows[3].children[i].innerText,
+    ];
 
-    tempRow.append(rows[0].children[i].cloneNode(true));
-    tempRow.append(rows[1].children[i].cloneNode(true));
-    tempRow.append(rows[2].children[i].cloneNode(true));
-    tempRow.append(rows[3].children[i].cloneNode(true));
+    const moved = move(arr);
 
-    move(tempRow);
-
-    rows[0].children[i].innerText = `${tempRow.children[0].innerText}`;
-    rows[1].children[i].innerText = `${tempRow.children[1].innerText}`;
-    rows[2].children[i].innerText = `${tempRow.children[2].innerText}`;
-    rows[3].children[i].innerText = `${tempRow.children[3].innerText}`;
-
-    styleUpdater();
+    rows[0].children[i].innerText = moved[0] === 0 ? '' : moved[0];
+    rows[1].children[i].innerText = moved[1] === 0 ? '' : moved[1];
+    rows[2].children[i].innerText = moved[2] === 0 ? '' : moved[2];
+    rows[3].children[i].innerText = moved[3] === 0 ? '' : moved[3];
   };
+  cellsAdder();
 };
 
 function moveDown() {
-  for (let i = 0; i < rows.length; i++) {
-    const tempRow = document.createElement('tr');
+  for (let i = 0; i < columnsQnt; i++) {
+    const arr = [
+      +rows[0].children[i].innerText,
+      +rows[1].children[i].innerText,
+      +rows[2].children[i].innerText,
+      +rows[3].children[i].innerText,
+    ];
 
-    tempRow.append(rows[0].children[i].cloneNode(true));
-    tempRow.append(rows[1].children[i].cloneNode(true));
-    tempRow.append(rows[2].children[i].cloneNode(true));
-    tempRow.append(rows[3].children[i].cloneNode(true));
+    arr.reverse();
 
-    reverser(tempRow);
-    move(tempRow);
-    reverser(tempRow);
+    const moved = move(arr);
 
-    rows[0].children[i].innerText = `${tempRow.children[0].innerText}`;
-    rows[1].children[i].innerText = `${tempRow.children[1].innerText}`;
-    rows[2].children[i].innerText = `${tempRow.children[2].innerText}`;
-    rows[3].children[i].innerText = `${tempRow.children[3].innerText}`;
+    moved.reverse();
 
-    styleUpdater();
+    rows[0].children[i].innerText = moved[0] === 0 ? '' : moved[0];
+    rows[1].children[i].innerText = moved[1] === 0 ? '' : moved[1];
+    rows[2].children[i].innerText = moved[2] === 0 ? '' : moved[2];
+    rows[3].children[i].innerText = moved[3] === 0 ? '' : moved[3];
   };
+  cellsAdder();
 }
 
-document.addEventListener('keyup', (e) => {
-  switch (e.code) {
-    case 'ArrowLeft':
-      moveLeft();
+function gameStarter() {
+  const index1 = Math.floor(Math.random() * cells.length);
+  let index2 = Math.floor(Math.random() * cells.length);
+
+  while (index1 === index2) {
+    index2 = Math.floor(Math.random() * cells.length);
+  }
+
+  const value1 = cellsCreator();
+  let value2 = cellsCreator();
+
+  while (value1 === value2) {
+    value2 = cellsCreator();
+  }
+
+  cells[index1].innerText = cellsCreator();
+  cells[index2].innerText = cellsCreator();
+
+  styleUpdater();
+};
+
+function cellsCreator() {
+  let resultCell;
+  const probability = Math.random();
+
+  if (probability < 0.1) {
+    resultCell = 4;
+  } else {
+    resultCell = 2;
+  }
+
+  return resultCell;
+}
+
+function restarter() {
+  for (const cell of cells) {
+    cell.innerHTML = '';
+    cell.classList.value = '';
+    cell.className = 'field-cell';
+  }
+  total = 0;
+  styleUpdater();
+}
+
+function cellsAdder() {
+  if (!hasEmptyCells()) {
+    return;
+  }
+
+  let wasAdded = false;
+
+  while (!wasAdded) {
+    const index = Math.floor(Math.random() * cells.length);
+
+    if (cells[index].innerText === '') {
+      cells[index].innerText = cellsCreator();
+      wasAdded = true;
+    };
+  };
+  styleUpdater();
+};
+
+function hasEmptyCells() {
+  for (const cell of cells) {
+    if (cell.innerText === '') {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+function messageUpdater() {
+  for (const cell of cells) {
+    if (cell.innerText === '2048') {
+      messageWin.classList.remove('hidden');
+    };
+  };
+};
+
+button.addEventListener('click', e => {
+  switch (e.target.innerText) {
+    case 'Start':
+      e.target.classList.value = '';
+      e.target.classList.add('button', 'restart');
+      e.target.innerText = 'Restart';
+      messageStart.classList.add('hidden');
+
+      gameStarter();
       break;
-    case 'ArrowRight':
-      moveRight();
+    case 'Restart':
+      e.target.classList.value = '';
+      e.target.classList.add('button', 'start');
+      e.target.innerText = 'Start';
+      messageStart.classList.remove('hidden');
+      messageWin.classList.add('hidden');
+      messageLose.classList.add('hidden');
+      restarter();
       break;
-    case 'ArrowUp':
-      moveUp();
-      break;
-    case 'ArrowDown':
-      moveDown();
-      break;
+  };
+});
+
+document.addEventListener('keyup', e => {
+  if (e.code === 'ArrowLeft') {
+    moveLeft();
+    styleUpdater();
+    messageUpdater();
+    looser();
+  };
+});
+
+document.addEventListener('keyup', e => {
+  if (e.code === 'ArrowRight') {
+    moveRight();
+    styleUpdater();
+    messageUpdater();
+    looser();
+  };
+});
+
+document.addEventListener('keyup', e => {
+  if (e.code === 'ArrowUp') {
+    moveUp();
+    styleUpdater();
+    messageUpdater();
+    looser();
+  };
+});
+
+document.addEventListener('keyup', e => {
+  if (e.code === 'ArrowDown') {
+    moveDown();
+    messageUpdater();
+    styleUpdater();
+    looser();
   };
 });
