@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultMessageLose = document.querySelector('.message-lose');
   const messageStart = document.querySelector('.message-start');
   const start = document.querySelector('.start');
-  // const reStart = document.querySelector('.restart-lose');
   const width = 4;
   const cells = [];
   let score = 0;
@@ -22,9 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
       gameField.appendChild(cell);
       cells.push(cell);
     }
-
-    // generateNumber();
-    // generateNumber();
   }
 
   createField();
@@ -105,13 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const row = [Number(totalOne), Number(totalTwo), Number(totalThree), Number(totalFour)];
 
-        const filteredRow = row.filter(num => num);
+        const filteredRowNum = row.filter(num => num !== 0);
 
-        const missing = 4 - filteredRow.length;
-
-        const zeros = Array(missing).fill(0);
-
-        const newRow = zeros.concat(filteredRow);
+        const zeros = Array(4 - filteredRowNum.length).fill(0);
+        const newRow = zeros.concat(filteredRowNum);
 
         cells[i].innerHTML = newRow[0];
         cells[i + 1].innerHTML = newRow[1];
@@ -135,13 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const row = [Number(totalOne), Number(totalTwo), Number(totalThree), Number(totalFour)];
 
-        const filteredRow = row.filter(num => num);
+        const filteredNum = row.filter(num => num !== 0);
 
-        const missing = 4 - filteredRow.length;
-
-        const zeros = Array(missing).fill(0);
-
-        const newRow = filteredRow.concat(zeros);
+        const zeros = Array(4 - filteredNum.length).fill(0);
+        const newRow = filteredNum.concat(zeros);
 
         cells[i].innerHTML = newRow[0];
         cells[i + 1].innerHTML = newRow[1];
@@ -162,13 +152,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const column = [Number(totalOne), Number(totalTwo), Number(totalThree), Number(totalFour)];
 
-      const filteredColumn = column.filter(num => num);
+      const filteredColumnNum = column.filter(num => num !== 0);
 
-      const missing = 4 - filteredColumn.length;
+      const zeros = Array(4 - filteredColumnNum.length).fill(0);
 
-      const zeros = Array(missing).fill(0);
-
-      const newColumn = zeros.concat(filteredColumn);
+      const newColumn = zeros.concat(filteredColumnNum);
 
       cells[i].innerHTML = newColumn[0];
       cells[i + width].innerHTML = newColumn[1];
@@ -188,13 +176,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const column = [Number(totalOne), Number(totalTwo), Number(totalThree), Number(totalFour)];
 
-      const filteredColumn = column.filter(num => num);
+      const filteredColumnNum = column.filter(num => num !== 0);
 
-      const missing = 4 - filteredColumn.length;
+      const zeros = Array(4 - filteredColumnNum.length).fill(0);
 
-      const zeros = Array(missing).fill(0);
-
-      const newColumn = filteredColumn.concat(zeros);
+      const newColumn = filteredColumnNum.concat(zeros);
 
       cells[i].innerHTML = newColumn[0];
       cells[i + width].innerHTML = newColumn[1];
@@ -233,22 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
     win();
   }
 
-  // keycodes
-  // function control(e) {
-  //   if (e.keyCode === 39) {
-  //     keyRight();
-  //   } else if (e.keyCode === 37) {
-  //     keyLeft();
-  //   } else if (e.keyCode === 38) {
-  //     keyUp();
-  //   } else if (e.keyCode === 40) {
-  //     keyDown();
-  //   }
-  // }
-
-  // document.addEventListener('keyup', control);
-
-  // document.addEventListener('keyup', (e) => {
   function moveArror(e) {
     if (e.code === 'ArrowRight') {
       moveRight();
@@ -274,34 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.addEventListener('keyup', moveArror);
-
-  // function keyRight() {
-  //   moveRight();
-  //   combineRows();
-  //   moveRight();
-  //   generateNumber();
-  // }
-
-  // function keyLeft() {
-  //   moveLeft();
-  //   combineRows();
-  //   moveLeft();
-  //   generateNumber();
-  // }
-
-  // function keyDown() {
-  //   moveDown();
-  //   combineColumn();
-  //   moveDown();
-  //   generateNumber();
-  // }
-
-  // function keyUp() {
-  //   moveUp();
-  //   combineColumn();
-  //   moveUp();
-  //   generateNumber();
-  // }
 
   function win() {
     for (let i = 0; i < cells.length; i++) {
