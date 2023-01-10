@@ -13,8 +13,8 @@ let total = 0;
 function looser() {
   let result = false;
 
-  for (let r = 0; r < rows.length; r++) {
-    const temp = rowArrayer(rows[r]);
+  for (let row = 0; row < rows.length; row++) {
+    const temp = rowArrayer(rows[row]);
 
     temp.forEach((el, ind, arr) => {
       if (el === arr[ind + 1]) {
@@ -46,12 +46,12 @@ function looser() {
 function rowArrayer(row) {
   const result = [];
 
-  for (const ch of row.children) {
-    if (ch.innerText === '') {
+  for (const child of row.children) {
+    if (child.innerText === '') {
       result.push(0);
       continue;
     }
-    result.push(Number(ch.innerText));
+    result.push(Number(child.innerText));
   };
 
   return result;
@@ -97,15 +97,15 @@ function styleUpdater() {
 
   score.innerText = `${total}`;
 
-  for (let r = 0; r < rows.length; r++) {
-    for (let c = 0; c < columnsQnt; c++) {
-      const num = rows[r].children[c].innerText;
+  for (let row = 0; row < rows.length; row++) {
+    for (let column = 0; column < columnsQnt; column++) {
+      const num = rows[row].children[column].innerText;
 
-      rows[r].children[c].classList.value = '';
-      rows[r].children[c].classList.add('field-cell');
+      rows[row].children[column].classList.value = '';
+      rows[row].children[column].classList.add('field-cell');
 
       if (num !== '') {
-        rows[r].children[c].classList.add(`field-cell--${num}`);
+        rows[row].children[column].classList.add(`field-cell--${num}`);
       }
     }
   };
@@ -134,33 +134,31 @@ function moveRight() {
   cellsAdder();
 }
 
+function columnArayer(collection, index) {
+  return [
+    +collection[0].children[index].innerText,
+    +collection[1].children[index].innerText,
+    +collection[2].children[index].innerText,
+    +collection[3].children[index].innerText,
+  ];
+}
+
 function moveUp() {
   for (let i = 0; i < columnsQnt; i++) {
-    const arr = [
-      +rows[0].children[i].innerText,
-      +rows[1].children[i].innerText,
-      +rows[2].children[i].innerText,
-      +rows[3].children[i].innerText,
-    ];
+    const arr = columnArayer(rows, i);
 
     const moved = move(arr);
 
-    rows[0].children[i].innerText = moved[0] === 0 ? '' : moved[0];
-    rows[1].children[i].innerText = moved[1] === 0 ? '' : moved[1];
-    rows[2].children[i].innerText = moved[2] === 0 ? '' : moved[2];
-    rows[3].children[i].innerText = moved[3] === 0 ? '' : moved[3];
+    [...rows].forEach((row, index) => {
+      row.children[i].innerText = moved[index] === 0 ? '' : moved[index];
+    });
   };
   cellsAdder();
 };
 
 function moveDown() {
   for (let i = 0; i < columnsQnt; i++) {
-    const arr = [
-      +rows[0].children[i].innerText,
-      +rows[1].children[i].innerText,
-      +rows[2].children[i].innerText,
-      +rows[3].children[i].innerText,
-    ];
+    const arr = columnArayer(rows, i);
 
     arr.reverse();
 
@@ -168,10 +166,9 @@ function moveDown() {
 
     moved.reverse();
 
-    rows[0].children[i].innerText = moved[0] === 0 ? '' : moved[0];
-    rows[1].children[i].innerText = moved[1] === 0 ? '' : moved[1];
-    rows[2].children[i].innerText = moved[2] === 0 ? '' : moved[2];
-    rows[3].children[i].innerText = moved[3] === 0 ? '' : moved[3];
+    [...rows].forEach((row, index) => {
+      row.children[i].innerText = moved[index] === 0 ? '' : moved[index];
+    });
   };
   cellsAdder();
 }
@@ -273,6 +270,7 @@ button.addEventListener('click', e => {
       messageStart.classList.remove('hidden');
       messageWin.classList.add('hidden');
       messageLose.classList.add('hidden');
+
       restarter();
       break;
   };
