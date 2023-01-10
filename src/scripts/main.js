@@ -253,25 +253,33 @@ function messageUpdater() {
   };
 };
 
+function startHandler(e) {
+  e.target.classList.value = '';
+  e.target.classList.add('button', 'restart');
+  e.target.innerText = 'Restart';
+  messageStart.classList.add('hidden');
+
+  gameStarter();
+}
+
+function restartHandler(e) {
+  e.target.classList.value = '';
+  e.target.classList.add('button', 'start');
+  e.target.innerText = 'Start';
+  messageStart.classList.remove('hidden');
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
+
+  restarter();
+}
+
 button.addEventListener('click', e => {
   switch (e.target.innerText) {
     case 'Start':
-      e.target.classList.value = '';
-      e.target.classList.add('button', 'restart');
-      e.target.innerText = 'Restart';
-      messageStart.classList.add('hidden');
-
-      gameStarter();
+      startHandler(e);
       break;
     case 'Restart':
-      e.target.classList.value = '';
-      e.target.classList.add('button', 'start');
-      e.target.innerText = 'Start';
-      messageStart.classList.remove('hidden');
-      messageWin.classList.add('hidden');
-      messageLose.classList.add('hidden');
-
-      restarter();
+      restartHandler(e);
       break;
   };
 });
