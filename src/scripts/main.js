@@ -115,10 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ----------------------------
 
-        const number = cells[i].innerHTML;
-        const cellElement = cells[i];
+        // if (i > 0) {
+        //   const number = cells[i].innerHTML;
+        //   const cellElement = cells[i];
 
-        addClassColor(cellElement, number);
+        //   addClassColor(cellElement, number);
+        // }
+
+        // const number = cells[i].innerHTML;
+        // const cellElement = cells[i];
+
+        // addClassColor(cellElement, number);
         // ---------------------------
 
         // console.log(number);
@@ -287,11 +294,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const number = cells[i].innerHTML;
         const cellElement = cells[i];
 
+        console.log(number);
+        console.log(cellElement);
+
         addClassColor(cellElement, number);
       }
     }
     win();
   }
+
+  // combineRows()
 
   function combineColumn() {
     for (let i = 0; i < 12; i++) {
@@ -412,6 +424,6 @@ document.addEventListener('DOMContentLoaded', () => {
       cellElement.className = `field-cell x${number}`;
     } else if (cellElement.innerHTML == 2048) {
       cellElement.classList.add('2048');
-    }
+    };
   }
 });
