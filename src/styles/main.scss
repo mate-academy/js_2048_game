@@ -10,6 +10,18 @@ body {
   font-weight: 900;
 }
 
+
+.animation {
+  position: relative;
+  animation: fade-in-up 1.8s ease;
+}
+
+.score-animation {
+  position: absolute;
+  opacity: 0;
+  top: 20px;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -23,55 +35,66 @@ body {
 
   &--2 {
     background: #eee4da;
+    animation: showBlock 0.3s ease;
   }
 
   &--4 {
     background: #ede0c8;
+    animation: showBlock 0.3s ease;
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
+    animation: showBlock 0.3s ease;
   }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+    animation: showBlock 0.8s ease;
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+    animation: showBlock 0.3s ease;
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+    animation: showBlock 0.3s ease;
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    animation: showBlock 0.3s ease;
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    animation: showBlock 0.3s ease;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    animation: showBlock 0.3s ease;
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+    animation: showBlock 0.3s ease;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    animation: showBlock 0.3s ease;
   }
 }
 
@@ -105,6 +128,7 @@ h1 {
 }
 
 .info {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -184,4 +208,26 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes showBlock {
+  0% {
+   opacity: 0.5;
+   scale: 0.8;
+  }
+  100% {
+   opacity: 1;
+   scale: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  0%{
+    top: 0;
+    opacity: 1;
+  }
+  100% {
+    top: -30px;
+    opacity: 0;
+  }
 }
