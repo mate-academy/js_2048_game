@@ -10,7 +10,6 @@ body {
   font-weight: 900;
 }
 
-
 .animation {
   position: relative;
   animation: fade-in-up 1.8s ease;
@@ -212,17 +211,17 @@ h1 {
 
 @keyframes showBlock {
   0% {
-   opacity: 0.5;
-   scale: 0.8;
+    opacity: 0.5;
+    scale: 0.8;
   }
   100% {
-   opacity: 1;
-   scale: 1;
+    opacity: 1;
+    scale: 1;
   }
 }
 
 @keyframes fade-in-up {
-  0%{
+  0% {
     top: 0;
     opacity: 1;
   }
