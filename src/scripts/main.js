@@ -46,8 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     generateNumber();
+    addClassColor();
     generateNumber();
-    document.addEventListener('keyup', moveArror);
+    addClassColor();
+    document.addEventListener('keyup', moveArrow);
   });
 
   // generate a number randomly
@@ -60,48 +62,18 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       generateNumber();
     }
-    // --------------------------
-
-    // if (cells[randomNumber].innerHTML > 0) {
-    //   cells[randomNumber].classList.add(`x${randomNumber}`);
-    // } else if (cells[randomNumber].innerHTML == 2048) {
-    //   cells[randomNumber].classList.add('2048');
-    // }
-
-    // console.log(cells[randomNumber]);
-    // ---------------------------
-
-    // if (cells[randomNumber].innerHTML == 2) {
-    //   cells[randomNumber].classList.add(`x${2}`);
-    // } else if (cells[randomNumber].innerHTML == 4) {
-    //   cells[randomNumber].classList.add('x4');
-    // } else if (cells[randomNumber].innerHTML == 8) {
-    //   cells[randomNumber].classList.add('x8');
-    // }
-
-    // console.log(cells[randomNumber]);
   };
-
-  // function addClasses(randomNumber, cell) {
-  //   if (cells[randomNumber].innerHTML > 0) {
-  //     cells[randomNumber].classList.add(`x${randomNumber}`);
-  //   } else if (cells[randomNumber].innerHTML === 2048) {
-  //     cells[randomNumber].classList.add('2048');
-  //   }
-  // }
-
-  // addClasses();
 
   // swipe right
   function moveRight() {
     for (let i = 0; i < cells.length; i++) {
       if (i % 4 === 0) {
-        const totalOne = cells[i].innerHTML;
-        const totalTwo = cells[i + 1].innerHTML;
-        const totalThree = cells[i + 2].innerHTML;
-        const totalFour = cells[i + 3].innerHTML;
+        const one = cells[i].innerHTML;
+        const two = cells[i + 1].innerHTML;
+        const three = cells[i + 2].innerHTML;
+        const four = cells[i + 3].innerHTML;
 
-        const row = [Number(totalOne), Number(totalTwo), Number(totalThree), Number(totalFour)];
+        const row = [Number(one), Number(two), Number(three), Number(four)];
 
         const filteredRowNum = row.filter(num => num !== 0);
 
@@ -112,34 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         cells[i + 1].innerHTML = newRow[1];
         cells[i + 2].innerHTML = newRow[2];
         cells[i + 3].innerHTML = newRow[3];
-
-        // ----------------------------
-
-        // if (i > 0) {
-        //   const number = cells[i].innerHTML;
-        //   const cellElement = cells[i];
-
-        //   addClassColor(cellElement, number);
-        // }
-
-        // const number = cells[i].innerHTML;
-        // const cellElement = cells[i];
-
-        // addClassColor(cellElement, number);
-        // ---------------------------
-
-        // console.log(number);
-
-        // if (cells[i].innerHTML > 0) {
-        //   cells[i].className = '';
-        //   cells[i].className = `field-cell x${number}`;
-        // } else if (cells[i].innerHTML == 2048) {
-        //   cells[i].classList.add('2048');
-        // }
-
-        // console.log(cells[i]);
-
-        // ----------------------------
       }
     }
   }
@@ -148,12 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function moveLeft() {
     for (let i = 0; i < 16; i++) {
       if (i % 4 === 0) {
-        const totalOne = cells[i].innerHTML;
-        const totalTwo = cells[i + 1].innerHTML;
-        const totalThree = cells[i + 2].innerHTML;
-        const totalFour = cells[i + 3].innerHTML;
+        const one = cells[i].innerHTML;
+        const two = cells[i + 1].innerHTML;
+        const three = cells[i + 2].innerHTML;
+        const four = cells[i + 3].innerHTML;
 
-        const row = [Number(totalOne), Number(totalTwo), Number(totalThree), Number(totalFour)];
+        const row = [Number(one), Number(two), Number(three), Number(four)];
 
         const filteredNum = row.filter(num => num !== 0);
 
@@ -166,40 +110,23 @@ document.addEventListener('DOMContentLoaded', () => {
         cells[i + 3].innerHTML = newRow[3];
 
         // ----------------------------
-
         // const number = cells[i].innerHTML;
         // const cellElement = cells[i];
 
         // addClassColor(cellElement, number);
-        // --------------------------
-
-        // console.log(number);
-
-        // if (cells[i].innerHTML > 0) {
-        //   cells[i].className = '';
-        //   cells[i].className = `field-cell x${number}`;
-        // } else if (cells[i].innerHTML == 2048) {
-        //   cells[i].classList.add('2048');
-        // }
-
-        // console.log(cells[i]);
-
-        // ----------------------------
       }
     }
   }
 
-  moveLeft();
-
   // swipe down
   function moveDown() {
     for (let i = 0; i < 4; i++) {
-      const totalOne = cells[i].innerHTML;
-      const totalTwo = cells[i + width].innerHTML;
-      const totalThree = cells[i + width * 2].innerHTML;
-      const totalFour = cells[i + width * 3].innerHTML;
+      const one = cells[i].innerHTML;
+      const two = cells[i + width].innerHTML;
+      const three = cells[i + width * 2].innerHTML;
+      const four = cells[i + width * 3].innerHTML;
 
-      const column = [Number(totalOne), Number(totalTwo), Number(totalThree), Number(totalFour)];
+      const column = [Number(one), Number(two), Number(three), Number(four)];
 
       const filteredColumnNum = column.filter(num => num !== 0);
 
@@ -213,37 +140,22 @@ document.addEventListener('DOMContentLoaded', () => {
       cells[i + width * 3].innerHTML = newColumn[3];
 
       // ----------------------------
-
       // const number = cells[i].innerHTML;
       // const cellElement = cells[i];
 
       // addClassColor(cellElement, number);
-      // -----------------------------
-
-      // console.log(number);
-
-      // if (cells[i].innerHTML > 0) {
-      //   cells[i].className = '';
-      //   cells[i].className = `field-cell x${number}`;
-      // } else if (cells[i].innerHTML == 2048) {
-      //   cells[i].classList.add('2048');
-      // }
-
-      // console.log(cells[i]);
-
-      // ----------------------------
     }
   }
 
   // swipe up
   function moveUp() {
     for (let i = 0; i < 4; i++) {
-      const totalOne = cells[i].innerHTML;
-      const totalTwo = cells[i + width].innerHTML;
-      const totalThree = cells[i + width * 2].innerHTML;
-      const totalFour = cells[i + width * 3].innerHTML;
+      const one = cells[i].innerHTML;
+      const two = cells[i + width].innerHTML;
+      const three = cells[i + width * 2].innerHTML;
+      const four = cells[i + width * 3].innerHTML;
 
-      const column = [Number(totalOne), Number(totalTwo), Number(totalThree), Number(totalFour)];
+      const column = [Number(one), Number(two), Number(three), Number(four)];
 
       const filteredColumnNum = column.filter(num => num !== 0);
 
@@ -257,25 +169,10 @@ document.addEventListener('DOMContentLoaded', () => {
       cells[i + width * 3].innerHTML = newColumn[3];
 
       // ----------------------------
-
       // const number = cells[i].innerHTML;
       // const cellElement = cells[i];
 
       // addClassColor(cellElement, number);
-      // --------------------------
-
-      // console.log(number);
-
-      // if (cells[i].innerHTML > 0) {
-      //   cells[i].className = '';
-      //   cells[i].className = `field-cell x${number}`;
-      // } else if (cells[i].innerHTML == 2048) {
-      //   cells[i].classList.add('2048');
-      // }
-
-      // console.log(cells[i]);
-
-      // ----------------------------
     }
   }
 
@@ -285,25 +182,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const combinedTotal
          = Number(cells[i].innerHTML) + Number(cells[i + 1].innerHTML);
 
-        cells[i + 1].innerHTML = combinedTotal;
-        cells[i].innerHTML = 0;
+        cells[i + 1].innerHTML = 0;
+        cells[i].innerHTML = combinedTotal;
         score += combinedTotal;
         scores.innerHTML = score;
-        // -----------------------------
-
-        const number = cells[i].innerHTML;
-        const cellElement = cells[i];
-
-        console.log(number);
-        console.log(cellElement);
-
-        addClassColor(cellElement, number);
       }
     }
     win();
   }
-
-  // combineRows()
 
   function combineColumn() {
     for (let i = 0; i < 12; i++) {
@@ -315,49 +201,55 @@ document.addEventListener('DOMContentLoaded', () => {
         cells[i + width].innerHTML = 0;
         score += combinedTotal;
         scores.innerHTML = score;
-
-        // ------------------------
-        const number = cells[i].innerHTML;
-        const cellElement = cells[i];
-
-        addClassColor(cellElement, number);
       }
     }
     win();
   }
 
-  function moveArror(e) {
+  function moveArrow(e) {
     if (e.code === 'ArrowRight') {
       moveRight();
       combineRows();
+      addClassColor();
       moveRight();
+      addClassColor();
       generateNumber();
+      addClassColor();
     } else if (e.code === 'ArrowLeft') {
       moveLeft();
       combineRows();
+      addClassColor();
       moveLeft();
+      addClassColor();
       generateNumber();
+      addClassColor();
     } else if (e.code === 'ArrowDown') {
       moveDown();
       combineColumn();
+      addClassColor();
       moveDown();
+      addClassColor();
       generateNumber();
+      addClassColor();
     } else if (e.code === 'ArrowUp') {
       moveUp();
       combineColumn();
+      addClassColor();
       moveUp();
+      addClassColor();
       generateNumber();
+      addClassColor();
     }
   }
 
-  document.addEventListener('keyup', moveArror);
+  document.addEventListener('keyup', moveArrow);
 
   function win() {
     for (let i = 0; i < cells.length; i++) {
       if (cells[i].innerHTML == 2048) {
         messageStart.classList.add('hidden');
         resultMessageWin.classList.remove('hidden');
-        document.removeEventListener('keyup', moveArror);
+        document.removeEventListener('keyup', moveArrow);
       }
     }
   }
@@ -377,53 +269,69 @@ document.addEventListener('DOMContentLoaded', () => {
       resultMessageLose.classList.remove('hidden');
       start.classList.remove('restart');
       start.classList.add('restart-lose');
-      document.removeEventListener('keyup', moveArror);
+      document.removeEventListener('keyup', moveArrow);
     }
   }
 
-  // function addClassColor(num) {
-  //      if (cells[i].innerHTML > 0) {
-  //     // cells[i].classList.add(`x${cells[i]}`);
-  //     cells[i].className = `field-cell x${num}`;
-  //   } else if (cells[i].innerHTML == 2048) {
-  //     cells[i].classList.add('2048');
-  //   }
-  // }
+  function addClassColor() {
+    for (let i = 0; i < cells.length; i++) {
+      if (cells[i].innerHTML == 0) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell');
+      } else if (cells[i].innerHTML == 2) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell', 'x2');
+      } else if (cells[i].innerHTML == 4) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell', 'x4');
+      } else if (cells[i].innerHTML == 8) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell', 'x8');
+      } else if (cells[i].innerHTML == 16) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell', 'x16');
+      } else if (cells[i].innerHTML == 32) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell', 'x32');
+      } else if (cells[i].innerHTML == 64) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell', 'x64');
+      } else if (cells[i].innerHTML == 128) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell', 'x128');
+      } else if (cells[i].innerHTML == 256) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell', 'x256');
+      } else if (cells[i].innerHTML == 512) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell', 'x512');
+      } else if (cells[i].innerHTML == 1024) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell', 'x1024');
+      } else if (cells[i].innerHTML == 2048) {
+        cells[i].className = '';
+        cells[i].classList.add('field-cell', 'x2048');
+      }
+    }
+  }
 
-  // addColorClass();
+  // function addClassColor(number) {
+  // console.log(number);
 
   // for (let i = 0; i < cells.length; i++) {
-  //   const num = cells[i];
-
   //   if (cells[i].innerHTML > 0) {
-  //     // cells[i].classList.add(`x${cells[i]}`);
-  //     cells[i].className = `field-cell x${num}`;
+  //     cells[i].className = '';
+  //     cells[i].className = `field-cell x${number}`;
   //   } else if (cells[i].innerHTML == 2048) {
   //     cells[i].classList.add('2048');
   //   }
-
-  //   console.log(cells[i]);
   // }
-  // =======
-  // const num = cells[i];
 
-  //       if (cells[i].innerHTML > 0) {
-  //         // cells[i].classList.add(`x${cells[i]}`);
-  //         // cells[i].className = `field-cell x${num}`;
-  //         cells[i].classList.add(`field-cell x${num}`);
-  //       } else if (cells[i].innerHTML == 2048) {
-  //         cells[i].classList.add('2048');
-  //       }
+  // for (let i = 0; i < cells.length; i++) {
+  //   if (number > 0) {
+  //     cells[i].className = '';
+  //     cells[i].className = `field-cell x${number}`;
 
-  function addClassColor(cellElement, number) {
-    console.log(number);
-    console.log(cellElement);
-
-    if (number > 0) {
-      cellElement.className = '';
-      cellElement.className = `field-cell x${number}`;
-    } else if (cellElement.innerHTML == 2048) {
-      cellElement.classList.add('2048');
-    };
-  }
+  //   }
+  // }
 });
