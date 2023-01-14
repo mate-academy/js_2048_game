@@ -13,14 +13,18 @@ let score = 0;
 
 start.addEventListener('click', () => {
   init();
-  messageHidden();
-  start.classList.remove('start');
-  start.classList.add('restart');
-  start.textContent = 'Restart'
-  gameScore.textContent = score;
+  hideMessages();
+  handleStart();
 });
 
-function messageHidden() {
+function handleStart() {
+  start.classList.remove('start');
+  start.classList.add('restart');
+  start.textContent = 'Restart';
+  gameScore.textContent = score;
+}
+
+function hideMessages() {
   for (const message of messageList) {
     message.classList.add('hidden');
   }
@@ -71,25 +75,25 @@ function draw() {
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const td = htmlElements[y][x];
-      const v = cells[y][x];
+      const cellValue = cells[y][x];
 
-      td.innerHTML = v === 0 ? '' : String(v);
+      td.innerHTML = cellValue === 0 ? '' : String(cellValue);
 
-      if (v === 0) {
+      if (cellValue === 0) {
         td.removeAttribute('class');
         td.classList.add('field-cell');
       } else {
         td.removeAttribute('class');
         td.classList.add(`field-cell`);
-        td.classList.add(`field-cell--${v}`);
+        td.classList.add(`field-cell--${cellValue}`);
       }
     }
   }
 }
 
 function slide(array, sizeGame) {
-  function filterEmty(a) {
-    return a.filter(v => v !== 0);
+  function filterEmty(arrayCells) {
+    return arrayCells.filter(value => value !== 0);
   }
 
   let arr = array;
@@ -184,7 +188,7 @@ function moveDown() {
   return changed;
 }
 
-function isWin() {
+function checkIsWin() {
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       if (cells[y][x] === 2048) {
@@ -246,14 +250,14 @@ document.addEventListener('keyup', (e) => {
   if (isGameOver()) {
     const messageLose = document.querySelector('.message-lose');
 
-    messageHidden();
+    hideMessages();
     messageLose.classList.toggle('hidden');
   }
 
-  if (isWin()) {
+  if (checkIsWin()) {
     const messageWin = document.querySelector('.message-win');
 
-    messageHidden();
+    hideMessages();
     messageWin.classList.toggle('hidden');
   }
 
