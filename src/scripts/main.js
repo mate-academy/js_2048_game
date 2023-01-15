@@ -135,7 +135,7 @@ const checkMovie = () => {
     });
   }
 
-  return UpToDown === false && leftToRigth === false;
+  return !UpToDown && !leftToRigth;
 };
 
 const getElementWithZeroValue = () => {
@@ -309,51 +309,57 @@ const UpOrDown = (said) => {
 /* listeners */
 
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') {
-    if (!checkOnWin()) {
-      leftOrRight();
+  switch (true) {
+    case e.key === 'ArrowLeft': {
+      if (!checkOnWin()) {
+        leftOrRight();
+      }
+
+      if (!getElementWithZeroValue(arrayObject).length) {
+        if (checkMovie()) {
+          restartGame();
+        };
+      }
+      break;
     }
 
-    if (!getElementWithZeroValue(arrayObject).length) {
-      if (checkMovie()) {
-        restartGame();
-      };
-    }
-  }
+    case e.key === 'ArrowRight': {
+      if (!checkOnWin()) {
+        leftOrRight('right');
+      }
 
-  if (e.key === 'ArrowRight') {
-    if (!checkOnWin()) {
-      leftOrRight('right');
-    }
-
-    if (!getElementWithZeroValue(arrayObject).length) {
-      if (checkMovie()) {
-        restartGame();
-      };
-    }
-  }
-
-  if (e.key === 'ArrowDown') {
-    if (!checkOnWin()) {
-      UpOrDown('Down');
+      if (!getElementWithZeroValue(arrayObject).length) {
+        if (checkMovie()) {
+          restartGame();
+        };
+      }
+      break;
     }
 
-    if (!getElementWithZeroValue(arrayObject).length) {
-      if (!checkMovie()) {
-        restartGame();
-      };
-    }
-  }
+    case e.key === 'ArrowDown': {
+      if (!checkOnWin()) {
+        UpOrDown('Down');
+      }
 
-  if (e.key === 'ArrowUp') {
-    if (!checkOnWin()) {
-      UpOrDown();
+      if (!getElementWithZeroValue(arrayObject).length) {
+        if (!checkMovie()) {
+          restartGame();
+        };
+      }
+      break;
     }
 
-    if (!getElementWithZeroValue(arrayObject).length) {
-      if (checkMovie()) {
-        restartGame();
-      };
+    case e.key === 'ArrowUp': {
+      if (!checkOnWin()) {
+        UpOrDown();
+      }
+
+      if (!getElementWithZeroValue(arrayObject).length) {
+        if (checkMovie()) {
+          restartGame();
+        };
+      }
+      break;
     }
   }
 });
