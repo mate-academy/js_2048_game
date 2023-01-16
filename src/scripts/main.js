@@ -31,7 +31,7 @@ restartButton.hidden = true;
 document.querySelector('.controls').append(restartButton);
 
 const checkIfHaveMoves = () => {
-  if ([...cells].filter(cell => cell.classList.length === 1).length > 0) {
+  if (cells.filter(cell => cell.classList.length === 1).length > 0) {
     return true;
   }
 
@@ -195,7 +195,7 @@ const restartButtonCallback = () => {
   innit();
 };
 
-const documentCallbak = (e) => {
+const keydownCallback = (e) => {
   e.preventDefault();
 
   if (!checkIfHaveMoves()) {
@@ -203,7 +203,7 @@ const documentCallbak = (e) => {
     messageLoseElement.classList.remove('hidden');
   };
 
-  const currentCellsValues = [...cells].map(cell => cell.textContent);
+  const currentCellsValues = cells.map(cell => cell.textContent);
 
   if (!isPlaying) {
     return;
@@ -228,7 +228,7 @@ const documentCallbak = (e) => {
     return;
   }
 
-  const newCellsValues = [...cells].map(cell => cell.textContent);
+  const newCellsValues = cells.map(cell => cell.textContent);
 
   const hasChanged = currentCellsValues.filter(
     (value, i) => value !== newCellsValues[i]).length;
@@ -240,4 +240,4 @@ const documentCallbak = (e) => {
 
 startButton.addEventListener('click', startButtonCallback);
 restartButton.addEventListener('click', restartButtonCallback);
-document.addEventListener('keydown', documentCallbak);
+document.addEventListener('keydown', keydownCallback);
