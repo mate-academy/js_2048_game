@@ -4,9 +4,12 @@ const gameField = document.querySelector('.game-field');
 const fieldRows = document.querySelectorAll('.field-row');
 const button = document.querySelector('button');
 const score = document.querySelector('.game-score');
+const highScore = document.querySelector('.game-high-score');
 const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
+const userDataKey = 'highScore';
+const userData = localStorage.getItem(userDataKey);
 const cellsCoords = {
   0: [0, 0, 0, 0],
   1: [0, 0, 0, 0],
@@ -17,6 +20,10 @@ let startTouchX;
 let startTouchY;
 let endTouchX;
 let endTouchY;
+
+if (userData) {
+  highScore.innerText = userData;
+}
 
 button.addEventListener('click', (e) => {
   if (e.target.classList.contains('start')) {
@@ -88,6 +95,16 @@ document.addEventListener('keyup', (e) => {
       break;
   }
 });
+
+function setHighScore() {
+  const infoScore = +score.innerText;
+  const infoHighScore = +highScore.innerText;
+
+  if (infoScore > infoHighScore) {
+    highScore.innerText = score.innerText;
+    localStorage.setItem(userDataKey, infoScore);
+  }
+}
 
 function actionMix(direction) {
   shift(direction);
@@ -259,5 +276,6 @@ function checkEndOfGame() {
 
   if (lose) {
     messageLose.hidden = false;
+    setHighScore();
   }
 }
