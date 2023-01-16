@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
       cells.push(cell);
     }
   }
-
   createField();
 
   // click Start button
@@ -51,6 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
     addClassColor();
     document.addEventListener('keyup', moveArrow);
   });
+
+  moveArrow();
 
   // generate a number randomly
   function generateNumber() {
@@ -108,12 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
         cells[i + 1].innerHTML = newRow[1];
         cells[i + 2].innerHTML = newRow[2];
         cells[i + 3].innerHTML = newRow[3];
-
-        // ----------------------------
-        // const number = cells[i].innerHTML;
-        // const cellElement = cells[i];
-
-        // addClassColor(cellElement, number);
       }
     }
   }
@@ -167,12 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
       cells[i + width].innerHTML = newColumn[1];
       cells[i + width * 2].innerHTML = newColumn[2];
       cells[i + width * 3].innerHTML = newColumn[3];
-
-      // ----------------------------
-      // const number = cells[i].innerHTML;
-      // const cellElement = cells[i];
-
-      // addClassColor(cellElement, number);
     }
   }
 
@@ -204,7 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     win();
+    // lose();
   }
+  // lose();
 
   function moveArrow(e) {
     if (e.code === 'ArrowRight') {
@@ -264,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    if (zeros === 0) {
+    if (zeros === 0 && !moveArrow()) {
       messageStart.classList.add('hidden');
       resultMessageLose.classList.remove('hidden');
       start.classList.remove('restart');
@@ -280,58 +271,38 @@ document.addEventListener('DOMContentLoaded', () => {
         cells[i].classList.add('field-cell');
       } else if (cells[i].innerHTML == 2) {
         cells[i].className = '';
-        cells[i].classList.add('field-cell', 'x2');
+        cells[i].classList.add(`field-cell--2`, 'field-cell');
       } else if (cells[i].innerHTML == 4) {
         cells[i].className = '';
-        cells[i].classList.add('field-cell', 'x4');
+        cells[i].classList.add(`field-cell--4`, 'field-cell');
       } else if (cells[i].innerHTML == 8) {
         cells[i].className = '';
-        cells[i].classList.add('field-cell', 'x8');
+        cells[i].classList.add(`field-cell--8`, 'field-cell');
       } else if (cells[i].innerHTML == 16) {
         cells[i].className = '';
-        cells[i].classList.add('field-cell', 'x16');
+        cells[i].classList.add(`field-cell--16`, 'field-cell');
       } else if (cells[i].innerHTML == 32) {
         cells[i].className = '';
-        cells[i].classList.add('field-cell', 'x32');
+        cells[i].classList.add(`field-cell--32`, 'field-cell');
       } else if (cells[i].innerHTML == 64) {
         cells[i].className = '';
-        cells[i].classList.add('field-cell', 'x64');
+        cells[i].classList.add(`field-cell--64`, 'field-cell');
       } else if (cells[i].innerHTML == 128) {
         cells[i].className = '';
-        cells[i].classList.add('field-cell', 'x128');
+        cells[i].classList.add(`field-cell--128`, 'field-cell');
       } else if (cells[i].innerHTML == 256) {
         cells[i].className = '';
-        cells[i].classList.add('field-cell', 'x256');
+        cells[i].classList.add(`field-cell--256`, 'field-cell');
       } else if (cells[i].innerHTML == 512) {
         cells[i].className = '';
-        cells[i].classList.add('field-cell', 'x512');
+        cells[i].classList.add(`field-cell--512`, 'field-cell');
       } else if (cells[i].innerHTML == 1024) {
         cells[i].className = '';
-        cells[i].classList.add('field-cell', 'x1024');
+        cells[i].classList.add(`field-cell--1024`, 'field-cell');
       } else if (cells[i].innerHTML == 2048) {
         cells[i].className = '';
-        cells[i].classList.add('field-cell', 'x2048');
+        cells[i].classList.add(`field-cell--2048`, 'field-cell');
       }
     }
   }
-
-  // function addClassColor(number) {
-  // console.log(number);
-
-  // for (let i = 0; i < cells.length; i++) {
-  //   if (cells[i].innerHTML > 0) {
-  //     cells[i].className = '';
-  //     cells[i].className = `field-cell x${number}`;
-  //   } else if (cells[i].innerHTML == 2048) {
-  //     cells[i].classList.add('2048');
-  //   }
-  // }
-
-  // for (let i = 0; i < cells.length; i++) {
-  //   if (number > 0) {
-  //     cells[i].className = '';
-  //     cells[i].className = `field-cell x${number}`;
-
-  //   }
-  // }
 });
