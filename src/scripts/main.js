@@ -276,18 +276,18 @@ const returnChangeArrays = (select, filerArray, array, scorePerMovie) => {
 
 const UpOrDown = (said) => {
   const copy = JSON.parse(JSON.stringify(arrayObject));
-  const arraySeleced = [];
+  const arraySelected = [];
   const array = said === 'Down' ? arrayObject.reverse() : arrayObject;
   const scorePerMovie = [];
 
   arrayObject = array.map((el) => {
     const select = el;
 
-    arraySeleced.push(select);
+    arraySelected.push(select);
 
     return returnChangeArrays(
       select,
-      arraySeleced,
+      arraySelected,
       arrayObject,
       scorePerMovie);
   });
@@ -318,7 +318,7 @@ window.addEventListener('keydown', (e) => {
       if (!getElementWithZeroValue(arrayObject).length) {
         if (checkMovie()) {
           restartGame();
-        };
+        }
       }
       break;
     }
@@ -331,7 +331,7 @@ window.addEventListener('keydown', (e) => {
       if (!getElementWithZeroValue(arrayObject).length) {
         if (checkMovie()) {
           restartGame();
-        };
+        }
       }
       break;
     }
@@ -344,7 +344,7 @@ window.addEventListener('keydown', (e) => {
       if (!getElementWithZeroValue(arrayObject).length) {
         if (!checkMovie()) {
           restartGame();
-        };
+        }
       }
       break;
     }
@@ -357,9 +357,13 @@ window.addEventListener('keydown', (e) => {
       if (!getElementWithZeroValue(arrayObject).length) {
         if (checkMovie()) {
           restartGame();
-        };
+        }
       }
       break;
+    }
+
+    default: {
+      alert('only arrows buttons need use for play game');
     }
   }
 });
