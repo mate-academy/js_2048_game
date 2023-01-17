@@ -28,26 +28,16 @@ button.addEventListener('click', () => {
 });
 
 document.addEventListener('keyup', (e) => {
-  switch (e.code) {
-    case 'ArrowLeft':
-      slideLeft();
-      setNewNumber();
-      break;
+  const previousField = [...gameField].toString();
 
-    case 'ArrowRight':
-      slideRight();
-      setNewNumber();
-      break;
+  e.code === 'ArrowLeft' || e.code === 'ArrowRight'
+    ? slideHorizontally(e.code)
+    : slideVertically(e.code);
 
-    case 'ArrowUp':
-      slideUp();
-      setNewNumber();
-      break;
+  const currentField = [...gameField].toString();
 
-    case 'ArrowDown':
-      slideDown();
-      setNewNumber();
-      break;
+  if (previousField !== currentField) {
+    setNewNumber();
   }
 
   document.querySelector('.game-score').innerText = score;
@@ -161,11 +151,20 @@ function filterZero(row) {
   return row.filter(num => num !== 0);
 }
 
-function slideLeft() {
+function slideHorizontally(side) {
   for (let r = 0; r < rows; r++) {
     let row = gameField[r];
 
-    row = slide(row);
+    if (side === 'ArrowLeft') {
+      row = slide(row);
+    }
+
+    if (side === 'ArrowRight') {
+      row.reverse();
+      row = slide(row);
+      row.reverse();
+    }
+
     gameField[r] = row;
 
     for (let c = 0; c < columns; c++) {
@@ -176,24 +175,7 @@ function slideLeft() {
   }
 }
 
-function slideRight() {
-  for (let r = 0; r < rows; r++) {
-    let row = gameField[r];
-
-    row.reverse();
-    row = slide(row);
-    row.reverse();
-    gameField[r] = row;
-
-    for (let c = 0; c < columns; c++) {
-      const num = gameField[r][c];
-
-      updateCell(field.rows[r].cells[c], num);
-    }
-  }
-}
-
-function slideUp() {
+function slideVertically(side) {
   for (let c = 0; c < columns; c++) {
     let row = [
       gameField[0][c],
@@ -202,30 +184,15 @@ function slideUp() {
       gameField[3][c],
     ];
 
-    row = slide(row);
-
-    for (let r = 0; r < rows; r++) {
-      gameField[r][c] = row[r];
-
-      const num = gameField[r][c];
-
-      updateCell(field.rows[r].cells[c], num);
+    if (side === 'ArrowUp') {
+      row = slide(row);
     }
-  }
-}
 
-function slideDown() {
-  for (let c = 0; c < columns; c++) {
-    let row = [
-      gameField[0][c],
-      gameField[1][c],
-      gameField[2][c],
-      gameField[3][c],
-    ];
-
-    row.reverse();
-    row = slide(row);
-    row.reverse();
+    if (side === 'ArrowDown') {
+      row.reverse();
+      row = slide(row);
+      row.reverse();
+    }
 
     for (let r = 0; r < rows; r++) {
       gameField[r][c] = row[r];
