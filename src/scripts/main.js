@@ -31,7 +31,7 @@ restartButton.hidden = true;
 document.querySelector('.controls').append(restartButton);
 
 const checkIfHaveMoves = () => {
-  if (cells.filter(cell => cell.classList.length === 1).length > 0) {
+  if ([...cells].filter(cell => cell.classList.length === 1).length > 0) {
     return true;
   }
 
@@ -203,7 +203,7 @@ const keydownCallback = (e) => {
     messageLoseElement.classList.remove('hidden');
   };
 
-  const currentCellsValues = cells.map(cell => cell.textContent);
+  const currentCellsValues = [...cells].map(cell => cell.textContent);
 
   if (!isPlaying) {
     return;
@@ -224,11 +224,7 @@ const keydownCallback = (e) => {
       break;
   };
 
-  if (!isPlaying) {
-    return;
-  }
-
-  const newCellsValues = cells.map(cell => cell.textContent);
+  const newCellsValues = [...cells].map(cell => cell.textContent);
 
   const hasChanged = currentCellsValues.filter(
     (value, i) => value !== newCellsValues[i]).length;
