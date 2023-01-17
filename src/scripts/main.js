@@ -8,9 +8,11 @@ const highScore = document.querySelector('.game-high-score');
 const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
-const userDataKey = 'highScore';
-const userData = localStorage.getItem(userDataKey);
-const cellsCoords = {
+const highScoreKey = 'highScore';
+const gameStateKey = 'gameState';
+const userDataHighScore = localStorage.getItem(highScoreKey);
+const userDataGameState = localStorage.getItem(gameStateKey);
+let cellsCoords = {
   0: [0, 0, 0, 0],
   1: [0, 0, 0, 0],
   2: [0, 0, 0, 0],
@@ -21,20 +23,29 @@ let startTouchY;
 let endTouchX;
 let endTouchY;
 
-if (userData) {
-  highScore.innerText = userData;
+if (userDataHighScore) {
+  highScore.innerText = userDataHighScore;
+}
+
+if (userDataGameState) {
+  const [fieldState, scoreState] = JSON.parse(userDataGameState);
+
+  cellsCoords = fieldState;
+  score.innerText = scoreState;
+
+  start();
+  updateGameField();
 }
 
 button.addEventListener('click', (e) => {
   if (e.target.classList.contains('start')) {
-    e.target.classList = 'button restart';
-    e.target.innerText = 'Restart';
-    messageStart.hidden = true;
+    start();
   } else {
     reset();
   }
   generate();
   generate();
+  setUserData();
 });
 
 gameField.addEventListener('touchstart', (e) => {
@@ -96,20 +107,24 @@ document.addEventListener('keyup', (e) => {
   }
 });
 
-function setHighScore() {
-  const infoScore = +score.innerText;
-  const infoHighScore = +highScore.innerText;
-
-  if (infoScore > infoHighScore) {
-    highScore.innerText = score.innerText;
-    localStorage.setItem(userDataKey, infoScore);
-  }
-}
-
 function actionMix(direction) {
   shift(direction);
   checkEndOfGame();
   generate();
+  setUserData();
+}
+
+function setUserData() {
+  const infoScore = +score.innerText;
+  const infoHighScore = +highScore.innerText;
+  const gameState = [cellsCoords, infoScore];
+
+  if (infoScore > infoHighScore) {
+    highScore.innerText = score.innerText;
+    localStorage.setItem(highScoreKey, infoScore);
+  }
+
+  localStorage.setItem(gameStateKey, JSON.stringify(gameState));
 }
 
 function reset() {
@@ -122,6 +137,12 @@ function reset() {
   messageLose.hidden = true;
   score.innerText = 0;
   updateGameField();
+}
+
+function start() {
+  button.classList = 'button restart';
+  button.innerText = 'Restart';
+  messageStart.hidden = true;
 }
 
 function updateGameField() {
@@ -276,6 +297,5 @@ function checkEndOfGame() {
 
   if (lose) {
     messageLose.hidden = false;
-    setHighScore();
   }
 }
