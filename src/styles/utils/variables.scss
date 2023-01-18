@@ -1,0 +1,23 @@
+:root {
+  --grid-size: 4;
+  --cell-size: 16vmin;
+  --cell-gap: 1vmin;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --cell-size: 14vmin;
+  }
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --cell-size: 10vmin;
+  }
+}
+
+$grid-size: var(--grid-size);
+$cell-size: var(--cell-size);
+$cell-gap: var(--cell-gap);
+$total-size: calc(#{$grid-size} * (#{$cell-size} + #{$cell-gap}));
+$field-size: calc(#{$total-size} - #{$cell-gap});
