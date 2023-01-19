@@ -30,9 +30,17 @@ button.addEventListener('click', () => {
 document.addEventListener('keyup', (e) => {
   const previousField = [...gameField].toString();
 
-  e.code === 'ArrowLeft' || e.code === 'ArrowRight'
-    ? slideHorizontally(e.code)
-    : slideVertically(e.code);
+  if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+    slideHorizontally(e.code);
+  }
+
+  if (e.code === 'ArrowUp' || e.code === 'ArrowDown') {
+    transpose();
+    slideHorizontally(e.code);
+    transpose();
+  }
+
+  updateField();
 
   const currentField = [...gameField].toString();
 
@@ -155,18 +163,22 @@ function slideHorizontally(side) {
   for (let r = 0; r < rows; r++) {
     let row = gameField[r];
 
-    if (side === 'ArrowLeft') {
+    if (side === 'ArrowLeft' || side === 'ArrowUp') {
       row = slide(row);
     }
 
-    if (side === 'ArrowRight') {
+    if (side === 'ArrowRight' || side === 'ArrowDown') {
       row.reverse();
       row = slide(row);
       row.reverse();
     }
 
     gameField[r] = row;
+  }
+}
 
+function updateField() {
+  for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       const num = gameField[r][c];
 
@@ -175,33 +187,8 @@ function slideHorizontally(side) {
   }
 }
 
-function slideVertically(side) {
-  for (let c = 0; c < columns; c++) {
-    let row = [
-      gameField[0][c],
-      gameField[1][c],
-      gameField[2][c],
-      gameField[3][c],
-    ];
-
-    if (side === 'ArrowUp') {
-      row = slide(row);
-    }
-
-    if (side === 'ArrowDown') {
-      row.reverse();
-      row = slide(row);
-      row.reverse();
-    }
-
-    for (let r = 0; r < rows; r++) {
-      gameField[r][c] = row[r];
-
-      const num = gameField[r][c];
-
-      updateCell(field.rows[r].cells[c], num);
-    }
-  }
+function transpose() {
+  gameField = gameField[0].map((_, i) => gameField.map(newRow => newRow[i]));
 }
 
 // game over message
