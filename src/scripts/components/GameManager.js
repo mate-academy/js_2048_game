@@ -1,5 +1,6 @@
 import { Grid } from './Grid';
 import { ViewManager } from './ViewManager';
+import { InputManager } from './InputManager';
 
 export class GameManager {
   constructor(size, winValue) {
@@ -11,22 +12,19 @@ export class GameManager {
 
     this.view = new ViewManager(this.size);
     this.grid = new Grid(this.size, this.view);
+    this.input = new InputManager(this.view.gameBody);
 
-    this.eventDirection = {
-      'ArrowLeft': this.grid.moveTilesLeft,
-      'ArrowUp': this.grid.moveTilesUp,
-      'ArrowRight': this.grid.moveTilesRight,
-      'ArrowDown': this.grid.moveTilesDown,
-    };
-
-    this.keydownListener = this.handleKeyDown.bind(this);
     this.initialize();
   }
 
   initialize() {
-    this.initKeyDownEvent();
     this.grid.insertTileToGame();
     this.grid.insertTileToGame();
+
+    this.input.setEventCallbacks(
+      this.grid.moveTiles.bind(this.grid),
+      this.updateState.bind(this)
+    );
 
     this.updateState();
   }
@@ -47,7 +45,7 @@ export class GameManager {
     }
 
     if (this.won || this.over) {
-      this.removeKeyDownEvent();
+      this.input.removeEvents();
     }
 
     this.view.updateGameState(this.grid.matrix, this.won, this.over);
@@ -55,31 +53,8 @@ export class GameManager {
     this.view.updateTilesState(this.grid);
   }
 
-  handleKeyDown(e) {
-    const { key } = e;
-
-    if (this.eventDirection[key]) {
-      e.preventDefault();
-      this.eventDirection[key].bind(this.grid)();
-
-      if (this.grid.matrixWasChanged()) {
-        this.grid.insertTileToGame();
-      }
-
-      this.updateState();
-    }
-  };
-
-  initKeyDownEvent() {
-    document.addEventListener('keydown', this.keydownListener);
-  }
-
-  removeKeyDownEvent() {
-    document.removeEventListener('keydown', this.keydownListener);
-  }
-
   reload() {
-    this.removeKeyDownEvent();
+    this.input.removeEvents();
     this.view.clear();
   }
 }

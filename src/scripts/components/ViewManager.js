@@ -4,6 +4,7 @@ import tryAgain from '../../images/try-again.gif';
 export class ViewManager {
   constructor(size) {
     this.gameSize = size;
+    this.gameBody = document.querySelector('.game-body');
     this.gameGrid = document.querySelector('.game-body__grid');
     this.gameTiles = document.querySelector('.game-body__tiles');
     this.gameMessage = document.querySelector('.game-body__message');

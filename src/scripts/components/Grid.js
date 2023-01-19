@@ -84,7 +84,7 @@ export class Grid {
     });
   }
 
-  moveTiles(revers = false, changeAxis = false) {
+  moveTiles({ revers, changeAxis }) {
     this.prepareGridBeforeMoving();
     this.prepareTilesBeforeMoving();
 
@@ -94,6 +94,10 @@ export class Grid {
       const increment = revers ? -1 : 1;
 
       this.movementAlgorithm(current, next, increment, index, changeAxis);
+    }
+
+    if (this.changed) {
+      this.insertTileToGame();
     }
   }
 
@@ -166,10 +170,6 @@ export class Grid {
     return !this.matrix[x][y];
   }
 
-  matrixWasChanged() {
-    return this.changed;
-  }
-
   emptyCellsAvailable() {
     return !!this.getAllEmptyCells().length;
   }
@@ -188,21 +188,5 @@ export class Grid {
         return xAxisMergerPossible || yAxisMergerPossible;
       }
     });
-  }
-
-  moveTilesLeft() {
-    this.moveTiles();
-  };
-
-  moveTilesUp() {
-    this.moveTiles(false, true);
-  }
-
-  moveTilesRight() {
-    this.moveTiles(true);
-  }
-
-  moveTilesDown() {
-    this.moveTiles(true, true);
   }
 }
