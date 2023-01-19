@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // click Start button
   start.addEventListener('click', () => {
+    document.addEventListener('keyup', moveArrow);
     score = 0;
     scores.innerHTML = score;
     messageStart.classList.add('hidden');
@@ -48,10 +49,24 @@ document.addEventListener('DOMContentLoaded', () => {
     addClassColor();
     generateNumber();
     addClassColor();
-    document.addEventListener('keyup', moveArrow);
   });
 
-  moveArrow();
+  // function generateNumber() {
+  //   const randomNumber = Math.floor(Math.random() * cells.length);
+
+  //   if (cells[randomNumber].innerHTML == 0) {
+  //     cells[randomNumber].innerHTML = 2;
+  //     lose();
+  //   }
+  // }
+
+  // function addNumber() {
+  //   generateNumber();
+  //     if (!waysRow() || !waysColumn()) {
+  //       return;
+  //     }
+
+  // }
 
   // generate a number randomly
   function generateNumber() {
@@ -61,9 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
       cells[randomNumber].innerHTML = 2;
       lose();
     } else {
+      // if (!waysRow() && !waysColumn()) {
+      //   return;
+      // }
+
       generateNumber();
     }
-  };
+  }
 
   // swipe right
   function moveRight() {
@@ -133,12 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
       cells[i + width].innerHTML = newColumn[1];
       cells[i + width * 2].innerHTML = newColumn[2];
       cells[i + width * 3].innerHTML = newColumn[3];
-
-      // ----------------------------
-      // const number = cells[i].innerHTML;
-      // const cellElement = cells[i];
-
-      // addClassColor(cellElement, number);
     }
   }
 
@@ -193,13 +206,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     win();
-    // lose();
   }
-  // lose();
 
   function moveArrow(e) {
     if (e.code === 'ArrowRight') {
       moveRight();
+      // generateNumber();
       combineRows();
       addClassColor();
       moveRight();
@@ -208,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
       addClassColor();
     } else if (e.code === 'ArrowLeft') {
       moveLeft();
+      //  generateNumber();
       combineRows();
       addClassColor();
       moveLeft();
@@ -216,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
       addClassColor();
     } else if (e.code === 'ArrowDown') {
       moveDown();
+      //  generateNumber();
       combineColumn();
       addClassColor();
       moveDown();
@@ -224,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
       addClassColor();
     } else if (e.code === 'ArrowUp') {
       moveUp();
+      //  generateNumber();
       combineColumn();
       addClassColor();
       moveUp();
@@ -232,8 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
       addClassColor();
     }
   }
-
-  document.addEventListener('keyup', moveArrow);
 
   function win() {
     for (let i = 0; i < cells.length; i++) {
@@ -243,6 +256,26 @@ document.addEventListener('DOMContentLoaded', () => {
         document.removeEventListener('keyup', moveArrow);
       }
     }
+  }
+
+  function waysRow() {
+    for (let i = 0; i < cells.length - 1; i++) {
+      if (cells[i].innerHTML === cells[i + 1].innerHTML) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function waysColumn() {
+    for (let i = 0; i < 12; i++) {
+      if (cells[i].innerHTML === cells[i + width].innerHTML) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // no zeros on the field - game is over
@@ -255,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    if (zeros === 0 && !moveArrow()) {
+    if (zeros === 0 && !waysRow() && !waysColumn()) {
       messageStart.classList.add('hidden');
       resultMessageLose.classList.remove('hidden');
       start.classList.remove('restart');
