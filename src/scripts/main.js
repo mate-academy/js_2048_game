@@ -21,11 +21,7 @@ for (const row of rows) {
   }
 }
 
-let cells = [];
-
-for (const row of rows) {
-  cells = cells.concat(row);
-}
+const cells = rows.flat();
 
 startBtn.addEventListener('click', () => {
   startMsg.classList.add('hidden');
