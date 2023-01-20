@@ -1,5 +1,4 @@
 'use strict';
-// Variables
 
 const startBtn = document.querySelector('.start');
 const score = document.querySelector('.game-score');
@@ -7,7 +6,6 @@ const startMsg = document.querySelector('.message-start');
 const winMsg = document.querySelector('.message-win');
 const loseMsg = document.querySelector('.message-lose');
 
-// Field Variables
 const fieldRows = [...document.querySelectorAll('.field-row')];
 const rows = [];
 
@@ -29,10 +27,7 @@ for (const row of rows) {
   cells = cells.concat(row);
 }
 
-// Game
-
 startBtn.addEventListener('click', () => {
-  // Start button
   startMsg.classList.add('hidden');
   startBtn.classList.remove('start');
   startBtn.classList.add('restart');
@@ -41,11 +36,13 @@ startBtn.addEventListener('click', () => {
   addNumber(cells);
   styleCells(cells);
 
-  // Restart button
   const restartBtn = document.querySelector('.restart');
+
+  restartBtn.style.outline = 'none';
 
   restartBtn.addEventListener('click', () => {
     score.textContent = '0';
+    winMsg.classList.add('hidden');
     loseMsg.classList.add('hidden');
 
     cells.forEach(cell => {
@@ -57,7 +54,6 @@ startBtn.addEventListener('click', () => {
     styleCells(cells);
   });
 
-  // Move
   document.body.addEventListener('keydown', (e) => {
     switch (e.code) {
       case 'ArrowLeft':
@@ -72,16 +68,16 @@ startBtn.addEventListener('click', () => {
       case 'ArrowDown':
         move(columns, rightOrDown);
         break;
+      default:
+        break;
     }
   });
 });
 
-// Functions
-
 function addNumber(allCells) {
-  const emptyCells = allCells.filter(cell => cell.textContent === '');
+  const emptyCells = allCells.filter(cell => !cell.textContent);
 
-  if (emptyCells.length === 0) {
+  if (!emptyCells.length) {
     return;
   }
 
@@ -100,7 +96,7 @@ function styleCells(allCells) {
     cell.className = '';
     cell.classList.add('field-cell');
 
-    if (cell.textContent !== '') {
+    if (cell.textContent) {
       cell.classList.add(`field-cell--${cell.textContent}`);
     }
   }
@@ -124,12 +120,12 @@ function move(arr, direction) {
 
 function rightOrDown(arr) {
   for (const row of arr) {
-    const cellsWithNumb = row.filter(cell => cell.textContent !== '');
+    const cellsWithNumb = row.filter(cell => cell.textContent);
 
     mergeCells(cellsWithNumb);
 
     for (let i = row.length - 1; i >= 0; i--) {
-      if (cellsWithNumb.length === 0) {
+      if (!cellsWithNumb.length) {
         row[i].textContent = '';
         continue;
       }
@@ -141,12 +137,12 @@ function rightOrDown(arr) {
 
 function leftOrUp(arr) {
   for (const row of arr) {
-    const cellsWithNumb = row.filter(cell => cell.textContent !== '');
+    const cellsWithNumb = row.filter(cell => cell.textContent);
 
     mergeCells(cellsWithNumb);
 
     for (let i = 0; i < row.length; i++) {
-      if (cellsWithNumb.length === 0) {
+      if (!cellsWithNumb.length) {
         row[i].textContent = '';
         continue;
       }
@@ -186,9 +182,10 @@ function showWinMsg(allCells) {
 }
 
 function showLoseMsg(allCells) {
-  const isEmptyCell = allCells.some(elem => elem.textContent === '');
+  const isEmptyCell = allCells.some(elem => !elem.textContent);
 
   if (!isEmptyCell && !isMergePossible(rows) && !isMergePossible(columns)) {
+    winMsg.classList.add('hidden');
     loseMsg.classList.remove('hidden');
   }
 }
