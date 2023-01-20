@@ -22,7 +22,7 @@ That's it!
 Okay, okay. Also, we have some rules:
 1) The game field is 4 x 4
 2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
+3) The player can move cells with keyboard arfieldCell
 4) All the numbers should be moved in the selected direction until all empty cells are filled in
    - 2 equal cells should be merged into a doubled number
    - The merged cell can’t be merged twice during one move

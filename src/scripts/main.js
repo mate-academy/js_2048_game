@@ -1,9 +1,8 @@
 'use strict';
 
-let board;
+let board = 0;
 let score = 0;
-const rows = 4;
-const columns = 4;
+const fieldCell = 4;
 const start = document.querySelector('.start');
 const restart = document.querySelector('.restart');
 const messageStart = document.querySelector('.message__start');
@@ -21,11 +20,11 @@ start.addEventListener('click', () => {
 });
 
 restart.addEventListener('click', () => {
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < columns; j++) {
+  for (let i = 0; i < fieldCell; i++) {
+    for (let j = 0; j < fieldCell; j++) {
       board[i][j] = 0;
 
-      const tile = document.getElementById(i.toString() + '-' + j.toString());
+      const tile = document.getElementById(`${i}-${j}`);
 
       tile.innerText = '';
       tile.classList = 'tile';
@@ -33,11 +32,10 @@ restart.addEventListener('click', () => {
   }
 
   score = 0;
+  setTwo();
+  setTwo();
   document.querySelector('.game-score').innerText = score;
-  start.style.display = 'block';
-  restart.style.display = 'none';
   messageLose.classList.add('hidden');
-  messageStart.style.display = 'block';
 });
 
 window.onload = function() {
@@ -52,11 +50,11 @@ function setGame() {
     [0, 0, 0, 0],
   ];
 
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < columns; j++) {
+  for (let i = 0; i < fieldCell; i++) {
+    for (let j = 0; j < fieldCell; j++) {
       const tile = document.createElement('div');
 
-      tile.id = i.toString() + '-' + j.toString();
+      tile.id = `${i}-${j}`;
 
       const num = board[i][j];
 
@@ -68,8 +66,8 @@ function setGame() {
 }
 
 function hasEmptyTile() {
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < columns; j++) {
+  for (let i = 0; i < fieldCell; i++) {
+    for (let j = 0; j < fieldCell; j++) {
       if (board[i][j] === 0) {
         return true;
       }
@@ -89,8 +87,8 @@ function setTwo() {
   let isfound = false;
 
   while (!isfound) {
-    const rowRandom = Math.floor(Math.random() * rows);
-    const columnRandom = Math.floor(Math.random() * columns);
+    const rowRandom = Math.floor(Math.random() * fieldCell);
+    const columnRandom = Math.floor(Math.random() * fieldCell);
 
     if (board[rowRandom][columnRandom] === 0) {
       board[rowRandom][columnRandom] = 2;
@@ -128,24 +126,21 @@ document.addEventListener('keyup', (e) => {
   switch (e.code) {
     case 'ArrowLeft':
       slideLeft();
-      setTwo();
       break;
     case 'ArrowRight':
       slideRight();
-      setTwo();
       break;
     case 'ArrowUp':
       slideUp();
-      setTwo();
       break;
     case 'ArrowDown':
       slideDown();
-      setTwo();
       break;
 
     default:
       break;
   }
+  setTwo();
   document.querySelector('.game-score').innerText = score;
 });
 
@@ -168,7 +163,7 @@ function slide(row) {
 
   copyRow = filterZero(copyRow);
 
-  while (copyRow.length < columns) {
+  while (copyRow.length < fieldCell) {
     copyRow.push(0);
   }
 
@@ -176,14 +171,14 @@ function slide(row) {
 }
 
 function slideLeft() {
-  for (let i = 0; i < rows; i++) {
+  for (let i = 0; i < fieldCell; i++) {
     let row = board[i];
 
     row = slide(row);
     board[i] = row;
 
-    for (let j = 0; j < columns; j++) {
-      const tile = document.getElementById(i.toString() + '-' + j.toString());
+    for (let j = 0; j < fieldCell; j++) {
+      const tile = document.getElementById(`${i}-${j}`);
       const num = board[i][j];
 
       updateTile(tile, num);
@@ -192,7 +187,7 @@ function slideLeft() {
 }
 
 function slideRight() {
-  for (let i = 0; i < rows; i++) {
+  for (let i = 0; i < fieldCell; i++) {
     let row = board[i];
 
     row.reverse();
@@ -200,8 +195,8 @@ function slideRight() {
     row.reverse();
     board[i] = row;
 
-    for (let j = 0; j < columns; j++) {
-      const tile = document.getElementById(i.toString() + '-' + j.toString());
+    for (let j = 0; j < fieldCell; j++) {
+      const tile = document.getElementById(`${i}-${j}`);
       const num = board[i][j];
 
       updateTile(tile, num);
@@ -210,15 +205,15 @@ function slideRight() {
 }
 
 function slideUp() {
-  for (let i = 0; i < columns; i++) {
+  for (let i = 0; i < fieldCell; i++) {
     let row = [board[0][i], board[1][i], board[2][i], board[3][i]];
 
     row = slide(row);
 
-    for (let j = 0; j < rows; j++) {
+    for (let j = 0; j < fieldCell; j++) {
       board[j][i] = row[j];
 
-      const tile = document.getElementById(j.toString() + '-' + i.toString());
+      const tile = document.getElementById(`${j}-${i}`);
       const num = board[j][i];
 
       updateTile(tile, num);
@@ -227,17 +222,17 @@ function slideUp() {
 }
 
 function slideDown() {
-  for (let i = 0; i < columns; i++) {
+  for (let i = 0; i < fieldCell; i++) {
     let row = [board[0][i], board[1][i], board[2][i], board[3][i]];
 
     row.reverse();
     row = slide(row);
     row.reverse();
 
-    for (let j = 0; j < rows; j++) {
+    for (let j = 0; j < fieldCell; j++) {
       board[j][i] = row[j];
 
-      const tile = document.getElementById(j.toString() + '-' + i.toString());
+      const tile = document.getElementById(`${j}-${i}`);
       const num = board[j][i];
 
       updateTile(tile, num);
