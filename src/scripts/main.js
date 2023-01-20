@@ -10,7 +10,6 @@ const startMessage = document.querySelector('.message-start');
 const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
 
-// start button and arrow keys events
 button.addEventListener('click', () => {
   score = 0;
   document.querySelector('.game-score').innerText = score;
@@ -51,7 +50,6 @@ document.addEventListener('keyup', (e) => {
   document.querySelector('.game-score').innerText = score;
 });
 
-// setting new game
 function setGame() {
   gameField = [
     [0, 0, 0, 0],
@@ -60,11 +58,11 @@ function setGame() {
     [0, 0, 0, 0],
   ];
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      const num = gameField[r][c];
+  for (let row = 0; row < rows; row++) {
+    for (let cell = 0; cell < columns; cell++) {
+      const num = gameField[row][cell];
 
-      updateCell(field.rows[r].cells[c], num);
+      updateCell(field.rows[row].cells[cell], num);
     }
   }
 
@@ -72,7 +70,6 @@ function setGame() {
   setNewNumber();
 }
 
-// setting new 2 or 4 in random empty cells
 function setNewNumber() {
   if (!hasEmptyCell()) {
     return;
@@ -81,21 +78,21 @@ function setNewNumber() {
   let found = false;
 
   while (!found) {
-    const r = Math.floor(Math.random() * rows);
-    const c = Math.floor(Math.random() * columns);
+    const row = Math.floor(Math.random() * rows);
+    const cell = Math.floor(Math.random() * columns);
 
-    if (gameField[r][c] === 0) {
-      gameField[r][c] = randomizeNumber();
-      updateCell(field.rows[r].cells[c], gameField[r][c]);
+    if (gameField[row][cell] === 0) {
+      gameField[row][cell] = randomizeNumber();
+      updateCell(field.rows[row].cells[cell], gameField[row][cell]);
       found = true;
     }
   }
 }
 
 function hasEmptyCell() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      if (gameField[r][c] === 0) {
+  for (let row = 0; row < rows; row++) {
+    for (let cell = 0; cell < columns; cell++) {
+      if (gameField[row][cell] === 0) {
         return true;
       }
     }
@@ -104,12 +101,10 @@ function hasEmptyCell() {
   return false;
 }
 
-// 10% probability of the appearance of 4
 function randomizeNumber() {
   return Math.random() >= 0.9 ? 4 : 2;
 }
 
-// updating cell value
 function updateCell(fieldCell, num) {
   fieldCell.innerText = '';
   fieldCell.className = 'field-cell';
@@ -128,8 +123,7 @@ function updateCell(fieldCell, num) {
   setGameOver();
 }
 
-// cells sliding
-function slide(row) {
+function mergeCells(row) {
   let newRow = row;
 
   newRow = filterZero(newRow);
@@ -160,29 +154,29 @@ function filterZero(row) {
 }
 
 function slideHorizontally(side) {
-  for (let r = 0; r < rows; r++) {
-    let row = gameField[r];
+  for (let row = 0; row < rows; row++) {
+    let newRow = gameField[row];
 
     if (side === 'ArrowLeft' || side === 'ArrowUp') {
-      row = slide(row);
+      newRow = mergeCells(newRow);
     }
 
     if (side === 'ArrowRight' || side === 'ArrowDown') {
-      row.reverse();
-      row = slide(row);
-      row.reverse();
+      newRow.reverse();
+      newRow = mergeCells(newRow);
+      newRow.reverse();
     }
 
-    gameField[r] = row;
+    gameField[row] = newRow;
   }
 }
 
 function updateField() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      const num = gameField[r][c];
+  for (let row = 0; row < rows; row++) {
+    for (let cell = 0; cell < columns; cell++) {
+      const num = gameField[row][cell];
 
-      updateCell(field.rows[r].cells[c], num);
+      updateCell(field.rows[row].cells[cell], num);
     }
   }
 }
@@ -191,18 +185,19 @@ function transpose() {
   gameField = gameField[0].map((_, i) => gameField.map(newRow => newRow[i]));
 }
 
-// game over message
 function setGameOver() {
-  const emptyCell = gameField.some(r => r.some(c => c === 0));
+  const emptyCell = gameField.some(row => row.some(cell => !cell));
 
   if (emptyCell) {
     return;
   }
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns - 1; c++) {
-      if (gameField[r][c] === gameField[r][c + 1]
-        || gameField[c][r] === gameField[c + 1][r]) {
+  for (let row = 0; row < rows; row++) {
+    for (let cell = 0; cell < columns - 1; cell++) {
+      const isNextSame = gameField[row][cell] === gameField[row][cell + 1];
+      const isBelowSame = gameField[cell][row] === gameField[cell + 1][row];
+
+      if (isNextSame || isBelowSame) {
         return;
       }
     }
