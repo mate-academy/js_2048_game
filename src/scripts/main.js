@@ -21,11 +21,11 @@ start.addEventListener('click', () => {
 });
 
 restart.addEventListener('click', () => {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      board[r][c] = 0;
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      board[i][j] = 0;
 
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
+      const tile = document.getElementById(i.toString() + '-' + j.toString());
 
       tile.innerText = '';
       tile.classList = 'tile';
@@ -52,13 +52,13 @@ function setGame() {
     [0, 0, 0, 0],
   ];
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
       const tile = document.createElement('div');
 
-      tile.id = r.toString() + '-' + c.toString();
+      tile.id = i.toString() + '-' + j.toString();
 
-      const num = board[r][c];
+      const num = board[i][j];
 
       updateTile(tile, num);
 
@@ -68,9 +68,9 @@ function setGame() {
 }
 
 function hasEmptyTile() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      if (board[r][c] === 0) {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      if (board[i][j] === 0) {
         return true;
       }
     }
@@ -86,20 +86,22 @@ function setTwo() {
     return;
   }
 
-  let found = false;
+  let isfound = false;
 
-  while (!found) {
-    const r = Math.floor(Math.random() * rows);
-    const c = Math.floor(Math.random() * columns);
+  while (!isfound) {
+    const rowRandom = Math.floor(Math.random() * rows);
+    const columnRandom = Math.floor(Math.random() * columns);
 
-    if (board[r][c] === 0) {
-      board[r][c] = 2;
+    if (board[rowRandom][columnRandom] === 0) {
+      board[rowRandom][columnRandom] = 2;
 
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
+      const tile = document.getElementById(
+        rowRandom.toString() + '-' + columnRandom.toString()
+      );
 
       tile.innerText = '2';
       tile.classList.add('tile--2');
-      found = true;
+      isfound = true;
     }
   }
 }
@@ -123,18 +125,26 @@ function updateTile(tile, num) {
 }
 
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft') {
-    slideLeft();
-    setTwo();
-  } else if (e.code === 'ArrowRight') {
-    slideRight();
-    setTwo();
-  } else if (e.code === 'ArrowUp') {
-    slideUp();
-    setTwo();
-  } else if (e.code === 'ArrowDown') {
-    slideDown();
-    setTwo();
+  switch (e.code) {
+    case 'ArrowLeft':
+      slideLeft();
+      setTwo();
+      break;
+    case 'ArrowRight':
+      slideRight();
+      setTwo();
+      break;
+    case 'ArrowUp':
+      slideUp();
+      setTwo();
+      break;
+    case 'ArrowDown':
+      slideDown();
+      setTwo();
+      break;
+
+    default:
+      break;
   }
   document.querySelector('.game-score').innerText = score;
 });
@@ -144,37 +154,37 @@ function filterZero(row) {
 }
 
 function slide(row) {
-  let Row = row;
+  let copyRow = [...row];
 
-  Row = filterZero(Row);
+  copyRow = filterZero(copyRow);
 
-  for (let i = 0; i < Row.length; i++) {
-    if (Row[i] === Row[i + 1]) {
-      Row[i] *= 2;
-      Row[i + 1] = 0;
-      score += Row[i];
+  for (let i = 0; i < copyRow.length; i++) {
+    if (copyRow[i] === copyRow[i + 1]) {
+      copyRow[i] *= 2;
+      copyRow[i + 1] = 0;
+      score += copyRow[i];
     }
   }
 
-  Row = filterZero(Row);
+  copyRow = filterZero(copyRow);
 
-  while (Row.length < columns) {
-    Row.push(0);
+  while (copyRow.length < columns) {
+    copyRow.push(0);
   }
 
-  return Row;
+  return copyRow;
 }
 
 function slideLeft() {
-  for (let r = 0; r < rows; r++) {
-    let row = board[r];
+  for (let i = 0; i < rows; i++) {
+    let row = board[i];
 
     row = slide(row);
-    board[r] = row;
+    board[i] = row;
 
-    for (let c = 0; c < columns; c++) {
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-      const num = board[r][c];
+    for (let j = 0; j < columns; j++) {
+      const tile = document.getElementById(i.toString() + '-' + j.toString());
+      const num = board[i][j];
 
       updateTile(tile, num);
     }
@@ -182,17 +192,17 @@ function slideLeft() {
 }
 
 function slideRight() {
-  for (let r = 0; r < rows; r++) {
-    let row = board[r];
+  for (let i = 0; i < rows; i++) {
+    let row = board[i];
 
     row.reverse();
     row = slide(row);
     row.reverse();
-    board[r] = row;
+    board[i] = row;
 
-    for (let c = 0; c < columns; c++) {
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-      const num = board[r][c];
+    for (let j = 0; j < columns; j++) {
+      const tile = document.getElementById(i.toString() + '-' + j.toString());
+      const num = board[i][j];
 
       updateTile(tile, num);
     }
@@ -200,16 +210,16 @@ function slideRight() {
 }
 
 function slideUp() {
-  for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+  for (let i = 0; i < columns; i++) {
+    let row = [board[0][i], board[1][i], board[2][i], board[3][i]];
 
     row = slide(row);
 
-    for (let r = 0; r < rows; r++) {
-      board[r][c] = row[r];
+    for (let j = 0; j < rows; j++) {
+      board[j][i] = row[j];
 
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-      const num = board[r][c];
+      const tile = document.getElementById(j.toString() + '-' + i.toString());
+      const num = board[j][i];
 
       updateTile(tile, num);
     }
@@ -217,18 +227,18 @@ function slideUp() {
 }
 
 function slideDown() {
-  for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+  for (let i = 0; i < columns; i++) {
+    let row = [board[0][i], board[1][i], board[2][i], board[3][i]];
 
     row.reverse();
     row = slide(row);
     row.reverse();
 
-    for (let r = 0; r < rows; r++) {
-      board[r][c] = row[r];
+    for (let j = 0; j < rows; j++) {
+      board[j][i] = row[j];
 
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-      const num = board[r][c];
+      const tile = document.getElementById(j.toString() + '-' + i.toString());
+      const num = board[j][i];
 
       updateTile(tile, num);
     }
