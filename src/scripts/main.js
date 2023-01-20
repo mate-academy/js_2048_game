@@ -176,27 +176,49 @@ function shift(direction) {
     const cellsY = [];
     let cells;
 
+    const getCells = (isFilterEmpty) => {
+      switch (direction) {
+        case 'left':
+          isFilterEmpty
+            ? cells = filterEmpty(cellsX)
+            : cellsCoords[row] = cells;
+          break;
+
+        case 'right':
+          isFilterEmpty
+            ? cells = filterEmpty(cellsX).reverse()
+            : cellsCoords[row] = cells.reverse();
+          break;
+
+        case 'up':
+          if (isFilterEmpty) {
+            cells = filterEmpty(cellsY);
+          } else {
+            for (let i = 0; i < cellsCoords[row].length; i++) {
+              cellsCoords[i][row] = cells[i];
+            }
+          }
+          break;
+
+        case 'down':
+          if (isFilterEmpty) {
+            cells = filterEmpty(cellsY).reverse();
+          } else {
+            cells = cells.reverse();
+
+            for (let i = 0; i < cellsCoords[row].length; i++) {
+              cellsCoords[i][row] = cells[i];
+            }
+          }
+          break;
+      }
+    };
+
     for (let i = 0; i < cellsCoords[row].length; i++) {
       cellsY.push(cellsCoords[i][row]);
     }
 
-    switch (direction) {
-      case 'left':
-        cells = filterEmpty(cellsX);
-        break;
-
-      case 'right':
-        cells = filterEmpty(cellsX).reverse();
-        break;
-
-      case 'up':
-        cells = filterEmpty(cellsY);
-        break;
-
-      case 'down':
-        cells = filterEmpty(cellsY).reverse();
-        break;
-    }
+    getCells(true);
 
     for (let i = 0; i < cells.length - 1; i++) {
       if (cells[i] === cells[i + 1]) {
@@ -211,29 +233,7 @@ function shift(direction) {
       cells.push(0);
     }
 
-    switch (direction) {
-      case 'left':
-        cellsCoords[row] = cells;
-        break;
-
-      case 'right':
-        cellsCoords[row] = cells.reverse();
-        break;
-
-      case 'up':
-        for (let i = 0; i < cellsCoords[row].length; i++) {
-          cellsCoords[i][row] = cells[i];
-        }
-        break;
-
-      case 'down':
-        cells = cells.reverse();
-
-        for (let i = 0; i < cellsCoords[row].length; i++) {
-          cellsCoords[i][row] = cells[i];
-        }
-        break;
-    }
+    getCells(false);
   }
 }
 
