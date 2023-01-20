@@ -17,7 +17,7 @@ Okay, what do we have?
 1) HTML and CSS are already written. You can use it, or implement your own design if you want.
 2) Reference.
 
-That's it!
+That's it!!
 
 Okay, okay. Also, we have some rules:
 1) The game field is 4 x 4
