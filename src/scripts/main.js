@@ -126,21 +126,25 @@ document.addEventListener('keyup', (e) => {
   switch (e.code) {
     case 'ArrowLeft':
       slideLeft();
+      setTwo();
       break;
     case 'ArrowRight':
       slideRight();
+      setTwo();
       break;
     case 'ArrowUp':
       slideUp();
+      setTwo();
       break;
     case 'ArrowDown':
       slideDown();
+      setTwo();
       break;
 
     default:
       break;
   }
-  setTwo();
+
   document.querySelector('.game-score').innerText = score;
 });
 
