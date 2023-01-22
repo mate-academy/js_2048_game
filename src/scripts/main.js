@@ -65,6 +65,28 @@ function setGame() {
   }
 }
 
+function isGameOver() {
+  for (let i = 0; i < fieldCell; i++) {
+    for (let j = 0; j < fieldCell; j++) {
+      if (board[i][j] === 0) {
+        return false;
+      }
+    }
+  }
+
+  for (let i = 0; i < fieldCell - 1; i++) {
+    for (let j = 0; j < fieldCell - 1; j++) {
+      const c = board[i][j];
+
+      if ((c !== 0 && c === board[i + 1][j]) || c === board[i][j + 1]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 function hasEmptyTile() {
   for (let i = 0; i < fieldCell; i++) {
     for (let j = 0; j < fieldCell; j++) {
@@ -78,9 +100,13 @@ function hasEmptyTile() {
 }
 
 function setTwo() {
-  if (!hasEmptyTile()) {
+  if (isGameOver()) {
     messageLose.classList.remove('hidden');
 
+    return;
+  }
+
+  if (!hasEmptyTile()) {
     return;
   }
 
