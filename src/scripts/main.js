@@ -17,6 +17,32 @@ start.addEventListener('click', () => {
   start.style.display = 'none';
   messageStart.style.display = 'none';
   restart.style.display = 'block';
+
+  document.addEventListener('keyup', (e) => {
+    switch (e.code) {
+      case 'ArrowLeft':
+        setTwo();
+        slideLeft();
+        break;
+      case 'ArrowRight':
+        setTwo();
+        slideRight();
+        break;
+      case 'ArrowUp':
+        setTwo();
+        slideUp();
+        break;
+      case 'ArrowDown':
+        setTwo();
+        slideDown();
+        break;
+
+      default:
+        break;
+    }
+
+    document.querySelector('.game-score').innerText = score;
+  });
 });
 
 restart.addEventListener('click', () => {
@@ -147,32 +173,6 @@ function updateTile(tile, num) {
     }
   }
 }
-
-document.addEventListener('keyup', (e) => {
-  switch (e.code) {
-    case 'ArrowLeft':
-      slideLeft();
-      setTwo();
-      break;
-    case 'ArrowRight':
-      slideRight();
-      setTwo();
-      break;
-    case 'ArrowUp':
-      slideUp();
-      setTwo();
-      break;
-    case 'ArrowDown':
-      slideDown();
-      setTwo();
-      break;
-
-    default:
-      break;
-  }
-
-  document.querySelector('.game-score').innerText = score;
-});
 
 function filterZero(row) {
   return row.filter((num) => num !== 0);
