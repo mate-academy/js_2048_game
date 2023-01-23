@@ -3,6 +3,7 @@
 class Game2048 {
   constructor() {
     this.score = 0;
+    this.maxValueCell = 0;
 
     [...field.rows].forEach((row) => {
       [...row.cells].forEach((cellTable) => {
@@ -12,14 +13,20 @@ class Game2048 {
     });
   }
 
+  get getMaxValueCell() {
+    return this.maxValueCell;
+  }
+
   get getScore() {
     return this.score;
   }
 
-  set setScore(value) {
-    if (this.score < value) {
-      this.score = value;
+  set setData(value) {
+    if (value > this.maxValueCell) {
+      this.maxValueCell = value;
     }
+
+    this.score += value;
   }
 }
 
@@ -103,11 +110,12 @@ function handlerKey(e) {
 }
 
 function newLoop() {
-  if (gamePlay.getScore === 2048) {
-    gamePlay.setScore = 0;
+  buttonStart.classList.add('restart');
+  buttonStart.innerHTML = 'Restart';
 
+  if (gamePlay.getMaxValueCell === 2048) {
+    gameScore.innerText = gamePlay.getScore + '';
     messageWin.classList.remove('hidden');
-    messageStart.classList.remove('hidden');
 
     return true;
   }
@@ -118,23 +126,28 @@ function newLoop() {
     const rows = getDataRows(field);
     const collumns = getDataColumns(field);
 
-    if (rows.indexOf((item) => shiftLeft(item) !== item) === -1
-      && collumns.indexOf((item) => shiftLeft(item) !== item) === -1
-    ) {
+    const impossibleCalcRows = rows.filter(item =>
+      item.join('') !== calculate(item).join(''));
+    const impossibleCalcColumns = collumns.filter(item =>
+      item.join('') !== calculate(item).join(''));
+
+    if (!impossibleCalcRows.length && !impossibleCalcColumns.length) {
       message.classList.remove('hidden');
 
       return true;
     }
   }
 
-  const number = rundomNumber();
-  const cell = selectRandomCell(empty);
+  if (empty.length !== 0) {
+    const number = rundomNumber();
+    const cell = findRandomCell(empty);
 
-  setTimeout(() => {
-    cell.innerText = number;
-    cell.className = `field-cell field-cell--${number}`;
-  }, 200);
-  gameScore.innerText = gamePlay.getScore + '';
+    setTimeout(() => {
+      cell.innerText = number;
+      cell.className = `field-cell field-cell--${number}`;
+    }, 200);
+    gameScore.innerText = gamePlay.getScore + '';
+  }
 
   return false;
 }
@@ -153,7 +166,7 @@ function findAllEmptyCells(table) {
   return emptyCells;
 }
 
-function selectRandomCell(array) {
+function findRandomCell(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
 
@@ -261,25 +274,27 @@ function reverse(lines) {
 
 function calculate(array) {
   let flag = false;
+  const result = array;
 
   do {
-    for (let i = 1; i < array.length; i++) {
-      if (array[i - 1] === array[i]) {
-        array[i - 1] = +array[i] * 2 + '';
-        gamePlay.setScore = +array[i - 1];
-        array[i] = '0';
+    for (let i = 1; i < result.length; i++) {
+      if (result[i - 1] === result[i]) {
+        result[i - 1] = +result[i] * 2 + '';
+        gamePlay.setData = +result[i - 1];
+        result[i] = '0';
         flag = true;
       }
     }
     flag = false;
   } while (flag);
 
-  return array;
+  return result;
 }
 
 Game2048.prototype.start = function() {
   gameOver = false;
   this.score = 0;
+  this.maxValueCell = 0;
   gameScore.innerText = this.score + '';
   message.classList.add('hidden');
   messageWin.classList.add('hidden');
@@ -288,7 +303,7 @@ Game2048.prototype.start = function() {
   for (let i = 0; i < 2; i++) {
     const emptyCells = findAllEmptyCells(field);
     const number = rundomNumber();
-    const cell = selectRandomCell(emptyCells);
+    const cell = findRandomCell(emptyCells);
 
     cell.innerText = number;
     cell.className = `field-cell field-cell--${number}`;
