@@ -37,7 +37,7 @@ const gameScore = document.getElementsByClassName('game-score')[0];
 let gameOver = false;
 let gamePlay = {};
 
-const message = document.getElementsByClassName('message')[0];
+const message = document.getElementsByClassName('message message-lose')[0];
 const messageStart = document.getElementsByClassName('message-start')[0];
 const messageWin = document.getElementsByClassName('message-win')[0];
 
@@ -120,33 +120,42 @@ function newLoop() {
     return true;
   }
 
-  const empty = findAllEmptyCells(field);
-
-  if (empty.length === 0) {
-    const rows = getDataRows(field);
-    const collumns = getDataColumns(field);
-
-    const impossibleCalcRows = rows.filter(item =>
-      item.join('') !== calculate(item).join(''));
-    const impossibleCalcColumns = collumns.filter(item =>
-      item.join('') !== calculate(item).join(''));
-
-    if (!impossibleCalcRows.length && !impossibleCalcColumns.length) {
-      message.classList.remove('hidden');
-
-      return true;
-    }
-  }
+  let empty = findAllEmptyCells(field);
+  let endInsertNewValue;
 
   if (empty.length !== 0) {
     const number = rundomNumber();
     const cell = findRandomCell(empty);
 
-    setTimeout(() => {
+    endInsertNewValue = new Promise(resolve => setTimeout(() => {
       cell.innerText = number;
       cell.className = `field-cell field-cell--${number}`;
-    }, 200);
+      resolve();
+    }, 200));
+
     gameScore.innerText = gamePlay.getScore + '';
+  }
+
+  if (endInsertNewValue !== undefined) {
+    endInsertNewValue.then(() => {
+      empty = findAllEmptyCells(field);
+
+      if (empty.length === 0) {
+        const rows = getDataRows(field);
+        const collumns = getDataColumns(field);
+
+        const impossibleCalcRows = rows.filter(item =>
+          item.join('') !== calculate(item).join(''));
+        const impossibleCalcColumns = collumns.filter(item =>
+          item.join('') !== calculate(item).join(''));
+
+        if (!impossibleCalcRows.length && !impossibleCalcColumns.length) {
+          message.classList.remove('hidden');
+
+          return true;
+        }
+      }
+    });
   }
 
   return false;
