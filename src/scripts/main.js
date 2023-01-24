@@ -74,21 +74,6 @@ const startGamePromise = new Promise((resolve) => {
   });
 });
 
-const firstMovePromise = new Promise((resolve) => {
-  document.addEventListener('keydown', e => {
-    if (KeyInfo.arrowKeys.includes(e.keyCode)) {
-      resolve();
-    }
-  }, { once: true });
-});
-
-firstMovePromise
-  .then(() => {
-    button.classList.remove('start');
-    button.classList.add('restart');
-    button.innerText = 'Restart';
-  });
-
 const KeyEvent = e => {
   const keyInfo = new KeyInfo(e.keyCode);
 
@@ -136,6 +121,19 @@ startGamePromise
 
       document.addEventListener('keydown', KeyEvent);
     });
+
+    return new Promise((resolve) => {
+      document.addEventListener('keydown', e => {
+        if (KeyInfo.arrowKeys.includes(e.keyCode)) {
+          resolve();
+        }
+      }, { once: true });
+    });
+  })
+  .then(() => {
+    button.classList.remove('start');
+    button.classList.add('restart');
+    button.innerText = 'Restart';
   });
 
 function isGameOver() {
