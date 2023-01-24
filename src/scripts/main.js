@@ -104,7 +104,7 @@ function isGameOver() {
     for (let j = 0; j < fieldCell - 1; j++) {
       const c = board[i][j];
 
-      if ((c !== 0 && c === board[i + 1][j]) || c === board[i][j + 1]) {
+      if (c !== 0 && (c === board[i + 1][j] || c === board[i][j + 1])) {
         return false;
       }
     }
