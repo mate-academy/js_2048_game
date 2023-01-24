@@ -11,7 +11,9 @@ const button = document.querySelector('.button');
 const scoreField = document.querySelector('.game-score');
 let score = +scoreField.innerText;
 const highScoreField = document.querySelector('.high-score');
-let highScore = +highScoreField.innerText;
+let highScore = getHighScore();
+
+highScoreField.innerText = highScore;
 
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
@@ -265,6 +267,7 @@ function merge(queue, { code }, justCheck = false) {
 
       highScore = highScore < score ? score : highScore;
       highScoreField.innerText = highScore;
+      setHighScore();
       i++;
     } else {
       continue;
@@ -291,4 +294,18 @@ function createLines({ acrossAxis: a }) {
   });
 
   return lines;
+}
+
+function getHighScore() {
+  const high = localStorage.getItem('highScore');
+
+  if (!high) {
+    return +highScoreField.innerText;
+  }
+
+  return isNaN(+high) ? +highScoreField.innerText : +high;
+}
+
+function setHighScore() {
+  localStorage.setItem('highScore', highScore);
 }

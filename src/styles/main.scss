@@ -86,7 +86,6 @@ body {
   width: 100%;
   justify-content: space-between;
   gap: 40px;
-  margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
 }
@@ -177,6 +176,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 24px;
 }
 
 .message-win {
@@ -186,5 +186,13 @@ h1 {
 
 .message-container {
   width: 100%;
-  height: 150px;
+}
+
+.instructions {
+  width: 400px;
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: normal;
+  color: #776e65;
 }
