@@ -189,19 +189,25 @@ function move(e) {
     moveRight();
     generate();
     styles();
-  } else if (e.code === 'ArrowLeft') {
+  };
+
+  if (e.code === 'ArrowLeft') {
     moveLeft();
     combineRow();
     moveLeft();
     generate();
     styles();
-  } else if (e.code === 'ArrowDown') {
+  };
+
+  if (e.code === 'ArrowDown') {
     moveDown();
     combineColumn();
     moveDown();
     generate();
     styles();
-  } else if (e.code === 'ArrowUp') {
+  };
+
+  if (e.code === 'ArrowUp') {
     moveUp();
     combineColumn();
     moveUp();
@@ -250,7 +256,7 @@ function checkForLose() {
 
 function checkForWin() {
   cells.forEach(el => {
-    if (el.innerHTML == 2048) {
+    if (el.innerHTML === '2048') {
       messageStart.classList.add('hidden');
       messageWin.classList.remove('hidden');
       document.removeEventListener('keyup', move);
