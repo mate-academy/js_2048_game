@@ -36,6 +36,7 @@ const gameScore = document.getElementsByClassName('game-score')[0];
 
 let gameOver = false;
 let gamePlay = {};
+let blockKey = false;
 
 const message = document.getElementsByClassName('message message-lose')[0];
 const messageStart = document.getElementsByClassName('message-start')[0];
@@ -50,7 +51,10 @@ buttonStart.addEventListener('click', () => {
 });
 
 function handlerKey(e) {
-  if (gameOver) {
+  e.preventDefault();
+  gameScore.innerText = gamePlay.getScore + '';
+
+  if (gameOver || blockKey) {
     return;
   }
 
@@ -59,6 +63,8 @@ function handlerKey(e) {
 
   switch (e.code) {
     case 'ArrowUp':
+      blockKey = true;
+
       const upDataColumns = shiftLeft(dataColumns);
       const calcColumnsUp = upDataColumns.reduce((prev, item) => {
         prev.push(calculate(item));
@@ -67,10 +73,10 @@ function handlerKey(e) {
       }, []);
 
       updateColumns(field, shiftLeft(calcColumnsUp));
-      gameOver = newLoop();
+      gameStatus();
       break;
     case 'ArrowDown':
-      e.preventDefault();
+      blockKey = true;
 
       const DownDataColumns = (shiftLeft(reverse(dataColumns)));
       const calcColumnsDown = DownDataColumns.reduce((prev, item) => {
@@ -80,9 +86,11 @@ function handlerKey(e) {
       }, []);
 
       updateColumns(field, reverse(shiftLeft(calcColumnsDown)));
-      gameOver = newLoop();
+      gameStatus();
       break;
     case 'ArrowLeft':
+      blockKey = true;
+
       const leftdataRows = shiftLeft(dataRows);
       const calcRowsLeft = leftdataRows.reduce((prev, item) => {
         prev.push(calculate(item));
@@ -91,12 +99,13 @@ function handlerKey(e) {
       }, []);
 
       updateRows(field, shiftLeft(calcRowsLeft));
-      gameOver = newLoop();
+      gameStatus();
       break;
     case 'ArrowRight':
+      blockKey = true;
+
       const reverseData = reverse(dataRows);
       const rightDataRows = shiftLeft(reverseData);
-
       const calcRowsRight = rightDataRows.reduce((prev, item) => {
         prev.push(calculate(item));
 
@@ -104,7 +113,7 @@ function handlerKey(e) {
       }, []);
 
       updateRows(field, reverse(shiftLeft(calcRowsRight)));
-      gameOver = newLoop();
+      gameStatus();
       break;
   }
 }
@@ -117,7 +126,7 @@ function newLoop() {
     gameScore.innerText = gamePlay.getScore + '';
     messageWin.classList.remove('hidden');
 
-    return true;
+    return new Promise(resolve => resolve(true));
   }
 
   let empty = findAllEmptyCells(field);
@@ -130,14 +139,6 @@ function newLoop() {
     endInsertNewValue = new Promise(resolve => setTimeout(() => {
       cell.innerText = number;
       cell.className = `field-cell field-cell--${number}`;
-      resolve();
-    }, 200));
-
-    gameScore.innerText = gamePlay.getScore + '';
-  }
-
-  if (endInsertNewValue !== undefined) {
-    endInsertNewValue.then(() => {
       empty = findAllEmptyCells(field);
 
       if (empty.length === 0) {
@@ -152,13 +153,24 @@ function newLoop() {
         if (!impossibleCalcRows.length && !impossibleCalcColumns.length) {
           message.classList.remove('hidden');
 
-          return true;
+          resolve(true);
         }
       }
-    });
+
+      resolve(false);
+    }, 0));
+  } else {
+    return new Promise(resolve => resolve(false));
   }
 
-  return false;
+  return endInsertNewValue;
+}
+
+function gameStatus() {
+  newLoop().then((result) => {
+    blockKey = false;
+    gameOver = result;
+  });
 }
 
 function findAllEmptyCells(table) {
