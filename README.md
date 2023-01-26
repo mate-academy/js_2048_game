@@ -5,6 +5,7 @@
 # [Demo](https://anastasiia-tilikina.github.io/js_2048_game/)
 
 # Technologies used
+
 - HTML5
 - CSS3
 - Sass (SCSS)
@@ -29,12 +30,24 @@
 - High score is saved in local storage.
 - The game can be restarted by clicking the `Restart` button.
 
+# How to run the project locally
+
+- Fork and clone this repository
+- Run `npm install` in your terminal
+- Open `http://localhost:8080/` in your browser
+- Run `npm start` to start the project locally
+
+# Dependencies
+
+- Node v14.17.1 or higher
+- npm v8.19.2 or higher
+
 # Reflections
+
 The main goal of this project was to practice JavaScript and DOM manipulations and combine JavaScript with HTML and CSS.
 
 The main challenge was to implement the game logic. I had to think about all possible scenarios and how to implement them.
 
 Eventually I practiced in building more complex logic using knowledge I have gained so far until this point.
-
 
 ### This project is inspired by original [2048 game](https://play2048.co/)
