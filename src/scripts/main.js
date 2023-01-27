@@ -1,12 +1,12 @@
 'use strict';
 
 const body = document.querySelector('body');
-const gameHeader = body.querySelector('.game-header');
-const gameField = body.querySelector('.game-field');
-const tbody = body.querySelector('tbody');
+// const gameHeader = body.querySelector('.game-header');
+// const gameField = body.querySelector('.game-field');
+// const tbody = body.querySelector('tbody');
 const fieldRowAll = body.querySelectorAll('.field-row');
-const controls = body.querySelector('.controls');
-const score = body.querySelector('.game-score');
+// const controls = body.querySelector('.controls');
+// const score = body.querySelector('.game-score');
 const start = body.querySelector('.start');
 let probabilityCount = 0;
 
@@ -15,51 +15,9 @@ function changeAdditionalClassCell(element, newAddClass) {
     element.classList.remove('field-cell--' + i);
   }
 
-  element.classList.add(newAddClass);
-}
-
-function moveLeft() {
-  for (const row of fieldRowAll) {
-    const cells = row.querySelectorAll('.field-cell');
-    const arrayCells = [];
-    const arrayCellsNew = [];
-
-    for (let i = 0; i < cells.length; i++) {
-      if (cells[i].textContent) {
-        arrayCells.push(parseInt(cells[i].textContent));
-      }
-    }
-
-    for (let i = 1; i < arrayCells.length; i++) {
-      if (arrayCells[i - 1] === arrayCells[i] ) {
-        arrayCells[i - 1] = arrayCells[i] * 2;
-        arrayCells[i] = 0;
-      }
-    }
-
-    for (let i = 1; i < arrayCells.length; i++) {
-      if (arrayCells[i] !== 0) {
-        arrayCellsNew.push(arrayCells[i]);
-      }
-    }
-
-    for (let i = 0; i < cells.length; i++) {
-      if (arrayCellsNew[i]) {
-        cells[i].textContent = arrayCellsNew[i];
-
-        const addClass = 'field-cell--' + arrayCellsNew[i];
-
-        changeAdditionalClassCell(cells[i], addClass);
-      } else {
-        cells[i].textContent = '';
-        changeAdditionalClassCell(cells[i], '');
-      }
-    }
+  if (newAddClass) {
+    element.classList.add(newAddClass);
   }
-}
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
 }
 
 function newCell() {
@@ -87,6 +45,51 @@ function newCell() {
     }
   }
 };
+
+function moveLeft() {
+  for (const row of fieldRowAll) {
+    const cells = row.querySelectorAll('.field-cell');
+    const arrayCells = [];
+    const arrayCellsNew = [];
+
+    for (let i = 0; i < cells.length; i++) {
+      if (cells[i].textContent) {
+        arrayCells.push(parseInt(cells[i].textContent));
+      }
+    }
+
+    for (let i = 1; i < arrayCells.length; i++) {
+      if (arrayCells[i - 1] === arrayCells[i]) {
+        arrayCells[i - 1] = arrayCells[i] * 2;
+        arrayCells[i] = 0;
+      }
+    }
+
+    for (let i = 1; i < arrayCells.length; i++) {
+      if (arrayCells[i] !== 0) {
+        arrayCellsNew.push(arrayCells[i]);
+      }
+    }
+
+    for (let i = 0; i < cells.length; i++) {
+      if (arrayCellsNew[i]) {
+        cells[i].textContent = arrayCellsNew[i];
+
+        const addClass = 'field-cell--' + arrayCellsNew[i];
+
+        changeAdditionalClassCell(cells[i], addClass);
+      } else {
+        cells[i].textContent = '';
+        changeAdditionalClassCell(cells[i]);
+      }
+    }
+  }
+  newCell();
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
 
 start.addEventListener('click', ourEvent => {
   if (start.classList.contains('start')) {
