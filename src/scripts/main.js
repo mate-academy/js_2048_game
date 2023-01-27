@@ -4,6 +4,7 @@ const gameSize = 4;
 const startBtn = document.querySelector('.button');
 const startMessage = document.querySelector('.message-start');
 const loseMessage = document.querySelector('.message-lose');
+const winMessage = document.querySelector('.message-win');
 const scoreField = document.querySelector('.game-score');
 let score = 0;
 let gameSquare = [
@@ -17,43 +18,25 @@ let gameSquare = [
 startBtn.addEventListener('click', () => {
   newGame();
 
-  // const btn = e.target;
-  // console.log(startBtn.innerText);
-
   if (startBtn.innerText === 'Start') {
-    // console.log('true');
     startBtn.innerText = 'Restart';
     startBtn.classList.replace('start', 'restart');
-  } else if (startBtn.textContent === 'Restart') {
-    startBtn.innerText = 'Start';
-    startBtn.classList.replace('restart', 'start');
   }
 
-  // startBtn.classList.toggle('')
-
-  // if (startBtn.textContent === 'Restart') {
-  // startBtn.innerText = 'Start';
-  // startBtn.classList.replace('restart', 'start');
-  // }
-
-  // btn.innerText = 'Restart';
-  // btn.classList.replace('start', 'restart');
   startMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
 });
 
 function generateNewNumber() {
-  let randomRow;
-  let randomCell;
+  const randomRow = Math.floor(Math.random() * gameSize);
+  const randomCell = Math.floor(Math.random() * gameSize);
 
-  do {
-    randomRow = Math.floor(Math.random() * gameSize);
-    randomCell = Math.floor(Math.random() * gameSize);
-
-    if (gameSquare[randomRow][randomCell] === 0) {
-      gameSquare[randomRow][randomCell] = Math.random() > 0.1 ? 2 : 4;
-      break;
-    }
-  } while (true);
+  if (gameSquare[randomRow][randomCell] === 0) {
+    gameSquare[randomRow][randomCell] = Math.random() > 0.1 ? 2 : 4;
+  } else {
+    generateNewNumber();
+  }
 }
 
 function fillGameField() {
@@ -71,6 +54,10 @@ function fillGameField() {
       const arrayValue = gameSquare[i][x];
 
       gameValue.innerText = arrayValue === 0 ? '' : arrayValue;
+      gameValue.classList.value = '';
+
+      gameValue.classList.add('field-cell',
+        `field-cell--${gameValue.innerText}`);
     }
   }
 }
@@ -86,7 +73,6 @@ function newGame() {
   score = 0;
   scoreField.innerText = score;
   generateNewNumber();
-  generateNewNumber();
   fillGameField();
 }
 
@@ -96,30 +82,29 @@ document.addEventListener('keydown', (e) => {
   switch (pressedKey) {
     case 'ArrowRight':
       moveRowsRight();
-      // fillGameField();
-      // generateNewNumber();
+      generateNewNumber();
       break;
     case 'ArrowLeft':
       moveRowsLeft();
-      // generateNewNumber();
+      generateNewNumber();
       break;
     case 'ArrowUp':
       moveRowsUp();
+      generateNewNumber();
       break;
     case 'ArrowDown':
       moveRowsDown();
+      generateNewNumber();
       break;
-    // default:
-      // return;
   }
 
-  isGameOver();
+  fillGameField();
 
-  if (isGameWon()) {
-    //console.log('won');
-  }
+  if (isGameOver()) {
+    loseMessage.classList.remove('hidden');
+  };
 
-// console.log('hello');
+  isGameWon();
 });
 
 function moveCellsLeft(array) {
@@ -127,35 +112,32 @@ function moveCellsLeft(array) {
     return collection.filter((item) => item !== 0);
   }
 
-  array = removeZeros(array);
+  let copy = [...array];
 
-  for (let i = 0; i < array.length - 1; i++) {
-    if (array[i] === array[i + 1]) {
-      array[i] *= 2;
-      array[i + 1] = 0;
-      score += array[i];
+  copy = removeZeros(copy);
+
+  for (let i = 0; i < copy.length - 1; i++) {
+    if (copy[i] === copy[i + 1]) {
+      copy[i] *= 2;
+      copy[i + 1] = 0;
+      score += copy[i];
       scoreField.innerText = score;
     }
   }
 
-  array = removeZeros(array);
+  copy = removeZeros(copy);
 
-  while (array.length < gameSize) {
-    array.push(0);
+  while (copy.length < gameSize) {
+    copy.push(0);
   }
 
-  return array;
+  return copy;
 }
 
 function moveRowsLeft() {
   for (let i = 0; i < gameSize; i++) {
     gameSquare[i] = moveCellsLeft(gameSquare[i], gameSize);
-
-    // fillGameField();
   }
-
-  generateNewNumber();
-  fillGameField();
 
   return gameSquare;
 }
@@ -165,19 +147,17 @@ function moveRowsRight() {
     gameSquare[i].reverse();
     gameSquare[i] = moveCellsLeft(gameSquare[i], gameSize);
     gameSquare[i].reverse();
-
-    // fillGameField();
   }
-
-  generateNewNumber();
-  fillGameField();
 
   return gameSquare;
 }
 
 function moveRowsUp() {
   for (let i = 0; i < gameSize; i++) {
-    let newRow = [gameSquare[0][i], gameSquare[1][i], gameSquare[2][i], gameSquare[3][i]];
+    let newRow = [gameSquare[0][i],
+      gameSquare[1][i],
+      gameSquare[2][i],
+      gameSquare[3][i]];
 
     newRow = moveCellsLeft(newRow, gameSize);
 
@@ -185,19 +165,17 @@ function moveRowsUp() {
     gameSquare[1][i] = newRow[1];
     gameSquare[2][i] = newRow[2];
     gameSquare[3][i] = newRow[3];
-
-    // fillGameField();
   };
-
-  generateNewNumber();
-  fillGameField();
 
   return gameSquare;
 }
 
 function moveRowsDown() {
   for (let i = 0; i < gameSize; i++) {
-    let newRow = [gameSquare[0][i], gameSquare[1][i], gameSquare[2][i], gameSquare[3][i]];
+    let newRow = [gameSquare[0][i],
+      gameSquare[1][i],
+      gameSquare[2][i],
+      gameSquare[3][i]];
 
     newRow.reverse();
     newRow = moveCellsLeft(newRow, gameSize);
@@ -207,44 +185,40 @@ function moveRowsDown() {
     gameSquare[1][i] = newRow[1];
     gameSquare[2][i] = newRow[2];
     gameSquare[3][i] = newRow[3];
-
-    // fillGameField();
   };
-
-  generateNewNumber();
-  fillGameField();
 
   return gameSquare;
 }
 
 function isGameOver() {
-  // console.log('hello')
-
   for (let row = 0; row < gameSquare.length; row++) {
     for (let col = 0; col < gameSquare.length; col++) {
       if (gameSquare[row][col] === 0) {
-        return;
+        return false;
       }
     }
   }
 
-  // console.log('hello')
-
-  for (let row = 0; row < gameSquare.length - 1; row++) {
-    for (let col = 0; col < gameSquare.length - 1; col++) {
+  for (let row = 0; row < gameSize - 1; row++) {
+    for (let col = 0; col < gameSize - 1; col++) {
       const cell = gameSquare[row][col];
 
-      if (cell === gameSquare[row + 1][col] || cell === gameSquare[row][col + 1]) {
-        return;
+      if (cell === gameSquare[row + 1][col]
+        || cell === gameSquare[row][col + 1]) {
+        return false;
       }
     }
   }
-  loseMessage.classList.remove('hidden');
-  // return true;
+
+  return true;
 }
 
 function isGameWon() {
   for (const row of gameSquare) {
-    return row.some(item => item.innerText === 2048);
+    for (let i = 0; i < gameSize; i++) {
+      if (row[i] === 2048) {
+        winMessage.classList.remove('hidden');
+      }
+    }
   }
 }
