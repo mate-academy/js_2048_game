@@ -100,11 +100,9 @@ function isGameOver() {
     }
   }
 
-  for (let i = 0; i < fieldCell - 1; i++) {
+  for (let i = 0; i < fieldCell; i++) {
     for (let j = 0; j < fieldCell - 1; j++) {
-      const c = board[i][j];
-
-      if (c !== 0 && (c === board[i + 1][j] || c === board[i][j + 1])) {
+      if (board[i][j] === board[i][j + 1] || board[j][i] === board[j + 1][i]) {
         return false;
       }
     }
