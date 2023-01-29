@@ -1,5 +1,5 @@
 1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
+    - [DEMO LINK](https://11Olya112.github.io/js_2048_game/)
 2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
     - Run `npm run test` command to test your code;
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
@@ -22,7 +22,7 @@ That's it!
 Okay, okay. Also, we have some rules:
 1) The game field is 4 x 4
 2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
+3) The player can move cells with keyboard arfieldCell
 4) All the numbers should be moved in the selected direction until all empty cells are filled in
    - 2 equal cells should be merged into a doubled number
    - The merged cell can’t be merged twice during one move
