@@ -105,14 +105,13 @@ function moveCells(keybordEvent) {
       break;
   }
 
-  getRandomCell();
   render();
 
   if (checkIsWin()) {
     checkIsWin();
   }
 
-  if (checkIsLose()) {
+  if (!canMoveHoriz() && !canMoveVert()) {
     messageLose.classList.remove('hidden');
     document.removeEventListener('keydown', moveCells);
   }
@@ -120,79 +119,145 @@ function moveCells(keybordEvent) {
   scoreVal.textContent = score;
 }
 
-function moveHorizont(arg) {
+function canMoveHoriz() {
+  const res = [];
+  let count = 0;
+
   for (let i = 0; i < 4; i++) {
-    let arr = clearEmpty(field[i]);
-
-    if (arg) {
-      arr.reverse();
+    for (let j = 1; j < 4; j++) {
+      if (field[i][j] === field[i][j - 1]) {
+        res.push(1);
+      } else {
+        res.push(0);
+      }
     }
+  }
 
-    if (arr.length > 1) {
-      for (let j = 1; j < arr.length; j++) {
-        if (arr[j - 1] === arr[j]) {
-          arr[j - 1] *= 2;
-          arr[j] = 0;
-          score += arr[j - 1];
-          clearEmpty(arr);
-        }
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (field[i][j] === 0) {
+        count++;
+      }
+    }
+  }
+
+  if (count || res.some(item => item === 1)) {
+    return true;
+  }
+
+  return false;
+}
+
+function canMoveVert() {
+  const res = [];
+  let count = 0;
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 1; j < 4; j++) {
+      if (field[j][i] === field[j - 1][i]) {
+        res.push(1);
+      } else {
+        res.push(0);
+      }
+    }
+  }
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (field[i][j] === 0) {
+        count++;
+      }
+    }
+  }
+
+  if (count || res.some(item => item === 1)) {
+    return true;
+  }
+
+  return false;
+}
+
+function moveHorizont(arg) {
+  if (canMoveHoriz()) {
+    for (let i = 0; i < 4; i++) {
+      let arr = clearEmpty(field[i]);
+
+      if (arg) {
+        arr.reverse();
       }
 
-      arr = clearEmpty(arr);
+      if (arr.length > 1) {
+        for (let j = 1; j < arr.length; j++) {
+          if (arr[j - 1] === arr[j]) {
+            arr[j - 1] *= 2;
+            arr[j] = 0;
+            score += arr[j - 1];
+            clearEmpty(arr);
+          }
+        }
+
+        arr = clearEmpty(arr);
+      }
+
+      while (arr.length !== 4) {
+        arr.push(0);
+      }
+
+      if (arg) {
+        arr.reverse();
+      }
+
+      field[i] = arr;
     }
 
-    while (arr.length !== 4) {
-      arr.push(0);
-    }
-
-    if (arg) {
-      arr.reverse();
-    }
-
-    field[i] = arr;
+    getRandomCell();
   }
 }
 
 function moveVertical(arg) {
-  for (let i = 0; i < 4; i++) {
-    let column = [];
+  if (canMoveVert()) {
+    for (let i = 0; i < 4; i++) {
+      let column = [];
 
-    for (let j = 0; j < 4; j++) {
-      column.push(field[j][i]);
-    }
-
-    let arr = clearEmpty(column);
-
-    if (arg) {
-      arr.reverse();
-    }
-
-    if (arr.length > 1) {
-      for (let j = 1; j < arr.length; j++) {
-        if (arr[j - 1] === arr[j]) {
-          arr[j - 1] *= 2;
-          arr[j] = 0;
-          score += arr[j - 1];
-        }
+      for (let j = 0; j < 4; j++) {
+        column.push(field[j][i]);
       }
 
-      arr = clearEmpty(arr);
+      let arr = clearEmpty(column);
+
+      if (arg) {
+        arr.reverse();
+      }
+
+      if (arr.length > 1) {
+        for (let j = 1; j < arr.length; j++) {
+          if (arr[j - 1] === arr[j]) {
+            arr[j - 1] *= 2;
+            arr[j] = 0;
+            score += arr[j - 1];
+          }
+        }
+
+        arr = clearEmpty(arr);
+      }
+
+      while (arr.length !== 4) {
+        arr.push(0);
+      }
+
+      if (arg) {
+        arr.reverse();
+      }
+
+      for (let j = 0; j < 4; j++) {
+        field[j][i] = arr[j];
+      }
+
+      arr = [];
+      column = [];
     }
 
-    while (arr.length !== 4) {
-      arr.push(0);
-    }
-
-    if (arg) {
-      arr.reverse();
-    }
-
-    for (let j = 0; j < 4; j++) {
-      field[j][i] = arr[j];
-    }
-
-    arr = [];
-    column = [];
+    getRandomCell();
   }
 }
 
@@ -212,31 +277,6 @@ function checkIsWin() {
       return true;
     }
   }));
-
-  return false;
-}
-
-function checkIsLose() {
-  let empty = 0;
-  const res = [];
-
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-      if (field[i][j] === 0) {
-        empty++;
-      }
-
-      if (field[i][j] !== field[i][j + 1] || field[i][j] !== field[j + 1][i]) {
-        res.push(0);
-      } else {
-        res.push(1);
-      }
-    }
-  }
-
-  if (!empty && res.every(num => num === 0)) {
-    return true;
-  }
 
   return false;
 }
