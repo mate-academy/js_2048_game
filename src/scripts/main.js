@@ -47,43 +47,67 @@ function newCell() {
 };
 
 function moveLeft() {
-  for (const row of fieldRowAll) {
-    const cells = row.querySelectorAll('.field-cell');
-    const arrayCells = [];
-    const arrayCellsNew = [];
+  const board = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
 
-    for (let i = 0; i < cells.length; i++) {
+  for (let i = 0; i < fieldRowAll.length; i++) {
+    const cells = fieldRowAll[i].querySelectorAll('.field-cell');
+
+    for (let j = 0; j < cells.length; j++) {
       if (cells[i].textContent) {
-        arrayCells.push(parseInt(cells[i].textContent));
-      }
-    }
-
-    for (let i = 1; i < arrayCells.length; i++) {
-      if (arrayCells[i - 1] === arrayCells[i]) {
-        arrayCells[i - 1] = arrayCells[i] * 2;
-        arrayCells[i] = 0;
-      }
-    }
-
-    for (let i = 1; i < arrayCells.length; i++) {
-      if (arrayCells[i] !== 0) {
-        arrayCellsNew.push(arrayCells[i]);
-      }
-    }
-
-    for (let i = 0; i < cells.length; i++) {
-      if (arrayCellsNew[i]) {
-        cells[i].textContent = arrayCellsNew[i];
-
-        const addClass = 'field-cell--' + arrayCellsNew[i];
-
-        changeAdditionalClassCell(cells[i], addClass);
-      } else {
-        cells[i].textContent = '';
-        changeAdditionalClassCell(cells[i]);
+        board[i][j] = parseInt(cells[i].textContent);
       }
     }
   }
+
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 1; j < board[i].length; j++) {
+      if (board[i][j - 1] === board[i][j]) {
+        board[i][j - 1] = board[i][j - 1] * 2;
+        board[i][j] = 0;
+      }
+    }
+  }
+
+  for (let i = 0; i < board.length; i++) {
+    const newRow = [];
+
+    for (let j = 0; j < board[i].length; j++) {
+      if (board[i][j] !== 0) {
+        newRow.push(board[i][j]);
+      }
+    }
+
+    for (let j = 0; j < newRow.length; j++) {
+      board[i][j] = newRow[j];
+    }
+
+    for (let j = newRow.length; j < board[i].length; j++) {
+      board[i][j] = 0;
+    }
+  }
+
+  for (let i = 0; i < board.length; i++) {
+    const cells = fieldRowAll[i].querySelectorAll('.field-cell');
+
+    for (let j = 0; j < board[i].length; j++) {
+      if (board[i][j] !== 0) {
+        cells[j].textContent = board[i][j];
+
+        const addClass = 'field-cell--' + board[i][j];
+
+        changeAdditionalClassCell(cells[j], addClass);
+      } else {
+        cells[j].textContent = '';
+        changeAdditionalClassCell(cells[j]);
+      }
+    }
+  }
+
   newCell();
 }
 
