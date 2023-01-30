@@ -7,6 +7,7 @@ const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
 const scoreField = document.querySelector('.game-score');
 let score = 0;
+let direction;
 let gameSquare = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -42,16 +43,16 @@ function generateNewNumber() {
 function fillGameField() {
   const gameBoard = document.querySelector('.game-field');
   const rows = [...gameBoard.rows];
-  const e = [];
+  const gameBoardCells = [];
 
   for (const a of rows) {
-    e.push([...a.cells]);
+    gameBoardCells.push([...a.cells]);
   }
 
-  for (let i = 0; i < gameSize; i++) {
-    for (let x = 0; x < gameSize; x++) {
-      const gameValue = e[i][x];
-      const arrayValue = gameSquare[i][x];
+  for (let row = 0; row < gameSize; row++) {
+    for (let column = 0; column < gameSize; column++) {
+      const gameValue = gameBoardCells[row][column];
+      const arrayValue = gameSquare[row][column];
 
       gameValue.innerText = arrayValue === 0 ? '' : arrayValue;
       gameValue.classList.value = '';
@@ -84,14 +85,17 @@ document.addEventListener('keydown', (e) => {
       moveRowsRight();
       generateNewNumber();
       break;
+
     case 'ArrowLeft':
       moveRowsLeft();
       generateNewNumber();
       break;
+
     case 'ArrowUp':
       moveRowsUp();
       generateNewNumber();
       break;
+
     case 'ArrowDown':
       moveRowsDown();
       generateNewNumber();
@@ -152,15 +156,20 @@ function moveRowsRight() {
   return gameSquare;
 }
 
-function moveRowsUp() {
+function moveVertically() {
   for (let i = 0; i < gameSize; i++) {
     let newRow = [gameSquare[0][i],
       gameSquare[1][i],
       gameSquare[2][i],
       gameSquare[3][i]];
 
-    newRow = moveCellsLeft(newRow, gameSize);
-
+    if (direction === 'up') {
+      newRow = moveCellsLeft(newRow, gameSize);
+    } else if (direction === 'down') {
+      newRow.reverse();
+      newRow = moveCellsLeft(newRow, gameSize);
+      newRow.reverse();
+    }
     gameSquare[0][i] = newRow[0];
     gameSquare[1][i] = newRow[1];
     gameSquare[2][i] = newRow[2];
@@ -170,24 +179,14 @@ function moveRowsUp() {
   return gameSquare;
 }
 
+function moveRowsUp() {
+  direction = 'up';
+  moveVertically();
+}
+
 function moveRowsDown() {
-  for (let i = 0; i < gameSize; i++) {
-    let newRow = [gameSquare[0][i],
-      gameSquare[1][i],
-      gameSquare[2][i],
-      gameSquare[3][i]];
-
-    newRow.reverse();
-    newRow = moveCellsLeft(newRow, gameSize);
-    newRow.reverse();
-
-    gameSquare[0][i] = newRow[0];
-    gameSquare[1][i] = newRow[1];
-    gameSquare[2][i] = newRow[2];
-    gameSquare[3][i] = newRow[3];
-  };
-
-  return gameSquare;
+  direction = 'down';
+  moveVertically();
 }
 
 function isGameOver() {
@@ -199,12 +198,10 @@ function isGameOver() {
     }
   }
 
-  for (let row = 0; row < gameSize - 1; row++) {
+  for (let row = 0; row < gameSize; row++) {
     for (let col = 0; col < gameSize - 1; col++) {
-      const cell = gameSquare[row][col];
-
-      if (cell === gameSquare[row + 1][col]
-        || cell === gameSquare[row][col + 1]) {
+      if (gameSquare[row][col] === gameSquare[row][col + 1]
+        || gameSquare[col][row] === gameSquare[col + 1][row]) {
         return false;
       }
     }
@@ -215,8 +212,8 @@ function isGameOver() {
 
 function isGameWon() {
   for (const row of gameSquare) {
-    for (let i = 0; i < gameSize; i++) {
-      if (row[i] === 2048) {
+    for (let cell = 0; cell < gameSize; cell++) {
+      if (row[cell] === 2048) {
         winMessage.classList.remove('hidden');
       }
     }
