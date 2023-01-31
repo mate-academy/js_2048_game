@@ -9,6 +9,12 @@ const fieldRowAll = body.querySelectorAll('.field-row');
 // const score = body.querySelector('.game-score');
 const start = body.querySelector('.start');
 let probabilityCount = 0;
+const board = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 
 function changeAdditionalClassCell(element, newAddClass) {
   for (let i = 2; i <= 2048; i = i * 2) {
@@ -47,13 +53,6 @@ function newCell() {
 };
 
 function moveLeft() {
-  const board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
-
   for (let i = 0; i < fieldRowAll.length; i++) {
     const cells = fieldRowAll[i].querySelectorAll('.field-cell');
 
