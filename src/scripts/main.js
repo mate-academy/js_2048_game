@@ -74,9 +74,9 @@ function render() {
 };
 
 function addNewNumber() {
-  const [randomY, randomX] = findEmptyCell();
+  const [randomColumn, randomRow] = findEmptyCell();
 
-  gameField[randomY][randomX] = Math.random() < 0.9 ? 2 : 4;
+  gameField[randomColumn][randomRow] = Math.random() < 0.9 ? 2 : 4;
 };
 
 function findEmptyCell() {
