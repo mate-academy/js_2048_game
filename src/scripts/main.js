@@ -9,6 +9,7 @@ const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const cells = document.querySelectorAll('.field-cell');
+const column = 4;
 
 let table2 = [
   [0, 0, 0, 0],
@@ -162,35 +163,45 @@ function transpose(original) {
 
 function moveCells(matrix, reverse = false, original = false) {
   const copy = !(reverse)
-    ? deepClone(matrix)
-    : deepClone(matrix).map(elem => elem.reverse());
+    ? deepClone(matrix).map(elem => elem.reverse())
+    : deepClone(matrix);
 
-  copy.forEach(items => {
-    for (let i = items.length - 1; i > 0; i--) {
-      if (items[i] === 0 && items[i - 1] > 0) {
-        items[i] = items[i - 1];
-        items[i - 1] = 0;
-      }
+  function removeZeroes(row) {
+    return row.filter(num => num !== 0);
+  }
 
-      for (let j = 1; j < items.length; j++) {
-        if (items[j - 1] !== 0 && items[j] === 0) {
-          items[j] = items[j - 1];
-          items[j - 1] = 0;
-        }
-      }
+  function slide(row) {
+    let newRow = removeZeroes(row);
 
-      if (items[i] === items[i - 1]) {
-        items[i] *= 2;
-        items[i - 1] = 0;
+    for (let i = 0; i < newRow.length - 1; i++) {
+      if (newRow[i] === newRow[i + 1]) {
+        newRow[i] *= 2;
+        newRow[i + 1] = 0;
 
         if (original) {
-          addScore(items[i]);
+          addScore(newRow[i]);
         }
       }
+      newRow = removeZeroes(newRow);
     }
-  });
 
-  return (!(reverse) ? copy : copy.map(elem => elem.reverse()));
+    while (newRow.length < column) {
+      newRow.push(0);
+    }
+
+    return newRow;
+  }
+
+  const copy1 = [];
+
+  for (let j = 0; j < rows.length; j++) {
+    let row = copy[j];
+
+    row = slide(row);
+    copy1[j] = row;
+  }
+
+  return (!(reverse) ? copy1.map(elem => elem.reverse()) : copy1);
 }
 
 function addScore(plusNumber) {
