@@ -2,6 +2,7 @@
 
 const tableGame = document.querySelector('.game-field');
 const rows = tableGame.rows;
+const columnLength = tableGame.rows.length;
 const button = document.querySelector('button');
 const score = document.querySelector('.game-score');
 
@@ -9,7 +10,7 @@ const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const cells = document.querySelectorAll('.field-cell');
-const column = 4;
+const winValue = 2048;
 
 let table2 = [
   [0, 0, 0, 0],
@@ -17,8 +18,6 @@ let table2 = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
-
-button.style.outline = 'none';
 
 let starting = false;
 
@@ -185,7 +184,7 @@ function moveCells(matrix, reverse = false, original = false) {
       newRow = removeZeroes(newRow);
     }
 
-    while (newRow.length < column) {
+    while (newRow.length < columnLength) {
       newRow.push(0);
     }
 
@@ -194,7 +193,7 @@ function moveCells(matrix, reverse = false, original = false) {
 
   const copy1 = [];
 
-  for (let j = 0; j < rows.length; j++) {
+  for (let j = 0; j < columnLength; j++) {
     let row = copy[j];
 
     row = slide(row);
@@ -212,8 +211,8 @@ function addScore(plusNumber) {
 }
 
 function addValuesToCells(matrix) {
-  for (let i = 0; i < rows.length; i++) {
-    for (let j = 0; j < rows.length; j++) {
+  for (let i = 0; i < columnLength; i++) {
+    for (let j = 0; j < columnLength; j++) {
       rows[i].cells[j].textContent = (matrix[i][j] !== 0)
         ? matrix[i][j]
         : ' ';
@@ -228,10 +227,10 @@ function addInRandomCell(matrix, percent = 10) {
     ? 2
     : 4;
 
-  for (let i = 0; i < rows.length; i++) {
-    for (let j = 0; j < rows.length; j++) {
+  for (let i = 0; i < columnLength; i++) {
+    for (let j = 0; j < columnLength; j++) {
       if (matrix[i][j] === 0) {
-        emptyCellsIndexes.push(`${i}${j}`);
+        emptyCellsIndexes.push([i, j]);
       }
     }
   }
@@ -264,7 +263,7 @@ function deepClone(obj) {
 function checkOnWin(matrix) {
   for (const row of matrix) {
     for (const cell of row) {
-      if (cell === 2048) {
+      if (cell === winValue) {
         messageWin.classList.remove('hidden');
       }
     }
