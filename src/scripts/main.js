@@ -1,12 +1,7 @@
 'use strict';
 
 const body = document.querySelector('body');
-// const gameHeader = body.querySelector('.game-header');
-// const gameField = body.querySelector('.game-field');
-// const tbody = body.querySelector('tbody');
 const fieldRowAll = body.querySelectorAll('.field-row');
-// const controls = body.querySelector('.controls');
-// const score = body.querySelector('.game-score');
 const start = body.querySelector('.start');
 let probabilityCount = 0;
 const board = [
@@ -60,6 +55,24 @@ function moveLeft() {
       if (cells[i].textContent) {
         board[i][j] = parseInt(cells[i].textContent);
       }
+    }
+  }
+
+  for (let i = 0; i < board.length; i++) {
+    const newRow = [];
+
+    for (let j = 0; j < board[i].length; j++) {
+      if (board[i][j] !== 0) {
+        newRow.push(board[i][j]);
+      }
+    }
+
+    for (let j = 0; j < newRow.length; j++) {
+      board[i][j] = newRow[j];
+    }
+
+    for (let j = newRow.length; j < board[i].length; j++) {
+      board[i][j] = 0;
     }
   }
 
