@@ -1,84 +1,126 @@
+$cell-size: 80px;
+$gap-size: 10px;
+$main-color: #7cb3cf;
+$cell-color: #252d7a;
+
+* {
+  box-sizing: border-box;
+}
+
 body {
+  position: fixed;
   margin: 0;
   display: flex;
+  width: 100%;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: $main-color;
   font-family: sans-serif;
-  font-size: 24px;
+  font-size: 10px;
   font-weight: 900;
 }
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
+.game-field {
+  position: relative;
+  margin-bottom: 30px;
 
-  &--2 {
-    background: #eee4da;
+  &__cell-container {
+    margin: 0;
+    display: grid;
+    grid-template-rows: repeat(4, $cell-size);
+    grid-template-columns: repeat(4, $cell-size);
+    gap: $gap-size;
+    align-items: center;
+    justify-content: center;
+    background-color: $main-color;
+    border-radius: 5px;
   }
 
-  &--4 {
-    background: #ede0c8;
+  &__cell {
+    width: $cell-size;
+    height: $cell-size;
+    border-radius: $gap-size;
+    background-color: $cell-color;
   }
 
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
+  &__tile {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $cell-size;
+    height: $cell-size;
+    border-radius: $gap-size;
+    color: #776e65;
+    box-sizing: border-box;
+    font-size: 2rem;
+    user-select: none;
+    animation: show 200ms ease-in-out;
+    transition: 100ms ease-in-out;
+    z-index: 2;
+    &--2 {
+      background-color: hsl(300, 50%, 80%);
+      color: #fff;
+    }
 
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
+    &--4 {
+      background-color: hsl(300, 50%, 70%);
+      color: #fff;
+    }
 
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
+    &--8 {
+      background-color: hsl(300, 50%, 60%);
+      color: #f9f6f2;
+    }
 
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
+    &--16 {
+      background-color: hsl(300, 50%, 50%);
+      color: #f9f6f2;
+    }
 
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
+    &--32 {
+      background-color: hsl(300, 50%, 40%);
+      color: #f9f6f2;
+    }
 
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
+    &--64 {
+      background-color: rgb(142, 59, 215);
+      color: #f9f6f2;
+    }
 
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
+    &--128 {
+      background-color: rgb(106, 33, 169);
+      color: #f9f6f2;
+    }
 
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
+    &--256 {
+      background-color: rgb(98, 12, 173);
+      color: #f9f6f2;
+    }
 
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    &--512 {
+      background-color: rgb(147, 21, 130);
+      color: #f9f6f2;
+    }
+
+    &--1024 {
+      background-color: rgb(231, 28, 204);
+      color: #f9f6f2;
+    }
+
+    &--2048 {
+      background: linear-gradient(#5880d9 10%, #d9d955 90%);
+      color: #c7c6c6;
+    }
   }
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
 }
 
 .game-header {
@@ -91,8 +133,8 @@ body {
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: #194f96;
+  color: #eae60a;
   width: 75px;
   height: 75px;
   font-size: 24px;
@@ -133,24 +175,26 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-
   transition: 0.25s ease background;
 }
 
 .start {
-  background: #1dae28;
+  background: #d1d91b;
+  color: #2750a9;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: #b78cbb;
+    color: #f9f9fa;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #b78cbb;
+  color: #ebf510;
 
   &:hover {
-    background: #f87474;
+    background: #6a21a9;
   }
 }
 
@@ -161,6 +205,7 @@ h1 {
   color: #776e65;
   padding: 10px;
   text-align: center;
+  box-shadow: 5px 5px 10px gray;
   border-radius: 5px;
   font-size: 20px;
 }
