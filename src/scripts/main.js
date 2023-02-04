@@ -12,7 +12,7 @@ const messageLose = document.querySelector('.message-lose');
 const cells = document.querySelectorAll('.field-cell');
 const winValue = 2048;
 
-let table2 = [
+let table = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -36,16 +36,16 @@ button.addEventListener('click', action => {
     starting = true;
     score.textContent = 0;
 
-    table2 = [
+    table = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
 
-    addInRandomCell(table2);
-    addInRandomCell(table2);
-    addValuesToCells(table2);
+    addInRandomCell(table);
+    addInRandomCell(table);
+    addValuesToCells(table);
     changeStyleCells(cells);
   }
 
@@ -85,19 +85,19 @@ document.addEventListener('keydown', (e) => {
     return null;
   }
 
-  const link = deepClone(table2);
+  const link = deepClone(table);
   const rotating = transpose(link);
 
   function arrowMove(matrix, reverse = false, vertical = false) {
-    table2 = vertical
+    table = vertical
       ? transpose(moveCells(matrix, reverse, true))
       : moveCells(matrix, reverse, true);
 
-    if (!onChanges(link, table2)) {
+    if (!onChanges(link, table)) {
       return null;
     }
-    addInRandomCell(table2);
-    addValuesToCells(table2);
+    addInRandomCell(table);
+    addValuesToCells(table);
     changeStyleCells(cells);
   }
 
@@ -116,15 +116,15 @@ document.addEventListener('keydown', (e) => {
       break;
   }
 
-  checkOnWin(table2);
+  checkOnWin(table);
 
-  for (const row of table2) {
+  for (const row of table) {
     if (!row.includes(0)) {
-      const checkTable = deepClone(table2);
+      const checkTable = deepClone(table);
       const down = transpose(moveCells(rotating, true));
       const up = transpose(moveCells(rotating, false));
-      const right = moveCells(table2, false);
-      const left = moveCells(table2, true);
+      const right = moveCells(table, false);
+      const left = moveCells(table, true);
       const results = [
         onChanges(checkTable, down),
         onChanges(checkTable, up),
@@ -191,16 +191,16 @@ function moveCells(matrix, reverse = false, original = false) {
     return newRow;
   }
 
-  const copy1 = [];
+  const copyOut = [];
 
   for (let j = 0; j < columnLength; j++) {
     let row = copy[j];
 
     row = slide(row);
-    copy1[j] = row;
+    copyOut[j] = row;
   }
 
-  return (!(reverse) ? copy1.map(elem => elem.reverse()) : copy1);
+  return (!(reverse) ? copyOut.map(elem => elem.reverse()) : copyOut);
 }
 
 function addScore(plusNumber) {
