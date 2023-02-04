@@ -10,6 +10,18 @@ body {
   font-weight: 900;
 }
 
+.innerField {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  color: #776e65;
+  box-sizing: border-box;
+  user-select: none;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -17,9 +29,80 @@ body {
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
   user-select: none;
+
+  &--merge {
+    transform: scale(1.15, 1.15);
+    transition: transform 0.15s;
+  }
+
+  &--move-left {
+    &--1 {
+      transform: translateX(-86px);
+      transition: transform 0.1s;
+    }
+
+    &--2 {
+      transform: translateX(-172px);
+      transition: transform 0.1s;
+    }
+
+    &--3 {
+      transform: translateX(-258px);
+      transition: transform 0.1s;
+    }
+  }
+
+  &--move-right {
+    &--1 {
+      transform: translateX(86px);
+      transition: transform 0.1s;
+    }
+
+    &--2 {
+      transform: translateX(172px);
+      transition: transform 0.1s;
+    }
+
+    &--3 {
+      transform: translateX(258px);
+      transition: transform 0.1s;
+    }
+  }
+
+  &--move-up {
+    &--1 {
+      transform: translateY(-86px);
+      transition: transform 0.1s;
+    }
+
+    &--2 {
+      transform: translateY(-172px);
+      transition: transform 0.1s;
+    }
+
+    &--3 {
+      transform: translateY(-258px);
+      transition: transform 0.1s;
+    }
+  }
+
+  &--move-down {
+    &--1 {
+      transform: translateY(86px);
+      transition: transform 0.1s;
+    }
+
+    &--2 {
+      transform: translateY(172px);
+      transition: transform 0.1s;
+    }
+
+    &--3 {
+      transform: translateY(258px);
+      transition: transform 0.1s;
+    }
+  }
 
   &--2 {
     background: #eee4da;
