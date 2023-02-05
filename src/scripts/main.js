@@ -1,11 +1,11 @@
 'use strict';
 
-let board;
+let board = [];
 let score = 0;
 const rows = 4;
 const columns = 4;
 
-window.onload = function() {
+window.onload = () => {
   setGame();
 };
 
@@ -18,10 +18,10 @@ function setGame() {
   ];
 
   // board = [
-  //   [0, 0, 0, 0],
-  //   [0, 2, 4, 8],
-  //   [16, 32, 64, 128],
-  //   [256, 512, 1024, 1024],
+  //   [2, 4, 8, 16],
+  //   [256, 128, 64, 32],
+  //   [2, 4, 8, 16],
+  //   [256, 128, 32, 32],
   // ];
 
   const tbody = document.getElementById('tbody');
@@ -36,27 +36,63 @@ function setGame() {
     for (let c = 0; c < columns; c++) {
       const cell = document.createElement('td');
 
-      cell.setAttribute('id', 'field_cell');
+      cell.setAttribute('id', r.toString() + '-' + c.toString());
       row.appendChild(cell);
-
-      cell.id = r.toString() + '-' + c.toString();
 
       const num = board[r][c];
 
       updateCell(cell, num);
-      document.getElementById(rowId).appendChild(cell);
     }
   }
+};
 
+function startButton() {
   document.getElementById('start_button').addEventListener('click', () => {
     document.getElementById('start_button').classList.remove('start');
     document.getElementById('start_button').innerHTML = 'Restart';
-    document.getElementById('start_button').classList.remove('restart');
+    document.getElementById('start_button').classList.add('restart');
     document.getElementsByClassName('message')[2].classList.add('hidden');
-    setTwo();
-    setTwo();
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < columns; c++) {
+        board[r][c] = 0;
+
+        const num = board[r][c];
+        const cell = document.getElementById(r.toString() + '-' + c.toString());
+
+        updateCell(cell, num);
+        score = 0;
+        document.getElementById('score').innerText = score;
+      }
+    }
+
+    setNumber();
+    setNumber();
+  });
+
+  document.addEventListener('keyup', (e) => {
+    switch (e.code) {
+      case 'ArrowLeft':
+        slideLeft();
+        setNumber();
+        break;
+      case 'ArrowRight':
+        slideRight();
+        setNumber();
+        break;
+      case 'ArrowUp':
+        slideUp();
+        setNumber();
+        break;
+      case 'ArrowDown':
+        slideDown();
+        setNumber();
+        break;
+    }
   });
 };
+
+startButton();
 
 function hasEmptyCell() {
   for (let r = 0; r < rows; r++) {
@@ -70,10 +106,8 @@ function hasEmptyCell() {
   return false;
 }
 
-function setTwo() {
+function setNumber() {
   if (!hasEmptyCell()) {
-    document.getElementsByClassName('message')[0].classList.remove('hidden');
-
     return;
   }
 
@@ -83,10 +117,8 @@ function setTwo() {
     const r = Math.floor(Math.random() * rows);
     const c = Math.floor(Math.random() * columns);
 
-    const rand = Math.random(1);
-
     if (board[r][c] === 0) {
-      board[r][c] = rand > 0.5 ? 2 : 4;
+      board[r][c] = Math.random() > 0.1 ? 2 : 4;
 
       const value = board[r][c];
 
@@ -100,8 +132,8 @@ function setTwo() {
 }
 
 function updateCell(cell, num) {
-  cell.innerText = '';
-  cell.classList.value = ''; // clear classes
+  cell.innerHTML = '';
+  cell.classList.value = '';
   cell.classList.add('field_cell');
 
   if (num > 0) {
@@ -113,24 +145,11 @@ function updateCell(cell, num) {
       cell.classList.remove('field_cell--' + num.toString());
     }
   }
-}
 
-document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft') {
-    slideLeft();
-    setTwo();
-  } else if (e.code === 'ArrowRight') {
-    slideRight();
-    setTwo();
-  } else if (e.code === 'ArrowUp') {
-    slideUp();
-    setTwo();
-  } else if (e.code === 'ArrowDown') {
-    slideDown();
-    setTwo();
+  if (num === 2048) {
+    document.getElementsByClassName('message')[1].classList.remove('hidden');
   }
-  document.getElementById('score').innerText = score;
-});
+}
 
 function filterZeroes(row) {
   return row.filter(num => num !== 0);
@@ -146,10 +165,7 @@ function slide(row) {
       row[i + 1] = 0;
       score += row[i];
 
-      if (row[i] === 2048) {
-        document.getElementsByClassName('message')[1]
-          .classList.remove('hidden');
-      }
+      document.getElementById('score').innerText = score;
     }
   }
 
@@ -232,3 +248,93 @@ function slideDown() {
     }
   }
 }
+
+// function gameOver() {
+//   for (let r = 0; r < rows; r++) {
+//     for (let c = 0; c < columns; c++) {
+//       if (board[r][c] !== board[r][c + 1]
+//         && board[r][c] !== board[r][c - 1]
+//         && board[r][c] !== board[r + 1][c]
+//         && board[r][c] !== board[r - 1][c]
+//         && !hasEmptyCell()) {
+//         document.getElementsByClassName('message')[0]
+//           .classList.remove('hidden');
+//       }
+//     }
+//   }
+// }
+
+// gameOver();
+
+// function canMoveLeft() {
+//   for (let r = 0; r < rows; r++) {
+//     for (let c = 1; c < columns; c++) {
+//       if (board[r][c] !== 0) {
+//         if (board[r][c - 1] === 0 || board[r][c - 1] === board[r][c]) {
+//           return true;
+//         }
+//       }
+//     }
+//   }
+
+//   return false;
+// }
+
+// function canMoveUp() {
+//   for (let r = 0; r < rows; r++) {
+//     for (let c = 1; c < columns; c++) {
+//       if (board[r][c] !== 0) {
+//         if (board[r - 1][c] === 0 || board[r - 1][c] === board[r][c]) {
+//           return true;
+//         }
+//       }
+//     }
+//   }
+
+//   return false;
+// }
+
+// function canMoveRight() {
+//   for (let r = 0; r < rows; r++) {
+//     for (let c = 1; c < columns; c++) {
+//       if (board[r][c] !== 0) {
+//         if (board[r][c + 1] === 0 || board[r][c + 1] === board[r][c]) {
+//           return true;
+//         }
+//       }
+//     }
+//   }
+
+//   return false;
+// }
+
+// function canMoveDown() {
+//   for (let r = 0; r < rows; r++) {
+//     for (let c = 1; c < columns; c++) {
+//       if (board[r][c] !== 0) {
+//         if (board[r + 1][c] === 0 || board[r + 1][c] === board[r][c]) {
+//           return true;
+//         }
+//       }
+//     }
+//   }
+
+//   return false;
+// }
+
+// function nomove() {
+//   if (canMoveDown() || canMoveLeft()
+//   || canMoveRight() || canMoveUp()) {
+//     return false;
+//   }
+
+//   return true;
+// }
+
+// function gameOver() {
+//   if (!nomove) {
+//     document.getElementsByClassName('message')[0].classList.remove('hidden');
+//   }
+// };
+
+// gameOver();
