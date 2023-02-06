@@ -78,7 +78,7 @@ export class Game {
       `);
     }
 
-    if (this.grid.isGameOver()) {
+    if (!this.grid.getAllEmptyCells().length) {
       this.removeEvents();
 
       this.view.printMessage('lose', `
@@ -104,6 +104,8 @@ export class Game {
       case 'ArrowDown':
         this.grid.moveDown();
         break;
+      default:
+        break;
     }
 
     this.score = this.grid.currentScore;
@@ -118,7 +120,7 @@ export class Game {
       `);
     }
 
-    if (this.grid.isGameOver() && this.grid.getAllEmptyCells().length === 0) {
+    if (!this.grid.getAllEmptyCells().length && this.grid.isGameOver()) {
       this.removeEvents();
 
       this.view.printMessage('lose', `

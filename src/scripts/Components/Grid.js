@@ -5,7 +5,7 @@ export class Grid {
     this.view = view;
     this.currentScore = 0;
     this.currentMargeTile = 0;
-    this.checkedToAddTile = true;
+    this.checkedToAddTile = false;
 
     this.matrix = [
       [null, null, null, null],
@@ -58,7 +58,7 @@ export class Grid {
   }
 
   isGameOver() {
-    for (let i = 0; i < this.matrix.length - 1; i++) {
+    for (let i = 0; i < this.matrix.length; i++) {
       for (let j = 0; j < this.matrix.length - 1; j++) {
         if ((this.matrix[i][j] && this.matrix[i][j + 1])
           && (this.matrix[i][j].value === this.matrix[i][j + 1].value)) {
@@ -69,11 +69,11 @@ export class Grid {
           && (this.matrix[j][i].value === this.matrix[j + 1][i].value)) {
           return false;
         }
-      }
-    }
 
-    if (this.getAllEmptyCells().length > 0) {
-      return false;
+        if (this.getAllEmptyCells().length > 0) {
+          return false;
+        }
+      }
     }
 
     return true;
@@ -90,7 +90,6 @@ export class Grid {
           next += increment;
         } else {
           if (!this.matrix[r][start]) {
-            this.checkedToAddTile = true;
             this.matrix[r][start] = this.matrix[r][next];
             this.matrix[r][start].setNewCoords(r, start);
             this.matrix[r][next] = null;
@@ -105,7 +104,6 @@ export class Grid {
             this.matrix[r][next].setNewCoords(r, start);
             this.view.setTilePosition(this.matrix[r][start]);
             this.view.setTilePosition(this.matrix[r][next]);
-            // setTimeout(() => this.matrix[r][next].removeHtmlElement(), 500);
             this.matrix[r][next].removeHtmlElement();
             this.matrix[r][next] = null;
             start += increment;
@@ -133,7 +131,6 @@ export class Grid {
           next += increment;
         } else {
           if (!this.matrix[start][r]) {
-            this.checkedToAddTile = true;
             this.matrix[start][r] = this.matrix[next][r];
             this.matrix[start][r].setNewCoords(start, r);
             this.matrix[next][r] = null;
@@ -147,7 +144,6 @@ export class Grid {
             this.currentMargeTile = this.matrix[start][r].value;
             this.view.setTilePosition(this.matrix[start][r]);
             this.view.setTilePosition(this.matrix[next][r]);
-            // setTimeout(() => this.matrix[next][r].removeHtmlElement(), 500);
             this.matrix[next][r].removeHtmlElement();
             this.matrix[next][r] = null;
             start += increment;
@@ -170,7 +166,6 @@ export class Grid {
     if (this.checkedToAddTile) {
       this.addTile();
     }
-
     this.checkedToAddTile = false;
   }
 
@@ -180,7 +175,6 @@ export class Grid {
     if (this.checkedToAddTile) {
       this.addTile();
     }
-
     this.checkedToAddTile = false;
   }
 
@@ -190,7 +184,6 @@ export class Grid {
     if (this.checkedToAddTile) {
       this.addTile();
     }
-
     this.checkedToAddTile = false;
   }
 
@@ -200,7 +193,6 @@ export class Grid {
     if (this.checkedToAddTile) {
       this.addTile();
     }
-
     this.checkedToAddTile = false;
   }
 }
