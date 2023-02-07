@@ -40,10 +40,11 @@ export class View {
   }
 
   setTilePosition(tile) {
-    const { topPosition, leftPosition } = this.getTilePosition(tile);
+    // eslint-disable-next-line no-shadow
+    const { top, left } = this.getTilePosition(tile);
 
-    tile.htmlElement.style.top = `${topPosition}%`;
-    tile.htmlElement.style.left = `${leftPosition}%`;
+    tile.htmlElement.style.top = `${top}%`;
+    tile.htmlElement.style.left = `${left}%`;
   }
 
   resetTiles(matrix) {

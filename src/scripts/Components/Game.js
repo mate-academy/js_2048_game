@@ -78,7 +78,7 @@ export class Game {
       `);
     }
 
-    if (!this.grid.getAllEmptyCells().length) {
+    if (!this.grid.getAllEmptyCells().length && this.grid.isGameOver()) {
       this.removeEvents();
 
       this.view.printMessage('lose', `
