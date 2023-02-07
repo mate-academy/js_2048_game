@@ -1,947 +1,443 @@
-/* eslint-disable no-shadow */
+/* eslint-disable max-len */
 'use strict';
 
-const cellsField = document.querySelector('.cells-field');
+class Cell {
+  constructor(value) {
+    this.value = value;
+  }
+}
+
+class GameField {
+  constructor() {
+    this.field = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+  }
+
+  addCell(cell, row, column) {
+    this.field = this.field.map((fRow, indexfRow) => {
+      if (indexfRow === row) {
+        return fRow.map((fCol, indexFCol) => (indexFCol === column)
+          ? cell.value
+          : fCol
+        );
+      }
+
+      return fRow;
+    });
+  }
+}
+
+class GameManager {
+  constructor() {
+    this.field = new GameField();
+    this.score = 0;
+    this.start = false;
+    this.win = false;
+    this.lose = false;
+    this.restart = false;
+    this.prevField = [];
+  }
+
+  createNewCell() {
+    const emptySpots = this.checkEmptySpots();
+
+    if (emptySpots.length === 0) {
+      this.checkLose();
+
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * emptySpots.length);
+    const [rowIndex, columnIndex] = emptySpots[randomIndex];
+    const startValue = () => (Math.floor(Math.random() * 11) >= 9) ? 4 : 2;
+    const newCell = new Cell(startValue());
+
+    if (this.start) {
+      this.field.addCell(newCell, rowIndex, columnIndex);
+    }
+  }
+
+  checkEmptySpots() {
+    const emptySpots = [];
+
+    this.field.field.forEach((row, iRow) => {
+      row.forEach((col, iCol) => {
+        if (col === 0) {
+          emptySpots.push([iRow, iCol]);
+        }
+      });
+    });
+
+    return emptySpots;
+  }
+
+  makeStep(strategy) {
+    this.prevField = JSON.parse(JSON.stringify(this.field.field));
+    strategy.move();
+    this.checkWin();
+  }
+
+  updateScore(newValue) {
+    this.score += newValue;
+  }
+
+  checkLose() {
+    if (this.checkEmptySpots().length === 0) {
+      const lose = this.field.field.some((row, iRow) => {
+        return !row.some((col, iCol) => iCol < 3
+          && (col === this.field.field[iRow][iCol + 1]
+          || this.field.field[iCol][iRow]
+              === this.field.field[iCol + 1][iRow]));
+      });
+
+      this.lose = lose;
+      this.start = !lose;
+    }
+  }
+
+  checkWin() {
+    const win = this.field.field.some(row => {
+      return row.some(cell => cell === 2048);
+    });
+
+    this.win = win;
+    this.start = !win;
+  }
+
+  restartGame() {
+    this.field = new GameField();
+    this.score = 0;
+    this.start = true;
+    this.win = false;
+    this.lose = false;
+    this.restart = true;
+    this.prevField = [];
+  }
+}
+
+class UpMovement {
+  constructor(currentGame) {
+    this.currentGame = currentGame;
+    this.field = this.currentGame.field.field;
+  }
+
+  move() {
+    this.moveAndMerge();
+    this.fillEmptySpaces();
+  }
+
+  moveAndMerge() {
+    for (let col = 0; col < 4; col++) {
+      for (let row = 0; row < 3; row++) {
+        let nextRow = row + 1;
+
+        while (nextRow <= 3 && this.field[nextRow][col] === 0) {
+          nextRow++;
+        }
+
+        if (nextRow <= 3 && this.field[row][col] === this.field[nextRow][col]) {
+          this.field[row][col] *= 2;
+          this.field[nextRow][col] = 0;
+          this.currentGame.updateScore(this.field[row][col]);
+        }
+      }
+    }
+  }
+
+  fillEmptySpaces() {
+    for (let col = 0; col < 4; col++) {
+      let nextRow = 0;
+
+      for (let row = 0; row < 4; row++) {
+        if (this.field[row][col] !== 0) {
+          this.field[nextRow][col] = this.field[row][col];
+          nextRow++;
+        }
+      }
+
+      while (nextRow < 4) {
+        this.field[nextRow][col] = 0;
+        nextRow++;
+      }
+    }
+  }
+}
+
+class DownMovement {
+  constructor(currentGame) {
+    this.currentGame = currentGame;
+    this.field = this.currentGame.field.field;
+  }
+
+  move() {
+    this.moveAndMerge();
+    this.fillEmptySpaces();
+  }
+
+  moveAndMerge() {
+    for (let iCol = 0; iCol < 4; iCol++) {
+      for (let iRow = 3; iRow >= 1; iRow--) {
+        let next = iRow - 1;
+
+        while (next >= 0 && this.field[next][iCol] === 0) {
+          next--;
+        }
+
+        if (next >= 0 && this.field[iRow][iCol] === this.field[next][iCol]) {
+          this.field[iRow][iCol] *= 2;
+          this.field[next][iCol] = 0;
+          this.currentGame.updateScore(this.field[iRow][iCol]);
+        }
+      }
+    }
+  }
+
+  fillEmptySpaces() {
+    for (let iCol = 0; iCol < 4; iCol++) {
+      let next = 3;
+
+      for (let iRow = 3; iRow >= 0; iRow--) {
+        if (this.field[iRow][iCol] !== 0) {
+          this.field[next][iCol] = this.field[iRow][iCol];
+          next--;
+        }
+      }
+
+      while (next >= 0) {
+        this.field[next][iCol] = 0;
+        next--;
+      }
+    }
+  }
+}
+
+class RightMovement {
+  constructor(currentGame) {
+    this.currentGame = currentGame;
+    this.field = this.currentGame.field.field;
+  }
+
+  move() {
+    this.moveAndMerge();
+    this.fillEmptySpaces();
+  }
+
+  moveAndMerge() {
+    for (let iRow = 0; iRow < 4; iRow++) {
+      for (let iCol = 3; iCol >= 1; iCol--) {
+        let next = iCol - 1;
+
+        while (next >= 0 && this.field[iRow][next] === 0) {
+          next--;
+        }
+
+        if (next >= 0 && this.field[iRow][iCol] === this.field[iRow][next]) {
+          this.field[iRow][iCol] *= 2;
+          this.field[iRow][next] = 0;
+          this.currentGame.updateScore(this.field[iRow][iCol]);
+        }
+      }
+    }
+  }
+
+  fillEmptySpaces() {
+    for (let iRow = 0; iRow < 4; iRow++) {
+      let next = 3;
+
+      for (let iCol = 3; iCol >= 0; iCol--) {
+        if (this.field[iRow][iCol] !== 0) {
+          this.field[iRow][next] = this.field[iRow][iCol];
+          next--;
+        }
+      }
+
+      while (next >= 0) {
+        this.field[iRow][next] = 0;
+        next--;
+      }
+    }
+  }
+}
+
+class LeftMovement {
+  constructor(currentGame) {
+    this.currentGame = currentGame;
+    this.field = this.currentGame.field.field;
+  }
+
+  move() {
+    this.moveAndMerge();
+    this.fillEmptySpaces();
+  }
+
+  moveAndMerge() {
+    for (let iRow = 0; iRow < 4; iRow++) {
+      for (let iCol = 0; iCol < 4 - 1; iCol++) {
+        let next = iCol + 1;
+
+        while (next < 4 && this.field[iRow][next] === 0) {
+          next++;
+        }
+
+        if (next < 4 && this.field[iRow][iCol] === this.field[iRow][next]) {
+          this.field[iRow][iCol] *= 2;
+          this.field[iRow][next] = 0;
+          this.currentGame.updateScore(this.field[iRow][iCol]);
+        }
+      }
+    }
+  }
+
+  fillEmptySpaces() {
+    for (let iRow = 0; iRow < 4; iRow++) {
+      let next = 0;
+
+      for (let iCol = 0; iCol < 4; iCol++) {
+        if (this.field[iRow][iCol] !== 0) {
+          this.field[iRow][next] = this.field[iRow][iCol];
+          next++;
+        }
+      }
+
+      while (next < 4) {
+        this.field[iRow][next] = 0;
+        next++;
+      }
+    }
+  }
+}
+
+class GameView {
+  constructor(currentGame) {
+    this.currentGame = currentGame;
+    this.cellsFieldView = document.querySelector('.cells-field');
+    this.gameScoreView = document.querySelector('.game-score');
+    this.messageLose = document.querySelector('.message-lose');
+    this.messageWin = document.querySelector('.message-win');
+  }
+
+  render() {
+    const cellsView = Object.values(this.cellsFieldView.children);
+    const fieldDate = Object.values(this.currentGame.field)[0];
+
+    fieldDate.forEach((rowField, rowFieldIndex) => {
+      rowField.forEach((colField, colFieldIndex) => {
+        const cellDataValue = fieldDate[rowFieldIndex][colFieldIndex];
+        const cellView = cellsView.find(cell => cell.className
+          .includes(`cell-position--${rowFieldIndex}-${colFieldIndex}`));
+
+        if (!cellView && colField !== 0) {
+          this.cellsFieldView.insertAdjacentHTML('afterbegin', `
+            <div
+              class="cell cell--${colField} cell-position cell-position--${rowFieldIndex}-${colFieldIndex}"
+            >
+              ${colField}
+            </div>
+          `);
+        }
+
+        if (cellView && +cellView.textContent !== cellDataValue) {
+          cellView.className = `cell cell--${cellDataValue} cell-position cell-position--${rowFieldIndex}-${colFieldIndex}`;
+          cellView.textContent = cellDataValue;
+        }
+
+        if (cellView && !cellDataValue) {
+          cellView.remove();
+        }
+      });
+    });
+
+    this.gameScoreView.textContent = this.currentGame.score;
+
+    if (this.currentGame.lose) {
+      this.messageLose.classList.remove('hidden');
+      this.start = false;
+    } else {
+      this.messageLose.classList.add('hidden');
+    }
+
+    if (this.currentGame.win) {
+      this.messageWin.classList.remove('hidden');
+      this.start = false;
+    } else {
+      this.messageWin.classList.add('hidden');
+    }
+  }
+
+  handleKeyPress(key) {
+    switch (key) {
+      case 'ArrowUp':
+        this.currentGame.makeStep(new UpMovement(this.currentGame));
+        break;
+      case 'ArrowDown':
+        this.currentGame.makeStep(new DownMovement(this.currentGame));
+        break;
+      case 'ArrowLeft':
+        this.currentGame.makeStep(new LeftMovement(this.currentGame));
+        break;
+      case 'ArrowRight':
+        this.currentGame.makeStep(new RightMovement(this.currentGame));
+        break;
+
+      default:
+        break;
+    }
+  }
+}
+
+const gameManager = new GameManager();
+const gameView = new GameView(gameManager);
+
 const startButton = document.querySelector('.start');
 const messageStart = document.querySelector('.message-start');
-const messageLose = document.querySelector('.message-lose');
-const messageWin = document.querySelector('.message-win');
-const gameScore = document.querySelector('.game-score');
-let start = false;
-let win = false;
-let lose = false;
 
 startButton.addEventListener('click', () => {
-  start = true;
-  messageStart.classList.add('hidden');
-  startButton.classList.add('restart');
-  startButton.classList.remove('start');
-  startButton.textContent = 'Restart';
-  createNewCell();
-  createNewCell();
-});
+  gameManager.start = true;
 
-document.querySelector('.button').addEventListener('click', () => {
-  if (document.querySelector('.button').classList.contains('restart')) {
-    document.querySelector('.button').blur();
-    [...document.querySelectorAll('.cell-position')].map(cell => cell.remove());
-    gameScore.textContent = 0;
-    lose = false;
-    messageLose.classList.add('hidden');
-    start = true;
-    createNewCell();
-    createNewCell();
+  if (startButton.textContent === 'Start') {
+    messageStart.classList.add('hidden');
+    startButton.classList.add('restart');
+    startButton.classList.remove('start');
+    startButton.textContent = 'Restart';
+
+    gameManager.createNewCell();
+    gameManager.createNewCell();
+    gameView.render();
+  } else {
+    gameManager.restartGame();
+    gameView.render();
+
+    setTimeout(() => {
+      gameManager.createNewCell();
+      gameManager.createNewCell();
+      gameView.render();
+    }, 150);
   }
 });
 
-window.addEventListener('keyup', (event) => {
-  if (start) {
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
-      .includes(event.key)) {
-      makeStep(event.key);
+document.addEventListener('keyup', (e) => {
+  if (gameManager.start
+    && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)
+  ) {
+    gameView.handleKeyPress(e.key);
+    gameManager.checkLose();
+    gameView.render();
 
+    if (JSON.stringify(gameManager.prevField)
+      !== JSON.stringify(gameManager.field.field)
+    ) {
       setTimeout(() => {
-        createNewCell();
-      }, 250);
+        gameManager.createNewCell();
+        gameView.render();
+      }, 300);
     }
   }
 
-  if (lose) {
-    messageLose.classList.remove('hidden');
-  }
-
-  if (win) {
-    messageWin.classList.remove('hidden');
+  if (e.code === 'NumpadEnter' || e.code === 'Space') {
+    e.preventDefault();
   }
 });
-
-function getNumberPositionOfCell(element) {
-  const cellClassName = element.className;
-  const cellClassPosition = cellClassName.split(' ')
-    .find(cellClass => cellClass.includes('cell-position--'));
-  let positionNumber;
-
-  if (cellClassPosition.length === 16) {
-    positionNumber = cellClassPosition.slice(-1);
-  } else {
-    positionNumber = cellClassPosition.slice(-2);
-  }
-
-  return +positionNumber;
-}
-
-function getFilledCellsPosition() {
-  const cellsPositionArray = [...document.querySelectorAll('.cell-position')];
-  const filledPositions = cellsPositionArray.map(cellEl => {
-    return getNumberPositionOfCell(cellEl);
-  });
-
-  return filledPositions;
-};
-
-function getNewStartValue() {
-  let randomValue;
-
-  const probabilityNumber = Math.floor(Math.random() * 11);
-
-  if (probabilityNumber >= 9) {
-    randomValue = 4;
-  } else {
-    randomValue = 2;
-  }
-
-  return randomValue;
-};
-
-function createNewCell() {
-  let position;
-
-  function getCellPosition() {
-    const randomPosition = Math.floor(Math.random() * (16 - 1 + 1)) + 1;
-
-    if (!getFilledCellsPosition().includes(randomPosition)) {
-      position = randomPosition;
-    }
-  }
-
-  while ((position === undefined && cellsField.childElementCount < 16)) {
-    getCellPosition();
-  }
-
-  if (position === undefined) {
-    lose = true;
-    start = false;
-
-    return;
-  }
-
-  const newValue = getNewStartValue();
-
-  const newCell = `
-  <div
-    class="cell cell--${newValue} cell-position cell-position--${position}"
-  >${newValue}</div>
-  `;
-
-  cellsField.insertAdjacentHTML('afterbegin', newCell);
-}
-
-function makeStep(key) {
-  const cellsPositionArray = [...document.querySelectorAll('.cell-position')];
-
-  function processindKeyPress(keyType) {
-    switch (keyType) {
-      case 'ArrowDown':
-        cellsPositionArray
-          .sort((el1, el2) =>
-            getNumberPositionOfCell(el2) - getNumberPositionOfCell(el1))
-          .forEach(cell => {
-            if (!cell.className.includes('cell-position--')) {
-              return;
-            };
-
-            const cellPositionNumber = getNumberPositionOfCell(cell);
-
-            if ([9, 10, 11, 12].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(4, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  4,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, 4);
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(4, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, 4, cellPositionNumber);
-
-                return;
-              }
-            }
-
-            if ([5, 6, 7, 8].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(4, true, cellPositionNumber)
-                && getConditionalForCellMove(8, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  4,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, 4);
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(4, false, cellPositionNumber)
-                && getConditionalForCellMove(8, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  8,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, 8);
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, 4, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(4, false, cellPositionNumber)
-                && getConditionalForCellMove(8, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, 8, cellPositionNumber);
-
-                return;
-              }
-            }
-
-            if ([1, 2, 3, 4].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(4, true, cellPositionNumber)
-                && getConditionalForCellMove(8, true, cellPositionNumber)
-                && getConditionalForCellMove(12, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  4,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, 4);
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(4, false, cellPositionNumber)
-                && getConditionalForCellMove(8, true, cellPositionNumber)
-                && getConditionalForCellMove(12, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  8,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, 8);
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, 4, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(4, false, cellPositionNumber)
-                && getConditionalForCellMove(8, false, cellPositionNumber)
-                && getConditionalForCellMove(12, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  12,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, 12);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, 8, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(4, false, cellPositionNumber)
-                && getConditionalForCellMove(8, false, cellPositionNumber)
-                && getConditionalForCellMove(12, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, 12, cellPositionNumber);
-              }
-            }
-          });
-        break;
-
-      case 'ArrowUp':
-        cellsPositionArray.sort(
-          (el1, el2) =>
-            getNumberPositionOfCell(el1) - getNumberPositionOfCell(el2)
-        )
-          .forEach(cell => {
-            if (!cell.className.includes('cell-position--')) {
-              return;
-            };
-
-            const cellPositionNumber = getNumberPositionOfCell(cell);
-
-            if ([5, 6, 7, 8].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(-4, true, cellPositionNumber)) {
-                const nexCell = getNextColumnCell(
-                  -4,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nexCell.textContent === cell.textContent) {
-                  if (!nexCell.classList.contains('merged')) {
-                    changedCell(cell, nexCell, cellPositionNumber, -4);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-4, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, -4, cellPositionNumber);
-
-                return;
-              }
-            }
-
-            if ([9, 10, 11, 12].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(-4, true, cellPositionNumber)
-                  && getConditionalForCellMove(-8, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  -4,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, -4);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-4, false, cellPositionNumber)
-                && getConditionalForCellMove(-8, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  -8,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, -8);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, -4, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-4, false, cellPositionNumber)
-                && getConditionalForCellMove(-8, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, -8, cellPositionNumber);
-
-                return;
-              }
-            }
-
-            if ([13, 14, 15, 16].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(-4, true, cellPositionNumber)
-                && getConditionalForCellMove(-8, true, cellPositionNumber)
-                && getConditionalForCellMove(-12, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  -4,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, -4);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-4, false, cellPositionNumber)
-                && getConditionalForCellMove(-8, true, cellPositionNumber)
-                && getConditionalForCellMove(-12, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  -8,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, -8);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, -4, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-4, false, cellPositionNumber)
-                && getConditionalForCellMove(-8, false, cellPositionNumber)
-                && getConditionalForCellMove(-12, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  -12,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, -12);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, -8, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-4, false, cellPositionNumber)
-                && getConditionalForCellMove(-8, false, cellPositionNumber)
-                && getConditionalForCellMove(-12, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, -12, cellPositionNumber);
-              }
-            }
-          });
-        break;
-
-      case 'ArrowRight':
-        cellsPositionArray.sort(
-          (el1, el2) =>
-            getNumberPositionOfCell(el2) - getNumberPositionOfCell(el1)
-        )
-          .forEach(cell => {
-            if (!cell.className.includes('cell-position--')) {
-              return;
-            };
-
-            const cellPositionNumber = getNumberPositionOfCell(cell);
-
-            if ([3, 7, 11, 15].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(1, true, cellPositionNumber)) {
-                const nexCell = getNextColumnCell(
-                  1,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nexCell.textContent === cell.textContent) {
-                  if (!nexCell.classList.contains('merged')) {
-                    changedCell(cell, nexCell, cellPositionNumber, 1);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(1, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, 1, cellPositionNumber);
-
-                return;
-              }
-            }
-
-            if ([2, 6, 10, 14].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(1, true, cellPositionNumber)
-            && getConditionalForCellMove(2, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  1,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, 1);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(1, false, cellPositionNumber)
-                && getConditionalForCellMove(2, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  2,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, 2);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, 1, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(1, false, cellPositionNumber)
-                && getConditionalForCellMove(2, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, 2, cellPositionNumber);
-              }
-            }
-
-            if ([1, 5, 9, 13].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(1, true, cellPositionNumber)
-                && getConditionalForCellMove(2, true, cellPositionNumber)
-                && getConditionalForCellMove(3, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  1,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, 1);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(1, false, cellPositionNumber)
-                && getConditionalForCellMove(2, true, cellPositionNumber)
-                && getConditionalForCellMove(3, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  2,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, 2);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, 1, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(1, false, cellPositionNumber)
-                && getConditionalForCellMove(2, false, cellPositionNumber)
-                && getConditionalForCellMove(3, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  3,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, 3);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, 2, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(1, false, cellPositionNumber)
-                && getConditionalForCellMove(2, false, cellPositionNumber)
-                && getConditionalForCellMove(3, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, 3, cellPositionNumber);
-              }
-            }
-          });
-        break;
-
-      case 'ArrowLeft':
-        cellsPositionArray.sort(
-          (el1, el2) =>
-            getNumberPositionOfCell(el1) - getNumberPositionOfCell(el2)
-        )
-          .forEach(cell => {
-            if (!cell.className.includes('cell-position--')) {
-              return;
-            };
-
-            const cellPositionNumber = getNumberPositionOfCell(cell);
-
-            if ([2, 6, 10, 14].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(-1, true, cellPositionNumber)) {
-                const nexCell = getNextColumnCell(
-                  -1,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nexCell.textContent === cell.textContent) {
-                  if (!nexCell.classList.contains('merged')) {
-                    changedCell(cell, nexCell, cellPositionNumber, -1);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-1, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, -1, cellPositionNumber);
-
-                return;
-              }
-            }
-
-            if ([3, 7, 11, 15].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(-1, true, cellPositionNumber)
-                  && getConditionalForCellMove(-2, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  -1,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, -1);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-1, false, cellPositionNumber)
-                && getConditionalForCellMove(-2, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  -2,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, -2);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, -1, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-1, false, cellPositionNumber)
-                && getConditionalForCellMove(-2, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, -2, cellPositionNumber);
-
-                return;
-              }
-            }
-
-            if ([4, 8, 12, 16].includes(cellPositionNumber)) {
-              if (getConditionalForCellMove(-1, true, cellPositionNumber)
-                && getConditionalForCellMove(-2, true, cellPositionNumber)
-                && getConditionalForCellMove(-3, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  -1,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, -1);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-1, false, cellPositionNumber)
-                && getConditionalForCellMove(-2, true, cellPositionNumber)
-                && getConditionalForCellMove(-3, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  -2,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, -2);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, -1, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-1, false, cellPositionNumber)
-                && getConditionalForCellMove(-2, false, cellPositionNumber)
-                && getConditionalForCellMove(-3, true, cellPositionNumber)) {
-                const nextCell = getNextColumnCell(
-                  -3,
-                  cellsPositionArray,
-                  cellPositionNumber
-                );
-
-                if (nextCell.textContent === cell.textContent) {
-                  if (!nextCell.classList.contains('merged')) {
-                    changedCell(cell, nextCell, cellPositionNumber, -3);
-
-                    cell.classList.add('merged');
-
-                    gameScore.textContent = +gameScore.textContent
-                      + (+cell.textContent);
-
-                    return;
-                  }
-                }
-
-                addedAndRemoveClassForCell(cell, -2, cellPositionNumber);
-
-                return;
-              }
-
-              if (getConditionalForCellMove(-1, false, cellPositionNumber)
-                && getConditionalForCellMove(-2, false, cellPositionNumber)
-                && getConditionalForCellMove(-3, false, cellPositionNumber)) {
-                addedAndRemoveClassForCell(cell, -3, cellPositionNumber);
-              }
-            }
-          });
-        break;
-    }
-  }
-
-  processindKeyPress(key);
-  removeMargedClass();
-
-  win = cellsPositionArray.some(el => el.textContent === '2048');
-}
-
-function changedCell(
-  element,
-  nextElement,
-  position,
-  step
-) {
-  element.classList
-    .remove(`cell-position--${position}`, `cell--${element.innerText}`);
-  nextElement.classList.remove(`cell-position--${position + step}`);
-
-  element.classList.add(
-    `cell-position--${position + step}`,
-    `cell--${+element.innerText * 2}`
-  );
-  element.innerHTML = `${+element.innerText * 2}`;
-  nextElement.remove();
-}
-
-function getConditionalForCellMove(
-  nextCellPosition,
-  isNextCellOccupied,
-  position
-) {
-  const filledPositions = getFilledCellsPosition();
-
-  if (isNextCellOccupied) {
-    return filledPositions.includes(position + nextCellPosition);
-  } else {
-    return !(filledPositions.includes(position + nextCellPosition));
-  }
-}
-
-function addedAndRemoveClassForCell(element, positionStep, position) {
-  element.classList.remove(`cell-position--${position}`);
-  element.classList.add(`cell-position--${position + positionStep}`);
-}
-
-function getNextColumnCell(step, positionArray, position) {
-  const nextCell = positionArray
-    .find(cellValue =>
-      cellValue.classList.contains(`cell-position--${position + step}`));
-
-  return nextCell;
-}
-
-function removeMargedClass() {
-  const cellsPositionArray = [...document.querySelectorAll('.cell-position')];
-
-  return cellsPositionArray.map(cell => cell.classList.remove('merged'));
-}
