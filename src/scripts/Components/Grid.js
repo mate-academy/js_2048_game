@@ -160,39 +160,34 @@ export class Grid {
     }
   }
 
-  moveLeft() {
-    this.moveTilesOnXAxis();
-
+  addTileAfterMove() {
     if (this.checkedToAddTile) {
       this.addTile();
     }
     this.checkedToAddTile = false;
+  }
+
+  moveLeft() {
+    this.moveTilesOnXAxis();
+
+    this.addTileAfterMove();
   }
 
   moveRight() {
     this.moveTilesOnXAxis(true);
 
-    if (this.checkedToAddTile) {
-      this.addTile();
-    }
-    this.checkedToAddTile = false;
+    this.addTileAfterMove();
   }
 
   moveUp() {
     this.moveTilesOnYAxis();
 
-    if (this.checkedToAddTile) {
-      this.addTile();
-    }
-    this.checkedToAddTile = false;
+    this.addTileAfterMove();
   }
 
   moveDown() {
     this.moveTilesOnYAxis(true);
 
-    if (this.checkedToAddTile) {
-      this.addTile();
-    }
-    this.checkedToAddTile = false;
+    this.addTileAfterMove();
   }
 }

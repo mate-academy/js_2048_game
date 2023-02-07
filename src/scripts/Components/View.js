@@ -7,11 +7,10 @@ export class View {
     this.messageContainer = document.querySelector('.message-container');
   }
 
-  // eslint-disable-next-line no-shadow
-  printMessage(status, messageText) {
+  printMessage(statusName, messageText) {
     const message = document.createElement('div');
 
-    message.className = `message message-${status}`;
+    message.className = `message message-${statusName}`;
     message.innerHTML = `${messageText}`;
     this.messageContainer.append(message);
   }
@@ -41,18 +40,16 @@ export class View {
   }
 
   setTilePosition(tile) {
-    // eslint-disable-next-line no-shadow
-    const { top, left } = this.getTilePosition(tile);
+    const { topPosition, leftPosition } = this.getTilePosition(tile);
 
-    tile.htmlElement.style.top = `${top}%`;
-    tile.htmlElement.style.left = `${left}%`;
+    tile.htmlElement.style.top = `${topPosition}%`;
+    tile.htmlElement.style.left = `${leftPosition}%`;
   }
 
   resetTiles(matrix) {
     matrix
       .flat()
       .filter(el => el)
-      // eslint-disable-next-line no-return-assign
       .forEach(el => el.removeHtmlElement());
   }
 
