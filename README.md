@@ -1,4 +1,4 @@
-Personall application of the famous Maths game 2048 which was originally created by Gabriele Cirulli. 
+Personal application of the famous Maths game 2048 which was originally created by Gabriele Cirulli. 
 
 2048 is an easy and fun puzzle game. 
 
