@@ -63,18 +63,19 @@ function findTakenCells() {
   return arrTaken;
 }
 
-function createNewCell(takenCells) {
+function createNewCell() {
   const min = 1;
   const max = 16;
 
   let newField = Math.floor(Math.random() * (max - min)) + min;
 
-  while (takenCells.includes(newField)) {
+  while (findTakenCells().includes(newField)) {
     newField = Math.floor(Math.random() * (max - min)) + min;
   }
 
   listCells[newField].textContent = '2';
   listCells[newField].classList = ('innerField field-cell--2');
+  scoreField.textContent = countScore(findTakenCells());
 }
 
 const countScore = (takenCells) => {
@@ -89,7 +90,7 @@ const countScore = (takenCells) => {
   return sum;
 };
 
-const step = async(oldCellIndex, stepCount, oneStep, didMerge, sideMove) => {
+const steps = async(oldCellIndex, stepCount, oneStep, didMerge, sideMove) => {
   if (stepCount !== 0 || didMerge) {
     listCells[oldCellIndex].classList
       .add(`field-cell--move-${sideMove}--${didMerge
@@ -146,8 +147,28 @@ const merge = async(newCellIndex, oldCellIndex) => {
   await cancelClass;
 };
 
+const lose = (changeConditions) => {
+  const left = changeConditions('left')[1]
+  || changeConditions('left')[2] || changeConditions('left')[3];
+
+  const right = changeConditions('right')[1]
+  || changeConditions('right')[2] || changeConditions('right')[3];
+
+  const up = changeConditions('up')[1]
+  || changeConditions('up')[2] || changeConditions('up')[3];
+
+  const down = changeConditions('down')[1]
+  || changeConditions('down')[2] || changeConditions('down')[3];
+
+  if (findTakenCells().length === 16 && !left && !right && !up && !down) {
+    loseMessage.classList.remove('hidden');
+  }
+};
+
 const moveCells = async(sideMove) => {
   const doMove = new Promise(async(resolve) => {
+    isMovingNow = true;
+
     const takenCells = findTakenCells();
     let didMove = false;
     const isDescCycle = (sideMove === 'right' || sideMove === 'down') && true;
@@ -158,48 +179,54 @@ const moveCells = async(sideMove) => {
       let stepCount = 0;
       let didMerge = false;
 
-      let oneStep = 1;
-      let firstCondition = (takenCells[cellIndex] % 4 === 1) && true;
-      let secondCondition = (takenCells[cellIndex] % 4 === 2) && true;
-      let thirdCondition = (takenCells[cellIndex] % 4 === 3) && true;
+      const changeConditions = (moveSide) => {
+        let step = 1;
+        let firstCondition = (takenCells[cellIndex] % 4 === 1) && true;
+        let secondCondition = (takenCells[cellIndex] % 4 === 2) && true;
+        let thirdCondition = (takenCells[cellIndex] % 4 === 3) && true;
 
-      if (sideMove === 'up') {
-        firstCondition = takenCells[cellIndex] >= 4
-        && takenCells[cellIndex] <= 7;
-
-        secondCondition = takenCells[cellIndex] >= 8
-        && takenCells[cellIndex] <= 11;
-
-        thirdCondition = takenCells[cellIndex] >= 12
-        && takenCells[cellIndex] <= 15;
-        oneStep = 4;
-      }
-
-      if (sideMove === 'right') {
-        oneStep = -1;
-
-        firstCondition = (takenCells[cellIndex] % 4 === 2) && true;
-        secondCondition = (takenCells[cellIndex] % 4 === 1) && true;
-        thirdCondition = (takenCells[cellIndex] % 4 === 0) && true;
-      }
-
-      if (sideMove === 'down') {
-        oneStep = -4;
-
-        firstCondition = takenCells[cellIndex] >= 8
-          && takenCells[cellIndex] <= 11;
-
-        secondCondition = takenCells[cellIndex] >= 4
+        if (moveSide === 'up') {
+          firstCondition = takenCells[cellIndex] >= 4
           && takenCells[cellIndex] <= 7;
 
-        thirdCondition = takenCells[cellIndex] >= 0
-        && takenCells[cellIndex] <= 3;
-      }
+          secondCondition = takenCells[cellIndex] >= 8
+          && takenCells[cellIndex] <= 11;
 
+          thirdCondition = takenCells[cellIndex] >= 12
+          && takenCells[cellIndex] <= 15;
+          step = 4;
+        }
+
+        if (moveSide === 'right') {
+          step = -1;
+
+          firstCondition = (takenCells[cellIndex] % 4 === 2) && true;
+          secondCondition = (takenCells[cellIndex] % 4 === 1) && true;
+          thirdCondition = (takenCells[cellIndex] % 4 === 0) && true;
+        }
+
+        if (moveSide === 'down') {
+          step = -4;
+
+          firstCondition = takenCells[cellIndex] >= 8
+            && takenCells[cellIndex] <= 11;
+
+          secondCondition = takenCells[cellIndex] >= 4
+            && takenCells[cellIndex] <= 7;
+
+          thirdCondition = takenCells[cellIndex] >= 0
+          && takenCells[cellIndex] <= 3;
+        }
+
+        return [step, firstCondition, secondCondition, thirdCondition];
+      };
+
+      const oneStep = changeConditions(sideMove)[0];
       const oldCellIndex = takenCells[cellIndex];
-      const nextCellIndex = takenCells[cellIndex] - oneStep;
+      const nextCellIndex = takenCells[cellIndex]
+      - oneStep;
 
-      if (firstCondition) {
+      if (changeConditions(sideMove)[1]) {
         if (listCells[nextCellIndex].textContent === '') {
           stepCount++;
         } else if (listCells[nextCellIndex].textContent
@@ -208,7 +235,7 @@ const moveCells = async(sideMove) => {
         }
       }
 
-      if (secondCondition) {
+      if (changeConditions(sideMove)[2]) {
         if (listCells[nextCellIndex].textContent === '') {
           stepCount++;
 
@@ -224,7 +251,7 @@ const moveCells = async(sideMove) => {
         }
       }
 
-      if (thirdCondition) {
+      if (changeConditions(sideMove)[3]) {
         if (listCells[nextCellIndex].textContent === '') {
           stepCount++;
 
@@ -248,54 +275,39 @@ const moveCells = async(sideMove) => {
       }
 
       if (stepCount !== 0 || didMerge) {
-        await step(oldCellIndex, stepCount, oneStep, didMerge, sideMove);
+        await steps(oldCellIndex, stepCount, oneStep, didMerge, sideMove);
         didMove = true;
       }
 
-      if (takenCells.length === 16 && !stepCount && !didMerge) {
-        loseMessage.classList.remove('hidden');
-      }
+      lose(changeConditions);
     };
 
-    if (didMove) {
-      window.setTimeout(() => {
-        createNewCell(findTakenCells());
-        scoreField.textContent = countScore(findTakenCells());
-      }, 200);
-    }
+    didMove && createNewCell();
 
     resolve();
   });
 
   await doMove;
+
+  isMovingNow = false;
 };
 
-if (isMovingNow === false) {
-  // eslint-disable-next-line no-shadow
-  document.addEventListener('keyup', (event) => {
-    switch (event.code) {
-      case 'ArrowLeft':
-        isMovingNow = true;
-        moveCells('left');
-        isMovingNow = false;
-        break;
-      case 'ArrowRight':
-        isMovingNow = true;
-        moveCells('right');
-        isMovingNow = false;
-        break;
-      case 'ArrowUp':
-        isMovingNow = true;
-        moveCells('up');
-        isMovingNow = false;
-        break;
-      case 'ArrowDown':
-        isMovingNow = true;
-        moveCells('down');
-        isMovingNow = false;
-        break;
-      default:
-        break;
-    }
-  });
-}
+// eslint-disable-next-line no-shadow
+document.addEventListener('keyup', (event) => {
+  switch (event.code) {
+    case 'ArrowLeft':
+      !isMovingNow && moveCells('left');
+      break;
+    case 'ArrowRight':
+      !isMovingNow && moveCells('right');
+      break;
+    case 'ArrowUp':
+      !isMovingNow && moveCells('up');
+      break;
+    case 'ArrowDown':
+      !isMovingNow && moveCells('down');
+      break;
+    default:
+      break;
+  }
+});
