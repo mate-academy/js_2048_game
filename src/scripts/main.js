@@ -12,25 +12,29 @@ let isMovingNow = false;
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 
+const findRandNunb = (min, max) => {
+  return Math.floor(Math.random() * (max - min)) + min;
+};
+
 startButton.addEventListener('click', () => {
-  start();
+  startGame();
 });
 
 function randomNumbForStart() {
   const min = 1;
   const max = 16;
 
-  firstField = Math.floor(Math.random() * (max - min)) + min;
-  secondField = Math.floor(Math.random() * (max - min)) + min;
+  firstField = findRandNunb(min, max);
+  secondField = findRandNunb(min, max);
 
   while (secondField === firstField) {
-    secondField = Math.floor(Math.random() * (max - min)) + min;
+    secondField = findRandNunb(min, max);
   }
 
   return [firstField, secondField];
 }
 
-function start() {
+function startGame() {
   const arr = randomNumbForStart();
   const startMessage = document.querySelector('.message-start');
 
@@ -67,10 +71,10 @@ function createNewCell() {
   const min = 1;
   const max = 16;
 
-  let newField = Math.floor(Math.random() * (max - min)) + min;
+  let newField = findRandNunb(min, max);
 
   while (findTakenCells().includes(newField)) {
-    newField = Math.floor(Math.random() * (max - min)) + min;
+    newField = findRandNunb(min, max);
   }
 
   listCells[newField].textContent = '2';
@@ -181,9 +185,9 @@ const moveCells = async(sideMove) => {
 
       const changeConditions = (moveSide) => {
         let step = 1;
-        let firstCondition = (takenCells[cellIndex] % 4 === 1) && true;
-        let secondCondition = (takenCells[cellIndex] % 4 === 2) && true;
-        let thirdCondition = (takenCells[cellIndex] % 4 === 3) && true;
+        let firstCondition = (takenCells[cellIndex] % 4 === 1);
+        let secondCondition = (takenCells[cellIndex] % 4 === 2);
+        let thirdCondition = (takenCells[cellIndex] % 4 === 3);
 
         if (moveSide === 'up') {
           firstCondition = takenCells[cellIndex] >= 4
@@ -200,9 +204,9 @@ const moveCells = async(sideMove) => {
         if (moveSide === 'right') {
           step = -1;
 
-          firstCondition = (takenCells[cellIndex] % 4 === 2) && true;
-          secondCondition = (takenCells[cellIndex] % 4 === 1) && true;
-          thirdCondition = (takenCells[cellIndex] % 4 === 0) && true;
+          firstCondition = (takenCells[cellIndex] % 4 === 2);
+          secondCondition = (takenCells[cellIndex] % 4 === 1);
+          thirdCondition = (takenCells[cellIndex] % 4 === 0);
         }
 
         if (moveSide === 'down') {
