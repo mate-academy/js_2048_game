@@ -20,7 +20,7 @@ startButton.addEventListener('click', () => {
   startGame();
 });
 
-function randomNumbForStart() {
+function findRandCellForStart() {
   const min = 1;
   const max = 16;
 
@@ -35,7 +35,7 @@ function randomNumbForStart() {
 }
 
 function startGame() {
-  const arr = randomNumbForStart();
+  const arr = findRandCellForStart();
   const startMessage = document.querySelector('.message-start');
 
   for (let cellIndex = 0; cellIndex < listCells.length; cellIndex++) {
