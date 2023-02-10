@@ -13,8 +13,10 @@ function generateInEmptyCell() {
     const x = Math.floor(Math.random() * fieldSide);
     const y = Math.floor(Math.random() * fieldSide);
 
-    if (fieldRows[x].children[y].textContent === '') {
-      fieldRows[x].children[y].textContent = `${Math.random() >= 0.9 ? 4 : 2}`;
+    const cell = fieldRows[x].children[y];
+
+    if (!cell.textContent) {
+      cell.textContent = `${Math.random() >= 0.9 ? 4 : 2}`;
       break;
     }
   } while (true);
@@ -22,7 +24,7 @@ function generateInEmptyCell() {
 
 function addClass(cells) {
   cells.forEach(cell => {
-    if (cell.textContent !== '') {
+    if (cell.textContent) {
       cell.className = `field-cell`;
       cell.classList.add(`field-cell--${cell.innerText}`);
     };
@@ -31,7 +33,7 @@ function addClass(cells) {
 
 function calcScore(scoreElement, newCellContent) {
   const prevScore = +scoreElement.innerText;
-  const newScore = prevScore + +newCellContent;
+  const newScore = prevScore + Number(newCellContent);
 
   scoreElement.innerText = newScore;
 }
@@ -41,16 +43,22 @@ function slide(row) {
 
   if (cells.length > 0) {
     for (let i = 0; i < cells.length - 1; i++) {
-      if (cells[i].innerText === cells[i + 1].innerText) {
-        cells[i].innerText = +(cells[i].innerText) * 2;
+      let cell1 = cells[i].innerText;
+      let cell2 = cells[i + 1].innerText;
 
-        calcScore(score, cells[i].innerText);
+      if (cell1 === cell2) {
+        cell1 = +(cell1) * 2;
+
+        calcScore(score, cell1);
 
         cells[i + 1].classList.remove(
-          `field-cell--${cells[i + 1].innerText}`
+          `field-cell--${cell2}`
         );
-        cells[i + 1].innerText = '';
+        cell2 = '';
       }
+
+      cells[i].innerText = cell1;
+      cells[i + 1].innerText = cell2;
     }
   }
 
@@ -62,16 +70,22 @@ function slideReverse(row) {
 
   if (cells.length > 0) {
     for (let i = cells.length - 1; i > 0; i--) {
-      if (cells[i].innerText === cells[i - 1].innerText) {
-        cells[i].innerText = +(cells[i].innerText) * 2;
+      let cell1 = cells[i].innerText;
+      let cell2 = cells[i - 1].innerText;
 
-        calcScore(score, cells[i].innerText);
+      if (cell1 === cell2) {
+        cell1 = +(cell1) * 2;
+
+        calcScore(score, cell1);
 
         cells[i - 1].classList.remove(
-          `field-cell--${cells[i - 1].innerText}`
+          `field-cell--${cell2}`
         );
-        cells[i - 1].innerText = '';
+        cell2 = '';
       }
+
+      cells[i].innerText = cell1;
+      cells[i - 1].innerText = cell2;
     }
   }
 
@@ -92,18 +106,22 @@ function pushCells(row) {
 
 function deleteAdditionalClass(row, size) {
   for (let j = 0; j < size; j++) {
-    if (row.children[j].innerText === '') {
-      row.children[j].className = 'field-cell';
+    const cell = row.children[j];
+
+    if (!cell.innerText) {
+      cell.className = 'field-cell';
     }
   }
 }
 
 function changeClasses(row, newCellsContent) {
   for (let i = 0; i < fieldSide; i++) {
-    row.children[i].innerText = newCellsContent[i] || '';
+    const cell = row.children[i];
 
-    row.children[i].classList.add(
-      `field-cell--${row.children[i].innerText}`
+    cell.innerText = newCellsContent[i] || '';
+
+    cell.classList.add(
+      `field-cell--${cell.innerText}`
     );
   }
 
@@ -121,7 +139,9 @@ function createColumnArrays(rows, size) {
 
   for (const row of rows) {
     for (let i = 0; i < size; i++) {
-      colArr[i].push(row.children[i].innerText);
+      const cellsContent = row.children[i].innerText;
+
+      colArr[i].push(cellsContent);
     }
   }
 
@@ -145,10 +165,12 @@ function changeColumnArrays(mainArr, size) {
 function changeColumnCells(tableRows, newArr, size) {
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
-      tableRows[i].children[j].innerText = newArr[i][j];
+      const cell = tableRows[i].children[j];
 
-      tableRows[i].children[j].classList.add(
-        `field-cell--${tableRows[i].children[j].innerText}`
+      cell.innerText = newArr[i][j];
+
+      cell.classList.add(
+        `field-cell--${cell.innerText}`
       );
     }
 
@@ -163,13 +185,28 @@ function slideLeft(row) {
   changeClasses(newRow, cellsContent);
 }
 
+function slideRight(row) {
+  const newRow = slideReverse(row);
+  let cellsContent = pushCells(newRow);
+  const newLength = fieldSide - cellsContent.length;
+  const emptyArr = new Array(newLength).fill('');
+
+  cellsContent = [
+    ...emptyArr,
+    ...cellsContent,
+  ];
+
+  changeClasses(newRow, cellsContent);
+}
+
 function slideUp(tableRows) {
   let colArr = createColumnArrays(tableRows, fieldSide);
 
   colArr = colArr.map(arr => {
+    const newArrLength = fieldSide - arr.length;
     let filledArr = [
       ...arr,
-      ...new Array(fieldSide - arr.length).fill(''),
+      ...new Array(newArrLength).fill(''),
     ];
 
     for (let i = 0; i < fieldSide - 1; i++) {
@@ -179,9 +216,11 @@ function slideUp(tableRows) {
         filledArr[i + 1] = '';
         filledArr = filledArr.filter(el => el !== '');
 
+        const filledArrNewLength = fieldSide - filledArr.length;
+
         filledArr = [
           ...filledArr,
-          ...new Array(fieldSide - filledArr.length).fill(''),
+          ...new Array(filledArrNewLength).fill(''),
         ];
       }
     }
@@ -198,8 +237,9 @@ function slideDown(tableRows) {
   let colArr = createColumnArrays(tableRows, fieldSide);
 
   colArr = colArr.map(arr => {
+    const newArrLength = fieldSide - arr.length;
     let filledArr = [
-      ...new Array(fieldSide - arr.length).fill(''),
+      ...new Array(newArrLength).fill(''),
       ...arr,
     ];
 
@@ -210,8 +250,10 @@ function slideDown(tableRows) {
         filledArr[i - 1] = '';
         filledArr = filledArr.filter(el => el !== '');
 
+        const filledArrNewLength = fieldSide - filledArr.length;
+
         filledArr = [
-          ...new Array(fieldSide - filledArr.length).fill(''),
+          ...new Array(filledArrNewLength).fill(''),
           ...filledArr,
         ];
       }
@@ -225,24 +267,12 @@ function slideDown(tableRows) {
   changeColumnCells(tableRows, newRowsArr, fieldSide);
 }
 
-function slideRight(row) {
-  const newRow = slideReverse(row);
-  let cellsContent = pushCells(newRow);
-  const emptyArr = new Array(fieldSide - cellsContent.length).fill('');
-
-  cellsContent = [
-    ...emptyArr,
-    ...cellsContent,
-  ];
-
-  changeClasses(newRow, cellsContent);
-}
-
 function startGame(element) {
   if (element.className === 'button start') {
     element.textContent = 'Restart';
     element.classList.remove('start');
     element.classList.add('restart');
+    element.style.outline = 'none';
 
     message.style.display = 'none';
 
@@ -265,27 +295,55 @@ function continueGame() {
   addClass(fieldCells);
 }
 
-function loseGame(tableCells, tableRows, size) {
-  let fullBoard = false;
-
-  if (tableCells.filter(el => el.textContent === '').length === 0) {
-    const matrix = [];
-
-    for (const row of tableRows) {
-      const cellsContent = [...row.children].map(el => el.textContent);
-
-      matrix.push(cellsContent);
-    }
-
-    for (let i = 0; i < size - 1; i++) {
-      for (let j = 0; j < size - 1; j++) {
-        const cell = matrix[i][j];
-
-        if (cell !== matrix[i + 1][j] && cell !== matrix[i][j + 1]) {
-          fullBoard = true;
-        }
+function checkPossibleMove(array) {
+  const canBeMoved = array.filter(arr => {
+    for (let i = 0; i < arr.length - 1; i++) {
+      if (arr[i] === arr[i + 1]) {
+        return arr;
       }
     }
+  });
+
+  return canBeMoved;
+}
+
+function checkFullBoard(arrays, size) {
+  let fullBoard = false;
+
+  if (arrays.every(arr => arr.length === size)) {
+    const canBeMoved = checkPossibleMove(arrays);
+
+    if (canBeMoved.length === 0) {
+      fullBoard = true;
+    }
+  }
+
+  return fullBoard;
+}
+
+function canBeMovedVertically(rows, size) {
+  const columns = createColumnArrays(rows, size);
+
+  return checkFullBoard(columns, size);
+}
+
+function canBeMovedHorizontally(rows, size) {
+  const tableRows = [];
+
+  for (const row of rows) {
+    tableRows.push([...row.children].map(el => el.textContent));
+  }
+
+  return checkFullBoard(tableRows, size);
+}
+
+function loseGame(tableRows, size) {
+  let fullBoard = false;
+  const canSlideHorizontally = canBeMovedHorizontally(tableRows, size);
+  const canSlideVertically = canBeMovedVertically(tableRows, size);
+
+  if (canSlideHorizontally && canSlideVertically) {
+    fullBoard = true;
   }
 
   return fullBoard;
@@ -315,12 +373,14 @@ function addMessage(messageContainer, messageClass) {
 }
 
 function playing() {
-  if (!loseGame(fieldCells, fieldRows, fieldSide)) {
+  if (!loseGame(fieldRows, fieldSide)) {
     if (winGame(fieldCells)) {
       addMessage(message, 'win');
     }
     continueGame();
-  } else {
+  }
+
+  if (loseGame(fieldRows, fieldSide)) {
     addMessage(message, 'lose');
   }
 }
@@ -365,5 +425,3 @@ startButton.addEventListener('click', e => {
     };
   });
 });
-
-// #endregion
