@@ -22,7 +22,11 @@ const randomNumber = () => {
   const max = 10;
   let number = Math.floor(Math.random() * (max - min + 1)) + min;
 
-  number === 4 ? number = 4 : number = 2;
+  if (number === 4) {
+    return number;
+  }
+
+  number = 2;
 
   return number;
 };
@@ -36,7 +40,14 @@ const randomCell = () => {
   if (playObject[row][column] === 0) {
     return [row, column];
   }
-  row >= 3 ? row-- : row++;
+
+  if (row >= 3) {
+    row--;
+
+    return [row, column];
+  }
+
+  row++;
 
   return [row, column];
 };
@@ -91,10 +102,21 @@ const emptySort = (array, direct) => {
       y = a;
     }
 
-    x === '' ? x = 0 : x = x * 1;
-    y === '' ? y = 0 : y = y * 1;
+    if (x === '') {
+      x = 0;
+    }
 
-    return y === 0 || '' ? -1 : x === 0 || '' ? 1 : 0;
+    if (y === '') {
+      y = 0;
+    }
+
+    if (y === 0 || '') {
+      return -1;
+    } else if (x === 0 || '') {
+      return 1;
+    } else {
+      return 0;
+    }
   });
 };
 
