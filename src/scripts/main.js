@@ -8,13 +8,13 @@ const board = [
 ];
 
 // const board = [
-//   [4, 2, 2, 2],
-//   [4, 4, 2, 2],
+//   [0, 2, 2, 2],
+//   [0, 0, 2, 2],
 //   [0, 0, 0, 2],
-//   [2, 8, 4, 4],
+//   [2, 0, 0, 0],
 // ];
 
-// console.table(board);
+console.table(board);
 
 let probabilityCount = 0;
 
@@ -39,8 +39,8 @@ function newCell() {
         probabilityCount = 0;
       }
 
-      // console.log('add new cell');
-      // console.table(board);
+      console.log('add new cell');
+      console.table(board);
 
       return;
     }
@@ -63,6 +63,28 @@ function shiftRowLeft(row) {
   return newRow;
 }
 
+function moveRight() {
+  for (let i = 0; i < board.length; i++) {
+    board[i] = shiftRowLeft(board[i]).reverse();
+  }
+
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 1; j < board[i].length; j++) {
+      if (board[i][j - 1] === board[i][j]) {
+        board[i][j - 1] = 0;
+        board[i][j] = board[i][j] * 2;
+      }
+    }
+  }
+
+  for (let i = 0; i < board.length; i++) {
+    board[i] = shiftRowLeft(board[i]).reverse();
+  }
+
+  console.log('move right');
+  console.table(board);
+}
+
 function moveLeft() {
   for (let i = 0; i < board.length; i++) {
     board[i] = shiftRowLeft(board[i]);
@@ -81,74 +103,125 @@ function moveLeft() {
     board[i] = shiftRowLeft(board[i]);
   }
 
-  // console.log('move left');
-  // console.table(board);
+  console.log('move left');
+  console.table(board);
 }
 
-// function moveLeft() {
-//   for (let i = 0; i < board.length; i++) {
-//     const newRow = [];
+function moveUp() {
+  for (let i = 0; i < board.length; i++) {
+    let newColumn = [];
 
-//     for (let j = 0; j < board[i].length; j++) {
-//       if (board[i][j] !== 0) {
-//         newRow.push(board[i][j]);
-//       }
-//     }
+    for (let j = 0; j < board[0].length; j++) {
+      newColumn.push(board[j][i]);
+    }
 
-//     for (let j = 0; j < newRow.length; j++) {
-//       board[i][j] = newRow[j];
-//     }
+    newColumn = shiftRowLeft(newColumn);
 
-//     for (let j = newRow.length; j < board[i].length; j++) {
-//       board[i][j] = 0;
-//     }
-//   }
+    for (let j = 1; j < newColumn.length; j++) {
+      if (newColumn[j - 1] === newColumn[j]) {
+        newColumn[j - 1] = newColumn[j - 1] * 2;
+        newColumn[j] = 0;
+      }
+    }
 
-//   for (let i = 0; i < board.length; i++) {
-//     for (let j = 1; j < board[i].length; j++) {
-//       if (board[i][j - 1] === board[i][j]) {
-//         board[i][j - 1] = board[i][j - 1] * 2;
-//         board[i][j] = 0;
-//       }
-//     }
-//   }
+    newColumn = shiftRowLeft(newColumn);
 
-//   for (let i = 0; i < board.length; i++) {
-//     const newRow = [];
+    for (let j = 0; j < newColumn.length; j++) {
+      board[j][i] = newColumn[j];
+    }
+  }
 
-//     for (let j = 0; j < board[i].length; j++) {
-//       if (board[i][j] !== 0) {
-//         newRow.push(board[i][j]);
-//       }
-//     }
+  console.log('move up');
+  console.table(board);
+}
 
-//     for (let j = 0; j < newRow.length; j++) {
-//       board[i][j] = newRow[j];
-//     }
+function moveDown() {
+  for (let i = 0; i < board.length; i++) {
+    let newColumn = [];
 
-//     for (let j = newRow.length; j < board[i].length; j++) {
-//       board[i][j] = 0;
-//     }
-//   }
+    for (let j = 0; j < board[0].length; j++) {
+      newColumn.push(board[j][i]);
+    }
 
-//   console.log('move left');
-//   console.table(board);
-// }
+    newColumn = shiftRowLeft(newColumn).reverse();
+
+    for (let j = 1; j < newColumn.length; j++) {
+      if (newColumn[j - 1] === newColumn[j]) {
+        newColumn[j - 1] = 0;
+        newColumn[j] = newColumn[j] * 2;
+      }
+    }
+
+    newColumn = shiftRowLeft(newColumn).reverse();
+
+    for (let j = 0; j < newColumn.length; j++) {
+      board[j][i] = newColumn[j];
+    }
+  }
+
+  console.log('move down');
+  console.table(board);
+}
+
+function changeAdditionalClassCell(element, newAddClass) {
+  element.classList = '';
+  element.classList.add('field-cell');
+
+  if (newAddClass) {
+    element.classList.add(newAddClass);
+  }
+}
+
+function display() {
+  const body = document.querySelector('body');
+  const fieldRowAll = body.querySelectorAll('.field-row');
+
+  for (let i = 0; i < board.length; i++) {
+    const cells = fieldRowAll[i].querySelectorAll('.field-cell');
+
+    for (let j = 0; j < board[i].length; j++) {
+      if (board[i][j] !== 0) {
+        cells[j].textContent = board[i][j];
+
+        const addClass = 'field-cell--' + board[i][j];
+
+        changeAdditionalClassCell(cells[j], addClass);
+      } else {
+        cells[j].textContent = '';
+        changeAdditionalClassCell(cells[j]);
+      }
+    }
+  }
+}
 
 document.addEventListener('keydown', e => {
   switch (e.key) {
     case 'ArrowRight':
+      moveRight();
+      display();
+      newCell();
+      display();
       break;
 
     case 'ArrowLeft':
       moveLeft();
+      display();
       newCell();
+      display();
       break;
 
     case 'ArrowUp':
+      moveUp();
+      display();
+      newCell();
+      display();
       break;
 
     case 'ArrowDown':
+      moveDown();
+      display();
+      newCell();
+      display();
       break;
 
     default:
