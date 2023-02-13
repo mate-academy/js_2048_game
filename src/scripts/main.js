@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use strict';
 
 let board = [
@@ -7,14 +6,6 @@ let board = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
-
-// const board = [
-//   [0, 2, 2, 2],
-//   [0, 0, 2, 2],
-//   [0, 0, 0, 2],
-//   [2, 0, 0, 0],
-// ];
-
 let probabilityCount = 0;
 let score = 0;
 let started = false;
@@ -56,9 +47,6 @@ function newCell() {
         probabilityCount = 0;
       }
 
-      console.log('add new cell');
-      console.table(board);
-
       return;
     }
   }
@@ -98,9 +86,6 @@ function moveRight() {
   for (let i = 0; i < board.length; i++) {
     board[i] = shiftRowLeft(board[i]).reverse();
   }
-
-  console.log('move right');
-  console.table(board);
 }
 
 function moveLeft() {
@@ -121,9 +106,6 @@ function moveLeft() {
   for (let i = 0; i < board.length; i++) {
     board[i] = shiftRowLeft(board[i]);
   }
-
-  console.log('move left');
-  console.table(board);
 }
 
 function moveUp() {
@@ -150,9 +132,6 @@ function moveUp() {
       board[j][i] = newColumn[j];
     }
   }
-
-  console.log('move up');
-  console.table(board);
 }
 
 function moveDown() {
@@ -179,9 +158,6 @@ function moveDown() {
       board[j][i] = newColumn[j];
     }
   }
-
-  console.log('move down');
-  console.table(board);
 }
 
 function changeAdditionalClassCell(element, newAddClass) {
@@ -291,8 +267,6 @@ function startGame() {
 }
 
 start.addEventListener('click', ourEvent => {
-  console.log('NEW GAME');
-  console.table(board);
   startGame();
   started = true;
 
@@ -348,56 +322,3 @@ document.addEventListener('keyup', e => {
       break;
   }
 });
-
-// start.addEventListener('click', ourEvent => {
-//   console.log('NEW GAME');
-//   console.table(board);
-//   startGame();
-
-//   if (ourEvent.target.matches('.restart')) {
-//     start.textContent = 'Start';
-//     start.classList.remove('restart');
-//     start.classList.add('start');
-//   }
-
-//   document.addEventListener('keyup', e => {
-//     if (ourEvent.target.matches('.start')) {
-//       start.textContent = 'Restart';
-//       start.classList.remove('start');
-//       start.classList.add('restart');
-//     }
-
-//     switch (e.key) {
-//       case 'ArrowRight':
-//         moveRight();
-//         display();
-//         newCell();
-//         display();
-//         break;
-
-//       case 'ArrowLeft':
-//         moveLeft();
-//         display();
-//         newCell();
-//         display();
-//         break;
-
-//       case 'ArrowUp':
-//         moveUp();
-//         display();
-//         newCell();
-//         display();
-//         break;
-
-//       case 'ArrowDown':
-//         moveDown();
-//         display();
-//         newCell();
-//         display();
-//         break;
-
-//       default:
-//         break;
-//     }
-//   });
-// });
