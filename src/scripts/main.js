@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 'use strict';
 
 let board = [];
@@ -5,9 +6,7 @@ let score = 0;
 const rows = 4;
 const columns = 4;
 
-window.onload = () => {
-  setGame();
-};
+setGame();
 
 function setGame() {
   board = [
@@ -16,13 +15,6 @@ function setGame() {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
-
-  // board = [
-  //   [2, 4, 8, 16],
-  //   [256, 128, 64, 32],
-  //   [2, 4, 8, 16],
-  //   [256, 128, 32, 32],
-  // ];
 
   const tbody = document.getElementById('tbody');
 
@@ -88,6 +80,15 @@ function startButton() {
         slideDown();
         setNumber();
         break;
+      default:
+        break;
+    }
+
+    if (isGameOver()) {
+      setTimeout(function() {
+        document.getElementsByClassName('message')[0]
+          .classList.remove('hidden');
+      }, 1000);
     }
   });
 };
@@ -249,92 +250,24 @@ function slideDown() {
   }
 }
 
-// function gameOver() {
-//   for (let r = 0; r < rows; r++) {
-//     for (let c = 0; c < columns; c++) {
-//       if (board[r][c] !== board[r][c + 1]
-//         && board[r][c] !== board[r][c - 1]
-//         && board[r][c] !== board[r + 1][c]
-//         && board[r][c] !== board[r - 1][c]
-//         && !hasEmptyCell()) {
-//         document.getElementsByClassName('message')[0]
-//           .classList.remove('hidden');
-//       }
-//     }
-//   }
-// }
+function isGameOver() {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < columns; x++) {
+      if (board[y][x] === 0) {
+        return false;
+      }
+    }
+  }
 
-// gameOver();
+  for (let y = 0; y < rows - 1; y++) {
+    for (let x = 0; x < columns - 1; x++) {
+      const c = board[y][x];
 
-// function canMoveLeft() {
-//   for (let r = 0; r < rows; r++) {
-//     for (let c = 1; c < columns; c++) {
-//       if (board[r][c] !== 0) {
-//         if (board[r][c - 1] === 0 || board[r][c - 1] === board[r][c]) {
-//           return true;
-//         }
-//       }
-//     }
-//   }
+      if (c !== 0 && (c === board[y + 1][x] || c === board[y][x + 1])) {
+        return false;
+      }
+    }
+  }
 
-//   return false;
-// }
-
-// function canMoveUp() {
-//   for (let r = 0; r < rows; r++) {
-//     for (let c = 1; c < columns; c++) {
-//       if (board[r][c] !== 0) {
-//         if (board[r - 1][c] === 0 || board[r - 1][c] === board[r][c]) {
-//           return true;
-//         }
-//       }
-//     }
-//   }
-
-//   return false;
-// }
-
-// function canMoveRight() {
-//   for (let r = 0; r < rows; r++) {
-//     for (let c = 1; c < columns; c++) {
-//       if (board[r][c] !== 0) {
-//         if (board[r][c + 1] === 0 || board[r][c + 1] === board[r][c]) {
-//           return true;
-//         }
-//       }
-//     }
-//   }
-
-//   return false;
-// }
-
-// function canMoveDown() {
-//   for (let r = 0; r < rows; r++) {
-//     for (let c = 1; c < columns; c++) {
-//       if (board[r][c] !== 0) {
-//         if (board[r + 1][c] === 0 || board[r + 1][c] === board[r][c]) {
-//           return true;
-//         }
-//       }
-//     }
-//   }
-
-//   return false;
-// }
-
-// function nomove() {
-//   if (canMoveDown() || canMoveLeft()
-//   || canMoveRight() || canMoveUp()) {
-//     return false;
-//   }
-
-//   return true;
-// }
-
-// function gameOver() {
-//   if (!nomove) {
-//     document.getElementsByClassName('message')[0].classList.remove('hidden');
-//   }
-// };
-
-// gameOver();
+  return true;
+}
