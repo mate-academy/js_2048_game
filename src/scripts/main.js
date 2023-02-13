@@ -15,21 +15,31 @@ let board = [
 //   [2, 0, 0, 0],
 // ];
 
-// console.table(board);
-
 let probabilityCount = 0;
+let score = 0;
+let started = false;
 
 const body = document.querySelector('body');
 const fieldRowAll = body.querySelectorAll('.field-row');
 const start = body.querySelector('.start');
 const scoreDisplay = body.querySelector('.game-score');
-let score = 0;
+const messageStart = document.querySelector('.message-start');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
 function newCell() {
+  if (!freeCell()) {
+    if (ifLose()) {
+      messageLose.classList.remove('hidden');
+    }
+
+    return;
+  }
+
   let rowInd = 0;
   let cellInd = 0;
 
@@ -183,6 +193,68 @@ function changeAdditionalClassCell(element, newAddClass) {
   }
 }
 
+function ifWin() {
+  for (const row of board) {
+    for (const cell of row) {
+      if (cell === 2048) {
+        messageWin.classList.remove('hidden');
+        start.textContent = 'Start';
+        start.classList.remove('restart');
+        start.classList.add('start');
+        started = false;
+        messageStart.classList.remove('hidden');
+      }
+    }
+  }
+}
+
+function freeCell() {
+  for (const row of board) {
+    for (const cell of row) {
+      if (cell === 0) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function ifLose() {
+  let lose = true;
+  const temp = [...board];
+  const tempProbabilityCount = probabilityCount;
+  const tempScore = score;
+
+  moveLeft();
+
+  if (freeCell()) {
+    lose = false;
+    board = [...temp];
+    probabilityCount = tempProbabilityCount;
+    score = tempScore;
+
+    return lose;
+  }
+
+  moveUp();
+
+  if (freeCell()) {
+    lose = false;
+    board = [...temp];
+    probabilityCount = tempProbabilityCount;
+    score = tempScore;
+
+    return lose;
+  }
+
+  board = [...temp];
+  probabilityCount = tempProbabilityCount;
+  score = tempScore;
+
+  return lose;
+}
+
 function display() {
   for (let i = 0; i < board.length; i++) {
     const cells = fieldRowAll[i].querySelectorAll('.field-cell');
@@ -222,51 +294,110 @@ start.addEventListener('click', ourEvent => {
   console.log('NEW GAME');
   console.table(board);
   startGame();
+  started = true;
 
-  if (ourEvent.target.matches('.restart')) {
-    start.textContent = 'Start';
-    start.classList.remove('restart');
-    start.classList.add('start');
+  if (ourEvent.target.matches('.start')) {
+    start.textContent = 'Restart';
+    start.classList.remove('start');
+    start.classList.add('restart');
+    messageStart.classList.add('hidden');
+    messageWin.classList.add('hidden');
+    messageLose.classList.add('hidden');
+  }
+});
+
+document.addEventListener('keyup', e => {
+  if (started === false) {
+    return;
   }
 
-  document.addEventListener('keydown', e => {
-    if (ourEvent.target.matches('.start')) {
-      start.textContent = 'Restart';
-      start.classList.remove('start');
-      start.classList.add('restart');
-    }
+  switch (e.key) {
+    case 'ArrowRight':
+      moveRight();
+      display();
+      ifWin();
+      newCell();
+      display();
+      break;
 
-    switch (e.key) {
-      case 'ArrowRight':
-        moveRight();
-        display();
-        newCell();
-        display();
-        break;
+    case 'ArrowLeft':
+      moveLeft();
+      display();
+      ifWin();
+      newCell();
+      display();
+      break;
 
-      case 'ArrowLeft':
-        moveLeft();
-        display();
-        newCell();
-        display();
-        break;
+    case 'ArrowUp':
+      moveUp();
+      display();
+      ifWin();
+      newCell();
+      display();
+      break;
 
-      case 'ArrowUp':
-        moveUp();
-        display();
-        newCell();
-        display();
-        break;
+    case 'ArrowDown':
+      moveDown();
+      display();
+      ifWin();
+      newCell();
+      display();
+      break;
 
-      case 'ArrowDown':
-        moveDown();
-        display();
-        newCell();
-        display();
-        break;
-
-      default:
-        break;
-    }
-  });
+    default:
+      break;
+  }
 });
+
+// start.addEventListener('click', ourEvent => {
+//   console.log('NEW GAME');
+//   console.table(board);
+//   startGame();
+
+//   if (ourEvent.target.matches('.restart')) {
+//     start.textContent = 'Start';
+//     start.classList.remove('restart');
+//     start.classList.add('start');
+//   }
+
+//   document.addEventListener('keyup', e => {
+//     if (ourEvent.target.matches('.start')) {
+//       start.textContent = 'Restart';
+//       start.classList.remove('start');
+//       start.classList.add('restart');
+//     }
+
+//     switch (e.key) {
+//       case 'ArrowRight':
+//         moveRight();
+//         display();
+//         newCell();
+//         display();
+//         break;
+
+//       case 'ArrowLeft':
+//         moveLeft();
+//         display();
+//         newCell();
+//         display();
+//         break;
+
+//       case 'ArrowUp':
+//         moveUp();
+//         display();
+//         newCell();
+//         display();
+//         break;
+
+//       case 'ArrowDown':
+//         moveDown();
+//         display();
+//         newCell();
+//         display();
+//         break;
+
+//       default:
+//         break;
+//     }
+//   });
+// });
