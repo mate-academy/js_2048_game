@@ -6,7 +6,6 @@ let board = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
-let tempBoard;
 let probabilityCount = 0;
 let score = 0;
 let started = false;
@@ -18,20 +17,6 @@ const scoreDisplay = body.querySelector('.game-score');
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
-
-function isSame(prevBoard) {
-  let same = true;
-
-  for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[i].length; j++) {
-      if (board[i][j] !== prevBoard[i][j]) {
-        same = false;
-      }
-    }
-  }
-
-  return same;
-}
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
@@ -302,51 +287,34 @@ document.addEventListener('keyup', e => {
 
   switch (e.key) {
     case 'ArrowRight':
-      tempBoard = [...board];
       moveRight();
       display();
       ifWin();
-
-      if (!isSame(tempBoard)) {
-        newCell();
-        display();
-      }
+      newCell();
+      display();
       break;
 
     case 'ArrowLeft':
-      tempBoard = [...board];
       moveLeft();
       display();
       ifWin();
-
-      if (!isSame(tempBoard)) {
-        newCell();
-        display();
-      }
+      newCell();
+      display();
       break;
 
     case 'ArrowUp':
-      tempBoard = [...board];
       moveUp();
       display();
       ifWin();
-
-      if (!isSame(tempBoard)) {
-        newCell();
-        display();
-      }
+      newCell();
+      display();
       break;
 
     case 'ArrowDown':
-      tempBoard = [...board];
       moveDown();
       display();
-      ifWin();
-
-      if (!isSame(tempBoard)) {
-        newCell();
-        display();
-      }
+      newCell();
+      display();
       break;
 
     default:
