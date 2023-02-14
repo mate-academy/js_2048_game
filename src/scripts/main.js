@@ -86,6 +86,10 @@ function moveRight() {
   for (let i = 0; i < board.length; i++) {
     board[i] = shiftRowLeft(board[i]).reverse();
   }
+
+  newCell();
+  display();
+  ifWin();
 }
 
 function moveLeft() {
@@ -106,6 +110,10 @@ function moveLeft() {
   for (let i = 0; i < board.length; i++) {
     board[i] = shiftRowLeft(board[i]);
   }
+
+  newCell();
+  display();
+  ifWin();
 }
 
 function moveUp() {
@@ -132,6 +140,10 @@ function moveUp() {
       board[j][i] = newColumn[j];
     }
   }
+
+  newCell();
+  display();
+  ifWin();
 }
 
 function moveDown() {
@@ -158,6 +170,10 @@ function moveDown() {
       board[j][i] = newColumn[j];
     }
   }
+
+  newCell();
+  display();
+  ifWin();
 }
 
 function changeAdditionalClassCell(element, newAddClass) {
@@ -288,33 +304,18 @@ document.addEventListener('keyup', e => {
   switch (e.key) {
     case 'ArrowRight':
       moveRight();
-      display();
-      ifWin();
-      newCell();
-      display();
       break;
 
     case 'ArrowLeft':
       moveLeft();
-      display();
-      ifWin();
-      newCell();
-      display();
       break;
 
     case 'ArrowUp':
       moveUp();
-      display();
-      ifWin();
-      newCell();
-      display();
       break;
 
     case 'ArrowDown':
       moveDown();
-      display();
-      newCell();
-      display();
       break;
 
     default:
