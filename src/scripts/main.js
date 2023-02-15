@@ -68,7 +68,7 @@ function shiftRowLeft(row) {
   return newRow;
 }
 
-function moveRight() {
+function moveRight(check) {
   for (let i = 0; i < board.length; i++) {
     board[i] = shiftRowLeft(board[i]).reverse();
   }
@@ -87,12 +87,14 @@ function moveRight() {
     board[i] = shiftRowLeft(board[i]).reverse();
   }
 
-  newCell();
-  display();
-  ifWin();
+  if (!check) {
+    newCell();
+    display();
+    ifWin();
+  }
 }
 
-function moveLeft() {
+function moveLeft(check) {
   for (let i = 0; i < board.length; i++) {
     board[i] = shiftRowLeft(board[i]);
   }
@@ -111,12 +113,14 @@ function moveLeft() {
     board[i] = shiftRowLeft(board[i]);
   }
 
-  newCell();
-  display();
-  ifWin();
+  if (!check) {
+    newCell();
+    display();
+    ifWin();
+  }
 }
 
-function moveUp() {
+function moveUp(check) {
   for (let i = 0; i < board.length; i++) {
     let newColumn = [];
 
@@ -141,12 +145,14 @@ function moveUp() {
     }
   }
 
-  newCell();
-  display();
-  ifWin();
+  if (!check) {
+    newCell();
+    display();
+    ifWin();
+  }
 }
 
-function moveDown() {
+function moveDown(check) {
   for (let i = 0; i < board.length; i++) {
     let newColumn = [];
 
@@ -171,9 +177,11 @@ function moveDown() {
     }
   }
 
-  newCell();
-  display();
-  ifWin();
+  if (!check) {
+    newCell();
+    display();
+    ifWin();
+  }
 }
 
 function changeAdditionalClassCell(element, newAddClass) {
@@ -212,37 +220,37 @@ function freeCell() {
   return false;
 }
 
+function goToOldBoard(oldBoard, oldProbabilityCount, oldScore) {
+  board = [...oldBoard];
+  probabilityCount = oldProbabilityCount;
+  score = oldScore;
+}
+
 function ifLose() {
   let lose = true;
   const temp = [...board];
   const tempProbabilityCount = probabilityCount;
   const tempScore = score;
 
-  moveLeft();
+  moveLeft('check');
 
   if (freeCell()) {
     lose = false;
-    board = [...temp];
-    probabilityCount = tempProbabilityCount;
-    score = tempScore;
+    goToOldBoard(temp, tempProbabilityCount, tempScore);
 
     return lose;
   }
 
-  moveUp();
+  moveUp('check');
 
   if (freeCell()) {
     lose = false;
-    board = [...temp];
-    probabilityCount = tempProbabilityCount;
-    score = tempScore;
+    goToOldBoard(temp, tempProbabilityCount, tempScore);
 
     return lose;
   }
 
-  board = [...temp];
-  probabilityCount = tempProbabilityCount;
-  score = tempScore;
+  goToOldBoard(temp, tempProbabilityCount, tempScore);
 
   return lose;
 }
@@ -252,15 +260,18 @@ function display() {
     const cells = fieldRowAll[i].querySelectorAll('.field-cell');
 
     for (let j = 0; j < board[i].length; j++) {
-      if (board[i][j] !== 0) {
-        cells[j].textContent = board[i][j];
+      const boardCell = board[i][j];
+      const cell = cells[j];
 
-        const addClass = 'field-cell--' + board[i][j];
+      if (boardCell !== 0) {
+        cell.textContent = boardCell;
 
-        changeAdditionalClassCell(cells[j], addClass);
+        const addClass = 'field-cell--' + boardCell;
+
+        changeAdditionalClassCell(cell, addClass);
       } else {
-        cells[j].textContent = '';
-        changeAdditionalClassCell(cells[j]);
+        cell.textContent = '';
+        changeAdditionalClassCell(cell);
       }
     }
   }
@@ -276,6 +287,7 @@ function startGame() {
     [0, 0, 0, 0],
   ];
   probabilityCount = 0;
+  score = 0;
 
   newCell();
   newCell();
@@ -297,7 +309,7 @@ start.addEventListener('click', ourEvent => {
 });
 
 document.addEventListener('keyup', e => {
-  if (started === false) {
+  if (!started) {
     return;
   }
 
