@@ -34,7 +34,7 @@ startBtn.addEventListener('click', () => {
 });
 
 restartBtn.addEventListener('click', () => {
-  document.location.reload(true);
+  restartGame();
 });
 
 document.addEventListener('keydown', keyEvent => {
@@ -102,6 +102,16 @@ function start() {
   generateRandCell();
   generateRandCell();
   render();
+}
+
+function restartGame() {
+  gameScore = 0;
+  updateScore(0);
+  clear();
+  board.forEach(row => {
+    row.fill(0);
+  });
+  start();
 }
 
 function moveDown() {
