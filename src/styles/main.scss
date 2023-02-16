@@ -4,7 +4,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: linear-gradient(to right, #81e4f6, #f69381);
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
@@ -76,9 +76,10 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: #c8bca8;
   border-spacing: 10px;
   border-radius: 5px;
+  box-shadow: 6px 4px 8px;
 }
 
 .game-header {
