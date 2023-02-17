@@ -58,27 +58,27 @@ document.addEventListener('keydown', (e) => {
         if (array[i].innerHTML !== '') {
           const element = array[i];
           const elementParent = element.parentElement;
-          const rowOfElement = [...elementParent.children];
-          const posOfElementInRow = rowOfElement
+          const row = [...elementParent.children];
+          const position = row
             .find(result => result === element).cellIndex;
 
-          for (let j = posOfElementInRow + 1; j < 4; j++) {
-            if (rowOfElement[j].innerHTML === '' && j !== 3) {
+          for (let j = position + 1; j < 4; j++) {
+            if (row[j].innerHTML === '' && j !== 3) {
               continue;
-            } else if (rowOfElement[j].innerHTML === element.innerHTML) {
-              rowOfElement[j].innerHTML
-                = +rowOfElement[j].innerHTML + +element.innerHTML;
-              score.innerText = +score.innerText + +rowOfElement[j].innerText;
-            } else if (rowOfElement[j].innerHTML !== ''
-              && j !== posOfElementInRow + 1) {
-              rowOfElement[j - 1].innerHTML = element.innerHTML;
-            } else if (rowOfElement[j].innerHTML === '') {
-              rowOfElement[j].innerHTML = element.innerHTML;
+            } else if (row[j].innerHTML === element.innerHTML) {
+              row[j].innerHTML
+                = +row[j].innerHTML + +element.innerHTML;
+              score.innerText = +score.innerText + +row[j].innerText;
+            } else if (row[j].innerHTML !== ''
+              && j !== position + 1) {
+              row[j - 1].innerHTML = element.innerHTML;
+            } else if (row[j].innerHTML === '') {
+              row[j].innerHTML = element.innerHTML;
             } else {
               break;
             }
             changes = true;
-            rowOfElement[posOfElementInRow].innerHTML = '';
+            row[position].innerHTML = '';
             break;
           }
         } else {
@@ -93,30 +93,30 @@ document.addEventListener('keydown', (e) => {
       const array = [...allCell];
 
       for (let i = 0; i < 16; i++) {
-        if (array[i].innerHTML !== '') {
+        if (array[i].innerHTML) {
           const element = array[i];
           const elementParent = element.parentElement;
-          const rowOfElement = [...elementParent.children];
-          const posOfElementInRow = rowOfElement
+          const row = [...elementParent.children];
+          const position = row
             .find(result => result === element).cellIndex;
 
-          for (let j = posOfElementInRow - 1; j >= 0; j--) {
-            if (rowOfElement[j].innerHTML === '' && j !== 0) {
+          for (let j = position - 1; j >= 0; j--) {
+            if (row[j].innerHTML === '' && j !== 0) {
               continue;
-            } else if (rowOfElement[j].innerHTML === element.innerHTML) {
-              rowOfElement[j].innerHTML
-                = +`${rowOfElement[j].innerHTML}` + +`${element.innerHTML}`;
-              score.innerText = +score.innerText + +rowOfElement[j].innerText;
-            } else if (rowOfElement[j].innerHTML !== ''
-              && j !== posOfElementInRow - 1) {
-              rowOfElement[j + 1].innerHTML = element.innerHTML;
-            } else if (rowOfElement[j].innerHTML === '') {
-              rowOfElement[j].innerHTML = element.innerHTML;
+            } else if (row[j].innerHTML === element.innerHTML) {
+              row[j].innerHTML
+                = +`${row[j].innerHTML}` + +`${element.innerHTML}`;
+              score.innerText = +score.innerText + +row[j].innerText;
+            } else if (row[j].innerHTML !== ''
+              && j !== position - 1) {
+              row[j + 1].innerHTML = element.innerHTML;
+            } else if (row[j].innerHTML === '') {
+              row[j].innerHTML = element.innerHTML;
             } else {
               break;
             }
             changes = true;
-            rowOfElement[posOfElementInRow].innerHTML = '';
+            row[position].innerHTML = '';
             break;
           }
         } else {
