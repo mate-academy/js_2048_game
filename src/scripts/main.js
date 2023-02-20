@@ -8,22 +8,19 @@ const messageWin = document.querySelector('.message-win');
 const collLength = 4;
 const rowLenght = 4;
 const gameScore = document.querySelector('.game-score');
-let emptyCell = [];
 let count = 0;
 
 function randomNumbersTwoAndFour() {
   const randomNumber = Math.floor(Math.random() * 10);
 
-  if (randomNumber <= 0) {
-    return 2;
-  } else if (randomNumber <= 0.9) {
+  if (randomNumber < 1) {
     return 4;
-  } else {
-    return 2;
   }
+
+  return 2;
 }
 
-function searchEmptyCell() {
+function searchEmptyCells() {
   const arr = [];
 
   for (let i = 0; i < rowLenght; i++) {
@@ -34,16 +31,16 @@ function searchEmptyCell() {
     }
   }
 
-  emptyCell = [...arr];
-
-  return emptyCell.length > 0;
+  return arr;
 }
 
 function addNewCell() {
-  if (searchEmptyCell()) {
-    const lengthArr = emptyCell.length - 1;
-    const index = Math.floor(Math.random() * (lengthArr - 0 + 1) + 0);
-    const element = emptyCell[index];
+  const emptyCells = searchEmptyCells();
+
+  if (emptyCells.length > 0) {
+    const lengthArr = emptyCells.length - 1;
+    const index = Math.floor(Math.random() * lengthArr);
+    const element = emptyCells[index];
     const [rowsIndex, colIndex] = element;
     const number = randomNumbersTwoAndFour();
 
@@ -55,6 +52,8 @@ function addNewCell() {
 }
 
 buttonStart.addEventListener('click', () => {
+  const emptyCells = searchEmptyCells();
+
   buttonStart.classList.add('restart');
   buttonStart.classList.remove('start');
   buttonStart.textContent = 'Restart';
@@ -62,9 +61,7 @@ buttonStart.addEventListener('click', () => {
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
 
-  if (emptyCell.length > 0) {
-    emptyCell = [];
-
+  if (emptyCells.length > 0) {
     for (let i = 0; i < rowLenght; i++) {
       for (let j = 0; j < collLength; j++) {
         if (table.rows[i].cells[j].textContent) {
