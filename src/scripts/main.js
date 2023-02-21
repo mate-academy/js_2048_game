@@ -61,6 +61,9 @@ buttonStart.addEventListener('click', () => {
   messageWin.classList.add('hidden');
 
   if (start) {
+    count = 0;
+    gameScore.textContent = count;
+
     for (let i = 0; i < rowLenght; i++) {
       for (let j = 0; j < collLength; j++) {
         if (table.rows[i].cells[j].textContent) {
