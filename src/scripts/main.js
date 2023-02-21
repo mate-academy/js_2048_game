@@ -9,6 +9,7 @@ const collLength = 4;
 const rowLenght = 4;
 const gameScore = document.querySelector('.game-score');
 let count = 0;
+let start = false;
 
 function randomNumbersTwoAndFour() {
   const randomNumber = Math.floor(Math.random() * 10);
@@ -52,8 +53,6 @@ function addNewCell() {
 }
 
 buttonStart.addEventListener('click', () => {
-  const emptyCells = searchEmptyCells();
-
   buttonStart.classList.add('restart');
   buttonStart.classList.remove('start');
   buttonStart.textContent = 'Restart';
@@ -61,7 +60,7 @@ buttonStart.addEventListener('click', () => {
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
 
-  if (emptyCells.length > 0) {
+  if (start) {
     for (let i = 0; i < rowLenght; i++) {
       for (let j = 0; j < collLength; j++) {
         if (table.rows[i].cells[j].textContent) {
@@ -73,6 +72,7 @@ buttonStart.addEventListener('click', () => {
       }
     }
   }
+  start = true;
   addNewCell();
   addNewCell();
 });
