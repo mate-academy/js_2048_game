@@ -27,7 +27,7 @@ function startGame(eventStart) {
   eventStart.currentTarget.classList.add('restart');
   eventStart.currentTarget.textContent = 'restart';
   score.textContent = 0;
-  message.forEach(m => m.classList.remove('hidden'));
+  message.forEach(m => m.classList.add('hidden'));
 
   removeStyleCell();
   clearCell();
