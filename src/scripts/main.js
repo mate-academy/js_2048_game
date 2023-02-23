@@ -10,10 +10,6 @@ const rows = 4;
 const cells = 4;
 let score = 0;
 
-function updateScore() {
-  gameScore.textContent = score;
-}
-
 const board = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -38,6 +34,10 @@ startRestartButton.addEventListener('click', (e) => {
 
   updateGameField();
 });
+
+function updateScore() {
+  gameScore.textContent = score;
+}
 
 function checkForWin() {
   for (let r = 0; r < rows; r++) {
