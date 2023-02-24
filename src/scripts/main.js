@@ -35,7 +35,8 @@ buttonStart.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if (!messageWin.classList.contains('hidden')) {
+  if (!messageWin.classList.contains('hidden')
+    || buttonStart.classList.contains('start')) {
     return;
   }
 
