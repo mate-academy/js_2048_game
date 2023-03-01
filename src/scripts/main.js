@@ -29,7 +29,7 @@ startBtn.addEventListener('click', () => {
 
   score = 0;
 
-  updateGame();
+  updateTheGame();
   setNewCell();
   setNewCell();
 
@@ -42,30 +42,30 @@ startBtn.addEventListener('click', () => {
 });
 
 document.addEventListener('keyup', type => {
-  if (startBtn.classList.contains('restart')) {
-    if (type.code === 'ArrowLeft') {
+  switch (startBtn.classList.contains('restart')) {
+    case type.code === 'ArrowLeft':
       slideLeft();
       setNewCell();
-    }
+      break;
 
-    if (type.code === 'ArrowRight') {
+    case type.code === 'ArrowRight':
       slideRight();
       setNewCell();
-    }
+      break;
 
-    if (type.code === 'ArrowUp') {
+    case type.code === 'ArrowUp':
       slideUp();
       setNewCell();
-    }
+      break;
 
-    if (type.code === 'ArrowDown') {
+    case type.code === 'ArrowDown':
       slideDown();
       setNewCell();
-    }
+      break;
   }
 
-  if (!isPossible()) {
-    isLose();
+  if (!checkIfPossible()) {
+    checkIfLose();
   }
 });
 
@@ -80,7 +80,7 @@ function updateCell(cell, num) {
   }
 }
 
-function updateGame() {
+function updateTheGame() {
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < columns; col++) {
       const currentCell = fieldRows[row].cells[col];
@@ -93,7 +93,7 @@ function updateGame() {
   scoreBoard.innerText = String(score);
 }
 
-function isEmpty() {
+function checkIfEmpty() {
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < columns; col++) {
       if (field[row][col] === 0) {
@@ -106,7 +106,7 @@ function isEmpty() {
 }
 
 function setNewCell() {
-  if (!isEmpty()) {
+  if (!checkIfEmpty()) {
     return;
   }
 
@@ -122,7 +122,7 @@ function setNewCell() {
       field[row][col] = value;
       check = true;
 
-      updateGame();
+      updateTheGame();
     }
   }
 }
@@ -139,7 +139,7 @@ function slide(row) {
       newRow[i] *= 2;
       newRow[i + 1] = 0;
       score += newRow[i];
-      isWin(newRow[i]);
+      checkIfWin(newRow[i]);
     }
   }
 
@@ -160,7 +160,7 @@ function slideLeft() {
     field[r] = row;
   }
 
-  updateGame();
+  updateTheGame();
 }
 
 function slideRight() {
@@ -173,7 +173,7 @@ function slideRight() {
     field[r] = row;
   }
 
-  updateGame();
+  updateTheGame();
 }
 
 function slideUp() {
@@ -187,7 +187,7 @@ function slideUp() {
     }
   }
 
-  updateGame();
+  updateTheGame();
 }
 
 function slideDown() {
@@ -203,10 +203,10 @@ function slideDown() {
     }
   }
 
-  updateGame();
+  updateTheGame();
 }
 
-function isPossible() {
+function checkIfPossible() {
   let check = false;
 
   for (let row = 0; row < rows; row++) {
@@ -220,14 +220,14 @@ function isPossible() {
     }
   }
 
-  if (!check && !isEmpty()) {
+  if (!check && !checkIfEmpty()) {
     return false;
   }
 
   return true;
 }
 
-function isWin(value) {
+function checkIfWin(value) {
   if (value === 2048) {
     messageWin.classList.remove('hidden');
     startBtn.classList.remove('restart');
@@ -235,7 +235,7 @@ function isWin(value) {
   }
 }
 
-function isLose() {
+function checkIfLose() {
   messageLose.classList.remove('hidden');
   startBtn.classList.remove('restart');
   startBtn.innerText = 'Start';
