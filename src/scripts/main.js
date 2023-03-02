@@ -10,21 +10,23 @@ const rows = Array.from(document.querySelectorAll('.field-row'));
 const board = Array(4).fill(0).map(x => Array(4).fill(0));
 
 function findEmptyCell() {
-  let randomRow;
-  let randomColumn;
+  const boardSize = {
+    row: 0,
+    column: 0,
+  };
 
   do {
-    randomRow = Math.floor(Math.random() * 4);
-    randomColumn = Math.floor(Math.random() * 4);
-  } while (board[randomRow][randomColumn] !== 0);
+    boardSize.row = Math.floor(Math.random() * 4);
+    boardSize.column = Math.floor(Math.random() * 4);
+  } while (board[boardSize.row][boardSize.column] !== 0);
 
-  return [randomRow, randomColumn];
+  return boardSize;
 }
 
 function addNumber() {
-  const [randomRow, randomColumn] = findEmptyCell();
+  const { row, column } = findEmptyCell();
 
-  board[randomRow][randomColumn] = Math.random() < 0.9 ? 2 : 4;
+  board[row][column] = Math.random() < 0.9 ? 2 : 4;
 }
 
 function render() {
