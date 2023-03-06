@@ -34,7 +34,6 @@ function setGame() {
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      // create div tag
       const tile = document.createElement('div');
 
       tile.id = r.toString() + '-' + c.toString();
