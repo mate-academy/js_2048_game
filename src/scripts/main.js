@@ -98,16 +98,16 @@ function updateTile(tile, num) {
 }
 
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft') {
+  if (e.code === 'ArrowLeft' && button.classList.contains('restart')) {
     slideLeft();
     setTwo();
-  } else if (e.code === 'ArrowRight') {
+  } else if (e.code === 'ArrowRight' && button.classList.contains('restart')) {
     slideRight();
     setTwo();
-  } else if (e.code === 'ArrowUp') {
+  } else if (e.code === 'ArrowUp' && button.classList.contains('restart')) {
     slideUp();
     setTwo();
-  } else if (e.code === 'ArrowDown') {
+  } else if (e.code === 'ArrowDown' && button.classList.contains('restart')) {
     slideDown();
     setTwo();
   }
