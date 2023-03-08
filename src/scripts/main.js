@@ -101,7 +101,7 @@ function slideLeft() {
   for (let r = 0; r < rowsNum; r++) {
     const newRow = slide(field[r]);
 
-    updateRow(r, newRow)
+    updateRow(r, newRow);
   }
 }
 
