@@ -22,6 +22,8 @@ const winValue = 2048;
 let maxTileValue = 0;
 let score = 0;
 let isListenerRemoved = false;
+let touchX = 0;
+let touchY = 0;
 
 function filterZero(row) {
   return row.filter(tileValue => tileValue !== 0);
@@ -141,6 +143,36 @@ function canMoveVertically() {
   return false;
 }
 
+function removeListeners() {
+  document.removeEventListener('keyup', handleSlide);
+  gameField.removeEventListener('touchstart', handleFirstTouch);
+  gameField.removeEventListener('touchend', handleSlideWithSwipe);
+}
+
+function changeFieldAfterSlide() {
+  gameScore.textContent = score;
+
+  if (maxTileValue === winValue) {
+    messageWin.classList.remove('hidden');
+
+    removeListeners();
+
+    isListenerRemoved = true;
+
+    return;
+  }
+
+  addTile();
+
+  if (!canMoveHorizontally() && !canMoveVertically()) {
+    messageLose.classList.remove('hidden');
+
+    removeListeners();
+
+    isListenerRemoved = true;
+  }
+}
+
 function handleSlide(e) {
   const action = e.code;
 
@@ -169,23 +201,35 @@ function handleSlide(e) {
       return;
   }
 
-  gameScore.textContent = score;
+  changeFieldAfterSlide();
+}
 
-  if (maxTileValue === winValue) {
-    messageWin.classList.remove('hidden');
-    document.removeEventListener('keyup', handleSlide);
-    isListenerRemoved = true;
+function handleFirstTouch(e) {
+  touchX = e.changedTouches[0].clientX;
+  touchY = e.changedTouches[0].clientY;
+}
 
+function handleSlideWithSwipe(e) {
+  const deltaX = e.changedTouches[0].clientX - touchX;
+  const deltaY = e.changedTouches[0].clientY - touchY;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX < 0) {
+      slideLeft();
+    } else {
+      slideRight();
+    }
+  } else if (Math.abs(deltaX) < Math.abs(deltaY)) {
+    if (deltaY < 0) {
+      slideUp();
+    } else {
+      slideDown();
+    }
+  } else {
     return;
   }
 
-  addTile();
-
-  if (!canMoveHorizontally() && !canMoveVertically()) {
-    messageLose.classList.remove('hidden');
-    document.removeEventListener('keyup', handleSlide);
-    isListenerRemoved = true;
-  }
+  changeFieldAfterSlide();
 }
 
 function hasEmptyTile() {
@@ -260,7 +304,7 @@ startButton.addEventListener('click', (e) => {
     clearField();
 
     if (!isListenerRemoved) {
-      document.removeEventListener('keyup', handleSlide);
+      removeListeners();
     }
 
     if (!messageLose.classList.contains('hidden')) {
@@ -276,4 +320,6 @@ startButton.addEventListener('click', (e) => {
   addTile(true);
 
   document.addEventListener('keyup', handleSlide);
+  gameField.addEventListener('touchstart', handleFirstTouch);
+  gameField.addEventListener('touchend', handleSlideWithSwipe);
 });

@@ -8,6 +8,8 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+
+  overscroll-behavior-y: contain;
 }
 
 .field-cell {
