@@ -11,6 +11,7 @@ const field = [
 ];
 
 const startButton = document.querySelector('.button');
+const gameFieldTable = document.querySelector('.game-field');
 const gameField = document.querySelector('.game-field').tBodies[0];
 
 const gameScore = document.querySelector('.game-score');
@@ -56,61 +57,59 @@ function slide(row, isChecking = false) {
   return newRow;
 }
 
+function getColumn(columnNum) {
+  return field.reduce((accum, row) => {
+    accum.push(row[columnNum]);
+
+    return accum;
+  }, []);
+}
+
+function updateColumn(columnNum, newColumn) {
+  for (let r = 0; r < rowsNum; r++) {
+    field[r][columnNum] = newColumn[r];
+
+    updateTile(r, columnNum, newColumn[r] || '');
+  }
+}
+
+function updateRow(rowNum, newRow) {
+  field[rowNum] = newRow;
+
+  for (let c = 0; c < columnsNum; c++) {
+    updateTile(rowNum, c, newRow[c] || '');
+  }
+}
+
 function slideUp() {
   for (let c = 0; c < columnsNum; c++) {
-    const row = slide([
-      field[0][c],
-      field[1][c],
-      field[2][c],
-      field[3][c],
-    ]);
+    const newColumn = slide(getColumn(c));
 
-    for (let r = 0; r < rowsNum; r++) {
-      field[r][c] = row[r];
-
-      updateTile(r, c, row[r] || '');
-    }
+    updateColumn(c, newColumn);
   }
 }
 
 function slideDown() {
   for (let c = 0; c < columnsNum; c++) {
-    const row = slide([
-      field[0][c],
-      field[1][c],
-      field[2][c],
-      field[3][c],
-    ].reverse()).reverse();
+    const newColumn = slide(getColumn(c).reverse()).reverse();
 
-    for (let r = 0; r < rowsNum; r++) {
-      field[r][c] = row[r];
-
-      updateTile(r, c, row[r] || '');
-    }
+    updateColumn(c, newColumn);
   }
 }
 
 function slideLeft() {
   for (let r = 0; r < rowsNum; r++) {
-    const row = slide(field[r]);
+    const newRow = slide(field[r]);
 
-    field[r] = row;
-
-    for (let c = 0; c < columnsNum; c++) {
-      updateTile(r, c, row[c] || '');
-    }
+    updateRow(r, newRow)
   }
 }
 
 function slideRight() {
   for (let r = 0; r < rowsNum; r++) {
-    const row = slide(field[r].reverse()).reverse();
+    const newRow = slide(field[r].reverse()).reverse();
 
-    field[r] = row;
-
-    for (let c = 0; c < columnsNum; c++) {
-      updateTile(r, c, row[c] || '');
-    }
+    updateRow(r, newRow);
   }
 }
 
@@ -128,12 +127,7 @@ function canMoveHorizontally() {
 
 function canMoveVertically() {
   for (let c = 0; c < columnsNum; c++) {
-    const column = [
-      field[0][c],
-      field[1][c],
-      field[2][c],
-      field[3][c],
-    ];
+    const column = getColumn(c);
 
     if (slide(column, true).some((tileValue) => tileValue === 0)) {
       return true;
@@ -145,8 +139,8 @@ function canMoveVertically() {
 
 function removeListeners() {
   document.removeEventListener('keyup', handleSlide);
-  gameField.removeEventListener('touchstart', handleFirstTouch);
-  gameField.removeEventListener('touchend', handleSlideWithSwipe);
+  gameFieldTable.removeEventListener('touchstart', handleFirstTouch);
+  gameFieldTable.removeEventListener('touchend', handleSlideWithSwipe);
 }
 
 function changeFieldAfterSlide() {
@@ -205,6 +199,8 @@ function handleSlide(e) {
 }
 
 function handleFirstTouch(e) {
+  e.preventDefault();
+
   touchX = e.changedTouches[0].clientX;
   touchY = e.changedTouches[0].clientY;
 }
@@ -320,6 +316,6 @@ startButton.addEventListener('click', (e) => {
   addTile(true);
 
   document.addEventListener('keyup', handleSlide);
-  gameField.addEventListener('touchstart', handleFirstTouch);
-  gameField.addEventListener('touchend', handleSlideWithSwipe);
+  gameFieldTable.addEventListener('touchstart', handleFirstTouch);
+  gameFieldTable.addEventListener('touchend', handleSlideWithSwipe);
 });
