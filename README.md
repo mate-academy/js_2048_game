@@ -1,3 +1,4 @@
+## Introduction
 To begin with, let me please present to you the project I have been working on. This is the 2048 game which is a popular puzzle game where players slide numbered tiles on a grid to combine them and create a tile with the number 2048. My implementation of the game is built using JavaScript mostly and utilizes a variety of tools and methods to create a smooth and engaging gaming experience based on JS.
 
 ## addEventListener
@@ -24,6 +25,7 @@ A recursive function was used to implement the core game logic, where tiles were
 ## functions
 Finally, I used functions extensively throughout the code to encapsulate different pieces of logic and make the code more modular and easier to understand. For example, I created functions to move tiles in different directions, combine adjacent tiles, and check whether the game had been won or lost.
 
+## Summary
 Overall, my implementation of the 2048 game showcases my proficiency with a wide range of JavaScript tools and methods, including event listeners, logical operators, math functions, recursion, loops, class manipulation, and function creation.
 
 Building this game with JavaScript was a breeze! It was so easy, it's like child's play... or should I say, like playing 2048 itself!
