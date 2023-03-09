@@ -21,6 +21,8 @@ body {
   vertical-align: center;
   user-select: none;
 
+  transition: all 0.3s;
+
   &--2 {
     background: #eee4da;
   }
