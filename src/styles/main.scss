@@ -138,6 +138,9 @@ h1 {
 }
 
 .start {
+  width: 82px;
+  outline: none;
+
   background: #1dae28;
   font-size: 20px;
 
@@ -147,10 +150,13 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  width: 82px;
+  outline: none;
+
+  background: #e35c5c;
 
   &:hover {
-    background: #f87474;
+    background: #c64949;
   }
 }
 
