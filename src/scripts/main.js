@@ -12,7 +12,7 @@ const field = [
 
 const startButton = document.querySelector('.button');
 const gameFieldTable = document.querySelector('.game-field');
-const gameField = document.querySelector('.game-field').tBodies[0];
+const gameField = gameFieldTable.tBodies[0];
 
 const gameScore = document.querySelector('.game-score');
 const messageLose = document.querySelector('.message-lose');
