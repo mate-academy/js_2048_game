@@ -1,6 +1,5 @@
 'use strict';
 
-const start = document.querySelector('.start');
 const restartElement = document.createElement('button');
 
 restartElement.textContent = 'Restart';
@@ -10,7 +9,7 @@ document.querySelector('.controls').append(restartElement);
 // ******START****** //
 
 document.body.querySelector('.start').addEventListener('click', () => {
-  start.classList.add('hidden');
+  document.querySelector('.start').classList.add('hidden');
   restartElement.classList.remove('hidden');
   document.querySelector('.message-start').classList.add('hidden');
   game();
@@ -49,7 +48,7 @@ function game() {
   }
 
   function winCheck(arr) {
-    const max = arr.sort((a, b) => b - a)[0];
+    const max = Math.max.apply(null, arr);
     const element = document.querySelector('.message-win').classList;
 
     if (max >= 2048) {
