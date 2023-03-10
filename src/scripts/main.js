@@ -14,23 +14,29 @@ function putArrayInPage(arr) {
       tdElements[i].textContent = arr[i];
       tdElements[i].classList.add('field-cell--' + arr[i]);
     }
+
+    if (tdElements[i].textContent === '32') {
+      // console.log('WIN !!!');
+    }
   }
 }
 
 function setNumberInArray() {
-  let random = Math.random() * 100;
+  let twoOrFour = Math.random() * 100;
 
-  random = random <= 10 ? 4 : 2;
+  twoOrFour = twoOrFour <= 10 ? 4 : 2;
 
   for (let i = 0; i < 10000; i++) {
-    const x = Math.floor(Math.random() * 16);
+    const freeCell = Math.floor(Math.random() * 16);
 
-    if (array[x] === 0) {
-      array[x] = random;
+    if (array[freeCell] === 0) {
+      array[freeCell] = twoOrFour;
 
       return;
     }
   }
+  // eslint-disable-next-line no-console
+  console.log('GAME OVER');
 }
 
 setNumberInArray();
@@ -38,6 +44,12 @@ setNumberInArray();
 putArrayInPage(array);
 
 let score = 0;
+
+function showScores() {
+  document.querySelector('.game-score').textContent = score;
+}
+
+//* *****START*******//
 
 function doublingLeft() {
   for (let row = 0; row <= 12; row = row + 4) {
@@ -241,7 +253,7 @@ document.body.addEventListener('keydown', (eventFunc) => {
     movingUp();
     setNumberInArray();
     putArrayInPage(array);
-    document.querySelector('.game-score').textContent = score;
+    showScores();
   }
 });
 
@@ -251,7 +263,7 @@ document.body.addEventListener('keydown', (eventFunc) => {
     movingDown();
     setNumberInArray();
     putArrayInPage(array);
-    document.querySelector('.game-score').textContent = score;
+    showScores();
   }
 });
 
@@ -261,7 +273,7 @@ document.body.addEventListener('keydown', (eventFunc) => {
     movingLeft();
     setNumberInArray();
     putArrayInPage(array);
-    document.querySelector('.game-score').textContent = score;
+    showScores();
   }
 });
 
@@ -271,6 +283,6 @@ document.body.addEventListener('keydown', (eventFunc) => {
     movingRight();
     setNumberInArray();
     putArrayInPage(array);
-    document.querySelector('.game-score').textContent = score;
+    showScores();
   }
 });
