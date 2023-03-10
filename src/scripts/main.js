@@ -17,6 +17,7 @@ document.body.querySelector('.start').addEventListener('click', () => {
 });
 
 document.body.querySelector('.restart').addEventListener('click', () => {
+  document.querySelector('.message-win').classList.add('hidden');
   document.querySelector('.message-lose').classList.add('hidden');
   game();
 });
@@ -44,10 +45,17 @@ function game() {
         tdElem.textContent = arr[i];
         tdElem.classList.add('field-cell--' + arr[i]);
       }
+    }
+  }
 
-      if (Number(tdElem.textContent) >= 2048) {
-        document.querySelector('.message-win').classList.remove('hidden');
-      }
+  function winCheck(arr) {
+    const max = arr.sort((a, b) => b - a)[0];
+    const element = document.querySelector('.message-win').classList;
+
+    if (max >= 2048) {
+      element.remove('hidden');
+    } else {
+      element.add('hidden');
     }
   }
 
@@ -180,6 +188,7 @@ function game() {
       setNumberInArray(array);
       putArrayInPage(array);
       showScores(score);
+      winCheck(array);
     }
   });
 
@@ -191,6 +200,7 @@ function game() {
       setNumberInArray(array);
       putArrayInPage(array);
       showScores(score);
+      winCheck(array);
     }
   });
 
@@ -202,6 +212,7 @@ function game() {
       setNumberInArray(array);
       putArrayInPage(array);
       showScores(score);
+      winCheck(array);
     }
   });
 
@@ -213,6 +224,7 @@ function game() {
       setNumberInArray(array);
       putArrayInPage(array);
       showScores(score);
+      winCheck(array);
     }
   });
 }
