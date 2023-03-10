@@ -6,7 +6,7 @@ restartElement.textContent = 'Restart';
 restartElement.classList.add('button', 'restart', 'hidden');
 document.querySelector('.controls').append(restartElement);
 
-// *********** START ************ //
+// *********************** START ************************ //
 
 document.body.querySelector('.start').addEventListener('click', () => {
   document.querySelector('.start').classList.add('hidden');
