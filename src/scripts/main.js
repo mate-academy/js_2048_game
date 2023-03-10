@@ -71,144 +71,48 @@ function game() {
 
   function doublingLeft(arr) {
     for (let row = 0; row <= 12; row = row + 4) {
-      const innerArr
-        = [arr[row], arr[row + 1], arr[row + 2], arr[row + 3]];
-
-      for (let i = 0; i < innerArr.length; i++) {
-        if (innerArr[i] === innerArr[i + 1]) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i + 1] = 0;
-          continue;
+      for (let i = 0; i <= 2; i++) {
+        if (arr[i + row] === arr[i + row + 1]) {
+          arr[i + row] = arr[i + row] * 2;
+          score = score + arr[i + row];
+          arr[i + row + 1] = 0;
         }
-
-        if (innerArr[i] === innerArr[i + 3]
-          && innerArr[i + 1] === 0
-          && innerArr[i + 2] === 0) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i + 3] = 0;
-          continue;
-        }
-
-        if (innerArr[i] === innerArr[i + 2] && innerArr[i + 1] === 0) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i + 2] = 0;
-        }
-      }
-
-      for (let i = 0; i < innerArr.length; i++) {
-        innerArr[i] = Math.floor(innerArr[i]);
-        arr[row + i] = innerArr[i];
       }
     }
   }
 
   function doublingRight(arr) {
     for (let row = 0; row <= 12; row = row + 4) {
-      const innerArr
-        = [arr[row], arr[row + 1], arr[row + 2], arr[row + 3]];
-
-      for (let i = innerArr.length - 1; i >= 0; i--) {
-        if (innerArr[i] === innerArr[i - 1]) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i - 1] = 0;
-          continue;
+      for (let i = 2; i >= 0; i--) {
+        if (arr[i + row] === arr[i + row + 1]) {
+          arr[i + row + 1] = arr[i + row + 1] * 2;
+          score = score + arr[i + row + 1];
+          arr[i + row] = 0;
         }
-
-        if (innerArr[i] === innerArr[i - 3]
-          && innerArr[i - 1] === 0
-          && innerArr[i - 2] === 0) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i - 3] = 0;
-          continue;
-        }
-
-        if (innerArr[i] === innerArr[i - 2] && innerArr[i - 1] === 0) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i - 2] = 0;
-        }
-      }
-
-      for (let i = 0; i < innerArr.length; i++) {
-        innerArr[i] = Math.floor(innerArr[i]);
-        arr[row + i] = innerArr[i];
       }
     }
   }
 
   function doublingUp(arr) {
     for (let row = 0; row <= 3; row++) {
-      const innerArr
-        = [arr[row], arr[row + 4], arr[row + 8], arr[row + 12]];
-
-      for (let i = 0; i < innerArr.length; i++) {
-        if (innerArr[i] === innerArr[i + 1]) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i + 1] = 0;
-          continue;
+      for (let i = 0; i <= 12; i = i + 4) {
+        if (arr[row + i] === arr[row + i + 4]) {
+          arr[row + i] = arr[row + i] * 2;
+          score = score + arr[row + i];
+          arr[row + i + 4] = 0;
         }
-
-        if (innerArr[i] === innerArr[i + 3]
-          && innerArr[i + 1] === 0
-          && innerArr[i + 2] === 0) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i + 3] = 0;
-          continue;
-        }
-
-        if (innerArr[i] === innerArr[i + 2] && innerArr[i + 1] === 0) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i + 2] = 0;
-        }
-      }
-
-      for (let i = 0; i < innerArr.length; i++) {
-        innerArr[i] = Math.floor(innerArr[i]);
-        arr[row + i * 4] = innerArr[i];
       }
     }
   }
 
   function doublingDown(arr) {
     for (let row = 0; row <= 3; row++) {
-      const innerArr
-        = [arr[row], arr[row + 4], arr[row + 8], arr[row + 12]];
-
-      for (let i = innerArr.length - 1; i >= 0; i--) {
-        if (innerArr[i] === innerArr[i - 1]) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i - 1] = 0;
-          continue;
+      for (let i = 12; i >= 0; i = i - 4) {
+        if (arr[row + i] === arr[row + i - 4]) {
+          arr[row + i] = arr[row + i] * 2;
+          score = score + arr[row + i];
+          arr[row + i - 4] = 0;
         }
-
-        if (innerArr[i] === innerArr[i - 3]
-          && innerArr[i - 1] === 0
-          && innerArr[i - 2] === 0) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i - 3] = 0;
-          continue;
-        }
-
-        if (innerArr[i] === innerArr[i + 2] && innerArr[i + 1] === 0) {
-          innerArr[i] = innerArr[i] * 2 + 0.1;
-          score = score + Math.floor(innerArr[i]);
-          innerArr[i + 2] = 0;
-        }
-      }
-
-      for (let i = 0; i < innerArr.length; i++) {
-        innerArr[i] = Math.floor(innerArr[i]);
-        arr[row + i * 4] = innerArr[i];
       }
     }
   }
@@ -267,6 +171,7 @@ function game() {
 
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowUp') {
+      movingUp(array);
       doublingUp(array);
       movingUp(array);
       setNumberInArray(array);
@@ -277,6 +182,7 @@ function game() {
 
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowDown') {
+      movingDown(array);
       doublingDown(array);
       movingDown(array);
       setNumberInArray(array);
@@ -287,6 +193,7 @@ function game() {
 
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowLeft') {
+      movingLeft(array);
       doublingLeft(array);
       movingLeft(array);
       setNumberInArray(array);
@@ -297,6 +204,7 @@ function game() {
 
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowRight') {
+      movingRight(array);
       doublingRight(array);
       movingRight(array);
       setNumberInArray(array);
