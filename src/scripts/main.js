@@ -6,7 +6,7 @@ restartElement.textContent = 'Restart';
 restartElement.classList.add('button', 'restart', 'hidden');
 document.querySelector('.controls').append(restartElement);
 
-// ******START****** //
+// *********** START ************ //
 
 document.body.querySelector('.start').addEventListener('click', () => {
   document.querySelector('.start').classList.add('hidden');
@@ -58,12 +58,16 @@ function game() {
     }
   }
 
+  function lossCheck() {
+
+  }
+
   function setNumberInArray(arr) {
     let twoOrFour = Math.random() * 100;
 
     twoOrFour = twoOrFour <= 10 ? 4 : 2;
 
-    for (let i = 0; i < 100000; i++) {
+    for (let i = 0; i < 10000; i++) {
       const freeCell = Math.floor(Math.random() * 16);
 
       if (arr[freeCell] === 0) {
@@ -72,13 +76,13 @@ function game() {
         return;
       }
     }
-    document.querySelector('.message-lose').classList.remove('hidden');
   }
 
   function showScores(sco) {
     document.querySelector('.game-score').textContent = sco;
   }
 
+  // ***************** moving and dubling function **************** //
   function doublingLeft(arr) {
     for (let row = 0; row <= 12; row = row + 4) {
       for (let i = 0; i <= 2; i++) {
@@ -179,6 +183,7 @@ function game() {
     }
   }
 
+  // ***************** event up down left right **************** //
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowUp') {
       movingUp(array);
@@ -188,6 +193,7 @@ function game() {
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
+      lossCheck();
     }
   });
 
@@ -200,6 +206,7 @@ function game() {
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
+      lossCheck();
     }
   });
 
@@ -212,6 +219,7 @@ function game() {
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
+      lossCheck();
     }
   });
 
@@ -224,6 +232,7 @@ function game() {
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
+      lossCheck();
     }
   });
 }
