@@ -17,6 +17,7 @@ document.body.querySelector('.start').addEventListener('click', () => {
 });
 
 document.body.querySelector('.restart').addEventListener('click', () => {
+  document.querySelector('.message-lose').classList.add('hidden');
   game();
 });
 
@@ -30,12 +31,14 @@ function game() {
   showScores(score);
 
   function putArrayInPage(arr) {
+    document.querySelectorAll('td').forEach((item) => {
+      item.removeAttribute('class');
+      item.classList.add('field-cell');
+      item.textContent = '';
+    });
+
     for (let i = 0; i < 16; i++) {
       const tdElem = document.querySelectorAll('td')[i];
-
-      tdElem.removeAttribute('class');
-      tdElem.classList.add('field-cell');
-      tdElem.textContent = '';
 
       if (arr[i] !== 0) {
         tdElem.textContent = arr[i];
@@ -53,7 +56,7 @@ function game() {
 
     twoOrFour = twoOrFour <= 10 ? 4 : 2;
 
-    for (let i = 0; i < 10000; i++) {
+    for (let i = 0; i < 100000; i++) {
       const freeCell = Math.floor(Math.random() * 16);
 
       if (arr[freeCell] === 0) {
