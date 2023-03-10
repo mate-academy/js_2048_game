@@ -29,6 +29,46 @@ function game() {
   putArrayInPage(array);
   showScores(score);
 
+  function putArrayInPage(arr) {
+    for (let i = 0; i < 16; i++) {
+      const tdElem = document.querySelectorAll('td')[i];
+
+      tdElem.removeAttribute('class');
+      tdElem.classList.add('field-cell');
+      tdElem.textContent = '';
+
+      if (arr[i] !== 0) {
+        tdElem.textContent = arr[i];
+        tdElem.classList.add('field-cell--' + arr[i]);
+      }
+
+      if (Number(tdElem.textContent) >= 2048) {
+        document.querySelector('.message-win').classList.remove('hidden');
+      }
+    }
+  }
+
+  function setNumberInArray(arr) {
+    let twoOrFour = Math.random() * 100;
+
+    twoOrFour = twoOrFour <= 10 ? 4 : 2;
+
+    for (let i = 0; i < 10000; i++) {
+      const freeCell = Math.floor(Math.random() * 16);
+
+      if (arr[freeCell] === 0) {
+        arr[freeCell] = twoOrFour;
+
+        return;
+      }
+    }
+    document.querySelector('.message-lose').classList.remove('hidden');
+  }
+
+  function showScores(sco) {
+    document.querySelector('.game-score').textContent = sco;
+  }
+
   function doublingLeft(arr) {
     for (let row = 0; row <= 12; row = row + 4) {
       const innerArr
@@ -171,45 +211,6 @@ function game() {
         arr[row + i * 4] = innerArr[i];
       }
     }
-  }
-
-  function putArrayInPage(arr) {
-    for (let i = 0; i < 16; i++) {
-      const tdElem = document.querySelectorAll('td')[i];
-
-      tdElem.removeAttribute('class');
-      tdElem.classList.add('field-cell');
-      tdElem.textContent = '';
-
-      if (arr[i] !== 0) {
-        tdElem.textContent = arr[i];
-        tdElem.classList.add('field-cell--' + arr[i]);
-      }
-
-      if (Number(tdElem.textContent) >= 2048) {
-        document.querySelector('.message-win').classList.remove('hidden');
-      }
-    }
-  }
-
-  function setNumberInArray(arr) {
-    let twoOrFour = Math.random() * 100;
-
-    twoOrFour = twoOrFour <= 10 ? 4 : 2;
-
-    for (let i = 0; i < 10000; i++) {
-      const freeCell = Math.floor(Math.random() * 16);
-
-      if (arr[freeCell] === 0) {
-        arr[freeCell] = twoOrFour;
-
-        return;
-      }
-    }
-  }
-
-  function showScores(sco) {
-    document.querySelector('.game-score').textContent = sco;
   }
 
   function movingLeft(arr) {
