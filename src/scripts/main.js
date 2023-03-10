@@ -1,27 +1,77 @@
 'use strict';
 
-const tdElements = document.querySelectorAll('td');
+let score = 0;
 
-const array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+document.body.querySelector('.start').addEventListener('click', () => {
+  const array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+  setNumberInArray(array);
+  setNumberInArray(array);
+  putArrayInPage(array);
+
+  document.querySelector('.message-start').classList.add('hidden');
+
+  document.body.addEventListener('keydown', (eventFunc) => {
+    if (eventFunc.key === 'ArrowUp') {
+      doublingUp(array);
+      movingUp(array);
+      setNumberInArray(array);
+      putArrayInPage(array);
+      showScores();
+    }
+  });
+
+  document.body.addEventListener('keydown', (eventFunc) => {
+    if (eventFunc.key === 'ArrowDown') {
+      doublingDown(array);
+      movingDown(array);
+      setNumberInArray(array);
+      putArrayInPage(array);
+      showScores();
+    }
+  });
+
+  document.body.addEventListener('keydown', (eventFunc) => {
+    if (eventFunc.key === 'ArrowLeft') {
+      doublingLeft(array);
+      movingLeft(array);
+      setNumberInArray(array);
+      putArrayInPage(array);
+      showScores();
+    }
+  });
+
+  document.body.addEventListener('keydown', (eventFunc) => {
+    if (eventFunc.key === 'ArrowRight') {
+      doublingRight(array);
+      movingRight(array);
+      setNumberInArray(array);
+      putArrayInPage(array);
+      showScores();
+    }
+  });
+});
 
 function putArrayInPage(arr) {
   for (let i = 0; i < 16; i++) {
-    tdElements[i].removeAttribute('class');
-    tdElements[i].classList.add('field-cell');
-    tdElements[i].textContent = '';
+    const tdElem = document.querySelectorAll('td')[i];
+
+    tdElem.removeAttribute('class');
+    tdElem.classList.add('field-cell');
+    tdElem.textContent = '';
 
     if (arr[i] !== 0) {
-      tdElements[i].textContent = arr[i];
-      tdElements[i].classList.add('field-cell--' + arr[i]);
+      tdElem.textContent = arr[i];
+      tdElem.classList.add('field-cell--' + arr[i]);
     }
 
-    if (tdElements[i].textContent === '32') {
+    if (tdElem.textContent >= Number('2048')) {
       // console.log('WIN !!!');
     }
   }
 }
 
-function setNumberInArray() {
+function setNumberInArray(arr) {
   let twoOrFour = Math.random() * 100;
 
   twoOrFour = twoOrFour <= 10 ? 4 : 2;
@@ -29,32 +79,22 @@ function setNumberInArray() {
   for (let i = 0; i < 10000; i++) {
     const freeCell = Math.floor(Math.random() * 16);
 
-    if (array[freeCell] === 0) {
-      array[freeCell] = twoOrFour;
+    if (arr[freeCell] === 0) {
+      arr[freeCell] = twoOrFour;
 
       return;
     }
   }
-  // eslint-disable-next-line no-console
-  console.log('GAME OVER');
 }
-
-setNumberInArray();
-setNumberInArray();
-putArrayInPage(array);
-
-let score = 0;
 
 function showScores() {
   document.querySelector('.game-score').textContent = score;
 }
 
-//* *****START*******//
-
-function doublingLeft() {
+function doublingLeft(arr) {
   for (let row = 0; row <= 12; row = row + 4) {
     const innerArr
-      = [array[row], array[row + 1], array[row + 2], array[row + 3]];
+      = [arr[row], arr[row + 1], arr[row + 2], arr[row + 3]];
 
     for (let i = 0; i < innerArr.length; i++) {
       if (innerArr[i] === innerArr[i + 1]) {
@@ -82,30 +122,30 @@ function doublingLeft() {
 
     for (let i = 0; i < innerArr.length; i++) {
       innerArr[i] = Math.floor(innerArr[i]);
-      array[row + i] = innerArr[i];
+      arr[row + i] = innerArr[i];
     }
   }
-} // done
+}
 
-function movingLeft() {
+function movingLeft(arr) {
   for (let j = 0; j < 6; j++) {
     for (let i = 15; i >= 1; i--) {
       if (i === 4 || i === 8 || i === 12) {
         continue;
       }
 
-      if (array[i - 1] === 0) {
-        array[i - 1] = array[i];
-        array[i] = 0;
+      if (arr[i - 1] === 0) {
+        arr[i - 1] = arr[i];
+        arr[i] = 0;
       }
     }
   }
 }
 
-function doublingRight() {
+function doublingRight(arr) {
   for (let row = 0; row <= 12; row = row + 4) {
     const innerArr
-      = [array[row], array[row + 1], array[row + 2], array[row + 3]];
+      = [arr[row], arr[row + 1], arr[row + 2], arr[row + 3]];
 
     for (let i = innerArr.length - 1; i >= 0; i--) {
       if (innerArr[i] === innerArr[i - 1]) {
@@ -133,30 +173,30 @@ function doublingRight() {
 
     for (let i = 0; i < innerArr.length; i++) {
       innerArr[i] = Math.floor(innerArr[i]);
-      array[row + i] = innerArr[i];
+      arr[row + i] = innerArr[i];
     }
   }
 }
 
-function movingRight() {
+function movingRight(arr) {
   for (let j = 0; j < 6; j++) {
     for (let i = 14; i >= 0; i--) {
       if (i === 3 || i === 7 || i === 11) {
         continue;
       }
 
-      if (array[i + 1] === 0) {
-        array[i + 1] = array[i];
-        array[i] = 0;
+      if (arr[i + 1] === 0) {
+        arr[i + 1] = arr[i];
+        arr[i] = 0;
       }
     }
   }
 }
 
-function doublingUp() {
+function doublingUp(arr) {
   for (let row = 0; row <= 3; row++) {
     const innerArr
-      = [array[row], array[row + 4], array[row + 8], array[row + 12]];
+      = [arr[row], arr[row + 4], arr[row + 8], arr[row + 12]];
 
     for (let i = 0; i < innerArr.length; i++) {
       if (innerArr[i] === innerArr[i + 1]) {
@@ -184,26 +224,26 @@ function doublingUp() {
 
     for (let i = 0; i < innerArr.length; i++) {
       innerArr[i] = Math.floor(innerArr[i]);
-      array[row + i * 4] = innerArr[i];
+      arr[row + i * 4] = innerArr[i];
     }
   }
 }
 
-function movingUp() {
+function movingUp(arr) {
   for (let j = 0; j < 6; j++) {
     for (let i = 4; i <= 15; i++) {
-      if (array[i - 4] === 0) {
-        array[i - 4] = array[i];
-        array[i] = 0;
+      if (arr[i - 4] === 0) {
+        arr[i - 4] = arr[i];
+        arr[i] = 0;
       }
     }
   }
 }
 
-function doublingDown() {
+function doublingDown(arr) {
   for (let row = 0; row <= 3; row++) {
     const innerArr
-      = [array[row], array[row + 4], array[row + 8], array[row + 12]];
+      = [arr[row], arr[row + 4], arr[row + 8], arr[row + 12]];
 
     for (let i = innerArr.length - 1; i >= 0; i--) {
       if (innerArr[i] === innerArr[i - 1]) {
@@ -231,58 +271,18 @@ function doublingDown() {
 
     for (let i = 0; i < innerArr.length; i++) {
       innerArr[i] = Math.floor(innerArr[i]);
-      array[row + i * 4] = innerArr[i];
+      arr[row + i * 4] = innerArr[i];
     }
   }
 }
 
-function movingDown() {
+function movingDown(arr) {
   for (let j = 0; j < 6; j++) {
     for (let i = 11; i >= 0; i--) {
-      if (array[i + 4] === 0) {
-        array[i + 4] = array[i];
-        array[i] = 0;
+      if (arr[i + 4] === 0) {
+        arr[i + 4] = arr[i];
+        arr[i] = 0;
       }
     }
   }
-}// done
-
-document.body.addEventListener('keydown', (eventFunc) => {
-  if (eventFunc.key === 'ArrowUp') {
-    doublingUp();
-    movingUp();
-    setNumberInArray();
-    putArrayInPage(array);
-    showScores();
-  }
-});
-
-document.body.addEventListener('keydown', (eventFunc) => {
-  if (eventFunc.key === 'ArrowDown') {
-    doublingDown();
-    movingDown();
-    setNumberInArray();
-    putArrayInPage(array);
-    showScores();
-  }
-});
-
-document.body.addEventListener('keydown', (eventFunc) => {
-  if (eventFunc.key === 'ArrowLeft') {
-    doublingLeft();
-    movingLeft();
-    setNumberInArray();
-    putArrayInPage(array);
-    showScores();
-  }
-});
-
-document.body.addEventListener('keydown', (eventFunc) => {
-  if (eventFunc.key === 'ArrowRight') {
-    doublingRight();
-    movingRight();
-    setNumberInArray();
-    putArrayInPage(array);
-    showScores();
-  }
-});
+}
