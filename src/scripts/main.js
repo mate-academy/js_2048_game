@@ -58,8 +58,43 @@ function game() {
     }
   }
 
-  function lossCheck() {
+  function lossCheck(arr) {
+    const zeroCount = arr.includes(0);
+    let mirrors = 0;
 
+    for (let i = 0; i < 4; i++) {
+      if (arr[i] === arr[i + 4]) {
+        mirrors++;
+      }
+
+      if (arr[i + 4] === arr[i + 8]) {
+        mirrors++;
+      }
+
+      if (arr[i + 8] === arr[i + 12]) {
+        mirrors++;
+      }
+    }
+
+    for (let i = 0; i <= 12; i = i + 4) {
+      if (arr[i] === arr[i + 1]) {
+        mirrors++;
+      }
+
+      if (arr[i + 1] === arr[i + 2]) {
+        mirrors++;
+      }
+
+      if (arr[i + 2] === arr[i + 3]) {
+        mirrors++;
+      }
+    }
+
+    if (mirrors === 0 && zeroCount === false) {
+      document.querySelector('.message-lose').classList.remove('hidden');
+    } else {
+      document.querySelector('.message-lose').classList.add('hidden');
+    }
   }
 
   function setNumberInArray(arr) {
@@ -183,7 +218,7 @@ function game() {
     }
   }
 
-  // ***************** event up down left right **************** //
+  // ***************** events: up down left right **************** //
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowUp') {
       movingUp(array);
@@ -193,7 +228,7 @@ function game() {
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
-      lossCheck();
+      lossCheck(array);
     }
   });
 
@@ -206,7 +241,7 @@ function game() {
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
-      lossCheck();
+      lossCheck(array);
     }
   });
 
@@ -219,7 +254,7 @@ function game() {
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
-      lossCheck();
+      lossCheck(array);
     }
   });
 
@@ -232,7 +267,7 @@ function game() {
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
-      lossCheck();
+      lossCheck(array);
     }
   });
 }
