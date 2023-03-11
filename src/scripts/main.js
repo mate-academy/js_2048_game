@@ -62,31 +62,19 @@ function game() {
     const zeroCount = arr.includes(0);
     let mirrors = 0;
 
-    for (let i = 0; i < 4; i++) {
-      if (arr[i] === arr[i + 4]) {
-        mirrors++;
-      }
-
-      if (arr[i + 4] === arr[i + 8]) {
-        mirrors++;
-      }
-
-      if (arr[i + 8] === arr[i + 12]) {
-        mirrors++;
+    for (let i = 0; i <= 3; i++) {
+      for (let j = 0; j <= 8; j = j + 4) {
+        if (arr[i + j] === arr[i + j + 4]) {
+          mirrors++;
+        }
       }
     }
 
     for (let i = 0; i <= 12; i = i + 4) {
-      if (arr[i] === arr[i + 1]) {
-        mirrors++;
-      }
-
-      if (arr[i + 1] === arr[i + 2]) {
-        mirrors++;
-      }
-
-      if (arr[i + 2] === arr[i + 3]) {
-        mirrors++;
+      for (let j = 0; j <= 2; j++) {
+        if (arr[i + j] === arr[i + j + 1]) {
+          mirrors++;
+        }
       }
     }
 
