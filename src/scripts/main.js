@@ -118,42 +118,6 @@ function game() {
     }
   }
 
-  function doublingRight(arr) {
-    for (let row = 0; row <= 12; row = row + 4) {
-      for (let i = 2; i >= 0; i--) {
-        if (arr[i + row] === arr[i + row + 1]) {
-          arr[i + row + 1] = arr[i + row + 1] * 2;
-          score = score + arr[i + row + 1];
-          arr[i + row] = 0;
-        }
-      }
-    }
-  }
-
-  function doublingUp(arr) {
-    for (let row = 0; row <= 3; row++) {
-      for (let i = 0; i <= 12; i = i + 4) {
-        if (arr[row + i] === arr[row + i + 4]) {
-          arr[row + i] = arr[row + i] * 2;
-          score = score + arr[row + i];
-          arr[row + i + 4] = 0;
-        }
-      }
-    }
-  }
-
-  function doublingDown(arr) {
-    for (let row = 0; row <= 3; row++) {
-      for (let i = 12; i >= 0; i = i - 4) {
-        if (arr[row + i] === arr[row + i - 4]) {
-          arr[row + i] = arr[row + i] * 2;
-          score = score + arr[row + i];
-          arr[row + i - 4] = 0;
-        }
-      }
-    }
-  }
-
   function movingLeft(arr) {
     for (let j = 0; j < 6; j++) {
       for (let i = 15; i >= 1; i--) {
@@ -164,6 +128,33 @@ function game() {
         if (arr[i - 1] === 0) {
           arr[i - 1] = arr[i];
           arr[i] = 0;
+        }
+      }
+    }
+  }
+
+  function canMoveLeft(arr) {
+    for (let i = 1; i <= 13; i = i + 4) {
+      for (let j = 0; j <= 2; j++) {
+        const firstNum = arr[i + j];
+        const secondNum = arr[i + j - 1];
+
+        if ((firstNum !== 0) && (firstNum === secondNum || secondNum === 0)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  function doublingRight(arr) {
+    for (let row = 0; row <= 12; row = row + 4) {
+      for (let i = 2; i >= 0; i--) {
+        if (arr[i + row] === arr[i + row + 1]) {
+          arr[i + row + 1] = arr[i + row + 1] * 2;
+          score = score + arr[i + row + 1];
+          arr[i + row] = 0;
         }
       }
     }
@@ -184,22 +175,38 @@ function game() {
     }
   }
 
-  function movingUp(arr) {
-    for (let j = 0; j < 6; j++) {
-      for (let i = 4; i <= 15; i++) {
-        if (arr[i - 4] === 0) {
-          arr[i - 4] = arr[i];
-          arr[i] = 0;
+  function canMoveRight(arr) {
+    for (let i = 2; i <= 14; i = i + 4) {
+      for (let j = 0; j <= 2; j++) {
+        const firstNum = arr[i - j];
+        const secondNum = arr[i - j + 1];
+
+        if ((firstNum !== 0) && (firstNum === secondNum || secondNum === 0)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  function doublingUp(arr) {
+    for (let row = 0; row <= 3; row++) {
+      for (let i = 0; i <= 12; i = i + 4) {
+        if (arr[row + i] === arr[row + i + 4]) {
+          arr[row + i] = arr[row + i] * 2;
+          score = score + arr[row + i];
+          arr[row + i + 4] = 0;
         }
       }
     }
   }
 
-  function movingDown(arr) {
+  function movingUp(arr) {
     for (let j = 0; j < 6; j++) {
-      for (let i = 11; i >= 0; i--) {
-        if (arr[i + 4] === 0) {
-          arr[i + 4] = arr[i];
+      for (let i = 4; i <= 15; i++) {
+        if (arr[i - 4] === 0) {
+          arr[i - 4] = arr[i];
           arr[i] = 0;
         }
       }
@@ -221,41 +228,34 @@ function game() {
     return false;
   }
 
+  function doublingDown(arr) {
+    for (let row = 0; row <= 3; row++) {
+      for (let i = 12; i >= 0; i = i - 4) {
+        if (arr[row + i] === arr[row + i - 4]) {
+          arr[row + i] = arr[row + i] * 2;
+          score = score + arr[row + i];
+          arr[row + i - 4] = 0;
+        }
+      }
+    }
+  }
+
+  function movingDown(arr) {
+    for (let j = 0; j < 6; j++) {
+      for (let i = 11; i >= 0; i--) {
+        if (arr[i + 4] === 0) {
+          arr[i + 4] = arr[i];
+          arr[i] = 0;
+        }
+      }
+    }
+  }
+
   function canMoveDown(arr) {
     for (let i = 8; i <= 11; i++) {
       for (let j = 0; j <= 8; j = j + 4) {
         const firstNum = arr[i - j];
         const secondNum = arr[i - j + 4];
-
-        if ((firstNum !== 0) && (firstNum === secondNum || secondNum === 0)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  function canMoveLeft(arr) {
-    for (let i = 1; i <= 13; i = i + 4) {
-      for (let j = 0; j <= 2; j++) {
-        const firstNum = arr[i + j];
-        const secondNum = arr[i + j - 1];
-
-        if ((firstNum !== 0) && (firstNum === secondNum || secondNum === 0)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  function canMoveRight(arr) {
-    for (let i = 2; i <= 14; i = i + 4) {
-      for (let j = 0; j <= 2; j++) {
-        const firstNum = arr[i - j];
-        const secondNum = arr[i - j + 1];
 
         if ((firstNum !== 0) && (firstNum === secondNum || secondNum === 0)) {
           return true;
