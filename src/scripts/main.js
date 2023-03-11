@@ -218,13 +218,75 @@ function game() {
     }
   }
 
+  function canMoveUp(arr) {
+    for (let i = 4; i <= 7; i++) {
+      for (let j = 0; j <= 8; j = j + 4) {
+        const firstNum = arr[i + j];
+        const secondNum = arr[i + j - 4];
+
+        if ((firstNum !== 0) && (firstNum === secondNum || secondNum === 0)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  function canMoveDown(arr) {
+    for (let i = 8; i <= 11; i++) {
+      for (let j = 0; j <= 8; j = j + 4) {
+        const firstNum = arr[i - j];
+        const secondNum = arr[i - j + 4];
+
+        if ((firstNum !== 0) && (firstNum === secondNum || secondNum === 0)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  function canMoveLeft(arr) {
+    for (let i = 1; i <= 13; i = i + 4) {
+      for (let j = 0; j <= 2; j++) {
+        const firstNum = arr[i + j];
+        const secondNum = arr[i + j - 1];
+
+        if ((firstNum !== 0) && (firstNum === secondNum || secondNum === 0)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  function canMoveRight(arr) {
+    for (let i = 2; i <= 14; i = i + 4) {
+      for (let j = 0; j <= 2; j++) {
+        const firstNum = arr[i - j];
+        const secondNum = arr[i - j + 1];
+
+        if ((firstNum !== 0) && (firstNum === secondNum || secondNum === 0)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   // ***************** events: up down left right **************** //
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowUp') {
-      movingUp(array);
-      doublingUp(array);
-      movingUp(array);
-      setNumberInArray(array);
+      if (canMoveUp(array) === true) {
+        movingUp(array);
+        doublingUp(array);
+        movingUp(array);
+        setNumberInArray(array);
+      }
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
@@ -234,10 +296,12 @@ function game() {
 
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowDown') {
-      movingDown(array);
-      doublingDown(array);
-      movingDown(array);
-      setNumberInArray(array);
+      if (canMoveDown(array) === true) {
+        movingDown(array);
+        doublingDown(array);
+        movingDown(array);
+        setNumberInArray(array);
+      }
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
@@ -247,10 +311,12 @@ function game() {
 
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowLeft') {
-      movingLeft(array);
-      doublingLeft(array);
-      movingLeft(array);
-      setNumberInArray(array);
+      if (canMoveLeft(array) === true) {
+        movingLeft(array);
+        doublingLeft(array);
+        movingLeft(array);
+        setNumberInArray(array);
+      }
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
@@ -260,10 +326,12 @@ function game() {
 
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowRight') {
-      movingRight(array);
-      doublingRight(array);
-      movingRight(array);
-      setNumberInArray(array);
+      if (canMoveRight(array) === true) {
+        movingRight(array);
+        doublingRight(array);
+        movingRight(array);
+        setNumberInArray(array);
+      }
       putArrayInPage(array);
       showScores(score);
       winCheck(array);
