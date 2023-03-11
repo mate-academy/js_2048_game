@@ -106,6 +106,7 @@ function game() {
   }
 
   // ***************** moving and dubling function **************** //
+
   function doublingLeft(arr) {
     for (let row = 0; row <= 12; row = row + 4) {
       for (let i = 0; i <= 2; i++) {
@@ -239,11 +240,13 @@ function game() {
   }
 
   function movingDown(arr) {
-    for (let j = 0; j < 6; j++) {
-      for (let i = 11; i >= 0; i--) {
-        if (arr[i + 4] === 0) {
-          arr[i + 4] = arr[i];
-          arr[i] = 0;
+    for (let k = 0; k < 6; k++) {
+      for (let i = 8; i <= 11; i++) {
+        for (let j = 8; j >= 0; j = j - 4) {
+          if (arr[i - j + 4] === 0) {
+            arr[i - j + 4] = arr[i - j];
+            arr[i - j] = 0;
+          }
         }
       }
     }
@@ -272,6 +275,7 @@ function game() {
   }
 
   // ***************** events: up down left right **************** //
+
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowUp') {
       if (canMoveUp(array) === true) {
