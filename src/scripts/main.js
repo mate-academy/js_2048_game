@@ -278,6 +278,13 @@ function game() {
     return false;
   }
 
+  function completeForMoving() {
+    putArrayInPage(array);
+    showScores(score);
+    winCheck(array);
+    lossCheck(array);
+  }
+
   // ***************** events: up down left right **************** //
   document.body.addEventListener('keydown', (eventFunc) => {
     if (eventFunc.key === 'ArrowUp') {
@@ -287,10 +294,7 @@ function game() {
         movingUp(array);
         setNumberInArray(array);
       }
-      putArrayInPage(array);
-      showScores(score);
-      winCheck(array);
-      lossCheck(array);
+      completeForMoving();
     }
   });
 
@@ -302,10 +306,7 @@ function game() {
         movingDown(array);
         setNumberInArray(array);
       }
-      putArrayInPage(array);
-      showScores(score);
-      winCheck(array);
-      lossCheck(array);
+      completeForMoving();
     }
   });
 
@@ -317,10 +318,7 @@ function game() {
         movingLeft(array);
         setNumberInArray(array);
       }
-      putArrayInPage(array);
-      showScores(score);
-      winCheck(array);
-      lossCheck(array);
+      completeForMoving();
     }
   });
 
@@ -332,10 +330,7 @@ function game() {
         movingRight(array);
         setNumberInArray(array);
       }
-      putArrayInPage(array);
-      showScores(score);
-      winCheck(array);
-      lossCheck(array);
+      completeForMoving();
     }
   });
 }
