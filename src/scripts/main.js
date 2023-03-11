@@ -199,11 +199,13 @@ function game() {
   }
 
   function movingUp(arr) {
-    for (let j = 0; j < 6; j++) {
-      for (let i = 4; i <= 15; i++) {
-        if (arr[i - 4] === 0) {
-          arr[i - 4] = arr[i];
-          arr[i] = 0;
+    for (let k = 0; k < 6; k++) {
+      for (let i = 4; i <= 7; i++) {
+        for (let j = 0; j <= 8; j = j + 4) {
+          if (arr[i + j - 4] === 0) {
+            arr[i + j - 4] = arr[i + j];
+            arr[i + j] = 0;
+          }
         }
       }
     }
