@@ -8,6 +8,12 @@ const columns = 4;
 const button = document.querySelector('.start');
 
 button.addEventListener('click', () => {
+  if (button.classList.contains('restart')) {
+    score = 0;
+    document.querySelector('.score').innerText = 0;
+    document.querySelector('.message-lose').classList.add('hidden');
+  }
+
   document.querySelector('#board').innerHTML = '';
   setGame();
   setTwo();
@@ -60,7 +66,7 @@ function hasEmptyTile() {
 
 function setTwo() {
   if (!hasEmptyTile()) {
-    document.querySelector('.message-lose').classList.remove('hidden');
+    loseCheck();
 
     return;
   }
@@ -98,29 +104,35 @@ function updateTile(tile, num) {
 }
 
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft' && button.classList.contains('restart')) {
-    slideLeft();
-    setTwo();
-  } else if (e.code === 'ArrowRight' && button.classList.contains('restart')) {
-    slideRight();
-    setTwo();
-  } else if (e.code === 'ArrowUp' && button.classList.contains('restart')) {
-    slideUp();
-    setTwo();
-  } else if (e.code === 'ArrowDown' && button.classList.contains('restart')) {
-    slideDown();
-    setTwo();
+  if (button.classList.contains('restart')) {
+    switch (e.code) {
+      case 'ArrowLeft':
+        slideLeft();
+        setTwo();
+        break;
+      case 'ArrowRight':
+        slideRight();
+        setTwo();
+        break;
+      case 'ArrowUp':
+        slideUp();
+        setTwo();
+        break;
+      case 'ArrowDown':
+        slideDown();
+        setTwo();
+    }
   }
-
   document.querySelector('.score').innerText = score;
 });
 
 function filterZero(argRow) {
-  return argRow.filter(num => num !== 0); // create a new array without zeroes
+  return argRow.filter(num => num); // create a new array without zeroes
 }
 
 function slide(argRow) {
   // [0, 2, 2, 2]
+
   let copyRow = filterZero(argRow); // get rid of zeroes -> [2, 2, 2]
 
   // slide
@@ -130,7 +142,7 @@ function slide(argRow) {
       copyRow[i] *= 2;
       copyRow[i + 1] = 0;
       score += copyRow[i];
-    } // [2, 2, 2] -> [4, 0, 2]
+    }
   }
 
   copyRow = filterZero(copyRow); // [4, 2]
@@ -141,6 +153,20 @@ function slide(argRow) {
   } // [4, 2, 0, 0]
 
   return copyRow;
+}
+
+function slideLeftCheck() {
+  const result = [];
+
+  for (let r = 0; r < rows; r++) {
+    const row1 = [...board[r]];
+
+    const row2 = slide(row1);
+
+    result.push(JSON.stringify(row1) === JSON.stringify(row2));
+  }
+
+  return result.includes(false);
 }
 
 function slideLeft() {
@@ -161,6 +187,20 @@ function slideLeft() {
       updateTile(tile, num);
     }
   }
+}
+
+function slideRightCheck() {
+  const result = [];
+
+  for (let r = 0; r < rows; r++) {
+    const row1 = [...board[r]];
+
+    const row2 = slide(row1);
+
+    result.push(JSON.stringify(row1) === JSON.stringify(row2));
+  }
+
+  return result.includes(false);
 }
 
 function slideRight() {
@@ -185,6 +225,20 @@ function slideRight() {
   }
 }
 
+function slideUpCheck() {
+  const result = [];
+
+  for (let c = 0; c < columns; c++) {
+    const row1 = [...[board[0][c], board[1][c], board[2][c], board[3][c]]];
+
+    const row2 = slide(row1);
+
+    result.push(JSON.stringify(row1) === JSON.stringify(row2));
+  }
+
+  return result.includes(false);
+}
+
 function slideUp() {
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
@@ -204,6 +258,20 @@ function slideUp() {
       updateTile(tile, num);
     }
   }
+}
+
+function slideDownCheck() {
+  const result = [];
+
+  for (let c = 0; c < columns; c++) {
+    const row1 = [...[board[0][c], board[1][c], board[2][c], board[3][c]]];
+
+    const row2 = slide(row1);
+
+    result.push(JSON.stringify(row1) === JSON.stringify(row2));
+  }
+
+  return result.includes(false);
 }
 
 function slideDown() {
@@ -226,5 +294,12 @@ function slideDown() {
 
       updateTile(tile, num);
     }
+  }
+}
+
+function loseCheck() {
+  if (!slideLeftCheck() && !slideRightCheck()
+       && !slideUpCheck() && !slideDownCheck()) {
+    document.querySelector('.message-lose').classList.remove('hidden');
   }
 }
