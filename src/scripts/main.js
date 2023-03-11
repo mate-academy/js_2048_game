@@ -119,15 +119,13 @@ function game() {
   }
 
   function movingLeft(arr) {
-    for (let j = 0; j < 6; j++) {
-      for (let i = 15; i >= 1; i--) {
-        if (i === 4 || i === 8 || i === 12) {
-          continue;
-        }
-
-        if (arr[i - 1] === 0) {
-          arr[i - 1] = arr[i];
-          arr[i] = 0;
+    for (let k = 0; k < 6; k++) {
+      for (let i = 1; i <= 13; i = i + 4) {
+        for (let j = 0; j <= 2; j++) {
+          if (arr[i + j - 1] === 0) {
+            arr[i + j - 1] = arr[i + j];
+            arr[i + j] = 0;
+          }
         }
       }
     }
