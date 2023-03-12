@@ -81,12 +81,17 @@ body {
   border-radius: 5px;
 }
 
+.tbody {
+  transition: 0.5s;
+}
+
 .game-header {
   display: flex;
   width: 100%;
   justify-content: space-between;
   margin-bottom: 24px;
-  padding: 10px;
+  padding-bottom: 10px;
+  gap: 10px;
   box-sizing: border-box;
 }
 
@@ -117,6 +122,11 @@ h1 {
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+}
+
+.high-score {
+  min-width: min-content;
+  background-color: bisque;
 }
 
 .controls {
@@ -179,6 +189,12 @@ h1 {
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
+}
+
+.message-lose {
+  background-color: transparent;
+  transform: translateY(-220%);
+  scale: 1.5;
 }
 
 .message-container {
