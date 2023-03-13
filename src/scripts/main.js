@@ -16,11 +16,6 @@ window.addEventListener('load', () => {
 });
 
 function initializeGame() {
-  gameField = Array(FIELD_SIZE).fill(0)
-    .map(row => Array(FIELD_SIZE).fill(0));
-
-  score = 0;
-
   startButton.addEventListener('click', () => {
     startButton.className = 'button restart';
     startButton.textContent = 'Restart';
