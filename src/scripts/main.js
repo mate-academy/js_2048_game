@@ -70,7 +70,7 @@ function addRandomCell() {
   const randomNumber = Math.floor(Math.random() * (emptyCells.length - 1));
   const randomCell = emptyCells[randomNumber];
 
-  if (emptyCells.length < 1) {
+  if (!emptyCells.length && !cheackPossibleMovement()) {
     const loseMessage = document.querySelector('.message-lose');
 
     loseMessage.classList.remove('hidden');
@@ -78,7 +78,28 @@ function addRandomCell() {
     return;
   }
 
-  randomCell.innerText = Math.random() < 0.9 ? 2 : 4;
+  if (randomCell) {
+    randomCell.innerText = Math.random() < 0.9 ? 2 : 4;
+  }
+}
+
+function cheackPossibleMovement() {
+  const board = convertToNumberBoard();
+
+  for (let r = 0; r < rowsLength; r++) {
+    for (let i = 0; i < rowsLength; i++) {
+      const currentCell = board[r][i];
+      const rightCell = board[r] && board[r][i + 1];
+      const downCell = board[r + 1] && board[r + 1][i];
+
+      if (currentCell === rightCell
+        || currentCell === downCell) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 function slideLeft() {
