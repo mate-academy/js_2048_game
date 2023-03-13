@@ -26,6 +26,7 @@ startButton.addEventListener('click', () => {
     };
   });
 
+  score.innerText = 0;
   addRandomCell();
   addRandomCell();
   setClass();
