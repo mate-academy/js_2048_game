@@ -151,6 +151,7 @@ function setRandomNumber() {
 
       tile.innerText = `${tileValue}`;
       tile.classList.add(`field-cell--${tileValue}`);
+      tile.classList.add('scale');
       created = true;
     }
   }
