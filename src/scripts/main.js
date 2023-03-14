@@ -15,50 +15,60 @@ window.addEventListener('load', () => {
   initializeGame();
 });
 
-function initializeGame() {
-  startButton.addEventListener('click', () => {
-    startButton.className = 'button restart';
-    startButton.textContent = 'Restart';
-    startMessage.classList.add('hidden');
-    winMessage.classList.add('hidden');
-    loseMessage.classList.add('hidden');
+const resetGame = () => {
+  startButton.className = 'button restart';
+  startButton.textContent = 'Restart';
+  startMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
 
-    gameField = Array(FIELD_SIZE).fill(0)
-      .map(row => Array(FIELD_SIZE).fill(0));
-    score = 0;
+  gameField = Array(FIELD_SIZE).fill(0)
+    .map(row => Array(FIELD_SIZE).fill(0));
+  score = 0;
 
-    for (let i = 0; i < FIELD_SIZE; i++) {
-      for (let j = 0; j < FIELD_SIZE; j++) {
-        const currentCell = fieldCells[i * FIELD_SIZE + j];
+  for (let i = 0; i < FIELD_SIZE; i++) {
+    for (let j = 0; j < FIELD_SIZE; j++) {
+      const currentCell = fieldCells[i * FIELD_SIZE + j];
 
-        currentCell.id = (`${i}-${j}`);
+      currentCell.id = (`${i}-${j}`);
 
-        const value = gameField[i][j];
+      const value = gameField[i][j];
 
-        updateCell(currentCell, value);
-      }
+      updateCell(currentCell, value);
     }
+  }
 
-    document.addEventListener('keyup', manageGame);
+  document.addEventListener('keyup', manageGame);
 
-    addRandomCell();
-    addRandomCell();
-  });
+  addRandomCell();
+  addRandomCell();
+};
+
+function initializeGame() {
+  startButton.addEventListener('click', resetGame);
 }
 
 function manageGame(e) {
-  if (e.code === 'ArrowLeft') {
-    slideHorizontal('left');
-    addRandomCell();
-  } else if (e.code === 'ArrowRight') {
-    slideHorizontal('right');
-    addRandomCell();
-  } else if (e.code === 'ArrowUp') {
-    slideVertical('up');
-    addRandomCell();
-  } else if (e.code === 'ArrowDown') {
-    slideVertical('down');
-    addRandomCell();
+  switch (e.code) {
+    case 'ArrowLeft':
+      slideHorizontal('left');
+      addRandomCell();
+      break;
+
+    case 'ArrowRight':
+      slideHorizontal('right');
+      addRandomCell();
+      break;
+
+    case 'ArrowUp':
+      slideVertical('up');
+      addRandomCell();
+      break;
+
+    case 'ArrowDown':
+      slideVertical('down');
+      addRandomCell();
+      break;
   }
 
   gameScore.textContent = score;
@@ -79,13 +89,13 @@ function hasWon() {
 }
 
 function hasLost() {
-  if (
-    !canMoveHorizontally('left')
+  const hasNoMoves = !canMoveHorizontally('left')
     && !canMoveHorizontally('right')
     && !canMoveVertically('up')
-    && !canMoveVertically('down')) {
-    loseMessage.classList.remove('hidden');
+    && !canMoveVertically('down');
 
+  if (hasNoMoves) {
+    loseMessage.classList.remove('hidden');
     document.removeEventListener('keyup', manageGame);
   }
 }
@@ -102,15 +112,7 @@ function updateCell(cell, value) {
 }
 
 function hasEmptyCell() {
-  for (let i = 0; i < FIELD_SIZE; i++) {
-    for (let j = 0; j < FIELD_SIZE; j++) {
-      if (gameField[i][j] === 0) {
-        return true;
-      }
-    }
-  }
-
-  return false;
+  return gameField.some(row => row.includes(0));
 }
 
 function addRandomCell() {
@@ -161,10 +163,14 @@ function slide(row) {
 
 function slideHorizontal(direction) {
   for (let i = 0; i < FIELD_SIZE; i++) {
-    if (direction === 'right') {
-      gameField[i] = slide(gameField[i].reverse()).reverse();
-    } else if (direction === 'left') {
-      gameField[i] = slide(gameField[i]);
+    switch (direction) {
+      case 'right':
+        gameField[i] = slide(gameField[i].reverse()).reverse();
+        break;
+
+      case 'left':
+        gameField[i] = slide(gameField[i]);
+        break;
     }
 
     for (let j = 0; j < FIELD_SIZE; j++) {
@@ -185,10 +191,14 @@ function slideVertical(direction) {
       gameField[3][j],
     ];
 
-    if (direction === 'down') {
-      row = slide(row.reverse()).reverse();
-    } else if (direction === 'up') {
-      row = slide(row);
+    switch (direction) {
+      case 'down':
+        row = slide(row.reverse()).reverse();
+        break;
+
+      case 'up':
+        row = slide(row);
+        break;
     }
 
     for (let i = 0; i < FIELD_SIZE; i++) {
