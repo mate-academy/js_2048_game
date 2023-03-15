@@ -9,8 +9,8 @@ const gameScore = document.querySelector('.game-score');
 const cells = document.querySelectorAll('.field-cell');
 const restartButton = document.createElement('button');
 
-restartButton.textContent = "Restart";
-restartButton.setAttribute("class", "button restart hidden");
+restartButton.textContent = 'Restart';
+restartButton.setAttribute('class', 'button restart hidden');
 
 controls.append(restartButton);
 
@@ -18,7 +18,7 @@ let board = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
-  [0, 0, 0, 0]
+  [0, 0, 0, 0],
 ];
 let isStart = false;
 let score = 0;
@@ -31,7 +31,7 @@ startButton.addEventListener('click', () => {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ];
   score = 0;
   gameScore.textContent = score;
@@ -52,7 +52,7 @@ restartButton.addEventListener('click', () => {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ];
   score = 0;
   gameScore.textContent = score;
@@ -72,22 +72,22 @@ document.addEventListener('keydown', move);
 function move(e) {
   if (isStart) {
     switch (e.key) {
-      case "ArrowLeft":
+      case 'ArrowLeft':
         e.preventDefault();
         moveLeft();
         break;
 
-      case "ArrowRight":
+      case 'ArrowRight':
         e.preventDefault();
         moveRight();
         break;
 
-      case "ArrowUp":
+      case 'ArrowUp':
         e.preventDefault();
         moveUp();
         break;
 
-      case "ArrowDown":
+      case 'ArrowDown':
         e.preventDefault();
         moveDown();
         break;
@@ -114,7 +114,9 @@ function addTile() {
   for (let r = 0; r < ROW_SIZE; r++) {
     for (let c = 0; c < COL_SIZE; c++) {
       if (board[r][c] === 0) {
-        emptyTiles.push({row: r, col: c});
+        emptyTiles.push({
+          row: r, col: c,
+        });
       }
     }
   }
@@ -133,7 +135,7 @@ function updateCells() {
     const oldValue = cell.textContent;
 
     if (value === 0) {
-      cell.textContent = "";
+      cell.textContent = '';
       cell.classList.remove(`field-cell--${oldValue}`);
     } else {
       cell.textContent = value;
@@ -144,11 +146,11 @@ function updateCells() {
 };
 
 function moveLeft() {
-  let checkBoard = [...board.flat()];
+  const checkBoard = [...board.flat()];
 
   for (let r = 0; r < ROW_SIZE; r++) {
-    let row = board[r];
-    let newRow = [];
+    const row = board[r];
+    const newRow = [];
 
     for (let c = 0; c < COL_SIZE; c++) {
       if (row[c] !== 0) {
@@ -189,11 +191,11 @@ function mergeLeft() {
 }
 
 function moveRight() {
-  let checkBoard = [...board.flat()];
+  const checkBoard = [...board.flat()];
 
   for (let r = 0; r < ROW_SIZE; r++) {
-    let row = board[r];
-    let newRow = [];
+    const row = board[r];
+    const newRow = [];
 
     for (let c = COL_SIZE - 1; c >= 0; c--) {
       if (row[c] !== 0) {
@@ -234,11 +236,12 @@ function mergeRight() {
 }
 
 function moveUp() {
-  let checkBoard = [...board.flat()];
+  const checkBoard = [...board.flat()];
 
   for (let c = 0; c < COL_SIZE; c++) {
     for (let r = 0; r < ROW_SIZE; r++) {
       let i = r;
+
       while (i > 0 && board[i - 1][c] === 0) {
         board[i - 1][c] = board[i][c];
         board[i][c] = 0;
@@ -273,11 +276,12 @@ function mergeUp() {
 }
 
 function moveDown() {
-  let checkBoard = [...board.flat()];
+  const checkBoard = [...board.flat()];
 
   for (let c = 0; c < COL_SIZE; c++) {
     for (let r = ROW_SIZE - 2; r >= 0; r--) {
       let i = r;
+
       while (i < ROW_SIZE - 1 && board[i + 1][c] === 0) {
         board[i + 1][c] = board[i][c];
         board[i][c] = 0;
@@ -285,7 +289,7 @@ function moveDown() {
       }
     }
   }
-  
+
   if (!canAddTile(checkBoard) || mergeDown()) {
     addTile();
   }
@@ -312,20 +316,19 @@ function mergeDown() {
 }
 
 function checkWin() {
-  let isWin = board.some(row => row.includes(2048));
+  const isWin = board.some(row => row.includes(2048));
 
   return isWin;
 };
 
-
 function checkLose() {
-  let isLose = board.every(row => row.every(cell => cell !== 0));
+  const isLose = board.every(row => row.every(cell => cell !== 0));
 
   return isLose;
 };
 
 function canAddTile(arr) {
-  let flatBoard = board.flat();
+  const flatBoard = board.flat();
 
   return flatBoard.every((element, index) => element === arr[index]);
 }
