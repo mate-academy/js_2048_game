@@ -268,16 +268,16 @@ function includesZero() {
 }
 
 function isGameOver() {
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4 - 1; j++) {
+  for (let i = 0; i < fieldLength; i++) {
+    for (let j = 0; j < fieldLength - 1; j++) {
       if (field[i][j] === field[i][j + 1]) {
         return false;
       }
     }
   }
 
-  for (let i = 0; i < 4 - 1; i++) {
-    for (let j = 0; j < 4; j++) {
+  for (let i = 0; i < fieldLength - 1; i++) {
+    for (let j = 0; j < fieldLength; j++) {
       if (field[i][j] === field[i + 1][j]) {
         return false;
       }
