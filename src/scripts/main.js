@@ -6,12 +6,17 @@ const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const gameScore = document.querySelector('.game-score');
 const fieldLength = 4;
-
+const up = 'ArrowUp';
+const down = 'ArrowDown';
+const left = 'ArrowLeft';
+const right = 'ArrowRight';
+let winning;
 let score;
 let field;
 
 buttonAction.addEventListener('click', () => {
   score = 0;
+  winning = false;
 
   field = [
     [0, 0, 0, 0],
@@ -23,7 +28,7 @@ buttonAction.addEventListener('click', () => {
   addNewNumber();
   addNewNumber();
 
-  AllMessagesHidden();
+  allMessagesHidden();
 
   buttonAction.innerHTML = 'Reset';
   buttonAction.classList.remove('start');
@@ -69,7 +74,7 @@ function render() {
 
   gameScore.innerHTML = score;
 
-  if (score === 2048) {
+  if (winning) {
     messageWin.classList.remove('hidden');
   }
 
@@ -94,19 +99,19 @@ function render() {
 
 document.addEventListener('keyup', (e) => {
   switch (e.code) {
-    case 'ArrowUp':
+    case up:
       moveUp();
       break;
 
-    case 'ArrowDown':
+    case down:
       moveDown();
       break;
 
-    case 'ArrowLeft':
+    case left:
       moveLeft();
       break;
 
-    case 'ArrowRight':
+    case right:
       moveRight();
       break;
 
@@ -228,6 +233,7 @@ function summationNumbers(arr, reverse) {
     for (let i = fieldLength - 1; i >= 0; i--) {
       if (arr[i] === arr[i - 1] && arr[i] !== 0) {
         arr[i] += arr[i - 1];
+        isWinning(arr[i]);
         arr[i - 1] = 0;
         score += arr[i];
       }
@@ -236,6 +242,7 @@ function summationNumbers(arr, reverse) {
     for (let i = 0; i < fieldLength - 1; i++) {
       if (arr[i] === arr[i + 1] && arr[i] !== 0) {
         arr[i] += arr[i + 1];
+        isWinning(arr[i]);
         arr[i + 1] = 0;
         score += arr[i];
       }
@@ -243,7 +250,7 @@ function summationNumbers(arr, reverse) {
   }
 }
 
-function AllMessagesHidden() {
+function allMessagesHidden() {
   messages.forEach(message => message.classList.add('hidden'));
 }
 
@@ -279,3 +286,9 @@ function isGameOver() {
 
   return true;
 }
+
+function isWinning(number) {
+  if (number === 2048) {
+    winning = true;
+  }
+};
