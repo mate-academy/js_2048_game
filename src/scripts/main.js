@@ -28,7 +28,7 @@ buttonAction.addEventListener('click', () => {
   addNewNumber();
   addNewNumber();
 
-  allMessagesHidden();
+  hideAllMessages();
 
   buttonAction.innerHTML = 'Reset';
   buttonAction.classList.remove('start');
@@ -40,24 +40,23 @@ buttonAction.addEventListener('click', () => {
 function addNewNumber() {
   if (includesZero()) {
     let row = field[randomNumber(4)];
-    const zeroIndex = row.indexOf(0);
 
-    if (zeroIndex !== -1) {
-      const allIndexZero = row.reduce((acc, el, i) => {
-        if (el === 0) {
-          acc.push(i);
-        }
-
-        return acc;
-      }, []);
-
-      const randomZero = allIndexZero[randomNumber(allIndexZero.length)];
-      const rowIndex = field.indexOf(row);
-
-      field[rowIndex][randomZero] = randomNumber();
-    } else {
+    while (row.indexOf(0) === -1) {
       row = field[randomNumber(4)];
     }
+
+    const allIndexZero = row.reduce((acc, el, i) => {
+      if (el === 0) {
+        acc.push(i);
+      }
+
+      return acc;
+    }, []);
+
+    const randomZero = allIndexZero[randomNumber(allIndexZero.length)];
+    const rowIndex = field.indexOf(row);
+
+    field[rowIndex][randomZero] = randomNumber();
   }
 }
 
@@ -88,7 +87,10 @@ function render() {
 
       if (field[i][j] !== 0) {
         cell[index].innerHTML = field[i][j];
-        cell[index].className = `field-cell field-cell--${field[i][j]}`;
+
+        cell[index].className = `
+          field-cell field-cell--show field-cell--${field[i][j]}
+        `;
       } else {
         cell[index].innerHTML = '';
         cell[index].className = 'field-cell';
@@ -118,6 +120,10 @@ document.addEventListener('keyup', (e) => {
     default:
       break;
   }
+
+  render();
+  addNewNumber();
+  render();
 });
 
 function moveLeft() {
@@ -134,9 +140,6 @@ function moveLeft() {
 
     field[i] = row;
   }
-
-  addNewNumber();
-  render();
 };
 
 function moveRight() {
@@ -153,9 +156,6 @@ function moveRight() {
 
     field[i] = row;
   }
-
-  addNewNumber();
-  render();
 };
 
 function moveUp() {
@@ -180,9 +180,6 @@ function moveUp() {
       field[l][i] = column[l];
     }
   }
-
-  addNewNumber();
-  render();
 };
 
 function moveDown() {
@@ -207,9 +204,6 @@ function moveDown() {
       field[l][i] = column[l];
     }
   }
-
-  addNewNumber();
-  render();
 };
 
 function filterZero(arr) {
@@ -250,7 +244,7 @@ function summationNumbers(arr, reverse) {
   }
 }
 
-function allMessagesHidden() {
+function hideAllMessages() {
   messages.forEach(message => message.classList.add('hidden'));
 }
 
