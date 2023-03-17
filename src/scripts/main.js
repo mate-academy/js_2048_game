@@ -86,11 +86,13 @@ function moveRight(check) {
   for (let i = 0; i < board.length; i++) {
     board[i] = shiftRowLeft(board[i]).reverse();
   }
+}
 
+function checkAndAct(check) {
   if (!check) {
     newCell();
     display();
-    ifWin();
+    checkWin();
   }
 }
 
@@ -114,9 +116,7 @@ function moveLeft(check) {
   }
 
   if (!check) {
-    newCell();
-    display();
-    ifWin();
+    checkAndAct(check);
   }
 }
 
@@ -146,9 +146,7 @@ function moveUp(check) {
   }
 
   if (!check) {
-    newCell();
-    display();
-    ifWin();
+    checkAndAct(check);
   }
 }
 
@@ -178,9 +176,7 @@ function moveDown(check) {
   }
 
   if (!check) {
-    newCell();
-    display();
-    ifWin();
+    checkAndAct(check);
   }
 }
 
@@ -193,7 +189,7 @@ function changeAdditionalClassCell(element, newAddClass) {
   }
 }
 
-function ifWin() {
+function checkWin() {
   for (const row of board) {
     for (const cell of row) {
       if (cell === 2048) {
@@ -288,6 +284,9 @@ function startGame() {
   ];
   probabilityCount = 0;
   score = 0;
+  messageStart.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
 
   newCell();
   newCell();
@@ -302,9 +301,6 @@ start.addEventListener('click', ourEvent => {
     start.textContent = 'Restart';
     start.classList.remove('start');
     start.classList.add('restart');
-    messageStart.classList.add('hidden');
-    messageWin.classList.add('hidden');
-    messageLose.classList.add('hidden');
   }
 });
 
