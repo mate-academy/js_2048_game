@@ -6,13 +6,17 @@ const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const gameScore = document.querySelector('.game-score');
 const fieldLength = 4;
-const up = 'ArrowUp';
-const down = 'ArrowDown';
-const left = 'ArrowLeft';
-const right = 'ArrowRight';
+
 let winning;
 let score;
 let field;
+
+const move = {
+  up: 'ArrowUp',
+  down: 'ArrowDown',
+  left: 'ArrowLeft',
+  right: 'ArrowRight',
+};
 
 buttonAction.addEventListener('click', () => {
   score = 0;
@@ -101,19 +105,19 @@ function render() {
 
 document.addEventListener('keyup', (e) => {
   switch (e.code) {
-    case up:
+    case move.up:
       moveUp();
       break;
 
-    case down:
+    case move.down:
       moveDown();
       break;
 
-    case left:
+    case move.left:
       moveLeft();
       break;
 
-    case right:
+    case move.right:
       moveRight();
       break;
 
