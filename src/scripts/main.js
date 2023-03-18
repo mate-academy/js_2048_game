@@ -1,112 +1,132 @@
-"use strict";
+'use strict';
 
-const startButton = document.querySelector(".button.start");
-const allCells = document.querySelectorAll(".field-cell");
-let emptyCells = [...allCells];
-const messageStart = document.querySelector(".message.message-start");
+// * initializing vars
 
-const getEmptyCells = () =>
-  emptyCells.filter((cell) => cell.classList.length === 1);
+let board;
+const cells = document.querySelectorAll('.field-cell');
+const startButton = document.querySelector('.button.start');
+const gameField = document.querySelector('tbody');
+const messageStart = document.querySelector('.message.message-start');
+const messageWin = document.querySelector('.message.message-win');
+const messageLose = document.querySelector('.message.message-lose');
+const initialClassName = 'field-cell';
 
-startGame();
+// * starting game
+
+startButton.addEventListener('click', startGame);
+
+// * main semantic of logic
 
 function startGame() {
-  onStart();
+  if (startButton.innerText === 'Start') {
+    clearBoard();
+    startButton.innerText = 'Restart';
+    startButton.classList.add('restart');
+    hideMessage(messageStart);
+    setRandomCell();
+    setRandomCell();
+  } else {
+    restartGame();
+  }
+
+  updateCell();
+
+  checkForWin();
+  checkForLose(); // should be modified
 }
 
-function onStart() {
-  startButton.addEventListener(
-    "click",
-    () => {
-      messageStart.classList.add("hidden");
-      setRandomCell();
-      setRandomCell();
-      onArrowClick();
-    },
-    { once: true }
-  );
+// * restart button modification
+function restartGame() {
+  const confirmed = window.confirm('Are you sure you want to restart game?');
+
+  if (!confirmed) {
+    return;
+  }
+
+  hideMessage(messageWin);
+  hideMessage(messageLose);
+  showMessage(messageStart);
+  clearBoard();
+
+  startButton.innerText = 'Start';
+  startButton.classList.remove('restart');
+}
+
+// * checking if we have a winner
+function checkForWin() {
+  const isWin = [...cells].some((cell) => cell.innerText === '2048');
+
+  if (isWin) {
+    showMessage(messageWin);
+  }
+}
+
+// * checking if we have a loser
+function checkForLose() {
+  const isLose = [...cells].every((cell) => cell.innerText !== '');
+
+  if (isLose) {
+    showMessage(messageLose);
+  }
+}
+
+// * hiding message func
+function hideMessage(message) {
+  if (!message.classList.contains('hidden')) {
+    message.classList.add('hidden');
+  }
+}
+
+// * showing message func
+function showMessage(message) {
+  return message.classList.remove('hidden');
+}
+
+function clearBoard() {
+  board = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+}
+
+// * update Tile value and class
+
+function updateCell() {
+  board.forEach((boardRow, boardRowIndex) => {
+    boardRow.forEach((boardCellValue, boardCellIndex) => {
+      const cell = gameField.rows[boardRowIndex].cells[boardCellIndex];
+
+      cell.innerText = '';
+      cell.className = initialClassName;
+
+      if (boardCellValue > 0 && boardCellValue <= 2048) {
+        cell.innerText = boardCellValue;
+        cell.classList.add(`${initialClassName}--${boardCellValue}`);
+      }
+    });
+  });
 }
 
 function setRandomCell() {
-  const randomPosition = Math.floor(Math.random() * emptyCells.length);
-  const randomCell = emptyCells[randomPosition];
+  const numberOfRows = 4;
+  const numberOfCells = 4;
 
-  randomCell.innerText = getRandomNumber();
-  randomCell.classList.add(`field-cell--${randomCell.innerText}`);
+  const getRandomRow = Math.floor(Math.random() * numberOfRows);
+  const getRandomCell = Math.floor(Math.random() * numberOfCells);
 
-  emptyCells = getEmptyCells();
+  if (board[getRandomRow][getRandomCell] !== 0) {
+    setRandomCell();
+
+    return;
+  }
+
+  board[getRandomRow][getRandomCell] = getTwoOrFour();
 }
 
-function getRandomNumber() {
+function getTwoOrFour() {
   const randomNum = Math.random();
 
-  return randomNum < 0.1 ? 4 : 2;
-}
-
-function move(direction) {
-  allCells.forEach((cell) => {
-    if (cell.classList.length > 1) {
-      const previousCellClassName = cell.className;
-      const previousCellInnerText = cell.innerText;
-
-      switch (direction) {
-        case "top":
-          break;
-
-        case "down":
-          break;
-
-        case "right":
-          let currentCell = cell;
-          let nextCell = currentCell.nextElementSibling;
-
-          if (nextCell && nextCell.classList.length === 1) {
-            nextCell.className = previousCellClassName;
-            nextCell.innerText = previousCellInnerText;
-
-            currentCell.innerText = "";
-            currentCell.className = "field-cell";
-
-            currentCell = nextCell;
-            nextCell = currentCell.nextElementSibling;
-
-            console.log(emptyCells);
-          }
-
-          break;
-
-        case "left":
-          break;
-
-        default:
-          break;
-      }
-    }
-  });
-}
-
-function onArrowClick() {
-  // we are going to set here some keyboards events and make the logic for them
-  document.body.addEventListener("keydown", (e) => {
-    switch (e.code) {
-      case "ArrowUp":
-        //* we should move all elements to the top if there is a space
-        allCells.forEach((cell) => {});
-        break;
-
-      case "ArrowDown":
-        //* we should move all elements to the down if there is a space
-        allCells.forEach((cell) => {});
-        break;
-
-      case "ArrowRight":
-        //* we should move all elements to the right if there is a space
-        move("right");
-        setRandomCell();
-        break;
-
-      default:
-        break;
-    }
-  });
+  return randomNum > 0.1 ? 2 : 4;
 }
