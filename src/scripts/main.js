@@ -1,31 +1,31 @@
-"use strict";
+'use strict';
 
 // * initializing vars
 
 let board;
-const cells = document.querySelectorAll(".field-cell");
-const startButton = document.querySelector(".button.start");
-const gameField = document.querySelector("tbody");
-const messageStart = document.querySelector(".message.message-start");
-const messageWin = document.querySelector(".message.message-win");
-const messageLose = document.querySelector(".message.message-lose");
-const initialClassName = "field-cell";
+const cells = document.querySelectorAll('.field-cell');
+const startButton = document.querySelector('.button.start');
+const gameField = document.querySelector('tbody');
+const messageStart = document.querySelector('.message.message-start');
+const messageWin = document.querySelector('.message.message-win');
+const messageLose = document.querySelector('.message.message-lose');
+const initialClassName = 'field-cell';
 
 go();
 
 // * starting game
 function go() {
-  startButton.removeEventListener("click", startGame);
-  startButton.addEventListener("click", startGame);
+  startButton.removeEventListener('click', startGame);
+  startButton.addEventListener('click', startGame);
 }
 
 // * main semantic of logic
 
 function startGame() {
-  if (startButton.innerText === "Start") {
+  if (startButton.innerText === 'Start') {
     clearBoard();
-    startButton.innerText = "Restart";
-    startButton.classList.add("restart");
+    startButton.innerText = 'Restart';
+    startButton.classList.add('restart');
     hideMessage(messageStart);
     setRandomTile();
     setRandomTile();
@@ -33,7 +33,7 @@ function startGame() {
     restartGame();
   }
 
-  window.addEventListener("keyup", moveListener);
+  window.addEventListener('keyup', moveListener);
   checkForWin();
   checkForLose(); // should be modified
   updateCells();
@@ -41,23 +41,20 @@ function startGame() {
 
 function moveListener(e) {
   switch (e.key) {
-    case "ArrowRight":
-      move("right");
+    case 'ArrowRight':
+      move('right');
       break;
 
-    case "ArrowLeft":
-      move("left");
+    case 'ArrowLeft':
+      move('left');
       break;
 
-    case "ArrowUp":
-      move("up");
+    case 'ArrowUp':
+      move('up');
       break;
 
-    case "ArrowDown":
-      move("down");
-      break;
-
-    default:
+    case 'ArrowDown':
+      move('down');
       break;
   }
 
@@ -68,17 +65,18 @@ function move(direction) {
   let noFreeSpace = false;
 
   switch (direction) {
-    case "right":
+    case 'right':
       board.forEach((boardRow) => {
-        let emptyCells = 0;
+        let numberOfEmptyCells = 0;
+
         for (let i = boardRow.length; i >= 0; i--) {
           if (boardRow[i] === 0) {
-            emptyCells++;
+            numberOfEmptyCells++;
             continue;
           }
 
-          if (emptyCells > 0) {
-            boardRow[i + emptyCells] = boardRow[i];
+          if (numberOfEmptyCells > 0) {
+            boardRow[i + numberOfEmptyCells] = boardRow[i];
             boardRow[i] = 0;
             noFreeSpace = true;
           }
@@ -87,17 +85,18 @@ function move(direction) {
 
       break;
 
-    case "left":
+    case 'left':
       board.forEach((boardRow) => {
-        let emptyCells = 0;
+        let numberOfEmptyCells = 0;
+
         for (let i = 0; i < boardRow.length; i++) {
           if (boardRow[i] === 0) {
-            emptyCells++;
+            numberOfEmptyCells++;
             continue;
           }
 
-          if (emptyCells > 0) {
-            boardRow[i - emptyCells] = boardRow[i];
+          if (numberOfEmptyCells > 0) {
+            boardRow[i - numberOfEmptyCells] = boardRow[i];
             boardRow[i] = 0;
             noFreeSpace = true;
           }
@@ -106,24 +105,65 @@ function move(direction) {
 
       break;
 
-    case "top":
-      // do something
+    case 'up':
+      board.forEach((boardRow, boardRowIndex) => {
+        for (let i = 0; i < boardRow.length; i++) {
+          if (boardRow[i] > 0) {
+            let targetRow = boardRowIndex;
+
+            for (let j = boardRowIndex - 1; j >= 0; j--) {
+              if (board[j][i] !== 0) {
+                break;
+              }
+
+              targetRow = j;
+            }
+
+            if (targetRow !== boardRowIndex) {
+              board[targetRow][i] = boardRow[i];
+              boardRow[i] = 0;
+              noFreeSpace = true;
+            }
+          }
+        }
+      });
+
       break;
 
-    case "down":
-      // do something
-      break;
+    case 'down':
+      board.forEach((boardRow, boardRowIndex) => {
+        for (let i = 0; i < boardRow.length; i++) {
+          if (boardRow[i] > 0) {
+            let targetRow = boardRowIndex;
 
-    default:
+            for (let j = boardRowIndex + 1; j < board.length; j++) {
+              if (board[j][i] !== 0) {
+                continue;
+              }
+
+              targetRow = j;
+            }
+
+            if (targetRow !== boardRowIndex) {
+              board[targetRow][i] = boardRow[i];
+              boardRow[i] = 0;
+              noFreeSpace = true;
+            }
+          }
+        }
+      });
+
       break;
   }
 
-  if (noFreeSpace) setRandomTile();
+  if (noFreeSpace) {
+    setRandomTile();
+  }
 }
 
 // * restart button modification
 function restartGame() {
-  const confirmed = window.confirm("Are you sure you want to restart game?");
+  const confirmed = window.confirm('Are you sure you want to restart game?');
 
   if (!confirmed) {
     return;
@@ -134,15 +174,15 @@ function restartGame() {
   showMessage(messageStart);
   clearBoard();
 
-  startButton.innerText = "Start";
-  startButton.classList.remove("restart");
+  startButton.innerText = 'Start';
+  startButton.classList.remove('restart');
 
   go();
 }
 
 // * checking if we have a winner
 function checkForWin() {
-  const isWin = [...cells].some((cell) => cell.innerText === "2048");
+  const isWin = [...cells].some((cell) => cell.innerText === '2048');
 
   if (isWin) {
     showMessage(messageWin);
@@ -151,7 +191,7 @@ function checkForWin() {
 
 // * checking if we have a loser
 function checkForLose() {
-  const isLose = [...cells].every((cell) => cell.innerText !== "");
+  const isLose = [...cells].every((cell) => cell.innerText !== '');
 
   if (isLose) {
     showMessage(messageLose);
@@ -160,14 +200,14 @@ function checkForLose() {
 
 // * hiding message func
 function hideMessage(message) {
-  if (!message.classList.contains("hidden")) {
-    message.classList.add("hidden");
+  if (!message.classList.contains('hidden')) {
+    message.classList.add('hidden');
   }
 }
 
 // * showing message func
 function showMessage(message) {
-  return message.classList.remove("hidden");
+  return message.classList.remove('hidden');
 }
 
 function clearBoard() {
@@ -186,7 +226,7 @@ function updateCells() {
     boardRow.forEach((boardCellValue, boardCellIndex) => {
       const cell = gameField.rows[boardRowIndex].cells[boardCellIndex];
 
-      cell.innerText = "";
+      cell.innerText = '';
       cell.className = initialClassName;
 
       if (boardCellValue > 0 && boardCellValue <= 2048) {
