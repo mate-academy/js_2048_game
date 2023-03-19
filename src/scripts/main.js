@@ -104,39 +104,39 @@ function updateTile(tile, num) {
   }
 }
 
-const handler = (e) => {
-  switch (e.code) {
+const handler = (event) => {
+  switch (event.code) {
     case 'ArrowLeft': {
       slideLeftRight(true);
-      setTimeout(setRandom, 500);
+      setRandom();
 
       break;
     }
 
     case 'ArrowRight': {
       slideLeftRight(false);
-      setTimeout(setRandom, 500);
+      setRandom();
 
       break;
     }
 
     case 'ArrowUp': {
       slideUpDown(true);
-      setTimeout(setRandom, 500);
+      setRandom();
 
       break;
     }
 
     case 'ArrowDown': {
       slideUpDown(false);
-      setTimeout(setRandom, 500);
+      setRandom();
 
       break;
     }
   }
 
-  loseGame();
-  winGame();
+  checkIsGameLoss();
+  checkIsGameWon();
 };
 
 function tileWithoutZero(row) {
@@ -214,24 +214,36 @@ function slideUpDown(up) {
   }
 };
 
-function loseGame() {
-  if (hasEmptyTile()) {
-    return;
-  }
-
+function checkIsGameLoss() {
   for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns - 1; c++) {
-      if (board[c][r] === board[c + 1][r]
-        || board[r][c] === board[r][c + 1]
-      ) {
-        messageLose.classList.remove('hidden');
-        document.removeEventListener('keyup', handler);
+    for (let c = 0; c < columns; c++) {
+      if (board[r][c] === 0) {
+        return;
+      };
+
+      if (r !== 3 && board[r][c] === board[r + 1][c]) {
+        return;
+      };
+
+      if (c !== 3 && board[r][c] === board[r][c + 1]) {
+        return;
+      };
+
+      if (c === 3 && r === 3 && board[r][c] === board[r - 1][c]) {
+        return;
+      }
+
+      if (c === 3 && r === 3 && board[r][c] === board[r][c - 1]) {
+        return;
       }
     }
   }
+
+  messageLose.classList.remove('hidden');
+  document.removeEventListener('keyup', handler);
 }
 
-function winGame() {
+function checkIsGameWon() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       if (board[r][c] === 2048) {
