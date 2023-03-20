@@ -24,7 +24,7 @@ function getRandomInt(max) {
 
 function newCell() {
   if (!freeCell()) {
-    if (ifLose()) {
+    if (checkIfLose()) {
       messageLose.classList.remove('hidden');
     }
 
@@ -115,9 +115,7 @@ function moveLeft(check) {
     board[i] = shiftRowLeft(board[i]);
   }
 
-  if (!check) {
-    checkAndAct(check);
-  }
+  checkAndAct(check);
 }
 
 function moveUp(check) {
@@ -145,9 +143,7 @@ function moveUp(check) {
     }
   }
 
-  if (!check) {
-    checkAndAct(check);
-  }
+  checkAndAct(check);
 }
 
 function moveDown(check) {
@@ -175,9 +171,7 @@ function moveDown(check) {
     }
   }
 
-  if (!check) {
-    checkAndAct(check);
-  }
+  checkAndAct(check);
 }
 
 function changeAdditionalClassCell(element, newAddClass) {
@@ -193,14 +187,26 @@ function checkWin() {
   for (const row of board) {
     for (const cell of row) {
       if (cell === 2048) {
-        messageWin.classList.remove('hidden');
-        start.textContent = 'Start';
-        start.classList.remove('restart');
-        start.classList.add('start');
-        started = false;
-        messageStart.classList.remove('hidden');
+        return true;
       }
     }
+  }
+
+  return false;
+}
+
+function handleWin() {
+  messageWin.classList.remove('hidden');
+  start.textContent = 'Start';
+  start.classList.remove('restart');
+  start.classList.add('start');
+  started = false;
+  messageStart.classList.remove('hidden');
+}
+
+if (checkAndAct) {
+  if (checkWin()) {
+    handleWin();
   }
 }
 
@@ -222,7 +228,7 @@ function goToOldBoard(oldBoard, oldProbabilityCount, oldScore) {
   score = oldScore;
 }
 
-function ifLose() {
+function checkIfLose() {
   let lose = true;
   const temp = [...board];
   const tempProbabilityCount = probabilityCount;
