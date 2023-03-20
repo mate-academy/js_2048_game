@@ -11,6 +11,13 @@ const messageStart = document.querySelector('.message-start');
 const rows = 4;
 const columns = 4;
 
+const directionMove = {
+  up: 'ArrowUp',
+  down: 'ArrowDown',
+  left: 'ArrowLeft',
+  right: 'ArrowRight',
+};
+
 button.addEventListener('click', () => {
   if (button.textContent === 'Start') {
     button.classList.remove('start');
@@ -61,7 +68,7 @@ function beginGame() {
 function hasEmptyTile() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      if (board[r][c] === 0) {
+      if (!board[r][c]) {
         return true;
       }
     }
@@ -104,30 +111,30 @@ function updateTile(tile, num) {
   }
 }
 
-const handler = (event) => {
-  switch (event.code) {
-    case 'ArrowLeft': {
+const handler = (e) => {
+  switch (e.code) {
+    case directionMove.left: {
       slideLeftRight(true);
       setRandom();
 
       break;
     }
 
-    case 'ArrowRight': {
+    case directionMove.right: {
       slideLeftRight(false);
       setRandom();
 
       break;
     }
 
-    case 'ArrowUp': {
+    case directionMove.up: {
       slideUpDown(true);
       setRandom();
 
       break;
     }
 
-    case 'ArrowDown': {
+    case directionMove.down: {
       slideUpDown(false);
       setRandom();
 
@@ -217,7 +224,7 @@ function slideUpDown(up) {
 function checkIsGameLoss() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      if (board[r][c] === 0) {
+      if (!board[r][c]) {
         return;
       };
 
