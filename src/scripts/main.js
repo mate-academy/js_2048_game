@@ -86,6 +86,8 @@ function moveRight(check) {
   for (let i = 0; i < board.length; i++) {
     board[i] = shiftRowLeft(board[i]).reverse();
   }
+
+  checkAndAct(check);
 }
 
 function checkAndAct(check) {
@@ -316,12 +318,12 @@ document.addEventListener('keyup', e => {
   }
 
   switch (e.key) {
-    case 'ArrowRight':
-      moveRight();
-      break;
-
     case 'ArrowLeft':
       moveLeft();
+      break;
+
+    case 'ArrowRight':
+      moveRight();
       break;
 
     case 'ArrowUp':
