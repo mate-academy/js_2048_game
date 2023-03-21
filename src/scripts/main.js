@@ -55,18 +55,17 @@ function fillCell(x, y, value) {
     var cell = document.querySelector(".field-row:nth-last-child(".concat(y, ") > .field-cell:nth-child(").concat(x));
     if (cell) {
         cell.textContent = "".concat(value || '');
+        cell.className = 'field-cell';
         if (value) {
             cell.classList.add("field-cell--".concat(value));
         }
     }
 }
 function clearCell(field, x, y) {
-    var _a;
     var index = field.cells.findIndex(function (cell) {
         return cell.coords.x === x && cell.coords.y === y;
     });
     var cell = document.querySelector(".field-row:nth-last-child(".concat(y, ") > .field-cell:nth-child(").concat(x));
-    cell === null || cell === void 0 ? void 0 : cell.classList.remove("field-cell--".concat((_a = field.cells[index].contains) === null || _a === void 0 ? void 0 : _a.value));
     field.cells[index].contains = null;
 }
 function generateUnit(quantity, field) {
@@ -165,7 +164,6 @@ function updateCells(field) {
 function checkResult(field) {
     var _a;
     if (field.cells.some(function (cell) { var _a; return ((_a = cell.contains) === null || _a === void 0 ? void 0 : _a.value) === 2048; })) {
-        alert('You win!');
         (_a = document.querySelector('.message-win')) === null || _a === void 0 ? void 0 : _a.classList.remove('hidden');
     }
 }
@@ -209,43 +207,48 @@ function handleMove(field, direction) {
             }
             break;
     }
+    return field;
 }
 function isGameOver(field, score) {
-    var trialField = __assign({}, field);
+    var trialField = JSON.parse(JSON.stringify(field));
     for (var direction in MoveDirection) {
-        handleMove(trialField, direction);
-    }
-    console.log('calculateScore(trialField):', calculateScore(trialField));
-    console.log('score', score);
-    return score === calculateScore(trialField);
-}
-function resetField(field) {
-    field.cells = field.cells.map(function (cell) {
-        if (cell.contains) {
-            return __assign(__assign({}, cell), { contains: null });
+        trialField = handleMove(trialField, MoveDirection[direction]);
+        var isFull = !trialField.cells.filter(function (cell) { return !cell.contains; }).length;
+        if (!isFull) {
+            generateUnit(1, trialField);
         }
-        return cell;
-    });
-    updateCells(field);
+        if (score !== calculateScore(trialField)) {
+            return false;
+        }
+    }
+    return true;
 }
+// function resetField(field: Field) {
+//       field = generateField(rows, tiers);
+//       updateCells(field);
+// }
 var startButton = document.querySelector('.start');
 startButton === null || startButton === void 0 ? void 0 : startButton.addEventListener('click', function () {
-    var _a;
+    var _a, _b, _c;
     (_a = document.querySelector('.message-start')) === null || _a === void 0 ? void 0 : _a.classList.add('hidden');
+    (_b = document.querySelector('.message-lose')) === null || _b === void 0 ? void 0 : _b.classList.add('hidden');
+    (_c = document.querySelector('.message-win')) === null || _c === void 0 ? void 0 : _c.classList.add('hidden');
     var rows = document.querySelectorAll('.field-row').length;
     var tiers = document.querySelectorAll('.field-row:first-child > .field-cell').length;
     var field = generateField(rows, tiers);
     if (field.cells.filter(function (cell) { return cell.contains; })) {
-        resetField(field);
+        field = generateField(rows, tiers);
+        updateCells(field);
     }
     generateUnit(2, field);
     unpdateScore(field);
+    console.log(field.cells);
     document.body.addEventListener('keyup', function (e) {
         var _a;
         handleMove(field, e.key);
         var isFull = !field.cells.filter(function (cell) { return !cell.contains; }).length;
         if (isFull && isGameOver(field, calculateScore(field))) {
-            console.log('insile Game Over');
+            console.log(field.cells);
             (_a = document.querySelector('.message-lose')) === null || _a === void 0 ? void 0 : _a.classList.remove('hidden');
         }
         if (startButton.classList.contains('start')) {

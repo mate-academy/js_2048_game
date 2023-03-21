@@ -69,6 +69,7 @@ function fillCell(x, y, value) {
   const cell = document.querySelector(`.field-row:nth-last-child(${y}) > .field-cell:nth-child(${x}`);
   if (cell) {
     cell.textContent = `${value || ''}`;
+    cell.className = 'field-cell'
     if (value) {
       cell.classList.add(`field-cell--${value}`);
     }
@@ -81,7 +82,6 @@ function clearCell(field: Field, x, y) {
     return cell.coords.x === x && cell.coords.y === y
   })
   const cell = document.querySelector(`.field-row:nth-last-child(${y}) > .field-cell:nth-child(${x}`);
-  cell?.classList.remove(`field-cell--${field.cells[index].contains?.value}`);
   field.cells[index].contains = null;
 }
 
@@ -191,7 +191,6 @@ function updateCells(field: Field) {
 
 function checkResult(field: Field) {
   if (field.cells.some((cell: FieldCell) => cell.contains?.value === 2048)) {
-    alert('You win!');
     document.querySelector('.message-win')?.classList.remove('hidden');
   }
 };
@@ -237,52 +236,53 @@ function handleMove(field: Field, direction: string) {
       }
       break
   }
+  return field;
 }
 
 function isGameOver(field: Field, score: number) {
-  const trialField = { ...field }
+  let trialField = JSON.parse(JSON.stringify(field));
+
   for (let direction in MoveDirection) {
-    handleMove(trialField, direction);
-  }
-  console.log('calculateScore(trialField):', calculateScore(trialField));
-  console.log('score', score);
-  return score === calculateScore(trialField)
-}
-
-function resetField(field: Field) {
-  field.cells = field.cells.map((cell: FieldCell) => {
-    if (cell.contains) {
-      return { ...cell, contains: null }
+    trialField = handleMove(trialField, MoveDirection[direction]);
+    const isFull = !trialField.cells.filter((cell: FieldCell) => !cell.contains).length
+    if (!isFull) {
+      generateUnit(1, trialField);
     }
-
-    return cell;
-  })
-
-  updateCells(field);
+    if (score !== calculateScore(trialField)) {
+      return false;
+    }
+  }
+  return true
 }
+
+// function resetField(field: Field) {
+//       field = generateField(rows, tiers);
+//       updateCells(field);
+// }
 
 const startButton: HTMLButtonElement | null = document.querySelector('.start');
 startButton?.addEventListener('click', function () {
   document.querySelector('.message-start')?.classList.add('hidden');
+  document.querySelector('.message-lose')?.classList.add('hidden');
+  document.querySelector('.message-win')?.classList.add('hidden');
   const rows = document.querySelectorAll('.field-row').length;
   const tiers = document.querySelectorAll('.field-row:first-child > .field-cell').length;
-  const field = generateField(rows, tiers);
+  let field = generateField(rows, tiers);
 
   if (field.cells.filter((cell: FieldCell) => cell.contains)) {
-    resetField(field);
+    field = generateField(rows, tiers);
+    updateCells(field);
   }
 
   generateUnit(2, field);
   unpdateScore(field);
 
   document.body.addEventListener('keyup', (e) => {
-
     handleMove(field, e.key);
 
     const isFull = !field.cells.filter((cell: FieldCell) => !cell.contains).length
 
     if (isFull && isGameOver(field, calculateScore(field))) {
-      console.log('insile Game Over');
       document.querySelector('.message-lose')?.classList.remove('hidden')
     }
 
