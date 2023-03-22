@@ -130,6 +130,25 @@ function filterZero(argRow) {
   return argRow.filter(num => num); // create a new array without zeroes
 }
 
+function slideCheck(argRow) {
+  let copyRow = filterZero(argRow);
+
+  for (let i = 0; i < copyRow.length - 1; i++) {
+    if (copyRow[i] === copyRow[i + 1]) {
+      copyRow[i] *= 2;
+      copyRow[i + 1] = 0;
+    }
+  }
+
+  copyRow = filterZero(copyRow);
+
+  while (copyRow.length < columns) {
+    copyRow.push(0);
+  }
+
+  return copyRow;
+}
+
 function slide(argRow) {
   // [0, 2, 2, 2]
 
@@ -161,7 +180,7 @@ function slideLeftCheck() {
   for (let r = 0; r < rows; r++) {
     const row1 = [...board[r]];
 
-    const row2 = slide(row1);
+    const row2 = slideCheck(row1);
 
     result.push(JSON.stringify(row1) === JSON.stringify(row2));
   }
@@ -195,7 +214,7 @@ function slideRightCheck() {
   for (let r = 0; r < rows; r++) {
     const row1 = [...board[r]];
 
-    const row2 = slide(row1);
+    const row2 = slideCheck(row1);
 
     result.push(JSON.stringify(row1) === JSON.stringify(row2));
   }
@@ -231,7 +250,7 @@ function slideUpCheck() {
   for (let c = 0; c < columns; c++) {
     const row1 = [...[board[0][c], board[1][c], board[2][c], board[3][c]]];
 
-    const row2 = slide(row1);
+    const row2 = slideCheck(row1);
 
     result.push(JSON.stringify(row1) === JSON.stringify(row2));
   }
@@ -266,7 +285,7 @@ function slideDownCheck() {
   for (let c = 0; c < columns; c++) {
     const row1 = [...[board[0][c], board[1][c], board[2][c], board[3][c]]];
 
-    const row2 = slide(row1);
+    const row2 = slideCheck(row1);
 
     result.push(JSON.stringify(row1) === JSON.stringify(row2));
   }
