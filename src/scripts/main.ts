@@ -32,10 +32,10 @@ enum Axis {
 }
 
 enum MoveDirection {
-  Up = 'ArrowUp',
-  Down = 'ArrowDown',
-  Left = 'ArrowLeft',
-  Right = 'ArrowRight',
+  ArrowUp = 'ArrowUp',
+  ArrowDown = 'ArrowDown',
+  ArrowLeft = 'ArrowLeft',
+  ArrowRight = 'ArrowRight',
 };
 
 function generateField(rowLength, tierLength): Field {
@@ -118,25 +118,25 @@ function moveUnit(unit: FieldUnit, field: Field, direction: string): FieldUnit |
   let newCoords: Coords = { ...unit.coords }
 
   switch (direction) {
-    case MoveDirection.Up:
+    case MoveDirection.ArrowUp:
       newCoords = {
         x: unit.coords.x,
         y: unit.coords.y + 1,
       };
       break;
-    case MoveDirection.Down:
+    case MoveDirection.ArrowDown:
       newCoords = {
         x: unit.coords.x,
         y: unit.coords.y - 1,
       };
       break;
-    case MoveDirection.Left:
+    case MoveDirection.ArrowLeft:
       newCoords = {
         x: unit.coords.x - 1,
         y: unit.coords.y,
       };
       break;
-    case MoveDirection.Right:
+    case MoveDirection.ArrowRight:
       newCoords = {
         x: unit.coords.x + 1,
         y: unit.coords.y,
@@ -215,26 +215,28 @@ function unpdateScore(field: Field) {
 
 function handleMove(field: Field, direction: string) {
   switch (direction) {
-    case MoveDirection.Down:
+    case MoveDirection.ArrowDown:
       for (let i = 1; i <= field.height; i++) {
         moveTier(i, direction, Axis.Y, field);
       }
       break
-    case MoveDirection.Up:
+    case MoveDirection.ArrowUp:
       for (let i = field.height - 1; i; i--) {
         moveTier(i, direction, Axis.Y, field);
       }
       break
-    case MoveDirection.Left:
+    case MoveDirection.ArrowLeft:
       for (let i = 1; i <= field.height; i++) {
         moveTier(i, direction, Axis.X, field);
       }
       break
-    case MoveDirection.Right:
+    case MoveDirection.ArrowRight:
       for (let i = field.width - 1; i; i--) {
         moveTier(i, direction, Axis.X, field);
       }
       break
+    default:
+      return field;
   }
   return field;
 }
@@ -255,11 +257,6 @@ function isGameOver(field: Field, score: number) {
   return true
 }
 
-// function resetField(field: Field) {
-//       field = generateField(rows, tiers);
-//       updateCells(field);
-// }
-
 const startButton: HTMLButtonElement | null = document.querySelector('.start');
 startButton?.addEventListener('click', function () {
   document.querySelector('.message-start')?.classList.add('hidden');
@@ -276,27 +273,33 @@ startButton?.addEventListener('click', function () {
 
   generateUnit(2, field);
   unpdateScore(field);
-
+  console.log('__________________________________________');
+  console.log('Field outside event/keyup:', field);
+  
   document.body.addEventListener('keyup', (e) => {
-    handleMove(field, e.key);
+    if (Object.values(MoveDirection).includes(MoveDirection[e.key])) {
+      handleMove(field, e.key);
+      
+      console.log('Field inside event/keyup:', field);
+      console.log('__________________________________________');
+      let isFull = !field.cells.filter((cell: FieldCell) => !cell.contains).length;
 
-    const isFull = !field.cells.filter((cell: FieldCell) => !cell.contains).length
+      if (isFull && isGameOver(field, calculateScore(field))) {
+        document.querySelector('.message-lose')?.classList.remove('hidden')
+      }
 
-    if (isFull && isGameOver(field, calculateScore(field))) {
-      document.querySelector('.message-lose')?.classList.remove('hidden')
+      if (startButton.classList.contains('start')) {
+        startButton.classList.replace('start', 'restart');
+        startButton.textContent = 'Restart';
+      }
+
+      if (!isFull) {
+        generateUnit(1, field);
+      }
+
+      updateCells(field);
+      unpdateScore(field);
+      checkResult(field);
     }
-
-    if (startButton.classList.contains('start')) {
-      startButton.classList.replace('start', 'restart');
-      startButton.textContent = 'Restart';
-    }
-
-    if (!isFull) {
-      generateUnit(1, field);
-    }
-
-    updateCells(field);
-    unpdateScore(field);
-    checkResult(field);
   });
 })

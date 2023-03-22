@@ -21,10 +21,10 @@ var Axis;
 })(Axis || (Axis = {}));
 var MoveDirection;
 (function (MoveDirection) {
-    MoveDirection["Up"] = "ArrowUp";
-    MoveDirection["Down"] = "ArrowDown";
-    MoveDirection["Left"] = "ArrowLeft";
-    MoveDirection["Right"] = "ArrowRight";
+    MoveDirection["ArrowUp"] = "ArrowUp";
+    MoveDirection["ArrowDown"] = "ArrowDown";
+    MoveDirection["ArrowLeft"] = "ArrowLeft";
+    MoveDirection["ArrowRight"] = "ArrowRight";
 })(MoveDirection || (MoveDirection = {}));
 ;
 function generateField(rowLength, tierLength) {
@@ -96,25 +96,25 @@ function moveUnit(unit, field, direction) {
     var _a, _b, _c, _d;
     var newCoords = __assign({}, unit.coords);
     switch (direction) {
-        case MoveDirection.Up:
+        case MoveDirection.ArrowUp:
             newCoords = {
                 x: unit.coords.x,
                 y: unit.coords.y + 1
             };
             break;
-        case MoveDirection.Down:
+        case MoveDirection.ArrowDown:
             newCoords = {
                 x: unit.coords.x,
                 y: unit.coords.y - 1
             };
             break;
-        case MoveDirection.Left:
+        case MoveDirection.ArrowLeft:
             newCoords = {
                 x: unit.coords.x - 1,
                 y: unit.coords.y
             };
             break;
-        case MoveDirection.Right:
+        case MoveDirection.ArrowRight:
             newCoords = {
                 x: unit.coords.x + 1,
                 y: unit.coords.y
@@ -186,26 +186,28 @@ function unpdateScore(field) {
 }
 function handleMove(field, direction) {
     switch (direction) {
-        case MoveDirection.Down:
+        case MoveDirection.ArrowDown:
             for (var i = 1; i <= field.height; i++) {
                 moveTier(i, direction, Axis.Y, field);
             }
             break;
-        case MoveDirection.Up:
+        case MoveDirection.ArrowUp:
             for (var i = field.height - 1; i; i--) {
                 moveTier(i, direction, Axis.Y, field);
             }
             break;
-        case MoveDirection.Left:
+        case MoveDirection.ArrowLeft:
             for (var i = 1; i <= field.height; i++) {
                 moveTier(i, direction, Axis.X, field);
             }
             break;
-        case MoveDirection.Right:
+        case MoveDirection.ArrowRight:
             for (var i = field.width - 1; i; i--) {
                 moveTier(i, direction, Axis.X, field);
             }
             break;
+        default:
+            return field;
     }
     return field;
 }
@@ -223,10 +225,6 @@ function isGameOver(field, score) {
     }
     return true;
 }
-// function resetField(field: Field) {
-//       field = generateField(rows, tiers);
-//       updateCells(field);
-// }
 var startButton = document.querySelector('.start');
 startButton === null || startButton === void 0 ? void 0 : startButton.addEventListener('click', function () {
     var _a, _b, _c;
@@ -242,24 +240,28 @@ startButton === null || startButton === void 0 ? void 0 : startButton.addEventLi
     }
     generateUnit(2, field);
     unpdateScore(field);
-    console.log(field.cells);
+    console.log('__________________________________________');
+    console.log('Field outside event/keyup:', field);
     document.body.addEventListener('keyup', function (e) {
         var _a;
-        handleMove(field, e.key);
-        var isFull = !field.cells.filter(function (cell) { return !cell.contains; }).length;
-        if (isFull && isGameOver(field, calculateScore(field))) {
-            console.log(field.cells);
-            (_a = document.querySelector('.message-lose')) === null || _a === void 0 ? void 0 : _a.classList.remove('hidden');
+        if (Object.values(MoveDirection).includes(MoveDirection[e.key])) {
+            handleMove(field, e.key);
+            console.log('Field inside event/keyup:', field);
+            console.log('__________________________________________');
+            var isFull = !field.cells.filter(function (cell) { return !cell.contains; }).length;
+            if (isFull && isGameOver(field, calculateScore(field))) {
+                (_a = document.querySelector('.message-lose')) === null || _a === void 0 ? void 0 : _a.classList.remove('hidden');
+            }
+            if (startButton.classList.contains('start')) {
+                startButton.classList.replace('start', 'restart');
+                startButton.textContent = 'Restart';
+            }
+            if (!isFull) {
+                generateUnit(1, field);
+            }
+            updateCells(field);
+            unpdateScore(field);
+            checkResult(field);
         }
-        if (startButton.classList.contains('start')) {
-            startButton.classList.replace('start', 'restart');
-            startButton.textContent = 'Restart';
-        }
-        if (!isFull) {
-            generateUnit(1, field);
-        }
-        updateCells(field);
-        unpdateScore(field);
-        checkResult(field);
     });
 });
