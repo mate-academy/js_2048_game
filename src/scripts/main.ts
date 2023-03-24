@@ -213,7 +213,7 @@ function unpdateScore(field: Field) {
   }
 }
 
-function handleMove(field: Field, direction: string) {
+function handleKeypress(field: Field, direction: string) {
   switch (direction) {
     case MoveDirection.ArrowDown:
       for (let i = 1; i <= field.height; i++) {
@@ -245,61 +245,62 @@ function isGameOver(field: Field, score: number) {
   let trialField = JSON.parse(JSON.stringify(field));
 
   for (let direction in MoveDirection) {
-    trialField = handleMove(trialField, MoveDirection[direction]);
+    console.log(field);
+    trialField = handleKeypress(trialField, MoveDirection[direction]);
     const isFull = !trialField.cells.filter((cell: FieldCell) => !cell.contains).length
     if (!isFull) {
-      generateUnit(1, trialField);
-    }
-    if (score !== calculateScore(trialField)) {
+      console.log('is not game onver');
       return false;
     }
   }
+  console.log('is game onver');
   return true
 }
 
-const startButton: HTMLButtonElement | null = document.querySelector('.start');
-startButton?.addEventListener('click', function () {
-  document.querySelector('.message-start')?.classList.add('hidden');
-  document.querySelector('.message-lose')?.classList.add('hidden');
-  document.querySelector('.message-win')?.classList.add('hidden');
-  const rows = document.querySelectorAll('.field-row').length;
-  const tiers = document.querySelectorAll('.field-row:first-child > .field-cell').length;
-  let field = generateField(rows, tiers);
+function onArrowPress(e: KeyboardEvent) {
+  if (Object.values(MoveDirection).includes(MoveDirection[e.key])) {
+    handleKeypress(field, e.key);
 
+    let isFull = !field.cells.filter((cell: FieldCell) => !cell.contains).length;
+
+    if (isFull && isGameOver(field, calculateScore(field))) {
+      document.querySelector('.message-lose')?.classList.remove('hidden')
+    }
+
+    if (startButton?.classList.contains('start')) {
+      startButton.classList.replace('start', 'restart');
+      startButton.textContent = 'Restart';
+    }
+
+    if (!isFull) {
+      generateUnit(1, field);
+    }
+
+    updateCells(field);
+    unpdateScore(field);
+    checkResult(field);
+  }
+
+}
+
+const startButton: HTMLButtonElement | null = document.querySelector('.start');
+const rows = document.querySelectorAll('.field-row').length;
+const tiers = document.querySelectorAll('.field-row:first-child > .field-cell').length;
+let field = generateField(rows, tiers);
+
+startButton?.addEventListener('click', function () {
   if (field.cells.filter((cell: FieldCell) => cell.contains)) {
     field = generateField(rows, tiers);
     updateCells(field);
-  }
+    document.body.removeEventListener('keyup', onArrowPress);
+  };
+
+  document.querySelector('.message-start')?.classList.add('hidden');
+  document.querySelector('.message-lose')?.classList.add('hidden');
+  document.querySelector('.message-win')?.classList.add('hidden');
 
   generateUnit(2, field);
   unpdateScore(field);
-  console.log('__________________________________________');
-  console.log('Field outside event/keyup:', field);
-  
-  document.body.addEventListener('keyup', (e) => {
-    if (Object.values(MoveDirection).includes(MoveDirection[e.key])) {
-      handleMove(field, e.key);
-      
-      console.log('Field inside event/keyup:', field);
-      console.log('__________________________________________');
-      let isFull = !field.cells.filter((cell: FieldCell) => !cell.contains).length;
 
-      if (isFull && isGameOver(field, calculateScore(field))) {
-        document.querySelector('.message-lose')?.classList.remove('hidden')
-      }
-
-      if (startButton.classList.contains('start')) {
-        startButton.classList.replace('start', 'restart');
-        startButton.textContent = 'Restart';
-      }
-
-      if (!isFull) {
-        generateUnit(1, field);
-      }
-
-      updateCells(field);
-      unpdateScore(field);
-      checkResult(field);
-    }
-  });
-})
+  document.body.addEventListener('keyup', onArrowPress);
+});

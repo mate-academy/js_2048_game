@@ -184,7 +184,7 @@ function unpdateScore(field) {
         scoreElem.textContent = "".concat(score);
     }
 }
-function handleMove(field, direction) {
+function handleKeypress(field, direction) {
     switch (direction) {
         case MoveDirection.ArrowDown:
             for (var i = 1; i <= field.height; i++) {
@@ -214,54 +214,53 @@ function handleMove(field, direction) {
 function isGameOver(field, score) {
     var trialField = JSON.parse(JSON.stringify(field));
     for (var direction in MoveDirection) {
-        trialField = handleMove(trialField, MoveDirection[direction]);
+        console.log(field);
+        trialField = handleKeypress(trialField, MoveDirection[direction]);
         var isFull = !trialField.cells.filter(function (cell) { return !cell.contains; }).length;
         if (!isFull) {
-            generateUnit(1, trialField);
-        }
-        if (score !== calculateScore(trialField)) {
+            console.log('is not game onver');
             return false;
         }
     }
+    console.log('is game onver');
     return true;
 }
+function onArrowPress(e) {
+    var _a;
+    var isFull = !field.cells.filter(function (cell) { return !cell.contains; }).length;
+    if (Object.values(MoveDirection).includes(MoveDirection[e.key])) {
+        handleKeypress(field, e.key);
+        if (startButton === null || startButton === void 0 ? void 0 : startButton.classList.contains('start')) {
+            startButton.classList.replace('start', 'restart');
+            startButton.textContent = 'Restart';
+        }
+        if (!isFull) {
+            generateUnit(1, field);
+        }
+        updateCells(field);
+        unpdateScore(field);
+        checkResult(field);
+    }
+    if (isFull && isGameOver(field, calculateScore(field))) {
+        (_a = document.querySelector('.message-lose')) === null || _a === void 0 ? void 0 : _a.classList.remove('hidden');
+    }
+}
 var startButton = document.querySelector('.start');
+var rows = document.querySelectorAll('.field-row').length;
+var tiers = document.querySelectorAll('.field-row:first-child > .field-cell').length;
+var field = generateField(rows, tiers);
 startButton === null || startButton === void 0 ? void 0 : startButton.addEventListener('click', function () {
     var _a, _b, _c;
-    (_a = document.querySelector('.message-start')) === null || _a === void 0 ? void 0 : _a.classList.add('hidden');
-    (_b = document.querySelector('.message-lose')) === null || _b === void 0 ? void 0 : _b.classList.add('hidden');
-    (_c = document.querySelector('.message-win')) === null || _c === void 0 ? void 0 : _c.classList.add('hidden');
-    var rows = document.querySelectorAll('.field-row').length;
-    var tiers = document.querySelectorAll('.field-row:first-child > .field-cell').length;
-    var field = generateField(rows, tiers);
     if (field.cells.filter(function (cell) { return cell.contains; })) {
         field = generateField(rows, tiers);
         updateCells(field);
+        document.body.removeEventListener('keyup', onArrowPress);
     }
+    ;
+    (_a = document.querySelector('.message-start')) === null || _a === void 0 ? void 0 : _a.classList.add('hidden');
+    (_b = document.querySelector('.message-lose')) === null || _b === void 0 ? void 0 : _b.classList.add('hidden');
+    (_c = document.querySelector('.message-win')) === null || _c === void 0 ? void 0 : _c.classList.add('hidden');
     generateUnit(2, field);
     unpdateScore(field);
-    console.log('__________________________________________');
-    console.log('Field outside event/keyup:', field);
-    document.body.addEventListener('keyup', function (e) {
-        var _a;
-        if (Object.values(MoveDirection).includes(MoveDirection[e.key])) {
-            handleMove(field, e.key);
-            console.log('Field inside event/keyup:', field);
-            console.log('__________________________________________');
-            var isFull = !field.cells.filter(function (cell) { return !cell.contains; }).length;
-            if (isFull && isGameOver(field, calculateScore(field))) {
-                (_a = document.querySelector('.message-lose')) === null || _a === void 0 ? void 0 : _a.classList.remove('hidden');
-            }
-            if (startButton.classList.contains('start')) {
-                startButton.classList.replace('start', 'restart');
-                startButton.textContent = 'Restart';
-            }
-            if (!isFull) {
-                generateUnit(1, field);
-            }
-            updateCells(field);
-            unpdateScore(field);
-            checkResult(field);
-        }
-    });
+    document.body.addEventListener('keyup', onArrowPress);
 });
