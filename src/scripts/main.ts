@@ -29,7 +29,7 @@ interface Start {
 enum Axis {
   X = 'x',
   Y = 'y',
-}
+};
 
 enum MoveDirection {
   ArrowUp = 'ArrowUp',
@@ -44,7 +44,7 @@ function generateField(rowLength, tierLength): Field {
     width: tierLength,
     cells: generateCells({ x: rowLength, y: tierLength }),
   }
-}
+};
 
 function generateCells(maxSize: Coords): FieldCell[] {
   const cells: FieldCell[] = [];
@@ -74,7 +74,7 @@ function fillCell(x, y, value) {
       cell.classList.add(`field-cell--${value}`);
     }
   }
-}
+};
 
 function clearCell(field: Field, x, y) {
 
@@ -83,7 +83,7 @@ function clearCell(field: Field, x, y) {
   })
   const cell = document.querySelector(`.field-row:nth-last-child(${y}) > .field-cell:nth-child(${x}`);
   field.cells[index].contains = null;
-}
+};
 
 function generateUnit(quantity: number, field: Field) {
 
@@ -112,7 +112,7 @@ function generateUnit(quantity: number, field: Field) {
   };
 
   return field;
-}
+};
 
 function moveUnit(unit: FieldUnit, field: Field, direction: string): FieldUnit | undefined {
   let newCoords: Coords = { ...unit.coords }
@@ -161,6 +161,7 @@ function moveUnit(unit: FieldUnit, field: Field, direction: string): FieldUnit |
     // merge
     clearCell(field, unit.coords.x, unit.coords.y);
     targetCell.contains.value += unit.value;
+    score += targetCell.contains.value;
 
     return targetCell.contains;
   }
@@ -181,7 +182,7 @@ function moveTier(i: number, direction: MoveDirection, axis: Axis, field: Field)
       moveUnit(unit, field, direction);
     }
   })
-}
+};
 
 function updateCells(field: Field) {
   field.cells.forEach((cell: FieldCell) => {
@@ -195,23 +196,23 @@ function checkResult(field: Field) {
   }
 };
 
-function calculateScore(field: Field) {
-  let score = 0;
-  field.cells.forEach((cell: FieldCell) => {
-    if (cell.contains) {
-      score += cell.contains.value;
-    }
-  })
-  return score;
-}
+// function calculateScore(field: Field) {
+//   let score = 0;
+//   field.cells.forEach((cell: FieldCell) => {
+//     if (cell.contains) {
+//       score += cell.contains.value;
+//     }
+//   })
+//   return score;
+// };
 
 function unpdateScore(field: Field) {
-  const score = calculateScore(field);
+  // const score = calculateScore(field);
   const scoreElem = document.querySelector('.game-score');
   if (scoreElem) {
     scoreElem.textContent = `${score}`;
   }
-}
+};
 
 function handleKeypress(field: Field, direction: string) {
   switch (direction) {
@@ -239,7 +240,7 @@ function handleKeypress(field: Field, direction: string) {
       return field;
   }
   return field;
-}
+};
 
 function isGameOver(field: Field, score: number) {
   let trialField = JSON.parse(JSON.stringify(field));
@@ -255,7 +256,7 @@ function isGameOver(field: Field, score: number) {
   }
   console.log('is game onver');
   return true
-}
+};
 
 function onArrowPress(e: KeyboardEvent) {
   if (Object.values(MoveDirection).includes(MoveDirection[e.key])) {
@@ -263,7 +264,7 @@ function onArrowPress(e: KeyboardEvent) {
 
     let isFull = !field.cells.filter((cell: FieldCell) => !cell.contains).length;
 
-    if (isFull && isGameOver(field, calculateScore(field))) {
+    if (isFull && isGameOver(field, score)) {
       document.querySelector('.message-lose')?.classList.remove('hidden')
     }
 
@@ -281,14 +282,16 @@ function onArrowPress(e: KeyboardEvent) {
     checkResult(field);
   }
 
-}
+};
 
 const startButton: HTMLButtonElement | null = document.querySelector('.start');
 const rows = document.querySelectorAll('.field-row').length;
 const tiers = document.querySelectorAll('.field-row:first-child > .field-cell').length;
 let field = generateField(rows, tiers);
+let score;
 
 startButton?.addEventListener('click', function () {
+  score = 0;
   if (field.cells.filter((cell: FieldCell) => cell.contains)) {
     field = generateField(rows, tiers);
     updateCells(field);

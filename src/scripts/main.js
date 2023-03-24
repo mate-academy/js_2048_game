@@ -19,6 +19,7 @@ var Axis;
     Axis["X"] = "x";
     Axis["Y"] = "y";
 })(Axis || (Axis = {}));
+;
 var MoveDirection;
 (function (MoveDirection) {
     MoveDirection["ArrowUp"] = "ArrowUp";
@@ -34,6 +35,7 @@ function generateField(rowLength, tierLength) {
         cells: generateCells({ x: rowLength, y: tierLength })
     };
 }
+;
 function generateCells(maxSize) {
     var cells = [];
     for (var x = 1; x <= maxSize.x; x++) {
@@ -61,6 +63,7 @@ function fillCell(x, y, value) {
         }
     }
 }
+;
 function clearCell(field, x, y) {
     var index = field.cells.findIndex(function (cell) {
         return cell.coords.x === x && cell.coords.y === y;
@@ -68,6 +71,7 @@ function clearCell(field, x, y) {
     var cell = document.querySelector(".field-row:nth-last-child(".concat(y, ") > .field-cell:nth-child(").concat(x));
     field.cells[index].contains = null;
 }
+;
 function generateUnit(quantity, field) {
     var valueOptions = [2, 4];
     var coordsOptions = field.cells
@@ -92,6 +96,7 @@ function generateUnit(quantity, field) {
     ;
     return field;
 }
+;
 function moveUnit(unit, field, direction) {
     var _a, _b, _c, _d;
     var newCoords = __assign({}, unit.coords);
@@ -136,6 +141,7 @@ function moveUnit(unit, field, direction) {
         // merge
         clearCell(field, unit.coords.x, unit.coords.y);
         targetCell.contains.value += unit.value;
+        score += targetCell.contains.value;
         return targetCell.contains;
     }
     // next move
@@ -154,6 +160,7 @@ function moveTier(i, direction, axis, field) {
         }
     });
 }
+;
 function updateCells(field) {
     field.cells.forEach(function (cell) {
         var _a;
@@ -168,22 +175,23 @@ function checkResult(field) {
     }
 }
 ;
-function calculateScore(field) {
-    var score = 0;
-    field.cells.forEach(function (cell) {
-        if (cell.contains) {
-            score += cell.contains.value;
-        }
-    });
-    return score;
-}
+// function calculateScore(field: Field) {
+//   let score = 0;
+//   field.cells.forEach((cell: FieldCell) => {
+//     if (cell.contains) {
+//       score += cell.contains.value;
+//     }
+//   })
+//   return score;
+// };
 function unpdateScore(field) {
-    var score = calculateScore(field);
+    // const score = calculateScore(field);
     var scoreElem = document.querySelector('.game-score');
     if (scoreElem) {
         scoreElem.textContent = "".concat(score);
     }
 }
+;
 function handleKeypress(field, direction) {
     switch (direction) {
         case MoveDirection.ArrowDown:
@@ -211,6 +219,7 @@ function handleKeypress(field, direction) {
     }
     return field;
 }
+;
 function isGameOver(field, score) {
     var trialField = JSON.parse(JSON.stringify(field));
     for (var direction in MoveDirection) {
@@ -225,11 +234,15 @@ function isGameOver(field, score) {
     console.log('is game onver');
     return true;
 }
+;
 function onArrowPress(e) {
     var _a;
-    var isFull = !field.cells.filter(function (cell) { return !cell.contains; }).length;
     if (Object.values(MoveDirection).includes(MoveDirection[e.key])) {
         handleKeypress(field, e.key);
+        var isFull = !field.cells.filter(function (cell) { return !cell.contains; }).length;
+        if (isFull && isGameOver(field, score)) {
+            (_a = document.querySelector('.message-lose')) === null || _a === void 0 ? void 0 : _a.classList.remove('hidden');
+        }
         if (startButton === null || startButton === void 0 ? void 0 : startButton.classList.contains('start')) {
             startButton.classList.replace('start', 'restart');
             startButton.textContent = 'Restart';
@@ -241,16 +254,16 @@ function onArrowPress(e) {
         unpdateScore(field);
         checkResult(field);
     }
-    if (isFull && isGameOver(field, calculateScore(field))) {
-        (_a = document.querySelector('.message-lose')) === null || _a === void 0 ? void 0 : _a.classList.remove('hidden');
-    }
 }
+;
 var startButton = document.querySelector('.start');
 var rows = document.querySelectorAll('.field-row').length;
 var tiers = document.querySelectorAll('.field-row:first-child > .field-cell').length;
 var field = generateField(rows, tiers);
+var score;
 startButton === null || startButton === void 0 ? void 0 : startButton.addEventListener('click', function () {
     var _a, _b, _c;
+    score = 0;
     if (field.cells.filter(function (cell) { return cell.contains; })) {
         field = generateField(rows, tiers);
         updateCells(field);
