@@ -196,18 +196,8 @@ function checkResult(field: Field) {
   }
 };
 
-// function calculateScore(field: Field) {
-//   let score = 0;
-//   field.cells.forEach((cell: FieldCell) => {
-//     if (cell.contains) {
-//       score += cell.contains.value;
-//     }
-//   })
-//   return score;
-// };
 
 function unpdateScore(field: Field) {
-  // const score = calculateScore(field);
   const scoreElem = document.querySelector('.game-score');
   if (scoreElem) {
     scoreElem.textContent = `${score}`;
@@ -291,19 +281,19 @@ let field = generateField(rows, tiers);
 let score;
 
 startButton?.addEventListener('click', function () {
-  score = 0;
   if (field.cells.filter((cell: FieldCell) => cell.contains)) {
     field = generateField(rows, tiers);
     updateCells(field);
     document.body.removeEventListener('keyup', onArrowPress);
   };
-
+  
   document.querySelector('.message-start')?.classList.add('hidden');
   document.querySelector('.message-lose')?.classList.add('hidden');
   document.querySelector('.message-win')?.classList.add('hidden');
-
-  generateUnit(2, field);
+  
+  score = 0;
   unpdateScore(field);
+  generateUnit(2, field);
 
   document.body.addEventListener('keyup', onArrowPress);
 });
