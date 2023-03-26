@@ -268,28 +268,47 @@ document.body.addEventListener('keydown', (el) => {
   if (el.key === leftArrow) {
     if (gameStart) {
       moveCells([...gameCells], 'beforeend');
+<<<<<<< HEAD
 
       addNeighborCells([...gameColumns], 'left');
 
       addNumber();
       gameCells = document.querySelectorAll('.field-cell');
     }
+=======
+    }
+
+    addNeighborCells([...gameColumns], 'left');
+
+    addNumber();
+    gameCells = document.querySelectorAll('.field-cell');
+>>>>>>> 43c8fc9c8abada72c90da5100634c833ad86f074
   };
 
   if (el.key === rightArrow) {
     if (gameStart) {
       moveCells([...gameCells].reverse(), 'afterbegin');
+<<<<<<< HEAD
 
       addNeighborCells([...gameColumns].reverse(), 'right');
 
       addNumber();
       gameCells = document.querySelectorAll('.field-cell');
     }
+=======
+    }
+
+    addNeighborCells([...gameColumns].reverse(), 'right');
+
+    addNumber();
+    gameCells = document.querySelectorAll('.field-cell');
+>>>>>>> 43c8fc9c8abada72c90da5100634c833ad86f074
   }
 
   if (el.key === upArrow) {
     if (gameStart) {
       cellsUp([...gameColumns]);
+<<<<<<< HEAD
 
       addNeighborColumn([...gameColumns], 'top');
 
@@ -307,6 +326,23 @@ document.body.addEventListener('keydown', (el) => {
       addNumber();
       gameCells = document.querySelectorAll('.field-cell');
     }
+=======
+    }
+
+    addNeighborColumn([...gameColumns], 'top');
+
+    addNumber();
+    gameCells = document.querySelectorAll('.field-cell');
+  }
+
+  if (el.key === downArrow) {
+    cellsUp([...gameColumns].reverse());
+
+    addNeighborColumn([...gameColumns].reverse(), 'down');
+
+    addNumber();
+    gameCells = document.querySelectorAll('.field-cell');
+>>>>>>> 43c8fc9c8abada72c90da5100634c833ad86f074
   }
 
   checkLose(tbody);
