@@ -8,13 +8,13 @@ const messageStart = document.querySelector('.message-start');
 const gameScore = document.querySelector('.game-score');
 
 let score = 0;
-let rows = 4;
-let columns = 4;
+const rows = 4;
+const columns = 4;
 let field = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
-  [0, 0, 0, 0]
+  [0, 0, 0, 0],
 ];
 
 function gameStart() {
@@ -22,7 +22,7 @@ function gameStart() {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ];
 
   addTwoDeuces();
@@ -37,16 +37,18 @@ startGame.addEventListener('click', () => {
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
   gameScore.innerHTML = 0;
+  score = 0;
 
   gameStart();
-})
+});
 
-document.addEventListener('keyup', (event) => {
+document.addEventListener('keydown', (e) => {
+  e.preventDefault();
   if (!startGame.classList.contains('restart')) {
-    return
+    return;
   }
 
-  switch (event.code) {
+  switch (e.code) {
     case 'ArrowLeft':
       slideLeft();
       addTwoDeuces();
@@ -75,7 +77,7 @@ function filterZeros(row) {
 }
 
 function slide(row) {
- let newRow = filterZeros(row);
+  let newRow = filterZeros(row);
 
   for (let i = 0; i < row.length - 1; i++) {
     if (newRow[i] === newRow[i + 1] && isFinite(newRow[i])) {
@@ -89,7 +91,7 @@ function slide(row) {
   newRow = filterZeros(newRow);
 
   while (newRow.length < columns) {
-    newRow.push(0)
+    newRow.push(0);
   }
 
   return newRow;
@@ -122,6 +124,7 @@ function slideRight() {
 function slideUp() {
   for (let c = 0; c < columns; c++) {
     let row = [field[0][c], field[1][c], field[2][c], field[3][c]];
+
     row = slide(row);
 
     for (let i = 0; i < columns; i++) {
@@ -135,6 +138,7 @@ function slideUp() {
 function slideDown() {
   for (let c = 0; c < columns; c++) {
     let row = [field[0][c], field[1][c], field[2][c], field[3][c]];
+
     row.reverse();
     row = slide(row);
     row.reverse();
@@ -171,7 +175,7 @@ function updateCell(cell, num) {
   }
 
   if (cell === 2048) {
-    messageWin.style.display = 'block'
+    messageWin.style.display = 'block';
   }
 };
 
@@ -179,10 +183,11 @@ function isEmptyCell() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       if (field[r][c] === 0) {
-        return true
+        return true;
       }
     }
   }
+
   return false;
 };
 
@@ -196,14 +201,14 @@ function addTwoDeuces() {
   let found = false;
 
   while (!found) {
-    let r = Math.floor(Math.random() * rows);
-    let c = Math.floor(Math.random() * columns);
+    const r = Math.floor(Math.random() * rows);
+    const c = Math.floor(Math.random() * columns);
 
     if (field[r][c] === 0) {
       field[r][c] = value;
       found = true;
 
-      updateHtml()
+      updateHtml();
     }
   }
 };
@@ -216,7 +221,7 @@ function isPossibleMove() {
       if (r < 3) {
         if (field[r][c] === field[r + 1][c]
           || field[r][c] === field[r][c + 1]) {
-            found = true;
+          found = true;
         }
       } else {
         if (field[r][c] === field[r][c + 1]) {
@@ -237,6 +242,6 @@ function isWin(value) {
   if (value === 2048) {
     messageWin.classList.remove('hidden');
     startGame.classList.replace('restart', 'start');
-    startGame.innerText = 'Start'
+    startGame.innerText = 'Start';
   }
 };
