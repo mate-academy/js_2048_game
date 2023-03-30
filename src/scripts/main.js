@@ -10,7 +10,6 @@ const tableCells = document.querySelectorAll('td');
 const tableSize = 4;
 let score = 0;
 let scoreBuffer = [];
-
 const keyCode = {
   left: 37,
   up: 38,
