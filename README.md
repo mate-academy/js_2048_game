@@ -5,7 +5,7 @@
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
     - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
 
-### Task: 2048 game
+### Task: 2048 ga
 
 Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
 If you are still here, let's do it.
