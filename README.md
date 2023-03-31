@@ -1,4 +1,4 @@
-    - [DEMO LINK](https://metinbicaksiz.github.io/js_2048_game/)
+[DEMO LINK](https://metinbicaksiz.github.io/js_2048_game/)
 
 ### 2048 game
 
