@@ -13,3 +13,4 @@ We have some rules:
 10) Change the `Start` button to `Restart` after the first move.
 11) Increase score with each move. The score should be increased by the sum of all merged cells.
 
+Demo https://vasyliev-anton.github.io/js_2048_game/
