@@ -26,7 +26,7 @@ function randomInt(max) {
 }
 
 function randomProbability() {
-  return (Math.random() >= 0.9 ? 4 : 2);
+  return (Math.random() * 1.01).toFixed(2);
 }
 
 function addRandomNumber(gameField) {
