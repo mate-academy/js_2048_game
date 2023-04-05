@@ -313,6 +313,8 @@ startButton.addEventListener('click', (e) => {
   }
 
   startMessage.classList.add('hidden');
+  looseMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
 
   cellLocation = randomCell();
 
