@@ -191,8 +191,7 @@ h1 {
   height: 150px;
 }
 
-@media (min-device-width: 600px) and (max-device-width: 1024px)
-  and (orientation: landscape) {
+@media (max-device-height: 560px) {
   .field-cell {
     height: 60px;
     width: 60px;
