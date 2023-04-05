@@ -39,8 +39,8 @@ function getActionButton() {
     ];
 
     score = 0;
-    messageLose.classList.toggle('hidden', true);
-    messageWin.classList.toggle('hidden', true);
+    messageLose.classList.add('hidden', true);
+    messageWin.classList.add('hidden', true);
   }
 
   addСoord();
