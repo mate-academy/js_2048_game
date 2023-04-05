@@ -16,8 +16,8 @@ let playObject = {
 const oldLocation = [];
 const newLocation = [];
 let score = 0;
-let x1 = null;
-let y1 = null;
+let coordiX = null;
+let coordiY = null;
 let hasMove = false;
 
 const randomNumber = () => {
@@ -277,6 +277,26 @@ const winOrLose = (field) => {
   looseMessage.classList.remove('hidden');
 };
 
+const handleMove = (move) => {
+  switch (move) {
+    case 'ArrowLeft':
+      shift('left');
+      break;
+
+    case 'ArrowRight':
+      shift('right');
+      break;
+
+    case 'ArrowUp':
+      vertikalShift('up');
+      break;
+
+    case 'ArrowDown':
+      vertikalShift('down');
+      break;
+  }
+};
+
 startButton.addEventListener('click', (e) => {
   playObject = {
     0: [0, 0, 0, 0],
@@ -284,6 +304,7 @@ startButton.addEventListener('click', (e) => {
     2: [0, 0, 0, 0],
     3: [0, 0, 0, 0],
   };
+  score = 0;
 
   if (startButton.matches('.start')) {
     startButton.classList.remove('start');
@@ -307,23 +328,7 @@ startButton.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   moveCheck(oldLocation);
 
-  switch (e.key) {
-    case 'ArrowLeft':
-      shift('left');
-      break;
-
-    case 'ArrowRight':
-      shift('right');
-      break;
-
-    case 'ArrowUp':
-      vertikalShift('up');
-      break;
-
-    case 'ArrowDown':
-      vertikalShift('down');
-      break;
-  }
+  handleMove(e.key);
 
   saveTable();
 
@@ -349,60 +354,44 @@ document.addEventListener('keyup', (e) => {
 document.addEventListener('touchstart', (e) => {
   const firstTouch = e.touches[0];
 
-  x1 = firstTouch.clientX;
-  y1 = firstTouch.clientY;
+  coordiX = firstTouch.clientX;
+  coordiY = firstTouch.clientY;
 });
 
 document.addEventListener('touchmove', (e) => {
-  if (!x1 || !y1) {
+  if (!coordiX || !coordiY) {
     return;
   }
 
-  const x2 = e.touches[0].clientX;
-  const y2 = e.touches[0].clientY;
-  const xDiff = x2 - x1;
-  const yDiff = y2 - y1;
+  const coordiXEnd = e.touches[0].clientX;
+  const coordieYEnd = e.touches[0].clientY;
+  const xDiff = coordiXEnd - coordiX;
+  const yDiff = coordieYEnd - coordiY;
   let touchMove = '';
 
   if (Math.abs(xDiff) >= Math.abs(yDiff)) {
     if (xDiff > 0) {
-      touchMove = 'right';
+      touchMove = 'ArrowRight';
     } else {
-      touchMove = 'left';
+      touchMove = 'ArrowLeft';
     }
   } else {
     if (yDiff > 0) {
-      touchMove = 'down';
+      touchMove = 'ArrowDown';
     } else {
-      touchMove = 'up';
+      touchMove = 'ArrowUp';
     }
   }
   moveCheck(oldLocation);
 
-  switch (touchMove) {
-    case 'left':
-      shift('left');
-      break;
-
-    case 'right':
-      shift('right');
-      break;
-
-    case 'up':
-      vertikalShift('up');
-      break;
-
-    case 'down':
-      vertikalShift('down');
-      break;
-  }
+  handleMove(touchMove);
 
   saveTable();
 
   moveCheck(newLocation);
 
-  x1 = null;
-  y1 = null;
+  coordiX = null;
+  coordiY = null;
   hasMove = true;
 });
 
@@ -426,87 +415,3 @@ document.addEventListener('touchend', (e) => {
   winOrLose(playObject);
   hasMove = false;
 });
-
-// function handleTouchMove(e) {
-//   if (!x1 || !y1) {
-//     return;
-//   }
-
-//   const x2 = e.touches[0].clientX;
-//   const y2 = e.touches[0].clientY;
-//   const xDiff = x2 - x1;
-//   const yDiff = y2 - y1;
-//   let touchMove = '';
-
-//   if (Math.abs(xDiff) >= Math.abs(yDiff)) {
-//     if (xDiff > 0) {
-//       console.log('right');
-//       touchMove = 'right';
-//     } else {
-//       console.log('left');
-//       touchMove = 'left';
-//     }
-//   } else {
-//     if (yDiff > 0) {
-//       console.log('down');
-//       touchMove = 'down';
-//     } else {
-//       console.log('up');
-//       touchMove = 'up';
-//     }
-//   }
-
-//   moveCheck(oldLocation);
-
-//   switch (touchMove) {
-//     case 'left':
-//       shift('left');
-//       break;
-
-//     case 'right':
-//       shift('right');
-//       break;
-
-//     case 'up':
-//       vertikalShift('up');
-//       break;
-
-//     case 'down':
-//       vertikalShift('down');
-//       break;
-//   }
-
-//   saveTable();
-
-//   moveCheck(newLocation);
-
-//   x1 = null;
-//   y1 = null;
-// }
-
-// function handleTouchEnd(e) {
-//   if (!x1 || !y1) {
-//     return;
-//   }
-
-//   if (startButton.matches('.start')) {
-//     return;
-//   }
-
-//   if (oldLocation.join() === newLocation.join()) {
-//     return;
-//   }
-
-//   console.log(oldLocation.join());
-//   console.log(newLocation.join());
-
-//   scoreInfo.textContent = score;
-
-//   addCell(playObject);
-//   saveTable();
-//   winOrLose(playObject);
-//   console.log('end');
-// }
-
-// document.addEventListener('touchmove', handleTouchMove);
-// document.addEventListener('touchend', handleTouchEnd);
