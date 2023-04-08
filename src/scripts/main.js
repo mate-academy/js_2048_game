@@ -1,7 +1,6 @@
 'use strict';
 
 let cells = [...document.querySelectorAll('td')];
-let classes = [];
 const score = document.querySelector('.game-score');
 const button = document.querySelector('.start');
 const startMassage = document.querySelector('.message-start');
@@ -70,8 +69,7 @@ button.addEventListener('click', () => {
 
   function addSortRowClasses(direction) {
     const rows = [...document.querySelectorAll('.field-row')];
-
-    classes = [];
+    const classes = [];
 
     for (const row of [...rows]) {
       const sortRowLeft = [];
@@ -178,7 +176,7 @@ button.addEventListener('click', () => {
 
           if ((cell.innerText === cellNext.innerText)
             && cell.innerText.length) {
-            cell.innerText = (+cell.innerText + Number(cellNext.innerText));
+            cell.innerText = (+cell.innerText * 2);
             cell.className = `field-cell field-cell--${cell.innerText}`;
             score.innerHTML = +score.innerHTML + +cell.innerHTML;
             cellNext.className = 'field-cell';
@@ -198,7 +196,7 @@ button.addEventListener('click', () => {
 
           if ((cell.innerText === cellNext.innerText)
             && cell.innerText.length) {
-            cell.innerText = (+cell.innerText + Number(cellNext.innerText));
+            cell.innerText = (+cell.innerText * 2);
             cell.className = `field-cell field-cell--${cell.innerText}`;
             score.innerHTML = +score.innerHTML + +cell.innerHTML;
             cellNext.className = 'field-cell';
@@ -224,8 +222,7 @@ button.addEventListener('click', () => {
           const cell = rows[b].cells[i];
 
           if (cell.innerText === sibling.cells[i].innerText && cell.innerText) {
-            cell.innerText
-              = (+cell.innerText + Number(sibling.cells[i].innerText));
+            cell.innerText = +cell.innerText * 2;
             cell.className = `field-cell field-cell--${cell.innerText}`;
             score.innerHTML = +score.innerHTML + +cell.innerHTML;
             sibling.cells[i].className = 'field-cell';
@@ -247,8 +244,7 @@ button.addEventListener('click', () => {
           const cell = rows[b].cells[i];
 
           if (cell.innerText === sibling.cells[i].innerText && cell.innerText) {
-            cell.innerText
-              = (+cell.innerText + Number(sibling.cells[i].innerText));
+            cell.innerText = +cell.innerText * 2;
             cell.className = `field-cell field-cell--${cell.innerText}`;
             score.innerHTML = +score.innerHTML + +cell.innerHTML;
             sibling.cells[i].className = 'field-cell';
@@ -269,13 +265,16 @@ function checkGameOver() {
     const row = rows[b];
 
     for (let i = 1; i < row.cells.length; i++) {
+      const cell = row.cells[i].innerText;
+      const nextCell = row.cells[i - 1].innerText;
+
       if (b === 0) {
-        if (row.cells[i].innerText === row.cells[i - 1].innerText) {
+        if (cell === nextCell) {
           count++;
         }
       } else {
-        if (row.cells[i].innerText === row.cells[i - 1].innerText
-          || row.cells[i].innerText
+        if (cell === nextCell
+          || cell
           === row.previousElementSibling.cells[i].innerText) {
           count++;
         }
