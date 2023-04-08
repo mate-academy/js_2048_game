@@ -16,36 +16,38 @@ button.addEventListener('click', () => {
   restart.addEventListener('click', () => {
     location.reload();
   });
+
+  if (button.className === 'button restart') {
+    document.addEventListener('keydown', (e) => {
+      if (cells.some(cell => cell.innerHTML === '2048')) {
+        winMassage.classList.remove('hidden');
+      }
+
+      if (e.code === 'ArrowLeft') {
+        sumContantRow('left');
+        addSortRowClasses('left');
+      }
+
+      if (e.code === 'ArrowRight') {
+        sumContantRow('rigth');
+        addSortRowClasses('right');
+      }
+
+      if (e.code === 'ArrowUp') {
+        sumContantColumn('up');
+      }
+
+      if (e.code === 'ArrowDown') {
+        sumContantColumn('down');
+      }
+      generateNewCell();
+      checkGameOver();
+    });
+  }
 });
 
 generateNewCell();
 generateNewCell();
-
-document.addEventListener('keydown', (e) => {
-  if (cells.some(cell => cell.innerHTML === '2048')) {
-    winMassage.classList.remove('hidden');
-  }
-
-  if (e.code === 'ArrowLeft') {
-    sumContantRow('left');
-    addSortRowClasses('left');
-  }
-
-  if (e.code === 'ArrowRight') {
-    sumContantRow('rigth');
-    addSortRowClasses('right');
-  }
-
-  if (e.code === 'ArrowUp') {
-    sumContantColumn('up');
-  }
-
-  if (e.code === 'ArrowDown') {
-    sumContantColumn('down');
-  }
-  generateNewCell();
-  checkGameOver();
-});
 
 function generateNewCell() {
   addUpdatedClassCell();
