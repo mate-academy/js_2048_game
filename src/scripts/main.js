@@ -11,31 +11,21 @@ const cellsData = [];
 let isGameOver = false;
 let score = 0;
 
-// Create an array for each cell
 for (let i = 0; i < 16; i++) {
   cellsData.push({ value: 0 });
 }
 
-// Add a new number to the playing field
 function addNewNumber() {
-  // Get all free cells
   const emptyCells = cellsData.filter((cell) => cell.value === 0);
 
   if (emptyCells.length > 0) {
-    // Select a random free cell
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
     const randomCell = emptyCells[randomIndex];
-    // const randomCell1 = emptyCells[randomIndex + 1];
-    // const randomCell2 = emptyCells[randomIndex + 2];
-
-    // randomCell1.value = 1024;
-    // randomCell2.value = 1024;
-    // Set value to 2 or 4
+    
     randomCell.value = Math.random() < 0.9 ? 2 : 4;
 
     scoreDisplay.textContent = score;
-    // Update cell data on the page
-
+  
     updateCells();
   }
 }
@@ -92,19 +82,16 @@ startButton.addEventListener('click', () => {
 function resetGame() {
   score = 0;
 
-  // Reset all cell values to 0
   cellsData.forEach((cell) => {
     cell.value = 0;
   });
 
   isGameOver = false;
 
-  // Clear score display and messages
   scoreDisplay.textContent = '0';
   loseMessage.classList.remove('show');
   winMessage.classList.remove('show');
 
-  // Remove cell classes
   cells.forEach((cell) => {
     cell.textContent = '';
 
@@ -127,31 +114,20 @@ function resetGame() {
 }
 
 function checkWin() {
-  for (let row = 0; row < cellsData.length; row++) {
-    if (cellsData[row].value === 2048) {
-      return true;
-    }
-  }
-
-  return false;
+  return cellsData.some(cell => cell.value === 2048);
 }
 
 function checkGameOver() {
-  // create emtyCell array where we have only emty cell
   const emptyCells = cellsData.filter(cell => cell.value === 0);
 
   if (emptyCells.length === 0) {
-    // Check if there are any adjacent cells with the same value
-    for (let i = 0; i < cellsData.length; i++) {
+      for (let i = 0; i < cellsData.length; i++) {
       const cell = cellsData[i];
 
-      // current cell is not most right cell
-      //  and neighboring cells are not equal to each other
       if (i % 4 !== 3 && cell.value === cellsData[i + 1].value) {
         return false;
       }
 
-      // the cell is in the first three rows of the playing field
       if (i < 12 && cell.value === cellsData[i + 4].value) {
         return false;
       }
@@ -178,22 +154,19 @@ document.addEventListener('keydown', (eventKey) => {
 });
 
 function mergeCells(row) {
-  const arr = row.filter(num => num); // removing empty cells
-
+  const arr = row.filter(num => num); 
   for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === arr[i + 1]) { // merge cells with the same values
+    if (arr[i] === arr[i + 1]) { 
       arr[i] *= 2;
       score += arr[i];
       arr.splice(i + 1, 1);
     }
   }
 
-  // adding missing empty cells to align the row
   while (arr.length < 4) {
     arr.push(0);
   }
 
-  // scoreDisplay.textContent = score;
   return arr;
 }
 
