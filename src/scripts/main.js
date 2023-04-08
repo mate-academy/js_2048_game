@@ -37,6 +37,8 @@ const addTileToScreen = () => {
 };
 
 const resetGame = () => {
+  document.addEventListener('keydown', move);
+
   score = 0;
 
   const hasMessageLose = messageLose.classList.contains('hidden');
