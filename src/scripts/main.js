@@ -9,6 +9,14 @@ const startMessage = document.querySelector('.message-start');
 const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
 
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+if (isMobile) {
+  startMessage.textContent = `HOW TO PLAY: Swipe with your fingers to move
+    the tiles. Tiles with the same number merge into one when they touch.
+    Add them up to reach 2048! Good luck!`;
+}
+
 start.addEventListener('click', () => {
   messageContainer.style.display = 'none';
   start.hidden = true;
@@ -53,6 +61,44 @@ document.addEventListener('keyup', e => {
     moveLeft();
     hasWon();
     hasLost();
+  }
+});
+
+const gameContainer = document.querySelector('.game-container');
+let startX, startY, endX, endY;
+
+gameContainer.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+});
+
+gameContainer.addEventListener('touchend', e => {
+  endX = e.changedTouches[0].clientX;
+  endY = e.changedTouches[0].clientY;
+
+  const diffX = endX - startX;
+  const diffY = endY - startY;
+
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (diffX > 0) {
+      moveRight();
+      hasWon();
+      hasLost();
+    } else {
+      moveLeft();
+      hasWon();
+      hasLost();
+    }
+  } else {
+    if (diffY > 0) {
+      moveDown();
+      hasWon();
+      hasLost();
+    } else {
+      moveUp();
+      hasWon();
+      hasLost();
+    }
   }
 });
 
