@@ -22,24 +22,25 @@ for (let i = 0; i < arrayCells.length; i++) {
   arrayCells[i] = new Array(tableSize).fill(0);
 }
 
+let handleKeyDown = false;
+
 // Старт або рестарт гри
 button.addEventListener('click', e => {
+  handleKeyDown = true;
+
   if (!button.classList.contains('restart')) {
     button.textContent = 'Restart';
     button.classList.add('restart');
     button.classList.remove('start');
-    // приховую будь-які меседжі
     messageStart.classList.add('hidden');
   } else {
-    // oчищую масив
     for (const element of arrayCells) {
       element.fill(0);
     }
 
-    // очищую клітинку таблиці та прибираю із класу модифікатор
     updateTable();
   }
-  // викликаю функцію генерування випадкових чисел
+
   generateRandomCell();
   generateRandomCell();
 });
@@ -62,29 +63,31 @@ function generateRandomCell() {
 
 // Функції руху - подія для пересування елементів по доці
 document.addEventListener('keydown', e => {
-  switch (e.key) {
-    case 'ArrowRight':
-      moveRight();
-      generateRandomCell();
-      break;
+  if (handleKeyDown) {
+    switch (e.key) {
+      case 'ArrowRight':
+        moveRight();
+        generateRandomCell();
+        break;
 
-    case 'ArrowLeft':
-      moveLeft();
-      generateRandomCell();
-      break;
+      case 'ArrowLeft':
+        moveLeft();
+        generateRandomCell();
+        break;
 
-    case 'ArrowUp':
-      moveUp();
-      generateRandomCell();
-      break;
+      case 'ArrowUp':
+        moveUp();
+        generateRandomCell();
+        break;
 
-    case 'ArrowDown':
-      moveDown();
-      generateRandomCell();
-      break;
+      case 'ArrowDown':
+        moveDown();
+        generateRandomCell();
+        break;
 
-    default:
-      throw new Error('The wrong button was pressed');
+      default:
+        throw new Error('The wrong button was pressed');
+    }
   }
 });
 
