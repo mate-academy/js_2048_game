@@ -213,7 +213,7 @@ function moveDown() {
 
   for (let j = 0; j < tableSize; j++) {
     for (let i = tableSize - 2; i >= 0; i--) {
-      if (arrayCells[i][j] !== 0) { // якщо клітинка не порожня
+      if (arrayCells[i][j] !== 0) {
         let k = i;
 
         while (k < tableSize - 1) {
@@ -221,12 +221,11 @@ function moveDown() {
             arrayCells[k + 1][j] = arrayCells[k][j];
             arrayCells[k][j] = 0;
             k++;
-            movedDown = true; // рух здійснено
+            movedDown = true;
           } else if (arrayCells[k + 1][j] === arrayCells[k][j]) {
-            // якщо нижня клітинка має таке ж значення, що й поточна
             arrayCells[k + 1][j] *= 2;
             arrayCells[k][j] = 0;
-            movedDown = true; // рух здійснено
+            movedDown = true;
             break;
           } else {
             break;
@@ -305,7 +304,6 @@ function checkGameOver() {
     }
   }
 
-  // Якщо жодна з умов не виконана, значить гра закінчилася поразкою
   return true;
 }
 
