@@ -1,7 +1,7 @@
 'use strict';
 
 let board;
-let currnetScore = 0;
+let currentScore = 0;
 let scoreSum = 0;
 const rows = 4;
 const colums = 4;
@@ -25,6 +25,7 @@ function buttonSwitcher() {
     score.textContent = '0';
     scoreSum = 0;
     setGame();
+    document.addEventListener('keyup', keyUpHandler);
   } else if (gameOn === false) {
     startGame.classList.remove('restart');
     startGame.classList.add('start');
@@ -71,15 +72,7 @@ function setGame() {
 }
 
 function hasEmptyTile() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < colums; c++) {
-      if (board[r][c] === 0) {
-        return true;
-      }
-    }
-  }
-
-  return false;
+  return board.some((row) => row.some((cell) => cell === 0));
 }
 
 function setRandom() {
@@ -133,7 +126,7 @@ function updateTile(tile, num) {
 }
 
 function keyUpHandler(e) {
-  currnetScore = 0;
+  currentScore = 0;
 
   if (e.code === 'ArrowLeft') {
     slideLeft();
@@ -151,14 +144,12 @@ function keyUpHandler(e) {
   score.textContent = scoreSum;
 
   score.insertAdjacentHTML('afterend', `
-    <span class="score-update">+${currnetScore}</span>
+    <span class="score-update">+${currentScore}</span>
   `);
 }
 
 if (document !== 'undefined') {
-  document.addEventListener('keyup', keyUpHandler, (e) => {
-    keyUpHandler();
-  });
+  document.addEventListener('keyup', keyUpHandler);
 }
 
 function filterZero(row) {
@@ -173,7 +164,7 @@ function slide(row) {
       row[i] *= 2;
       row[i + 1] = 0;
       scoreSum += row[i];
-      currnetScore += row[i];
+      currentScore += row[i];
     }
   }
 
