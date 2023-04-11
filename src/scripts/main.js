@@ -39,7 +39,21 @@ button.addEventListener('click', e => {
   generateRandomCell();
 });
 
+function checkFreeSpace() {
+  for (const row of arrayCells) {
+    if (row.includes(0)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 function generateRandomCell() {
+  if (!checkFreeSpace()) {
+    return;
+  }
+
   let rowIndex, cellIndex;
 
   do {
@@ -65,21 +79,53 @@ document.addEventListener('keydown', e => {
       case 'ArrowRight':
         moveRight();
         generateRandomCell();
+
+        if (checkGameOver()) {
+          messageLose.classList.remove('hidden');
+        }
+
+        if (checkWin()) {
+          messageWin.classList.remove('hidden');
+        }
         break;
 
       case 'ArrowLeft':
         moveLeft();
         generateRandomCell();
+
+        if (checkGameOver()) {
+          messageLose.classList.remove('hidden');
+        }
+
+        if (checkWin()) {
+          messageWin.classList.remove('hidden');
+        }
         break;
 
       case 'ArrowUp':
         moveUp();
         generateRandomCell();
+
+        if (checkGameOver()) {
+          messageLose.classList.remove('hidden');
+        }
+
+        if (checkWin()) {
+          messageWin.classList.remove('hidden');
+        }
         break;
 
       case 'ArrowDown':
         moveDown();
         generateRandomCell();
+
+        if (checkGameOver()) {
+          messageLose.classList.remove('hidden');
+        }
+
+        if (checkWin()) {
+          messageWin.classList.remove('hidden');
+        }
         break;
 
       default:
@@ -117,14 +163,6 @@ function moveRight() {
 
   if (movedRight) {
     updateTable();
-
-    if (checkWin()) {
-      messageWin.classList.remove('hidden');
-    }
-
-    if (checkGameOver()) {
-      messageLose.classList.remove('hidden');
-    }
   }
 }
 
@@ -157,14 +195,6 @@ function moveLeft() {
 
   if (movedLeft) {
     updateTable();
-
-    if (checkWin()) {
-      messageWin.classList.remove('hidden');
-    }
-
-    if (checkGameOver()) {
-      messageLose.classList.remove('hidden');
-    }
   }
 }
 
@@ -197,14 +227,6 @@ function moveUp() {
 
   if (movedUp) {
     updateTable();
-
-    if (checkWin()) {
-      messageWin.classList.remove('hidden');
-    }
-
-    if (checkGameOver()) {
-      messageLose.classList.remove('hidden');
-    }
   }
 }
 
@@ -237,14 +259,6 @@ function moveDown() {
 
   if (movedDown) {
     updateTable();
-
-    if (checkWin()) {
-      messageWin.classList.remove('hidden');
-    }
-
-    if (checkGameOver()) {
-      messageLose.classList.remove('hidden');
-    }
   }
 }
 
@@ -284,21 +298,16 @@ function checkWin() {
 }
 
 function checkGameOver() {
-  for (let i = 0; i < tableSize; i++) {
-    for (let j = 0; j < tableSize; j++) {
-      if (arrayCells[i][j] === 0) {
-        return false;
-      }
-    }
+  if (checkFreeSpace()) {
+    return false;
   }
 
   for (let i = 0; i < tableSize; i++) {
     for (let j = 0; j < tableSize; j++) {
-      if (i < tableSize - 1 && arrayCells[i][j] === arrayCells[i + 1][j]) {
-        return false;
-      }
-
-      if (j < tableSize - 1 && arrayCells[i][j] === arrayCells[i][j + 1]) {
+      if (
+        (i !== tableSize - 1 && arrayCells[i][j] === arrayCells[i + 1][j])
+        || (j !== tableSize - 1 && arrayCells[i][j] === arrayCells[i][j + 1])
+      ) {
         return false;
       }
     }
