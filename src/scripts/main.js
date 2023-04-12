@@ -1,5 +1,11 @@
 'use strict';
 
+const ClassActions = {
+  ADD: 'add',
+  DELETE: 'delete',
+  REPLACE: 'replace',
+};
+
 let isStarted = false;
 let isWon = false;
 let isLose = false;
@@ -54,15 +60,15 @@ const handleGameStatus = (isGameStarted) => {
 
 const handleCellClasses = (element, value, action) => {
   switch (action) {
-    case 'add':
+    case ClassActions.ADD:
       element.classList.add(`field-cell--${value}`);
       break;
 
-    case 'delete':
+    case ClassActions.DELETE:
       element.classList.remove(`field-cell--${value}`);
       break;
 
-    case 'replace':
+    case ClassActions.REPLACE:
       element.className = `field-cell field-cell--${value}`;
       break;
 
@@ -143,9 +149,14 @@ const moveSingleSetOfCells = (setOfCells) => {
         const newValue = currentCellValue + currentCellValue;
 
         setOfCells[i].innerHTML = newValue;
-        handleCellClasses(setOfCells[i], setOfCells[i].innerHTML, 'replace');
 
-        handleCellClasses(setOfCells[j], currentCellValue, 'delete');
+        handleCellClasses(
+          setOfCells[i],
+          setOfCells[i].innerHTML,
+          ClassActions.REPLACE
+        );
+
+        handleCellClasses(setOfCells[j], currentCellValue, ClassActions.DELETE);
         setOfCells[j].innerHTML = '';
 
         scoreTable.innerHTML = +scoreTable.innerHTML + newValue;
@@ -161,9 +172,18 @@ const moveSingleSetOfCells = (setOfCells) => {
     for (let j = i - 1; j >= 0; j--) {
       if (isCurrentEmpty && setOfCells[j].innerHTML !== '') {
         setOfCells[i].innerHTML = setOfCells[j].innerHTML;
-        handleCellClasses(setOfCells[i], setOfCells[j].innerHTML, 'add');
 
-        handleCellClasses(setOfCells[j], setOfCells[j].innerHTML, 'delete');
+        handleCellClasses(
+          setOfCells[i],
+          setOfCells[j].innerHTML,
+          ClassActions.ADD
+        );
+
+        handleCellClasses(
+          setOfCells[j],
+          setOfCells[j].innerHTML,
+          ClassActions.DELETE
+        );
         setOfCells[j].innerHTML = '';
         break;
       }
@@ -181,7 +201,7 @@ const createCell = () => {
     const cellValue = Math.random() < 0.9 ? 2 : 4;
 
     emptyCells[randomCellIndex].innerHTML = cellValue;
-    handleCellClasses(emptyCells[randomCellIndex], cellValue, 'add');
+    handleCellClasses(emptyCells[randomCellIndex], cellValue, ClassActions.ADD);
   }
 };
 
