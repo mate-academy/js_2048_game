@@ -78,9 +78,7 @@ function renderField(gameField) {
       cell.classList.add(`field-cell--${fieldValue}`);
     }
 
-    if (fieldValue === 2048) {
-        gameWin = true;
-    }
+    gameWin = fieldValue === 2048;
   }
 
   if (gameWin) {
