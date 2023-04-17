@@ -11,6 +11,10 @@ const columns = 4;
 let score = 0;
 let gammeBoard = [];
 let flagEnd = 0;
+let flagDoublingLeft = true;
+let flagDoublingRight = true;
+let flagDoublingUp = true;
+let flagDoublingDown = true;
 
 buttonStart.addEventListener('click', () => {
   buttonStart.classList.value = '';
@@ -24,6 +28,12 @@ buttonStart.addEventListener('click', () => {
 });
 
 function setGame() {
+  flagEnd = 0;
+  flagDoublingLeft = true;
+  flagDoublingRight = true;
+  flagDoublingUp = true;
+  flagDoublingDown = true;
+
   gammeBoard = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -100,27 +110,52 @@ function updateTile(tile, num) {
 }
 
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft') {
-    flagEnd = score;
-    slideLeft();
-    setRandomInEmptyCell();
-  } else if (e.code === 'ArrowRight') {
-    flagEnd = score;
-    slideRight();
-    setRandomInEmptyCell();
-  } else if (e.code === 'ArrowUp') {
-    flagEnd = score;
-    slideUp();
-    setRandomInEmptyCell();
-  } else if (e.code === 'ArrowDown') {
-    flagEnd = score;
-    slideDown();
-    setRandomInEmptyCell();
+  switch (e.code) {
+    case 'ArrowLeft':
+      flagEnd = score;
+      slideLeft();
+      setRandomInEmptyCell();
 
-    if (flagEnd === score && !emptyTile()) {
-      messageOver.classList.remove('hidden');
-      messageOver.style.color = '#f87474';
-    }
+      if (flagEnd === score) {
+        flagDoublingLeft = false;
+      }
+      break;
+
+    case 'ArrowRight':
+      flagEnd = score;
+      slideRight();
+      setRandomInEmptyCell();
+
+      if (flagEnd === score) {
+        flagDoublingRight = false;
+      }
+      break;
+
+    case 'ArrowUp':
+      flagEnd = score;
+      slideUp();
+      setRandomInEmptyCell();
+
+      if (flagEnd === score) {
+        flagDoublingUp = false;
+      }
+      break;
+
+    case 'ArrowDown':
+      flagEnd = score;
+      slideDown();
+      setRandomInEmptyCell();
+
+      if (flagEnd === score) {
+        flagDoublingDown = false;
+      }
+      break;
+  }
+
+  if (!flagDoublingDown && !flagDoublingLeft
+    && !flagDoublingRight && !flagDoublingUp && !emptyTile()) {
+    messageOver.classList.remove('hidden');
+    messageOver.style.color = '#f87474';
   }
 
   document.querySelector('.game-score').innerText = score;
