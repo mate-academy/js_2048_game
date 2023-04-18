@@ -39,7 +39,7 @@ function setRandomValue() {
     const col = Math.floor(Math.random() * 4);
 
     if (gameTable[row][col] === 0) {
-      const value = (Math.random() >= 0.75) ? 4 : 2;
+      const value = (Math.random() >= 0.9) ? 4 : 2;
 
       gameTable[row][col] = value;
       break;
