@@ -1,17 +1,17 @@
 'use strict';
 
-const theOnlyButton = document.querySelector('.button');
+const startGameButton = document.querySelector('.button');
 const board = document.querySelector('tbody');
 const boardSize = 4;
 const pointsCounter = document.querySelector('.game-score');
 const messageForWinner = document.querySelector('.message-win');
-const messageForLooser = document.querySelector('.message-lose');
+const messageForLoser = document.querySelector('.message-lose');
 const allCells = document.querySelectorAll('td');
 const winnerScore = 2048;
 let score = 0;
 
-theOnlyButton.addEventListener('click', () => {
-  changeButtonClass();
+startGameButton.addEventListener('click', () => {
+  changeStartBtnToRestartBtn();
   hideStartMessage();
 
   [...allCells].forEach(cell => {
@@ -21,11 +21,11 @@ theOnlyButton.addEventListener('click', () => {
     return cell;
   });
 
-  if (messageForLooser.classList.contains('hidden') === false) {
-    messageForLooser.classList.add('hidden');
+  if (!messageForLoser.classList.contains('hidden')) {
+    messageForLoser.classList.add('hidden');
   }
 
-  if (messageForWinner.classList.contains('hidden') === false) {
+  if (!messageForWinner.classList.contains('hidden')) {
     messageForWinner.classList.add('hidden');
   }
 
@@ -34,21 +34,61 @@ theOnlyButton.addEventListener('click', () => {
   generateNumber();
 });
 
-function changeButtonClass() {
-  theOnlyButton.textContent = 'Restart';
-  theOnlyButton.classList.remove('start');
-  theOnlyButton.classList.add('restart');
+function changeStartBtnToRestartBtn() {
+  if (startGameButton.classList.contains('start')) {
+    startGameButton.textContent = 'Restart';
+    startGameButton.classList.remove('start');
+    startGameButton.classList.add('restart');
+  }
 }
 
 function hideStartMessage() {
-  document.querySelector('.message-start').classList.add('hidden');
+  const messageBeforeStart = document.querySelector('.message-start');
+
+  if (!messageBeforeStart.classList.contains('hidden')) {
+    messageBeforeStart.classList.add('hidden');
+  }
+}
+
+function checkIfMergePossible() {
+  const numbersInColumns = makeArrayOfNumbersInColumns();
+  const numbersInRows = makeArrayOfNumbersInRows();
+  let isPair = true;
+  let isVerticalPair = false;
+  let isHorizontalPair = false;
+
+  for (const array of numbersInRows) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === array[i + 1]) {
+        isHorizontalPair = true;
+        break;
+      }
+    }
+  }
+
+  for (const array of numbersInColumns) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === array[i + 1]) {
+        isVerticalPair = true;
+        break;
+      }
+    }
+  }
+
+  if (!isHorizontalPair && !isVerticalPair) {
+    isPair = false;
+  }
+
+  if (!isPair) {
+    messageForLoser.classList.remove('hidden');
+  }
 }
 
 function generateNumber() {
-  const isEmptyCell = [...allCells].some(cell => cell.textContent === '');
+  const isEmptyCell = [...allCells].some(cell => !cell.textContent);
 
   if (!isEmptyCell) {
-    messageForLooser.classList.remove('hidden');
+    checkIfMergePossible();
 
     return;
   }
@@ -60,7 +100,7 @@ function generateNumber() {
     const verticallyCell = Math.floor(Math.random() * boardSize);
     const cellForNewNumber = board.rows[horizontallyCell].cells[verticallyCell];
 
-    if (cellForNewNumber.textContent === '') {
+    if (!cellForNewNumber.textContent) {
       const newNumber = Math.random() >= 0.9 ? 4 : 2;
 
       cellForNewNumber.textContent = `${newNumber}`;
@@ -71,30 +111,37 @@ function generateNumber() {
 }
 
 document.addEventListener('keyup', (e) => {
-  hideStartMessage();
-
-  if (e.code === 'Numpad8') {
+  if (e.code === 'Numpad8' || e.code === 'ArrowUp') {
+    hideStartMessage();
+    changeStartBtnToRestartBtn();
     moveNumbersUp();
+    pointsCounter.textContent = `${score}`;
     generateNumber();
   }
 
-  if (e.code === 'Numpad6') {
+  if (e.code === 'Numpad6' || e.code === 'ArrowRight') {
+    hideStartMessage();
+    changeStartBtnToRestartBtn();
     moveNumbersRight();
+    pointsCounter.textContent = `${score}`;
     generateNumber();
   }
 
-  if (e.code === 'Numpad4') {
+  if (e.code === 'Numpad4' || e.code === 'ArrowLeft') {
+    hideStartMessage();
+    changeStartBtnToRestartBtn();
     moveNumbersLeft();
+    pointsCounter.textContent = `${score}`;
     generateNumber();
   }
 
-  if (e.code === 'Numpad2') {
+  if (e.code === 'Numpad2' || e.code === 'ArrowDown') {
+    hideStartMessage();
+    changeStartBtnToRestartBtn();
     moveNumbersDown();
+    pointsCounter.textContent = `${score}`;
     generateNumber();
   }
-
-  pointsCounter.textContent = `${score}`;
-  changeButtonClass();
 });
 
 function makeArrayOfNumbersInColumns() {
@@ -102,15 +149,15 @@ function makeArrayOfNumbersInColumns() {
   let step = 0;
 
   do {
-    const ar = [];
+    const arr = [];
 
     for (let i = step; i < allCells.length; i += boardSize) {
-      if (allCells[i].textContent !== '') {
-        ar.push(Number(allCells[i].textContent));
+      if (allCells[i].textContent) {
+        arr.push(Number(allCells[i].textContent));
       }
     }
 
-    array.push(ar);
+    array.push(arr);
     step++;
   } while (step !== 4);
 
@@ -160,21 +207,21 @@ function matchNumbersOpp(array) {
 }
 
 function makeArrayOfNumbersInRows() {
-  const ar = [];
+  const arr = [];
 
   [...board.rows].forEach(row => {
     const array = [];
 
     [...row.cells].forEach(cell => {
-      if (cell.textContent !== '') {
+      if (cell.textContent) {
         array.push(Number(cell.textContent));
       }
     });
 
-    ar.push(array);
+    arr.push(array);
   });
 
-  return ar;
+  return arr;
 }
 
 function moveNumbersUp() {
