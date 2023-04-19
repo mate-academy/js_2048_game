@@ -28,13 +28,15 @@ let gameTable = [
 function checkEmptySpace() {
   for (let i = 0; i < gameTable.length; i++) {
     if (gameTable[i].includes(0)) {
-      return false;
+      return true;
     }
   }
+
+  return false;
 };
 
 function setRandomValue() {
-  while (!checkEmptySpace()) {
+  while (checkEmptySpace()) {
     const row = Math.floor(Math.random() * 4);
     const col = Math.floor(Math.random() * 4);
 
@@ -70,7 +72,7 @@ function addValueToCells() {
   });
 };
 
-function cellsConnetion(data) {
+function mergeCell(data) {
   const arrayResult = [];
 
   let firstEl = data.shift();
@@ -120,7 +122,7 @@ function moveCells(direction) {
           arrayElements.push(gameTable[j][i]);
         };
 
-        const newElements = cellsConnetion(arrayElements.filter(el => el > 0));
+        const newElements = mergeCell(arrayElements.filter(el => el > 0));
 
         if (newElements) {
           for (let l = 0; l < newElements.length; l++) {
@@ -139,7 +141,7 @@ function moveCells(direction) {
           arrayElements.push(gameTable[gameTable.length - 1 - j][i]);
         };
 
-        const newElements = cellsConnetion(arrayElements.filter(el => el > 0));
+        const newElements = mergeCell(arrayElements.filter(el => el > 0));
 
         if (newElements) {
           for (let l = 0; l < newElements.length; l++) {
@@ -152,7 +154,7 @@ function moveCells(direction) {
 
     case arrowKeyCode.left:
       for (let i = 0; i < gameTable.length; i++) {
-        const newElements = cellsConnetion(gameTable[i].filter(el => el > 0));
+        const newElements = mergeCell(gameTable[i].filter(el => el > 0));
 
         if (newElements) {
           for (let j = 0; j < newElements.length; j++) {
@@ -166,7 +168,7 @@ function moveCells(direction) {
     case arrowKeyCode.right:
       for (let i = 0; i < gameTable.length; i++) {
         const newElements
-          = cellsConnetion(gameTable[i].filter(el => el > 0).reverse());
+          = mergeCell(gameTable[i].filter(el => el > 0).reverse());
 
         if (newElements) {
           for (let j = 0; j < newElements.length; j++) {
@@ -184,7 +186,7 @@ function moveCells(direction) {
   return gameTableData;
 };
 
-function gameEnd() {
+function isGameFinished() {
   if (`${gameTable}` !== `${moveCells(arrowKeyCode.up)}`
   || `${gameTable}` !== `${moveCells(arrowKeyCode.down)}`
   || `${gameTable}` !== `${moveCells(arrowKeyCode.left)}`
@@ -240,7 +242,7 @@ function startGame(e) {
     sumScore();
     setRandomValue();
 
-    if (!checkEmptySpace() && !gameEnd()) {
+    if (!checkEmptySpace() && !isGameFinished()) {
       showResultMessage(false);
     }
 
