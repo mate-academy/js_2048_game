@@ -8,8 +8,10 @@ startButton.insertAdjacentHTML('afterend', `
 
 const restartButton = document.querySelector('.restart');
 const messageStart = document.querySelector('.message-start');
-const gameField = document.querySelector('.game-field').firstElementChild;
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
 const fieldCells = document.querySelectorAll('.field-cell');
+const scoreSpan = document.querySelector('.game-score');
 
 const getRandomCellValue = () => {
   return Math.floor(Math.random() * 10) < 9 ? 2 : 4;
@@ -30,19 +32,17 @@ const fillNewCell = () => {
   cell.classList.add(`field-cell--${value}`);
 };
 
-const firstMove = () => {
-  fillNewCell();
-  fillNewCell();
-};
-
-const toggleHidden = (element) => {
-  element.classList.toggle('hidden');
+const toggleHidden = (...elements) => {
+  elements.forEach(element => {
+    element.classList.toggle('hidden');
+  }); ;
 };
 
 startButton.addEventListener('click', () => {
-  // firstMove();
-  toggleHidden(startButton);
-  toggleHidden(restartButton);
+  fillNewCell();
+  fillNewCell();
+  toggleHidden(startButton, restartButton, messageStart);
+  document.addEventListener('keydown', handleMove);
 });
 
 restartButton.addEventListener('click', () => {
@@ -50,40 +50,19 @@ restartButton.addEventListener('click', () => {
     item.textContent = '';
     item.className = 'field-cell';
   });
-  toggleHidden(restartButton);
-  toggleHidden(startButton);
+  toggleHidden(startButton, restartButton, messageStart, messageLose);
+  setScore(0);
+  document.addEventListener('keydown', handleMove);
 });
 
-// moves
+const setProperClass = (cell) => {
+  if (cell.textContent) {
+    cell.className = `field-cell field-cell--${cell.textContent}`;
 
-const getCellInfo = (cell) => {
-  const parentRow = cell.parentElement;
-  const colIndex = [...parentRow.children].findIndex(el => el === cell);
-  const rowIndex = [...parentRow.parentElement.children].findIndex(el => el === parentRow);
-
-  return {
-    col: colIndex, row: rowIndex, value: cell.textContent,
-  };
-};
-
-const isChange = (prev) => {
-  const curr = getValuesSum();
-
-  return prev !== curr;
-};
-
-const getValuesSum = () => {
-  return [...fieldCells].reduce((acc, item) => {
-    return acc + +item.textContent;
-  }, 0);
-};
-
-const checkEmptyCells = () => {
-  const activeCells = [...fieldCells].filter(item => item.classList.length === 2);
-
-  if (activeCells.length === 16) {
-    console.log('finish');
+    return;
   }
+
+  cell.className = `field-cell`;
 };
 
 const move = (start, endX, endY, step, stepX, stepY) => {
@@ -96,27 +75,68 @@ const move = (start, endX, endY, step, stepX, stepY) => {
       }
     }
 
-    for (let o = 0; o < 3; o++) {
-      for (let i = start; i !== endX; i += stepX) {
-        if (line[i].textContent) {
-          continue;
+    const changeValues = (i, b) => {
+      const temp = line[i + b].textContent;
+
+      line[i].textContent = temp;
+
+      // if (temp) {
+      //   temp *= 2;
+      // }
+      line[i].textContent = temp;
+      setProperClass(line[i]);
+      line[i + b].textContent = '';
+      setProperClass(line[i + b]);
+    };
+
+    const moveLine = (a = start, b = stepX) => {
+      for (let i = a; i !== endX; i += b) {
+        if (line[i].textContent === line[i + b].textContent && line[i].textContent) {
+          setProperClass(line[i]);
         }
 
         if (!line[i].textContent) {
-          const temp = line[i + stepX].textContent;
-
-          line[i].textContent = temp;
-          line[i + stepX].textContent = '';
+          changeValues(i, b);
         }
+      };
+    };
+
+    const collapseLine = (i, b) => {
+      let equalCount = 0;
+
+      if (line[i].textContent === line[i + b].textContent && !!line[i].textContent) {
+        equalCount++;
+
+        const temp = line[i].textContent;
+
+        line[i].textContent = temp * 2;
+        setProperClass(line[i]);
+        line[i + b].textContent = '';
+        setProperClass(line[i + b]);
+
+        // changeValues(i, b);
+        setScore(+scoreSpan.textContent + +line[i].textContent * 2);
+      }
+
+      return equalCount;
+    };
+
+    for (let y = 0; y < 3; y++) {
+      moveLine();
+    };
+
+    for (let i = start; i !== endX; i += stepX) {
+      if (collapseLine(i, stepX)) {
+        moveLine(i, stepX);
       };
     };
   }
 };
 
-document.addEventListener('keydown', (e) => {
+const handleMove = (e) => {
+  const prevState = getFieldState();
+
   if (e.key === 'ArrowDown') {
-    // fillNewCell();
-    // checkEmptyCells();
     move(3, 0, 4, 1, -1, 4);
   };
 
@@ -131,4 +151,48 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') {
     move(0, 3, 16, 4, 1, 1);
   }
-});
+
+  const currState = getFieldState();
+
+  if (checkWin()) {
+    toggleHidden(messageWin);
+  }
+
+  if (checkStateChange(prevState, currState)) {
+    fillNewCell();
+  }
+
+  if (!checkStateChange(prevState, currState) && !checkEmptyCells()) {
+    toggleHidden(messageLose);
+
+    document.removeEventListener('keydown', handleMove);
+  }
+};
+
+const setScore = (value) => {
+  scoreSpan.textContent = value;
+};
+
+const getFieldState = (cells = fieldCells) => {
+  return [...cells].map(cell => cell.textContent);
+};
+
+const checkStateChange = (prev, curr) => {
+  for (let i = 0; i < prev.length; i++) {
+    if (prev[i] !== curr[i]) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+const checkEmptyCells = () => {
+  return [...fieldCells].some(el => {
+    return el.classList.length === 1;
+  });
+};
+
+const checkWin = () => {
+  return [...fieldCells].some(el => el.textContent === 2048);
+};
