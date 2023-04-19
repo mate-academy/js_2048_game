@@ -161,14 +161,14 @@ function handleMoveUp(x, minIndex, maxIndex) {
         = mergedCellCoords[x] !== y && mergedCellCoords[x] !== y + 1;
 
       if (nextCellInCol !== 0 && cell === 0) {
-        game[y][x] = game[y + 1][x];
+        game[y][x] = nextCellInCol;
         game[y + 1][x] = 0;
 
         swiped = true;
       }
 
       if (nextCellInCol === cell && cell !== 0 && cellsCanBeMerged) {
-        game[y][x] += game[y + 1][x];
+        game[y][x] += nextCellInCol;
         game[y + 1][x] = 0;
 
         increaseScore(cell + nextCellInCol);
@@ -200,14 +200,14 @@ function handleMoveDown(x, minIndex, maxIndex) {
         = mergedCellCoords[x] !== y && mergedCellCoords[x] !== y - 1;
 
       if (nextCellInCol !== 0 && cell === 0) {
-        game[y][x] = game[y - 1][x];
+        game[y][x] = nextCellInCol;
         game[y - 1][x] = 0;
 
         swiped = true;
       }
 
       if (nextCellInCol === cell && cell !== 0 && cellsCanBeMerged) {
-        game[y][x] += game[y - 1][x];
+        game[y][x] += nextCellInCol;
         game[y - 1][x] = 0;
 
         increaseScore(cell + nextCellInCol);
@@ -239,14 +239,14 @@ function handleMoveLeft(x, minIndex, maxIndex) {
         = mergedCellCoords[x] !== y && mergedCellCoords[x] !== y + 1;
 
       if (nextCellInRow !== 0 && cell === 0) {
-        game[x][y] = game[x][y + 1];
+        game[x][y] = nextCellInRow;
         game[x][y + 1] = 0;
 
         swiped = true;
       }
 
       if (nextCellInRow === cell && cell !== 0 && cellsCanBeMerged) {
-        game[x][y] += game[x][y + 1];
+        game[x][y] += nextCellInRow;
         game[x][y + 1] = 0;
 
         increaseScore(cell + nextCellInRow);
@@ -278,14 +278,14 @@ function handleMoveRight(x, minIndex, maxIndex) {
         = mergedCellCoords[x] !== y && mergedCellCoords[x] !== y - 1;
 
       if (nextCellInRow !== 0 && cell === 0) {
-        game[x][y] = game[x][y - 1];
+        game[x][y] = nextCellInRow;
         game[x][y - 1] = 0;
 
         swiped = true;
       }
 
       if (nextCellInRow === cell && cell !== 0 && cellsCanBeMerged) {
-        game[x][y] += game[x][y - 1];
+        game[x][y] += nextCellInRow;
         game[x][y - 1] = 0;
 
         increaseScore(cell + nextCellInRow);
