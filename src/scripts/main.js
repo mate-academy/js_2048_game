@@ -1,6 +1,6 @@
 'use strict';
 
-const start = document.querySelector('.start');
+const startButton = document.querySelector('.start');
 const table = document.querySelector('tbody');
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
@@ -16,7 +16,7 @@ let board = [
   [0, 0, 0, 0],
 ];
 
-start.addEventListener('click', gameStart);
+startButton.addEventListener('click', gameStart);
 
 function gameStart() {
   board = [
@@ -27,18 +27,18 @@ function gameStart() {
   ];
   score = 0;
 
-  start.classList.replace('start', 'restart');
+  startButton.classList.replace('start', 'restart');
   messageStart.classList.add('hidden');
   messageLose.classList.add('hidden');
 
-  start.innerText = 'Restart';
+  startButton.innerText = 'Restart';
 
   randomNum();
   randomNum();
 };
 
 document.addEventListener('keyup', e => {
-  if (!start.classList.contains('restart')) {
+  if (!startButton.classList.contains('restart')) {
     return;
   };
 
@@ -80,8 +80,8 @@ function renderHtml() {
 
       if (value === 2048) {
         messageWin.classList.remove('hidden');
-        start.classList.replace('restart', 'start');
-        start.innerText = 'Start';
+        startButton.classList.replace('restart', 'start');
+        startButton.innerText = 'Start';
       }
     }
   }
