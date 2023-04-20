@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
-"use strict";
+'use strict';
 
 // write your code here
 
@@ -8,26 +8,26 @@ let board;
 let score = 0;
 const rows = 4;
 const columns = 4;
-const field = document.querySelector("tbody");
-const button = document.querySelector("button");
-const startingMsg = document.querySelector(".message-start");
-const winnigMsg = document.querySelector(".message-win");
-const loseMsg = document.querySelector(".message-lose");
+const field = document.querySelector('tbody');
+const button = document.querySelector('button');
+const startingMsg = document.querySelector('.message-start');
+const winnigMsg = document.querySelector('.message-win');
+const loseMsg = document.querySelector('.message-lose');
 
-button.addEventListener("click", buttonHandler);
+button.addEventListener('click', buttonHandler);
 
 function buttonHandler() {
   score = 0;
-  document.querySelector(".game-score").innerText = score;
+  document.querySelector('.game-score').innerText = score;
 
-  if (button.classList.contains("start")) {
-    button.classList.replace("start", "restart");
-    button.innerText = "Restart";
-    startingMsg.classList.add("hidden");
+  if (button.classList.contains('start')) {
+    button.classList.replace('start', 'restart');
+    button.innerText = 'Restart';
+    startingMsg.classList.add('hidden');
     setEmptyBoard();
   } else {
-    winnigMsg.classList.add("hidden");
-    loseMsg.classList.add("hidden");
+    winnigMsg.classList.add('hidden');
+    loseMsg.classList.add('hidden');
     setEmptyBoard();
   }
 }
@@ -60,6 +60,7 @@ function isEmptyTile() {
       }
     }
   }
+
   return false;
 }
 
@@ -85,23 +86,23 @@ function setBoard() {
   }
 }
 
-document.addEventListener("keyup", (e) => {
+document.addEventListener('keyup', (e) => {
   const pressedKey = e.key;
 
   switch (pressedKey) {
-    case "ArrowUp":
+    case 'ArrowUp':
       slideUp();
       setBoard();
       break;
-    case "ArrowDown":
+    case 'ArrowDown':
       slideDown();
       setBoard();
       break;
-    case "ArrowLeft":
+    case 'ArrowLeft':
       slideLeft();
       setBoard();
       break;
-    case "ArrowRight":
+    case 'ArrowRight':
       slideRight();
       setBoard();
       break;
@@ -112,16 +113,17 @@ document.addEventListener("keyup", (e) => {
 });
 
 function updateTile(tile, num) {
-  tile.innerText = "";
-  tile.className = "field-cell";
-  document.querySelector(".game-score").textContent = score.toString();
+  tile.innerText = '';
+  tile.className = 'field-cell';
+  document.querySelector('.game-score').textContent = score.toString();
 
   if (num > 0) {
     tile.innerText = num.toString();
     tile.classList.add(`field-cell--${num}`);
 
     if (num === 2048) {
-      winnigMsg.classList.remove("hidden");
+      winnigMsg.classList.remove('hidden');
+
       return;
     }
   }
@@ -164,6 +166,7 @@ function slideLeft() {
       const cell = field.rows[r].cells[c];
 
       const num = board[r][c];
+
       updateTile(cell, num);
     }
   }
@@ -192,10 +195,12 @@ function slideRight() {
 function slideUp() {
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+
     row = slide(row);
 
     for (let r = 0; r < rows; r++) {
       board[r][c] = row[r];
+
       const cell = field.rows[r].cells[c];
 
       const num = board[r][c];
@@ -208,12 +213,14 @@ function slideUp() {
 function slideDown() {
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+
     row.reverse();
     row = slide(row);
     row.reverse();
 
     for (let r = 0; r < rows; r++) {
       board[r][c] = row[r];
+
       const cell = field.rows[r].cells[c];
 
       const num = board[r][c];
@@ -228,7 +235,7 @@ function gameHasMove() {
     return;
   }
 
-  for (let row = 0; row < rows - 1; row++) {
+  for (let row = 0; row < rows ; row++) {
     for (let cell = 0; cell < columns - 1; cell++) {
       const isNextSame = board[row][cell] === board[row][cell + 1];
       const isBelowSame = board[cell][row] === board[cell + 1][row];
@@ -238,5 +245,6 @@ function gameHasMove() {
       }
     }
   }
-  loseMsg.classList.remove("hidden");
+  loseMsg.classList.remove('hidden');
+  return;
 }
