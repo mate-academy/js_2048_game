@@ -65,6 +65,19 @@ const setProperClass = (cell) => {
   cell.className = `field-cell`;
 };
 
+const changeValues = (line, valA, valB, mult = 0) => {
+  let temp = line[valA + valB].textContent;
+
+  if (mult) {
+    temp *= 2;
+  }
+
+  line[valA].textContent = temp;
+  setProperClass(line[valA]);
+  line[valA + valB].textContent = '';
+  setProperClass(line[valA + valB]);
+};
+
 const move = (start, endX, endY, step, stepX, stepY) => {
   for (let x = 0; x < endY; x += step) {
     const line = [];
@@ -75,54 +88,34 @@ const move = (start, endX, endY, step, stepX, stepY) => {
       }
     }
 
-    const changeValues = (i, b) => {
-      const temp = line[i + b].textContent;
-
-      line[i].textContent = temp;
-
-      // if (temp) {
-      //   temp *= 2;
-      // }
-      line[i].textContent = temp;
-      setProperClass(line[i]);
-      line[i + b].textContent = '';
-      setProperClass(line[i + b]);
-    };
-
     const moveLine = (a = start, b = stepX) => {
       for (let i = a; i !== endX; i += b) {
-        if (line[i].textContent === line[i + b].textContent && line[i].textContent) {
-          setProperClass(line[i]);
+        if (!line[i].textContent) {
+          changeValues(line, i, b);
         }
 
-        if (!line[i].textContent) {
-          changeValues(i, b);
+        if (line[i].textContent === line[i + b].textContent
+           && line[i].textContent) {
+          setProperClass(line[i]);
         }
       };
+    };
+
+    for (let y = 0; y < 3; y++) {
+      moveLine();
     };
 
     const collapseLine = (i, b) => {
       let equalCount = 0;
 
-      if (line[i].textContent === line[i + b].textContent && !!line[i].textContent) {
+      if (line[i].textContent === line[i + b].textContent
+        && !!line[i].textContent) {
         equalCount++;
-
-        const temp = line[i].textContent;
-
-        line[i].textContent = temp * 2;
-        setProperClass(line[i]);
-        line[i + b].textContent = '';
-        setProperClass(line[i + b]);
-
-        // changeValues(i, b);
+        changeValues(line, i, b, 2);
         setScore(+scoreSpan.textContent + +line[i].textContent * 2);
       }
 
       return equalCount;
-    };
-
-    for (let y = 0; y < 3; y++) {
-      moveLine();
     };
 
     for (let i = start; i !== endX; i += stepX) {
