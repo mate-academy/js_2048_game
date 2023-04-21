@@ -74,8 +74,7 @@ function setTwo() {
   let found = false;
 
   while (!found) {
-    // random r, c
-    const r = Math.floor(Math.random() * rows); // 0-1 * 4 -> 0 - 4
+    const r = Math.floor(Math.random() * rows);
     const c = Math.floor(Math.random() * columns);
 
     if (board[r][c] === 0) {
@@ -94,7 +93,7 @@ function setTwo() {
 
 function updateTile(tile, num) {
   tile.innerText = '';
-  tile.classList.value = ''; // clear the classList
+  tile.classList.value = '';
   tile.classList.add('tile');
 
   if (num > 0) {
@@ -127,7 +126,7 @@ document.addEventListener('keyup', (e) => {
 });
 
 function filterZero(argRow) {
-  return argRow.filter(num => num); // create a new array without zeroes
+  return argRow.filter(num => num);
 }
 
 function slideCheck(argRow) {
@@ -150,13 +149,9 @@ function slideCheck(argRow) {
 }
 
 function slide(argRow) {
-  // [0, 2, 2, 2]
+  let copyRow = filterZero(argRow);
 
-  let copyRow = filterZero(argRow); // get rid of zeroes -> [2, 2, 2]
-
-  // slide
   for (let i = 0; i < copyRow.length - 1; i++) {
-    // check every 2
     if (copyRow[i] === copyRow[i + 1]) {
       copyRow[i] *= 2;
       copyRow[i + 1] = 0;
@@ -164,12 +159,11 @@ function slide(argRow) {
     }
   }
 
-  copyRow = filterZero(copyRow); // [4, 2]
+  copyRow = filterZero(copyRow);
 
-  // add zeroes
   while (copyRow.length < columns) {
     copyRow.push(0);
-  } // [4, 2, 0, 0]
+  }
 
   return copyRow;
 }
