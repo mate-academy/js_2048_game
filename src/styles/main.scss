@@ -8,77 +8,87 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+
 }
 
-.field-cell {
-  background: #d6cdc4;
+#board {
+  width: 340px;
+  height: 340px;
+
+  background-color: #cdc1b5;
+  border: 5px solid #bbada0;
+  border-radius: 5px;
+
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tile {
   width: 75px;
   height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
+  border: 5px solid #bbada0;
 
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
+  font-size: 30px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+.x2 {
+  background-color: #eee4da;
+  color: #727371;
+}
+
+.x4 {
+  background-color: #ece0ca;
+  color: #727371;
+}
+
+.x8 {
+  background-color: #f4b17a;
+  color: white;
+}
+
+.x16 {
+  background-color: #f59575;
+  color: white;
+}
+
+.x32 {
+  background-color: #f57c5f;
+  color: white;
+}
+
+.x64 {
+  background-color: #f65d3b;
+  color: white;
+}
+
+.x128 {
+  background-color: #edce71;
+  color: white;
+}
+
+.x256 {
+  background-color: #edcc63;
+  color: white;
+}
+
+.x512 {
+  background-color: #edc651;
+  color: white;
+}
+
+.x1024 {
+  background-color: #eec744;
+  color: white;
+}
+
+.x2048 {
+  background-color: #fe3d3d;
+  color: white;
 }
 
 .game-header {
@@ -133,6 +143,7 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
+  margin-bottom: 20px;
 
   transition: 0.25s ease background;
 }
@@ -147,10 +158,10 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #f87474;
 
   &:hover {
-    background: #f87474;
+    background: #ee6b6b;
   }
 }
 
@@ -185,3 +196,4 @@ h1 {
   width: 100%;
   height: 150px;
 }
+// d
