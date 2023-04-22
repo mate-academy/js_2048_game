@@ -72,7 +72,7 @@ function setGame() {
 }
 
 function hasEmptyTile() {
-  return board.some((row) => row.some((cell) => cell === 0));
+  return board.some((row) => row.some((cell) => !cell));
 }
 
 function setRandom() {
@@ -153,7 +153,7 @@ if (document !== 'undefined') {
 }
 
 function filterZero(row) {
-  return row.filter(num => num !== 0);
+  return row.filter(num => num);
 }
 
 function slide(row) {
