@@ -1,8 +1,4 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-console */
 'use strict';
-
-// write your code here
 
 let board;
 let score = 0;
@@ -235,7 +231,7 @@ function gameHasMove() {
     return;
   }
 
-  for (let row = 0; row < rows ; row++) {
+  for (let row = 0; row < rows; row++) {
     for (let cell = 0; cell < columns - 1; cell++) {
       const isNextSame = board[row][cell] === board[row][cell + 1];
       const isBelowSame = board[cell][row] === board[cell + 1][row];
@@ -246,5 +242,4 @@ function gameHasMove() {
     }
   }
   loseMsg.classList.remove('hidden');
-  return;
 }
