@@ -57,16 +57,31 @@ function setGame() {
 };
 
 function hasEmptyTile() {
+  let canMove = false;
+
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       if (board[r][c] === 0) {
         return true;
       }
+
+      if (c < columns - 1 && board[r][c] === board[r][c + 1]) {
+        canMove = true;
+      }
+
+      if (r < rows - 1 && board[r][c] === board[r + 1][c]) {
+        canMove = true;
+      }
     }
   }
 
-  messageStart.classList.add('hidden');
-  messageLose.classList.remove('hidden');
+  if (!canMove) {
+    messageStart.classList.add('hidden');
+    messageLose.classList.remove('hidden');
+    startButton.classList.remove('restart');
+    startButton.classList.add('start');
+    startButton.innerText = 'Start';
+  }
 
   return false;
 }
