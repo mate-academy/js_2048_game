@@ -12,7 +12,7 @@ const handlerSlide = e => {
   switch (e.code) {
     case 'ArrowLeft':
       if (slideLeft()) {
-        setTimeout(function() {
+        setTimeout(() => {
           createTile();
         }, 200);
       }
@@ -20,7 +20,7 @@ const handlerSlide = e => {
 
     case 'ArrowRight':
       if (slideRight()) {
-        setTimeout(function() {
+        setTimeout(() => {
           createTile();
         }, 200);
       }
@@ -28,7 +28,7 @@ const handlerSlide = e => {
 
     case 'ArrowDown':
       if (slideDown()) {
-        setTimeout(function() {
+        setTimeout(() => {
           createTile();
         }, 200);
       }
@@ -36,7 +36,7 @@ const handlerSlide = e => {
 
     case 'ArrowUp':
       if (slideUp()) {
-        setTimeout(function() {
+        setTimeout(() => {
           createTile();
         }, 200);
       }
