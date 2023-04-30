@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048</title>
     <link rel="stylesheet" href="./styles/main.scss">
+    <script src="scripts/main.js"></script>
   </head>
   <body>
     <div class="container">
@@ -12,12 +13,11 @@
         <h1>2048</h1>
         <div class="controls">
           <p class="info">
-            Score: <span class="game-score">0</span>
+            Score: <span class="game-score" id="score">0</span>
           </p>
           <button class="button start">Start</button>
         </div>
       </div>
-
       <table class="game-field">
         <tbody>
           <tr class="field-row">
