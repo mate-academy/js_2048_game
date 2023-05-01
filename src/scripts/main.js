@@ -9,8 +9,6 @@ let actionCounter = 0;
 
 const blockedCells = [];
 
-// Some Function to create random
-
 function getRandomNumber() {
   const randomize = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
   const index = Math.floor(Math.random() * randomize.length);
@@ -34,8 +32,6 @@ function addRandomNumber(num) {
   };
 };
 
-// Some Function to end game
-
 function isGameLost() {
   let result = true;
 
@@ -43,10 +39,10 @@ function isGameLost() {
     const cells = [...row.cells];
 
     for (let i = 0; i < cells.length - 1; i++) {
-      if (
-        (cells[i].innerText === cells[i + 1].innerText)
-        || cells[i].innerText === ''
-      ) {
+      const value = cells[i].innerText;
+      const nextValue = cells[i + 1].innerText;
+
+      if ((value === nextValue) || value === '') {
         result = false;
 
         return;
@@ -70,10 +66,10 @@ function isGameLost() {
 
     columns.forEach(column => {
       for (let i = 0; i < column.length - 1; i++) {
-        if (
-          (column[i].innerText === column[i + 1].innerText)
-          || column[i].innerText === ''
-        ) {
+        const value = column[i].innerText;
+        const nextValue = column[i + 1].innerText;
+
+        if ((value === nextValue) || value === '') {
           result = false;
 
           return;
@@ -84,8 +80,6 @@ function isGameLost() {
 
   return result;
 };
-
-// Implementation of game stages
 
 function looseGame() {
   const messageLose = document.querySelector('.message-lose');
@@ -101,6 +95,7 @@ function winGame() {
 
 function startGame() {
   startButton.classList.remove('start');
+  startButton.style.outline = 'none';
   startButton.classList.add('restart');
 
   if (startButton.innerText === 'Start') {
@@ -136,8 +131,6 @@ function startGame() {
   addRandomNumber(getRandomNumber());
 };
 
-// Some function to get field data
-
 function getAllCells() {
   return [...document.querySelectorAll('.field-cell')];
 };
@@ -147,42 +140,47 @@ function getFreeCells() {
     .filter(cell => cell.innerText === '');
 };
 
-// Implementation of game control
+function moveCells(firsCell, secondCell) {
+  const firstValue = Number(firsCell.innerText);
+  const secondValue = Number(secondCell.innerText);
+
+  if (firstValue !== 0 && secondValue === 0) {
+    firsCell.className = 'field-cell';
+    firsCell.innerText = '';
+    secondCell.innerText = firstValue;
+    secondCell.classList.add(`field-cell--${firstValue}`);
+    actionCounter++;
+  };
+
+  if (
+    firstValue !== 0 && firstValue === secondValue
+    && !blockedCells.includes(firsCell)
+  ) {
+    firsCell.className = 'field-cell';
+    firsCell.innerText = '';
+    secondCell.innerText = firstValue * 2;
+    secondCell.classList.add(`field-cell--${firstValue * 2}`);
+    blockedCells.push(secondCell);
+
+    scoreCounter += Number(secondCell.innerText);
+    scoreInfo.innerText = scoreCounter;
+    actionCounter++;
+
+    if (secondCell.innerText === '2048') {
+      winGame();
+    };
+  };
+};
 
 const moveRight = () => {
   [...gameField.rows].forEach(row => {
     const cells = [...row.cells];
 
     for (let i = 2; i >= 0; i--) {
-      const value = Number(cells[i].innerText);
-      const nextValue = Number(cells[i + 1].innerText);
+      const firsCell = cells[i];
+      const secondCell = cells[i + 1];
 
-      if (value !== 0 && nextValue === 0) {
-        cells[i].className = 'field-cell';
-        cells[i].innerText = '';
-        cells[i + 1].innerText = value;
-        cells[i + 1].classList.add(`field-cell--${value}`);
-        actionCounter++;
-      };
-
-      if (
-        value !== 0 && value === nextValue
-        && !blockedCells.includes(cells[i])
-      ) {
-        cells[i].className = 'field-cell';
-        cells[i].innerText = '';
-        cells[i + 1].innerText = value * 2;
-        cells[i + 1].classList.add(`field-cell--${value * 2}`);
-        blockedCells.push(cells[i + 1]);
-
-        scoreCounter += Number(cells[i + 1].innerText);
-        scoreInfo.innerText = scoreCounter;
-        actionCounter++;
-
-        if (cells[i + 1].innerText === '2048') {
-          winGame();
-        };
-      };
+      moveCells(firsCell, secondCell);
     };
   });
 };
@@ -192,35 +190,10 @@ const moveLeft = () => {
     const cells = [...row.cells];
 
     for (let i = 1; i < 4; i++) {
-      const value = Number(cells[i].innerText);
-      const prevValue = Number(cells[i - 1].innerText);
+      const firsCell = cells[i];
+      const secondCell = cells[i - 1];
 
-      if (value !== 0 && prevValue === 0) {
-        cells[i].className = 'field-cell';
-        cells[i].innerText = '';
-        cells[i - 1].innerText = value;
-        cells[i - 1].classList.add(`field-cell--${value}`);
-        actionCounter++;
-      };
-
-      if (
-        value !== 0 && value === prevValue
-        && !blockedCells.includes(cells[i])
-      ) {
-        cells[i].className = 'field-cell';
-        cells[i].innerText = '';
-        cells[i - 1].innerText = value * 2;
-        cells[i - 1].classList.add(`field-cell--${value * 2}`);
-        blockedCells.push(cells[i - 1]);
-
-        scoreCounter += Number(cells[i - 1].innerText);
-        scoreInfo.innerText = scoreCounter;
-        actionCounter++;
-
-        if (cells[i - 1].innerText === '2048') {
-          winGame();
-        };
-      };
+      moveCells(firsCell, secondCell);
     };
   });
 };
@@ -241,35 +214,10 @@ const moveUp = () => {
 
   columns.forEach(column => {
     for (let i = 1; i < 4; i++) {
-      const value = Number(column[i].innerText);
-      const prevValue = Number(column[i - 1].innerText);
+      const firsCell = column[i];
+      const secondCell = column[i - 1];
 
-      if (value !== 0 && prevValue === 0) {
-        column[i].className = 'field-cell';
-        column[i].innerText = '';
-        column[i - 1].innerText = value;
-        column[i - 1].classList.add(`field-cell--${value}`);
-        actionCounter++;
-      };
-
-      if (
-        value !== 0 && value === prevValue
-        && !blockedCells.includes(column[i])
-      ) {
-        column[i].className = 'field-cell';
-        column[i].innerText = '';
-        column[i - 1].innerText = value * 2;
-        column[i - 1].classList.add(`field-cell--${value * 2}`);
-        blockedCells.push(column[i - 1]);
-
-        scoreCounter += Number(column[i - 1].innerText);
-        scoreInfo.innerText = scoreCounter;
-        actionCounter++;
-
-        if (column[i - 1].innerText === '2048') {
-          winGame();
-        };
-      };
+      moveCells(firsCell, secondCell);
     };
   });
 };
@@ -290,40 +238,13 @@ const moveDown = () => {
 
   columns.forEach(column => {
     for (let i = 2; i >= 0; i--) {
-      const value = Number(column[i].innerText);
-      const prevValue = Number(column[i + 1].innerText);
+      const firstCell = column[i];
+      const secondCell = column[i + 1];
 
-      if (value !== 0 && prevValue === 0) {
-        column[i].className = 'field-cell';
-        column[i].innerText = '';
-        column[i + 1].innerText = value;
-        column[i + 1].classList.add(`field-cell--${value}`);
-        actionCounter++;
-      };
-
-      if (
-        value !== 0 && value === prevValue
-        && !blockedCells.includes(column[i])
-      ) {
-        column[i].className = 'field-cell';
-        column[i].innerText = '';
-        column[i + 1].innerText = value * 2;
-        column[i + 1].classList.add(`field-cell--${value * 2}`);
-        blockedCells.push(column[i + 1]);
-
-        scoreCounter += Number(column[i + 1].innerText);
-        scoreInfo.innerText = scoreCounter;
-        actionCounter++;
-
-        if (column[i + 1].innerText === '2048') {
-          winGame();
-        };
-      };
+      moveCells(firstCell, secondCell);
     };
   });
 };
-
-// EventListeners part
 
 startButton.addEventListener('click', (e) => {
   startGame();
