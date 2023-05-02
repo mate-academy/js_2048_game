@@ -32,6 +32,12 @@ function addRandomNumber(num) {
   };
 };
 
+function repeater(f, count) {
+  for (let i = 0; i < count; i++) {
+    f();
+  };
+};
+
 function isGameLost() {
   let result = true;
 
@@ -50,7 +56,7 @@ function isGameLost() {
     };
   });
 
-  if (result === true) {
+  if (result) {
     const columns = [];
     const fieldRows = [...gameField.rows];
 
@@ -144,6 +150,9 @@ function moveCells(firsCell, secondCell) {
   const firstValue = Number(firsCell.innerText);
   const secondValue = Number(secondCell.innerText);
 
+  const cellsCompare = firstValue !== 0 && firstValue === secondValue
+    && !blockedCells.includes(firsCell);
+
   if (firstValue !== 0 && secondValue === 0) {
     firsCell.className = 'field-cell';
     firsCell.innerText = '';
@@ -152,10 +161,7 @@ function moveCells(firsCell, secondCell) {
     actionCounter++;
   };
 
-  if (
-    firstValue !== 0 && firstValue === secondValue
-    && !blockedCells.includes(firsCell)
-  ) {
+  if (cellsCompare) {
     firsCell.className = 'field-cell';
     firsCell.innerText = '';
     secondCell.innerText = firstValue * 2;
@@ -255,27 +261,19 @@ document.addEventListener('keydown', (e) => {
 
   switch (e.key) {
     case 'ArrowRight':
-      moveRight();
-      moveRight();
-      moveRight();
+      repeater(moveRight, 3);
       break;
 
     case 'ArrowLeft':
-      moveLeft();
-      moveLeft();
-      moveLeft();
+      repeater(moveLeft, 3);
       break;
 
     case 'ArrowUp':
-      moveUp();
-      moveUp();
-      moveUp();
+      repeater(moveUp, 3);
       break;
 
     case 'ArrowDown':
-      moveDown();
-      moveDown();
-      moveDown();
+      repeater(moveDown, 3);
       break;
 
     default:
