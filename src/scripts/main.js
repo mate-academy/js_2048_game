@@ -29,20 +29,17 @@ function setGame() {
     [0, 0, 0, 0],
   ];
 
-  const field = document.querySelector('.game-field');
-
-  field.id = 'board';
+  const tiles = document.querySelectorAll('.tile');
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      const tile = document.createElement('div');
+      const tile = tiles[r * rows + c];
 
       tile.id = r.toString() + '-' + c.toString();
 
       const num = board[r][c];
 
       updateTile(tile, num);
-      document.getElementById('board').append(tile);
     }
   }
   setTwo();
