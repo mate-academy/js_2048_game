@@ -110,217 +110,132 @@ container.addEventListener('click', (ev) => {
   }
 });
 
-function moveRowsLeft(rows) {
-  rows.forEach(row => {
-    const rowValues = [];
+function mergeValues(values) {
+  const valuesMerged = values.map((num, index, array) => {
+    if (num === array[index + 1]) {
+      array[index + 1] = null;
+      scoring(num * 2);
 
-    for (let i = 0; i < row.cells.length; i++) {
-      const cell = row.cells[i];
-
-      if (cell.textContent !== '') {
-        const value = cell.textContent;
-
-        cell.classList.remove(`field-cell--${value}`);
-        rowValues.push(value);
-        cell.textContent = '';
-      }
+      return num * 2;
+    } else {
+      return num;
     }
+  }).filter((num) => num);
 
-    const rowValuesMerged = rowValues.map((num, index, array) => {
-      if (num === array[index + 1]) {
-        array[index + 1] = null;
-        scoring(num * 2);
-
-        return num * 2;
-      } else {
-        return num;
-      }
-    }).filter((num) => num);
-
-    for (let i = 0; i < row.cells.length; i++) {
-      const cell = row.cells[i];
-      const newValue = rowValuesMerged.shift();
-
-      if (newValue) {
-        cell.classList.add(`field-cell--${newValue}`);
-        cell.textContent = newValue;
-      }
-    }
-  });
-
-  gameOver();
+  return valuesMerged;
 }
 
-function moveRowsRight(rows) {
-  rows.forEach(row => {
-    const rowValues = [];
+function classEditor(values, cell) {
+  cell.classList.remove(`field-cell--${cell.textContent}`);
 
-    for (let i = row.cells.length - 1; i >= 0; i--) {
-      const cell = row.cells[i];
+  const newValue = values.splice(0, 1)[0];
 
-      if (cell.textContent !== '') {
-        const value = cell.textContent;
+  cell.textContent = newValue;
 
-        cell.classList.remove(`field-cell--${value}`);
-        rowValues.unshift(value);
-        cell.textContent = '';
-      }
-    }
+  if (!newValue) {
+    return;
+  }
 
-    const rowValuesMerged = rowValues.map((num, index, array) => {
-      if (num === array[index + 1]) {
-        array[index + 1] = null;
-        scoring(num * 2);
-
-        return num * 2;
-      } else {
-        return num;
-      }
-    }).filter((num) => num);
-
-    for (let i = row.cells.length - 1; i >= 0; i--) {
-      const cell = row.cells[i];
-      const newValue = rowValuesMerged.pop();
-
-      if (newValue) {
-        cell.classList.add(`field-cell--${newValue}`);
-        cell.textContent = newValue;
-      }
-    }
-  });
-
-  gameOver();
+  cell.classList.add(`field-cell--${newValue}`);
 }
 
-function moveColumnsUp(columns) {
-  columns.forEach(column => {
-    const columnValues = [...column.map(el => el.textContent)];
+function moveCells(data, key) {
+  let arr;
 
-    const columnValuesMerged = columnValues.map((num, index, array) => {
-      if (num === array[index + 1]) {
-        array[index + 1] = null;
-        scoring(num * 2);
+  switch (key) {
+    case 'ArrowLeft':
+    case 'ArrowRight':
+      arr = data.rows;
+      break;
+    case 'ArrowUp':
+    case 'ArrowDown':
+      arr = data.columns;
+      break;
+  }
 
-        return num * 2;
-      } else {
-        return num;
-      }
-    }).filter((num) => num);
+  arr.forEach(el => {
+    const arrValues = [...el.map(сell => сell.textContent)]
+      .filter((num) => num);
 
-    for (let i = 0; i < column.length; i++) {
-      const cell = column[i];
+    if (key === 'ArrowDown' || key === 'ArrowRight') {
+      arrValues.reverse();
+    }
 
-      cell.classList.remove(`field-cell--${cell.textContent}`);
+    const valuesMerged = mergeValues(arrValues);
 
-      const newValue = columnValuesMerged.shift();
+    for (let i = 0; i < el.length; i++) {
+      const cell = key === 'ArrowUp' || key === 'ArrowLeft'
+        ? el[i] : el[el.length - i - 1];
 
-      cell.textContent = newValue;
-      cell.classList.add(`field-cell--${newValue}`);
+      classEditor(valuesMerged, cell);
     }
   });
 
-  gameOver();
-}
-
-function moveColumnsDown(columns) {
-  columns.forEach(column => {
-    const columnValues = [...column.map(el => el.textContent)].reverse();
-
-    const columnValuesMerged = columnValues.map((num, index, array) => {
-      if (num === array[index + 1]) {
-        array[index + 1] = null;
-        scoring(num * 2);
-
-        return num * 2;
-      } else {
-        return num;
-      }
-    }).filter((num) => num);
-
-    for (let i = column.length - 1; i >= 0; i--) {
-      const cell = column[i];
-
-      cell.classList.remove(`field-cell--${cell.textContent}`);
-
-      const newValue = columnValuesMerged.shift();
-
-      cell.textContent = newValue;
-      cell.classList.add(`field-cell--${newValue}`);
-    }
-  });
-
-  gameOver();
+  gameOver(data);
 }
 
 function arrowCallback(ev) {
   const table = body.querySelector('table');
 
-  const columns = Array.from(table.rows[0].cells).map((_, index) =>
-    Array.from(table.rows).map(row => row.cells[index]));
+  const tableData = {
+    rows:
+      Array.from(document.querySelectorAll('tr'))
+        .map(row => Array.from(row.cells)),
+    columns:
+      Array.from(table.rows[0].cells)
+        .map((_, index) => Array.from(table.rows).map(row => row.cells[index])),
+  };
 
-  const rows = document.querySelectorAll('tr');
-
-  if (ev.key === 'ArrowLeft') {
-    moveRowsLeft(rows);
-  }
-
-  if (ev.key === 'ArrowRight') {
-    moveRowsRight(rows);
-  }
-
-  if (ev.key === 'ArrowUp') {
-    moveColumnsUp(columns);
-  }
-
-  if (ev.key === 'ArrowDown') {
-    moveColumnsDown(columns);
+  switch (ev.key) {
+    case 'ArrowLeft':
+    case 'ArrowRight':
+    case 'ArrowUp':
+    case 'ArrowDown':
+      moveCells(tableData, ev.key);
+      break;
   }
 };
 
 function moveTile(option) {
-  if (option === 'add') {
-    window.addEventListener('keydown', arrowCallback);
-  }
-
-  if (option === 'delete') {
-    window.removeEventListener('keydown', arrowCallback);
+  switch (option) {
+    case 'add':
+      window.addEventListener('keydown', arrowCallback);
+      break;
+    case 'delete':
+      window.removeEventListener('keydown', arrowCallback);
+      break;
   }
 }
 
-function scoring(mergeAcc) {
+function scoring(acc) {
   const score = container.querySelector('.game-score');
 
-  score.textContent = parseInt(score.textContent) + parseInt(mergeAcc);
+  score.textContent = parseInt(score.textContent) + parseInt(acc);
 };
 
-function gameOver() {
-  const fieldCells = document.querySelectorAll('.game-field td');
-
-  const win = Array.from(fieldCells).some(cell => cell.textContent === '2048');
+function gameOver(data) {
+  const win = Array.from(
+    document.querySelectorAll('.game-field td'))
+    .some(cell => cell.textContent === '2048');
 
   if (win) {
     gameNotification('win');
     moveTile('delete');
   }
 
-  const table = document.querySelector('table');
-  const columns = Array.from(table.rows[0].cells).map((_, index) =>
-    Array.from(table.rows).map(row => row.cells[index]));
-  const rows = Array.from(document.querySelectorAll('tr'))
-    .map(row => Array.from(row.cells));
   const noEmptyTile = !createTile().length;
-  let canMove = false;
+  let cantMove = true;
 
-  for (const arr of rows.concat(columns)) {
+  for (const arr of data.rows.concat(data.columns)) {
     for (let i = 0; i < arr.length - 1; i++) {
       if (arr[i].textContent === arr[i + 1].textContent) {
-        canMove = true;
+        cantMove = false;
         break;
       }
     }
   }
 
-  if (noEmptyTile && !canMove) {
+  if (noEmptyTile && cantMove) {
     gameNotification('lose');
     moveTile('delete');
   }
