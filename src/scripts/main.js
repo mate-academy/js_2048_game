@@ -29,6 +29,9 @@ function setGame() {
     [0, 0, 0, 0],
   ];
 
+  score = 0;
+  gameScore.textContent = score;
+
   const tiles = document.querySelectorAll('.tile');
 
   for (let r = 0; r < rows; r++) {
@@ -76,8 +79,6 @@ document.addEventListener('keyup', (e) => {
       setTwo();
       break;
   }
-
-  gameScore.innerText = score;
 });
 
 function filterZero(row) {
@@ -94,6 +95,7 @@ function slide(r) {
       row[i] *= 2;
       row[i + 1] = 0;
       score += row[i];
+      gameScore.innerText = score;
     }
 
     if (row[i] === 2048) {
