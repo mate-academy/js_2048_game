@@ -15,7 +15,7 @@ let score = 0;
 
 startButton.addEventListener('click', startGame);
 
-function setRundomNumber() {
+function setRandomNumber() {
   const twoOrFour = Math.random() < 0.2 ? 4 : 2;
 
   let found = false;
@@ -24,12 +24,15 @@ function setRundomNumber() {
     const rowInd = Math.floor(Math.random() * 4);
     const colInd = Math.floor(Math.random() * 4);
 
+    if (!hasEmptyCells(field)) {
+      break;
+    }
+
     if (field[rowInd][colInd] === 0) {
       field[rowInd][colInd] = twoOrFour;
       found = true;
     }
   }
-
   updateGame();
 };
 
@@ -45,17 +48,16 @@ function startGame() {
   startButton.innerText = 'Restart';
   startButton.classList.replace('start', 'restart');
   messageStart.classList.add('hidden');
+  messageLose.classList.add('hidden');
 
-  setRundomNumber();
-  setRundomNumber();
+  setRandomNumber();
+  setRandomNumber();
 };
 
 document.addEventListener('keyup', e => {
   if (startButton.classList.contains('start')) {
     return;
   }
-
-  const fieldCopy = field.map(arr => arr.slice());
 
   switch (e.code) {
     case 'ArrowLeft': slideLeft(); break;
@@ -64,10 +66,8 @@ document.addEventListener('keyup', e => {
     case 'ArrowDown': slideDown(); break;
     default: break;
   }
-
-  if (!isFieldChanged(field, fieldCopy)) {
-    setRundomNumber();
-  }
+  setRandomNumber();
+  setRandomNumber();
 
   updateGame();
 });
@@ -96,7 +96,7 @@ function updateGame() {
   }
   scoreGame.innerText = score;
 
-  if (isGameOver()) {
+  if (!canPlay(field)) {
     messageLose.classList.remove('hidden');
     startButton.innerText = 'Start';
   }
@@ -109,13 +109,14 @@ function filterZero(row) {
 function slide(row) {
   let newRow = filterZero(row);
 
-  for (let i = 0; i < newRow.length - 1; i++) {
-    if (newRow[i] === newRow[i + 1]) {
-      newRow[i] *= 2;
-      newRow[i + 1] = 0;
-      score += newRow[i];
+  newRow.map((el, ind, arr) => {
+    if (arr[ind] === arr[ind + 1]) {
+      arr[ind] *= 2;
+      arr[ind + 1] = 0;
+      score += arr[ind];
     }
-  }
+  });
+
   newRow = filterZero(newRow);
 
   while (newRow.length < rows) {
@@ -126,83 +127,92 @@ function slide(row) {
 };
 
 function slideLeft() {
-  for (let r = 0; r < rows; r++) {
-    let row = field[r];
+  field.forEach((row, ind) => {
+    field[ind] = slide(row);
 
-    row = slide(row);
-    field[r] = row;
-  }
+    return field[ind];
+  });
 };
 
 function slideRight() {
-  for (let r = 0; r < rows; r++) {
-    let row = field[r].reverse();
+  field.forEach((row, ind) => {
+    field[ind] = slide(row.reverse());
 
-    row = slide(row);
-    field[r] = row.reverse();
-  }
+    return field[ind].reverse();
+  });
 }
 
 function slideUp() {
-  for (let i = 0; i < cols; i++) {
-    let row = [field[0][i], field[1][i], field[2][i], field[3][i]];
+  field.forEach((row, ind) => {
+    const newRow = slide(
+      [field[0][ind], field[1][ind], field[2][ind], field[3][ind]]);
 
-    row = slide(row);
-    field[0][i] = row[0];
-    field[1][i] = row[1];
-    field[2][i] = row[2];
-    field[3][i] = row[3];
-  }
+    field[0][ind] = newRow[0];
+    field[1][ind] = newRow[1];
+    field[2][ind] = newRow[2];
+    field[3][ind] = newRow[3];
+  });
 }
 
 function slideDown() {
-  for (let i = 0; i < cols; i++) {
-    let row = [field[0][i], field[1][i], field[2][i], field[3][i]].reverse();
+  field.forEach((row, ind) => {
+    let newRow = [field[3][ind], field[2][ind], field[1][ind], field[0][ind]];
 
-    row = slide(row).reverse();
-    field[0][i] = row[0];
-    field[1][i] = row[1];
-    field[2][i] = row[2];
-    field[3][i] = row[3];
-  }
+    newRow = slide(newRow).reverse();
+    field[0][ind] = newRow[0];
+    field[1][ind] = newRow[1];
+    field[2][ind] = newRow[2];
+    field[3][ind] = newRow[3];
+  });
 }
 
-function isGameOver() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (field[r][c] === 0) {
-        return false;
-      }
-    }
-  }
+function hasEmptyCells(arr) {
+  let equal = false;
 
-  for (let r = 0; r < rows - 1; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (field[r][c] === field[r + 1][c]) {
-        return false;
+  arr.forEach((e, i) => {
+    e.forEach(el => {
+      if (el === 0) {
+        equal = true;
       }
-    }
-  }
+    });
+  });
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols - 1; c++) {
-      if (field[r][c] === field[r][c + 1]) {
-        return false;
-      }
-    }
-  }
-
-  return true;
+  return equal;
 }
 
-function isFieldChanged(fieldGame, fieldCopy) {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (fieldGame[r][c] === fieldCopy[r][c]) {
-        return false;
-      }
-    }
+function canPlay(array) {
+
+  function isEqualInColumns(arr) {
+    let equal = false;
+
+    arr.forEach((e, i, a) => {
+      e.forEach((el, ind) => {
+        if (i < 3 && a[i][ind] === a[i + 1][ind]) {
+          equal = true;
+        }
+      });
+    });
+
+    return equal;
   }
 
-  return true;
-};
+  function isEqualInRow(arr) {
+    let equal = false;
+
+    arr.forEach((e, i, a) => {
+      e.forEach((el, ind) => {
+        if (ind < 3 && a[i][ind] === a[i][ind + 1]) {
+          equal = true;
+        }
+      });
+    });
+
+    return equal;
+  }
+
+  const res1 = hasEmptyCells(array);
+  const res2 = isEqualInColumns(array);
+  const res3 = isEqualInRow(array);
+
+  return (res1 || res2 || res3);
+}
