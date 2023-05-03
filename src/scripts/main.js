@@ -208,22 +208,26 @@ function render() {
 }
 
 function check() {
-  const isLose = board.flat().every(cell => cell > 0);
+  if (board.some(row => row.includes(2048))) {
+    messageWin.classList.remove('hidden');
+  } else if (!board.flat().includes(0) && !adjacentCellsAvailable()) {
+    messageLose.classList.remove('hidden');
+  }
+}
 
-  for (const row of board) {
-    for (const cell of row) {
-      if (cell === 2048) {
-        messageWin.classList.remove('hidden');
-        messageStart.classList.add('hidden');
+function adjacentCellsAvailable() {
+  for (let row = 0; row < rows; row++) {
+    for (let cell = 0; cell < cells; cell++) {
+      const cellValue = board[row][cell];
+
+      if ((cell < cells - 1 && board[row][cell + 1] === cellValue)
+        || (row < rows - 1 && board[row + 1][cell] === cellValue)) {
+        return true;
       }
     }
   }
 
-  if (isLose) {
-    messageLose.classList.remove('hidden');
-    messageWin.classList.add('hidden');
-    messageStart.classList.add('hidden');
-  }
+  return false;
 }
 
 document.addEventListener('click', (e) => {
