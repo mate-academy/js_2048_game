@@ -1,6 +1,5 @@
 'use strict';
 
-// write your code here
 const button = document.querySelector('button');
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
