@@ -24,7 +24,7 @@ let gameTable = [
 ];
 
 function isTableFull() {
-  return gameTable.flat().includes(0);
+  return !gameTable.flat().includes(0);
 }
 
 function generateRandomTile() {
