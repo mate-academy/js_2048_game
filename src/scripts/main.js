@@ -197,7 +197,8 @@ function setTwo() {
 
     if (board[r][c] === 0) {
       board[r][c] = Math.random() >= 0.9 ? 4 : 2;
-      let value = board[r][c];
+
+      const value = board[r][c];
 
       const tile = document.getElementById(r.toString() + '-' + c.toString());
 
