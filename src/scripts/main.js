@@ -19,6 +19,8 @@ startButton.addEventListener('click', () => {
   startButton.innerText = 'Restart';
 
   messageStart.classList.add('hidden');
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
 });
 
 function setGame() {
@@ -194,12 +196,13 @@ function setTwo() {
     const c = Math.floor(Math.random() * columns);
 
     if (board[r][c] === 0) {
-      board[r][c] = 2;
+      board[r][c] = Math.random() >= 0.9 ? 4 : 2;
+      let value = board[r][c];
 
       const tile = document.getElementById(r.toString() + '-' + c.toString());
 
-      tile.innerText = '2';
-      tile.classList.add(`tile--2`);
+      tile.innerText = value.toString();
+      tile.classList.add(`tile--${tile.innerText}`);
       found = true;
     }
   }
