@@ -17,7 +17,7 @@ function addTile() {
   const randomIndex = Math.floor(Math.random() * emptyCells.length);
   const randomNumber = Math.random() < 0.9 ? '2' : '4';
 
-  emptyCells[randomIndex].classList.add('field-cell--' + randomNumber);
+  emptyCells[randomIndex].classList.add(`field-cell--${randomNumber}`);
   emptyCells[randomIndex].classList.add('field-cell--animation');
   emptyCells[randomIndex].textContent = randomNumber;
 }
@@ -49,11 +49,8 @@ document.addEventListener('click', (e) => {
 });
 
 function moveUp(index) {
-  let colNums = [];
-
-  rows.forEach(row => {
-    colNums.push(+row.cells[index].textContent);
-  });
+  let colNums = [...rows]
+    .reduce((prev, row) => prev.concat(+row.cells[index].textContent), []);
 
   colNums = colNums.filter(num => !!num);
 
@@ -78,11 +75,8 @@ function moveUp(index) {
 }
 
 function moveDown(index) {
-  let colNums = [];
-
-  rows.forEach(row => {
-    colNums.push(+row.cells[index].textContent);
-  });
+  let colNums = [...rows]
+    .reduce((prev, row) => prev.concat(+row.cells[index].textContent), []);
 
   colNums = colNums.reverse().filter(num => !!num);
 
@@ -108,9 +102,8 @@ function moveDown(index) {
 
 function moveRight() {
   rows.forEach(row => {
-    let rowNums = [];
-
-    [...row.cells].forEach(cell => rowNums.push(+cell.innerHTML));
+    let rowNums = [...row.cells]
+      .reduce((prev, cell) => prev.concat(+cell.innerHTML), []);
 
     rowNums = rowNums.reverse().filter(num => !!num);
 
@@ -137,9 +130,8 @@ function moveRight() {
 
 function moveLeft() {
   rows.forEach(row => {
-    let rowNums = [];
-
-    [...row.cells].forEach(cell => rowNums.push(+cell.innerHTML));
+    let rowNums = [...row.cells]
+      .reduce((prev, cell) => prev.concat(+cell.innerHTML), []);
 
     rowNums = rowNums.filter(num => !!num);
 
@@ -167,20 +159,7 @@ function moveLeft() {
 function addCorrectClasses() {
   for (const cell of cells) {
     cell.className = 'field-cell';
-
-    switch (cell.textContent) {
-      case '2': cell.classList.add('field-cell--2'); break;
-      case '4': cell.classList.add('field-cell--4'); break;
-      case '8': cell.classList.add('field-cell--8'); break;
-      case '16': cell.classList.add('field-cell--16'); break;
-      case '32': cell.classList.add('field-cell--32'); break;
-      case '64': cell.classList.add('field-cell--64'); break;
-      case '128': cell.classList.add('field-cell--128'); break;
-      case '256': cell.classList.add('field-cell--256'); break;
-      case '512': cell.classList.add('field-cell--512'); break;
-      case '1024': cell.classList.add('field-cell--1024'); break;
-      case '2048': cell.classList.add('field-cell--2048'); break;
-    };
+    cell.classList.add(`field-cell--${cell.textContent}`);
   }
 }
 
@@ -191,10 +170,9 @@ function gameOverCheck() {
     const beforeCheckCells = [...fullFieldCells].map(cell => cell.textContent);
     const scoreBeforeCheck = score.textContent;
 
-    moveUp(0);
-    moveUp(1);
-    moveUp(2);
-    moveUp(3);
+    for (let i = 0; i < rows.length; i++) {
+      moveUp(i);
+    }
     moveRight();
 
     const changeCheck = [...cells].every((cell, i) => (
@@ -236,19 +214,17 @@ document.addEventListener('keydown', e => {
 
   switch (e.key) {
     case 'ArrowUp':
-      moveUp(0);
-      moveUp(1);
-      moveUp(2);
-      moveUp(3);
+      for (let i = 0; i < rows.length; i++) {
+        moveUp(i);
+      }
       addTile();
       addTile();
       break;
 
     case 'ArrowDown':
-      moveDown(0);
-      moveDown(1);
-      moveDown(2);
-      moveDown(3);
+      for (let i = 0; i < rows.length; i++) {
+        moveDown(i);
+      }
       addTile();
       addTile();
       break;
