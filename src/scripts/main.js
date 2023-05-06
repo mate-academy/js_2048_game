@@ -17,11 +17,7 @@ function addTile() {
   const randomIndex = Math.floor(Math.random() * emptyCells.length);
   const randomNumber = Math.random() < 0.9 ? '2' : '4';
 
-  if (randomNumber === '2') {
-    emptyCells[randomIndex].classList.add('field-cell--2');
-  } else {
-    emptyCells[randomIndex].classList.add('field-cell--4');
-  }
+  emptyCells[randomIndex].classList.add('field-cell--' + randomNumber);
   emptyCells[randomIndex].classList.add('field-cell--animation');
   emptyCells[randomIndex].textContent = randomNumber;
 }
