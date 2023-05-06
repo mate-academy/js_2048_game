@@ -16,6 +16,39 @@ const messageLose = gameMessageContainer.querySelector('.message-lose');
 const messageWin = gameMessageContainer.querySelector('.message-win');
 const messageStart = gameMessageContainer.querySelector('.message-start');
 
+function removeEventHandler() {
+  document.removeEventListener('keydown', keydownEventHandler);
+}
+
+function addEventHandler() {
+  document.addEventListener('keydown', keydownEventHandler);
+}
+
+function keydownEventHandler(el) {
+  if (el.key === 'ArrowRight') {
+    addRandomNumber();
+    moveRight();
+    removeClas();
+  } else if (el.key === 'ArrowLeft') {
+    addRandomNumber();
+    moveLeft();
+    removeClas();
+  } else if (el.key === 'ArrowUp') {
+    addRandomNumber();
+    moveUp();
+    removeClas();
+  } else if (el.key === 'ArrowDown') {
+    addRandomNumber();
+    moveDown();
+    removeClas();
+  }
+  win();
+  isGameOver();
+  gameScore.textContent = score;
+}
+
+removeEventHandler()
+
 let score = 0;
 
 function removeClas() {
@@ -255,6 +288,7 @@ function isGameOver() {
   messageLose.classList.remove('hidden');
 }
 
+
 gameButonStart.addEventListener('click', (e) => {
   gameButonStart.classList.remove('start');
   gameButonStart.classList.add('restart');
@@ -265,14 +299,14 @@ gameButonStart.addEventListener('click', (e) => {
 
   cell.map(el => {
     el.textContent = '';
+
     return el;
   });
-  
 
   score = 0;
   gameScore.textContent = score;
 
-  let index1 = generateRandomIndex();
+  const index1 = generateRandomIndex();
   let index2 = generateRandomIndex();
 
   if (index2 === index1) {
@@ -283,35 +317,9 @@ gameButonStart.addEventListener('click', (e) => {
   cell[index2].textContent = generateRandomNumber();
   cell[index2].classList.add(`field-cell--${cell[index2].textContent}`);
   removeClas();
-
-  document.addEventListener('keydown', function(el) {
-    if (el.key === 'ArrowRight') {
-      addRandomNumber();
-
-      moveRight();
-
-      removeClas();
-    } else if (el.key === 'ArrowLeft') {
-      addRandomNumber();
-
-      moveLeft();
-
-      removeClas();
-    } else if (el.key === 'ArrowUp') {
-      addRandomNumber();
-
-      moveUp();
-
-      removeClas();
-    } else if (el.key === 'ArrowDown') {
-      addRandomNumber();
-
-      moveDown();
-
-      removeClas();
-    }
-    win();
-    isGameOver();
-    gameScore.textContent = score;
-  });
+  addEventHandler()
 });
+
+
+
+
