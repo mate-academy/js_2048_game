@@ -24,30 +24,45 @@ function addEventHandler() {
   document.addEventListener('keydown', keydownEventHandler);
 }
 
+const Directions = {
+  ArrowUp: 'up',
+  ArrowDown: 'down',
+  ArrowLeft: 'left',
+  ArrowRight: 'right'
+};
+
 function keydownEventHandler(el) {
-  if (el.key === 'ArrowRight') {
+  const direction = Directions[el.key];
+
+  if (direction) {
     addRandomNumber();
-    moveRight();
+    move(direction);
     removeClas();
-  } else if (el.key === 'ArrowLeft') {
-    addRandomNumber();
-    moveLeft();
-    removeClas();
-  } else if (el.key === 'ArrowUp') {
-    addRandomNumber();
-    moveUp();
-    removeClas();
-  } else if (el.key === 'ArrowDown') {
-    addRandomNumber();
-    moveDown();
-    removeClas();
+    win();
+    isGameOver();
+    gameScore.textContent = score;
   }
-  win();
-  isGameOver();
-  gameScore.textContent = score;
 }
 
-removeEventHandler()
+function move(direction) {
+  switch (direction) {
+    case 'up':
+      moveUp();
+      break;
+    case 'down':
+      moveDown();
+      break;
+    case 'left':
+      moveLeft();
+      break;
+    case 'right':
+      moveRight();
+      break;
+  }
+}
+
+
+removeEventHandler();
 
 let score = 0;
 
@@ -288,7 +303,6 @@ function isGameOver() {
   messageLose.classList.remove('hidden');
 }
 
-
 gameButonStart.addEventListener('click', (e) => {
   gameButonStart.classList.remove('start');
   gameButonStart.classList.add('restart');
@@ -317,9 +331,5 @@ gameButonStart.addEventListener('click', (e) => {
   cell[index2].textContent = generateRandomNumber();
   cell[index2].classList.add(`field-cell--${cell[index2].textContent}`);
   removeClas();
-  addEventHandler()
+  addEventHandler();
 });
-
-
-
-
