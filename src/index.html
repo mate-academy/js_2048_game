@@ -7,55 +7,29 @@
     <link rel="stylesheet" href="./styles/main.scss">
   </head>
   <body>
+
     <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
+      <div class="game_header">
+        <h1 class="game_title">2048</h1>
         <div class="controls">
           <p class="info">
-            Score: <span class="game-score">0</span>
+              Score: <span class="game_score" id="score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <p class="info">
+            best: <span class="game_score" id="best">0</span>
+          </p>
+          <button class="button start" id="startbutton">New Game</button>
         </div>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+      <div id="board" class="game_board">
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+      </div>
 
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+      <div class="message_container">
+        <p class="message message_lose hidden" id="start">You lose! Restart the game?</p>
+        <p class="message message_win hidden" id="winner">Winner! Congrats! You did it!</p>
+        <p class="message message_start" id="loser">Press "New Game" to begin game. Good luck!</p>
       </div>
     </div>
     <script type="text/javascript" src="scripts/main.js"></script>
