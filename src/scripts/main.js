@@ -219,7 +219,7 @@ function checkLose() {
 }
 
 function scoreUpdater(number) {
-  scoreUpdateContainer.insertAdjacentHTML('afterbegin', `
+  scoreUpdateContainer.insertAdjacentHTML('beforeend', `
       <span class="score-update">+${number}</span>
     `);
 
