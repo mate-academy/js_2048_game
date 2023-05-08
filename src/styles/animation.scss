@@ -1,0 +1,10 @@
+@keyframes score-update {
+  0% {
+    top: 0px;
+    opacity: 1;
+  }
+  100% {
+    top: -200px;
+    opacity: 0;
+  }
+}
