@@ -21,6 +21,10 @@ body {
   vertical-align: center;
   user-select: none;
 
+  &--appear {
+    animation: show 200ms;
+  }
+
   &--2 {
     background: #eee4da;
   }
@@ -184,4 +188,10 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+  }
 }
