@@ -1,8 +1,6 @@
 {
-  "baseUrl": "http://localhost:8080",
+  "baseUrl": "http://localhost:3000",
   "video": true,
-  "pluginsFile": false,
-  "supportFile": false,
   "viewportHeight": 1920,
   "viewportWidth": 1080,
   "screenshotOnRunFailure": true,
@@ -12,5 +10,9 @@
     "overwrite": false,
     "html": false,
     "json": true
+  },
+  "component": {
+    "testFiles": "**/*.spec.{js,ts,jsx,tsx}",
+    "componentFolder": "src"
   }
 }
