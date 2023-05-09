@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const grid = [
   [0, 0, 0, 0],
@@ -9,23 +9,29 @@ const grid = [
 
 let score = 0;
 
-const startButton = document.querySelector('.start');
+const startButton = document.querySelector(".start");
 let started = false;
 
-startButton.addEventListener('click', () => {
-  if (startButton.classList.contains('start')) {
+startButton.addEventListener("click", () => {
+  if (startButton.classList.contains("start")) {
     started = true;
 
-    startButton.classList.remove('start');
-    startButton.classList.add('restart');
-    startButton.textContent = 'Restart';
+    startButton.classList.remove("start");
+    startButton.classList.add("restart");
+    startButton.textContent = "Restart";
 
-    const messages = document.querySelectorAll('.message');
+    const messages = document.querySelectorAll(".message");
 
     for (const message of messages) {
-      message.classList.add('hidden');
+      message.classList.add("hidden");
     }
 
+    score = 0;
+    grid.map((innerArray) => innerArray.fill(0));
+    generateTile();
+    generateTile();
+    render();
+  } else if (startButton.classList.contains("restart")) {
     score = 0;
     grid.map((innerArray) => innerArray.fill(0));
     generateTile();
@@ -34,9 +40,9 @@ startButton.addEventListener('click', () => {
   }
 });
 
-const scoreCount = document.querySelector('.game-score');
+const scoreCount = document.querySelector(".game-score");
 
-const gameField = document.querySelector('.game-field');
+const gameField = document.querySelector(".game-field");
 
 const generateTile = () => {
   if (grid.some((innerArray) => innerArray.includes(0))) {
@@ -60,8 +66,8 @@ const render = () => {
       const value = grid[i][j];
 
       if (value === 0) {
-        cell.textContent = '';
-        cell.className = 'field-cell';
+        cell.textContent = "";
+        cell.className = "field-cell";
       } else {
         cell.textContent = value;
         cell.className = `field-cell field-cell--appear field-cell--${value}`;
@@ -100,18 +106,22 @@ const moveUp = () => {
   for (let i = 1; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
       if (grid[i][j] !== 0) {
-        for (let k = i; k > 0; k--) {
-          if (grid[k - 1][j] === 0) {
-            grid[k - 1][j] = grid[k][j];
-            grid[k][j] = 0;
+        let k = i;
+
+        while (k > 0 && grid[k - 1][j] === 0) {
+          grid[k - 1][j] = grid[k][j];
+          grid[k][j] = 0;
+
+          if (k > 1) {
+            k--;
           }
         }
 
-        if (grid[i - 1][j] === grid[i][j]) {
-          grid[i - 1][j] *= 2;
-          grid[i][j] = 0;
+        if (grid[k - 1][j] === grid[k][j]) {
+          grid[k - 1][j] *= 2;
+          grid[k][j] = 0;
 
-          score += grid[i - 1][j];
+          score += grid[k - 1][j];
         }
       }
     }
@@ -122,18 +132,22 @@ const moveDown = () => {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 4; j++) {
       if (grid[i][j] !== 0) {
-        for (let k = i; k < 3; k++) {
-          if (grid[k + 1][j] === 0) {
-            grid[k + 1][j] = grid[k][j];
-            grid[k][j] = 0;
+        let k = i;
+
+        while (k < 3 && grid[k + 1][j] === 0) {
+          grid[k + 1][j] = grid[k][j];
+          grid[k][j] = 0;
+
+          if (k < 2) {
+            k++;
           }
         }
 
-        if (grid[i + 1][j] === grid[i][j]) {
-          grid[i + 1][j] *= 2;
-          grid[i][j] = 0;
+        if (grid[k + 1][j] === grid[k][j]) {
+          grid[k + 1][j] *= 2;
+          grid[k][j] = 0;
 
-          score += grid[i + 1][j];
+          score += grid[k + 1][j];
         }
       }
     }
@@ -144,18 +158,22 @@ const moveRight = () => {
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 3; j++) {
       if (grid[i][j] !== 0) {
-        for (let k = j; k < 3; k++) {
-          if (grid[i][j + 1] === 0) {
-            grid[i][j + 1] = grid[i][j];
-            grid[i][j] = 0;
+        let k = j;
+
+        while (k < 3 && grid[i][k + 1] === 0) {
+          grid[i][k + 1] = grid[i][k];
+          grid[i][j] = 0;
+
+          if (k < 2) {
+            k++;
           }
         }
 
-        if (grid[i][j + 1] === grid[i][j]) {
-          grid[i][j + 1] *= 2;
-          grid[i][j] = 0;
+        if (grid[i][k + 1] === grid[i][k]) {
+          grid[i][k + 1] *= 2;
+          grid[i][k] = 0;
 
-          score += grid[i][j + 1];
+          score += grid[i][k + 1];
         }
       }
     }
@@ -164,35 +182,39 @@ const moveRight = () => {
 
 const moveLeft = () => {
   for (let i = 0; i < 4; i++) {
-    for (let j = 1; j < 4; j++) {
+    for (let j = 0; j < 4; j++) {
       if (grid[i][j] !== 0) {
-        for (let k = j; k > 0; k--) {
-          if (grid[i][j - 1] === 0) {
-            grid[i][j - 1] = grid[i][j];
-            grid[i][j] = 0;
+        let k = j;
+
+        while (grid[i][k - 1] === 0 && k > 0) {
+          grid[i][k - 1] = grid[i][k];
+          grid[i][k] = 0;
+
+          if (k > 1) {
+            k--;
           }
         }
 
-        if (grid[i][j - 1] === grid[i][j]) {
-          grid[i][j - 1] *= 2;
-          grid[i][j] = 0;
+        if (grid[i][k - 1] === grid[i][k]) {
+          grid[i][k - 1] *= 2;
+          grid[i][k] = 0;
 
-          score += grid[i][j - 1];
+          score += grid[i][k];
         }
       }
     }
   }
 };
 
-document.addEventListener('keyup', (eventy) => {
+document.addEventListener("keyup", (click) => {
   if (isMovePossible() && started) {
-    if (eventy.key === 'ArrowUp') {
+    if (click.key === "ArrowUp") {
       moveUp();
-    } else if (eventy.key === 'ArrowDown') {
+    } else if (click.key === "ArrowDown") {
       moveDown();
-    } else if (eventy.key === 'ArrowLeft') {
+    } else if (click.key === "ArrowLeft") {
       moveLeft();
-    } else if (eventy.key === 'ArrowRight') {
+    } else if (click.key === "ArrowRight") {
       moveRight();
     }
     generateTile();
@@ -200,16 +222,16 @@ document.addEventListener('keyup', (eventy) => {
   }
 
   if (!isMovePossible()) {
-    document.querySelector('.message-lose').classList.remove('hidden');
-    startButton.classList.add('start');
-    startButton.classList.remove('restart');
-    startButton.innerText = 'Start';
+    document.querySelector(".message-lose").classList.remove("hidden");
+    startButton.classList.add("start");
+    startButton.classList.remove("restart");
+    startButton.innerText = "Start";
   }
 
   if (grid.some((innerArray) => innerArray.includes(2048))) {
-    document.querySelector('.message-win').classList.remove('hidden');
-    startButton.classList.add('start');
-    startButton.classList.remove('restart');
-    startButton.innerText = 'Start';
+    document.querySelector(".message-win").classList.remove("hidden");
+    startButton.classList.add("start");
+    startButton.classList.remove("restart");
+    startButton.innerText = "Start";
   }
 });
