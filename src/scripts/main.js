@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const grid = [
   [0, 0, 0, 0],
@@ -9,21 +9,21 @@ const grid = [
 
 let score = 0;
 
-const startButton = document.querySelector(".start");
+const startButton = document.querySelector('.start');
 let started = false;
 
-startButton.addEventListener("click", () => {
-  if (startButton.classList.contains("start")) {
+startButton.addEventListener('click', () => {
+  if (startButton.classList.contains('start')) {
     started = true;
 
-    startButton.classList.remove("start");
-    startButton.classList.add("restart");
-    startButton.textContent = "Restart";
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+    startButton.textContent = 'Restart';
 
-    const messages = document.querySelectorAll(".message");
+    const messages = document.querySelectorAll('.message');
 
     for (const message of messages) {
-      message.classList.add("hidden");
+      message.classList.add('hidden');
     }
 
     score = 0;
@@ -31,7 +31,7 @@ startButton.addEventListener("click", () => {
     generateTile();
     generateTile();
     render();
-  } else if (startButton.classList.contains("restart")) {
+  } else if (startButton.classList.contains('restart')) {
     score = 0;
     grid.map((innerArray) => innerArray.fill(0));
     generateTile();
@@ -40,9 +40,9 @@ startButton.addEventListener("click", () => {
   }
 });
 
-const scoreCount = document.querySelector(".game-score");
+const scoreCount = document.querySelector('.game-score');
 
-const gameField = document.querySelector(".game-field");
+const gameField = document.querySelector('.game-field');
 
 const generateTile = () => {
   if (grid.some((innerArray) => innerArray.includes(0))) {
@@ -66,8 +66,8 @@ const render = () => {
       const value = grid[i][j];
 
       if (value === 0) {
-        cell.textContent = "";
-        cell.className = "field-cell";
+        cell.textContent = '';
+        cell.className = 'field-cell';
       } else {
         cell.textContent = value;
         cell.className = `field-cell field-cell--appear field-cell--${value}`;
@@ -206,15 +206,15 @@ const moveLeft = () => {
   }
 };
 
-document.addEventListener("keyup", (click) => {
+document.addEventListener('keyup', (click) => {
   if (isMovePossible() && started) {
-    if (click.key === "ArrowUp") {
+    if (click.key === 'ArrowUp') {
       moveUp();
-    } else if (click.key === "ArrowDown") {
+    } else if (click.key === 'ArrowDown') {
       moveDown();
-    } else if (click.key === "ArrowLeft") {
+    } else if (click.key === 'ArrowLeft') {
       moveLeft();
-    } else if (click.key === "ArrowRight") {
+    } else if (click.key === 'ArrowRight') {
       moveRight();
     }
     generateTile();
@@ -222,16 +222,16 @@ document.addEventListener("keyup", (click) => {
   }
 
   if (!isMovePossible()) {
-    document.querySelector(".message-lose").classList.remove("hidden");
-    startButton.classList.add("start");
-    startButton.classList.remove("restart");
-    startButton.innerText = "Start";
+    document.querySelector('.message-lose').classList.remove('hidden');
+    startButton.classList.add('start');
+    startButton.classList.remove('restart');
+    startButton.innerText = 'Start';
   }
 
   if (grid.some((innerArray) => innerArray.includes(2048))) {
-    document.querySelector(".message-win").classList.remove("hidden");
-    startButton.classList.add("start");
-    startButton.classList.remove("restart");
-    startButton.innerText = "Start";
+    document.querySelector('.message-win').classList.remove('hidden');
+    startButton.classList.add('start');
+    startButton.classList.remove('restart');
+    startButton.innerText = 'Start';
   }
 });
