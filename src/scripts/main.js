@@ -67,26 +67,6 @@ restartButton.addEventListener('click', () => {
   updateCells();
 });
 
-function addTile() {
-  const emptyTiles = [];
-
-  for (let r = 0; r < ROW_SIZE; r++) {
-    for (let c = 0; c < COL_SIZE; c++) {
-      if (board[r][c] === 0) {
-        emptyTiles.push({
-          row: r, col: c,
-        });
-      }
-    }
-  }
-
-  const randomIndex = Math.floor(Math.random() * emptyTiles.length);
-  const randomTile = emptyTiles[randomIndex];
-  const randomValue = Math.random() <= 0.1 ? 4 : 2;
-
-  board[randomTile.row][randomTile.col] = randomValue;
-};
-
 function updateCells() {
   for (let i = 0; i < cells.length; i++) {
     const cell = cells[i];
@@ -114,6 +94,26 @@ function updateCells() {
   }
 
   gameScore.textContent = score;
+};
+
+function addTile() {
+  const emptyTiles = [];
+
+  for (let r = 0; r < ROW_SIZE; r++) {
+    for (let c = 0; c < COL_SIZE; c++) {
+      if (board[r][c] === 0) {
+        emptyTiles.push({
+          row: r, col: c,
+        });
+      }
+    }
+  }
+
+  const randomIndex = Math.floor(Math.random() * emptyTiles.length);
+  const randomTile = emptyTiles[randomIndex];
+  const randomValue = Math.random() <= 0.1 ? 4 : 2;
+
+  board[randomTile.row][randomTile.col] = randomValue;
 };
 
 document.addEventListener('keydown', e => {
