@@ -27,7 +27,7 @@ const cols = [...field.rows].reduce((res, el) => {
   return res;
 }, []);
 
-startButton.onclick = e => {
+startButton.addEventListener('click', e => {
   if (!startButton.toggle) {
     document.addEventListener('keydown', game);
     showMessage();
@@ -44,7 +44,7 @@ startButton.onclick = e => {
     start();
     showMessage();
   }
-};
+});
 
 function game(e) {
   if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
@@ -56,7 +56,7 @@ function game(e) {
   };
 
   addNewNumber(rows);
-  classHandler();
+  cellClassHandler();
 }
 
 function move(arr, direction) {
@@ -76,28 +76,27 @@ function move(arr, direction) {
       }
     });
 
-    if (direction === 'ArrowRight' || direction === 'ArrowDown') {
-      for (let index = el.length - 1; index >= 0; index--) {
-        if (clear.length) {
-          el[index].innerText = clear.pop();
-        } else {
-          el[index].innerText = '';
+    switch (direction) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        for (let index = el.length - 1; index >= 0; index--) {
+          clear.length
+            ? el[index].innerText = clear.pop()
+            : el[index].innerText = '';
         }
-      }
-    }
-
-    if (direction === 'ArrowLeft' || direction === 'ArrowUp') {
-      for (let ind = 0; ind < el.length; ind++) {
-        if (clear.length) {
-          el[ind].innerText = clear.shift();
-        } else {
-          el[ind].innerText = '';
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        for (let ind = 0; ind < el.length; ind++) {
+          clear.length
+            ? el[ind].innerText = clear.shift()
+            : el[ind].innerText = '';
         }
-      }
+        break;
     }
   });
 
-  classHandler();
+  cellClassHandler();
 
   cellList.forEach(el => {
     if (+el.innerText === 2048) {
@@ -156,7 +155,7 @@ function getClearArray(arr = []) {
   return result;
 };
 
-function classHandler() {
+function cellClassHandler() {
   cellList.forEach(el => {
     while (el.classList.length > 0) {
       el.classList.remove(el.classList.item(0));
@@ -172,7 +171,7 @@ function classHandler() {
 function start() {
   addNewNumber(rows);
   addNewNumber(rows);
-  classHandler();
+  cellClassHandler();
 };
 
 function showMessage(type) {
