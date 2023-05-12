@@ -28,7 +28,7 @@ const Directions = {
   ArrowUp: 'up',
   ArrowDown: 'down',
   ArrowLeft: 'left',
-  ArrowRight: 'right'
+  ArrowRight: 'right',
 };
 
 function keydownEventHandler(el) {
@@ -44,23 +44,22 @@ function keydownEventHandler(el) {
   }
 }
 
-function move(direction) {
-  switch (direction) {
-    case 'up':
+function move(Direction) {
+  switch (Direction) {
+    case Directions.ArrowUp:
       moveUp();
       break;
-    case 'down':
+    case Directions.ArrowDown:
       moveDown();
       break;
-    case 'left':
+    case Directions.ArrowLeft:
       moveLeft();
       break;
-    case 'right':
+    case Directions.ArrowRight:
       moveRight();
       break;
   }
 }
-
 
 removeEventHandler();
 
@@ -86,11 +85,13 @@ function generateRandomNumber() {
 
   if (randomNumber < 0.1) {
     return 4;
-  } else if (randomNumber < 0.9) {
-    return 2;
-  } else {
+  }
+  
+  if (randomNumber < 0.9) {
     return 2;
   }
+
+    return 2;
 }
 
 function generateRandomIndex() {
