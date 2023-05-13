@@ -139,6 +139,9 @@ h1 {
 .button {
   border: none;
   border-radius: 5px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;
@@ -274,8 +277,4 @@ hr {
 .x2048 {
   background: #edc22e;
   color: #f9f6f2;
-}
-
-#restartbutton {
-  display: none;
 }

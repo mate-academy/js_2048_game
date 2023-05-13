@@ -9,7 +9,20 @@ const start = document.getElementById('startbutton');
 const restart = document.getElementById('restartbutton');
 
 window.onload = function() {
-  setGame();
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      const tile = document.createElement('div');
+
+      tile.id = r.toString() + '-' + c.toString();
+
+      const num = board[r][c];
+
+      updateTile(tile, num);
+      document.getElementById('board').append(tile);
+    }
+  }
+
+  restart.style.display = 'none';
 };
 
 start.addEventListener('click', setStart);
@@ -73,23 +86,17 @@ function setGame() {
 }
 
 function isGameOver() {
-  // Check if there are any empty cells
-
-  board.forEach(row => {
-    row.forEach(cell => {
-      if (cell === 0) {
-        return false;
-      }
-    });
-  });
-
-  for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[i].length; j++) {
-      if (j < board[i].length - 1 && board[i][j] === board[i][j + 1]) {
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (board[i][j] === 0) {
         return false;
       }
 
-      if (i < board.length - 1 && board[i][j] === board[i + 1][j]) {
+      if (i > 0 && board[i][j] === board[i - 1][j]) {
+        return false;
+      }
+
+      if (j > 0 && board[i][j] === board[i][j - 1]) {
         return false;
       }
     }
@@ -196,7 +203,7 @@ function filterZero(row) {
 }
 
 function slide(row) {
-  document.getElementById('restartbutton').style.display = 'unset';
+  document.getElementById('restartbutton').style.display = 'flex';
   document.getElementById('startbutton').style.display = 'none';
 
   let rowSecond = filterZero(row);
