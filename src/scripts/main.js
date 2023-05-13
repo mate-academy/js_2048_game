@@ -208,24 +208,17 @@ function isCanMove() {
 };
 
 function checkRows() {
-  for (let i = 0; i < 4; i++) {
-    if (newState[i].some(cell => cell === 0)
-      || newState[i]
-        .some((cell, j) => cell === newState[i][j + 1])) {
-      return true;
-    }
-  }
-
-  return false;
+  return newState.some(row =>
+    row.some((cell, index) =>
+      cell === 0 || cell === row[index + 1]
+    )
+  );
 }
 
 function checkColumns() {
-  for (let i = 0; i < 4; i++) {
-    if (newState[i]
-      .some((cell, j) => cell === newState[i][j + 1])) {
-      return true;
-    }
-  }
-
-  return false;
+  return newState.some((column, i) => {
+    return column.some((cell, j) => {
+      return newState[j + 1][i] === cell;
+    });
+  });
 }
