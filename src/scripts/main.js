@@ -1,23 +1,27 @@
 'use strict';
 
-let board = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
-
 let score = 0;
 let best = 0;
 const rows = 4;
 const columns = 4;
+let board = Array.from({ length: rows }, () => new Array(columns).fill(0));
 const start = document.getElementById('startbutton');
+const restart = document.getElementById('restartbutton');
 
 window.onload = function() {
   setGame();
 };
 
 start.addEventListener('click', setStart);
+restart.addEventListener('click', reStart);
+
+function reStart() {
+  restart.style.display = 'none';
+
+  setStart();
+
+  document.getElementById('startbutton').style.display = 'flex';
+}
 
 function setStart() {
   const elements = document.getElementsByClassName('tile');
@@ -26,16 +30,12 @@ function setStart() {
     elements[0].parentNode.removeChild(elements[0]);
   }
 
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  board = Array.from({ length: rows }, () => new Array(columns).fill(0));
 
-  document.getElementById('loser').classList.remove('hidden');
+  document.getElementById('loser').classList.add('hidden');
   document.getElementById('winner').classList.add('hidden');
   document.getElementById('start').classList.add('hidden');
+  document.getElementById('startbutton').style.display = 'none';
 
   setGame();
 }
@@ -49,13 +49,11 @@ function setGame() {
     rowID.push(Math.floor(Math.random() * 4));
   }
 
-  for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[i].length; j++) {
-      if (columnId.includes(i) && rowID.includes(j)) {
-        board[i][j] = 2;
-      }
-    }
-  }
+  columnId.forEach((numberColumn) => {
+    rowID.forEach((numberRow) => {
+      board[numberColumn][numberRow] = 2;
+    });
+  });
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
@@ -76,15 +74,15 @@ function setGame() {
 
 function isGameOver() {
   // Check if there are any empty cells
-  for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[i].length; j++) {
-      if (board[i][j] === 0) {
+
+  board.forEach(row => {
+    row.forEach(cell => {
+      if (cell === 0) {
         return false;
       }
-    }
-  }
+    });
+  });
 
-  // Check if there are any adjacent cells with the same value
   for (let i = 0; i < board.length; i++) {
     for (let j = 0; j < board[i].length; j++) {
       if (j < board[i].length - 1 && board[i][j] === board[i][j + 1]) {
@@ -101,15 +99,25 @@ function isGameOver() {
 }
 
 function hasEmptyTile() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      if (board[r][c] === 0) {
-        return true;
-      }
-    }
-  }
+  let hasZero = false;
 
-  return false;
+  // for (let r = 0; r < rows; r++) {
+  //   for (let c = 0; c < columns; c++) {
+  //     if (board[r][c] === 0) {
+  //       return true;
+  //     }
+  //   }
+  // }
+
+  board.forEach(row => {
+    row.forEach(cell => {
+      if (cell === 0) {
+        hasZero = true;
+      }
+    });
+  });
+
+  return hasZero;
 }
 
 function setTwo() {
@@ -156,6 +164,8 @@ function updateTile(tile, num) {
     document.getElementById('winner').classList.remove('hidden');
     document.getElementById('start').classList.add('hidden');
     document.getElementById('loser').classList.add('hidden');
+    document.getElementById('startbutton').style.display = 'unset';
+    document.getElementById('restartbutton').style.display = 'none';
   }
 }
 
@@ -178,6 +188,8 @@ document.addEventListener('keyup', (e) => {
     document.getElementById('loser').classList.add('hidden');
     document.getElementById('winner').classList.add('hidden');
     document.getElementById('start').classList.remove('hidden');
+    document.getElementById('startbutton').style.display = 'unset';
+    document.getElementById('restartbutton').style.display = 'none';
     throw new Error('Something went wrong.');
   }
 
@@ -192,10 +204,13 @@ function filterZero(row) {
 }
 
 function slide(row) {
+  document.getElementById('restartbutton').style.display = 'unset';
+  document.getElementById('startbutton').style.display = 'none';
+
   let rowSecond = filterZero(row);
 
-  for (let i = 0; i < rowSecond.length - 1; i++) {
-    if (rowSecond[i] === rowSecond[i + 1]) {
+  rowSecond.forEach((value, i) => {
+    if (i < rowSecond.length - 1 && rowSecond[i] === rowSecond[i + 1]) {
       rowSecond[i] *= 2;
       rowSecond[i + 1] = 0;
 
@@ -205,7 +220,7 @@ function slide(row) {
         best = score;
       }
     }
-  }
+  });
 
   rowSecond = filterZero(rowSecond);
 
