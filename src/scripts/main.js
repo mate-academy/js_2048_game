@@ -101,14 +101,6 @@ function isGameOver() {
 function hasEmptyTile() {
   let hasZero = false;
 
-  // for (let r = 0; r < rows; r++) {
-  //   for (let c = 0; c < columns; c++) {
-  //     if (board[r][c] === 0) {
-  //       return true;
-  //     }
-  //   }
-  // }
-
   board.forEach(row => {
     row.forEach(cell => {
       if (cell === 0) {
