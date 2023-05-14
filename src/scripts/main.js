@@ -90,20 +90,20 @@ const setGame = () => {
     [0, 0, 0, 0],
   ];
 
-  for (let r = 0; r < rows; r++) {
-    const row = document.createElement('tr');
+  board.forEach((matrixRow, rowIndex) => {
+    const htmlRow = document.createElement('tr');
 
-    document.querySelector('.game-field').append(row);
+    document.querySelector('.game-field').append(htmlRow);
 
-    for (let c = 0; c < columns; c++) {
-      const cell = document.createElement('td');
-      const num = board[r][c];
+    matrixRow.forEach((_, columnIndex) => {
+      const htmlCell = document.createElement('td');
+      const num = board[rowIndex][columnIndex];
 
-      cell.id = `${r}-${c}`;
-      updateTile(cell, num);
-      row.append(cell);
-    }
-  }
+      htmlCell.id = `${rowIndex}-${columnIndex}`;
+      updateTile(htmlCell, num);
+      htmlRow.append(htmlCell);
+    });
+  });
 };
 
 const isFreeSpace = () => {
@@ -165,24 +165,24 @@ const slide = (row, direction) => {
 
   changed[direction] = false;
 
-  for (let i = 0; i < updatedRow.length - 1; i++) {
-    if (updatedRow[i] === updatedRow[i + 1]) {
+  updatedRow.forEach((cell, cellIndex) => {
+    if (updatedRow[cellIndex] === updatedRow[cellIndex + 1]) {
       changed = {
         left: true,
         right: true,
         up: true,
         down: true,
       };
-      updatedRow[i] *= 2;
-      updatedRow[i + 1] = 0;
-      score += updatedRow[i];
+      updatedRow[cellIndex] *= 2;
+      updatedRow[cellIndex + 1] = 0;
+      score += updatedRow[cellIndex];
       document.querySelector('.game-score').innerHTML = score;
 
-      if (updatedRow[i] === 2048) {
+      if (updatedRow[cellIndex] === 2048) {
         winMessage.classList.remove('hidden');
       }
     }
-  }
+  });
 
   updatedRow = filterZero(updatedRow);
 
