@@ -6,19 +6,13 @@ let score = 0;
 const rows = 4;
 const columns = 4;
 let isFirstMove = true;
-let isMoved = true;
+let isMoved = false;
 let changed = {
   left: true,
   right: true,
   up: true,
   down: true,
 };
-const emptyBoard = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
 
 const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
@@ -31,6 +25,8 @@ window.onload = function() {
 };
 
 document.addEventListener('keyup', (e) => {
+  isMoved = false;
+
   switch (e.code) {
     case 'ArrowLeft':
       slideLeft();
@@ -67,7 +63,12 @@ startButton.addEventListener('click', e => {
 
 // region main functions
 const setGame = () => {
-  board = emptyBoard;
+  board = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
 
   board.forEach((matrixRow, rowIndex) => {
     const htmlRow = document.createElement('tr');
@@ -96,7 +97,12 @@ const startGame = () => {
 };
 
 const resetBoard = () => {
-  board = emptyBoard;
+  board = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
 
   board.forEach((row, rowIndex) => {
     row.forEach((cell, columnIndex) => {
@@ -150,8 +156,6 @@ const slide = (row, direction) => {
     isFirstMove = false;
     startGame();
   }
-
-  isMoved = true;
   changed[direction] = false;
 
   let updatedRow = filterZero(row);
@@ -183,9 +187,10 @@ const slide = (row, direction) => {
 
   const isSame = updatedRow.every(
     (cell, cellIndex) => cell === row[cellIndex]);
+  const isRowEmpty = !filterZero(row).length;
 
-  if (isSame && !filterZero(row).length) {
-    isMoved = false;
+  if (!isSame && !isRowEmpty) {
+    isMoved = true;
   }
 
   return updatedRow;
@@ -199,7 +204,9 @@ const slideLeft = () => {
       const cell = document.getElementById(`${r}-${c}`);
       const num = board[r][c];
 
-      updateTile(cell, num);
+      if (+cell.innerText !== num) {
+        updateTile(cell, num);
+      }
     }
   }
 };
@@ -218,7 +225,9 @@ const slideRight = () => {
       const cell = document.getElementById(`${r}-${c}`);
       const num = board[r][c];
 
-      updateTile(cell, num);
+      if (+cell.innerText !== num) {
+        updateTile(cell, num);
+      }
     }
   }
 };
@@ -242,7 +251,9 @@ const slideUp = () => {
       const cell = document.getElementById(`${r}-${c}`);
       const num = board[r][c];
 
-      updateTile(cell, num);
+      if (+cell.innerText !== num) {
+        updateTile(cell, num);
+      }
     }
   }
 };
@@ -268,7 +279,9 @@ const slideDown = () => {
       const cell = document.getElementById(`${r}-${c}`);
       const num = board[r][c];
 
-      updateTile(cell, num);
+      if (+cell.innerText !== num) {
+        updateTile(cell, num);
+      }
     }
   }
 };
