@@ -1,21 +1,30 @@
 'use strict';
 
+// region variables
 let board;
 let score = 0;
 const rows = 4;
 const columns = 4;
 let isFirstMove = true;
+let isMoved = true;
 let changed = {
   left: true,
   right: true,
   up: true,
   down: true,
 };
+const emptyBoard = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 
 const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 const startButton = document.querySelector('.start');
+// endregion
 
 window.onload = function() {
   setGame();
@@ -44,10 +53,11 @@ document.addEventListener('keyup', (e) => {
 
   if (!isAnythingChanged && !isFreeSpace()) {
     loseMessage.classList.remove('hidden');
-
-    return;
   }
-  setTimeout(() => addNumber(), 300);
+
+  if (isMoved) {
+    setTimeout(() => addNumber(), 300);
+  }
 });
 
 startButton.addEventListener('click', e => {
@@ -55,40 +65,9 @@ startButton.addEventListener('click', e => {
   startGame();
 });
 
-const startGame = () => {
-  addNumber();
-  addNumber();
-  startMessage.classList.add('hidden');
-  winMessage.classList.add('hidden');
-  loseMessage.classList.add('hidden');
-  startButton.classList.replace('start', 'restart');
-  startButton.innerHTML = 'Restart';
-};
-
-const resetBoard = () => {
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
-
-  board.forEach((row, rowIndex) => {
-    row.forEach((cell, columnIndex) => {
-      const tile = document.getElementById(`${rowIndex}-${columnIndex}`);
-
-      updateTile(tile, 0);
-    });
-  });
-};
-
+// region main functions
 const setGame = () => {
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  board = emptyBoard;
 
   board.forEach((matrixRow, rowIndex) => {
     const htmlRow = document.createElement('tr');
@@ -106,12 +85,26 @@ const setGame = () => {
   });
 };
 
-const isFreeSpace = () => {
-  return board.some((row) => row.some(cell => cell === 0));
+const startGame = () => {
+  addNumber();
+  addNumber();
+  startMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
+  startButton.classList.replace('start', 'restart');
+  startButton.innerHTML = 'Restart';
 };
 
-const calculateProbabilityNumber = () => {
-  return Math.random() > 0.9 ? 4 : 2;
+const resetBoard = () => {
+  board = emptyBoard;
+
+  board.forEach((row, rowIndex) => {
+    row.forEach((cell, columnIndex) => {
+      const tile = document.getElementById(`${rowIndex}-${columnIndex}`);
+
+      updateTile(tile, 0);
+    });
+  });
 };
 
 const addNumber = () => {
@@ -149,10 +142,7 @@ const updateTile = (cell, num) => {
     }
   }
 };
-
-const filterZero = (row) => {
-  return row.filter(num => num !== 0);
-};
+// endregion
 
 // region slide functions
 const slide = (row, direction) => {
@@ -161,9 +151,10 @@ const slide = (row, direction) => {
     startGame();
   }
 
-  let updatedRow = filterZero(row);
-
+  isMoved = true;
   changed[direction] = false;
+
+  let updatedRow = filterZero(row);
 
   updatedRow.forEach((cell, cellIndex) => {
     if (updatedRow[cellIndex] === updatedRow[cellIndex + 1]) {
@@ -190,14 +181,19 @@ const slide = (row, direction) => {
     updatedRow.push(0);
   }
 
+  const isSame = updatedRow.every(
+    (cell, cellIndex) => cell === row[cellIndex]);
+
+  if (isSame && !filterZero(row).length) {
+    isMoved = false;
+  }
+
   return updatedRow;
 };
 
 const slideLeft = () => {
   for (let r = 0; r < rows; r++) {
-    const row = slide(board[r], 'left');
-
-    board[r] = row;
+    board[r] = slide(board[r], 'left');
 
     for (let c = 0; c < columns; c++) {
       const cell = document.getElementById(`${r}-${c}`);
@@ -235,7 +231,7 @@ const slideUp = () => {
     row.fill(0);
 
     row.forEach((_, index) => {
-      row.push(board[index][c]);
+      row[index] = board[index][c];
     });
 
     row = slide(row, 'up');
@@ -259,7 +255,7 @@ const slideDown = () => {
     row.fill(0);
 
     row.forEach((_, index) => {
-      row.push(board[index][c]);
+      row[index] = board[index][c];
     });
 
     row.reverse();
@@ -275,5 +271,19 @@ const slideDown = () => {
       updateTile(cell, num);
     }
   }
+};
+// endregion
+
+// region utility functions
+const isFreeSpace = () => {
+  return board.some((row) => row.some(cell => cell === 0));
+};
+
+const calculateProbabilityNumber = () => {
+  return Math.random() > 0.9 ? 4 : 2;
+};
+
+const filterZero = (row) => {
+  return row.filter(num => num !== 0);
 };
 // endregion
