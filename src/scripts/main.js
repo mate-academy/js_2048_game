@@ -148,7 +148,7 @@ function moveRight(arr) {
 
 function keyPress(keypress) {
   switch (keypress.key) {
-    case 'ArowLeft':
+    case 'ArrowLeft':
       moveLeft(board);
       setRandomCell();
       renderGameBoard();
