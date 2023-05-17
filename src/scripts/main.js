@@ -41,39 +41,41 @@ const keyUpHandler = (e) => {
     case 'ArrowLeft':
       arrowLeft(state);
 
-      if (isWin(state) || (isLose(state))) {
+      if (isWin(state)) {
         break;
       }
       setTwoOrFour(state);
+      isLose(state);
       break;
     case 'ArrowRight':
       arrowRight(state);
 
-      if (isWin(state) || (isLose(state))) {
+      if (isWin(state)) {
         break;
       }
       setTwoOrFour(state);
+      isLose(state);
       break;
     case 'ArrowDown':
       arrowDown(state);
 
-      if (isWin(state) || (isLose(state))) {
+      if (isWin(state)) {
         break;
       }
       setTwoOrFour(state);
+      isLose(state);
       break;
     case 'ArrowUp':
       arrowUp(state);
 
-      if (isWin(state) || (isLose(state))) {
+      if (isWin(state)) {
         break;
       }
       setTwoOrFour(state);
+      isLose(state);
       break;
     default:
   }
-  // // eslint-disable-next-line no-console
-  // console.log(e.key, e.code, e.repeat);
 };
 
 button.addEventListener('click', clickHandler);
@@ -295,14 +297,14 @@ function isLose(gameBoard) {
     .map(cell => cell.value)
     .filter(cell => cell === 0);
 
-  if (filterZero.length === 0) {
+  const canNotMove = filterZero.length === 0
+  && !canMoveLeftOrRight(gameBoard)
+  && !canMoveUpOrDown(gameBoard);
+
+  if (canNotMove) {
     messageLose.classList.toggle('hidden');
     document.body.removeEventListener('keyup', keyUpHandler);
-
-    return true;
   }
-
-  return false;
 }
 
 function resetCells(cellsBoard) {
@@ -310,4 +312,46 @@ function resetCells(cellsBoard) {
     cell.innerText = '';
     cell.className = 'field-cell';
   });
+}
+
+function canMoveLeftOrRight(stateBoard) {
+  let canMove = false;
+
+  for (let row = 0; row < size; row++) {
+    const filterZeroByRow = (board) =>
+      board.filter(cell => cell.y === row && cell.value !== 0)
+        .map(cell => cell.value);
+    const mergeRow = (newCells) => {
+      for (let cell = 0; cell < newCells.length - 1; cell++) {
+        if (newCells[cell] === newCells[cell + 1]) {
+          canMove = true;
+        }
+      }
+    };
+
+    mergeRow(filterZeroByRow(stateBoard));
+  }
+
+  return canMove;
+}
+
+function canMoveUpOrDown(stateBoard) {
+  let canMove = false;
+
+  for (let col = 0; col < size; col++) {
+    const filterZeroByCol = (board) =>
+      board.filter(cell => cell.x === col && cell.value !== 0)
+        .map(cell => cell.value);
+    const mergeCol = (newCells) => {
+      for (let cell = 0; cell < newCells.length - 1; cell++) {
+        if (newCells[cell] === newCells[cell + 1]) {
+          canMove = true;
+        }
+      }
+    };
+
+    mergeCol(filterZeroByCol(stateBoard));
+  }
+
+  return canMove;
 }
