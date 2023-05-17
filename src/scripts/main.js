@@ -8,11 +8,27 @@ const messageWin = document.querySelector('.message-win');
 const gameScore = document.querySelector('.game-score');
 const arrayCell = [...fieldCell];
 let secondClick = false;
+const actionInSwipe = {
+  down: false,
+  up: false,
+  right: false,
+  left: false,
+};
 
-function checkGameOver(action) {
+function checkGameOver() {
   const checkEmptyCell = arrayCell.filter(cell => !cell.textContent).length;
 
-  if (!action && !checkEmptyCell) {
+  function checkSomeAction() {
+    for (const swipe in actionInSwipe) {
+      if (swipe) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  if (!checkSomeAction() && !checkEmptyCell) {
     messageLose.classList.toggle('hidden');
   }
 }
@@ -131,7 +147,6 @@ function addOrMoveCeill(checkedCellInFunction, currentCell) {
 function downSwipe() {
   let checkedCell = 12;
   let currentCell = 8;
-  let someAction = false;
 
   for (let indexColumn = 0; indexColumn < 4; indexColumn++) {
     checkedCell += indexColumn;
@@ -141,7 +156,7 @@ function downSwipe() {
       if (arrayCell[indexCell].textContent) {
         if (!arrayCell[checkedCell].textContent) {
           movingCeill(checkedCell, indexCell);
-          someAction = true;
+          actionInSwipe.down = true;
           continue;
         }
 
@@ -149,7 +164,7 @@ function downSwipe() {
           === arrayCell[indexCell].textContent) {
           addNumber(checkedCell, indexCell);
           checkedCell -= 4;
-          someAction = true;
+          actionInSwipe.down = true;
           continue;
         } else {
           if (indexCell - 3 > 0 && ((indexCell - 7) < 0)) {
@@ -158,7 +173,7 @@ function downSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              someAction = true;
+              actionInSwipe.down = true;
               continue;
             }
           }
@@ -169,7 +184,7 @@ function downSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              someAction = true;
+              actionInSwipe.down = true;
               continue;
             }
           }
@@ -182,19 +197,18 @@ function downSwipe() {
     currentCell = 8;
   }
 
-  if (someAction) {
+  if (actionInSwipe.down) {
     addNewNumberOnField(getRandomNumber(15));
   }
 
   checkGameWin();
-  checkGameOver(someAction);
-  someAction = false;
+  checkGameOver();
+  actionInSwipe.down = false;
 }
 
 function upSwipe() {
   let checkedCell = 0;
   let currentCell = 4;
-  let someAction = false;
 
   for (let indexColumn = 0; indexColumn < 4; indexColumn++) {
     checkedCell += indexColumn;
@@ -204,7 +218,7 @@ function upSwipe() {
       if (arrayCell[indexCell].textContent) {
         if (!arrayCell[checkedCell].textContent) {
           movingCeill(checkedCell, indexCell);
-          someAction = true;
+          actionInSwipe.up = true;
           continue;
         }
 
@@ -212,7 +226,7 @@ function upSwipe() {
           === arrayCell[indexCell].textContent) {
           addNumber(checkedCell, indexCell);
           checkedCell += 4;
-          someAction = true;
+          actionInSwipe.up = true;
           continue;
         } else {
           if (indexCell - 7 > 0 && ((indexCell - 12) < 0)) {
@@ -221,7 +235,7 @@ function upSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              someAction = true;
+              actionInSwipe.up = true;
               continue;
             }
           }
@@ -232,7 +246,7 @@ function upSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              someAction = true;
+              actionInSwipe.up = true;
               continue;
             }
           }
@@ -245,19 +259,18 @@ function upSwipe() {
     currentCell = 4;
   }
 
-  if (someAction) {
+  if (actionInSwipe.up) {
     addNewNumberOnField(getRandomNumber(15));
   }
 
   checkGameWin();
-  checkGameOver(someAction);
-  someAction = false;
+  checkGameOver();
+  actionInSwipe.up = false;
 }
 
 function rightSwipe() {
   let checkedCell = 3;
   let currentCell = 2;
-  let someAction = false;
 
   for (let indexRow = 0; indexRow < 16; indexRow += 4) {
     checkedCell += indexRow;
@@ -267,7 +280,7 @@ function rightSwipe() {
       if (arrayCell[indexCell].textContent) {
         if (!arrayCell[checkedCell].textContent) {
           movingCeill(checkedCell, indexCell);
-          someAction = true;
+          actionInSwipe.right = true;
           continue;
         }
 
@@ -275,7 +288,7 @@ function rightSwipe() {
           === arrayCell[indexCell].textContent) {
           addNumber(checkedCell, indexCell);
           checkedCell -= 1;
-          someAction = true;
+          actionInSwipe.right = true;
           continue;
         } else {
           if ([1, 5, 9, 13].includes(indexCell)) {
@@ -284,7 +297,7 @@ function rightSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              someAction = true;
+              actionInSwipe.right = true;
               continue;
             }
           }
@@ -295,7 +308,7 @@ function rightSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              someAction = true;
+              actionInSwipe.right = true;
               continue;
             }
           }
@@ -308,18 +321,17 @@ function rightSwipe() {
     currentCell = 2;
   }
 
-  if (someAction) {
+  if (actionInSwipe.right) {
     addNewNumberOnField(getRandomNumber(15));
   }
   checkGameWin();
-  checkGameOver(someAction);
-  someAction = false;
+  checkGameOver();
+  actionInSwipe.right = false;
 }
 
 function leftSwipe() {
   let comprativeCell = 0;
   let currentCell = 1;
-  let someAction = false;
 
   for (let indexRow = 0; indexRow < 16; indexRow += 4) {
     comprativeCell += indexRow;
@@ -329,7 +341,7 @@ function leftSwipe() {
       if (arrayCell[indexCell].textContent) {
         if (!arrayCell[comprativeCell].textContent) {
           movingCeill(comprativeCell, indexCell);
-          someAction = true;
+          actionInSwipe.left = true;
           continue;
         }
 
@@ -337,7 +349,7 @@ function leftSwipe() {
           === arrayCell[indexCell].textContent) {
           addNumber(comprativeCell, indexCell);
           comprativeCell += 1;
-          someAction = true;
+          actionInSwipe.left = true;
           continue;
         } else {
           if ([2, 6, 10, 14].includes(indexCell)) {
@@ -346,7 +358,7 @@ function leftSwipe() {
             }
 
             if (addOrMoveCeill(comprativeCell, indexCell)) {
-              someAction = true;
+              actionInSwipe.left = true;
               continue;
             }
           }
@@ -357,7 +369,7 @@ function leftSwipe() {
             }
 
             if (addOrMoveCeill(comprativeCell, indexCell)) {
-              someAction = true;
+              actionInSwipe.left = true;
               continue;
             }
           }
@@ -370,12 +382,12 @@ function leftSwipe() {
     currentCell = 1;
   }
 
-  if (someAction) {
+  if (actionInSwipe.left) {
     addNewNumberOnField(getRandomNumber(15));
   }
 
   checkGameWin();
-  checkGameOver(someAction);
+  checkGameOver();
 
-  someAction = false;
+  actionInSwipe.left = false;
 }
