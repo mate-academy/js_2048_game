@@ -4,15 +4,22 @@ const start = document.querySelector('.start');
 const fieldCell = document.querySelectorAll('.field-cell');
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
 const gameScore = document.querySelector('.game-score');
 const arrayCell = [...fieldCell];
 let secondClick = false;
 
-function returnGameOver(action) {
+function checkGameOver(action) {
   const checkEmptyCell = arrayCell.filter(cell => !cell.textContent).length;
 
   if (!action && !checkEmptyCell) {
     messageLose.classList.toggle('hidden');
+  }
+}
+
+function checkGameWin() {
+  if (arrayCell.find(cell => cell.textContent === '2048')) {
+    messageWin.classList.toggle('hidden');
   }
 }
 
@@ -23,6 +30,19 @@ function resetCellAndScore() {
   });
   gameScore.textContent = 0;
 }
+
+const getRandomNumber = (numb) => Math.round(Math.random() * numb);
+
+function addNewNumberOnField(numberCeill) {
+  const randomNumber = getRandomNumber(4) === 4 ? 4 : 2;
+
+  if (!arrayCell[numberCeill].textContent) {
+    arrayCell[numberCeill].textContent = randomNumber;
+    arrayCell[numberCeill].classList.add(`field-cell--${randomNumber}`);
+  } else {
+    addNewNumberOnField(getRandomNumber(15));
+  }
+};
 
 start.addEventListener('click', () => {
   if (secondClick) {
@@ -63,233 +83,236 @@ function startGame() {
   messageStart.classList.add('hidden');
   start.classList.toggle('.restart');
   messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
 
-  const randomNumb = getRandomNumber(15);
-
-  addNewNumberOnField(randomNumb);
-  addNewNumberOnField(randomNumb);
+  addNewNumberOnField(getRandomNumber(15));
+  addNewNumberOnField(getRandomNumber(15));
 }
 
-function addNumber(row, cell) {
-  const numb = +arrayCell[cell].textContent;
+function addNumber(checkedCell, currentCell) {
+  const numb = +arrayCell[currentCell].textContent;
   const sumNumb = numb + numb;
 
   gameScore.textContent = +gameScore.textContent + sumNumb;
 
-  arrayCell[row].textContent = sumNumb;
-  arrayCell[row].classList.toggle(arrayCell[cell].classList[1]);
-  arrayCell[row].classList.add(`field-cell--${sumNumb}`);
+  arrayCell[checkedCell].textContent = sumNumb;
+  arrayCell[checkedCell].classList.toggle(arrayCell[currentCell].classList[1]);
+  arrayCell[checkedCell].classList.add(`field-cell--${sumNumb}`);
 
-  arrayCell[cell].className = 'field-cell';
-  arrayCell[cell].textContent = null;
+  arrayCell[currentCell].className = 'field-cell';
+  arrayCell[currentCell].textContent = null;
 }
 
-function movingCeill(col, cell) {
-  const numb = +arrayCell[cell].textContent;
+function movingCeill(checkedCell, currentCell) {
+  const numb = +arrayCell[currentCell].textContent;
 
-  arrayCell[col].textContent = numb;
-  arrayCell[col].classList.toggle(arrayCell[cell].classList[1]);
+  arrayCell[checkedCell].textContent = numb;
+  arrayCell[checkedCell].classList.toggle(arrayCell[currentCell].classList[1]);
 
-  arrayCell[cell].className = 'field-cell';
-  arrayCell[cell].textContent = null;
+  arrayCell[currentCell].className = 'field-cell';
+  arrayCell[currentCell].textContent = null;
 }
 
-function addOrMoveCeill(comprativeRowInFuction, ceil) {
-  if (!arrayCell[comprativeRowInFuction].textContent) {
-    movingCeill(comprativeRowInFuction, ceil);
+function addOrMoveCeill(checkedCellInFunction, currentCell) {
+  if (!arrayCell[checkedCellInFunction].textContent) {
+    movingCeill(checkedCellInFunction, currentCell);
 
     return 'moving';
   }
 
-  if (arrayCell[comprativeRowInFuction].textContent
-    === arrayCell[ceil].textContent) {
-    addNumber(comprativeRowInFuction, ceil);
+  if (arrayCell[checkedCellInFunction].textContent
+    === arrayCell[currentCell].textContent) {
+    addNumber(checkedCellInFunction, currentCell);
 
     return 'add';
   }
 }
 
 function downSwipe() {
-  let comprativeRow = 12;
-  let currentRow = 8;
+  let checkedCell = 12;
+  let currentCell = 8;
   let someAction = false;
 
   for (let indexColumn = 0; indexColumn < 4; indexColumn++) {
-    comprativeRow += indexColumn;
-    currentRow += indexColumn;
+    checkedCell += indexColumn;
+    currentCell += indexColumn;
 
-    for (let indexRow = currentRow; indexRow >= 0; indexRow -= 4) {
-      if (arrayCell[indexRow].textContent) {
-        if (!arrayCell[comprativeRow].textContent) {
-          movingCeill(comprativeRow, indexRow);
+    for (let indexCell = currentCell; indexCell >= 0; indexCell -= 4) {
+      if (arrayCell[indexCell].textContent) {
+        if (!arrayCell[checkedCell].textContent) {
+          movingCeill(checkedCell, indexCell);
           someAction = true;
           continue;
         }
 
-        if (arrayCell[comprativeRow].textContent
-          === arrayCell[indexRow].textContent) {
-          addNumber(comprativeRow, indexRow);
-          comprativeRow -= 4;
+        if (arrayCell[checkedCell].textContent
+          === arrayCell[indexCell].textContent) {
+          addNumber(checkedCell, indexCell);
+          checkedCell -= 4;
           someAction = true;
           continue;
         } else {
-          if (indexRow - 3 > 0 && ((indexRow - 7) < 0)) {
-            if (comprativeRow - 4 !== indexRow) {
-              comprativeRow -= 4;
+          if (indexCell - 3 > 0 && ((indexCell - 7) < 0)) {
+            if (checkedCell - 4 !== indexCell) {
+              checkedCell -= 4;
             }
 
-            if (addOrMoveCeill(comprativeRow, indexRow)) {
+            if (addOrMoveCeill(checkedCell, indexCell)) {
               someAction = true;
               continue;
             }
           }
 
-          if (indexRow - 4 < 0) {
-            if (comprativeRow - 4 !== indexRow) {
-              comprativeRow -= 4;
+          if (indexCell - 4 < 0) {
+            if (checkedCell - 4 !== indexCell) {
+              checkedCell -= 4;
             }
 
-            if (addOrMoveCeill(comprativeRow, indexRow)) {
+            if (addOrMoveCeill(checkedCell, indexCell)) {
               someAction = true;
               continue;
             }
           }
 
-          comprativeRow -= 4;
+          checkedCell -= 4;
         }
       }
     }
-    comprativeRow = 12;
-    currentRow = 8;
+    checkedCell = 12;
+    currentCell = 8;
   }
 
   if (someAction) {
     addNewNumberOnField(getRandomNumber(15));
   }
-  returnGameOver(someAction);
+
+  checkGameWin();
+  checkGameOver(someAction);
   someAction = false;
 }
 
 function upSwipe() {
-  let comprativeRow = 0;
-  let currentRow = 4;
+  let checkedCell = 0;
+  let currentCell = 4;
   let someAction = false;
 
   for (let indexColumn = 0; indexColumn < 4; indexColumn++) {
-    comprativeRow += indexColumn;
-    currentRow += indexColumn;
+    checkedCell += indexColumn;
+    currentCell += indexColumn;
 
-    for (let indexRow = currentRow; indexRow < 16; indexRow += 4) {
-      if (arrayCell[indexRow].textContent) {
-        if (!arrayCell[comprativeRow].textContent) {
-          movingCeill(comprativeRow, indexRow);
+    for (let indexCell = currentCell; indexCell < 16; indexCell += 4) {
+      if (arrayCell[indexCell].textContent) {
+        if (!arrayCell[checkedCell].textContent) {
+          movingCeill(checkedCell, indexCell);
           someAction = true;
           continue;
         }
 
-        if (arrayCell[comprativeRow].textContent
-          === arrayCell[indexRow].textContent) {
-          addNumber(comprativeRow, indexRow);
-          comprativeRow += 4;
+        if (arrayCell[checkedCell].textContent
+          === arrayCell[indexCell].textContent) {
+          addNumber(checkedCell, indexCell);
+          checkedCell += 4;
           someAction = true;
           continue;
         } else {
-          if (indexRow - 7 > 0 && ((indexRow - 12) < 0)) {
-            if (comprativeRow + 4 !== indexRow) {
-              comprativeRow += 4;
+          if (indexCell - 7 > 0 && ((indexCell - 12) < 0)) {
+            if (checkedCell + 4 !== indexCell) {
+              checkedCell += 4;
             }
 
-            if (addOrMoveCeill(comprativeRow, indexRow)) {
+            if (addOrMoveCeill(checkedCell, indexCell)) {
               someAction = true;
               continue;
             }
           }
 
-          if (indexRow - 11 > 0) {
-            if (comprativeRow + 4 !== indexRow) {
-              comprativeRow += 4;
+          if (indexCell - 11 > 0) {
+            if (checkedCell + 4 !== indexCell) {
+              checkedCell += 4;
             }
 
-            if (addOrMoveCeill(comprativeRow, indexRow)) {
+            if (addOrMoveCeill(checkedCell, indexCell)) {
               someAction = true;
               continue;
             }
           }
 
-          comprativeRow += 4;
+          checkedCell += 4;
         }
       }
     }
-    currentRow = 4;
-    comprativeRow = 0;
+    checkedCell = 0;
+    currentCell = 4;
   }
 
   if (someAction) {
     addNewNumberOnField(getRandomNumber(15));
   }
 
-  returnGameOver(someAction);
+  checkGameWin();
+  checkGameOver(someAction);
   someAction = false;
 }
 
 function rightSwipe() {
-  let comprativeCell = 3;
+  let checkedCell = 3;
   let currentCell = 2;
   let someAction = false;
 
   for (let indexRow = 0; indexRow < 16; indexRow += 4) {
-    comprativeCell += indexRow;
+    checkedCell += indexRow;
     currentCell += indexRow;
 
     for (let indexCell = currentCell; (indexCell + 1) % 4 !== 0; indexCell--) {
       if (arrayCell[indexCell].textContent) {
-        if (!arrayCell[comprativeCell].textContent) {
-          movingCeill(comprativeCell, indexCell);
+        if (!arrayCell[checkedCell].textContent) {
+          movingCeill(checkedCell, indexCell);
           someAction = true;
           continue;
         }
 
-        if (arrayCell[comprativeCell].textContent
+        if (arrayCell[checkedCell].textContent
           === arrayCell[indexCell].textContent) {
-          addNumber(comprativeCell, indexCell);
-          comprativeCell -= 1;
+          addNumber(checkedCell, indexCell);
+          checkedCell -= 1;
           someAction = true;
           continue;
         } else {
           if ([1, 5, 9, 13].includes(indexCell)) {
-            if (comprativeCell - 1 !== indexCell) {
-              comprativeCell -= 1;
+            if (checkedCell - 1 !== indexCell) {
+              checkedCell -= 1;
             }
 
-            if (addOrMoveCeill(comprativeCell, indexCell)) {
+            if (addOrMoveCeill(checkedCell, indexCell)) {
               someAction = true;
               continue;
             }
           }
 
           if ([0, 4, 8, 12].includes(indexCell)) {
-            if (comprativeCell - 1 !== indexCell) {
-              comprativeCell -= 1;
+            if (checkedCell - 1 !== indexCell) {
+              checkedCell -= 1;
             }
 
-            if (addOrMoveCeill(comprativeCell, indexCell)) {
+            if (addOrMoveCeill(checkedCell, indexCell)) {
               someAction = true;
               continue;
             }
           }
 
-          comprativeCell -= 1;
+          checkedCell -= 1;
         }
       }
     }
-    comprativeCell = 3;
+    checkedCell = 3;
     currentCell = 2;
   }
 
   if (someAction) {
     addNewNumberOnField(getRandomNumber(15));
   }
-  returnGameOver(someAction);
+  checkGameWin();
+  checkGameOver(someAction);
   someAction = false;
 }
 
@@ -351,20 +374,8 @@ function leftSwipe() {
     addNewNumberOnField(getRandomNumber(15));
   }
 
-  returnGameOver(someAction);
+  checkGameWin();
+  checkGameOver(someAction);
 
   someAction = false;
 }
-
-const getRandomNumber = (numb) => Math.round(Math.random() * numb);
-
-function addNewNumberOnField(numberCeill) {
-  const randomNumber = getRandomNumber(4) === 4 ? 4 : 2;
-
-  if (!arrayCell[numberCeill].textContent) {
-    arrayCell[numberCeill].textContent = randomNumber;
-    arrayCell[numberCeill].classList.add(`field-cell--${randomNumber}`);
-  } else {
-    addNewNumberOnField(getRandomNumber(15));
-  }
-};
