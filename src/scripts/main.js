@@ -149,10 +149,10 @@ function arrowLeft(stateBoard) {
     const makeCellsAndUpdate = (newCells) =>
       newCells
         .map((item, index) => (
-          { x: index,
-            y: row,
-            value: item }))
-        .map(cell => updateState(stateBoard, cell));
+          updateState(stateBoard,
+            { x: index,
+              y: row,
+              value: item })));
 
     let newRow = makeRow(stateBoard);
 
@@ -188,10 +188,10 @@ function arrowRight(stateBoard) {
     const makeCellsAndUpdate = (newCells) =>
       newCells
         .map((item, index) => (
-          { x: index,
-            y: row,
-            value: item }))
-        .map(cell => updateState(stateBoard, cell));
+          updateState(stateBoard,
+            { x: index,
+              y: row,
+              value: item })));
 
     let newRow = makeRow(stateBoard);
 
@@ -227,10 +227,10 @@ function arrowDown(stateBoard) {
     const makeCellsAndUpdate = (newCells) =>
       newCells
         .map((item, index) => (
-          { x: col,
-            y: index,
-            value: item }))
-        .map(cell => updateState(stateBoard, cell));
+          updateState(stateBoard,
+            { x: index,
+              y: col,
+              value: item })));
 
     let newRow = makeRow(stateBoard);
 
@@ -266,10 +266,10 @@ function arrowUp(stateBoard) {
     const makeCellsAndUpdate = (newCells) =>
       newCells
         .map((item, index) => (
-          { x: col,
-            y: index,
-            value: item }))
-        .map(cell => updateState(stateBoard, cell));
+          updateState(stateBoard,
+            { x: index,
+              y: col,
+              value: item })));
 
     let newRow = makeRow(stateBoard);
 
