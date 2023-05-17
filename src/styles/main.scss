@@ -21,6 +21,10 @@ body {
   vertical-align: center;
   user-select: none;
 
+  &--0 {
+    background: #d6cdc4;
+  }
+
   &--2 {
     background: #eee4da;
   }
