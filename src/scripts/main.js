@@ -218,7 +218,7 @@ function checkRows() {
 function checkColumns() {
   return newState.some((column, i) => {
     return column.some((cell, j) => {
-      return newState[j + 1][i] === cell;
+      return newState[i][j + 1] === cell;
     });
   });
 }
