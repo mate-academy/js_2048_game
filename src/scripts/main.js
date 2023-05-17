@@ -15,21 +15,27 @@ const actionInSwipe = {
   left: false,
 };
 
+function updateActions() {
+  for (const swipe in actionInSwipe) {
+    actionInSwipe[swipe] = true;
+  }
+}
+
 function checkGameOver() {
   const checkEmptyCell = arrayCell.filter(cell => !cell.textContent).length;
 
   function checkSomeAction() {
     for (const swipe in actionInSwipe) {
-      if (swipe) {
+      if (actionInSwipe[swipe]) {
         return true;
-      } else {
-        return false;
-      }
+      };
     }
+
+    return false;
   }
 
   if (!checkSomeAction() && !checkEmptyCell) {
-    messageLose.classList.toggle('hidden');
+    messageLose.classList.remove('hidden');
   }
 }
 
@@ -49,14 +55,19 @@ function resetCellAndScore() {
 
 const getRandomNumber = (numb) => Math.round(Math.random() * numb);
 
-function addNewNumberOnField(numberCeill) {
+function addNewNumberOnField(numberCeill, actionRemove) {
   const randomNumber = getRandomNumber(4) === 4 ? 4 : 2;
+  const checkEmptyCell = arrayCell.filter(cell => !cell.textContent).length;
 
-  if (!arrayCell[numberCeill].textContent) {
-    arrayCell[numberCeill].textContent = randomNumber;
-    arrayCell[numberCeill].classList.add(`field-cell--${randomNumber}`);
+  if (checkEmptyCell) {
+    if (!arrayCell[numberCeill].textContent) {
+      arrayCell[numberCeill].textContent = randomNumber;
+      arrayCell[numberCeill].classList.add(`field-cell--${randomNumber}`);
+    } else {
+      addNewNumberOnField(getRandomNumber(15));
+    }
   } else {
-    addNewNumberOnField(getRandomNumber(15));
+    actionInSwipe[actionRemove] = false;
   }
 };
 
@@ -156,7 +167,7 @@ function downSwipe() {
       if (arrayCell[indexCell].textContent) {
         if (!arrayCell[checkedCell].textContent) {
           movingCeill(checkedCell, indexCell);
-          actionInSwipe.down = true;
+          updateActions();
           continue;
         }
 
@@ -164,7 +175,7 @@ function downSwipe() {
           === arrayCell[indexCell].textContent) {
           addNumber(checkedCell, indexCell);
           checkedCell -= 4;
-          actionInSwipe.down = true;
+          updateActions();
           continue;
         } else {
           if (indexCell - 3 > 0 && ((indexCell - 7) < 0)) {
@@ -173,7 +184,7 @@ function downSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              actionInSwipe.down = true;
+              updateActions();
               continue;
             }
           }
@@ -184,7 +195,7 @@ function downSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              actionInSwipe.down = true;
+              updateActions();
               continue;
             }
           }
@@ -198,12 +209,11 @@ function downSwipe() {
   }
 
   if (actionInSwipe.down) {
-    addNewNumberOnField(getRandomNumber(15));
+    addNewNumberOnField(getRandomNumber(15), 'down');
   }
 
-  checkGameWin();
   checkGameOver();
-  actionInSwipe.down = false;
+  checkGameWin();
 }
 
 function upSwipe() {
@@ -218,7 +228,7 @@ function upSwipe() {
       if (arrayCell[indexCell].textContent) {
         if (!arrayCell[checkedCell].textContent) {
           movingCeill(checkedCell, indexCell);
-          actionInSwipe.up = true;
+          updateActions();
           continue;
         }
 
@@ -226,7 +236,7 @@ function upSwipe() {
           === arrayCell[indexCell].textContent) {
           addNumber(checkedCell, indexCell);
           checkedCell += 4;
-          actionInSwipe.up = true;
+          updateActions();
           continue;
         } else {
           if (indexCell - 7 > 0 && ((indexCell - 12) < 0)) {
@@ -235,7 +245,7 @@ function upSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              actionInSwipe.up = true;
+              updateActions();
               continue;
             }
           }
@@ -246,7 +256,7 @@ function upSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              actionInSwipe.up = true;
+              updateActions();
               continue;
             }
           }
@@ -260,12 +270,11 @@ function upSwipe() {
   }
 
   if (actionInSwipe.up) {
-    addNewNumberOnField(getRandomNumber(15));
+    addNewNumberOnField(getRandomNumber(15), 'up');
   }
 
-  checkGameWin();
   checkGameOver();
-  actionInSwipe.up = false;
+  checkGameWin();
 }
 
 function rightSwipe() {
@@ -280,7 +289,7 @@ function rightSwipe() {
       if (arrayCell[indexCell].textContent) {
         if (!arrayCell[checkedCell].textContent) {
           movingCeill(checkedCell, indexCell);
-          actionInSwipe.right = true;
+          updateActions();
           continue;
         }
 
@@ -288,7 +297,7 @@ function rightSwipe() {
           === arrayCell[indexCell].textContent) {
           addNumber(checkedCell, indexCell);
           checkedCell -= 1;
-          actionInSwipe.right = true;
+          updateActions();
           continue;
         } else {
           if ([1, 5, 9, 13].includes(indexCell)) {
@@ -297,7 +306,7 @@ function rightSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              actionInSwipe.right = true;
+              updateActions();
               continue;
             }
           }
@@ -308,7 +317,7 @@ function rightSwipe() {
             }
 
             if (addOrMoveCeill(checkedCell, indexCell)) {
-              actionInSwipe.right = true;
+              updateActions();
               continue;
             }
           }
@@ -322,11 +331,11 @@ function rightSwipe() {
   }
 
   if (actionInSwipe.right) {
-    addNewNumberOnField(getRandomNumber(15));
+    addNewNumberOnField(getRandomNumber(15), 'right');
   }
-  checkGameWin();
+
   checkGameOver();
-  actionInSwipe.right = false;
+  checkGameWin();
 }
 
 function leftSwipe() {
@@ -337,11 +346,11 @@ function leftSwipe() {
     comprativeCell += indexRow;
     currentCell += indexRow;
 
-    for (let indexCell = currentCell; (indexCell + 1) % 4 !== 0; indexCell++) {
+    for (let indexCell = currentCell; indexCell % 4 !== 0; indexCell++) {
       if (arrayCell[indexCell].textContent) {
         if (!arrayCell[comprativeCell].textContent) {
           movingCeill(comprativeCell, indexCell);
-          actionInSwipe.left = true;
+          updateActions();
           continue;
         }
 
@@ -349,7 +358,7 @@ function leftSwipe() {
           === arrayCell[indexCell].textContent) {
           addNumber(comprativeCell, indexCell);
           comprativeCell += 1;
-          actionInSwipe.left = true;
+          updateActions();
           continue;
         } else {
           if ([2, 6, 10, 14].includes(indexCell)) {
@@ -358,7 +367,7 @@ function leftSwipe() {
             }
 
             if (addOrMoveCeill(comprativeCell, indexCell)) {
-              actionInSwipe.left = true;
+              updateActions();
               continue;
             }
           }
@@ -369,7 +378,7 @@ function leftSwipe() {
             }
 
             if (addOrMoveCeill(comprativeCell, indexCell)) {
-              actionInSwipe.left = true;
+              updateActions();
               continue;
             }
           }
@@ -383,11 +392,8 @@ function leftSwipe() {
   }
 
   if (actionInSwipe.left) {
-    addNewNumberOnField(getRandomNumber(15));
+    addNewNumberOnField(getRandomNumber(15), 'left');
   }
-
-  checkGameWin();
   checkGameOver();
-
-  actionInSwipe.left = false;
+  checkGameWin();
 }
