@@ -27,8 +27,34 @@ function getRandomIndex() {
   return Math.floor(Math.random() * 4);
 }
 
+function hasAdjacentTiles() {
+  let hasAdjacent = false;
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cells; c++) {
+      if (c < cells - 1 && gameBoard[r][c] === gameBoard[r][c + 1]) {
+        hasAdjacent = true;
+      } else if (r < rows - 1 && gameBoard[r][c] === gameBoard[r + 1][c]) {
+        hasAdjacent = true;
+      }
+    }
+  }
+
+  return hasAdjacent;
+};
+
+function isLoser() {
+  if (!hasEmptyTile() && !hasAdjacentTiles()) {
+    loseMessage.classList.remove('hidden');
+    document.removeEventListener('keyup', keyHandler);
+  }
+}
+
 function isWinner() {
-  return gameBoard.some(row => row.some(cell => cell === 2048));
+  if (gameBoard.some(row => row.some(cell => cell === 2048))) {
+    winMessage.classList.remove('hidden');
+    document.removeEventListener('keyup', keyHandler);
+  }
 }
 
 function resetBoard() {
@@ -129,6 +155,7 @@ function move(row) {
 
 function moveLeft() {
   isWinner();
+  isLoser();
   moveScore = 0;
 
   for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
@@ -146,6 +173,7 @@ function moveLeft() {
 
 function moveRight() {
   isWinner();
+  isLoser();
   moveScore = 0;
 
   for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
@@ -165,6 +193,7 @@ function moveRight() {
 
 function moveUp() {
   isWinner();
+  isLoser();
   moveScore = 0;
 
   for (let columnIndex = 0; columnIndex < 4; columnIndex++) {
@@ -192,6 +221,7 @@ function moveUp() {
 
 function moveDown() {
   isWinner();
+  isLoser();
   moveScore = 0;
 
   for (let columnIndex = 0; columnIndex < 4; columnIndex++) {
