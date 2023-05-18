@@ -228,8 +228,8 @@ function arrowDown(stateBoard) {
       newCells
         .map((item, index) => (
           updateState(stateBoard,
-            { x: index,
-              y: col,
+            { x: col,
+              y: index,
               value: item })));
 
     let newRow = makeRow(stateBoard);
@@ -267,8 +267,8 @@ function arrowUp(stateBoard) {
       newCells
         .map((item, index) => (
           updateState(stateBoard,
-            { x: index,
-              y: col,
+            { x: col,
+              y: index,
               value: item })));
 
     let newRow = makeRow(stateBoard);
