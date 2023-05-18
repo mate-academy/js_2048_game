@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+
 interface Props {
   score: number;
   isGameStarted: boolean;
@@ -17,7 +19,14 @@ export const GameHeader: React.FC<Props> = ({
           Score:
           <span className="game-score">{score}</span>
         </p>
-        <button type="button" className="button start" onClick={onStartGame}>
+        <button
+          type="button"
+          className={classNames('button', {
+            start: !isGameStarted,
+            restart: isGameStarted,
+          })}
+          onClick={onStartGame}
+        >
           {isGameStarted ? 'Restart' : 'Start'}
         </button>
       </div>

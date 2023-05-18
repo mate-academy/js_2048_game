@@ -4,6 +4,6 @@ interface Props {
   cell: Cell;
 }
 
-export const FieldCell: React.FC<Props> = ({ cell }) => {
-  return <td className="field-cell">{cell.value || ''}</td>;
-};
+export const FieldCell: React.FC<Props> = ({ cell }) => (
+  <td className={`field-cell field-cell--${cell.value}`}>{cell.value || ''}</td>
+);
