@@ -136,9 +136,9 @@ document.addEventListener('keydown', (action) => {
 
 const moveUp = () => {
   for (let col = 0; col < 4; col++) {
-    for (let row = 1; row < 4; row++) {
-      if (gameMarkup[row][col] !== 0) {
-        let currentRow = row;
+    gameMarkup.forEach((row, rowIndex) => {
+      if (row[col] !== 0) {
+        let currentRow = rowIndex;
 
         while (currentRow > 0 && gameMarkup[currentRow - 1][col] === 0) {
           gameMarkup[currentRow - 1][col] = gameMarkup[currentRow][col];
@@ -153,15 +153,15 @@ const moveUp = () => {
           gameMarkup[currentRow][col] = 0;
         }
       }
-    }
+    });
   }
 };
 
 const moveDown = () => {
   for (let col = 0; col < 4; col++) {
-    for (let row = 2; row >= 0; row--) {
-      if (gameMarkup[row][col] !== 0) {
-        let currentRow = row;
+    gameMarkup.forEach((row, rowIndex) => {
+      if (row[col] !== 0) {
+        let currentRow = rowIndex;
 
         while (currentRow < 3 && gameMarkup[currentRow + 1][col] === 0) {
           gameMarkup[currentRow + 1][col] = gameMarkup[currentRow][col];
@@ -176,54 +176,52 @@ const moveDown = () => {
           gameMarkup[currentRow][col] = 0;
         }
       }
-    }
+    });
   }
 };
 
 const moveLeft = () => {
-  for (let row = 0; row < 4; row++) {
+  gameMarkup.forEach((row) => {
     for (let col = 1; col < 4; col++) {
-      if (gameMarkup[row][col] !== 0) {
+      if (row[col] !== 0) {
         let currentCol = col;
 
-        while (currentCol > 0 && gameMarkup[row][currentCol - 1] === 0) {
-          gameMarkup[row][currentCol - 1] = gameMarkup[row][currentCol];
-          gameMarkup[row][currentCol] = 0;
+        while (currentCol > 0 && row[currentCol - 1] === 0) {
+          row[currentCol - 1] = row[currentCol];
+          row[currentCol] = 0;
           currentCol--;
         }
 
-        if (currentCol > 0
-          && gameMarkup[row][currentCol - 1] === gameMarkup[row][currentCol]) {
-          gameMarkup[row][currentCol - 1] *= 2;
-          scoreOfTheGame += gameMarkup[row][currentCol - 1];
-          gameMarkup[row][currentCol] = 0;
+        if (currentCol > 0 && row[currentCol - 1] === row[currentCol]) {
+          row[currentCol - 1] *= 2;
+          scoreOfTheGame += row[currentCol - 1];
+          row[currentCol] = 0;
         }
       }
     }
-  }
+  });
 };
 
 const moveRight = () => {
-  for (let row = 0; row < 4; row++) {
+  gameMarkup.forEach((row) => {
     for (let col = 2; col >= 0; col--) {
-      if (gameMarkup[row][col] !== 0) {
+      if (row[col] !== 0) {
         let currentCol = col;
 
-        while (currentCol < 3 && gameMarkup[row][currentCol + 1] === 0) {
-          gameMarkup[row][currentCol + 1] = gameMarkup[row][currentCol];
-          gameMarkup[row][currentCol] = 0;
+        while (currentCol < 3 && row[currentCol + 1] === 0) {
+          row[currentCol + 1] = row[currentCol];
+          row[currentCol] = 0;
           currentCol++;
         }
 
-        if (currentCol < 3
-          && gameMarkup[row][currentCol + 1] === gameMarkup[row][currentCol]) {
-          gameMarkup[row][currentCol + 1] *= 2;
-          scoreOfTheGame += gameMarkup[row][currentCol + 1];
-          gameMarkup[row][currentCol] = 0;
+        if (currentCol < 3 && row[currentCol + 1] === row[currentCol]) {
+          row[currentCol + 1] *= 2;
+          scoreOfTheGame += row[currentCol + 1];
+          row[currentCol] = 0;
         }
       }
     }
-  }
+  });
 };
 
 const checkGameOver = () => {
