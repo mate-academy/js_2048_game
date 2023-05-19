@@ -56,6 +56,8 @@ startButton.addEventListener('click', () => {
 
       theGameStarted = false;
 
+      scoreOfTheGame = 0;
+
       for (const message of allMessages) {
         message.classList.add('hidden');
       }
@@ -91,14 +93,25 @@ const handleRowRender = (gameRow, markupRow) => {
 };
 
 const fillRandomCell = () => {
-  if (gameMarkup.some(row => row.includes(0))) {
-    const randomNum = Math.random() < 0.9 ? 2 : 4;
-    const randomRow = Math.floor(Math.random() * 4);
-    const randomCol = Math.floor(Math.random() * 4);
+  const emptyCells = [];
 
-    if (gameMarkup[randomRow][randomCol] === 0) {
-      gameMarkup[randomRow][randomCol] = randomNum;
-    }
+  gameMarkup.forEach((row, rowIndex) => {
+    row.forEach((cell, colIndex) => {
+      if (cell === 0) {
+        emptyCells.push({
+          row: rowIndex,
+          col: colIndex,
+        });
+      }
+    });
+  });
+
+  if (emptyCells.length > 0) {
+    const randomNum = Math.random() < 0.9 ? 2 : 4;
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+    const { row, col } = emptyCells[randomIndex];
+
+    gameMarkup[row][col] = randomNum;
   }
 };
 
@@ -109,19 +122,23 @@ document.addEventListener('keydown', (action) => {
     switch (key) {
       case 'ArrowUp':
         moveUp();
+        fillRandomCell();
         break;
       case 'ArrowDown':
         moveDown();
+        fillRandomCell();
         break;
       case 'ArrowLeft':
         moveLeft();
+        fillRandomCell();
         break;
       case 'ArrowRight':
         moveRight();
+        fillRandomCell();
         break;
+      default:
+        return;
     }
-
-    fillRandomCell();
     render();
   }
 
