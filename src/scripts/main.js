@@ -40,42 +40,24 @@ const keyUpHandler = (e) => {
   switch (e.key) {
     case 'ArrowLeft':
       arrowLeft(state);
-
-      if (isWin(state)) {
-        break;
-      }
-      setTwoOrFour(state);
-      isLose(state);
       break;
     case 'ArrowRight':
       arrowRight(state);
-
-      if (isWin(state)) {
-        break;
-      }
-      setTwoOrFour(state);
-      isLose(state);
       break;
     case 'ArrowDown':
       arrowDown(state);
-
-      if (isWin(state)) {
-        break;
-      }
-      setTwoOrFour(state);
-      isLose(state);
       break;
     case 'ArrowUp':
       arrowUp(state);
-
-      if (isWin(state)) {
-        break;
-      }
-      setTwoOrFour(state);
-      isLose(state);
       break;
     default:
   }
+
+  if (isWin(state)) {
+    return;
+  };
+  setTwoOrFour(state);
+  isLose(state);
 };
 
 button.addEventListener('click', clickHandler);
