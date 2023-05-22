@@ -47,9 +47,11 @@ function newPoint() {
   const column = getRandomInt(0, 4);
 
   if (rows[row].children[column].classList.value === 'field-cell') {
+    const value = getStartPoint();
+    
     rows[row].children[column].classList
-    = `field-cell field-cell--${getStartPoint()}`;
-    rows[row].children[column].innerText = getStartPoint();
+    = `field-cell field-cell--${value}`;
+    rows[row].children[column].innerText = value;
   } else {
     newPoint();
   }
