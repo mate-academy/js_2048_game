@@ -8,7 +8,13 @@ const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 
+function keyDown() {
+  document.addEventListener('keydown', handlerSlide);
+}
+
 const handlerSlide = e => {
+  document.removeEventListener('keydown', handlerSlide);
+
   switch (e.code) {
     case 'ArrowLeft':
       if (slideLeft()) {
@@ -45,6 +51,11 @@ const handlerSlide = e => {
     default:
       return true;
   }
+
+  setTimeout(() => {
+    removeClassMerged();
+    keyDown();
+  }, 200);
 };
 
 window.onload = function() {
@@ -77,13 +88,12 @@ function getStart() {
   document.querySelectorAll('.tile')
     .forEach(tile => tile.remove());
 
-  gameScore.innerText = 0;
+  gameScore.innerText = '0';
   messageStart.classList.add('hidden');
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
 
-  document.addEventListener('keyup', handlerSlide);
-
+  keyDown();
   createTile();
   createTile();
 };
@@ -93,7 +103,7 @@ function getWin() {
   button.classList.remove('restart');
   button.classList.add('start');
   button.innerText = 'Start';
-  document.removeEventListener('keyup', handlerSlide);
+  document.removeEventListener('keydown', handlerSlide);
 }
 
 function createTile() {
@@ -171,6 +181,12 @@ function canSlideTiles(values, r, c) {
   return false;
 }
 
+function removeClassMerged() {
+  const mergedTiles = document.querySelectorAll('.merged');
+
+  mergedTiles.forEach(mergedTile => mergedTile.classList.remove('merged'));
+}
+
 function horizontalMoveTile(tile, y, x) {
   tile.id = `${y}-${x}`;
   tile.style.setProperty('--x', x);
@@ -184,7 +200,7 @@ function horizontalMergeTiles(tile, y, x) {
   tile.innerText = +tile.innerText * 2;
   tile.style.setProperty('--x', x);
   tile.classList.remove(`tile--${value}`);
-  tile.classList.add(`tile--${value * 2}`);
+  tile.classList.add(`tile--${value * 2}`, 'merged');
   gameScore.innerText = +gameScore.innerText + value * 2;
 
   if (checkGameWin()) {
@@ -205,7 +221,7 @@ function verticalMergeTiles(tile, y, x) {
   tile.innerText = +tile.innerText * 2;
   tile.style.setProperty('--y', y);
   tile.classList.remove(`tile--${value}`);
-  tile.classList.add(`tile--${value * 2}`);
+  tile.classList.add(`tile--${value * 2}`, 'merged');
   gameScore.innerText = +gameScore.innerText + value * 2;
 
   if (checkGameWin()) {
@@ -235,7 +251,12 @@ function slideLeft() {
             : '';
         }
 
-        if (nextValue === +currentTile.innerText && nextValue !== '') {
+        if (
+          nextValue === +currentTile.innerText
+            && !document.getElementById(`${r}-${iterator}`)
+              .classList.contains('merged')
+            && nextValue !== ''
+        ) {
           x = iterator;
           horizontalMergeTiles(currentTile, r, x);
         } else if (nextValue === '') {
@@ -278,7 +299,12 @@ function slideRight() {
             : '';
         }
 
-        if (nextValue === +currentTile.innerText && nextValue !== '') {
+        if (
+          nextValue === +currentTile.innerText
+            && !document.getElementById(`${r}-${iterator}`)
+              .classList.contains('merged')
+            && nextValue !== ''
+        ) {
           x = iterator;
           horizontalMergeTiles(currentTile, r, x);
         } else if (nextValue === '') {
@@ -321,7 +347,12 @@ function slideDown() {
             : '';
         }
 
-        if (nextValue === +currentTile.innerText && nextValue !== '') {
+        if (
+          nextValue === +currentTile.innerText
+            && !document.getElementById(`${iterator}-${c}`)
+              .classList.contains('merged')
+            && nextValue !== ''
+        ) {
           y = iterator;
           verticalMergeTiles(currentTile, y, c);
         } else if (nextValue === '') {
@@ -364,7 +395,11 @@ function slideUp() {
             : '';
         }
 
-        if (nextValue === +currentTile.innerText && nextValue !== '') {
+        if (
+          nextValue === +currentTile.innerText
+            && !currentTile.classList.contains('merged')
+            && nextValue !== ''
+        ) {
           y = iterator;
           verticalMergeTiles(currentTile, y, c);
         } else if (nextValue === '') {
