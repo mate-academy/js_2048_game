@@ -34,10 +34,13 @@ function reStart() {
   setStart();
 
   document.getElementById('startbutton').style.display = 'flex';
+  document.getElementById('restartbutton').style.display = 'none';
 }
 
 function setStart() {
   const elements = document.getElementsByClassName('tile');
+
+  document.addEventListener('keyup', handleKeyUp);
 
   while (elements.length > 0) {
     elements[0].parentNode.removeChild(elements[0]);
@@ -49,6 +52,7 @@ function setStart() {
   document.getElementById('winner').classList.add('hidden');
   document.getElementById('start').classList.add('hidden');
   document.getElementById('startbutton').style.display = 'none';
+  document.getElementById('restartbutton').style.display = 'flex';
 
   setGame();
 }
@@ -57,14 +61,26 @@ function setGame() {
   const columnId = [];
   const rowID = [];
 
-  for (let i = 0; i < 2; i++) {
-    columnId.push(Math.floor(Math.random() * 4));
-    rowID.push(Math.floor(Math.random() * 4));
+  while (columnId.length < 1) {
+    const number = Math.floor(Math.random() * 4);
+
+    if (!columnId.includes(number) && !rowID.includes(number)) {
+      columnId.push(number);
+    }
+  }
+
+  while (rowID.length < 1) {
+    const number = Math.floor(Math.random() * 4);
+
+    if (!columnId.includes(number) && !rowID.includes(number)) {
+      rowID.push(number);
+    }
   }
 
   columnId.forEach((numberColumn) => {
     rowID.forEach((numberRow) => {
       board[numberColumn][numberRow] = 2;
+      board[numberRow][numberColumn] = 2;
     });
   });
 
@@ -163,12 +179,12 @@ function updateTile(tile, num) {
     document.getElementById('winner').classList.remove('hidden');
     document.getElementById('start').classList.add('hidden');
     document.getElementById('loser').classList.add('hidden');
-    document.getElementById('startbutton').style.display = 'unset';
+    document.getElementById('startbutton').style.display = 'flex';
     document.getElementById('restartbutton').style.display = 'none';
   }
 }
 
-document.addEventListener('keyup', (e) => {
+function handleKeyUp(e) {
   if (e.code === 'ArrowLeft') {
     slideLeft();
     setTwo();
@@ -194,7 +210,7 @@ document.addEventListener('keyup', (e) => {
 
   document.getElementById('score').innerText = score;
   document.getElementById('best').innerText = best;
-});
+}
 
 function filterZero(row) {
   return row.filter((number) => {
