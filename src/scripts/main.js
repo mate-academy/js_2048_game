@@ -15,6 +15,7 @@ let endGame = false;
 let winOrLose = false;
 
 let score = 0;
+let scoreUpdate = 0;
 
 render();
 
@@ -106,46 +107,54 @@ document.addEventListener('keydown', (ev) => {
 
   switch (ev.key) {
     case 'ArrowUp':
+      scoreUpdate = 0;
       const copyUp = up();
 
       if (checkCopy(copyUp)) {
         masNumbers = copyUp;
+        score += scoreUpdate;
         spawnNumb();
       } else {
-        loseOrNo ();
+        loseOrNo();
       }
       render();
       break;
     case 'ArrowDown':
+      scoreUpdate = 0;
       const copyDown = down();
 
       if (checkCopy(copyDown)) {
         masNumbers = copyDown;
+        score += scoreUpdate;
         spawnNumb();
       } else {
-        loseOrNo ();
+        loseOrNo();
       }
       render();
       break;
     case 'ArrowLeft':
+      scoreUpdate = 0;
       const copyLeft = left();
 
       if (checkCopy(copyLeft)) {
         masNumbers = copyLeft;
+        score += scoreUpdate;
         spawnNumb();
       } else {
-        loseOrNo ();
+        loseOrNo();
       }
       render();
       break;
     case 'ArrowRight':
+      scoreUpdate = 0;
       const copyRigth = rigth();
 
       if (checkCopy(copyRigth)) {
         masNumbers = copyRigth;
+        score += scoreUpdate;
         spawnNumb();
       } else {
-        loseOrNo ();
+        loseOrNo();
       }
       render();
       break;
@@ -227,7 +236,7 @@ function spawnNumb() {
 function up() {
   gameStart = true;
 
-  let copy = createCopy();
+  const copy = createCopy();
 
   for (let j = 0; j < copy.length; j++) {
     let temp = [];
@@ -251,8 +260,8 @@ function up() {
 
 function down() {
   gameStart = true;
-  
-  let copy = createCopy();
+
+  const copy = createCopy();
 
   for (let j = 0; j < copy.length; j++) {
     let temp = [];
@@ -277,7 +286,7 @@ function down() {
 function left() {
   gameStart = true;
 
-  let copy = createCopy();
+  const copy = createCopy();
 
   for (let i = 0; i < copy.length; i++) {
     const teml = slide(copy[i]);
@@ -295,7 +304,7 @@ function left() {
 function rigth() {
   gameStart = true;
 
-  let copy = createCopy();
+  const copy = createCopy();
 
   for (let i = 0; i < copy.length; i++) {
     const teml = slide(copy[i]).reverse();
@@ -316,7 +325,7 @@ function slide(masiv) {
   for (let i = 1; i < mas.length; i++) {
     if (mas[i] === mas[i - 1]) {
       mas[i - 1] = mas[i] + mas[i];
-      score += mas[i - 1];
+      scoreUpdate += mas[i - 1];
 
       if (score >= 2048) {
         endGame = true;
@@ -330,7 +339,7 @@ function slide(masiv) {
 }
 
 function createCopy() {
-  let copy = [
+  const copy = [
     ['', '', '', ''],
     ['', '', '', ''],
     ['', '', '', ''],
@@ -354,17 +363,18 @@ function checkCopy(copy) {
       }
     }
   }
+
   return false;
 }
 
-function loseOrNo () {
-  const l =  checkCopy(left());
-  const r =  checkCopy(rigth());
-  const u =  checkCopy(up());
+function loseOrNo() {
+  const l = checkCopy(left());
+  const r = checkCopy(rigth());
+  const u = checkCopy(up());
   const d = checkCopy(down());
 
   if (l || r || u || d) {
-    return;
+
   } else {
     endGame = true;
     winOrLose = false;
