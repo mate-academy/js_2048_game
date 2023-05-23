@@ -13,9 +13,6 @@ let gameBlock = false;
 const arrayIndex = [];
 
 function getRandomInt(min, max) {
-  /* const mn = Math.ceil(min);
-  const mx = Math.floor(max); */
-
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
@@ -27,50 +24,49 @@ function getStartPoint() {
     arrayIndex.length = 0;
   }
 
-  function getPoint() {
+  do {
     index = getRandomInt(0, 10);
+  } while (arrayIndex.includes(index));
 
-    if (!arrayIndex.includes(index)) {
-      arrayIndex.push(index);
-    } else {
-      getPoint();
-    }
-  }
-
-  getPoint();
+  arrayIndex.push(index);
 
   return arrayPoint[index];
 }
 
 function newPoint() {
-  const row = getRandomInt(0, 4);
-  const column = getRandomInt(0, 4);
+  const value = getStartPoint();
+  let row;
+  let column;
 
-  if (rows[row].children[column].classList.value === 'field-cell') {
-    const value = getStartPoint();
-    
+  if (freeCeilCount() > 0) {
+    do {
+      row = getRandomInt(0, 4);
+      column = getRandomInt(0, 4);
+    } while (rows[row].children[column].classList.value !== 'field-cell');
+
     rows[row].children[column].classList
     = `field-cell field-cell--${value}`;
     rows[row].children[column].innerText = value;
-  } else {
-    newPoint();
   }
 }
 
-function lose() {
+function freeCeilCount() {
   let freeCeil = 16;
+
+  [ ...rows ].forEach((row) => [ ...row.children ].forEach((column) => {
+    if (column.innerText !== '') {
+      freeCeil--;
+    }
+  }));
+
+  return freeCeil;
+}
+
+function lose() {
   let xCount = 12;
   let yCount = 12;
 
-  for (let i = 0; i < 4; i++) {
-    for (let n = 0; n < 4; n++) {
-      if (rows[i].children[n].innerText !== '') {
-        freeCeil--;
-      }
-    }
-  }
-
-  if (freeCeil === 0) {
+  if (freeCeilCount() === 0) {
     for (let i = 0; i < 3; i++) {
       for (let n = 0; n < 4; n++) {
         if (rows[i].children[n].innerText
@@ -81,18 +77,18 @@ function lose() {
     }
   }
 
-  if (freeCeil === 0) {
-    for (let i = 0; i < 4; i++) {
+  if (freeCeilCount() === 0) {
+    [ ...rows ].forEach((row) => {
       for (let n = 0; n < 3; n++) {
-        if (rows[i].children[n].innerText
-          !== rows[i].children[n + 1].innerText) {
+        if (row.children[n].innerText
+          !== row.children[n + 1].innerText) {
           yCount--;
         }
       }
-    }
+    });
   }
 
-  if (freeCeil === 0 && yCount === 0 && xCount === 0) {
+  if (freeCeilCount() === 0 && yCount === 0 && xCount === 0) {
     loseMessage.classList = 'message message-lose';
     gameBlock = false;
   }
@@ -122,15 +118,13 @@ start.addEventListener('click', (evnt) => {
     loseMessage.classList = 'message message-lose hidden';
     winMessage.classList = 'message message-win hidden';
 
-    for (let i = 0; i < 4; i++) {
-      for (let n = 0; n < 4; n++) {
-        rows[i].children[n].classList = 'field-cell';
-        rows[i].children[n].innerText = '';
-      }
+    [ ...rows ].forEach((row) => [ ...row.children ].forEach((column) => {
+      column.classList = 'field-cell';
+      column.innerText = '';
+    }));
 
-      scoreValue = 0;
-      score.innerText = scoreValue;
-    }
+    scoreValue = 0;
+    score.innerText = scoreValue;
 
     newPoint();
     newPoint();
