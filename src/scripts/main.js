@@ -1,12 +1,12 @@
-"use strict";
+'use strict';
 
-const root = document.querySelector(".container");
+const root = document.querySelector('.container');
 
 let masNumbers = [
-  ["", "", "", ""],
-  ["", "", "", ""],
-  ["", "", "", ""],
-  ["", "", "", ""],
+  ['', '', '', ''],
+  ['', '', '', ''],
+  ['', '', '', ''],
+  ['', '', '', ''],
 ];
 
 let gameStart = false;
@@ -27,8 +27,8 @@ function render() {
           Score: <span class="game-score">${score}</span>
         </p>
         <button
-          class="button ${gameStart ? "restart" : "start"}"
-        ><span>${gameStart ? "Restart" : "Start"}</span></button>
+          class="button ${gameStart ? 'restart' : 'start'}"
+        ><span>${gameStart ? 'Restart' : 'Start'}</span></button>
       </div>
     </div>
   `;
@@ -38,37 +38,37 @@ function render() {
       <tbody>
         <tr class="field-row">
         ${masNumbers[0]
-          .map(
-            (numb) => `<td class="field-cell field-cell--${numb}">${numb}</td>`
-          )
-          .join("")}
+    .map(
+      (numb) => `<td class="field-cell field-cell--${numb}">${numb}</td>`
+    )
+    .join('')}
         </tr>
 
         <tr class="field-row">
           ${masNumbers[1]
-            .map(
-              (numb) =>
-                `<td class="field-cell field-cell--${numb}">${numb}</td>`
-            )
-            .join("")}
+    .map(
+      (numb) =>
+        `<td class="field-cell field-cell--${numb}">${numb}</td>`
+    )
+    .join('')}
         </tr>
 
         <tr class="field-row">
           ${masNumbers[2]
-            .map(
-              (numb) =>
-                `<td class="field-cell field-cell--${numb}">${numb}</td>`
-            )
-            .join("")}
+    .map(
+      (numb) =>
+        `<td class="field-cell field-cell--${numb}">${numb}</td>`
+    )
+    .join('')}
         </tr>
 
         <tr class="field-row">
           ${masNumbers[3]
-            .map(
-              (numb) =>
-                `<td class="field-cell field-cell--${numb}">${numb}</td>`
-            )
-            .join("")}
+    .map(
+      (numb) =>
+        `<td class="field-cell field-cell--${numb}">${numb}</td>`
+    )
+    .join('')}
         </tr>
       </tbody>
     </table>
@@ -77,12 +77,12 @@ function render() {
   const footer = `
     <div class="message-container">
       <p class="message message-lose ${
-        endGame ? (winOrLose ? "hidden" : "") : "hidden"
-      }">You lose! Restart the game?</p>
+  endGame ? (winOrLose ? 'hidden' : '') : 'hidden'
+}">You lose! Restart the game?</p>
       <p class="message message-win ${
-        endGame ? (winOrLose ? "" : "hidden") : "hidden"
-      }">Winner! Congrats! You did it!</p>
-      <p class="message message-start" ${createGamer ? "hidden" : ""}>
+  endGame ? (winOrLose ? '' : 'hidden') : 'hidden'
+}">Winner! Congrats! You did it!</p>
+      <p class="message message-start" ${createGamer ? 'hidden' : ''}>
         Press "Start" to begin game. Good luck!
       </p>
     </div>
@@ -90,33 +90,67 @@ function render() {
 
   root.innerHTML = `${header}${main}${footer}`;
 
-  const buttonStart = root.querySelector(".button");
+  const buttonStart = root.querySelector('.button');
 
-  buttonStart.addEventListener("click", GameController);
+  buttonStart.addEventListener('click', GameController);
 }
 
-document.addEventListener("keydown", (event) => {
+document.addEventListener('keydown', (ev) => {
   if (endGame) {
     return;
   }
 
-  switch (event.key) {
-    case "ArrowUp":
-      up();
+  if (!createGamer) {
+    return;
+  }
 
-      return;
-    case "ArrowDown":
-      down();
+  switch (ev.key) {
+    case 'ArrowUp':
+      const copyUp = up();
 
-      return;
-    case "ArrowLeft":
-      left();
+      if (checkCopy(copyUp)) {
+        masNumbers = copyUp;
+        spawnNumb();
+      } else {
+        loseOrNo ();
+      }
+      render();
+      break;
+    case 'ArrowDown':
+      const copyDown = down();
 
-      return;
-    case "ArrowRight":
-      rigth();
+      if (checkCopy(copyDown)) {
+        masNumbers = copyDown;
+        spawnNumb();
+      } else {
+        loseOrNo ();
+      }
+      render();
+      break;
+    case 'ArrowLeft':
+      const copyLeft = left();
 
+      if (checkCopy(copyLeft)) {
+        masNumbers = copyLeft;
+        spawnNumb();
+      } else {
+        loseOrNo ();
+      }
+      render();
+      break;
+    case 'ArrowRight':
+      const copyRigth = rigth();
+
+      if (checkCopy(copyRigth)) {
+        masNumbers = copyRigth;
+        spawnNumb();
+      } else {
+        loseOrNo ();
+      }
+      render();
+      break;
     default:
+      break;
   }
 });
 
@@ -149,10 +183,10 @@ function restart() {
 
 function clear() {
   masNumbers = [
-    ["", "", "", ""],
-    ["", "", "", ""],
-    ["", "", "", ""],
-    ["", "", "", ""],
+    ['', '', '', ''],
+    ['', '', '', ''],
+    ['', '', '', ''],
+    ['', '', '', ''],
   ];
 }
 
@@ -169,7 +203,7 @@ function spawnNumb() {
 
   for (let i = 0; i < masNumbers.length; i++) {
     for (let j = 0; j < masNumbers[0].length; j++) {
-      if (masNumbers[i][j] === "") {
+      if (masNumbers[i][j] === '') {
         indexOfEmpty.push({
           x: i,
           y: j,
@@ -186,90 +220,98 @@ function spawnNumb() {
 
   const newPosition = Math.floor(Math.random() * indexOfEmpty.length);
 
-  masNumbers[indexOfEmpty[newPosition].x][indexOfEmpty[newPosition].y] =
-    twoOrFour();
+  masNumbers[indexOfEmpty[newPosition].x][indexOfEmpty[newPosition].y]
+    = twoOrFour();
 }
 
 function up() {
   gameStart = true;
 
-  for (let j = 0; j < masNumbers.length; j++) {
-    const temp = [];
+  let copy = createCopy();
 
-    for (let i = 0; i < masNumbers.length; i++) {
-      temp.push(masNumbers[i][j]);
+  for (let j = 0; j < copy.length; j++) {
+    let temp = [];
+
+    for (let i = 0; i < copy.length; i++) {
+      temp.push(copy[i][j]);
     }
     temp = slide(temp);
 
-    for (let i = 0; i < masNumbers.length; i++) {
-      masNumbers[i][j] = "";
+    for (let i = 0; i < copy.length; i++) {
+      copy[i][j] = '';
     }
 
     for (let i = 0; i < temp.length; i++) {
-      masNumbers[i][j] = temp[i];
+      copy[i][j] = temp[i];
     }
   }
-  spawnNumb();
-  render();
+
+  return copy;
 }
 
 function down() {
   gameStart = true;
+  
+  let copy = createCopy();
 
-  for (let j = 0; j < masNumbers.length; j++) {
-    const temp = [];
+  for (let j = 0; j < copy.length; j++) {
+    let temp = [];
 
-    for (let i = 0; i < masNumbers.length; i++) {
-      temp.push(masNumbers[i][j]);
+    for (let i = 0; i < copy.length; i++) {
+      temp.push(copy[i][j]);
     }
     temp = slide(temp).reverse();
 
-    for (let i = 0; i < masNumbers.length; i++) {
-      masNumbers[i][j] = "";
+    for (let i = 0; i < copy.length; i++) {
+      copy[i][j] = '';
     }
 
-    for (let i = masNumbers.length - 1, k = 0; k < temp.length; k++, i--) {
-      masNumbers[i][j] = temp[k];
+    for (let i = copy.length - 1, k = 0; k < temp.length; k++, i--) {
+      copy[i][j] = temp[k];
     }
   }
-  spawnNumb();
-  render();
+
+  return copy;
 }
 
 function left() {
   gameStart = true;
 
-  for (let i = 0; i < masNumbers.length; i++) {
-    const teml = slide(masNumbers[i]);
+  let copy = createCopy();
 
-    masNumbers[i].forEach((el, i, mas) => (mas[i] = ""));
+  for (let i = 0; i < copy.length; i++) {
+    const teml = slide(copy[i]);
+
+    copy[i].forEach((el, index, mas) => (mas[index] = ''));
 
     for (let j = 0; j < teml.length; j++) {
-      masNumbers[i][j] = teml[j];
+      copy[i][j] = teml[j];
     }
   }
-  spawnNumb();
-  render();
+
+  return copy;
 }
 
 function rigth() {
   gameStart = true;
 
-  for (let i = 0; i < masNumbers.length; i++) {
-    const teml = slide(masNumbers[i]).reverse();
+  let copy = createCopy();
 
-    masNumbers[i].forEach((el, i, mas) => (mas[i] = ""));
+  for (let i = 0; i < copy.length; i++) {
+    const teml = slide(copy[i]).reverse();
 
-    for (let k = 0, j = masNumbers.length - 1; k < teml.length; k++, j--) {
-      masNumbers[i][j] = teml[k];
+    copy[i].forEach((el, index, mas) => (mas[index] = ''));
+
+    for (let k = 0, j = copy.length - 1; k < teml.length; k++, j--) {
+      copy[i][j] = teml[k];
     }
   }
-  spawnNumb();
-  render();
+
+  return copy;
 }
 
-function slide(mas) {
-  mas = mas.filter((x) => x !== "");
+function slide(masiv) {
+  const mas = masiv.filter((x) => x !== '');
 
   for (let i = 1; i < mas.length; i++) {
     if (mas[i] === mas[i - 1]) {
@@ -280,9 +322,51 @@ function slide(mas) {
         endGame = true;
         winOrLose = true;
       }
-      mas[i] = "";
+      mas[i] = '';
     }
   }
 
-  return mas.filter((x) => x !== "");
+  return mas.filter((x) => x !== '');
+}
+
+function createCopy() {
+  let copy = [
+    ['', '', '', ''],
+    ['', '', '', ''],
+    ['', '', '', ''],
+    ['', '', '', ''],
+  ];
+
+  for (let i = 0; i < masNumbers.length; i++) {
+    for (let j = 0; j < masNumbers[i].length; j++) {
+      copy[i][j] = masNumbers[i][j];
+    }
+  }
+
+  return copy;
+}
+
+function checkCopy(copy) {
+  for (let i = 0; i < masNumbers.length; i++) {
+    for (let j = 0; j < masNumbers[i].length; j++) {
+      if (masNumbers[i][j] !== copy[i][j]) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function loseOrNo () {
+  const l =  checkCopy(left());
+  const r =  checkCopy(rigth());
+  const u =  checkCopy(up());
+  const d = checkCopy(down());
+
+  if (l || r || u || d) {
+    return;
+  } else {
+    endGame = true;
+    winOrLose = false;
+  }
 }
