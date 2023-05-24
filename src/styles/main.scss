@@ -11,14 +11,15 @@ body {
 }
 
 .field-cell {
+  display: grid;
+  text-align: center;
+  align-items: center;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
   user-select: none;
 
   &--2 {
@@ -77,8 +78,13 @@ body {
 
 .game-field {
   background: #bbada0;
-  border-spacing: 10px;
+  // border-spacing: 10px;
   border-radius: 5px;
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
 }
 
 .game-header {
