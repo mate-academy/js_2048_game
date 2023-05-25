@@ -19,18 +19,11 @@ window.onload = function() {
 };
 
 function setGame() {
-  // board = [
-  //   [0, 0, 0, 0],
-  //   [0, 0, 0, 0],
-  //   [0, 0, 0, 0],
-  //   [0, 0, 0, 0],
-  // ];
-
   board = [
-    [4, 64, 8, 16],
-    [8, 8, 128, 0],
-    [16, 2, 4, 16],
-    [8, 1024, 1024, 8],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
   ];
 
   for (let r = 0; r < rows; r++) {
@@ -72,7 +65,7 @@ function setTwoOrFour() {
     const el = Math.floor(Math.random() * 10);
 
     if (board[r][c] === 0) {
-      board[r][c] = 2;
+      board[r][c] = addNumber[el];
 
       const tile = document.getElementById(r.toString() + '-' + c.toString());
 
@@ -240,6 +233,13 @@ button.addEventListener('click', (e) => {
     startMessage.classList.remove('hidden');
     loseMessage.classList.add('hidden');
 
+    board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < columns; c++) {
         const tile = document.getElementById(`${r}-${c}`);
@@ -251,6 +251,9 @@ button.addEventListener('click', (e) => {
         winMessage.classList.add('hidden');
       }
     }
+
+    score = 0;
+    scoreField.innerText = score;
   }
 });
 
