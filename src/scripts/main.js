@@ -110,29 +110,33 @@ document.addEventListener('keyup', (e) => {
     return;
   }
 
+  let moved = false; // Track if any valid move was made
+
   switch (e.code) {
     case 'ArrowRight':
-      moveRight();
+      moved = moveRight();
       break;
 
     case 'ArrowLeft':
-      moveLeft();
+      moved = moveLeft();
       break;
 
     case 'ArrowUp':
-      moveUp();
+      moved = moveUp();
       break;
 
     case 'ArrowDown':
-      moveDown();
+      moved = moveDown();
       break;
 
     default:
       return;
   }
 
-  handleAddNumber();
-  updateFieldCell();
+  if (moved) {
+    handleAddNumber();
+    updateFieldCell();
+  }
 });
 
 function filterZero(row) {
@@ -166,54 +170,119 @@ function slider(row) {
 }
 
 function moveRight() {
+  let moved = false;
+
   for (let r = 0; r < cellsLength; r++) {
     let row = gameField[r];
+
+    const originalRow = [...row];
 
     row.reverse();
     row = slider(row);
 
-    gameField[r] = row.reverse();
+    row.reverse();
+
+    gameField[r] = row;
+
+    // Check if any valid move was made in this row
+    if (!moved && !arraysEqual(originalRow, row)) {
+      moved = true;
+    }
   }
+
+  return moved;
 }
 
 function moveLeft() {
+  let moved = false;
+
   for (let r = 0; r < cellsLength; r++) {
     let row = gameField[r];
+
+    const originalRow = [...row];
 
     row = slider(row);
 
     gameField[r] = row;
+
+    if (!moved && !arraysEqual(originalRow, row)) {
+      moved = true;
+    }
   }
+
+  return moved;
 }
 
 function moveUp() {
+  let moved = false;
+
   for (let c = 0; c < cellsLength; c++) {
-    let row = [
+    let column = [
       gameField[0][c], gameField[1][c], gameField[2][c], gameField[3][c],
     ];
 
-    row = slider(row);
+    const originalColumn = [...column];
+
+    column = slider(column);
 
     for (let r = 0; r < cellsLength; r++) {
-      gameField[r][c] = row[r];
+      gameField[r][c] = column[r];
+    }
+
+    if (!moved && !arraysEqual(originalColumn, column)) {
+      moved = true;
     }
   }
+
+  return moved;
 }
 
 function moveDown() {
+  let moved = false;
+
   for (let c = 0; c < cellsLength; c++) {
-    let row = [
+    let column = [
       gameField[0][c], gameField[1][c], gameField[2][c], gameField[3][c],
     ];
 
-    row.reverse();
-    row = slider(row);
-    row.reverse();
+    const originalColumn = [...column];
+
+    column.reverse();
+    column = slider(column);
+    column.reverse();
 
     for (let r = 0; r < cellsLength; r++) {
-      gameField[r][c] = row[r];
+      gameField[r][c] = column[r];
+    }
+
+    if (!moved && !arraysEqual(originalColumn, column)) {
+      moved = true;
     }
   }
+
+  return moved;
+}
+
+function arraysEqual(a, b) {
+  if (a === b) {
+    return true;
+  };
+
+  if (a == null || b == null) {
+    return false;
+  };
+
+  if (a.length !== b.length) {
+    return false;
+  };
+
+  for (let i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) {
+      return false;
+    };
+  }
+
+  return true;
 }
 
 function loseInTheGame() {
