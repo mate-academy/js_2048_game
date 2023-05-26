@@ -110,7 +110,7 @@ document.addEventListener('keyup', (e) => {
     return;
   }
 
-  let moved = false; // Track if any valid move was made
+  let moved = false;
 
   switch (e.code) {
     case 'ArrowRight':
@@ -184,7 +184,6 @@ function moveRight() {
 
     gameField[r] = row;
 
-    // Check if any valid move was made in this row
     if (!moved && !arraysEqual(originalRow, row)) {
       moved = true;
     }
