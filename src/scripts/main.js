@@ -1,21 +1,37 @@
 'use strict';
 
+import { rotateField } from "./helpers";
+import { checkPossibleMoves } from "./helpers";
+
 const board = document.querySelector('.game-field');
+const messageWin = document.querySelector('.message-win');
+const messageLose = document.querySelector('.message-lose');
 const size = 4;
 let score = 0;
 let field = [
-  [2, 2, 2, 2],
-  [2, 2, 2, 2],
-  [4, 4, 8, 8],
-  [4, 4, 8, 8],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
 ];
 
+const winNum = 2048;
+let isWon = false;
+let isLose = false;
+let possibleMoves = [];
+
 const filterZeros = (nums) => nums.filter(num => num !== 0);
+const getRandomIdex = () => Math.floor(Math.random() * size);
+const probabilityOf4 = () => Math.floor(Math.random() * 10); // 1/10 = 10%
 
 function setGame() {
+  addNum();
+  addNum();
+  possibleMoves = checkPossibleMoves(field, size);
+
   for (let r = 0; r < size; r++) {
     for (let c = 0; c < size; c++) {
-      const value = field[r][c];
+      const value = field[r][c] || '';
       const styleColor = value > 0 ? `field-cell--${value}` : '';
 
       board.insertAdjacentHTML('beforeend', `
@@ -29,45 +45,41 @@ function setGame() {
     }
   }
 }
+
 setGame();
 
 document.addEventListener('keyup', (e) => {
+  if (!possibleMoves.includes(e.code)) {
+    return;
+  }
+
   switch (e.code) {
     case 'ArrowLeft':
     case 'ArrowRight':
-      for (let r = 0; r < size; r++) {
-        let row = field[r];
-        row = slideHorizontal(e.code, row);
-        field[r] = row;
-      }
+      field = slideRows(e.code, field);
       break;
 
     case 'ArrowUp':
     case 'ArrowDown':
-      slideVertical(e.code)
+      const rotated = rotateField(field, size);
+      const slided = slideRows(e.code, rotated);
+
+      field = rotateField(slided, size);
       break;
   }
 
+  addNum();
   updateBoard();
+  possibleMoves = checkPossibleMoves(field, size);
 })
 
-function slideHorizontal(arrow, row) {
-  if (arrow === 'ArrowRight') {
-    row = row.reverse();
-    row = slide(row);
-    row = row.reverse();
-  } else {
-    row = slide(row);
-  }
+function slideRows(arrow, field) {
+  const workField = field.map(row => [...row]);
 
-  return row;
-}
+  for (let r = 0; r < size; r++) {
+    let row = workField[r];
 
-function slideVertical(arrow) {
-  for (let c = 0; c < size; c++) {
-    let row = [field[0][c], field[1][c], field[2][c], field[2][c]];
-
-    if (arrow === 'ArrowDown') {
+    if (arrow === 'ArrowRight' || arrow === 'ArrowDown') {
       row = row.reverse();
       row = slide(row);
       row = row.reverse();
@@ -75,10 +87,10 @@ function slideVertical(arrow) {
       row = slide(row);
     }
 
-    for (let r = 0; r < size; r++) {
-      field[r][c] = row[r];
-    }
+    workField[r] = row;
   }
+
+  return workField;
 }
 
 function slide(row) {
@@ -102,6 +114,9 @@ function slide(row) {
 }
 
 function updateBoard() {
+  checkWin();
+  checkLose();
+
   for (let r = 0; r < size; r++) {
     for (let c = 0; c < size; c++) {
       const value = field[r][c];
@@ -119,3 +134,34 @@ function updateBoard() {
   }
 }
 
+function addNum() {
+  let foundZeroCell = false;
+  let numToAdd = (probabilityOf4() === 4) ? 4 : 2;
+
+  while (!foundZeroCell) {
+    const r = getRandomIdex();
+    const c = getRandomIdex();
+
+    if (field[r][c] === 0) {
+      field[r][c] = numToAdd;
+      foundZeroCell = true;
+    }
+  }
+}
+
+function checkWin() {
+  field.forEach(row => {
+    if (row.find(num => num === winNum)) {
+      messageWin.classList.remove('hidden');
+      isWon = true;
+    }
+  });
+}
+
+function checkLose() {
+  if (possibleMoves.length === 0) {
+    messageLose.classList.remove('hidden');
+    isLose = true;
+    return;
+  }
+}
