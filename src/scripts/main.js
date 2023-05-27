@@ -12,7 +12,9 @@ const messageLose = document.querySelector('.message-lose');
 const buttonStart = document.querySelector('.start');
 const buttonRestart = document.querySelector('.restart');
 const scoreboard = document.querySelector('.game-score');
+const bestScoreboard = document.querySelector('.game-best-score');
 let score = +localStorage.score || 0;
+let bestScore = +localStorage.bestScore || 0;
 let isPlaying = localStorage.isPlaying;
 
 let field = isPlaying
@@ -48,6 +50,8 @@ function setGame() {
 setGame();
 
 if (isPlaying) {
+  scoreboard.innerText = score;
+  bestScoreboard.innerHTML = bestScore;
   buttonStart.classList.add('hidden');
   buttonRestart.classList.remove('hidden');
   startGame();
@@ -245,7 +249,17 @@ function updateScore(value) {
   } else {
     score += value;
     localStorage.score = score;
+
+    if (score > bestScore) {
+      updateBestScore(score);
+    }
   }
 
   scoreboard.innerText = score;
+}
+
+function updateBestScore(newScore) {
+  bestScore = newScore;
+  localStorage.bestScore = newScore;
+  bestScoreboard.innerHTML = bestScore;
 }

@@ -52,7 +52,7 @@ export function convertSwipeToArrow(touches) {
   const difX = touches.end.X - touches.start.X;
   const difY = touches.end.Y - touches.start.Y;
 
-  if (Math.abs(difX + difY) < 70) { // check for long enough swipe
+  if (Math.abs(difX + difY) < 50) { // check for long enough swipe
     return;
   }
 
