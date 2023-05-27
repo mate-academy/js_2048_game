@@ -1,22 +1,24 @@
 'use strict';
 
+import { size, clearField, winNum } from "./constants";
 import { rotateField } from "./helpers";
 import { checkPossibleMoves } from "./helpers";
 import { convertSwipeToArrow } from "./helpers";
 
-export const board = document.querySelector('.game-field');
+const board = document.querySelector('.game-field');
+const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
-const size = 4;
-let score = 0;
-let field = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
+const buttonStart = document.querySelector('.start');
+const buttonRestart = document.querySelector('.restart');
+const scoreboard = document.querySelector('.game-score');
+let score = +localStorage.score || 0;
+let isPlaying = localStorage.isPlaying;
 
-const winNum = 2048;
+let field = isPlaying
+  ? JSON.parse(localStorage.field)
+  : clearField;
+
 let isWon = false;
 let isLose = false;
 let possibleMoves = [];
@@ -26,10 +28,6 @@ const getRandomIdex = () => Math.floor(Math.random() * size);
 const probabilityOf4 = () => Math.floor(Math.random() * 10); // 1/10 = 10%
 
 function setGame() {
-  addNum();
-  addNum();
-  possibleMoves = checkPossibleMoves(field, size);
-
   for (let r = 0; r < size; r++) {
     for (let c = 0; c < size; c++) {
       const value = field[r][c] || '';
@@ -48,6 +46,47 @@ function setGame() {
 }
 
 setGame();
+
+if (isPlaying) {
+  buttonStart.classList.add('hidden');
+  buttonRestart.classList.remove('hidden');
+  startGame();
+}
+
+function startGame() {
+  if (isPlaying) {
+    messageStart.classList.add('hidden');
+    possibleMoves = checkPossibleMoves(field, size);
+    updateBoard();
+
+    return;
+  }
+
+  messageStart.classList.add('hidden');
+  addNum();
+  addNum();
+  updateBoard();
+  possibleMoves = checkPossibleMoves(field, size);
+}
+
+buttonStart.addEventListener('click', (e) => {
+  localStorage.isPlaying = true;
+  buttonStart.classList.add('hidden');
+  buttonRestart.classList.remove('hidden');
+
+  startGame();
+})
+
+buttonRestart.addEventListener('click', (e) => {
+  localStorage.field = JSON.stringify(clearField);
+  field = JSON.parse(localStorage.field);
+  localStorage.isPlaying = false;
+  isPlaying = localStorage.isPlaying;
+  updateScore(null);
+  addNum();
+  addNum();
+  startGame();
+})
 
 document.addEventListener('keyup', (e) => {
   move(e.code);
@@ -70,6 +109,7 @@ board.addEventListener('touchstart', e => {
 })
 
 board.addEventListener('touchmove', e => {
+  e.preventDefault()
   touches.end.X = Math.abs(e.touches[0].clientX);
   touches.end.Y = Math.abs(e.touches[0].clientY);
 })
@@ -77,7 +117,6 @@ board.addEventListener('touchmove', e => {
 board.addEventListener('touchend', e => {
   move(convertSwipeToArrow(touches));
 })
-
 
 function move(arrow) {
   if (!possibleMoves.includes(arrow)) {
@@ -100,8 +139,10 @@ function move(arrow) {
   }
 
   addNum();
-  updateBoard();
+  checkWin();
   possibleMoves = checkPossibleMoves(field, size);
+  checkLose();
+  updateBoard();
 }
 
 function slideRows(arrow, field) {
@@ -131,7 +172,7 @@ function slide(row) {
     if (row[i] === row[i + 1]) {
       row[i] *= 2;
       row[i + 1] = 0;
-      score += row[i];
+      updateScore(row[i]);
     }
   }
 
@@ -145,8 +186,7 @@ function slide(row) {
 }
 
 function updateBoard() {
-  checkWin();
-  checkLose();
+  localStorage.field = JSON.stringify(field);
 
   for (let r = 0; r < size; r++) {
     for (let c = 0; c < size; c++) {
@@ -163,6 +203,7 @@ function updateBoard() {
       }
     }
   }
+
 }
 
 function addNum() {
@@ -195,4 +236,16 @@ function checkLose() {
     isLose = true;
     return;
   }
+}
+
+function updateScore(value) {
+  if (value === null) {
+    score = 0;
+    localStorage.score = score;
+  } else {
+    score += value;
+    localStorage.score = score;
+  }
+
+  scoreboard.innerText = score;
 }

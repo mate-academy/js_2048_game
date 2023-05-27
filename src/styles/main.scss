@@ -169,6 +169,11 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+
+  &-lose {
+    background: #f87474;
+    color: #f9f6f2;
+  }
 }
 
 .hidden {
