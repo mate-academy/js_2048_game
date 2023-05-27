@@ -7,15 +7,15 @@ $cell-size-header: 5rem;
 html {
   font-size: 11px;
 
-  @media (min-width: 350px)  {
+  @media (min-width: 350px) {
     font-size: 12px;
   }
 
-  @media (min-width: 410px)  {
+  @media (min-width: 410px) {
     font-size: 14px;
   }
 
-  @media (min-width: 490px)  {
+  @media (min-width: 490px) {
     font-size: 16px;
   }
 }
@@ -25,7 +25,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #2F2F2F;
+  background: #2f2f2f;
   font-family: sans-serif;
   font-size: 2rem;
   font-weight: 900;
@@ -42,30 +42,30 @@ body {
   user-select: none;
 
   &--2 {
-    background: #F5E6D9;
+    background: #f5e6d9;
   }
 
   &--4 {
-    background: #EECCB8;
+    background: #eeccb8;
   }
 
   &--8 {
-    background: #DFB195;
+    background: #dfb195;
     color: #f9f6f2;
   }
 
   &--16 {
-    background: #D29672;
+    background: #d29672;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #B57048;
+    background: #b57048;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #9E5A33;
+    background: #9e5a33;
     color: #f9f6f2;
   }
 
@@ -80,7 +80,7 @@ body {
   }
 
   &--512 {
-    background: #522C12;
+    background: #522c12;
     color: #f9f6f2;
   }
 
@@ -115,7 +115,7 @@ body {
   width: $board-size;
   max-width: $board-max-size;
   justify-content: space-between;
-  margin: 24px 0 24px;
+  margin: 24px 0;
   box-sizing: border-box;
 }
 
@@ -168,7 +168,6 @@ h1 {
   align-items: center;
   text-align: center;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;

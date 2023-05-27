@@ -86,6 +86,8 @@ buttonRestart.addEventListener('click', (e) => {
   field = JSON.parse(localStorage.field);
   localStorage.isPlaying = false;
   isPlaying = localStorage.isPlaying;
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
   updateScore(null);
   addNum();
   addNum();
