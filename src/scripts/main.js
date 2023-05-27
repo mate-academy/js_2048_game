@@ -2,8 +2,9 @@
 
 import { rotateField } from "./helpers";
 import { checkPossibleMoves } from "./helpers";
+import { convertSwipeToArrow } from "./helpers";
 
-const board = document.querySelector('.game-field');
+export const board = document.querySelector('.game-field');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const size = 4;
@@ -49,20 +50,50 @@ function setGame() {
 setGame();
 
 document.addEventListener('keyup', (e) => {
-  if (!possibleMoves.includes(e.code)) {
+  move(e.code);
+})
+
+const touches = {
+  start: {
+    X: 0,
+    Y: 0,
+  },
+  end: {
+    X: 0,
+    Y: 0,
+  },
+};
+
+board.addEventListener('touchstart', e => {
+  touches.start.X = Math.abs(e.touches[0].clientX);
+  touches.start.Y = Math.abs(e.touches[0].clientY);
+})
+
+board.addEventListener('touchmove', e => {
+  touches.end.X = Math.abs(e.touches[0].clientX);
+  touches.end.Y = Math.abs(e.touches[0].clientY);
+})
+
+board.addEventListener('touchend', e => {
+  move(convertSwipeToArrow(touches));
+})
+
+
+function move(arrow) {
+  if (!possibleMoves.includes(arrow)) {
     return;
   }
 
-  switch (e.code) {
+  switch (arrow) {
     case 'ArrowLeft':
     case 'ArrowRight':
-      field = slideRows(e.code, field);
+      field = slideRows(arrow, field);
       break;
 
     case 'ArrowUp':
     case 'ArrowDown':
       const rotated = rotateField(field, size);
-      const slided = slideRows(e.code, rotated);
+      const slided = slideRows(arrow, rotated);
 
       field = rotateField(slided, size);
       break;
@@ -71,7 +102,7 @@ document.addEventListener('keyup', (e) => {
   addNum();
   updateBoard();
   possibleMoves = checkPossibleMoves(field, size);
-})
+}
 
 function slideRows(arrow, field) {
   const workField = field.map(row => [...row]);

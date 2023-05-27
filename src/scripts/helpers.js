@@ -21,30 +21,24 @@ export function checkPossibleMoves(field, size) {
       const center = field[r][c];
       
       if (center !== 0) {
-        console.log(center, 'center')
         const Up = (r > 0) ? field[r - 1][c] : null;
         const Down = (r < size - 1) ? field[r + 1][c] : null;
         const Left = (c > 0) ? field[r][c - 1] : null;
         const Right = (c < size - 1) ? field[r][c + 1] : null;
 
         if (Left === 0 || Left === center) {
-        console.log(Left, 'left')
-
           !possibleMoves.includes('ArrowLeft') && possibleMoves.push('ArrowLeft');
         }
-  
+
         if (Right === 0 || Right === center) {
-          console.log(Right, 'Right')
           !possibleMoves.includes('ArrowRight') && possibleMoves.push('ArrowRight');
         }
-  
+
         if (Up === 0 || Up === center) {
-          console.log(Up, 'Up')
           !possibleMoves.includes('ArrowUp') && possibleMoves.push('ArrowUp');
         }
-  
+
         if (Down === 0 || Down === center) {
-          console.log(Down, 'Down')
           !possibleMoves.includes('ArrowDown') && possibleMoves.push('ArrowDown');
         }
       }
@@ -52,4 +46,21 @@ export function checkPossibleMoves(field, size) {
   }
 
   return possibleMoves;
+}
+
+export function convertSwipeToArrow(touches) {
+  const difX = touches.end.X - touches.start.X;
+  const difY = touches.end.Y - touches.start.Y;
+
+  if (Math.abs(difX + difY) < 100) { // check for long swipe
+    return;
+  }
+
+  const isVertital = Math.abs(difY) > Math.abs(difX);
+
+  if (isVertital) {
+    return (difY < 0) ? 'ArrowUp' : 'ArrowDown';
+  } else {
+    return (difX < 0) ? 'ArrowLeft' : 'ArrowRight';
+  }
 }
