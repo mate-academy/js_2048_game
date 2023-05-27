@@ -15,6 +15,13 @@ const actionInSwipe = {
   left: false,
 };
 
+const arrowCases = {
+  down: 'ArrowDown',
+  up: 'ArrowUp',
+  right: 'ArrowRight',
+  left: 'ArrowLeft',
+};
+
 function updateActions() {
   for (const swipe in actionInSwipe) {
     actionInSwipe[swipe] = true;
@@ -87,16 +94,16 @@ document.addEventListener('keydown', (e) => {
   }
 
   switch (e.key) {
-    case 'ArrowDown':
+    case arrowCases.down:
       downSwipe();
       break;
-    case 'ArrowUp':
+    case arrowCases.up:
       upSwipe();
       break;
-    case 'ArrowRight':
+    case arrowCases.right:
       rightSwipe();
       break;
-    case 'ArrowLeft':
+    case arrowCases.left:
       leftSwipe();
       break;
 
