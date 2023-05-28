@@ -66,7 +66,7 @@ function updateTile(tile, num) {
   }
 }
 
-function renderBoard() {
+function updateBoard() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < collums; c++) {
       const tile = gameBoard.rows[r].cells[r];
@@ -144,7 +144,7 @@ function slideLeft() {
   addTileNumber();
   score += moveScore;
   scoreGame.innerHTML = score;
-  renderBoard();
+  updateBoard();
 }
 
 function slideRight() {
@@ -160,7 +160,7 @@ function slideRight() {
   addTileNumber();
   score += moveScore;
   scoreGame.innerHTML = score;
-  renderBoard();
+  updateBoard();
 }
 
 function slideUp() {
@@ -183,7 +183,7 @@ function slideUp() {
   addTileNumber();
   score += moveScore;
   scoreGame.innerHTML = score;
-  renderBoard();
+  updateBoard();
 }
 
 function slideDown() {
@@ -207,7 +207,7 @@ function slideDown() {
   addTileNumber();
   score += moveScore;
   scoreGame.innerHTML = score;
-  renderBoard();
+  updateBoard();
 }
 
 startButton.addEventListener('click', (e) => {
@@ -230,7 +230,7 @@ startButton.addEventListener('click', (e) => {
   addTileNumber();
   addTileNumber();
 
-  renderBoard();
+  updateBoard();
 });
 
 function keyEventHandler(e) {
