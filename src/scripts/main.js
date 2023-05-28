@@ -17,7 +17,7 @@ const board = [
   [0, 0, 0, 0],
 ];
 let score = 0;
-let moveScore = 0;
+let slideScore = 0;
 
 function emptyTileNumber() {
   for (let r = 0; r < rows; r++) {
@@ -55,7 +55,7 @@ function updateTile(tile, num) {
   if (num > 0) {
     tile.classList.add(`field-cell--${num}`);
     tile.innerHTML = num;
-    moveScore += num;
+    slideScore += num;
   }
 
   if (num === 2048) {
@@ -132,7 +132,7 @@ function slide(row) {
 }
 
 function slideLeft() {
-  moveScore = 0;
+  slideScore = 0;
 
   for (let r = 0; r < rows; r++) {
     let row = board[r];
@@ -142,13 +142,13 @@ function slideLeft() {
   }
 
   addTileNumber();
-  score += moveScore;
+  score += slideScore;
   scoreGame.innerHTML = score;
   updateBoard();
 }
 
 function slideRight() {
-  moveScore = 0;
+  slideScore = 0;
 
   for (let r = 0; r < rows; r++) {
     let row = board[r];
@@ -158,13 +158,13 @@ function slideRight() {
   }
 
   addTileNumber();
-  score += moveScore;
+  score += slideScore;
   scoreGame.innerHTML = score;
   updateBoard();
 }
 
 function slideUp() {
-  moveScore = 0;
+  slideScore = 0;
 
   for (let c = 0; c < collums; c++) {
     let row = [];
@@ -181,13 +181,13 @@ function slideUp() {
   }
 
   addTileNumber();
-  score += moveScore;
+  score += slideScore;
   scoreGame.innerHTML = score;
   updateBoard();
 }
 
 function slideDown() {
-  moveScore = 0;
+  slideScore = 0;
 
   for (let c = 0; c < collums; c++) {
     let row = [];
@@ -205,7 +205,7 @@ function slideDown() {
   }
 
   addTileNumber();
-  score += moveScore;
+  score += slideScore;
   scoreGame.innerHTML = score;
   updateBoard();
 }
@@ -248,5 +248,3 @@ function keyEventHandler(e) {
       break;
   }
 }
-
-document.addEventListener('keyup', keyEventHandler);
