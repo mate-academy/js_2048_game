@@ -10,7 +10,12 @@ const gameBoard = document.querySelector('.game-field');
 const collums = 4;
 const rows = 4;
 
-let board;
+const board = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 let score = 0;
 let moveScore = 0;
 
@@ -36,7 +41,7 @@ function addTileNumber() {
       cellIndex = Math.floor(Math.random() * collums);
     } while (board[rowIndex][cellIndex] !== 0);
 
-    board[rowIndex][cellIndex] = Math.floor(Math.random() <= 0.9 ? 2 : 4);
+    board[rowIndex][cellIndex] = Math.floor(Math.random() < 0.9 ? 2 : 4);
   } else {
     return null;
   }
@@ -54,8 +59,21 @@ function updateTile(tile, num) {
   }
 
   if (num === 2048) {
-    gameWon();
+    winMessage.classList.remove('hidden');
+    startButton.classList.replace('restart', 'start');
+    startButton.innerText = 'Start';
     document.removeEventListener('keyup', keyEventHandler);
+  }
+}
+
+function updateBoard() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < collums; c++) {
+      const tile = gameBoard.rows[r].cells[c];
+      const num = board[r][c];
+
+      updateTile(tile, num);
+    }
   }
 
   scoreGame.innerHTML = score;
@@ -66,25 +84,8 @@ function updateTile(tile, num) {
   }
 }
 
-function updateBoard() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < collums; c++) {
-      const tile = gameBoard.rows[r].cells[r];
-      const num = board[r][c];
-
-      updateTile(tile, num);
-    }
-  }
-}
-
-function gameWon() {
-  winMessage.classList.remove('hidden');
-  startButton.classList.replace('restart', 'start');
-  startButton.innerText = 'Start';
-}
-
 function gameLost() {
-  if (emptyTileNumber) {
+  if (!emptyTileNumber) {
     return false;
   }
 
@@ -109,26 +110,25 @@ function gameLost() {
 
 function slide(row) {
   const noZerosRow = row.filter(cell => cell !== 0);
-  const mergedRow = [];
-  let mergedValue = 0;
+  const oneToTwoRow = [];
+  let oneToTwoValue = 0;
 
   for (let i = 0; i < noZerosRow.length; i++) {
     if (noZerosRow[i] === noZerosRow[i + 1]) {
-      mergedRow.push(noZerosRow[i] * 2);
-      mergedValue += noZerosRow[i] * 2;
+      oneToTwoRow.push(noZerosRow[i] * 2);
+      oneToTwoValue += noZerosRow[i] * 2;
     } else {
-      mergedRow.push(noZerosRow[i]);
+      oneToTwoRow.push(noZerosRow[i]);
     }
   }
 
-  // [4, 2, 0, 0]
-  while (mergedRow.length < collums) {
-    mergedRow.push(0);
+  while (oneToTwoRow.length < collums) {
+    oneToTwoRow.push(0);
   }
 
-  score += mergedValue;
+  score += oneToTwoValue;
 
-  return mergedRow;
+  return oneToTwoRow;
 }
 
 function slideLeft() {
@@ -211,12 +211,8 @@ function slideDown() {
 }
 
 startButton.addEventListener('click', (e) => {
-  board = [];
+  board.forEach(row => row.fill(0));
   score = 0;
-
-  for (let r = 0; r < rows; r++) {
-    board.push(new Array(collums).fill(0));
-  }
 
   startMessage.classList.add('hidden');
   winMessage.classList.add('hidden');
