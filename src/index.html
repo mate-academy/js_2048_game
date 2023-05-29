@@ -10,6 +10,7 @@
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
+        <button class="rules">Rules</button>
         <div class="controls">
           <p class="info">
             Score: <span class="game-score">0</span>
@@ -56,6 +57,15 @@
         <p class="message message-lose hidden">You lose! Restart the game?</p>
         <p class="message message-win hidden">Winner! Congrats! You did it!</p>
         <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+      </div>
+
+      <div class="message rules-container visibility">
+        <button class="rules-exit">&#215</button>
+        <p>
+          HOW TO PLAY: Use your arrow keys to move the tiles.
+          Tiles with the same number merge into one when they touch.
+          Add them up to reach 2048!
+        </p>
       </div>
     </div>
     <script type="text/javascript" src="scripts/main.js"></script>
