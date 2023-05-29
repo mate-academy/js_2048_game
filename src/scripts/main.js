@@ -42,19 +42,21 @@ function startGame() {
 }
 
 function addRandomCell() {
-  const availableCells = getAvailableCells();
+  setTimeout(() => {
+    const availableCells = getAvailableCells();
 
-  if (availableCells.length === 0) {
-    return;
-  }
-
-  const randomCell
-    = availableCells[Math.floor(Math.random() * availableCells.length)];
-  const value = Math.random() > 0.1 ? 2 : 4;
-
-  field[randomCell.row][randomCell.column] = value;
-
-  updateField();
+    if (availableCells.length === 0) {
+      return;
+    }
+  
+    const randomCell
+      = availableCells[Math.floor(Math.random() * availableCells.length)];
+    const value = Math.random() > 0.1 ? 2 : 4;
+  
+    field[randomCell.row][randomCell.column] = value;
+  
+    updateField();
+  },500);
 }
 
 function getAvailableCells() {
