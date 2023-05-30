@@ -19,8 +19,8 @@ export function checkPossibleMoves(field, size) {
       }
 
       const center = field[r][c];
-      
-      if (center !== 0) {
+
+      if (center) {
         const Up = (r > 0) ? field[r - 1][c] : null;
         const Down = (r < size - 1) ? field[r + 1][c] : null;
         const Left = (c > 0) ? field[r][c - 1] : null;
@@ -56,11 +56,8 @@ export function convertSwipeToArrow(touches) {
     return;
   }
 
-  const isVertital = Math.abs(difY) > Math.abs(difX);
+  const directionY = difY < 0 ? 'ArrowUp' : 'ArrowDown';
+  const directionX = difX < 0 ? 'ArrowLeft' : 'ArrowRight';
 
-  if (isVertital) {
-    return (difY < 0) ? 'ArrowUp' : 'ArrowDown';
-  } else {
-    return (difX < 0) ? 'ArrowLeft' : 'ArrowRight';
-  }
+  return (Math.abs(difY) > Math.abs(difX)) ? directionY : directionX;
 }
