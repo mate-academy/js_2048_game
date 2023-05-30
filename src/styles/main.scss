@@ -17,9 +17,9 @@ body {
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &--2 {
     background: #eee4da;
@@ -79,6 +79,16 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  box-sizing: border-box;
+
+  width: 350px;
+  height: 350px;
+  padding: 5px;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-content: space-around;
 }
 
 .game-header {
