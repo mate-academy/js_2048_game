@@ -3,7 +3,6 @@
 const tablGamme = document.querySelector('.game-field');
 const buttonStart = document.querySelector('.start');
 const messageStart = document.querySelector('.message-start');
-const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const messageOver = document.querySelector('.message-over');
 const rows = 4;
@@ -22,7 +21,6 @@ buttonStart.addEventListener('click', () => {
   buttonStart.innerText = 'Restart';
   messageStart.classList.add('hidden');
   messageOver.classList.add('hidden');
-  messageLose.classList.remove('hidden');
   document.querySelector('.game-score').innerText = 0;
   setGame();
 });
@@ -104,7 +102,6 @@ function updateTile(tile, num) {
     if (num === 2048) {
       tile.classList.add('field-cell--' + num.toString());
       messageWin.classList.remove('hidden');
-      messageLose.classList.add('hidden');
     }
   }
 }
