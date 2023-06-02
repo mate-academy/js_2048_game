@@ -25,17 +25,13 @@ let gameTable = [
 ];
 
 function isGameTableFull() {
-  for (let i = 0; i < size; i++) {
-    if (gameTable[i].includes(0)) {
-      return false;
-    }
-  }
+  return gameTable.some(row => row === 0);
 }
 
 function randomNumber() {
   while (!isGameTableFull()) {
-    const row = Math.floor(Math.random() * 4);
-    const col = Math.floor(Math.random() * 4);
+    const row = Math.floor(Math.random() * size);
+    const col = Math.floor(Math.random() * size);
 
     if (gameTable[row][col] === 0) {
       gameTable[row][col] = (Math.random() <= 0.1) ? 4 : 2;
@@ -179,11 +175,8 @@ function performAction(direct) {
 }
 
 function displayGameResult(result) {
-  if (result) {
-    messageWin.classList.remove('hidden');
-  } else {
-    messageLose.classList.remove('hidden');
-  }
+  result ? messageWin.classList.remove('hidden')
+    : messageLose.classList.remove('hidden');
   document.removeEventListener('keydown', handleKeyPress);
 }
 
@@ -204,12 +197,12 @@ function startNewGame() {
 }
 
 function cleanTable() {
-  [...tableCells].map(el => {
+  [...tableCells].forEach(el => {
     el.classList.remove(`field-cell--${el.textContent}`);
     el.textContent = '';
   });
 
-  gameTable.map(row => row.map((_, ind) => {
+  gameTable.forEach(row => row.forEach((_, ind) => {
     row[ind] = 0;
   }));
 }
