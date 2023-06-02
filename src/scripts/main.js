@@ -9,11 +9,6 @@ const rows = 4;
 const columns = 4;
 let score = 0;
 let gammeBoard = [];
-let flagEnd = 0;
-let flagDoublingLeft = true;
-let flagDoublingRight = true;
-let flagDoublingUp = true;
-let flagDoublingDown = true;
 
 buttonStart.addEventListener('click', () => {
   buttonStart.classList.value = '';
@@ -26,12 +21,6 @@ buttonStart.addEventListener('click', () => {
 });
 
 function setGame() {
-  flagEnd = 0;
-  flagDoublingLeft = true;
-  flagDoublingRight = true;
-  flagDoublingUp = true;
-  flagDoublingDown = true;
-
   gammeBoard = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -56,6 +45,28 @@ function emptyTile() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       if (gammeBoard[r][c] === 0) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function moves() {
+  for (let r = 0; r < rows - 1; r++) {
+    for (let c = 0; c < columns - 1; c++) {
+      if ((gammeBoard[r][c] === gammeBoard[r][c + 1])
+        || (gammeBoard[r][c] === 0)) {
+        return true;
+      }
+    }
+  }
+
+  for (let col = 0; col < columns - 1; col++) {
+    for (let row = 0; row < rows - 1; row++) {
+      if ((gammeBoard[row][col] === gammeBoard[row + 1][col])
+        || (gammeBoard[row][col] === 0)) {
         return true;
       }
     }
@@ -109,48 +120,36 @@ function updateTile(tile, num) {
 document.addEventListener('keyup', (e) => {
   switch (e.code) {
     case 'ArrowLeft':
-      flagEnd = score;
       slideLeft();
       setRandomInEmptyCell();
+      moves();
 
-      if (flagEnd === score) {
-        flagDoublingLeft = false;
-      }
       break;
 
     case 'ArrowRight':
-      flagEnd = score;
+      // flagEnd = score;
       slideRight();
       setRandomInEmptyCell();
+      moves();
 
-      if (flagEnd === score) {
-        flagDoublingRight = false;
-      }
       break;
 
     case 'ArrowUp':
-      flagEnd = score;
       slideUp();
       setRandomInEmptyCell();
+      moves();
 
-      if (flagEnd === score) {
-        flagDoublingUp = false;
-      }
       break;
 
     case 'ArrowDown':
-      flagEnd = score;
       slideDown();
       setRandomInEmptyCell();
+      moves();
 
-      if (flagEnd === score) {
-        flagDoublingDown = false;
-      }
       break;
   }
 
-  if (!flagDoublingDown && !flagDoublingLeft
-    && !flagDoublingRight && !flagDoublingUp && !emptyTile()) {
+  if (!moves()) {
     messageOver.classList.remove('hidden');
     messageOver.style.color = '#f87474';
   }
