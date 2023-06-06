@@ -117,6 +117,7 @@ function slide(row) {
     if (noZerosRow[i] === noZerosRow[i + 1]) {
       oneToTwoRow.push(noZerosRow[i] * 2);
       oneToTwoValue += noZerosRow[i] * 2;
+      noZerosRow[i + 1] = 0;
     } else {
       oneToTwoRow.push(noZerosRow[i]);
     }
