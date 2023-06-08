@@ -85,7 +85,7 @@ function updateBoard() {
 }
 
 function gameLost() {
-  if (!emptyTileNumber) {
+  if (emptyTileNumber()) {
     return false;
   }
 
