@@ -39,6 +39,10 @@ Hints:
 - Use `hidden` class for hiding elements on page.
 - Use `start`, `restart` classes for the main button for different styles.
 - Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
+- Use `keydown` event and `event.key` property to handle arrow buttons presses
+    ```js
+    document.addEventListener('keydown', event => console.log(event.key));
+    ```
 
 You can change the HTM/CSS layout if you need it.
 
