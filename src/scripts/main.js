@@ -31,10 +31,6 @@ button.addEventListener('click', () => {
     handleAddNumber();
     updateFieldCell();
   } else if (button.classList.contains('restart')) {
-    button.classList.remove('restart');
-    button.classList.add('start');
-    button.innerHTML = 'Start';
-    messageStart.classList.remove('hidden');
     messageLose.classList.add('hidden');
     messageWin.classList.add('hidden');
     gameClickBehavior = false;
@@ -46,7 +42,11 @@ button.addEventListener('click', () => {
       [0, 0, 0, 0],
     ];
 
+    gameClickBehavior = true;
+
     score = 0;
+    handleAddNumber();
+    handleAddNumber();
     updateFieldCell();
   }
 });
