@@ -1,16 +1,15 @@
-# IDE
 .idea
 .vscode
-
-# Node
+build
+dist
 node_modules
-
-# MacOS
 .DS_Store
 
-# Generated files
-dist
-.cache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 raw_reports
+reports
 cypress/screenshots
 cypress/videos
