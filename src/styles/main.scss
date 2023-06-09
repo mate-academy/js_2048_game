@@ -21,6 +21,24 @@ body {
   vertical-align: center;
   user-select: none;
 
+  @keyframes tile-merge {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  &--merge-animation {
+    animation-name: tile-merge;
+    animation-duration: 0.15s;
+    animation-timing-function: linear;
+  }
+
   &--2 {
     background: #eee4da;
   }
@@ -74,7 +92,6 @@ body {
     color: #f9f6f2;
   }
 }
-
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
@@ -125,6 +142,7 @@ h1 {
 
 .button {
   border: none;
+  outline: none;
   border-radius: 5px;
   cursor: pointer;
   color: #f9f6f2;
@@ -139,7 +157,7 @@ h1 {
 
 .start {
   background: #1dae28;
-  font-size: 20px;
+  font-size: 19px;
 
   &:hover {
     background: #179921;
