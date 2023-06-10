@@ -21,6 +21,10 @@ body {
   vertical-align: center;
   user-select: none;
 
+  &--default {
+    background: #d6cdc4;
+  }
+
   &--2 {
     background: #eee4da;
   }
@@ -148,6 +152,8 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  padding: 0;
+  outline: none;
 
   &:hover {
     background: #f87474;
