@@ -21,6 +21,10 @@ body {
   vertical-align: center;
   user-select: none;
 
+  &--0 {
+    color: transparent;
+  }
+
   &--2 {
     background: #eee4da;
   }
@@ -124,6 +128,7 @@ h1 {
 }
 
 .button {
+  padding: 0;
   border: none;
   border-radius: 5px;
   cursor: pointer;
