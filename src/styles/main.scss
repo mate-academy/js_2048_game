@@ -1,82 +1,45 @@
+@import "mixins";
+
+html {
+  overflow: hidden;
+  @include onMobile {
+    min-height: 80vh;
+  }
+}
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #344c11;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+
+  @include onMobile {
+    height: 80vh;
+    overflow: hidden;
+    touch-action: none;
+  }
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #778d45;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #1a2902;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
 }
 
 .game-field {
-  background: #bbada0;
+  position: relative;
+  background: #1a2902;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -86,15 +49,15 @@ body {
   width: 100%;
   justify-content: space-between;
   margin-bottom: 24px;
-  padding: 10px;
+  padding: 5px;
   box-sizing: border-box;
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
+  background: #dddf00;
+  color: #1a2902;
+  width: 80px;
+  height: 80px;
   font-size: 24px;
   border-radius: 5px;
   display: flex;
@@ -109,13 +72,13 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: #778d45;
+  width: 80px;
+  height: 80px;
   border-radius: 5px;
-  color: #776e65;
+  color: #1a2902;
   box-sizing: border-box;
-  font-size: 16px;
+  font-size: 18px;
   margin: 0 8px 0 0;
 }
 
@@ -124,22 +87,23 @@ h1 {
 }
 
 .button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: #1a2902;
   font-family: sans-serif;
   font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
-
+  font-size: 20px;
+  width: 80px;
+  height: 80px;
   transition: 0.25s ease background;
 }
 
 .start {
   background: #1dae28;
-  font-size: 20px;
 
   &:hover {
     background: #179921;
@@ -147,18 +111,17 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #dddf00;
 
   &:hover {
-    background: #f87474;
+    background: #ffff3f;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  color: #1a2902;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
@@ -176,12 +139,108 @@ h1 {
   width: 350px;
 }
 
+.message-start {
+  background: #1dae28;
+}
+
+.message-lose {
+  background: #e56b6f;
+  color: #540b0e;
+  transition: all 0.5s ease;
+  scale: 1.2;
+}
+
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
+
 }
 
 .message-container {
-  width: 100%;
+  width: 70%;
   height: 150px;
+  animation: scale 1s infinite alternate;
+}
+
+@keyframes scale {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 1.2;
+  }
+}
+
+.tile {
+  background: #d6cdc4;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  color: #1a2902;
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: center;
+  user-select: none;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  animation: scaleTile 0.3s backwards ease-in-out 0.3s;
+
+  @keyframes scaleTile {
+    0% {
+      scale: 0;
+    }
+    50% {
+      scale: 1.2;
+    }
+    100% {
+      scale: 1;
+    }
+  }
+
+  &--2 {
+    background: #ffff3f;
+  }
+
+  &--4 {
+    background: #ac0;
+  }
+
+  &--8 {
+    background: #55a630;
+  }
+
+  &--16 {
+    background: #2b9348;
+  }
+
+  &--32 {
+    background: #80b918;
+  }
+
+  &--64 {
+    background: #d4d700;
+  }
+
+  &--128 {
+    background: #bfd200;
+  }
+
+  &--256 {
+    background: #eeef20;
+  }
+
+  &--512 {
+    background: #ffd500;
+  }
+
+  &--1024 {
+    background: #ffea00;
+  }
+
+  &--2048 {
+    background: #dddf00;
+  }
 }
