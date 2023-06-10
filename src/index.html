@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048</title>
     <link rel="stylesheet" href="./styles/main.scss">
+    <link rel="icon" href="./images/2048_logo.png">
   </head>
   <body>
     <div class="container">
       <div class="game-header">
-        <h1>2048</h1>
+        <h1 title="by Max Bovtun">2048</h1>
         <div class="controls">
           <p class="info">
             Score: <span class="game-score">0</span>
@@ -20,42 +21,47 @@
 
       <table class="game-field">
         <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+          <tr id="row-1" class="field-row">
+            <td id="cell-1-1" class="field-cell"></td>
+            <td id="cell-1-2" class="field-cell"></td>
+            <td id="cell-1-3" class="field-cell"></td>
+            <td id="cell-1-4" class="field-cell"></td>
           </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+          <tr id="row-2" class="field-row">
+            <td id="cell-2-1" class="field-cell"></td>
+            <td id="cell-2-2" class="field-cell"></td>
+            <td id="cell-2-3" class="field-cell"></td>
+            <td id="cell-2-4" class="field-cell"></td>
           </tr>
 
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+          <tr id="row-3" class="field-row">
+            <td id="cell-3-1" class="field-cell"></td>
+            <td id="cell-3-2" class="field-cell"></td>
+            <td id="cell-3-3" class="field-cell"></td>
+            <td id="cell-3-4" class="field-cell"></td>
+          </tr>
+
+
+          <tr id="row-4" class="field-row">
+            <td id="cell-4-1" class="field-cell"></td>
+            <td id="cell-4-2" class="field-cell"></td>
+            <td id="cell-4-3" class="field-cell"></td>
+            <td id="cell-4-4" class="field-cell"></td>
           </tr>
         </tbody>
       </table>
 
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
+        <p class="message message-play hidden">Could you reach the 2048?</p>
         <p class="message message-win hidden">Winner! Congrats! You did it!</p>
         <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+        <p class="message message-score">
+          Highest score: <span class="highest-score">0</span>
+        </p>
+        <p class="version">beta v0.9.9</p>
       </div>
     </div>
     <script type="text/javascript" src="scripts/main.js"></script>

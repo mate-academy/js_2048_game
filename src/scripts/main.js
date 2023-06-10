@@ -1,3 +1,6 @@
 'use strict';
 
-// write your code here
+const { gameInit } = require('./game');
+
+// Game init:
+gameInit();
