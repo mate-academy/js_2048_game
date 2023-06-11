@@ -85,19 +85,19 @@ document.addEventListener('keyup', e => {
   let endH = true;
   let endV = true;
 
-  tableGame.forEach(row => {
-    for (let i = 0; i < row.length - 1; i++) {
-      if (row[i] === row[i + 1]) {
+  for (let r = 0; r < tableGame.length; r++) {
+    for (let c = 0; c < tableGame.length - 1; c++) {
+      if (tableGame[r][c] === tableGame[r][c + 1]) {
         endH = false;
 
         return;
       }
     }
-  });
+  }
 
-  for (let i = 0; i < tableGame.length - 1; i++) {
+  for (let r = 0; r < tableGame.length; r++) {
     const row = [
-      tableGame[0][i], tableGame[1][i], tableGame[2][i], tableGame[3][i],
+      tableGame[0][r], tableGame[1][r], tableGame[2][r], tableGame[3][r],
     ];
 
     for (let c = 0; c < row.length - 1; c++) {
@@ -110,7 +110,7 @@ document.addEventListener('keyup', e => {
   }
 
   if (
-    [...cells].every(cell => cell.className !== 'field-cell')
+    tableGame.every(row => row.every(cell => cell !== 0))
     && endV === true
     && endH === true
   ) {
