@@ -10,7 +10,6 @@ const loseMessages = document.querySelector('.message-lose');
 const winMessages = document.querySelector('.message-win');
 const elementScore = document.querySelector('.game-score');
 
-// create empty array 4 x 4 | start GameField
 function createField() {
   const field = [];
 
@@ -21,7 +20,6 @@ function createField() {
   return field;
 }
 
-// fill Game Field after each steps and cell added
 function fillGameField(board) {
   const cells = document.querySelectorAll('.field-cell');
   let count = 0;
