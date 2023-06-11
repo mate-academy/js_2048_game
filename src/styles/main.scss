@@ -20,6 +20,11 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px, rgba(0, 0, 0, 0.2) 0 -1px 0 inset;
+
+  &--new {
+    animation: newCell 0.3s;
+  }
 
   &--2 {
     background: #eee4da;
@@ -144,6 +149,11 @@ h1 {
   &:hover {
     background: #179921;
   }
+
+  &:focus-visible {
+    border: 2px solid #236d29;
+    outline: none;
+  }
 }
 
 .restart {
@@ -151,6 +161,11 @@ h1 {
 
   &:hover {
     background: #f87474;
+  }
+
+  &:focus-visible {
+    border: 1px solid rgb(148, 78, 91);
+    outline: none;
   }
 }
 
@@ -184,4 +199,17 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes newCell {
+  from {
+    transform: scale(70%);
+    box-shadow: rgba(50, 50, 93, 0.25) 0 30px 60px -12px inset,
+      rgba(0, 0, 0, 0.3) 0 18px 36px -18px inset;
+  }
+
+  100% {
+    transform: scale(100%);
+    border-radius: 7px;
+  }
 }
