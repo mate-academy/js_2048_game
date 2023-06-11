@@ -66,6 +66,29 @@ function isBoardFull() {
   return true;
 }
 
+function hasValidMoves() {
+  for (let r = 0; r < rowsAmount; r++) {
+    for (let c = 0; c < columnsAmount; c++) {
+      const currentNum = board[r][c];
+
+      if (
+        (r > 0 && board[r - 1][c] === currentNum)
+        || (r < rowsAmount - 1 && board[r + 1][c] === currentNum)
+        || (c > 0 && board[r][c - 1] === currentNum)
+        || (c < columnsAmount - 1 && board[r][c + 1] === currentNum)
+      ) {
+        return true;
+      }
+
+      if (currentNum === 0) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 function isWinner() {
   for (let r = 0; r < rowsAmount; r++) {
     for (let c = 0; c < columnsAmount; c++) {
@@ -107,7 +130,7 @@ function hasEmptyTile() {
 }
 
 function setTwo() {
-  if (!hasEmptyTile()) {
+  if (!hasEmptyTile() || !hasValidMoves()) {
     return;
   }
 
