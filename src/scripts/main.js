@@ -30,6 +30,7 @@ function fillGameField(board) {
       cells[i].className = `field-cell field-cell--${item}`;
 
       if (item === 2048) {
+        document.removeEventListener('keydown', keyPress);
         winMessages.classList.remove('hidden');
       }
 
@@ -122,6 +123,37 @@ function stepY(board, reverse = false) {
   return board;
 }
 
+function nextCell(board) {
+  if (change) {
+    addCell(board);
+    setTimeout(() => fillGameField(board), 200);
+  }
+}
+
+const keyPress = (e) => {
+  e.preventDefault();
+
+  if (e.code === 'ArrowLeft') {
+    fillGameField(stepX(gameField));
+    nextCell(gameField);
+  }
+
+  if (e.code === 'ArrowRight') {
+    fillGameField(stepX(gameField, true));
+    nextCell(gameField);
+  }
+
+  if (e.code === 'ArrowUp') {
+    fillGameField(stepY(gameField));
+    nextCell(gameField);
+  }
+
+  if (e.code === 'ArrowDown') {
+    fillGameField(stepY(gameField, true));
+    nextCell(gameField);
+  }
+};
+
 button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
     button.textContent = 'Restart';
@@ -142,26 +174,3 @@ button.addEventListener('click', () => {
 
   document.addEventListener('keydown', keyPress);
 });
-
-const keyPress = (e) => {
-  if (e.code === 'ArrowLeft') {
-    fillGameField(stepX(gameField));
-  }
-
-  if (e.code === 'ArrowRight') {
-    fillGameField(stepX(gameField, true));
-  }
-
-  if (e.code === 'ArrowUp') {
-    fillGameField(stepY(gameField));
-  }
-
-  if (e.code === 'ArrowDown') {
-    fillGameField(stepY(gameField, true));
-  }
-
-  if (change) {
-    addCell(gameField);
-    setTimeout(() => fillGameField(gameField), 200);
-  }
-};
