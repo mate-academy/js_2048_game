@@ -22,7 +22,7 @@ function randomInteger(min, max) {
   return Math.round(rand);
 }
 
-function FirtsValue(arr) {
+function firtsValue(arr) {
   const a = randomInteger(0, arr.length - 1);
   const valueA = randomInteger(1, 10) === 10 ? 4 : 2;
 
@@ -31,7 +31,7 @@ function FirtsValue(arr) {
   arr.splice(a, 1);
 }
 
-function restartMesagge() {
+function restartMessage() {
   const messageList = document.querySelectorAll('.message');
 
   for (const element of messageList) {
@@ -47,12 +47,12 @@ buttonPlay.addEventListener('click', e => {
   if (buttonPlay.classList.contains('start')) {
     buttonPlay.classList.remove('start');
     buttonPlay.classList.add('restart');
-    restartMesagge();
+    restartMessage();
 
     buttonPlay.innerHTML = `Restart`;
 
-    FirtsValue(placePlay);
-    FirtsValue(placePlay);
+    firtsValue(placePlay);
+    firtsValue(placePlay);
 
     gameTable.dataset.value = 'on';
 
@@ -66,12 +66,12 @@ buttonPlay.addEventListener('click', e => {
     buttonPlay.innerHTML = 'Start';
 
     for (const element of placePlay) {
-      element.className = `${BASE_CELL_CLASS}`;
+      element.className = BASE_CELL_CLASS;
 
       element.innerHTML = '';
     }
 
-    restartMesagge();
+    restartMessage();
 
     gameTable.dataset.value = 'off';
 
@@ -131,16 +131,14 @@ function newCell() {
     .filter(element => element.classList.length === 1);
 
   if (blanckCell.length === 0) {
-    if (checkPlace(placeColums) === false && checkPlace(plaseRow) === false) {
+    if (!checkPlace(placeColums) && !checkPlace(plaseRow)) {
       document.querySelector('.message-lose').classList.remove('hidden');
-
-      return;
     }
 
     return;
   }
 
-  FirtsValue(blanckCell);
+  firtsValue(blanckCell);
 }
 
 function moveCell(line) {
