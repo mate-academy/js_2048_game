@@ -292,16 +292,24 @@ document.addEventListener(eEnd, e => {
   if (Math.abs(endX) > Math.abs(endY)) {
     if (endX < 0) {
       moveLeft();
-    } else {
+    }
+
+    if (endX > 0) {
       moveRight();
     }
-  } else {
+  }
+
+  if (Math.abs(endX) < Math.abs(endY)) {
     if (endY < 0) {
       moveUp();
-    } else {
+    }
+
+    if (endY > 0) {
       moveDown();
     }
   }
+
+  startX = startY = endX = endY = null;
 
   if (JSON.stringify(copyTableGame) === JSON.stringify(tableGame)) {
     return;
