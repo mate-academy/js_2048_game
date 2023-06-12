@@ -267,30 +267,29 @@ function moveDown() {
 // }
 
 // for swipe
-// const eStart = 'pointerdown';
-// const eMove = 'pointermove';
-// const eEnd = 'pointerup';
-const eStart = 'touchstart';
-const eMove = 'touchmove';
-const eEnd = 'touchend';
 
 let startX, startY, endX, endY;
 
-document.addEventListener(eStart, e => {
+document.addEventListener('touchstart', e => {
   if (e.touches.length === 1) {
-    startX = e.clientX;
-    startY = e.clientY;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
   } else {
     startX = startY = endX = endY = null;
   }
 });
 
-document.addEventListener(eMove, e => {
-  endX = e.clientX - startX;
-  endY = e.clientY - startY;
+document.addEventListener('touchmove', e => {
+  if (e.touches.length > 1) {
+    return;
+  }
+
+  endX = e.touches[0].clientX - startX;
+  endY = e.touches[0].clientY - startY;
+  e.preventDefault();
 });
 
-document.addEventListener(eEnd, e => {
+document.addEventListener('touchend', e => {
   const copyTableGame = JSON.parse(JSON.stringify(tableGame));
 
   if (Math.abs(endX) > Math.abs(endY)) {
