@@ -286,7 +286,6 @@ table.addEventListener('touchmove', e => {
 
   endX = e.touches[0].clientX - startX;
   endY = e.touches[0].clientY - startY;
-  e.preventDefault();
 });
 
 table.addEventListener('touchend', e => {
