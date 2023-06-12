@@ -234,16 +234,20 @@ document.addEventListener('keyup', (key) => {
 });
 
 table.addEventListener('touchstart', (e) => {
+  e.preventDefault();
   startY = e.touches[0].clientY;
   startX = e.touches[0].clientX;
 });
 
 table.addEventListener('touchmove', (e) => {
+  e.preventDefault();
   moveY = e.touches[0].clientY;
   moveX = e.touches[0].clientX;
 });
 
 table.addEventListener('touchend', (e) => {
+  e.preventDefault();
+
   const endY = Math.abs(startY - moveY);
   const endX = Math.abs(startX - moveX);
 
