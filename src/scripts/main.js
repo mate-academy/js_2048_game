@@ -267,89 +267,34 @@ function moveDown() {
 // }
 
 // for swipe
+function swipe(code) {
+  document.dispatchEvent(new KeyboardEvent('keyup', { 'code': code }));
+}
 
 let startX, startY, endX, endY;
 
-table.addEventListener('touchstart', e => {
-  if (e.touches.length === 1) {
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-  } else {
-    startX = startY = endX = endY = null;
-  }
+document.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
 });
 
-table.addEventListener('touchmove', e => {
-  if (e.touches.length > 1) {
-    return;
-  }
-
+document.addEventListener('touchmove', e => {
   endX = e.touches[0].clientX - startX;
   endY = e.touches[0].clientY - startY;
 });
 
-table.addEventListener('touchend', e => {
-  const copyTableGame = JSON.parse(JSON.stringify(tableGame));
-
+document.addEventListener('touchend', e => {
   if (Math.abs(endX) > Math.abs(endY)) {
     if (endX < 0) {
-      moveLeft();
+      swipe('ArrowLeft');
     } else {
-      moveRight();
+      swipe('ArrowRight');
     }
   } else {
     if (endY < 0) {
-      moveUp();
+      swipe('ArrowUp');
     } else {
-      moveDown();
+      swipe('ArrowDown');
     }
-  }
-
-  startX = startY = endX = endY = null;
-
-  if (JSON.stringify(copyTableGame) === JSON.stringify(tableGame)) {
-    return;
-  }
-
-  addCell();
-  render();
-
-  if ([...cells].some(cell => cell.classList.contains('field-cell--2048'))) {
-    messageWin.classList.remove('hidden');
-  }
-
-  let endH = true;
-  let endV = true;
-
-  for (let r = 0; r < tableGame.length; r++) {
-    for (let c = 0; c < tableGame.length - 1; c++) {
-      if (tableGame[r][c] === tableGame[r][c + 1]) {
-        endH = false;
-
-        return;
-      }
-    }
-  }
-
-  for (let r = 0; r < tableGame.length; r++) {
-    const row = [
-      tableGame[0][r], tableGame[1][r], tableGame[2][r], tableGame[3][r],
-    ];
-
-    for (let c = 0; c < row.length - 1; c++) {
-      if (row[c] === row[c + 1]) {
-        endV = false;
-
-        return;
-      }
-    }
-  }
-
-  if (
-    tableGame.every(row => row.every(cell => cell !== 0))
-    && endV === true
-    && endH === true
-  ) {
-    messageLose.classList.remove('hidden');
   }
 });
