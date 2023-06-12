@@ -204,6 +204,18 @@ function slide(row) {
   return newRow;
 }
 
+function replaceZeros() {
+  for (let r = 0; r < rowsAmount; r++) {
+    for (let c = 0; c < columnsAmount; c++) {
+      const tile = document.getElementById(r.toString() + '-' + c.toString());
+
+      if (tile.innerText === '0') {
+        tile.innerText = '';
+      }
+    }
+  }
+}
+
 function slideLeft() {
   for (let r = 0; r < rowsAmount; r++) {
     let row = board[r];
@@ -218,16 +230,7 @@ function slideLeft() {
       updateCell(tile, num);
     }
   }
-
-  for (let r = 0; r < rowsAmount; r++) {
-    for (let c = 0; c < columnsAmount; c++) {
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-
-      if (tile.innerText === '0') {
-        tile.innerText = '';
-      }
-    }
-  }
+  replaceZeros();
 
   if (isBoardFull()) {
     messageLose.classList.remove('hidden');
@@ -255,16 +258,7 @@ function slideRight() {
       updateCell(tile, num);
     }
   }
-
-  for (let r = 0; r < rowsAmount; r++) {
-    for (let c = 0; c < columnsAmount; c++) {
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-
-      if (tile.innerText === '0') {
-        tile.innerText = '';
-      }
-    }
-  }
+  replaceZeros();
 
   if (isBoardFull()) {
     messageLose.classList.remove('hidden');
@@ -293,15 +287,7 @@ function slideUp() {
     }
   }
 
-  for (let r = 0; r < rowsAmount; r++) {
-    for (let c = 0; c < columnsAmount; c++) {
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-
-      if (tile.innerText === '0') {
-        tile.innerText = '';
-      }
-    }
-  }
+  replaceZeros();
 
   if (isBoardFull()) {
     messageLose.classList.remove('hidden');
@@ -332,15 +318,7 @@ function slideDown() {
     }
   }
 
-  for (let r = 0; r < rowsAmount; r++) {
-    for (let c = 0; c < columnsAmount; c++) {
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-
-      if (tile.innerText === '0') {
-        tile.innerText = '';
-      }
-    }
-  }
+  replaceZeros();
 
   if (isBoardFull()) {
     messageLose.classList.remove('hidden');
