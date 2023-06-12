@@ -142,7 +142,7 @@ function slidingSum(row, key) {
     : fieldRow;
 }
 
-function moveLeftandRight(key) {
+function moveLeftAndRight(key) {
   for (let r = 0; r < gameField.length; r++) {
     let row = gameField[r];
 
@@ -151,7 +151,7 @@ function moveLeftandRight(key) {
   }
 }
 
-function moveUpandDown(key) {
+function moveUpAndDown(key) {
   for (let r = 0; r < gameField.length; r++) {
     let transformRow = [
       gameField[0][r], gameField[1][r], gameField[2][r], gameField[3][r],
@@ -165,7 +165,7 @@ function moveUpandDown(key) {
   }
 }
 
-startButton.addEventListener('click', () => {
+startButton.addEventListener('click', (e) => {
   if (startButton.classList.contains('start')) {
     startButton.classList.remove('start');
     startButton.classList.add('restart');
@@ -194,20 +194,82 @@ document.addEventListener('keyup', (key) => {
 
   switch (key.code) {
     case 'ArrowLeft':
-      moveLeftandRight(key.code);
+      moveLeftAndRight(key.code);
       break;
 
     case 'ArrowRight':
-      moveLeftandRight(key.code);
+      moveLeftAndRight(key.code);
       break;
 
     case 'ArrowUp':
-      moveUpandDown(key.code);
+      moveUpAndDown(key.code);
       break;
 
     case 'ArrowDown':
-      moveUpandDown(key.code);
+      moveUpAndDown(key.code);
       break;
+  }
+
+  if (JSON.stringify(copyTableGame) === JSON.stringify(gameField)) {
+    return;
+  }
+
+  randomNumber();
+
+  renderGameField();
+
+  const loseStatus = gameOver();
+
+  if (!loseStatus) {
+    changingDivMessage('lose');
+  }
+});
+
+let startY;
+let startX;
+let moveY;
+let moveX;
+
+table.addEventListener('touchstart', (e) => {
+  startY = e.touches[0].clientY;
+  startX = e.touches[0].clientX;
+});
+
+table.addEventListener('touchmove', (e) => {
+  moveY = e.touches[0].clientY;
+  moveX = e.touches[0].clientX;
+});
+
+table.addEventListener('touchend', (e) => {
+  const endY = Math.abs(startY - moveY);
+  const endX = Math.abs(startX - moveX);
+
+  const lose = document.querySelector('.message-lose');
+
+  if (startButton.classList.contains('start')) {
+    return;
+  }
+
+  if (!lose.classList.contains('hidden')) {
+    return;
+  }
+
+  const copyTableGame = JSON.parse(JSON.stringify(gameField));
+
+  if ((startY - moveY) < 0 && endY > endX) {
+    moveUpAndDown('ArrowDown');
+  }
+
+  if ((startY - moveY) > 0 && endY > endX) {
+    moveUpAndDown('ArrowUp');
+  }
+
+  if ((startX - moveX) < 0 && endX > endY) {
+    moveLeftAndRight('ArrowRight');
+  }
+
+  if ((startX - moveX) > 0 && endX > endY) {
+    moveLeftAndRight('ArrowLeft');
   }
 
   if (JSON.stringify(copyTableGame) === JSON.stringify(gameField)) {
