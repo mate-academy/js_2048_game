@@ -270,7 +270,7 @@ function moveDown() {
 
 let startX, startY, endX, endY;
 
-document.addEventListener('touchstart', e => {
+table.addEventListener('touchstart', e => {
   if (e.touches.length === 1) {
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
@@ -279,7 +279,7 @@ document.addEventListener('touchstart', e => {
   }
 });
 
-document.addEventListener('touchmove', e => {
+table.addEventListener('touchmove', e => {
   if (e.touches.length > 1) {
     return;
   }
@@ -289,7 +289,7 @@ document.addEventListener('touchmove', e => {
   e.preventDefault();
 });
 
-document.addEventListener('touchend', e => {
+table.addEventListener('touchend', e => {
   const copyTableGame = JSON.parse(JSON.stringify(tableGame));
 
   if (Math.abs(endX) > Math.abs(endY)) {
