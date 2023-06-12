@@ -6,6 +6,10 @@ const gameStatus = document.querySelector('.message-container');
 const table = document.querySelector('.game-field');
 const rows = table.rows;
 let score = 0;
+let startY;
+let startX;
+let moveY;
+let moveX;
 
 const gameField = [
   [0, 0, 0, 0],
@@ -165,6 +169,10 @@ function moveUpAndDown(key) {
   }
 }
 
+function simulateKeyPress(code) {
+  document.dispatchEvent(new KeyboardEvent('keyup', { 'code': code }));
+}
+
 startButton.addEventListener('click', (e) => {
   if (startButton.classList.contains('start')) {
     startButton.classList.remove('start');
@@ -225,11 +233,6 @@ document.addEventListener('keyup', (key) => {
   }
 });
 
-let startY;
-let startX;
-let moveY;
-let moveX;
-
 table.addEventListener('touchstart', (e) => {
   startY = e.touches[0].clientY;
   startX = e.touches[0].clientX;
@@ -244,45 +247,19 @@ table.addEventListener('touchend', (e) => {
   const endY = Math.abs(startY - moveY);
   const endX = Math.abs(startX - moveX);
 
-  const lose = document.querySelector('.message-lose');
-
-  if (startButton.classList.contains('start')) {
-    return;
-  }
-
-  if (!lose.classList.contains('hidden')) {
-    return;
-  }
-
-  const copyTableGame = JSON.parse(JSON.stringify(gameField));
-
   if ((startY - moveY) < 0 && endY > endX) {
-    moveUpAndDown('ArrowDown');
+    simulateKeyPress('ArrowDown');
   }
 
   if ((startY - moveY) > 0 && endY > endX) {
-    moveUpAndDown('ArrowUp');
+    simulateKeyPress('ArrowUp');
   }
 
   if ((startX - moveX) < 0 && endX > endY) {
-    moveLeftAndRight('ArrowRight');
+    simulateKeyPress('ArrowRight');
   }
 
   if ((startX - moveX) > 0 && endX > endY) {
-    moveLeftAndRight('ArrowLeft');
-  }
-
-  if (JSON.stringify(copyTableGame) === JSON.stringify(gameField)) {
-    return;
-  }
-
-  randomNumber();
-
-  renderGameField();
-
-  const loseStatus = gameOver();
-
-  if (!loseStatus) {
-    changingDivMessage('lose');
+    simulateKeyPress('ArrowLeft');
   }
 });
