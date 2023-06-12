@@ -19,6 +19,7 @@ button.addEventListener('click', () => {
     button.classList.add('restart');
     button.innerText = 'Restart';
     messageStart.classList.add('hidden');
+
     setGame();
     enableEventListeners();
   } else {
@@ -157,11 +158,11 @@ function slideHorizontally(side) {
   for (let row = 0; row < rows; row++) {
     let newRow = [...board[row]];
 
-    if (side === 'ArrowLeft' || side === 'ArrowUp') {
+    if (isMoveLeftOrUp(side)) {
       newRow = slide(newRow);
     }
 
-    if (side === 'ArrowRight' || side === 'ArrowDown') {
+    if (isMoveRightOrDown(side)) {
       newRow.reverse();
       newRow = slide(newRow);
       newRow.reverse();
@@ -176,6 +177,14 @@ function slideHorizontally(side) {
       updateCell(gameCell, num);
     }
   }
+}
+
+function isMoveLeftOrUp(side) {
+  return side === 'ArrowLeft' || side === 'ArrowUp';
+}
+
+function isMoveRightOrDown(side) {
+  return side === 'ArrowRight' || side === 'ArrowDown';
 }
 
 function updateBoard() {
