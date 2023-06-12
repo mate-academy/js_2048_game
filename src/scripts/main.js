@@ -233,21 +233,17 @@ document.addEventListener('keyup', (key) => {
   }
 });
 
-window.addEventListener('touchstart', (e) => {
-  e.preventDefault();
+document.addEventListener('touchstart', (e) => {
   startY = e.touches[0].clientY;
   startX = e.touches[0].clientX;
 });
 
-window.addEventListener('touchmove', (e) => {
-  e.preventDefault();
+document.addEventListener('touchmove', (e) => {
   moveY = e.touches[0].clientY;
   moveX = e.touches[0].clientX;
 });
 
-window.addEventListener('touchend', (e) => {
-  e.preventDefault();
-
+document.addEventListener('touchend', (e) => {
   const endY = Math.abs(startY - moveY);
   const endX = Math.abs(startX - moveX);
 
