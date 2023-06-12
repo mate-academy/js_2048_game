@@ -277,8 +277,12 @@ const eEnd = 'touchend';
 let startX, startY, endX, endY;
 
 document.addEventListener(eStart, e => {
-  startX = e.clientX;
-  startY = e.clientY;
+  if (e.touches.length === 1) {
+    startX = e.clientX;
+    startY = e.clientY;
+  } else {
+    startX = startY = endX = endY = null;
+  }
 });
 
 document.addEventListener(eMove, e => {
@@ -292,19 +296,13 @@ document.addEventListener(eEnd, e => {
   if (Math.abs(endX) > Math.abs(endY)) {
     if (endX < 0) {
       moveLeft();
-    }
-
-    if (endX > 0) {
+    } else {
       moveRight();
     }
-  }
-
-  if (Math.abs(endX) < Math.abs(endY)) {
+  } else {
     if (endY < 0) {
       moveUp();
-    }
-
-    if (endY > 0) {
+    } else {
       moveDown();
     }
   }
