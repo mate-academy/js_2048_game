@@ -45,12 +45,16 @@ function fillGameField(board) {
   }
 }
 
+function gerRandomСoordinate() {
+  return Math.floor(Math.random() * 4);
+}
+
 function addCell(board) {
   let row, col;
 
   do {
-    row = Math.floor(Math.random() * 4);
-    col = Math.floor(Math.random() * 4);
+    row = gerRandomСoordinate();
+    col = gerRandomСoordinate();
   } while (board[row][col]);
 
   board[row][col] = Math.random() < 0.9 ? 2 : 4;
@@ -88,15 +92,15 @@ function stepX(board, reverse = false) {
 }
 
 function stepY(board, reverse = false) {
-  let rotateBoard = board.map((el, i) =>
+  let rotatedBoard = board.map((el, i) =>
     el.map((item, j) => board[j][3 - i])
   );
 
-  rotateBoard = stepX(rotateBoard, reverse);
+  rotatedBoard = stepX(rotatedBoard, reverse);
 
-  rotateBoard.forEach((element, i) => {
+  rotatedBoard.forEach((element, i) => {
     element.forEach((item, j) => {
-      board[i][j] = rotateBoard[3 - j][i];
+      board[i][j] = rotatedBoard[3 - j][i];
     });
   });
 
@@ -113,24 +117,23 @@ function nextCell(board) {
 const keyPress = (e) => {
   e.preventDefault();
 
-  if (e.code === 'ArrowLeft') {
-    fillGameField(stepX(gameField));
-    nextCell(gameField);
-  }
-
-  if (e.code === 'ArrowRight') {
-    fillGameField(stepX(gameField, true));
-    nextCell(gameField);
-  }
-
-  if (e.code === 'ArrowUp') {
-    fillGameField(stepY(gameField));
-    nextCell(gameField);
-  }
-
-  if (e.code === 'ArrowDown') {
-    fillGameField(stepY(gameField, true));
-    nextCell(gameField);
+  switch (e.code) {
+    case 'ArrowLeft':
+      fillGameField(stepX(gameField));
+      nextCell(gameField);
+      break;
+    case 'ArrowRight':
+      fillGameField(stepX(gameField, true));
+      nextCell(gameField);
+      break;
+    case 'ArrowUp':
+      fillGameField(stepY(gameField));
+      nextCell(gameField);
+      break;
+    case 'ArrowDown':
+      fillGameField(stepY(gameField, true));
+      nextCell(gameField);
+      break;
   }
 };
 
@@ -146,7 +149,12 @@ button.addEventListener('click', () => {
     document.removeEventListener('keydown', keyPress);
   }
 
-  gameField = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+  gameField = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
 
   addCell(gameField);
   addCell(gameField);
