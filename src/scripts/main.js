@@ -12,6 +12,7 @@ const gameScore = document.querySelector('.game-score');
 
 const winScore = 2048;
 let score = 0;
+let isGameStarted = false;
 
 let gameBoard = boardInit();
 
@@ -20,11 +21,22 @@ function boardInit() {
     () => Array(gameFieldWidth).fill(0));
 }
 
-function startGame() {
-  messageStart.classList.add('hidden');
-  buttonStart.classList.remove('start');
-  buttonStart.classList.add('restart');
-  buttonStart.innerText = 'Restart';
+buttonStart.addEventListener('click', () => {
+  if (buttonStart.classList.contains('start') && !isGameStarted) {
+    isGameStarted = true;
+
+    messageStart.classList.add('hidden');
+    buttonStart.classList.remove('start');
+    buttonStart.classList.add('restart');
+    buttonStart.innerText = 'Restart';
+  } else if (buttonStart.classList.contains('restart')) {
+    isGameStarted = false;
+    gameScore.innerText = 0;
+    score = 0;
+
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
+  }
 
   resetGameBoard();
   fillRandomCell();
@@ -32,16 +44,7 @@ function startGame() {
   fillBoard();
 
   document.addEventListener('keyup', movesController);
-}
-
-function restartGame() {
-  resetGameBoard();
-  gameScore.innerText = 0;
-  score = 0;
-  startGame();
-  messageWin.classList.add('hidden');
-  messageLose.classList.add('hidden');
-}
+});
 
 function resetGameBoard() {
   gameBoard = boardInit();
@@ -105,7 +108,7 @@ function fillBoard() {
 }
 
 function duplicateGameBoard() {
-  return gameBoard.map((row) => [...row]);
+  return gameBoard.map((row) => row.slice());
 }
 
 function compareArrays(newArr, prevArr) {
@@ -198,6 +201,3 @@ function movesController(e) {
   fillBoard();
   handleWin();
 }
-
-buttonStart.addEventListener('click', startGame);
-buttonStart.addEventListener('click', restartGame);
