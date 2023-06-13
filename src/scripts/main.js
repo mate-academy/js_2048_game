@@ -29,11 +29,16 @@ button.addEventListener('click', () => {
   }
 });
 
+const Directions = {
+  ArrowLeft: 'ArrowLeft',
+  ArrowRight: 'ArrowRight',
+};
+
 function enableEventListeners() {
   document.addEventListener('keyup', (e) => {
     const prevBoard = JSON.stringify(board);
 
-    if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+    if (e.code === Directions.ArrowLeft || e.code === Directions.ArrowRight) {
       slideHorizontally(e.code);
     }
 
@@ -180,11 +185,11 @@ function slideHorizontally(side) {
 }
 
 function isMoveLeftOrUp(side) {
-  return side === 'ArrowLeft' || side === 'ArrowUp';
+  return side === Directions.ArrowLeft || side === 'ArrowUp';
 }
 
 function isMoveRightOrDown(side) {
-  return side === 'ArrowRight' || side === 'ArrowDown';
+  return side === Directions.ArrowRight || side === 'ArrowDown';
 }
 
 function updateBoard() {
