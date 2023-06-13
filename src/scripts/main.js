@@ -174,11 +174,11 @@ function addCells(sacrifice, direction, indexRow) {
 
   function sortCells(array) {
     array.sort((a, b) => {
-      if (a.textContent === '') {
+      if (!a.textContent) {
         return 1;
       }
 
-      if (b.textContent === '') {
+      if (!b.textContent) {
         return -1;
       }
 
@@ -202,10 +202,8 @@ function needAddNewCell(arrayRow, direction) {
     switch (direction) {
       case 'ArrowLeft':
         for (let i = item.children.length - 1; i > 0; i--) {
-          if (item.children[i].textContent
-            && !item.children[i - 1].textContent) {
-            return true;
-          }
+          return item.children[i].textContent
+          && !item.children[i - 1].textContent;
         }
         break;
 
