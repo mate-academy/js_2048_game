@@ -8,6 +8,7 @@ const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 
 let totalScore = 0;
+let gameStatus = false;
 
 button.addEventListener('click', e => {
   e.target.textContent = 'Restart';
@@ -17,6 +18,7 @@ button.addEventListener('click', e => {
   messageWin.classList.add('hidden');
   messageLose.classList.add('hidden');
   score.textContent = 0;
+  gameStatus = true;
 
   clearFields();
   generateRandomField();
@@ -74,6 +76,10 @@ function addRandomField() {
 }
 
 document.addEventListener('keydown', e => {
+  if (!gameStatus) {
+    return;
+  }
+
   const emptyFields = getEmptyFields();
 
   if (emptyFields.length === 0) {
