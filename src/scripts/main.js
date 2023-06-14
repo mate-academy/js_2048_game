@@ -77,7 +77,7 @@ function checkAndAction(check) {
   }
 }
 
-const moveRight = (check) => {
+function moveRight(check) {
   for (let i = 0; i < board.length; i++) {
     board[i] = shiftRowLeft(board[i]).reverse();
   }
@@ -97,9 +97,9 @@ const moveRight = (check) => {
   }
 
   checkAndAction(check);
-};
+}
 
-const moveLeft = (check) => {
+function moveLeft(check) {
   for (let i = 0; i < board.length; i++) {
     board[i] = shiftRowLeft(board[i]);
   }
@@ -119,7 +119,7 @@ const moveLeft = (check) => {
   }
 
   checkAndAction(check);
-};
+}
 
 const moveUp = (check) => {
   for (let i = 0; i < board.length; i++) {
@@ -142,7 +142,7 @@ const moveUp = (check) => {
     newColumn = shiftRowLeft(newColumn);
 
     for (let k = 0; k < newColumn.length; k++) {
-      board[k][i] = newColumn(k);
+      board[k][i] = newColumn[k];
     }
   }
 
@@ -170,7 +170,7 @@ const moveDown = (check) => {
     newColumn = shiftRowLeft(newColumn).reverse();
 
     for (let j = 0; j < newColumn.length; j++) {
-      board[j][i] = newColumn;
+      board[j][i] = newColumn[j];
     }
   }
 
@@ -203,9 +203,11 @@ function checkIfPlayerWon() {
 function handleVictory() {
   messageWin.classList.remove('hidden');
 
-  start
-    .textContent = 'Start'
-      .classList.remove('restart').add('start');
+  start.textContent = 'Start';
+
+  start.classList
+    .remove('restart')
+    .add('start');
 
   started = false;
   messageStart.classList.remove('hidden');
@@ -232,7 +234,7 @@ function freeCell() {
 function goToOldBoard(oldBoard, oldProbabilityCount, oldScore) {
   board = [...oldBoard];
   probabilityCount = oldProbabilityCount;
-  score = oldBoard;
+  score = oldScore;
 }
 
 function checkIfPlayerLose() {
@@ -258,11 +260,15 @@ function checkIfPlayerLose() {
 
     return lose;
   }
+
+  goToOldBoard(temp, tepmProbabilityCount, tempScore);
+
+  return lose;
 }
 
 function showDisplay() {
   for (let i = 0; i < board.length; i++) {
-    const cells = fieldRowAll[i].querySelector('.field-cell');
+    const cells = fieldRowAll[i].querySelectorAll('.field-cell');
 
     for (let j = 0; j < board[i].length; j++) {
       const boardCell = board[i][j];
@@ -271,7 +277,7 @@ function showDisplay() {
       if (boardCell !== 0) {
         cell.textContent = boardCell;
 
-        const addClass = 'field-cell--' + boardCell;
+        const addClass = `field-cell--${boardCell}`;
 
         changeClassCell(cell, addClass);
       } else {
@@ -309,7 +315,8 @@ start.addEventListener('click', ({ target }) => {
 
   if (target.matches('.start')) {
     start.textContent = 'Restart';
-    start.classList.remove('start').add('restart');
+    start.classList.remove('start');
+    start.classList.add('restart');
   }
 });
 
@@ -324,7 +331,7 @@ document.addEventListener('keyup', ({ key }) => {
 
       break;
 
-    case 'ArrowRigth':
+    case 'ArrowRight':
       moveRight();
 
       break;
