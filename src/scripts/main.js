@@ -54,39 +54,35 @@ function setGame() {
   messageWin.classList.add('hidden');
 }
 
-function isBoardFull() {
-  for (let r = 0; r < rowsAmount; r++) {
-    for (let c = 0; c < columnsAmount; c++) {
-      if (board[r][c] === 0) {
-        return false;
+function hasValidMoves() {
+  if (!hasEmptyTile()) {
+    for (let r = 0; r < rowsAmount; r++) {
+      for (let c = 0; c < columnsAmount; c++) {
+        const currentNum = board[r][c];
+
+        if (
+          (r > 0 && board[r - 1][c] === currentNum)
+          || (r < rowsAmount - 1 && board[r + 1][c] === currentNum)
+          || (c > 0 && board[r][c - 1] === currentNum)
+          || (c < columnsAmount - 1 && board[r][c + 1] === currentNum)
+        ) {
+          return true;
+        }
       }
     }
+
+    return false;
   }
 
   return true;
 }
 
-function hasValidMoves() {
-  for (let r = 0; r < rowsAmount; r++) {
-    for (let c = 0; c < columnsAmount; c++) {
-      const currentNum = board[r][c];
-
-      if (
-        (r > 0 && board[r - 1][c] === currentNum)
-        || (r < rowsAmount - 1 && board[r + 1][c] === currentNum)
-        || (c > 0 && board[r][c - 1] === currentNum)
-        || (c < columnsAmount - 1 && board[r][c + 1] === currentNum)
-      ) {
-        return true;
-      }
-
-      if (currentNum === 0) {
-        return true;
-      }
-    }
+function showMessageLose() {
+  if (!hasValidMoves()) {
+    messageLose.classList.remove('hidden');
+  } else {
+    messageLose.classList.add('hidden');
   }
-
-  return false;
 }
 
 function isWinner() {
@@ -191,12 +187,6 @@ function slide(row) {
     newRow.push(0);
   }
 
-  if (isBoardFull()) {
-    messageLose.classList.remove('hidden');
-  } else {
-    messageLose.classList.add('hidden');
-  }
-
   if (isWinner()) {
     messageWin.classList.remove('hidden');
   }
@@ -232,11 +222,13 @@ function slideLeft() {
   }
   replaceZeros();
 
-  if (isBoardFull()) {
+  if (!hasValidMoves()) {
     messageLose.classList.remove('hidden');
   } else {
     messageLose.classList.add('hidden');
   }
+
+  showMessageLose();
 
   if (isWinner()) {
     messageWin.classList.remove('hidden');
@@ -260,11 +252,7 @@ function slideRight() {
   }
   replaceZeros();
 
-  if (isBoardFull()) {
-    messageLose.classList.remove('hidden');
-  } else {
-    messageLose.classList.add('hidden');
-  }
+  showMessageLose();
 
   if (isWinner()) {
     messageWin.classList.remove('hidden');
@@ -289,11 +277,7 @@ function slideUp() {
 
   replaceZeros();
 
-  if (isBoardFull()) {
-    messageLose.classList.remove('hidden');
-  } else {
-    messageLose.classList.add('hidden');
-  }
+  showMessageLose();
 
   if (isWinner()) {
     messageWin.classList.remove('hidden');
@@ -320,11 +304,7 @@ function slideDown() {
 
   replaceZeros();
 
-  if (isBoardFull()) {
-    messageLose.classList.remove('hidden');
-  } else {
-    messageLose.classList.add('hidden');
-  }
+  showMessageLose();
 
   if (isWinner()) {
     messageWin.classList.remove('hidden');
