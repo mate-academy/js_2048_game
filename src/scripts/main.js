@@ -185,88 +185,49 @@ function move(row) {
   return line;
 }
 
-function moveLeft() {
+function moveHorizontal(isReversed) {
   for (let i = 0; i < tableGame.length; i++) {
     let row = tableGame[i];
 
+    isReversed && row.reverse();
     row = move(row);
+    isReversed && row.reverse();
     tableGame[i] = row;
   }
+}
+
+function moveVertical(isReversed) {
+  for (let i = 0; i < tableGame.length; i++) {
+    let row = [
+      tableGame[0][i], tableGame[1][i], tableGame[2][i], tableGame[3][i],
+    ];
+
+    isReversed && row.reverse();
+    row = move(row);
+    isReversed && row.reverse();
+    tableGame[0][i] = row[0];
+    tableGame[1][i] = row[1];
+    tableGame[2][i] = row[2];
+    tableGame[3][i] = row[3];
+  }
+}
+
+function moveLeft() {
+  moveHorizontal();
 }
 
 function moveRight() {
-  for (let i = 0; i < tableGame.length; i++) {
-    let row = tableGame[i];
-
-    row.reverse();
-    row = move(row);
-    row.reverse();
-    tableGame[i] = row;
-  }
+  moveHorizontal(true);
 }
 
 function moveUp() {
-  for (let i = 0; i < tableGame.length; i++) {
-    let row = [
-      tableGame[0][i], tableGame[1][i], tableGame[2][i], tableGame[3][i],
-    ];
-
-    row = move(row);
-    tableGame[0][i] = row[0];
-    tableGame[1][i] = row[1];
-    tableGame[2][i] = row[2];
-    tableGame[3][i] = row[3];
-  }
+  moveVertical();
 }
 
 function moveDown() {
-  for (let i = 0; i < tableGame.length; i++) {
-    let row = [
-      tableGame[0][i], tableGame[1][i], tableGame[2][i], tableGame[3][i],
-    ];
-
-    row.reverse();
-    row = move(row);
-    row.reverse();
-    tableGame[0][i] = row[0];
-    tableGame[1][i] = row[1];
-    tableGame[2][i] = row[2];
-    tableGame[3][i] = row[3];
-  }
+  moveVertical(true);
 }
 
-// function moves(key) {
-//   for (let i = 0; i < tableGame.length; i++) {
-//     let row = tableGame[i];
-
-//     if (key === 'ArrowUp' || key === 'ArrowDown') {
-//       row = [
-//         tableGame[0][i], tableGame[1][i], tableGame[2][i], tableGame[3][i],
-//       ];
-//     }
-
-//     if (key === 'ArrowRight' || key === 'ArrowDown') {
-//       row.reverse();
-//     }
-
-//     row = move(row); // можна навіть прописати код функції move(row) тут
-
-//     if (key === 'ArrowRight' || key === 'ArrowDown') {
-//       row.reverse();
-//     }
-
-//     if (key === 'ArrowLeft' || key === 'ArrowRight') {
-//       tableGame[i] = row;
-//     } else {
-//       tableGame[0][i] = row[0];
-//       tableGame[1][i] = row[1];
-//       tableGame[2][i] = row[2];
-//       tableGame[3][i] = row[3];
-//     }
-//   }
-// }
-
-// for swipe
 function swipe(code) {
   document.dispatchEvent(new KeyboardEvent('keyup', { 'code': code }));
 }
