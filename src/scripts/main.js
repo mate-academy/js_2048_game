@@ -32,6 +32,8 @@ button.addEventListener('click', () => {
 const Directions = {
   ArrowLeft: 'ArrowLeft',
   ArrowRight: 'ArrowRight',
+  ArrowUp: 'ArrowUp',
+  ArrowDown: 'ArrowDown',
 };
 
 function enableEventListeners() {
@@ -42,7 +44,7 @@ function enableEventListeners() {
       slideHorizontally(e.code);
     }
 
-    if (e.code === 'ArrowUp' || e.code === 'ArrowDown') {
+    if (e.code === Directions.ArrowUp || e.code === Directions.ArrowDown) {
       transpose();
       slideHorizontally(e.code);
       transpose();
@@ -185,11 +187,11 @@ function slideHorizontally(side) {
 }
 
 function isMoveLeftOrUp(side) {
-  return side === Directions.ArrowLeft || side === 'ArrowUp';
+  return side === Directions.ArrowLeft || side === Directions.ArrowUp;
 }
 
 function isMoveRightOrDown(side) {
-  return side === Directions.ArrowRight || side === 'ArrowDown';
+  return side === Directions.ArrowRight || side === Directions.ArrowDown;
 }
 
 function updateBoard() {
