@@ -2,12 +2,17 @@
 
 const startButton = document.querySelector('.start');
 const restartButton = document.querySelector('.restart');
-
 const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 
-let board;
+let board = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+
 const rows = 4;
 const columns = 4;
 
@@ -15,21 +20,22 @@ let isMoved = false;
 let gameOver;
 
 let score = 0;
+const winValue = 2048;
 
 document.querySelector('.game-score').innerText = score;
+
+const directions = {
+  Left: 'ArrowLeft',
+  Right: 'ArrowRight',
+  Down: 'ArrowDown',
+  Up: 'ArrowUp',
+};
 
 window.onload = () => (setField());
 
 function setField() {
   isMoved = false;
   gameOver = false;
-
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
 
   for (let row = 0; row < rows; row++) {
     for (let cell = 0; cell < columns; cell++) {
@@ -271,7 +277,7 @@ function checkGameOver() {
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      if (board[r][c] === 2048) {
+      if (board[r][c] === winValue) {
         win = true;
       }
 
@@ -325,19 +331,19 @@ restartButton.addEventListener('click', () => {
 });
 
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft') {
+  if (e.code === directions.Left) {
     slideLeft();
   }
 
-  if (e.code === 'ArrowRight') {
+  if (e.code === directions.Right) {
     slideRight();
   }
 
-  if (e.code === 'ArrowUp') {
+  if (e.code === directions.Up) {
     slideUp();
   }
 
-  if (e.code === 'ArrowDown') {
+  if (e.code === directions.Down) {
     slideDown();
   }
 });
