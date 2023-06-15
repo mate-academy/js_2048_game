@@ -182,14 +182,21 @@ function addCells(sacrifice, direction, indexRow) {
         return -1;
       }
 
-      if (a.textContent === b.textContent) {
+      const aMerged = a.getAttribute('data-merged') === 'true';
+      const bMerged = b.getAttribute('data-merged') === 'true';
+
+      if (a.textContent === b.textContent && !aMerged && !bMerged) {
         a.classList.remove(`field-cell--${a.textContent}`);
         a.textContent = '';
         b.classList.remove(`field-cell--${b.textContent}`);
-        b.textContent *= 2;
+        b.textContent = (parseInt(b.textContent) * 2).toString();
         b.classList.add(`field-cell--${b.textContent}`);
+        b.setAttribute('data-merged', 'true');
         theSameCellsAdded = true;
         gameScore.textContent = +gameScore.textContent + +b.textContent;
+      } else {
+        a.setAttribute('data-merged', 'false');
+        b.setAttribute('data-merged', 'false');
       }
 
       return 0;
