@@ -1,0 +1,79 @@
+.tile {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: #3d2963;
+  background-size: cover;
+  width: $cell-size;
+  height: $cell-size;
+  color: #776e65;
+  user-select: none;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: all 200ms ease-in-out;
+  z-index: 1;
+
+  &--new {
+    animation: appearance 200ms ease 200ms;
+    animation-fill-mode: backwards;
+
+  }
+
+  &--merged {
+    animation: merge 200ms ease 200ms;
+    animation-fill-mode: backwards;
+    z-index: 1;
+  }
+
+  &--hidden {
+    animation: hidden 200ms ease;
+    animation-fill-mode: both;
+  }
+
+  &--2 {
+    background-image: url(../images/2.gif);
+  }
+
+  &--4 {
+    background-image: url(../images/4.gif);
+  }
+
+  &--8 {
+    background-image: url(../images/8.gif);
+  }
+
+  &--16 {
+    background-image: url(../images/16.gif);
+  }
+
+  &--32 {
+    background-image: url(../images/32.gif);
+  }
+
+  &--64 {
+    background-image: url(../images/64.gif);
+  }
+
+  &--128 {
+    background-image: url(../images/128.gif);
+  }
+
+  &--256 {
+    background-image: url(../images/256.gif);
+  }
+
+  &--512 {
+    background-image: url(../images/512.gif);
+  }
+
+  &--1024 {
+    background-image: url(../images/1024.gif);
+  }
+
+  &--2048 {
+    background: #edc22e;
+    color: #f9f6f2;
+  }
+}

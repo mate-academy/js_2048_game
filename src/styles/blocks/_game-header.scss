@@ -1,0 +1,43 @@
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 44px;
+
+  @media (min-width: 600px) {
+    height: 56px;
+  }
+
+  &__button {
+    position: relative;
+    border: none;
+    background-color: #3d2963;
+    border-radius: 5px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 0 15px;
+    font-family: "Rubik", Arial, sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    height: 100%;
+    overflow: hidden;
+
+    transition: 0.3s ease all;
+
+    &:hover {
+      background-color: #d3386a;
+      color: rgba(255, 255, 255, 1);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    @media (min-width: 600px) {
+      padding: 0 20px;
+      font-size: 21px;
+      border-radius: 8px;
+    }
+  }
+}

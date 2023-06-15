@@ -1,0 +1,11 @@
+.page {
+  &__body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    background: #57407c;
+    font-family: "Rubik", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 300;
+  }
+}
