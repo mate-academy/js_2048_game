@@ -8,6 +8,14 @@ let allRows = document.querySelectorAll(`.field-row`);
 let countScore = 0;
 let wasMove = false;
 let restartButton;
+const winGame = 2048;
+
+const Directions = {
+  ArrowLeft: 'ArrowLeft',
+  ArrowRight: 'ArrowRight',
+  ArrowUp: 'ArrowUp',
+  ArrowDown: 'ArrowDown',
+};
 
 start.addEventListener('click', () => {
   reset();
@@ -27,7 +35,7 @@ function listener(e) {
     return elem.innerHTML !== '';
   });
 
-  if (e.code === 'ArrowLeft') {
+  if (e.code === Directions.ArrowLeft) {
     if (!restartButton) {
       restart();
     }
@@ -73,7 +81,7 @@ function listener(e) {
     }
   }
 
-  if (e.code === 'ArrowRight') {
+  if (e.code === Directions.ArrowRight) {
     if (!restartButton) {
       restart();
     }
@@ -121,7 +129,7 @@ function listener(e) {
     }
   }
 
-  if (e.code === 'ArrowUp') {
+  if (e.code === Directions.ArrowUp) {
     if (!restartButton) {
       restart();
     }
@@ -174,7 +182,7 @@ function listener(e) {
     }
   }
 
-  if (e.code === 'ArrowDown') {
+  if (e.code === Directions.ArrowDown) {
     if (!restartButton) {
       restart();
     }
@@ -343,7 +351,7 @@ function checkNewMoves() {
 }
 
 function check2048(num) {
-  if (+num === 2048) {
+  if (+num === winGame) {
     messageWin.classList.remove('hidden');
     document.removeEventListener('keydown', listener);
   }
