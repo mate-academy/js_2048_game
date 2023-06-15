@@ -1,89 +1,93 @@
+$cell-size: 90px;
+$white-color: #f9f6f2;
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #19193a;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: #323a50;
+  width: $cell-size;
+  height: $cell-size;
   border-radius: 5px;
-  color: #776e65;
+  color: #c1b8af;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #a2b8e2;
+    color: $white-color;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #7a96c9;
+    color: $white-color;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #678fd8;
+    color: $white-color;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: #4675ce;
+    color: $white-color;
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    background: #284376;
+    color: $white-color;
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    background: #1d396d;
+    color: $white-color;
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    background: #293a58;
+    color: $white-color;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: #1b3971;
+    color: $white-color;
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    background: #1a2b4d;
+    color: $white-color;
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    background: #19356c;
+    color: $white-color;
   }
 
   &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    background: #011336;
+    color: $white-color;
   }
 }
 
 .game-field {
-  background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
 }
 
 .game-header {
   display: flex;
-  width: 100%;
+  width: 400px;
   justify-content: space-between;
   margin-bottom: 24px;
   padding: 10px;
@@ -91,11 +95,11 @@ body {
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
+  background: #011336;
+  color: $white-color;
+  width: 180px;
+  height: 90px;
+  font-size: 32px;
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -109,13 +113,13 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: #7a96c9;
+  width: $cell-size;
+  height: $cell-size;
   border-radius: 5px;
-  color: #776e65;
+  color: #011336;
   box-sizing: border-box;
-  font-size: 16px;
+  font-size: 18px;
   margin: 0 8px 0 0;
 }
 
@@ -127,38 +131,39 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: $white-color;
   font-family: sans-serif;
   font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
+  font-size: 18px;
+  width: $cell-size;
+  height: $cell-size;
+  outline: none;
 
   transition: 0.25s ease background;
 }
 
 .start {
-  background: #1dae28;
+  background: #577dc4;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: #4364a2;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #243d6b;
 
   &:hover {
-    background: #f87474;
+    background: #1a2b4d;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #7a96c9;
+  color: #011336;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
@@ -171,17 +176,23 @@ h1 {
 
 .container {
   display: flex;
+  box-sizing: border-box;
   flex-direction: column;
   align-items: center;
-  width: 350px;
+  width: 450px;
 }
 
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: #011336;
+  color: $white-color;
 }
 
 .message-container {
-  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+  width: 400px;
   height: 150px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
 }
