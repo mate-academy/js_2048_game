@@ -8,6 +8,7 @@ const winMessage = document.querySelector('.message-win');
 const cells = document.querySelectorAll('.field-cell');
 const cellArr = [ ...cells ];
 const gameScore = document.querySelector('.game-score');
+const finalScore = '2048';
 let freeCells = [];
 let occupiedCells;
 let accessToMoveUp;
@@ -15,6 +16,12 @@ let accessToMoveDown;
 let accessToMoveRight;
 let accessToMoveLeft;
 let scoreNum;
+const Directions = {
+  ArrowUp: 'ArrowUp',
+  ArrowDown: 'ArrowDown',
+  ArrowLeft: 'ArrowLeft',
+  ArrowRight: 'ArrowRight',
+};
 
 function createNewCell() {
   const cellNum = Math.floor(Math.random() * freeCells.length);
@@ -73,7 +80,7 @@ startButton.addEventListener('click', () => {
 
 document.addEventListener('keydown', (e) => {
   occupiedCells.forEach(cell => {
-    if (cell.textContent === '2048') {
+    if (cell.textContent === finalScore) {
       accessToMoveUp = false;
       accessToMoveDown = false;
       accessToMoveRight = false;
@@ -94,7 +101,7 @@ document.addEventListener('keydown', (e) => {
     loseMessage.classList.remove('hidden');
   }
 
-  if (e.key === 'ArrowUp' && accessToMoveUp) {
+  if (e.key === Directions.ArrowUp && accessToMoveUp) {
     let accessNum = 0;
 
     occupiedCells.forEach(cell => {
@@ -153,7 +160,7 @@ document.addEventListener('keydown', (e) => {
     }
   }
 
-  if (e.key === 'ArrowDown' && accessToMoveDown) {
+  if (e.key === Directions.ArrowDown && accessToMoveDown) {
     const rvrsdOccpdCells = [ ...occupiedCells ].reverse();
     let accessNum = 0;
 
@@ -212,7 +219,7 @@ document.addEventListener('keydown', (e) => {
     }
   }
 
-  if (e.key === 'ArrowRight' && accessToMoveRight) {
+  if (e.key === Directions.ArrowRight && accessToMoveRight) {
     const rvrsdOccpdCells = [ ...occupiedCells ].reverse();
     let accessNum = 0;
 
@@ -272,7 +279,7 @@ document.addEventListener('keydown', (e) => {
     }
   }
 
-  if (e.key === 'ArrowLeft' && accessToMoveLeft) {
+  if (e.key === Directions.ArrowLeft && accessToMoveLeft) {
     let accessNum = 0;
 
     occupiedCells.forEach(cell => {
