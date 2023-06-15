@@ -18,11 +18,12 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
-  user-select: none;
+  line-height: 75px;
+  transition: 0.25s ease background;
 
   &--2 {
     background: #eee4da;
+    
   }
 
   &--4 {
@@ -76,14 +77,19 @@ body {
 }
 
 .game-field {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 75px);
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
   background: #bbada0;
-  border-spacing: 10px;
   border-radius: 5px;
 }
 
 .game-header {
   display: flex;
-  width: 100%;
+  width: 110%;
   justify-content: space-between;
   margin-bottom: 24px;
   padding: 10px;
@@ -117,6 +123,12 @@ h1 {
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+
+  &--levels {
+    @media (max-width: 450px) {
+      display: none;
+    }
+  }
 }
 
 .controls {
@@ -135,6 +147,20 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+}
+
+.level {
+  font-size: 14px;
+  background-color: #edc22e;
+  width: 100%;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 0;
+  cursor: pointer;
+}
+
+.selected {
+  border: 3px solid #708090;
 }
 
 .start {
