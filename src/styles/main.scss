@@ -10,6 +10,15 @@ body {
   font-weight: 900;
 }
 
+.tbody-columns {
+  display: flex;
+  gap: 10px;
+}
+
+#new-number {
+  transform: scale(0);
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -20,6 +29,11 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all 0.2s ease;
+
+  &[scale] {
+    transform: scale(1.2);
+  }
 
   &--2 {
     background: #eee4da;
@@ -75,6 +89,19 @@ body {
   }
 }
 
+.field-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  
+
+  & .field-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
@@ -124,6 +151,7 @@ h1 {
 }
 
 .button {
+  outline: none;
   border: none;
   border-radius: 5px;
   cursor: pointer;
