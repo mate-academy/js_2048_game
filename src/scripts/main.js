@@ -8,8 +8,8 @@ const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
 
 const gameSize = 4;
-let score = 0;
 const winScore = 2048;
+let score = 0;
 
 const gameGrid = [
   [0, 0, 0, 0],
@@ -41,8 +41,6 @@ button.addEventListener('click', (e) => {
     });
     resetGame();
     startGame();
-    score = 0;
-    scoreDisplay.textContent = score;
   }
 });
 
@@ -76,7 +74,7 @@ function startGame() {
 }
 
 function renderGameBoard() {
-  let maxNumber = 0;
+  scoreDisplay.textContent = score;
 
   for (let row = 0; row < gameSize; row++) {
     for (let col = 0; col < gameSize; col++) {
@@ -87,10 +85,6 @@ function renderGameBoard() {
 
       if (cellValue !== 0) {
         cell.classList.add(`cell-${cellValue}`);
-
-        if (cellValue > maxNumber) {
-          maxNumber = cellValue;
-        }
       } else {
         cell.classList.remove(`cell-${winScore}`);
       }
@@ -103,22 +97,22 @@ function renderGameBoard() {
       }
     }
   }
-  score = maxNumber;
-  scoreDisplay.textContent = score;
 }
 
 function resetGame() {
   gameGrid.forEach((row, rowIndex) => {
     row.fill(0);
   });
+
   score = 0;
-  scoreDisplay.textContent = score;
+
+  renderGameBoard();
+  setRandomCell();
+  setRandomCell();
 
   messages.forEach((message) => {
     message.style.display = 'none';
   });
-
-  renderGameBoard();
 }
 
 function setRandomCell() {
@@ -176,6 +170,12 @@ function canMove() {
   return false;
 }
 
+function mergeTiles(row, col, newRow, newCol) {
+  gameGrid[newRow][newCol] += gameGrid[row][col];
+  score += gameGrid[newRow][newCol];
+  gameGrid[row][col] = 0;
+}
+
 function moveUp() {
   let moved = false;
 
@@ -192,9 +192,7 @@ function moveUp() {
         }
 
         if (newRow > 0 && gameGrid[newRow - 1][col] === gameGrid[newRow][col]) {
-          gameGrid[newRow - 1][col] *= 2;
-          score += gameGrid[newRow - 1][col];
-          gameGrid[newRow][col] = 0;
+          mergeTiles(newRow, col, newRow - 1, col);
           moved = true;
         }
       }
@@ -224,9 +222,7 @@ function moveDown() {
 
         if (newRow < gameSize - 1
           && gameGrid[newRow + 1][col] === gameGrid[newRow][col]) {
-          gameGrid[newRow + 1][col] *= 2;
-          score += gameGrid[newRow + 1][col];
-          gameGrid[newRow][col] = 0;
+          mergeTiles(newRow, col, newRow + 1, col);
           moved = true;
         }
       }
@@ -255,9 +251,7 @@ function moveLeft() {
         }
 
         if (newCol > 0 && gameGrid[row][newCol - 1] === gameGrid[row][newCol]) {
-          gameGrid[row][newCol - 1] *= 2;
-          score += gameGrid[row][newCol - 1];
-          gameGrid[row][newCol] = 0;
+          mergeTiles(row, newCol, row, newCol - 1);
           moved = true;
         }
       }
@@ -287,9 +281,7 @@ function moveRight() {
 
         if (newCol < gameSize - 1
           && gameGrid[row][newCol + 1] === gameGrid[row][newCol]) {
-          gameGrid[row][newCol + 1] *= 2;
-          score += gameGrid[row][newCol + 1];
-          gameGrid[row][newCol] = 0;
+          mergeTiles(row, newCol, row, newCol + 1);
           moved = true;
         }
       }
