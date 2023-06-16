@@ -24,6 +24,7 @@ const directions = {
   ArrowRight: 'ArrowRight',
 };
 const finalResult = 2048;
+let curScore = 0;
 
 startButton.addEventListener('click', () => {
   if (startButton.classList.contains('start')) {
@@ -35,6 +36,8 @@ startButton.addEventListener('click', () => {
     [...gameField].forEach((field, i) => {
       fields[i] = field.innerText;
     });
+
+    generateFirst(fields);
   } else if (startButton.classList.contains('restart')) {
     gameField.forEach(field => {
       field.innerText = '';
@@ -44,7 +47,11 @@ startButton.addEventListener('click', () => {
     for (let i = 0; i < 16; i++) {
       fields[i] = '';
     }
+
+    generateFirst(fields);
+
     score.innerHTML = 0;
+    curScore = 0;
     loseMessage.classList.add('hidden');
     winMessage.classList.add('hidden');
   }
@@ -56,19 +63,19 @@ document.addEventListener('keydown', event => {
     && winMessage.classList.contains('hidden')) {
     switch (event.key) {
       case directions.ArrowUp:
-        upArrow(fields);
+        move(directions.ArrowUp, fields);
         rematch(fields);
         break;
       case directions.ArrowDown:
-        downArrow(fields);
+        move(directions.ArrowDown, fields);
         rematch(fields);
         break;
       case directions.ArrowLeft:
-        leftArrow(fields);
+        move(directions.ArrowLeft, fields);
         rematch(fields);
         break;
       case directions.ArrowRight:
-        rightArrow(fields);
+        move(directions.ArrowRight, fields);
         rematch(fields);
         break;
       default:
@@ -81,13 +88,15 @@ document.addEventListener('keydown', event => {
           .entries(fields)
           .filter(x => x[1] === '')));
 
-    const randomField = freeFields.random();
-    const addedNumber = Math.random() >= 0.1
-      ? 2
-      : 4;
+    if (freeFields.length > 0) {
+      const randomField = freeFields.random();
+      const addedNumber = Math.random() >= 0.1
+        ? 2
+        : 4;
 
-    fields[randomField] = addedNumber;
-    gameField[+randomField].textContent = addedNumber;
+      fields[randomField] = addedNumber;
+      gameField[+randomField].textContent = addedNumber;
+    }
 
     freeFields = Object
       .keys(Object
@@ -97,7 +106,7 @@ document.addEventListener('keydown', event => {
 
     paint(gameField);
 
-    score.innerHTML = Object.values(fields).reduce((a, b) => +a + +b);
+    score.innerHTML = curScore;
 
     const isLose = lose(fields);
 
@@ -133,227 +142,195 @@ const checkWin = (object) => {
   return values.some(value => value === finalResult);
 };
 
-const upArrow = (fields) => {
-  for (let i = 4; i <= 7; i++) {
-    if (fields[i] === fields[i - 4] && checkField(fields[i])) {
-      fields[i - 4] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i - 4] === '') {
-      fields[i - 4] = fields[i];
-      fields[i] = '';
-    }
+const move = (direction, object) => {
+  const cycles = {
+    i: 0,
+    limit() {
+      return this.i <= 0;
+    },
+    increment: 1,
+    indexFirst: 0,
+    indexSecond: 0,
+    indexThird: 0,
+  };
+
+  const firstCycle = {};
+  const secondCycle = {};
+  const thirdCycle = {};
+
+  Object.setPrototypeOf(firstCycle, cycles);
+  Object.setPrototypeOf(secondCycle, cycles);
+  Object.setPrototypeOf(thirdCycle, cycles);
+
+  switch (direction) {
+    case directions.ArrowUp:
+      cycles.increment = 1;
+      cycles.indexFirst = -4;
+      cycles.indexSecond = -8;
+      cycles.indexThird = -12;
+
+      firstCycle.i = 4;
+
+      firstCycle.limit = function() {
+        return this.i <= 7;
+      };
+
+      secondCycle.i = 8;
+
+      secondCycle.limit = function() {
+        return this.i <= 11;
+      };
+
+      thirdCycle.i = 12;
+
+      thirdCycle.limit = function() {
+        return this.i <= 15;
+      };
+      break;
+    case directions.ArrowDown:
+      cycles.increment = -1;
+      cycles.indexFirst = 4;
+      cycles.indexSecond = 8;
+      cycles.indexThird = 12;
+
+      firstCycle.i = 11;
+
+      firstCycle.limit = function() {
+        return this.i >= 8;
+      };
+
+      secondCycle.i = 7;
+
+      secondCycle.limit = function() {
+        return this.i >= 4;
+      };
+
+      thirdCycle.i = 3;
+
+      thirdCycle.limit = function() {
+        return this.i >= 0;
+      };
+      break;
+    case directions.ArrowLeft:
+      cycles.increment = 4;
+      cycles.indexFirst = -1;
+      cycles.indexSecond = -2;
+      cycles.indexThird = -3;
+
+      firstCycle.i = 1;
+
+      firstCycle.limit = function() {
+        return this.i <= 13;
+      };
+
+      secondCycle.i = 2;
+
+      secondCycle.limit = function() {
+        return this.i <= 14;
+      };
+
+      thirdCycle.i = 3;
+
+      thirdCycle.limit = function() {
+        return this.i <= 15;
+      };
+      break;
+    case directions.ArrowRight:
+      cycles.increment = 4;
+      cycles.indexFirst = 1;
+      cycles.indexSecond = 2;
+      cycles.indexThird = 3;
+
+      firstCycle.i = 2;
+
+      firstCycle.limit = function() {
+        return this.i <= 14;
+      };
+
+      secondCycle.i = 1;
+
+      secondCycle.limit = function() {
+        return this.i <= 13;
+      };
+
+      thirdCycle.i = 0;
+
+      thirdCycle.limit = function() {
+        return this.i <= 12;
+      };
+      break;
   }
 
-  for (let i = 8; i <= 11; i++) {
-    if (fields[i] === fields[i - 4] && checkField(fields[i])) {
-      fields[i - 4] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i - 4] === '') {
-      if (fields[i - 8] === fields[i] && checkField(fields[i])) {
-        fields[i - 8] = Number(fields[i]) * 2;
-        fields[i] = '';
-      } else if (fields[i - 8] === '') {
-        fields[i - 8] = fields[i];
-        fields[i] = '';
+  for (let i = firstCycle.i; firstCycle.limit(); i += firstCycle.increment) {
+    if (object[i] === object[i + firstCycle.indexFirst]
+        && checkField(object[i])) {
+      object[i + firstCycle.indexFirst] = newNumber(object[i]);
+      curScore += newNumber(object[i]);
+      object[i] = '';
+    } else if (object[i + firstCycle.indexFirst] === '') {
+      object[i + firstCycle.indexFirst] = object[i];
+      object[i] = '';
+    }
+
+    firstCycle.i += firstCycle.increment;
+  }
+
+  for (let i = secondCycle.i; secondCycle.limit(); i += secondCycle.increment) {
+    if (object[i] === object[i + secondCycle.indexFirst]
+        && checkField(object[i])) {
+      object[i + secondCycle.indexFirst] = newNumber(object[i]);
+      curScore += newNumber(object[i]);
+      object[i] = '';
+    } else if (object[i + secondCycle.indexFirst] === '') {
+      if (object[i + secondCycle.indexSecond] === object[i]
+          && checkField(object[i])) {
+        object[i + secondCycle.indexSecond] = newNumber(object[i]);
+        curScore += newNumber(object[i]);
+        object[i] = '';
+      } else if (object[i + secondCycle.indexSecond] === '') {
+        object[i + secondCycle.indexSecond] = object[i];
+        object[i] = '';
       } else {
-        fields[i - 4] = fields[i];
-        fields[i] = '';
+        object[i + secondCycle.indexFirst] = object[i];
+        object[i] = '';
       }
     }
+
+    secondCycle.i += secondCycle.increment;
   }
 
-  for (let i = 12; i <= 15; i++) {
-    if (fields[i] === fields[i - 4] && checkField(fields[i])) {
-      fields[i - 4] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i - 4] === '') {
-      if (fields[i - 8] === fields[i] && checkField(fields[i])) {
-        fields[i - 8] = Number(fields[i]) * 2;
-        fields[i] = '';
-      } else if (fields[i - 8] === '') {
-        if (fields[i - 12] === fields[i] && checkField(fields[i])) {
-          fields[i - 12] = Number(fields[i]) * 2;
-          fields[i] = '';
-        } else if (fields[i - 12] === '') {
-          fields[i - 12] = fields[i];
-          fields[i] = '';
+  for (let i = thirdCycle.i; thirdCycle.limit(); i += thirdCycle.increment) {
+    if (object[i] === object[i + thirdCycle.indexFirst]
+        && checkField(object[i])) {
+      object[i + thirdCycle.indexFirst] = newNumber(object[i]);
+      curScore += newNumber(object[i]);
+      object[i] = '';
+    } else if (object[i + thirdCycle.indexFirst] === '') {
+      if (object[i + thirdCycle.indexSecond] === object[i]
+          && checkField(object[i])) {
+        object[i + thirdCycle.indexSecond] = newNumber(object[i]);
+        curScore += newNumber(object[i]);
+        object[i] = '';
+      } else if (object[i + thirdCycle.indexSecond] === '') {
+        if (object[i + thirdCycle.indexThird] === object[i]
+            && checkField(object[i])) {
+          object[i + thirdCycle.indexThird] = newNumber(object[i]);
+          curScore += newNumber(object[i]);
+          object[i] = '';
+        } else if (object[i + thirdCycle.indexThird] === '') {
+          object[i + thirdCycle.indexThird] = object[i];
+          object[i] = '';
         } else {
-          fields[i - 8] = fields[i];
-          fields[i] = '';
+          object[i + thirdCycle.indexSecond] = object[i];
+          object[i] = '';
         }
       } else {
-        fields[i - 4] = fields[i];
-        fields[i] = '';
+        object[i + thirdCycle.indexFirst] = object[i];
+        object[i] = '';
       }
     }
-  }
-};
 
-const downArrow = (fields) => {
-  for (let i = 11; i >= 8; i--) {
-    if (fields[i] === fields[i + 4] && checkField(fields[i])) {
-      fields[i + 4] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i + 4] === '') {
-      fields[i + 4] = fields[i];
-      fields[i] = '';
-    }
-  }
-
-  for (let i = 7; i >= 4; i--) {
-    if (fields[i] === fields[i + 4] && checkField(fields[i])) {
-      fields[i + 4] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i + 4] === '') {
-      if (fields[i + 8] === fields[i] && checkField(fields[i])) {
-        fields[i + 8] = Number(fields[i]) * 2;
-        fields[i] = '';
-      } else if (fields[i + 8] === '') {
-        fields[i + 8] = fields[i];
-        fields[i] = '';
-      } else {
-        fields[i + 4] = fields[i];
-        fields[i] = '';
-      }
-    }
-  }
-
-  for (let i = 3; i >= 0; i--) {
-    if (fields[i] === fields[i + 4] && checkField(fields[i])) {
-      fields[i + 4] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i + 4] === '') {
-      if (fields[i + 8] === fields[i] && checkField(fields[i])) {
-        fields[i + 8] = Number(fields[i]) * 2;
-        fields[i] = '';
-      } else if (fields[i + 8] === '') {
-        if (fields[i + 12] === fields[i] && checkField(fields[i])) {
-          fields[i + 12] = Number(fields[i]) * 2;
-          fields[i] = '';
-        } else if (fields[i + 12] === '') {
-          fields[i + 12] = fields[i];
-          fields[i] = '';
-        } else {
-          fields[i + 8] = fields[i];
-          fields[i] = '';
-        }
-      } else {
-        fields[i + 4] = fields[i];
-        fields[i] = '';
-      }
-    }
-  }
-};
-
-const leftArrow = (fields) => {
-  for (let i = 1; i <= 13; i += 4) {
-    if (fields[i] === fields[i - 1] && checkField(fields[i])) {
-      fields[i - 1] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i - 1] === '') {
-      fields[i - 1] = fields[i];
-      fields[i] = '';
-    }
-  }
-
-  for (let i = 2; i <= 14; i += 4) {
-    if (fields[i] === fields[i - 1] && checkField(fields[i])) {
-      fields[i - 1] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i - 1] === '') {
-      if (fields[i - 2] === fields[i] && checkField(fields[i])) {
-        fields[i - 2] = Number(fields[i]) * 2;
-        fields[i] = '';
-      } else if (fields[i - 2] === '') {
-        fields[i - 2] = fields[i];
-        fields[i] = '';
-      } else {
-        fields[i - 1] = fields[i];
-        fields[i] = '';
-      }
-    }
-  }
-
-  for (let i = 3; i <= 15; i += 4) {
-    if (fields[i] === fields[i - 1] && checkField(fields[i])) {
-      fields[i - 1] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i - 1] === '') {
-      if (fields[i - 2] === fields[i] && checkField(fields[i])) {
-        fields[i - 2] = Number(fields[i]) * 2;
-        fields[i] = '';
-      } else if (fields[i - 2] === '') {
-        if (fields[i - 3] === fields[i] && checkField(fields[i])) {
-          fields[i - 3] = Number(fields[i]) * 2;
-          fields[i] = '';
-        } else if (fields[i - 3] === '') {
-          fields[i - 3] = fields[i];
-          fields[i] = '';
-        } else {
-          fields[i - 2] = fields[i];
-          fields[i] = '';
-        }
-      } else {
-        fields[i - 1] = fields[i];
-        fields[i] = '';
-      }
-    }
-  }
-};
-
-const rightArrow = (fields) => {
-  for (let i = 2; i <= 14; i += 4) {
-    if (fields[i] === fields[i + 1] && checkField(fields[i])) {
-      fields[i + 1] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i + 1] === '') {
-      fields[i + 1] = fields[i];
-      fields[i] = '';
-    }
-  }
-
-  for (let i = 1; i <= 13; i += 4) {
-    if (fields[i] === fields[i + 1] && checkField(fields[i])) {
-      fields[i + 1] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i + 1] === '') {
-      if (fields[i + 2] === fields[i] && checkField(fields[i])) {
-        fields[i + 2] = Number(fields[i]) * 2;
-        fields[i] = '';
-      } else if (fields[i + 2] === '') {
-        fields[i + 2] = fields[i];
-        fields[i] = '';
-      } else {
-        fields[i + 1] = fields[i];
-        fields[i] = '';
-      }
-    }
-  }
-
-  for (let i = 0; i <= 12; i += 4) {
-    if (fields[i] === fields[i + 1] && checkField(fields[i])) {
-      fields[i + 1] = Number(fields[i]) * 2;
-      fields[i] = '';
-    } else if (fields[i + 1] === '') {
-      if (fields[i + 2] === fields[i] && checkField(fields[i])) {
-        fields[i + 2] = Number(fields[i]) * 2;
-        fields[i] = '';
-      } else if (fields[i + 2] === '') {
-        if (fields[i + 3] === fields[i] && checkField(fields[i])) {
-          fields[i + 3] = Number(fields[i]) * 2;
-          fields[i] = '';
-        } else if (fields[i + 3] === '') {
-          fields[i + 3] = fields[i];
-          fields[i] = '';
-        } else {
-          fields[i + 2] = fields[i];
-          fields[i] = '';
-        }
-      } else {
-        fields[i + 1] = fields[i];
-        fields[i] = '';
-      }
-    }
+    thirdCycle.i += thirdCycle.increment;
   }
 };
 
@@ -416,3 +393,30 @@ const paint = (gameField) => {
     }
   });
 };
+
+const generateFirst = (object) => {
+  const keys = Object.keys(object);
+  const firstRandomField = keys.random();
+
+  keys.splice(firstRandomField, 1);
+
+  const secondRandomField = keys.random();
+
+  const addedNumber = () => {
+    return Math.random() >= 0.1
+      ? 2
+      : 4;
+  };
+
+  const first = addedNumber();
+  const second = addedNumber();
+
+  fields[firstRandomField] = first;
+  fields[secondRandomField] = second;
+  gameField[+firstRandomField].textContent = first;
+  gameField[+secondRandomField].textContent = second;
+
+  paint(gameField);
+};
+
+const newNumber = (str) => Number(str) * 2;
