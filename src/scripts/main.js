@@ -3,6 +3,7 @@
 const startButton = document.querySelector('.start');
 const fieldCellList = document.querySelectorAll('.field-cell');
 const fieldRowList = document.querySelectorAll('.field-row');
+const gameScore = document.querySelector('.game-score');
 
 function startTheGame() {
   startButton.addEventListener('click', () => {
@@ -21,42 +22,19 @@ function startTheGame() {
         item.textContent = '';
       }
     }
+
+    if (startButton.textContent === 'Start') {
+      gameScore.textContent = 0;
+    }
   });
 }
 
 function loseGame() {
-  const checkEmpty = [...fieldCellList].find(
-    (empty) => empty.textContent.length === 0);
-  let chekRow = false;
-  let chekCol = false;
+  const result = '';
+}
 
-  function callbackRow(row) {
-    for (let i = 0; i < row.length - 2; i++) {
-      if (row[i] === row[i + 1]) {
-        return true;
-      }
-    }
-  }
+function score() {
 
-  function callbackColumn() {
-    for (let indexCol = 0; indexCol < 4; indexCol++) {
-      for (let indexRow = 0; indexRow < 3; indexRow++) {
-        // eslint-disable-next-line max-len
-        if (fieldRowList[indexCol].children[indexRow] === fieldRowList[indexCol].children[indexRow + 1]) {
-          return true;
-        }
-      }
-    }
-  }
-
-  if (checkEmpty === false) {
-    chekRow = [...fieldRowList].some(callbackRow);
-    chekCol = callbackColumn(fieldRowList);
-
-    if (chekRow === true || chekCol === true) {
-      return true;
-    }
-  }
 }
 
 function emptyFieldNumber() {
@@ -75,9 +53,14 @@ function emptyFieldNumber() {
   }
 };
 
+
 function fieldCellAdder() {
   document.body.addEventListener('keydown', (e) => {
     const key = e.key;
+
+    if (startButton.textContent === 'Start') {
+      return;
+    }
 
     switch (key) {
       case 'ArrowLeft':
@@ -104,16 +87,11 @@ function fieldCellAdder() {
         const resultArray = [];
 
         [...currentRow.children].map((child) => {
-          // console.log(child.textContent);
-
           if (child.textContent.length !== 0) {
             resultArray.push(+child.textContent);
-            // console.log(resultArray);
             child.textContent = '';
           }
         });
-
-        // debugger;
 
         for (let x = 0; x < resultArray.length - 1; x++) {
           if (resultArray[x + 1] === undefined) {
@@ -122,19 +100,15 @@ function fieldCellAdder() {
 
           if (resultArray[x] === resultArray[x + 1]) {
             resultArray[x] = resultArray[x] * 2;
+            gameScore.textContent = +gameScore.textContent + resultArray[x];
 
             resultArray.splice((x + 1), 1);
             x = 0;
-
-            console.log(resultArray.length);
-            console.log(resultArray);
-            // continue;
           }
         };
 
         for (let index = 0; index < resultArray.length; index++) {
           currentRow.children[index].textContent = resultArray[index];
-          console.log(`field-cell--${currentRow.children[index].textContent}`);
         }
 
         resultArray.splice();
@@ -142,23 +116,16 @@ function fieldCellAdder() {
     }
 
     function ArrowRight() {
-      // debugger;
-
       for (let i = 0; i < 4; i++) {
         const currentRow = fieldRowList[i];
         const resultArray = [];
 
         [...currentRow.children].map((child) => {
-          // console.log(child.textContent);
-
           if (child.textContent.length !== 0) {
             resultArray.push(+child.textContent);
-            // console.log(resultArray);
             child.textContent = '';
           }
         });
-
-        // debugger;
 
         for (let x = resultArray.length - 1; x >= 0; x--) {
           if (resultArray[x - 1] === undefined) {
@@ -167,23 +134,18 @@ function fieldCellAdder() {
 
           if (resultArray[x] === resultArray[x - 1]) {
             resultArray[x] = resultArray[x] * 2;
+            gameScore.textContent = +gameScore.textContent + resultArray[x];
 
             resultArray.splice((x - 1), 1);
             x = 0;
-
-            console.log(resultArray.length);
-            console.log(resultArray);
-            // continue;
           }
         };
-        // debugger;
 
         let indexField = 3;
 
         for (let index = resultArray.length - 1; index >= 0; index--) {
           currentRow.children[indexField].textContent = resultArray[index];
           indexField = indexField - 1;
-          // currentRow.children[index].classList.add
         }
 
         resultArray.splice();
@@ -195,16 +157,10 @@ function fieldCellAdder() {
         const resultArray = [];
 
         for (let y = 0; y < 4; y++) {
-          const currentRow = fieldRowList[y];
           const currentChild = fieldRowList[y].children[i];
-
-          console.log(currentChild);
-
-          console.log(currentChild.textContent);
 
           if (currentChild.textContent.length !== 0) {
             resultArray.push(+currentChild.textContent);
-            // console.log(resultArray);
             currentChild.textContent = '';
           }
         };
@@ -216,35 +172,26 @@ function fieldCellAdder() {
 
           if (resultArray[x] === resultArray[x - 1]) {
             resultArray[x] = resultArray[x] * 2;
+            gameScore.textContent = +gameScore.textContent + resultArray[x];
 
             resultArray.splice((x - 1), 1);
             x = 0;
-
-            console.log(resultArray.length);
-            console.log(resultArray);
-            // continue;
           }
         };
 
         for (let index = 0; index < resultArray.length; index++) {
           fieldRowList[index].children[i].textContent = resultArray[index];
-          // currentRow.children[index].classList.add
         }
 
         resultArray.splice();
       }
-      // debugger;
-      // debugger;
     }
 
     function ArrowDown() {
-      // debugger;
-
       for (let i = 0; i < 4; i++) {
         const resultArray = [];
 
         for (let y = 0; y < 4; y++) {
-          const currentRow = fieldRowList[y];
           const currentChild = fieldRowList[y].children[i];
 
           if (currentChild.textContent.length !== 0) {
@@ -260,6 +207,7 @@ function fieldCellAdder() {
 
           if (resultArray[x] === resultArray[x - 1]) {
             resultArray[x] = resultArray[x] * 2;
+            gameScore.textContent = +gameScore.textContent + resultArray[x];
 
             resultArray.splice((x - 1), 1);
             x = 0;
@@ -271,12 +219,10 @@ function fieldCellAdder() {
         for (let index = 3; index > 0; index--) {
           fieldRowList[index].children[i].textContent = resultArray[indexField];
           indexField = indexField - 1;
-          // currentRow.children[index].classList.add
         }
 
         resultArray.splice();
       }
-      // debugger;
     }
 
     function ColorField() {
