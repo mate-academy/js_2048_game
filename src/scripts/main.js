@@ -7,6 +7,11 @@ const startMessage = document.querySelector('.message-start');
 const winMassage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 
+const ArrowLeft = 'ArrowLeft';
+const ArrowRight = 'ArrowRight';
+const ArrowUp = 'ArrowUp';
+const ArrowDown = 'ArrowDown';
+
 let gameStatus;
 let board;
 let score = 0;
@@ -115,22 +120,22 @@ document.addEventListener('keydown', (e) => {
   }
 
   switch (e.code) {
-    case 'ArrowLeft':
+    case ArrowLeft:
       moveLeft();
       generateRandomTile();
       break;
 
-    case 'ArrowRight':
+    case ArrowRight:
       moveRight();
       generateRandomTile();
       break;
 
-    case 'ArrowUp':
+    case ArrowUp:
       moveUp();
       generateRandomTile();
       break;
 
-    case 'ArrowDown':
+    case ArrowDown:
       moveDown();
       generateRandomTile();
       break;
@@ -201,11 +206,11 @@ function moveRight() {
 
 function moveUp() {
   for (let y = 0; y < maxColumns; y++) {
-    const row = [board[0][y], board[1][y], board[2][y], board[3][y]];
-    const movingRow = move(row);
+    const column = [board[0][y], board[1][y], board[2][y], board[3][y]];
+    const movingColumn = move(column);
 
     for (let x = 0; x < maxRows; x++) {
-      board[x][y] = movingRow[x];
+      board[x][y] = movingColumn[x];
 
       const tile = document.getElementById(`${x}-${y}`);
       const value = board[x][y];
