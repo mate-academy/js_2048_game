@@ -1,9 +1,9 @@
 'use strict';
 
 const startButton = document.querySelector('.start');
-const startMsg = document.querySelector('.message-start');
-const winMsg = document.querySelector('.message-win');
-const loseMsg = document.querySelector('.message-lose');
+const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
 const cells = document.querySelectorAll('.field-cell');
 const gameScore = document.querySelector('.game-score');
 
@@ -134,7 +134,7 @@ function moveCommands(command) {
           moved = true;
 
           if (gameBoard[newRow][newCol] === 2048) {
-            winMsg.classList.remove('hidden');
+            winMessage.classList.remove('hidden');
           }
           break;
         } else {
@@ -196,13 +196,13 @@ function moveCommands(command) {
     refreshBoard();
 
     if (ifLooser()) {
-      loseMsg.classList.remove('hidden');
+      loseMessage.classList.remove('hidden');
       startButton.classList.replace('restart', 'start');
       startButton.innerHTML = 'Restart';
     }
 
     if (ifWinner()) {
-      winMsg.classList.remove('hidden');
+      winMessage.classList.remove('hidden');
     }
   }
 }
@@ -215,8 +215,8 @@ startButton.addEventListener('click', (e) => {
   updateScore(0);
 
   startButton.classList.replace('start', 'restart');
-  startButton.innerHTML = 'Start';
-  startMsg.classList.add('hidden');
+  startButton.innerHTML = 'Restart';
+  startMessage.classList.add('hidden');
 });
 
 document.addEventListener('keydown', (e) => {
