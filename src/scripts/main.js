@@ -7,19 +7,17 @@ const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 
-let defaultBoard = [
+const defaultBoard = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
+
+let board = [];
 let probabilityCount = 0;
 let score = 0;
 let started = false;
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
-};
 
 function createNewCell() {
   if (!freeCell()) {
@@ -30,39 +28,36 @@ function createNewCell() {
     return;
   }
 
-  let row = 0;
-  let cell = 0;
+  const [row, cell] = getRandomEmptyCell();
+  const value = Math.random() < 0.9 ? 2 : 4;
 
-  while (true) {
-    row = getRandomInt(4);
-    cell = getRandomInt(4);
+  board[row][cell] = value;
+}
 
-    if (defaultBoard[row][cell] === 0) {
-      if (probabilityCount < 10) {
-        defaultBoard[row][cell] = 2;
-        probabilityCount++;
-      } else {
-        defaultBoard[row][cell] = 4;
-        probabilityCount = 0;
+function getRandomEmptyCell() {
+  const emptyCells = [];
+
+  board.forEach((row, rowIndex) => {
+    row.forEach((cell, cellIndex) => {
+      if (cell === 0) {
+        emptyCells.push([rowIndex, cellIndex]);
       }
+    });
+  });
 
-      return;
-    }
-  }
+  const randomIndex = getRandomInt(emptyCells.length);
+
+  return emptyCells[randomIndex];
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
 }
 
 function shiftRowLeft(row) {
-  const newRow = [];
+  const newRow = row.filter(element => element !== 0);
 
-  for (let i = 0; i < row.length; i++) {
-    const element = row[i];
-
-    if (element !== 0) {
-      newRow.push(element);
-    }
-  }
-
-  for (let i = newRow.length; i < row.length; i++) {
+  while (newRow.length < row.length) {
     newRow.push(0);
   }
 
@@ -78,67 +73,67 @@ function checkAndAction(check) {
 }
 
 function moveRight(check) {
-  defaultBoard.forEach((row, i) => {
-    defaultBoard[i] = shiftRowLeft(row).reverse();
+  board.forEach((row, i) => {
+    board[i] = shiftRowLeft(row).reverse();
   });
 
-  defaultBoard.forEach((row) => {
-    row.forEach((value, j) => {
-      if (value === row[j + 1]) {
-        row[j] = 0;
-        row[j + 1] *= 2;
-        score += row[j + 1];
+  board.forEach((row, i) => {
+    row.forEach((_, j) => {
+      if (row[j - 1] === row[j]) {
+        row[j - 1] = 0;
+        row[j] *= 2;
+        score += row[j];
       }
     });
   });
 
-  defaultBoard.forEach((row, i) => {
-    defaultBoard[i] = shiftRowLeft(row).reverse();
+  board.forEach((row, i) => {
+    board[i] = shiftRowLeft(row).reverse();
   });
 
   checkAndAction(check);
 }
 
 function moveLeft(check) {
-  defaultBoard.forEach((row, i) => {
-    defaultBoard[i] = shiftRowLeft(row);
+  board.forEach((row, i) => {
+    board[i] = shiftRowLeft(row);
   });
 
-  defaultBoard.forEach((row) => {
-    row.forEach((value, j) => {
-      if (value === row[j + 1]) {
-        row[j] = row[j] * 2;
-        row[j + 1] = 0;
-        score += row[j];
+  board.forEach((row, i) => {
+    row.forEach((_, j) => {
+      if (row[j - 1] === row[j]) {
+        row[j - 1] *= 2;
+        row[j] = 0;
+        score += row[j - 1];
       }
     });
   });
 
-  defaultBoard.forEach((row, i) => {
-    defaultBoard[i] = shiftRowLeft(row);
+  board.forEach((row, i) => {
+    board[i] = shiftRowLeft(row);
   });
 
   checkAndAction(check);
 }
 
 const moveUp = (check) => {
-  defaultBoard.forEach((column, i) => {
-    let newColumn = column.map((value) => value);
+  board.forEach((row, i) => {
+    let newColumn = row.map((_, j) => board[j][i]);
 
     newColumn = shiftRowLeft(newColumn);
 
-    newColumn.forEach((value, el) => {
-      if (value === newColumn[el + 1]) {
-        newColumn[el] = newColumn[el] * 2;
-        newColumn[el + 1] = 0;
-        score += newColumn[el];
+    newColumn.forEach((el, index) => {
+      if (newColumn[index - 1] === el) {
+        newColumn[index - 1] *= 2;
+        newColumn[index] = 0;
+        score += newColumn[index - 1];
       }
     });
 
     newColumn = shiftRowLeft(newColumn);
 
     newColumn.forEach((value, k) => {
-      defaultBoard[k][i] = value;
+      board[k][i] = value;
     });
   });
 
@@ -146,23 +141,23 @@ const moveUp = (check) => {
 };
 
 const moveDown = (check) => {
-  defaultBoard.forEach((column, i) => {
-    let newColumn = column.map((value) => value);
+  board.forEach((row, i) => {
+    let newColumn = row.map((_, j) => board[j][i]);
 
     newColumn = shiftRowLeft(newColumn).reverse();
 
-    newColumn.forEach((value, j) => {
-      if (value === newColumn[j + 1]) {
-        newColumn[j] = 0;
-        newColumn[j + 1] = newColumn[j + 1] * 2;
-        score += newColumn[j + 1];
+    for (let j = 0; j < newColumn.length; j++) {
+      if (newColumn[j - 1] === newColumn[j]) {
+        newColumn[j - 1] = 0;
+        newColumn[j] *= 2;
+        score += newColumn[j];
       }
-    });
+    }
 
     newColumn = shiftRowLeft(newColumn).reverse();
 
     newColumn.forEach((value, j) => {
-      defaultBoard[j][i] = value;
+      board[j][i] = value;
     });
   });
 
@@ -180,17 +175,8 @@ function changeClassCell(element, addClass) {
 
 function checkIfPlayerWon() {
   const pointForVictory = 2048;
-  let playerWon = false;
 
-  defaultBoard.forEach((row) => {
-    row.forEach((cell) => {
-      if (cell === pointForVictory) {
-        playerWon = true;
-      }
-    });
-  });
-
-  return playerWon;
+  return board.some(row => row.some(cell => cell === pointForVictory));
 }
 
 function handleVictory() {
@@ -213,28 +199,18 @@ if (checkAndAction) {
 }
 
 function freeCell() {
-  let hasFreeCell = false;
-
-  defaultBoard.forEach((row) => {
-    row.forEach((cell) => {
-      if (cell === 0) {
-        hasFreeCell = true;
-      }
-    });
-  });
-
-  return hasFreeCell;
+  return board.some(row => row.some(cell => cell === 0));
 }
 
 function goToOldBoard(oldBoard, oldProbabilityCount, oldScore) {
-  defaultBoard = [...oldBoard];
+  board = oldBoard.map(row => [...row]);
   probabilityCount = oldProbabilityCount;
   score = oldScore;
 }
 
 function checkIfPlayerLose() {
   let lose = true;
-  const temp = [...defaultBoard];
+  const temp = board.map(row => [...row]);
   const tepmProbabilityCount = probabilityCount;
   const tempScore = score;
 
@@ -262,7 +238,7 @@ function checkIfPlayerLose() {
 }
 
 function showDisplay() {
-  defaultBoard.forEach((row, i) => {
+  board.forEach((row, i) => {
     const cells = fieldRowAll[i].querySelectorAll('.field-cell');
 
     row.forEach((boardCell, j) => {
@@ -285,12 +261,7 @@ function showDisplay() {
 }
 
 function startGame() {
-  defaultBoard.forEach(row => {
-    row.forEach((_, j, arr) => {
-      arr[j] = 0;
-    });
-  });
-
+  board = defaultBoard.map(row => [...row]);
   probabilityCount = 0;
   score = 0;
   messageStart.classList.add('hidden');
@@ -321,22 +292,18 @@ document.addEventListener('keyup', ({ key }) => {
   switch (key) {
     case 'ArrowLeft':
       moveLeft();
-
       break;
 
     case 'ArrowRight':
       moveRight();
-
       break;
 
     case 'ArrowUp':
       moveUp();
-
       break;
 
     case 'ArrowDown':
       moveDown();
-
       break;
 
     default:
