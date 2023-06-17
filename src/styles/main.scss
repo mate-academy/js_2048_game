@@ -15,10 +15,11 @@ body {
   width: 75px;
   height: 75px;
   border-radius: 5px;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
   user-select: none;
 
   &--2 {
@@ -76,9 +77,13 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
-  border-spacing: 10px;
+  width: 340px;
+  height: 340px;
+  background-color: #bbada0;
+  border: 5px solid #bbada0;
   border-radius: 5px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .game-header {
@@ -95,7 +100,7 @@ h1 {
   color: #f9f6f2;
   width: 75px;
   height: 75px;
-  font-size: 24px;
+  font-size: 22px;
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -116,7 +121,7 @@ h1 {
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
-  margin: 0 8px 0 0;
+  margin: 0 10px 0 0;
 }
 
 .controls {
@@ -139,7 +144,7 @@ h1 {
 
 .start {
   background: #1dae28;
-  font-size: 20px;
+  font-size: 18px;
 
   &:hover {
     background: #179921;
