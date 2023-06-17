@@ -283,10 +283,12 @@ function reset() {
 
   const allCells = document.querySelectorAll('.field-cell');
   const messageStart = document.querySelector('.message-start');
+  const messageRules = document.querySelector('.message-rules');
 
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
   messageStart.hidden = true;
+  messageRules.hidden = true;
 
   allCells.forEach(td => {
     td.className = 'field-cell';
