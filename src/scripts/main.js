@@ -7,7 +7,7 @@ const columns = 4;
 const buttonStart = document.querySelector('.start');
 
 buttonStart.addEventListener('click', () => {
-  restertGame();
+  restartGame();
   setTwo();
   setTwo();
   document.querySelector('.message-start').classList.add('hidden');
@@ -15,7 +15,7 @@ buttonStart.addEventListener('click', () => {
   document.querySelector('.start').classList.add('restart');
 });
 
-function restertGame() {
+function restartGame() {
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < columns; j++) {
       const cell = document.getElementById(`${i}-${j}`);
@@ -193,7 +193,7 @@ function slideDown() {
   }
 }
 
-function hasEmptyZero() {
+function hasEmptyCell() {
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < columns; j++) {
       if (board[i][j] === 0) {
@@ -206,7 +206,7 @@ function hasEmptyZero() {
 }
 
 function setTwo() {
-  if (!hasEmptyZero()) {
+  if (!hasEmptyCell()) {
     return;
   };
 
@@ -234,7 +234,7 @@ function setTwo() {
 }
 
 function gameOver() {
-  if (hasEmptyZero()) {
+  if (hasEmptyCell()) {
     return false;
   }
 
