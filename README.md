@@ -2,9 +2,9 @@
 
 Welcome to my 2048 game project! This is a classic puzzle game implemented in JavaScript. In this game, you need to combine tiles with the same numbers to reach the elusive 2048 tile.
 
-Here is [DEMO LINK](https://pushkarskiyrodion.github.io/js_2048_game/)
+Check out the [DEMO LINK](https://pushkarskiyrodion.github.io/js_2048_game/) to see the live version of the 2048 Game.
 
-The game is inspired by the original 2048 game created by Gabriele Cirulli.
+The game is inspired by the original [2048 game](https://play2048.co/) created by Gabriele Cirulli.
 
 ## How to Play
 
