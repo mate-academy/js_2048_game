@@ -255,12 +255,6 @@ function ArrowDown() {
     }
   }
 
-  // if ([...fieldCellList].some(cell => cell.textContent === '') === false) {
-  //   console.log([...fieldCellList].some(cell => cell.textContent === ''));
-  //   // debugger;
-  //   loseGame();
-  // }
-
   if ([...fieldCellList].every(cell => cell.textContent !== '') === true) {
     loseGame();
 
@@ -292,7 +286,3 @@ function createNewCell() {
 }
 
 startTheGame();
-
-// if (startButton.classList.contains('restart')) {
-//   startTheGame();
-// }
