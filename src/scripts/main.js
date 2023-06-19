@@ -91,27 +91,26 @@ function render() {
 }
 
 function move(e) {
+  const Directions = {
+    ArrowLeft: left,
+    ArrowRight: right,
+    ArrowUp: up,
+    ArrowDown: down,
+  };
+
   newState = state;
 
   switch (e.key) {
-    case 'ArrowLeft':
-      left();
+    case Directions.ArrowLeft:
       break;
-
-    case 'ArrowRight':
-      right();
+    case Directions.ArrowRight:
       break;
-
-    case 'ArrowDown':
-      down();
+    case Directions.ArrowUp:
       break;
-
-    case 'ArrowUp':
-      up();
+    case Directions.ArrowDown:
       break;
-
     default:
-      return;
+      break;
   }
 
   for (let i = 0; i < 4; i++) {
