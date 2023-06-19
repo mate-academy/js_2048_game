@@ -21,6 +21,17 @@ The game is inspired by the original [2048 game](https://play2048.co/) created b
 + HTML: The game interface and structure are built with HTML.
 + CSS: The game styling and layout are handled using CSS.
 
+## Installation
+
+To run the 2048 game locally, follow these steps:
+
+1. Clone the repository: `git clone https://github.com/your-username/js_2048_game.git`
+2. Navigate to the project directory: `cd js_2048_game`
+3. Install dependencies: `npm install`
+4. Start the development server: `npm start`
+5. Open your web browser and visit: `http://localhost:3000`
+6. Enjoy playing the 2048 game!
+
 #
 
 Thank you for checking out the 2048 Game. If you have any questions or feedback, please don't hesitate to [contact me](mailto:pushkarskiyrodion@gmail.com).
