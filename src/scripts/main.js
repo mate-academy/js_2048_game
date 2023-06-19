@@ -26,7 +26,9 @@ function restartGame() {
 
       updateCell(cell, num);
 
-      document.querySelector('.game-score').textContent = 0;
+      score = 0;
+
+      document.querySelector('.game-score').textContent = score;
       document.querySelector('.message-lose').classList.add('hidden');
     }
   }
