@@ -1,7 +1,5 @@
 # 2048 Game
 
-## Project Overview
-
 Welcome to my 2048 game project! This is a classic puzzle game implemented in JavaScript. In this game, you need to combine tiles with the same numbers to reach the elusive 2048 tile.
 
 [DEMO LINK](https://pushkarskiyrodion.github.io/js_2048_game/)
