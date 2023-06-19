@@ -76,7 +76,7 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: #988573;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -116,7 +116,7 @@ h1 {
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
-  margin: 0 8px 0 0;
+  margin: 0 6px 0 0;
 }
 
 .controls {
@@ -126,6 +126,7 @@ h1 {
 .button {
   border: none;
   border-radius: 5px;
+  outline-style: none;
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;
@@ -135,6 +136,27 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+}
+
+.howto {
+  border: none;
+  border-radius: 5px;
+  outline-style: none;
+  cursor: pointer;
+  background: #336ccf;
+  color: #f9f6f2;
+  font-family: sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  width: 75px;
+  height: 75px;
+  margin: 0 6px 0 0;
+
+  transition: 0.25s ease background;
+
+  &:hover {
+    background: #1d4994;
+  }
 }
 
 .start {
@@ -173,12 +195,17 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
+  width: 360px;
 }
 
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
+}
+
+.message-howto {
+  font-size: 16px;
+  color: #1d4994;
 }
 
 .message-container {
