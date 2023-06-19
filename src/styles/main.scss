@@ -14,12 +14,13 @@ body {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
+  border-radius: 10px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all 200ms;
 
   &--2 {
     background: #eee4da;
@@ -78,7 +79,7 @@ body {
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .game-header {
@@ -125,7 +126,7 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;
