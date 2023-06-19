@@ -32,6 +32,6 @@ To run the 2048 game locally, follow these steps:
 5. Open your web browser and visit: `http://localhost:3000`
 6. Enjoy playing the 2048 game!
 
-#
+## Feedback
 
-Thank you for checking out the 2048 Game. If you have any questions or feedback, please don't hesitate to [contact me](mailto:pushkarskiyrodion@gmail.com).
+Thank you for checking out the 2048 Game. If you have any questions or feedback, please don't hesitate to [contact me](mailto:pushkarskiyrodion@gmail.com). Your input is greatly appreciated!
