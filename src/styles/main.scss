@@ -6,20 +6,24 @@ body {
   min-height: 100vh;
   background: #fbf8ef;
   font-family: sans-serif;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 900;
+  overflow: hidden;
 }
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: 100px;
+  height: 100px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
+  line-height: 100px;
   vertical-align: center;
   user-select: none;
+
+  transition: all 0.2s ease;
 
   &--2 {
     background: #eee4da;
@@ -79,6 +83,13 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  padding: 10px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .game-header {
@@ -93,8 +104,8 @@ body {
 h1 {
   background: #edc22e;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
+  width: 100px;
+  height: 100px;
   font-size: 24px;
   border-radius: 5px;
   display: flex;
@@ -110,8 +121,8 @@ h1 {
   align-items: center;
   justify-content: center;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: 100px;
+  height: 100px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
@@ -131,8 +142,8 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
+  width: 100px;
+  height: 100px;
 
   transition: 0.25s ease background;
 }
@@ -173,12 +184,19 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
+  width: 450px;
 }
 
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
+  visibility: hidden;
+}
+
+.message-lose {
+  background: #edc22e;
+  color: #f9f6f2;
+  visibility: hidden;
 }
 
 .message-container {
