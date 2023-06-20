@@ -40,13 +40,8 @@ function loseGame() {
     return false;
   }
 
-  for (let rowI = 0; rowI < 3; rowI++) {
+  for (let rowI = 0; rowI < 4; rowI++) {
     const curentRow = fieldRowList[rowI];
-
-    // eslint-disable-next-line max-len
-    if (curentRow.children[0].textContent === fieldRowList[rowI + 1].children[0].textContent) {
-      return false;
-    }
 
     for (let colI = 0; colI < 3; colI++) {
       // eslint-disable-next-line max-len
@@ -56,12 +51,12 @@ function loseGame() {
     }
   }
 
-  for (let colIndex = 0; colIndex < 3; colIndex++) {
-    for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
-      const curentEle = fieldRowList[colIndex].children[rowIndex];
+  for (let rowI = 0; rowI < 3; rowI++) {
+    for (let colI = 0; colI < 4; colI++) {
+      const curentEle = fieldRowList[rowI].children[colI];
 
       // eslint-disable-next-line max-len
-      if (+curentEle.textContent === +fieldRowList[colIndex].children[rowIndex + 1].textContent) {
+      if (+curentEle.textContent === +fieldRowList[rowI + 1].children[colI].textContent) {
         return false;
       }
     }
@@ -121,8 +116,10 @@ const handleKeyDown = (e) => {
       break;
   }
 
-  createNewCell();
-  colorField();
+  if ([...fieldCellList].some(cell => cell.textContent === '') === true) {
+    createNewCell();
+    colorField();
+  }
 };
 
 function fieldCellAdder() {
@@ -130,6 +127,27 @@ function fieldCellAdder() {
 }
 
 function ArrowLeft() {
+  if ([...fieldCellList].every(cell => cell.textContent !== '') === true) {
+    let isSameDigitsLeft = false;
+
+    for (let rowI = 0; rowI < 4; rowI++) {
+      const curentRow = fieldRowList[rowI];
+
+      for (let colI = 0; colI < 3; colI++) {
+        // eslint-disable-next-line max-len
+        if (+curentRow.children[colI].textContent === +curentRow.children[colI + 1].textContent) {
+          isSameDigitsLeft = true;
+        }
+      }
+    }
+
+    if (isSameDigitsLeft === false) {
+      loseGame();
+
+      return;
+    }
+  }
+
   for (let i = 0; i < 4; i++) {
     const currentRow = fieldRowList[i];
     const resultArray = [];
@@ -160,6 +178,28 @@ function ArrowLeft() {
 }
 
 function ArrowRight() {
+  if ([...fieldCellList].every(cell => cell.textContent !== '') === true) {
+    let isSameDigitsLeft = false;
+
+    for (let rowI = 0; rowI < 4; rowI++) {
+      const curentRow = fieldRowList[rowI];
+
+      for (let colI = 0; colI < 3; colI++) {
+        // eslint-disable-next-line max-len
+        if (+curentRow.children[colI].textContent === +curentRow.children[colI + 1].textContent) {
+          isSameDigitsLeft = true;
+          break;
+        }
+      }
+    }
+
+    if (isSameDigitsLeft === false) {
+      loseGame();
+
+      return;
+    }
+  }
+
   for (let i = 0; i < 4; i++) {
     const currentRow = fieldRowList[i];
     const resultArray = [];
@@ -193,6 +233,28 @@ function ArrowRight() {
 }
 
 function ArrowUp() {
+  if ([...fieldCellList].every(cell => cell.textContent !== '') === true) {
+    let isSameDigitsUp = false;
+
+    for (let rowInd = 0; rowInd < 3; rowInd++) {
+      for (let colInd = 0; colInd < 4; colInd++) {
+        const curentEle = fieldRowList[rowInd].children[colInd];
+
+        // eslint-disable-next-line max-len
+        if (+curentEle.textContent === +fieldRowList[rowInd + 1].children[colInd].textContent) {
+          isSameDigitsUp = true;
+          break;
+        }
+      }
+    }
+
+    if (isSameDigitsUp === false) {
+      loseGame();
+
+      return;
+    }
+  }
+
   for (let i = 0; i < 4; i++) {
     const resultArray = [];
 
@@ -201,6 +263,7 @@ function ArrowUp() {
 
       if (currentChild.textContent.length !== 0) {
         resultArray.push(+currentChild.textContent);
+
         currentChild.textContent = '';
       }
     };
@@ -224,6 +287,27 @@ function ArrowUp() {
 }
 
 function ArrowDown() {
+  if ([...fieldCellList].every(cell => cell.textContent !== '') === true) {
+    let isSameDigitsUp = false;
+
+    for (let colIndex = 0; colIndex < 3; colIndex++) {
+      for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
+        const curentEle = fieldRowList[colIndex].children[rowIndex];
+
+        // eslint-disable-next-line max-len
+        if (+curentEle.textContent === +fieldRowList[colIndex + 1].children[rowIndex].textContent) {
+          isSameDigitsUp = true;
+        }
+      }
+    }
+
+    if (isSameDigitsUp === false) {
+      loseGame();
+
+      return;
+    }
+  }
+
   for (let i = 0; i < 4; i++) {
     const resultArray = [];
 
@@ -277,11 +361,11 @@ function colorField() {
 }
 
 function createNewCell() {
-  const emptyCell = emptyFieldNumber();
+  const emptyCellNum = emptyFieldNumber();
 
-  if (emptyCell) {
-    fieldCellList[emptyCell].classList.add = 'field-cell--2';
-    fieldCellList[emptyCell].textContent = '2';
+  if (emptyCellNum >= 0) {
+    fieldCellList[emptyCellNum].classList.add = 'field-cell--2';
+    fieldCellList[emptyCellNum].textContent = '2';
   }
 }
 
