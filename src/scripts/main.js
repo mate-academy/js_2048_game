@@ -25,14 +25,18 @@ function hasAdjacentTiles() {
   for (let i = 0; i < rowsNum; i++) {
     for (let j = 0; j < columnsNum; j++) {
       if (j < columnsNum - 1 && field[i][j] === field[i][j + 1]) {
-        // console.log(j < columnsNum - 1 && field[i][j] === field[i][j + 1]);
-
         return true;
       }
 
       if (i < rowsNum - 1 && field[i][j] === field[i + 1][j]) {
-        // console.log(i < rowsNum - 1 && field[i][j] === field[i + 1][j]);
+        return true;
+      }
 
+      if (j > 0 && field[i][j] === field[i][j - 1]) {
+        return true;
+      }
+
+      if (i > 0 && field[i][j] === field[i - 1][j]) {
         return true;
       }
     }
@@ -168,6 +172,7 @@ button.addEventListener('click', () => {
 
     updateTable();
     messageLose.classList.add('hidden');
+    counter.textContent = '0';
   }
 
   handler = true;
@@ -199,12 +204,15 @@ document.addEventListener('keydown', (e) => {
         break;
     }
 
+    // console.log(!hasAdjacentTiles());
+    // console.log(!hasEmptyCell());
+
     if (checkWin()) {
       messageWin.classList.remove('hidden');
       handler = false;
     }
 
-    if (!hasEmptyCell() && hasAdjacentTiles()) {
+    if (!hasEmptyCell() && !hasAdjacentTiles()) {
       messageLose.classList.remove('hidden');
       handler = false;
     }
