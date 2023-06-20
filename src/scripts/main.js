@@ -5,6 +5,8 @@ const everyRow = Array.from(document.querySelectorAll('.field-row'));
 const mainButton = document.querySelector('.start');
 const gameScore = document.querySelector('.game-score');
 let canMoveInAnyDirection = [];
+let touchStartX = 0;
+let touchStartY = 0;
 let score = 0;
 
 function appendNumber() {
@@ -339,3 +341,39 @@ document.addEventListener('keyup', (e) => {
       break;
   }
 });
+
+document.addEventListener('touchstart', handleTouchStart, false);
+document.addEventListener('touchmove', handleTouchMove, false);
+
+function handleTouchStart(e) {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}
+
+function handleTouchMove(e) {
+  if (!touchStartX || !touchStartY) {
+    return;
+  }
+
+  const touchEndX = e.touches[0].clientX;
+  const touchEndY = e.touches[0].clientY;
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > 0) {
+      moveRight();
+    } else {
+      moveLeft();
+    }
+  } else {
+    if (deltaY > 0) {
+      moveDown();
+    } else {
+      moveUp();
+    }
+  }
+
+  touchStartX = 0;
+  touchStartY = 0;
+}
