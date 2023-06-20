@@ -25,7 +25,7 @@ The game is inspired by the original [2048 game](https://play2048.co/) created b
 
 To run the 2048 game locally, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/js_2048_game.git`
+1. Clone the repository: `git clone https://github.com/pushkarskiyrodion/js_2048_game.git`
 2. Navigate to the project directory: `cd js_2048_game`
 3. Install dependencies: `npm install`
 4. Start the development server: `npm start`
