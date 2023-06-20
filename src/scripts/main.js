@@ -318,20 +318,20 @@ mainButton.addEventListener('click', (e) => {
 });
 
 document.addEventListener('keyup', (e) => {
-  switch (e.key) {
-    case 'ArrowDown':
+  switch (e.keyCode) {
+    case 40:
       moveDown();
       break;
 
-    case 'ArrowUp':
+    case 38:
       moveUp();
       break;
 
-    case 'ArrowRight':
+    case 39:
       moveRight();
       break;
 
-    case 'ArrowLeft':
+    case 37:
       moveLeft();
       break;
 
