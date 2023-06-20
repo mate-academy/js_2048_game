@@ -25,10 +25,14 @@ function hasAdjacentTiles() {
   for (let i = 0; i < rowsNum; i++) {
     for (let j = 0; j < columnsNum; j++) {
       if (j < columnsNum - 1 && field[i][j] === field[i][j + 1]) {
+        // console.log(j < columnsNum - 1 && field[i][j] === field[i][j + 1]);
+
         return true;
       }
 
       if (i < rowsNum - 1 && field[i][j] === field[i + 1][j]) {
+        // console.log(i < rowsNum - 1 && field[i][j] === field[i + 1][j]);
+
         return true;
       }
     }
@@ -107,16 +111,6 @@ function slideLeft() {
   }
 
   updateTable();
-
-  if (checkWin()) {
-    messageWin.classList.remove('hidden');
-    handler = false;
-  }
-
-  if (!hasEmptyCell() && !hasAdjacentTiles()) {
-    messageLose.classList.remove('hidden');
-    handler = false;
-  }
 }
 
 function slideRight() {
@@ -130,16 +124,6 @@ function slideRight() {
   }
 
   updateTable();
-
-  if (checkWin()) {
-    messageWin.classList.remove('hidden');
-    handler = false;
-  }
-
-  if (!hasEmptyCell() && !hasAdjacentTiles()) {
-    messageLose.classList.remove('hidden');
-    handler = false;
-  }
 }
 
 function slideUp() {
@@ -154,16 +138,6 @@ function slideUp() {
   }
 
   updateTable();
-
-  if (checkWin(field)) {
-    messageWin.classList.remove('hidden');
-    handler = false;
-  }
-
-  if (!hasEmptyCell() && !hasAdjacentTiles()) {
-    messageLose.classList.remove('hidden');
-    handler = false;
-  }
 }
 
 function slideDown() {
@@ -180,16 +154,6 @@ function slideDown() {
   }
 
   updateTable();
-
-  if (checkWin(field)) {
-    messageWin.classList.remove('hidden');
-    handler = false;
-  }
-
-  if (!hasEmptyCell() && !hasAdjacentTiles()) {
-    messageLose.classList.remove('hidden');
-    handler = false;
-  }
 }
 
 button.addEventListener('click', () => {
@@ -233,6 +197,16 @@ document.addEventListener('keydown', (e) => {
         slideDown();
         generateRandomNum();
         break;
+    }
+
+    if (checkWin()) {
+      messageWin.classList.remove('hidden');
+      handler = false;
+    }
+
+    if (!hasEmptyCell() && hasAdjacentTiles()) {
+      messageLose.classList.remove('hidden');
+      handler = false;
     }
   }
 });
