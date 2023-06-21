@@ -129,15 +129,18 @@ function slideRight() {
   }
 }
 
+function fieldCombine(cell, num, row) {
+  for (let r = 0; r <= num; r++) {
+    field[r][cell] = row[r];
+  }
+}
+
 function slideUp() {
   for (let i = 0; i < columnsNum; i++) {
     let row = [field[0][i], field[1][i], field[2][i], field[3][i]];
 
     row = slide(row);
-    field[0][i] = row[0];
-    field[1][i] = row[1];
-    field[2][i] = row[2];
-    field[3][i] = row[3];
+    fieldCombine(i, 3, row);
   }
 }
 
@@ -148,10 +151,7 @@ function slideDown() {
     row.reverse();
     row = slide(row);
     row.reverse();
-    field[0][i] = row[0];
-    field[1][i] = row[1];
-    field[2][i] = row[2];
-    field[3][i] = row[3];
+    fieldCombine(i, 3, row);
   }
 }
 
