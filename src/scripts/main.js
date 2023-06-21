@@ -159,11 +159,18 @@ function slide(row) {
 }
 
 function slideLeft() {
+  let canSlide = false;
+
   for (let r = 0; r < rows; r++) {
     let row = board[r];
+    const originalRow = [...row];
 
     row = slide(row);
     board[r] = row;
+
+    if (!arraysEqual(originalRow, row)) {
+      canSlide = true;
+    }
 
     for (let c = 0; c < columns; c++) {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
@@ -172,17 +179,28 @@ function slideLeft() {
       UpdateTile(tile, num);
     }
   }
+
+  if (!canSlide) {
+    disableKeyupEvent();
+  }
 }
 
 function slideRight() {
+  let canSlide = false;
+
   for (let r = 0; r < rows; r++) {
     let row = board[r];
+    const originalRow = [...row];
 
     row.reverse();
     row = slide(row);
 
     board[r] = row.reverse();
 
+    if (!arraysEqual(originalRow, row)) {
+      canSlide = true;
+    }
+
     for (let c = 0; c < columns; c++) {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
       const num = board[r][c];
@@ -190,11 +208,18 @@ function slideRight() {
       UpdateTile(tile, num);
     }
   }
+
+  if (!canSlide) {
+    disableKeyupEvent();
+  }
 }
 
 function slideUp() {
+  let canSlide = false;
+
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+    const originalRow = [...row];
 
     row = slide(row);
 
@@ -206,12 +231,23 @@ function slideUp() {
 
       UpdateTile(tile, num);
     }
+
+    if (!arraysEqual(originalRow, row)) {
+      canSlide = true;
+    }
+  }
+
+  if (!canSlide) {
+    disableKeyupEvent();
   }
 }
 
 function slideDown() {
+  let canSlide = false;
+
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+    const originalRow = [...row];
 
     row.reverse();
     row = slide(row);
@@ -225,5 +261,31 @@ function slideDown() {
 
       UpdateTile(tile, num);
     }
+
+    if (!arraysEqual(originalRow, row)) {
+      canSlide = true;
+    }
   }
+
+  if (!canSlide) {
+    disableKeyupEvent();
+  }
+}
+
+function arraysEqual(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function disableKeyupEvent() {
+  document.removeEventListener('keyup');
 }
