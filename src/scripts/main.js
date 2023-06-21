@@ -1,5 +1,18 @@
 'use strict';
 
+const rowsNum = 4;
+const columnsNum = 4;
+let handler = false;
+let score = 0;
+let best = 0;
+
+const field = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+
 const cells = document.querySelectorAll('.field-cell');
 const rows = document.querySelectorAll('.field-row');
 const button = document.querySelector('.button');
@@ -7,19 +20,12 @@ const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const counter = document.querySelector('.game-score');
-let handler = false;
-let score = 0;
-const rowsNum = 4;
-const columnsNum = 4;
-const field = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
+const bestResult = document.querySelector('.game-best');
+
 const filterZero = (row) => row.filter(el => el !== 0);
 const hasEmptyCell = () => field.some(row => row.some(el => el === 0));
 const checkWin = () => field.some(row => row.some(el => el === 2048));
+const random = () => Math.floor(Math.random() * 4);
 
 function hasAdjacentTiles() {
   for (let i = 0; i < rowsNum; i++) {
@@ -31,14 +37,6 @@ function hasAdjacentTiles() {
       if (i < rowsNum - 1 && field[i][j] === field[i + 1][j]) {
         return true;
       }
-
-      if (j > 0 && field[i][j] === field[i][j - 1]) {
-        return true;
-      }
-
-      if (i > 0 && field[i][j] === field[i - 1][j]) {
-        return true;
-      }
     }
   }
 
@@ -46,11 +44,15 @@ function hasAdjacentTiles() {
 }
 
 function generateRandomNum() {
+  if (!hasEmptyCell()) {
+    return;
+  }
+
   let rowIndex, cellIndex;
 
   do {
-    rowIndex = Math.floor(Math.random() * 4);
-    cellIndex = Math.floor(Math.random() * 4);
+    rowIndex = random();
+    cellIndex = random();
   } while (field[rowIndex][cellIndex] !== 0);
 
   if (field[rowIndex][cellIndex] === 0) {
@@ -82,6 +84,7 @@ function updateTable() {
   }
 
   counter.textContent = score;
+  bestResult.textContent = best;
 }
 
 function slide(row) {
@@ -113,8 +116,6 @@ function slideLeft() {
     row = slide(row);
     field[i] = row;
   }
-
-  updateTable();
 }
 
 function slideRight() {
@@ -126,8 +127,6 @@ function slideRight() {
     row.reverse();
     field[i] = row;
   }
-
-  updateTable();
 }
 
 function slideUp() {
@@ -140,8 +139,6 @@ function slideUp() {
     field[2][i] = row[2];
     field[3][i] = row[3];
   }
-
-  updateTable();
 }
 
 function slideDown() {
@@ -156,8 +153,6 @@ function slideDown() {
     field[2][i] = row[2];
     field[3][i] = row[3];
   }
-
-  updateTable();
 }
 
 button.addEventListener('click', () => {
@@ -166,13 +161,15 @@ button.addEventListener('click', () => {
     button.textContent = 'Restart';
     messageStart.classList.add('hidden');
   } else {
-    for (const el of field) {
-      el.fill(0);
+    field.forEach(el => el.fill(0));
+
+    if (score > best) {
+      best = score;
+      score = 0;
     }
 
     updateTable();
     messageLose.classList.add('hidden');
-    counter.textContent = '0';
   }
 
   handler = true;
@@ -204,8 +201,7 @@ document.addEventListener('keydown', (e) => {
         break;
     }
 
-    // console.log(!hasAdjacentTiles());
-    // console.log(!hasEmptyCell());
+    updateTable();
 
     if (checkWin()) {
       messageWin.classList.remove('hidden');
