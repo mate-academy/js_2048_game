@@ -92,22 +92,26 @@ function render() {
 
 function move(e) {
   const Directions = {
-    ArrowLeft: left,
-    ArrowRight: right,
-    ArrowUp: up,
-    ArrowDown: down,
+    ArrowLeft: 'left',
+    ArrowRight: 'right',
+    ArrowUp: 'up',
+    ArrowDown: 'down',
   };
 
   newState = state;
 
   switch (e.key) {
     case Directions.ArrowLeft:
+      left();
       break;
     case Directions.ArrowRight:
+      right();
       break;
     case Directions.ArrowUp:
+      up();
       break;
     case Directions.ArrowDown:
+      down();
       break;
     default:
       break;
