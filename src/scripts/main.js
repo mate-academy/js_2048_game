@@ -17,6 +17,10 @@ function setGame() {
   document.querySelector('.message-start').style.visibility = 'hidden';
   count = 0;
 
+  if (document.querySelector('.message-lose').style.visibility === 'visible') {
+    document.querySelector('.message-lose').style.visibility = 'hidden';
+  }
+
   board = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -51,6 +55,23 @@ function areYouWin() {
   }
 }
 
+function areYouLose() {
+  let squere = 0;
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (board[r][c] > 0) {
+        squere++;
+      }
+    }
+  }
+
+  if (squere === 16) {
+    document.querySelector('.message-lose').style.visibility = 'visible';
+    document.removeEventListener('keyup');
+  }
+}
+
 function hasEmptyTile() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
@@ -66,6 +87,7 @@ function hasEmptyTile() {
 function setRandomCeil() {
   if (!hasEmptyTile()) {
     document.querySelector('.message-lose').style.visibility = 'visible';
+    document.removeEventListener('keyup');
 
     return;
   }
@@ -131,6 +153,7 @@ document.addEventListener('keyup', (e) => {
 
   score.textContent = count;
   areYouWin();
+  areYouLose();
 });
 
 function filterZero(row) {
