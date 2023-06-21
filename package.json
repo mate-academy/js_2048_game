@@ -32,7 +32,6 @@
     "mochawesome": "^6.2.1",
     "mochawesome-merge": "^4.2.0",
     "mochawesome-report-generator": "^5.1.0",
-    "node-sass": "^4.14.1",
     "parcel": "^1.12.4",
     "stylelint": "^13.5.0",
     "stylelint-config-recommended-scss": "^3.3.0",
@@ -44,5 +43,7 @@
   "mateAcademy": {
     "projectType": "layoutDOM"
   },
-  "dependencies": {}
+  "dependencies": {
+    "sass": "^1.63.4"
+  }
 }
