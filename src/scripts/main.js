@@ -23,6 +23,8 @@ document.addEventListener('click', e => {
 
     deleteFields.forEach(el => el.remove());
 
+    document.querySelector('.message-lose').classList.add('hidden');
+
     setGame();
   }
 });
@@ -115,7 +117,7 @@ function hasSimiliarTile() {
   return false;
 }
 
-function updateClass(title, num) {
+function updateClass(title, num, e) {
   title.innerText = '';
   title.className = '';
 
