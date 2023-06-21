@@ -168,6 +168,7 @@ button.addEventListener('click', () => {
       score = 0;
     }
 
+    score = 0;
     updateTable();
     messageLose.classList.add('hidden');
   }
