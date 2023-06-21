@@ -37,7 +37,7 @@ button.addEventListener('click', (e) => {
     }
   }
 
-  [...messages].map(message => message.classList.add('hidden'));
+  [...messages].forEach(message => message.classList.add('hidden'));
 
   tableScore.innerText = 0;
 
@@ -237,13 +237,13 @@ function moveIsPossible() {
     return true;
   }
 
-  let moveX = false;
-  let moveY = false;
+  let moveX = true;
+  let moveY = true;
 
   for (let r = 0; r < 4; r++) {
     for (let c = 0; c < 4; c++) {
       if (board[r][c] === board[r][c + 1]) {
-        moveX = true;
+        moveX = false;
       }
     }
   }
@@ -253,15 +253,10 @@ function moveIsPossible() {
 
     for (let r = 0; r < 4; r++) {
       if (boardColumn[r] === boardColumn[r + 1]) {
-        moveY = true;
+        moveY = false;
       }
     }
   }
 
-  // if (!moveX && !moveY) {
-  //   return false;
-  // }
-
-  // return true;
-  return !((!moveX && !moveY));
+  return !(moveX && moveY);
 }
