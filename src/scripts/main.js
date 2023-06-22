@@ -1,16 +1,22 @@
 'use strict';
 
-const start = document.querySelector('.start');
+const start = document.querySelector('.button');
 const gameScore = document.querySelector('.game-score');
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const fieldCell = document.getElementsByClassName('field-cell');
 const tabl = [
+  [16, 16, 16, 16],
+  [8, 8, 8, 8],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
+];
+let priveStart = [
+  [null, null, null, null],
+  [null, null, null, null],
+  [null, null, null, null],
+  [null, null, null, null],
 ];
 
 start.addEventListener('click', () => {
@@ -23,26 +29,45 @@ start.addEventListener('click', () => {
     messageWin.classList.add('hidden');
     setNewNumber();
     setNewNumber();
-  } else {
+  } else if (start.classList.contains('restart')) {
     start.classList.remove('restart');
     start.classList.add('start');
     start.textContent = 'Start';
     messageStart.classList.remove('hidden');
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
     restart();
   }
 });
 
 function restart() {
-  [...fieldCell].forEach(cell => {
-    cell.className = 'field-cell';
-    cell.textContent = '';
-  });
+  for (let i = 0; i < tabl.length; i++) {
+    for (let j = 0; j < tabl.length; j++) {
+      const cell = document.getElementById(`${i}-${j}`);
+
+      tabl[i][j] = 0;
+
+      const num = tabl[i][j];
+
+      updateCell(cell, num);
+    }
+  }
+  // [...fieldCell].forEach(cell => {
+  //   cell.className = 'field-cell';
+  //   cell.textContent = '';
+  // });
   score = 0;
 
   gameScore.innerText = 0;
 }
 
 document.addEventListener('keyup', (e) => {
+  if (start.classList.contains('start')) {
+    return;
+  }
+
+  priveStart = tabl;
+
   if (e.code === 'ArrowLeft') {
     moveLeft();
     setNewNumber();
@@ -65,7 +90,7 @@ document.addEventListener('keyup', (e) => {
 
   gameScore.innerText = score;
 
-  if (!hasEmptyCell()) {
+  if (gameOver()) {
     messageLose.classList.remove('hidden');
   }
 
@@ -175,8 +200,20 @@ function moveDown() {
   }
 }
 
+function isTablAqv() {
+  for (let r = 0; r < tabl.length; r++) {
+    for (let c = 0; c < tabl.length; c++) {
+      if (tabl[r][c] !== priveStart[r][c]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 function setNewNumber() {
-  if (!hasEmptyCell()) {
+  if (!hasEmptyCell() || isTablAqv()) {
     return;
   }
 
@@ -225,4 +262,23 @@ function updateCell(cell, value) {
       cell.classList.add('field-cell--' + value.toString());
     }
   }
+}
+
+function gameOver() {
+  if (hasEmptyCell()) {
+    return false;
+  }
+
+  for (let i = 0; i < tabl.length; i++) {
+    for (let j = 0; j < tabl.length; j++) {
+      const current = tabl[i][j];
+
+      if ((i + 1 < tabl.length && current === tabl[i + 1][j])
+       || (j + 1 < tabl.length && current === tabl[i][j + 1])) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
