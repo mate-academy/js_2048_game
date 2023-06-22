@@ -1,0 +1,12 @@
+@mixin gameCellPosition() {
+  @for $i from 0 through 3 {
+    @for $j from 0 through 3 {
+      &--position--#{$j}-#{$i} {
+        $row-translate: $j * ($cell-size + $game-field-gap);
+        $col-translate: $i * ($cell-size + $game-field-gap);
+
+        transform: translate($col-translate, $row-translate);
+      }
+    }
+  }
+}
