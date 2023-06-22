@@ -1,4 +1,4 @@
-import { flipArray, getRandomDigit } from './utils';
+'use strict';
 
 const INITIAL_RANDOM_NUMBERS = 2;
 const WIN_VALUE = 2048;
@@ -237,6 +237,25 @@ function getRandomStartCoords(max, elements) {
   }
 
   return randomCoords;
+}
+
+function flipArray(arr) {
+  const turnedArray = Array.from({
+    length: arr.length,
+  }).map(() => []);
+
+  for (const i in arr) {
+    for (const j in arr[i]) {
+      turnedArray[i].push(arr[j][i]);
+    }
+  }
+
+  return turnedArray;
+}
+
+function getRandomDigit(max) {
+  // the maximum is NOT inclusive
+  return Math.floor(Math.random() * max);
 }
 
 function resetGame() {
