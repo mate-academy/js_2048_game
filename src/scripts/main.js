@@ -7,8 +7,8 @@ const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const fieldCell = document.getElementsByClassName('field-cell');
 const board = [
-  [1024, 1024, 256, 512],
-  [8, 8, 8, 8],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
