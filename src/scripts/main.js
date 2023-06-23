@@ -6,13 +6,13 @@ const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const fieldCell = document.getElementsByClassName('field-cell');
-const tabl = [
-  [16, 16, 16, 16],
+const board = [
+  [1024, 1024, 256, 512],
   [8, 8, 8, 8],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
-let priveStart = [
+const prevBoard = [
   [null, null, null, null],
   [null, null, null, null],
   [null, null, null, null],
@@ -41,21 +41,17 @@ start.addEventListener('click', () => {
 });
 
 function restart() {
-  for (let i = 0; i < tabl.length; i++) {
-    for (let j = 0; j < tabl.length; j++) {
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board.length; j++) {
       const cell = document.getElementById(`${i}-${j}`);
 
-      tabl[i][j] = 0;
+      board[i][j] = 0;
 
-      const num = tabl[i][j];
+      const num = board[i][j];
 
       updateCell(cell, num);
     }
   }
-  // [...fieldCell].forEach(cell => {
-  //   cell.className = 'field-cell';
-  //   cell.textContent = '';
-  // });
   score = 0;
 
   gameScore.innerText = 0;
@@ -66,43 +62,47 @@ document.addEventListener('keyup', (e) => {
     return;
   }
 
-  priveStart = tabl;
+  updatePrevBoard();
 
-  if (e.code === 'ArrowLeft') {
-    moveLeft();
-    setNewNumber();
-  }
+  switch (e.code) {
+    case 'ArrowLeft':
+      moveLeft();
+      setNewNumber();
+      break;
 
-  if (e.code === 'ArrowRight') {
-    moveRight();
-    setNewNumber();
-  }
+    case 'ArrowRight':
+      moveRight();
+      setNewNumber();
+      break;
 
-  if (e.code === 'ArrowUp') {
-    moveUp();
-    setNewNumber();
-  }
+    case 'ArrowUp':
+      moveUp();
+      setNewNumber();
+      break;
 
-  if (e.code === 'ArrowDown') {
-    moveDown();
-    setNewNumber();
+    case 'ArrowDown':
+      moveDown();
+      setNewNumber();
+      break;
   }
 
   gameScore.innerText = score;
 
-  if (gameOver()) {
-    messageLose.classList.remove('hidden');
-  }
-
   if (score === 2048) {
     messageWin.classList.remove('hidden');
+    start.classList.replace('restart', 'start');
+    start.innerText = 'Start';
+  }
+
+  if (gameOver()) {
+    messageLose.classList.remove('hidden');
   }
 });
 
 let index = 0;
 
-for (let r = 0; r < tabl.length; r++) {
-  for (let c = 0; c < tabl.length; c++) {
+for (let r = 0; r < board.length; r++) {
+  for (let c = 0; c < board.length; c++) {
     fieldCell[index++].id = r.toString() + '-' + c.toString();
   }
 }
@@ -122,7 +122,7 @@ function slide(row) {
 
   const rowNew = row.filter(num => num !== 0);
 
-  while (rowNew.length < tabl.length) {
+  while (rowNew.length < board.length) {
     rowNew.push(0);
   }
 
@@ -130,16 +130,16 @@ function slide(row) {
 }
 
 function moveLeft() {
-  for (let r = 0; r < tabl.length; r++) {
-    let row = tabl[r];
+  for (let r = 0; r < board.length; r++) {
+    let row = board[r];
 
     row = slide(row);
-    tabl[r] = row;
+    board[r] = row;
 
-    for (let c = 0; c < tabl.length; c++) {
+    for (let c = 0; c < board.length; c++) {
       const cell = document.getElementById(r.toString() + '-' + c.toString());
 
-      const value = tabl[r][c];
+      const value = board[r][c];
 
       updateCell(cell, value);
     }
@@ -147,17 +147,17 @@ function moveLeft() {
 }
 
 function moveRight() {
-  for (let r = 0; r < tabl.length; r++) {
-    let row = tabl[r];
+  for (let r = 0; r < board.length; r++) {
+    let row = board[r];
 
     row.reverse();
     row = slide(row);
-    tabl[r] = row.reverse();
+    board[r] = row.reverse();
 
-    for (let c = 0; c < tabl.length; c++) {
+    for (let c = 0; c < board.length; c++) {
       const cell = document.getElementById(r.toString() + '-' + c.toString());
 
-      const value = tabl[r][c];
+      const value = board[r][c];
 
       updateCell(cell, value);
     }
@@ -165,16 +165,16 @@ function moveRight() {
 }
 
 function moveUp() {
-  for (let c = 0; c < tabl.length; c++) {
-    let row = [tabl[0][c], tabl[1][c], tabl[2][c], tabl[3][c]];
+  for (let c = 0; c < board.length; c++) {
+    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
 
     row = slide(row);
 
-    for (let r = 0; r < tabl.length; r++) {
-      tabl[r][c] = row[r];
+    for (let r = 0; r < board.length; r++) {
+      board[r][c] = row[r];
 
       const cell = document.getElementById(r.toString() + '-' + c.toString());
-      const value = tabl[r][c];
+      const value = board[r][c];
 
       updateCell(cell, value);
     }
@@ -182,28 +182,28 @@ function moveUp() {
 }
 
 function moveDown() {
-  for (let c = 0; c < tabl.length; c++) {
-    let row = [tabl[0][c], tabl[1][c], tabl[2][c], tabl[3][c]];
+  for (let c = 0; c < board.length; c++) {
+    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
 
     row.reverse();
     row = slide(row);
     row.reverse();
 
-    for (let r = 0; r < tabl.length; r++) {
-      tabl[r][c] = row[r];
+    for (let r = 0; r < board.length; r++) {
+      board[r][c] = row[r];
 
       const cell = document.getElementById(r.toString() + '-' + c.toString());
-      const value = tabl[r][c];
+      const value = board[r][c];
 
       updateCell(cell, value);
     }
   }
 }
 
-function isTablAqv() {
-  for (let r = 0; r < tabl.length; r++) {
-    for (let c = 0; c < tabl.length; c++) {
-      if (tabl[r][c] !== priveStart[r][c]) {
+function isBoardEqual() {
+  for (let r = 0; r < board.length; r++) {
+    for (let c = 0; c < board.length; c++) {
+      if (board[r][c] !== prevBoard[r][c]) {
         return false;
       }
     }
@@ -212,8 +212,16 @@ function isTablAqv() {
   return true;
 }
 
+function updatePrevBoard() {
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board.length; j++) {
+      prevBoard[i][j] = board[i][j];
+    }
+  }
+}
+
 function setNewNumber() {
-  if (!hasEmptyCell() || isTablAqv()) {
+  if (!hasEmptyCell() || isBoardEqual()) {
     return;
   }
 
@@ -221,11 +229,11 @@ function setNewNumber() {
 
   while (!found) {
     const value = Math.random() > 0.1 ? 2 : 4;
-    const r = Math.floor(Math.random() * tabl.length);
-    const c = Math.floor(Math.random() * tabl.length);
+    const r = Math.floor(Math.random() * board.length);
+    const c = Math.floor(Math.random() * board.length);
 
-    if (tabl[r][c] === 0) {
-      tabl[r][c] = value;
+    if (board[r][c] === 0) {
+      board[r][c] = value;
 
       const cell = document.getElementById(r.toString() + '-' + c.toString());
 
@@ -239,9 +247,9 @@ function setNewNumber() {
 }
 
 function hasEmptyCell() {
-  for (let r = 0; r < tabl.length; r++) {
-    for (let c = 0; c < tabl.length; c++) {
-      if (tabl[r][c] === 0) {
+  for (let r = 0; r < board.length; r++) {
+    for (let c = 0; c < board.length; c++) {
+      if (board[r][c] === 0) {
         return true;
       }
     }
@@ -269,12 +277,12 @@ function gameOver() {
     return false;
   }
 
-  for (let i = 0; i < tabl.length; i++) {
-    for (let j = 0; j < tabl.length; j++) {
-      const current = tabl[i][j];
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board.length; j++) {
+      const current = board[i][j];
 
-      if ((i + 1 < tabl.length && current === tabl[i + 1][j])
-       || (j + 1 < tabl.length && current === tabl[i][j + 1])) {
+      if ((i + 1 < board.length && current === board[i + 1][j])
+       || (j + 1 < board.length && current === board[i][j + 1])) {
         return false;
       }
     }
