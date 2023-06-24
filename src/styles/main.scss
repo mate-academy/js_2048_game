@@ -140,6 +140,7 @@ h1 {
 .start {
   background: #1dae28;
   font-size: 20px;
+  outline: none;
 
   &:hover {
     background: #179921;
@@ -148,6 +149,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  outline: none;
 
   &:hover {
     background: #f87474;
