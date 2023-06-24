@@ -8,6 +8,16 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+
+  overflow: hidden;
+  height: 100%;
+  overscroll-behavior-y: none;
+
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
 .field-cell {
