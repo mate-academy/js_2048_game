@@ -24,6 +24,7 @@ button.addEventListener('click', () => {
   winGameText.classList.add('hidden');
 
   startPlay();
+  addArrowKeyListener();
 });
 
 function hasEmptyTile() {
@@ -36,10 +37,10 @@ function hasEmptyTile() {
   return false;
 }
 
-function setRundom() {
+function setRandom() {
   while (hasEmptyTile()) {
-    const randomRow = Math.floor((Math.random() * numOfCells));
-    const randomCol = Math.floor((Math.random() * numOfCells));
+    const randomRow = Math.floor(Math.random() * numOfCells);
+    const randomCol = Math.floor(Math.random() * numOfCells);
 
     if (gameField[randomRow][randomCol] === 0) {
       const numb = Math.random() < 0.9 ? 2 : 4;
@@ -63,8 +64,8 @@ function startPlay() {
   scoreCount = 0;
   score.innerText = scoreCount;
 
-  setRundom();
-  setRundom();
+  setRandom();
+  setRandom();
 }
 
 function loseGame() {
@@ -73,7 +74,7 @@ function loseGame() {
   }
 
   for (let r = 0; r < numOfCells; r++) {
-    for (let c = 0; c < numOfCells; c++) {
+    for (let c = 0; c < numOfCells - 1; c++) {
       if (gameField[r][c] === gameField[r][c + 1]) {
         return false;
       }
@@ -118,33 +119,37 @@ function setCells() {
   }
 }
 
-document.addEventListener('keyup', (e) => {
+function addArrowKeyListener() {
+  document.addEventListener('keyup', handleArrowKey);
+}
+
+function handleArrowKey(e) {
   e.preventDefault();
 
   switch (e.code) {
     case 'ArrowLeft':
       slideLeft();
-      setRundom();
+      setRandom();
       break;
 
     case 'ArrowRight':
       slideRight();
-      setRundom();
+      setRandom();
       break;
 
     case 'ArrowUp':
       slideUp();
-      setRundom();
+      setRandom();
       break;
 
     case 'ArrowDown':
       slideDown();
-      setRundom();
+      setRandom();
       break;
   }
 
   setCells();
-});
+}
 
 function checkZero(row) {
   return row.filter(num => num !== 0);
@@ -174,7 +179,7 @@ function slide(row) {
 
 function slideLeft() {
   for (let r = 0; r < numOfCells; r++) {
-    let row = gameField[r];
+    let row = gameField[r].slice();
 
     row = slide(row);
     gameField[r] = row;
@@ -183,7 +188,7 @@ function slideLeft() {
 
 function slideRight() {
   for (let r = 0; r < numOfCells; r++) {
-    let row = gameField[r].reverse();
+    let row = gameField[r].slice().reverse();
 
     row = slide(row).reverse();
     gameField[r] = row;
@@ -193,7 +198,10 @@ function slideRight() {
 function slideUp() {
   for (let c = 0; c < numOfCells; c++) {
     let row = [
-      gameField[0][c], gameField[1][c], gameField[2][c], gameField[3][c],
+      gameField[0][c],
+      gameField[1][c],
+      gameField[2][c],
+      gameField[3][c],
     ];
 
     row = slide(row);
@@ -207,7 +215,10 @@ function slideUp() {
 function slideDown() {
   for (let c = 0; c < numOfCells; c++) {
     let row = [
-      gameField[0][c], gameField[1][c], gameField[2][c], gameField[3][c],
+      gameField[0][c],
+      gameField[1][c],
+      gameField[2][c],
+      gameField[3][c],
     ].reverse();
 
     row = slide(row).reverse();
