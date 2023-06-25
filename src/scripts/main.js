@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 'use strict';
 
 const startButton = document.querySelector('.start');
@@ -10,7 +9,7 @@ const gameField = document.querySelector('tbody');
 let score = 0;
 const rows = 4;
 const columns = 4;
-let board = [
+const board = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -55,6 +54,10 @@ function winGame() {
   }
 }
 
+function resetBoard(table) {
+  return table.forEach(el => el.splice(0, columns, 0, 0, 0, 0));
+}
+
 startButton.addEventListener('click', () => {
   startButton.classList.remove('start');
   startButton.classList.add('restart');
@@ -65,12 +68,7 @@ startButton.addEventListener('click', () => {
   score = 0;
   gameScore.textContent = score;
 
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  resetBoard(board);
 
   getRandomCell();
   getRandomCell();
@@ -95,61 +93,63 @@ function updateGame() {
 }
 
 document.addEventListener('keydown', ev => {
-  if (ev.key === 'ArrowLeft') {
-    moveLeft();
-    getRandomCell();
-  }
+  switch (ev.key) {
+    case 'ArrowLeft':
+      moveLeft();
+      break;
 
-  if (ev.key === 'ArrowRight') {
-    moveRight();
-    getRandomCell();
-  }
+    case 'ArrowRight':
+      moveRight();
+      break;
 
-  if (ev.key === 'ArrowUp') {
-    moveUp();
-    getRandomCell();
-  }
+    case 'ArrowUp':
+      moveUp();
+      break;
 
-  if (ev.key === 'ArrowDown') {
-    moveDown();
-    getRandomCell();
+    case 'ArrowDown':
+      moveDown();
+      break;
   }
 
   gameScore.textContent = score;
 
   if (!hasEmptyCell()) {
     messageLose.classList.remove('hidden');
+  } else {
+    messageLose.classList.add('hidden');
   }
 
   winGame();
+  getRandomCell();
 });
 
 function slide(row) {
-  row = row.filter(el => el !== 0);
+  let newRow = row.filter(el => el !== 0);
 
-  for (let i = 0; i < row.length - 1; i++) {
-    if (row[i] === row[i + 1]) {
-      row[i] *= 2;
-      row[i + 1] = 0;
-      score += row[i];
+  for (let i = 0; i < newRow.length - 1; i++) {
+    if (newRow[i] === newRow[i + 1]) {
+      newRow[i] *= 2;
+      newRow[i + 1] = 0;
+      score += newRow[i];
     }
   }
 
-  row = row.filter(el => el !== 0);
+  newRow = newRow.filter(el => el !== 0);
 
-  while (row.length < rows) {
-    row.push(0);
+  while (newRow.length < rows) {
+    newRow.push(0);
   }
 
-  return row;
+  return newRow;
 }
 
 function moveLeft() {
   for (let r = 0; r < rows; r++) {
-    let row = board[r];
+    const row = board[r];
 
-    row = slide(row);
-    board[r] = row;
+    const newRow = slide(row);
+
+    board[r] = newRow;
 
     updateGame();
   }
@@ -157,11 +157,11 @@ function moveLeft() {
 
 function moveRight() {
   for (let r = 0; r < rows; r++) {
-    let row = board[r];
+    const row = board[r];
 
-    row.reverse();
-    row = slide(row);
-    board[r] = row.reverse();
+    const newRow = slide([...row].reverse());
+
+    board[r] = newRow.reverse();
 
     updateGame();
   }
@@ -169,13 +169,14 @@ function moveRight() {
 
 function moveUp() {
   for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+    const row = [board[0][c], board[1][c], board[2][c], board[3][c]];
 
-    row = slide(row);
-    board[0][c] = row[0];
-    board[1][c] = row[1];
-    board[2][c] = row[2];
-    board[3][c] = row[3];
+    const newRow = slide(row);
+
+    board[0][c] = newRow[0];
+    board[1][c] = newRow[1];
+    board[2][c] = newRow[2];
+    board[3][c] = newRow[3];
 
     updateGame();
   }
@@ -183,15 +184,16 @@ function moveUp() {
 
 function moveDown() {
   for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+    const row = [board[0][c], board[1][c], board[2][c], board[3][c]];
 
-    row.reverse();
-    row = slide(row);
-    row.reverse();
-    board[0][c] = row[0];
-    board[1][c] = row[1];
-    board[2][c] = row[2];
-    board[3][c] = row[3];
+    const newRow = slide([...row].reverse());
+
+    newRow.reverse();
+
+    board[0][c] = newRow[0];
+    board[1][c] = newRow[1];
+    board[2][c] = newRow[2];
+    board[3][c] = newRow[3];
 
     updateGame();
   }
