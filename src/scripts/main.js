@@ -1,14 +1,14 @@
 'use strict';
 
-// elements constants
 const body = document.querySelector('body');
 const start = body.querySelector('.button');
 const rows = body.querySelectorAll('.field-row');
 const cells = body.querySelectorAll('.field-cell');
 const score = body.querySelector('.game-score');
 const messages = body.querySelectorAll('.message');
+const winMessage = body.querySelector('.message-win');
+const loseMessage = body.querySelector('.message-lose');
 
-// values
 let field = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -16,18 +16,23 @@ let field = [
   [0, 0, 0, 0],
 ];
 
+let gameOver = false;
+
 const rowsPerField = 4;
 const cellsPerRow = 4;
 
-// const gameOver = false;
-
-// change button
 start.addEventListener('click', () => {
   if (start.classList.contains('start')) {
     start.classList.replace('start', 'restart');
     start.textContent = 'Restart';
 
     document.addEventListener('keydown', (keybordEvent) => {
+      if (gameOver === true) {
+        return;
+      }
+
+      const boardClone = JSON.stringify(field);
+
       switch (keybordEvent.key) {
         case 'ArrowLeft':
           moveCellsToLeft();
@@ -45,6 +50,22 @@ start.addEventListener('click', () => {
           moveCellsDown();
           break;
       };
+
+      if (isImpossibleMove()) {
+        loseMessage.classList.remove('hidden');
+      }
+
+      if (boardClone === JSON.stringify(field)) {
+        return;
+      }
+
+      if ([...cells].some(cell =>
+        cell.classList.contains('field-cell--2048'))) {
+        gameOver = true;
+        winMessage.classList.remove('hidden');
+      }
+
+      getRandomCell();
     });
   }
 
@@ -60,6 +81,8 @@ start.addEventListener('click', () => {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
+
+  gameOver = false;
 
   [...messages].forEach(message => message.classList.add('hidden'));
 
@@ -77,7 +100,6 @@ function getRandomValue() {
   return (Math.random() >= 0.9) ? 4 : 2;
 }
 
-// getRandomCell function
 function getRandomCell() {
   const cellNumber = getRandomCellNumber();
   const cellValue = getRandomValue();
@@ -92,7 +114,6 @@ function getRandomCell() {
   }
 }
 
-// slide function
 function deleteZeroes(row) {
   return row.filter(cell => cell !== 0);
 }
@@ -118,7 +139,6 @@ function slide(row) {
   return newRow;
 }
 
-// changeCell function
 function changeCell(cell, count) {
   cell.className = '';
   cell.classList.add('field-cell');
@@ -151,7 +171,6 @@ function changeCellInColumn(col) {
   }
 }
 
-// move functions
 function moveCellsToLeft() {
   for (let row = 0; row < rowsPerField; row++) {
     const newRow = slide(field[row]);
@@ -160,8 +179,6 @@ function moveCellsToLeft() {
 
     changeCellinRow(row);
   }
-
-  getRandomCell();
 }
 
 function moveCellsToRight() {
@@ -172,8 +189,6 @@ function moveCellsToRight() {
 
     changeCellinRow(row);
   }
-
-  getRandomCell();
 }
 
 function moveCellsUp() {
@@ -194,8 +209,6 @@ function moveCellsUp() {
 
     changeCellInColumn(column);
   }
-
-  getRandomCell();
 }
 
 function moveCellsDown() {
@@ -216,6 +229,27 @@ function moveCellsDown() {
 
     changeCellInColumn(column);
   }
+}
 
-  getRandomCell();
+function isImpossibleMove() {
+  for (let row = 0; row < rowsPerField; row++) {
+    const column = [
+      field[0][row],
+      field[1][row],
+      field[2][row],
+      field[3][row],
+    ];
+
+    for (let cell = 0; cell < cellsPerRow; cell++) {
+      if (
+        field[row][cell] === 0
+        || field[row][cell] === field[row][cell + 1]
+        || column[cell] === column[cell + 1]
+      ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
