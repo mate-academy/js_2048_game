@@ -74,9 +74,6 @@ function generateTile() {
       if (!canMove()) {
         isGameOver = true;
         loseMessage.classList.remove('hidden');
-
-        startButton.removeEventListener('click', initGame);
-        tryAgain.removeEventListener('click', initGame);
       }
     }
   } else {
