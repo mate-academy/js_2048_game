@@ -15,11 +15,13 @@ body {
   width: 75px;
   height: 75px;
   border-radius: 5px;
+  border: #179921 solid 1px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: 0.25s;
 
   &--2 {
     background: #eee4da;
