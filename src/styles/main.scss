@@ -14,66 +14,73 @@ body {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
   user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
 }
+
+.field-cell.cell-2 {
+  background: #eee4da;
+}
+
+.field-cell.cell-4 {
+  background: #ede0c8;
+}
+
+.field-cell.cell-8 {
+  background: #f2b179;
+  color: #f9f6f2;
+}
+
+.field-cell.cell-16 {
+  background: #f59563;
+  color: #f9f6f2;
+}
+
+.field-cell.cell-32 {
+  background: #f67c5f;
+  color: #f9f6f2;
+}
+
+.field-cell.cell-64 {
+  background: #f65e3b;
+  color: #f9f6f2;
+}
+
+.field-cell.cell-128 {
+  background: #edcf72;
+  color: #f9f6f2;
+}
+
+.field-cell.cell-256 {
+  background: #edcc61;
+  color: #f9f6f2;
+}
+
+.field-cell.cell-512 {
+  background: #edc850;
+  color: #f9f6f2;
+}
+
+.field-cell.cell-1024 {
+  background: #edc53f;
+  color: #f9f6f2;
+}
+
+.field-cell.cell-2048 {
+  background: #edc22e;
+  color: #f9f6f2;
+}
+
+.game-field {
+  background: #bbada0;
+  border-spacing: 10px;
+  border-radius: 5px;
+}
+
+/* Остальные стили остаются неизменными */
+
 
 .game-field {
   background: #bbada0;

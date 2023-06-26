@@ -111,8 +111,8 @@ function isGameLost() {
   for (let i = 0; i < numOfCells; i++) {
     for (let j = 0; j < numOfCells - 1; j++) {
       if (
-        gameField[i][j] === gameField[i][j + 1]
-        || gameField[j][i] === gameField[j + 1][i]
+        gameField[i][j] === gameField[i][j + 1] ||
+        gameField[j][i] === gameField[j + 1][i]
       ) {
         return false;
       }
@@ -156,12 +156,11 @@ function moveUp() {
       if (gameField[i][j] !== 0) {
         for (let k = i; k > 0; k--) {
           if (
-            gameField[k - 1][j] === 0
-            || gameField[k - 1][j] === gameField[k][j]
+            gameField[k - 1][j] === 0 ||
+            gameField[k - 1][j] === gameField[k][j]
           ) {
             gameField[k - 1][j] += gameField[k][j];
             gameField[k][j] = 0;
-            scoreCount += gameField[k - 1][j];
             moved = true;
           }
         }
@@ -170,6 +169,7 @@ function moveUp() {
   }
 
   if (moved) {
+    scoreCount += calculateScore();
     moveUp();
   }
 }
@@ -182,12 +182,11 @@ function moveDown() {
       if (gameField[i][j] !== 0) {
         for (let k = i; k < numOfCells - 1; k++) {
           if (
-            gameField[k + 1][j] === 0
-            || gameField[k + 1][j] === gameField[k][j]
+            gameField[k + 1][j] === 0 ||
+            gameField[k + 1][j] === gameField[k][j]
           ) {
             gameField[k + 1][j] += gameField[k][j];
             gameField[k][j] = 0;
-            scoreCount += gameField[k + 1][j];
             moved = true;
           }
         }
@@ -196,6 +195,7 @@ function moveDown() {
   }
 
   if (moved) {
+    scoreCount += calculateScore();
     moveDown();
   }
 }
@@ -208,12 +208,11 @@ function moveLeft() {
       if (gameField[i][j] !== 0) {
         for (let k = j; k > 0; k--) {
           if (
-            gameField[i][k - 1] === 0
-            || gameField[i][k - 1] === gameField[i][k]
+            gameField[i][k - 1] === 0 ||
+            gameField[i][k - 1] === gameField[i][k]
           ) {
             gameField[i][k - 1] += gameField[i][k];
             gameField[i][k] = 0;
-            scoreCount += gameField[i][k - 1];
             moved = true;
           }
         }
@@ -222,6 +221,7 @@ function moveLeft() {
   }
 
   if (moved) {
+    scoreCount += calculateScore();
     moveLeft();
   }
 }
@@ -234,12 +234,11 @@ function moveRight() {
       if (gameField[i][j] !== 0) {
         for (let k = j; k < numOfCells - 1; k++) {
           if (
-            gameField[i][k + 1] === 0
-            || gameField[i][k + 1] === gameField[i][k]
+            gameField[i][k + 1] === 0 ||
+            gameField[i][k + 1] === gameField[i][k]
           ) {
             gameField[i][k + 1] += gameField[i][k];
             gameField[i][k] = 0;
-            scoreCount += gameField[i][k + 1];
             moved = true;
           }
         }
@@ -248,8 +247,19 @@ function moveRight() {
   }
 
   if (moved) {
+    scoreCount += calculateScore();
     moveRight();
   }
 }
 
-startGame();
+function calculateScore() {
+  let score = 0;
+
+  for (let i = 0; i < numOfCells; i++) {
+    for (let j = 0; j < numOfCells; j++) {
+      score += gameField[i][j];
+    }
+  }
+
+  return score;
+}
