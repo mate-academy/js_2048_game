@@ -5,7 +5,6 @@ const score = document.querySelector('.game-score');
 let count = 0;
 const rows = 4;
 const columns = 4;
-
 const startBtn = document.querySelector('.start');
 
 startBtn.onclick = setGame;
@@ -19,6 +18,10 @@ function setGame() {
 
   if (document.querySelector('.message-lose').style.visibility === 'visible') {
     document.querySelector('.message-lose').style.visibility = 'hidden';
+  }
+
+  if (document.querySelector('.message-win').style.visibility === 'visible') {
+    document.querySelector('.message-win').style.visibility = 'hidden';
   }
 
   board = [
@@ -56,17 +59,31 @@ function areYouWin() {
 }
 
 function areYouLose() {
-  let squere = 0;
+  let availableMoves = 0;
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      if (board[r][c] > 0) {
-        squere++;
+      if (board[r][c] === 0) {
+        availableMoves++;
+
+        return;
+      }
+
+      if (c > 0 && board[r][c] === board[r][c - 1]) {
+        availableMoves++;
+
+        return;
+      }
+
+      if (r > 0 && board[r][c] === board[r - 1][c]) {
+        availableMoves++;
+
+        return;
       }
     }
   }
 
-  if (squere === 16) {
+  if (availableMoves === 0) {
     document.querySelector('.message-lose').style.visibility = 'visible';
     document.removeEventListener('keyup');
   }
