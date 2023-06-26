@@ -8,13 +8,22 @@ const messageWin = gameContainer.querySelector('.message-win');
 const messageLose = gameContainer.querySelector('.message-lose');
 const gameScore = gameContainer.querySelector('.game-score');
 const gameRow = gameContainer.querySelectorAll('tr');
+const probabilityGeneratingNumber = 0.1;
+const numberFour = 4;
+const numberTwo = 2;
+const moveLeft = 'ArrowLeft';
+const moveRight = 'ArrowRight';
+const moveUp = 'ArrowUp';
+const moveDown = 'ArrowDown';
+const winnerNumber = '2048';
 let movePossible = false;
 
 function generateRandom() {
   const randomI = Math.floor(Math.random() * cells.length);
 
   if (cells[randomI].textContent === '') {
-    const randomNum = Math.random() < 0.1 ? '4' : '2';
+    const randomNum = Math.random() < probabilityGeneratingNumber
+      ? numberFour : numberTwo;
 
     cells[randomI].textContent = randomNum;
     cells[randomI].classList.add('field-cell--' + randomNum);
@@ -51,34 +60,30 @@ function updateCells() {
     if (cell.textContent === '') {
       cell.className = 'field-cell';
     } else {
-      cell.className = 'field-cell';
-      cell.classList.add('field-cell--' + cell.textContent);
+      cell.className = `field-cell field-cell--${cell.textContent}`;
     }
   });
 }
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') {
+  if (e.key === moveLeft) {
     slideLeft();
-    checkGameOver();
   }
 
-  if (e.key === 'ArrowRight') {
+  if (e.key === moveRight) {
     slideRight();
-    checkGameOver();
   }
 
-  if (e.key === 'ArrowUp') {
+  if (e.key === moveUp) {
     slideUp();
-    checkGameOver();
   }
 
-  if (e.key === 'ArrowDown') {
+  if (e.key === moveDown) {
     slideDown();
-    checkGameOver();
   }
 
   checkGameWin();
+  checkGameOver();
 });
 
 function filterZero(cellsArray) {
@@ -127,6 +132,7 @@ function slideLeft() {
   if (movePossible) {
     updateCells();
     generateRandom();
+    checkGameOver();
   }
 }
 
@@ -154,6 +160,7 @@ function slideRight() {
   if (movePossible) {
     updateCells();
     generateRandom();
+    checkGameOver();
   }
 }
 
@@ -184,6 +191,7 @@ function slideUp() {
   if (movePossible) {
     updateCells();
     generateRandom();
+    checkGameOver();
   }
 }
 
@@ -218,6 +226,7 @@ function slideDown() {
   if (movePossible) {
     updateCells();
     generateRandom();
+    checkGameOver();
   }
 }
 
@@ -248,7 +257,8 @@ function checkGameOver() {
 }
 
 function checkGameWin() {
-  const winCell = Array.from(cells).some(cell => cell.textContent === '2048');
+  const winCell = Array.from(cells).some(
+    cell => cell.textContent === winnerNumber);
 
   if (winCell) {
     messageWin.classList.remove('hidden');
