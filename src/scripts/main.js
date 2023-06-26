@@ -1,6 +1,6 @@
 'use strict';
 
-const message = document.querySelector('.message');
+const messages = document.querySelectorAll('.message');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const button = document.querySelector('.button');
@@ -46,10 +46,10 @@ button.addEventListener('click', () => {
     }
   }
 
-  message.classList.add('hidden');
+  [...messages].map((message) => message.classList.add('hidden'));
   score.textContent = 0;
 
-  cells.forEach((cell) => {
+  [...cells].map((cell) => {
     cell.className = 'field-cell';
     cell.textContent = '';
   });
@@ -98,21 +98,17 @@ document.addEventListener('keyup', (e) => {
   addCell();
   render();
 
-  if (
-    Array.from(cells).some((cell) =>
-      cell.classList.contains('field-cell--2048')
-    )
-  ) {
+  if ([...cells].some((cell) => cell.classList.contains('field-cell--2048'))) {
     messageWin.classList.remove('hidden');
   }
 
-  let endH = true;
-  let endV = true;
+  let horizontalEnd = true;
+  let verticalEnd = true;
 
   for (let r = 0; r < tableGame.length; r++) {
-    for (let c = 0; c < tableGame[r].length - 1; c++) {
+    for (let c = 0; c < tableGame.length - 1; c++) {
       if (tableGame[r][c] === tableGame[r][c + 1]) {
-        endH = false;
+        horizontalEnd = false;
 
         return;
       }
@@ -129,7 +125,7 @@ document.addEventListener('keyup', (e) => {
 
     for (let c = 0; c < row.length - 1; c++) {
       if (row[c] === row[c + 1]) {
-        endV = false;
+        verticalEnd = false;
 
         return;
       }
@@ -138,8 +134,8 @@ document.addEventListener('keyup', (e) => {
 
   if (
     tableGame.every((row) => row.every((cell) => cell !== 0))
-    && endV === true
-    && endH === true
+    && verticalEnd === true
+    && horizontalEnd === true
   ) {
     messageLose.classList.remove('hidden');
   }
@@ -222,7 +218,6 @@ function moveUp() {
     ];
 
     row = move(row);
-
     tableGame[0][i] = row[0];
     tableGame[1][i] = row[1];
     tableGame[2][i] = row[2];
@@ -248,6 +243,3 @@ function moveDown() {
     tableGame[3][i] = row[3];
   }
 }
-
-addCell();
-render();
