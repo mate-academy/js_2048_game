@@ -25,7 +25,7 @@ function getRandomCell() {
   const c = Math.floor(Math.random() * columns);
 
   if (board[r][c] === 0) {
-    board[r][c] = 2;
+    board[r][c] = Math.random() < 0.9 ? 2 : 4;
     updateGame();
   } else {
     getRandomCell();
@@ -52,6 +52,22 @@ function winGame() {
       }
     }
   }
+}
+
+function loseGame() {
+  if (hasEmptyCell()) {
+    return;
+  }
+
+  for (let r = 0; r < rows - 1; r++) {
+    for (let c = 0; c < columns - 1; c++) {
+      if (board[r][c] === board[r][c + 1] || board[r][c] === board[r + 1][c]) {
+        return;
+      }
+    }
+  }
+
+  messageLose.classList.remove('hidden');
 }
 
 function resetBoard(table) {
@@ -113,12 +129,7 @@ document.addEventListener('keydown', ev => {
 
   gameScore.textContent = score;
 
-  if (!hasEmptyCell()) {
-    messageLose.classList.remove('hidden');
-  } else {
-    messageLose.classList.add('hidden');
-  }
-
+  loseGame();
   winGame();
   getRandomCell();
 });
