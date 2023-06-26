@@ -28,7 +28,11 @@ function setGame() {
     [0, 0, 0, 0],
   ];
 
+  score = 0;
+  document.querySelector('.game-score').innerText = score;
   gameField.innerHTML = '';
+  loseMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
