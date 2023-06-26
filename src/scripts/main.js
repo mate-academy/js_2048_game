@@ -8,7 +8,7 @@ const winGameText = document.querySelector('.message-win');
 const cells = document.querySelectorAll('.field-cell');
 
 const numOfCells = 4;
-let scoreCount = 0;
+let mergedScore = 0;
 let gameField;
 let gameStarted = false;
 
@@ -31,9 +31,11 @@ function startGame() {
   gameField = Array.from({ length: numOfCells }, () =>
     Array(numOfCells).fill(0)
   );
-  scoreCount = 0;
-  score.innerText = scoreCount;
+  mergedScore = 0;
+  score.innerText = mergedScore;
 
+  addRandomNumber();
+  addRandomNumber();
   updateCells();
 }
 
@@ -44,8 +46,8 @@ function restartGame() {
   gameField = Array.from({ length: numOfCells }, () =>
     Array(numOfCells).fill(0)
   );
-  scoreCount = 0;
-  score.innerText = scoreCount;
+  mergedScore = 0;
+  score.innerText = mergedScore;
 
   addRandomNumber();
   addRandomNumber();
@@ -85,7 +87,7 @@ function updateCells() {
     }
   }
 
-  score.innerText = scoreCount;
+  score.innerText = mergedScore;
 
   if (isGameWon()) {
     winGameText.classList.remove('hidden');
@@ -150,16 +152,20 @@ document.addEventListener('keyup', (e) => {
 
 function moveUp() {
   let moved = false;
+  let currentMergedScore = 0;
 
   for (let j = 0; j < numOfCells; j++) {
     for (let i = 1; i < numOfCells; i++) {
       if (gameField[i][j] !== 0) {
         for (let k = i; k > 0; k--) {
-          if (
-            gameField[k - 1][j] === 0 ||
-            gameField[k - 1][j] === gameField[k][j]
-          ) {
-            gameField[k - 1][j] += gameField[k][j];
+          if (gameField[k - 1][j] === 0
+            || gameField[k - 1][j] === gameField[k][j]) {
+            if (gameField[k - 1][j] === gameField[k][j]) {
+              gameField[k - 1][j] *= 2;
+              currentMergedScore += gameField[k - 1][j];
+            } else {
+              gameField[k - 1][j] = gameField[k][j];
+            }
             gameField[k][j] = 0;
             moved = true;
           }
@@ -169,23 +175,27 @@ function moveUp() {
   }
 
   if (moved) {
-    scoreCount += calculateScore();
+    mergedScore += currentMergedScore;
     moveUp();
   }
 }
 
 function moveDown() {
   let moved = false;
+  let currentMergedScore = 0;
 
   for (let j = 0; j < numOfCells; j++) {
     for (let i = numOfCells - 2; i >= 0; i--) {
       if (gameField[i][j] !== 0) {
         for (let k = i; k < numOfCells - 1; k++) {
-          if (
-            gameField[k + 1][j] === 0 ||
-            gameField[k + 1][j] === gameField[k][j]
-          ) {
-            gameField[k + 1][j] += gameField[k][j];
+          if (gameField[k + 1][j] === 0
+            || gameField[k + 1][j] === gameField[k][j]) {
+            if (gameField[k + 1][j] === gameField[k][j]) {
+              gameField[k + 1][j] *= 2;
+              currentMergedScore += gameField[k + 1][j];
+            } else {
+              gameField[k + 1][j] = gameField[k][j];
+            }
             gameField[k][j] = 0;
             moved = true;
           }
@@ -195,23 +205,27 @@ function moveDown() {
   }
 
   if (moved) {
-    scoreCount += calculateScore();
+    mergedScore += currentMergedScore;
     moveDown();
   }
 }
 
 function moveLeft() {
   let moved = false;
+  let currentMergedScore = 0;
 
   for (let i = 0; i < numOfCells; i++) {
     for (let j = 1; j < numOfCells; j++) {
       if (gameField[i][j] !== 0) {
         for (let k = j; k > 0; k--) {
-          if (
-            gameField[i][k - 1] === 0 ||
-            gameField[i][k - 1] === gameField[i][k]
-          ) {
-            gameField[i][k - 1] += gameField[i][k];
+          if (gameField[i][k - 1] === 0
+            || gameField[i][k - 1] === gameField[i][k]) {
+            if (gameField[i][k - 1] === gameField[i][k]) {
+              gameField[i][k - 1] *= 2;
+              currentMergedScore += gameField[i][k - 1];
+            } else {
+              gameField[i][k - 1] = gameField[i][k];
+            }
             gameField[i][k] = 0;
             moved = true;
           }
@@ -221,23 +235,27 @@ function moveLeft() {
   }
 
   if (moved) {
-    scoreCount += calculateScore();
+    mergedScore += currentMergedScore;
     moveLeft();
   }
 }
 
 function moveRight() {
   let moved = false;
+  let currentMergedScore = 0;
 
   for (let i = 0; i < numOfCells; i++) {
     for (let j = numOfCells - 2; j >= 0; j--) {
       if (gameField[i][j] !== 0) {
         for (let k = j; k < numOfCells - 1; k++) {
-          if (
-            gameField[i][k + 1] === 0 ||
-            gameField[i][k + 1] === gameField[i][k]
-          ) {
-            gameField[i][k + 1] += gameField[i][k];
+          if (gameField[i][k + 1] === 0
+            || gameField[i][k + 1] === gameField[i][k]) {
+            if (gameField[i][k + 1] === gameField[i][k]) {
+              gameField[i][k + 1] *= 2;
+              currentMergedScore += gameField[i][k + 1];
+            } else {
+              gameField[i][k + 1] = gameField[i][k];
+            }
             gameField[i][k] = 0;
             moved = true;
           }
@@ -247,19 +265,7 @@ function moveRight() {
   }
 
   if (moved) {
-    scoreCount += calculateScore();
+    mergedScore += currentMergedScore;
     moveRight();
   }
-}
-
-function calculateScore() {
-  let score = 0;
-
-  for (let i = 0; i < numOfCells; i++) {
-    for (let j = 0; j < numOfCells; j++) {
-      score += gameField[i][j];
-    }
-  }
-
-  return score;
 }
