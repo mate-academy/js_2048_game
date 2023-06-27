@@ -17,6 +17,7 @@ const moveUp = 'ArrowUp';
 const moveDown = 'ArrowDown';
 const winnerNumber = '2048';
 let movePossible = false;
+let adjacentCells = false;
 
 function generateRandom() {
   const randomI = Math.floor(Math.random() * cells.length);
@@ -66,20 +67,22 @@ function updateCells() {
 }
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === moveLeft) {
-    slideLeft();
-  }
+  switch (e.key) {
+    case moveLeft:
+      slideLeft();
+      break;
 
-  if (e.key === moveRight) {
-    slideRight();
-  }
+    case moveRight:
+      slideRight();
+      break;
 
-  if (e.key === moveUp) {
-    slideUp();
-  }
+    case moveUp:
+      slideUp();
+      break;
 
-  if (e.key === moveDown) {
-    slideDown();
+    case moveDown:
+      slideDown();
+      break;
   }
 
   checkGameWin();
@@ -132,7 +135,6 @@ function slideLeft() {
   if (movePossible) {
     updateCells();
     generateRandom();
-    checkGameOver();
   }
 }
 
@@ -160,7 +162,6 @@ function slideRight() {
   if (movePossible) {
     updateCells();
     generateRandom();
-    checkGameOver();
   }
 }
 
@@ -191,7 +192,6 @@ function slideUp() {
   if (movePossible) {
     updateCells();
     generateRandom();
-    checkGameOver();
   }
 }
 
@@ -226,33 +226,6 @@ function slideDown() {
   if (movePossible) {
     updateCells();
     generateRandom();
-    checkGameOver();
-  }
-}
-
-function checkGameOver() {
-  const emptyCells = Array.from(cells).some(cell => cell.textContent === '');
-
-  let adjacentCells = false;
-
-  for (let i = 0; i < cells.length; i++) {
-    const currentCell = cells[i];
-    const rightCell = cells[i + 1];
-    const bottomCell = cells[i + 4];
-
-    if (rightCell && currentCell.textContent === rightCell.textContent) {
-      adjacentCells = true;
-      break;
-    }
-
-    if (bottomCell && currentCell.textContent === bottomCell.textContent) {
-      adjacentCells = true;
-      break;
-    }
-  }
-
-  if (!emptyCells && !adjacentCells) {
-    messageLose.classList.remove('hidden');
   }
 }
 
@@ -262,5 +235,32 @@ function checkGameWin() {
 
   if (winCell) {
     messageWin.classList.remove('hidden');
+  }
+}
+
+function checkGameOver() {
+  const emptyCells = Array.from(cells).some(cell => cell.textContent === '');
+
+  adjacentCells = false;
+
+  gameRow.forEach((row, rowIndex) => {
+    const rowCells = row.querySelectorAll('td');
+    const cellsArray = [...rowCells].map(td => td.textContent);
+
+    cellsArray.forEach((currentCell, i) => {
+      const rightCell = cellsArray[i + 1];
+      const bottomCell = rowIndex < gameRow.length - 1
+        ? gameRow[rowIndex + 1].children[i].textContent
+        : null;
+
+      if ((rightCell && currentCell === rightCell)
+        || (bottomCell && currentCell === bottomCell)) {
+        adjacentCells = true;
+      }
+    });
+  });
+
+  if (!emptyCells && !adjacentCells) {
+    messageLose.classList.remove('hidden');
   }
 }
