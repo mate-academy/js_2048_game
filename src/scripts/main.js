@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 
 'use strict';
 
@@ -160,8 +161,7 @@ function sumArowUp() {
         arrScore.push((+tbody.rows[i].cells[cellIndex].textContent));
 
         tbody.rows[i].cells[cellIndex].className
-        = (`field-cell field-cell--
-        ${tbody.rows[i].cells[cellIndex].textContent}`);
+        = (`field-cell field-cell--${tbody.rows[i].cells[cellIndex].textContent}`);
 
         tbody.rows[i + 1].cells[cellIndex].className = 'field-cell';
         tbody.rows[i + 1].cells[cellIndex].textContent = '';
@@ -181,8 +181,7 @@ function moveCellUp(cellIndex) {
           = tbody.rows[i].cells[cellIndex].textContent;
 
           tbody.rows[i - 1].cells[cellIndex].className
-          = (`field-cell field-cell--
-          ${tbody.rows[i].cells[cellIndex].textContent}`);
+          = (`field-cell field-cell--${tbody.rows[i].cells[cellIndex].textContent}`);
 
           tbody.rows[i].cells[cellIndex].className = 'field-cell'; ;
           tbody.rows[i].cells[cellIndex].textContent = '';
@@ -208,8 +207,7 @@ function sumArowDown() {
         arrScore.push(tbody.rows[i].cells[cellIndex].textContent);
 
         tbody.rows[i].cells[cellIndex].className
-        = (`field-cell field-cell--
-        ${tbody.rows[i].cells[cellIndex].textContent}`);
+        = (`field-cell field-cell--${tbody.rows[i].cells[cellIndex].textContent}`);
 
         tbody.rows[i - 1].cells[cellIndex].className = 'field-cell';
         tbody.rows[i - 1].cells[cellIndex].textContent = '';
@@ -229,8 +227,7 @@ function moveCellDown(cellIndex) {
           = tbody.rows[i].cells[cellIndex].textContent;
 
           tbody.rows[i + 1].cells[cellIndex].className
-          = (`field-cell field-cell--
-          ${tbody.rows[i].cells[cellIndex].textContent}`);
+          = (`field-cell field-cell--${tbody.rows[i].cells[cellIndex].textContent}`);
 
           tbody.rows[i].cells[cellIndex].className = 'field-cell'; ;
           tbody.rows[i].cells[cellIndex].textContent = '';
@@ -256,8 +253,7 @@ function sumArowRight() {
         arrScore.push(tbody.rows[rowindex].cells[i].textContent);
 
         tbody.rows[rowindex].cells[i].className
-        = (`field-cell field-cell--
-        ${tbody.rows[rowindex].cells[i].textContent}`);
+        = (`field-cell field-cell--${tbody.rows[rowindex].cells[i].textContent}`);
         tbody.rows[rowindex].cells[i - 1].className = 'field-cell';
         tbody.rows[rowindex].cells[i - 1].textContent = '';
         table.dataset.moove = 1;
@@ -277,8 +273,7 @@ function moveCellRight(rowindex) {
           = tbody.rows[rowindex].cells[i].textContent;
 
           tbody.rows[rowindex].cells[i + 1].className
-          = (`field-cell field-cell--
-          ${tbody.rows[rowindex].cells[i].textContent}`);
+          = (`field-cell field-cell--${tbody.rows[rowindex].cells[i].textContent}`);
 
           tbody.rows[rowindex].cells[i].className = 'field-cell'; ;
           tbody.rows[rowindex].cells[i].textContent = '';
@@ -304,8 +299,7 @@ function sumArrowLeft() {
         arrScore.push(tbody.rows[rowindex].cells[i].textContent);
 
         tbody.rows[rowindex].cells[i].className
-        = (`field-cell field-cell--
-        ${tbody.rows[rowindex].cells[i].textContent}`);
+        = (`field-cell field-cell--${tbody.rows[rowindex].cells[i].textContent}`);
 
         tbody.rows[rowindex].cells[i + 1].className = 'field-cell';
         tbody.rows[rowindex].cells[i + 1].textContent = '';
@@ -324,9 +318,7 @@ function moveCellLeft(rowindex) {
           tbody.rows[rowindex].cells[i - 1].textContent
           = tbody.rows[rowindex].cells[i].textContent;
 
-          tbody.rows[rowindex].cells[i - 1].className
-          = (`field-cell field-cell--
-          ${tbody.rows[rowindex].cells[i].textContent}`);
+          tbody.rows[rowindex].cells[i - 1].className = (`field-cell field-cell--${tbody.rows[rowindex].cells[i].textContent}`);
           tbody.rows[rowindex].cells[i].className = 'field-cell';
           tbody.rows[rowindex].cells[i].textContent = '';
           table.dataset.moove = 1;
@@ -376,7 +368,7 @@ function randomItemValue() {
   const randomValue = Math.random();
 
   if (randomValue < 0.1) {
-    return 2048;
+    return 4;
   } else {
     return 2;
   }
