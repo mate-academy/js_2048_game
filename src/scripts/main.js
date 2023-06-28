@@ -1,29 +1,34 @@
 'use strict';
 
-const start = document.querySelector('.start');
-const cells = document.querySelectorAll('.field-cell');
+const boardSize = 16;
 const bookedCells = [];
-const arrayWithValues = [];
+const arrayOfValues = [];
+const newValues = [2, 2, 2, 2, 2, 2, 2, 2, 2];
 
-const score = document.querySelector('.game-score');
-let scoreCounter = 0;
+const cells = document.querySelectorAll('.field-cell');
+const messagStart = document.querySelector('.message-start');
+const start = document.querySelector('.start');
 
 const messageLose = document.querySelector('.message-lose');
-let noUpdates = true;
-let finish = false;
+let lose = false;
 
 const messagWin = document.querySelector('.message-win');
 let win = false;
 
+const score = document.querySelector('.game-score');
+let scoreCounter = 0;
+
+newValues.splice(Math.floor(Math.random() * 10), 0, 4);
+
 const takeStep = () => {
-  let position = Math.floor(Math.random() * 16);
+  let position = Math.floor(Math.random() * boardSize);
 
   while (bookedCells.includes(position)) {
-    position = Math.floor(Math.random() * 16);
+    position = Math.floor(Math.random() * boardSize);
   }
 
   const step = cells[position];
-  const value = Math.ceil((Math.random() * 10) % 2) * 2;
+  const value = newValues[Math.floor(Math.random() * 10)];
 
   step.classList.add(`field-cell--${value}`);
   step.innerHTML = value;
@@ -32,13 +37,20 @@ const takeStep = () => {
 };
 
 const newGame = () => {
-  changeScore(0);
+  handleScore(0);
+
+  lose = false;
+  win = false;
 
   takeStep();
   takeStep();
+
+  start.classList.remove('start');
+  start.classList.add('restart');
+  start.innerHTML = 'Restart';
 };
 
-const clearCell = () => {
+const clearBoard = () => {
   for (const cell of cells) {
     if (cell.classList.length > 1) {
       const listOfClasses
@@ -50,22 +62,22 @@ const clearCell = () => {
   }
 };
 
-const saveCellsValues = () => {
-  for (let i = 0; i < cells.length; i++) {
-    if (cells[i].innerHTML) {
-      arrayWithValues.push([i, +cells[i].innerHTML]);
+const keepCellsValues = () => {
+  cells.forEach((cell, index) => {
+    if (cell.innerHTML) {
+      arrayOfValues.push([index, +cell.innerHTML]);
     }
-  }
+  });
 };
 
 const getBookedPositions = () => {
   clearArray(bookedCells);
 
-  for (let i = 0; i < cells.length; i++) {
-    if (cells[i].innerHTML !== '') {
-      bookedCells.push(i);
+  cells.forEach((cell, index) => {
+    if (cell.innerHTML !== '') {
+      bookedCells.push(index);
     }
-  }
+  });
 };
 
 const fillInBoard = (array) => {
@@ -81,112 +93,70 @@ const clearArray = (array) => {
   }
 };
 
-const changeScore = (value) => {
+const handleScore = (value) => {
   value === 0 ? scoreCounter = value : scoreCounter += value;
   score.innerHTML = scoreCounter;
 };
-
-newGame();
-
-start.addEventListener('click', () => {
-  clearCell();
-  clearArray(bookedCells);
-  clearArray(arrayWithValues);
-  newGame();
-  messageLose.classList.add('hidden');
-});
 
 const handleArrowClick = (side) => {
   for (let i = 0; i < 4; i++) {
     let slice;
 
     if (side === 'ArrowUp' || side === 'ArrowDown') {
-      slice = arrayWithValues.filter(value => value[0] % 4 === i);
+      slice = arrayOfValues.filter(value => value[0] % 4 === i);
     } else {
-      slice = arrayWithValues.filter(value => Math.floor(value[0] / 4) === i);
+      slice = arrayOfValues.filter(value => Math.floor(value[0] / 4) === i);
     }
 
     if (slice.length) {
       let extremeCellStep;
       let extremeCellPosition;
-      // let start;
 
       switch (side) {
         case 'ArrowUp':
-          // start = 0;
           extremeCellPosition = i;
           extremeCellStep = 4;
           break;
 
         case 'ArrowDown':
-          // start = 3;
           extremeCellPosition = 12 + i;
           extremeCellStep = -4;
           break;
 
         case 'ArrowRight':
-          // start = 3;
           extremeCellPosition = 4 * i + 3;
           extremeCellStep = -1;
           break;
 
         case 'ArrowLeft':
-          // start = 0;
           extremeCellPosition = 4 * i;
           extremeCellStep = 1;
           break;
       }
 
       const step = extremeCellStep > 0 ? 1 : -1;
+      const leftOrUp = (side === 'ArrowUp' || side === 'ArrowLeft');
 
-      if (side === 'ArrowUp' || side === 'ArrowLeft') {
-        for (let j = 0; j < 4; j++) {
-          if (slice[j]) {
-            if (slice[j][0] - extremeCellPosition > 0) {
-              slice[j][0] = extremeCellPosition;
-              noUpdates = false;
-            }
+      for (let j = 0; j < slice.length; j++) {
+        const k = leftOrUp ? j : slice.length - j - 1;
 
-            if (slice[j + step] && slice[j][1] === slice[j + step][1]) {
-              const newValue = slice[j][1] * 2;
+        if (slice[k + step] && slice[k][1] === slice[k + step][1]) {
+          const newValue = slice[k][1] * 2;
 
-              slice[j][1] = newValue;
-              slice.splice(j + step, 1);
-              changeScore(newValue);
-
-              if (newValue === 2048) {
-                win = true;
-              }
-
-              noUpdates = false;
-            }
-
-            extremeCellPosition += extremeCellStep;
-          }
+          slice[k][1] = newValue;
+          slice.splice(k + step, 1);
+          handleScore(newValue);
         }
-      } else {
-        for (let j = 3; j >= 0; j--) {
-          if (slice[j]) {
-            if (slice[j][0] - extremeCellPosition < 0) {
-              slice[j][0] = extremeCellPosition;
-              noUpdates = false;
-            }
+      }
 
-            if (slice[j + step] && slice[j][1] === slice[j + step][1]) {
-              const newValue = slice[j][1] * 2;
+      for (let j = 0; j < slice.length; j++) {
+        const k = leftOrUp ? j : slice.length - j - 1;
 
-              slice[j][1] = newValue;
-              slice.splice(j + step, 1);
-              changeScore(newValue);
-
-              if (newValue === 2048) {
-                win = true;
-              }
-
-              noUpdates = false;
-            }
-            extremeCellPosition += extremeCellStep;
+        if (slice[k]) {
+          if ((slice[k][0] - extremeCellPosition) * step > 0) {
+            slice[k][0] = extremeCellPosition;
           }
+          extremeCellPosition += extremeCellStep;
         }
       }
 
@@ -194,253 +164,61 @@ const handleArrowClick = (side) => {
     }
   }
 
-  if (bookedCells.length === 16 && noUpdates) {
-    finish = true;
-    console.log('finish');
-    // div.classList.toggle("visible", i < 10);
+  win = document.querySelector('.field-cell--2048');
+  messagWin.classList.toggle('hidden', !win);
+};
+
+const checkNewStepAvailable = (trigger) => {
+  if (trigger) {
+    let pairs = 0;
+
+    for (let i = 0; i < boardSize && pairs === 0; i += 2) {
+      const testCell = +cells[i].innerHTML;
+      const rightsCell = +cells[i + 1].innerHTML;
+      const lowerCell = +cells[i + 4].innerHTML;
+
+      switch (true) {
+        case (testCell === rightsCell):
+          pairs++;
+          break;
+
+        case (lowerCell && testCell === lowerCell):
+          pairs++;
+          break;
+      }
+    }
+
+    lose = pairs === 0;
+    messageLose.classList.toggle('hidden', !lose);
   }
 };
 
-document.addEventListener('keydown', evn => {
-  if (finish) {
-    console.log('return');
-    return;
-  }
+start.addEventListener('click', () => {
+  clearBoard();
+  clearArray(bookedCells);
+  clearArray(arrayOfValues);
 
-  const key = evn.key;
-
-  saveCellsValues();
-  clearCell();
-
-  handleArrowClick(key);
-
-  clearArray(arrayWithValues);
-  getBookedPositions();
-  takeStep();
+  newGame();
 
   messagWin.classList.toggle('hidden', !win);
-  messageLose.classList.toggle('hidden', !finish);
+  messageLose.classList.toggle('hidden', !lose);
+  messagStart.classList.toggle('hidden', true);
 });
 
-// 'use strict';
+document.addEventListener('keydown', evn => {
+  if (document.querySelector('.restart') && !lose) {
+    const key = evn.key;
 
-// const start = document.querySelector('.start');
-// const cells = document.querySelectorAll('.field-cell');
-// const score = document.querySelector('.game-score');
+    keepCellsValues();
+    clearBoard();
+    handleArrowClick(key);
+    clearArray(arrayOfValues);
+    getBookedPositions();
 
-// let scoreCounter = 0;
-// const bookedCells = [];
-// const arrayWithValues = [];
+    if (bookedCells.length !== boardSize) {
+      setTimeout(() => takeStep(), 150);
+    }
 
-// const takeStep = () => {
-//   let position = Math.floor(Math.random() * 16);
-
-//   while (bookedCells.includes(position)) {
-//     position = Math.floor(Math.random() * 16);
-//   }
-
-//   const step = cells[position];
-//   const value = Math.ceil((Math.random() * 10) % 2) * 2;
-
-//   step.classList.add(`field-cell--${value}`);
-//   step.innerHTML = value;
-
-//   bookedCells.push(position);
-// };
-
-// const newGame = () => {
-//   changeScore(0);
-
-//   takeStep();
-//   takeStep();
-// };
-
-// const clearCell = () => {
-//   for (const cell of cells) {
-//     if (cell.classList.length > 1) {
-//       const listOfClasses
-//         = cell.classList.toString().replace('field-cell ', '');
-
-//       cell.classList.remove(listOfClasses);
-//       cell.innerHTML = '';
-//     }
-//   }
-// };
-
-// const saveCellsValues = () => {
-//   for (let i = 0; i < cells.length; i++) {
-//     if (cells[i].innerHTML) {
-//       arrayWithValues.push([i, +cells[i].innerHTML]);
-//     }
-//   }
-// };
-
-// const getBookedPositions = () => {
-//   clearArray(bookedCells);
-
-//   for (let i = 0; i < cells.length; i++) {
-//     if (cells[i].innerHTML !== '') {
-//       bookedCells.push(i);
-//     }
-//   }
-// };
-
-// const fillInBoard = (array) => {
-//   array.forEach(cell => {
-//     cells[cell[0]].classList.add(`field-cell--${cell[1]}`);
-//     cells[cell[0]].innerHTML = cell[1];
-//   });
-// };
-
-// const clearArray = (array) => {
-//   while (array.length > 0) {
-//     array.pop();
-//   }
-// };
-
-// const changeScore = (value) => {
-//   value === 0 ? scoreCounter = value : scoreCounter += value;
-//   score.innerHTML = scoreCounter;
-// };
-
-// newGame();
-
-// start.addEventListener('click', () => {
-//   clearCell();
-//   clearArray(bookedCells);
-//   clearArray(arrayWithValues);
-//   newGame();
-// });
-
-// document.addEventListener('keydown', evn => {
-//   const key = evn.key;
-
-//   saveCellsValues();
-//   clearCell();
-
-//   switch (key) {
-//     case 'ArrowUp':
-//       for (let i = 0; i < 4; i++) {
-//         const slice = arrayWithValues.filter(value => value[0] % 4 === i);
-
-//         if (slice.length) {
-//           let upperCell = i;
-
-//           for (let j = 0; j < 4; j++) {
-//             if (slice[j]) {
-//               if (slice[j][0] > upperCell) {
-//                 slice[j][0] = upperCell;
-//               }
-
-//               if (slice[j + 1] && slice[j][1] === slice[j + 1][1]) {
-//                 const newValue = slice[j][1] * 2;
-
-//                 slice[j][1] = newValue;
-//                 slice.splice(j + 1, 1);
-//                 changeScore(newValue);
-//               }
-
-//               upperCell += 4;
-//             }
-//           }
-
-//           fillInBoard(slice);
-//         }
-//       }
-//       break;
-
-//     case 'ArrowDown':
-//       for (let i = 0; i < 4; i++) {
-//         const slice = arrayWithValues.filter(value => value[0] % 4 === i);
-
-//         if (slice.length) {
-//           let lowerCell = 12 + i;
-
-//           for (let j = 3; j >= 0; j--) {
-//             if (slice[j]) {
-//               if (slice[j][0] < lowerCell) {
-//                 slice[j][0] = lowerCell;
-//               }
-
-//               if (slice[j - 1] && slice[j][1] === slice[j - 1][1]) {
-//                 const newValue = slice[j][1] * 2;
-
-//                 slice[j][1] = newValue;
-//                 slice.splice(j - 1, 1);
-//                 changeScore(newValue);
-//               }
-//               lowerCell -= 4;
-//             }
-//           }
-
-//           fillInBoard(slice);
-//         }
-//       }
-//       break;
-
-//     case 'ArrowRight':
-//       for (let i = 0; i < 4; i++) {
-//         const slice = arrayWithValues.filter(
-//           value => Math.floor(value[0] / 4) === i
-//         );
-
-//         if (slice.length) {
-//           let rightCell = 4 * i + 3;
-
-//           for (let j = 3; j >= 0; j--) {
-//             if (slice[j]) {
-//               if (slice[j][0] < rightCell) {
-//                 slice[j][0] = rightCell;
-//               }
-
-//               if (slice[j - 1] && slice[j][1] === slice[j - 1][1]) {
-//                 const newValue = slice[j][1] * 2;
-
-//                 slice[j][1] = newValue;
-//                 slice.splice(j - 1, 1);
-//                 changeScore(newValue);
-//               }
-//               rightCell -= 1;
-//             }
-//           }
-
-//           fillInBoard(slice);
-//         }
-//       }
-//       break;
-
-//     case 'ArrowLeft':
-//       for (let i = 0; i < 4; i++) {
-//         const slice
-//           = arrayWithValues.filter(value => Math.floor(value[0] / 4) === i);
-
-//         if (slice.length) {
-//           let leftCell = 4 * i;
-
-//           for (let j = 0; j < 4; j++) {
-//             if (slice[j]) {
-//               if (slice[j][0] > leftCell) {
-//                 slice[j][0] = leftCell;
-//               }
-
-//               if (slice[j + 1] && slice[j][1] === slice[j + 1][1]) {
-//                 const newValue = slice[j][1] * 2;
-
-//                 slice[j][1] = newValue;
-//                 slice.splice(j + 1, 1);
-//                 changeScore(newValue);
-//               }
-//               leftCell += 1;
-//             }
-//           }
-
-//           fillInBoard(slice);
-//         }
-//       }
-//       break;
-//   }
-
-//   clearArray(arrayWithValues);
-//   getBookedPositions();
-//   takeStep();
-// });
+    checkNewStepAvailable(bookedCells.length === boardSize);
+  }
+});
