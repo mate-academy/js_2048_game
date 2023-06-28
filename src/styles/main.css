@@ -19,126 +19,128 @@ body {
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
   user-select: none;
+}
 
-  &--2 {
-    background: #eee4dc;
+.field_cell--2 {
+  background: #eee4dc;
+}
 
-    &::after {
-      content: "2";
-      display: block;
-      text-align: center;
-    }
-  }
+.field_cell--2::after {
+  content: "2";
+  display: block;
+  text-align: center;
+}
 
-  &--4 {
-    background: #ede0c8;
+.field_cell--4 {
+  background: #ede0c8;
+}
 
-    &::after {
-      content: "4";
-      display: block;
-      text-align: center;
-    }
-  }
+.field_cell--4::after {
+  content: "4";
+  display: block;
+  text-align: center;
+}
 
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+.field_cell--8 {
+  background: #f2b179;
+  color: #f9f6f2;
+}
 
-    &::after {
-      content: "8";
-      display: block;
-      text-align: center;
-    }
-  }
+.field_cell--8::after {
+  content: "8";
+  display: block;
+  text-align: center;
+}
 
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+.field_cell--16 {
+  background: #f59563;
+  color: #f9f6f2;
+}
 
-    &::after {
-      content: "16";
-      display: block;
-      text-align: center;
-    }
-  }
+.field_cell--16::after {
+  content: "16";
+  display: block;
+  text-align: center;
+}
 
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+.field_cell--32 {
+  background: #f67c5f;
+  color: #f9f6f2;
+}
 
-    &::after {
-      content: "32";
-      display: block;
-      text-align: center;
-    }
-  }
+.field_cell--32::after {
+  content: "32";
+  display: block;
+  text-align: center;
+}
 
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+.field_cell--64 {
+  background: #f65e3b;
+  color: #f9f6f2;
+}
 
-    &::after {
-      content: "64";
-      display: block;
-      text-align: center;
-    }
-  }
+.field_cell--64::after {
+  content: "64";
+  display: block;
+  text-align: center;
+}
 
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+.field_cell--128 {
+  background: #edcf72;
+  color: #f9f6f2;
+}
 
-    &::after {
-      content: "128";
-      display: block;
-      text-align: center;
-    }
-  }
+.field_cell--128::after {
+  content: "128";
+  display: block;
+  text-align: center;
+}
 
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+.field_cell--256 {
+  background: #edcc61;
+  color: #f9f6f2;
+}
 
-    &::after {
-      content: "256";
-      display: block;
-      text-align: center;
-    }
-  }
+.field_cell--256::after {
+  content: "256";
+  display: block;
+  text-align: center;
+}
 
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+.field_cell--512 {
+  background: #edc850;
+  color: #f9f6f2;
+}
 
-    &::after {
-      content: "512";
-      display: block;
-      text-align: center;
-    }
-  }
+.field_cell--512::after {
+  content: "512";
+  display: block;
+  text-align: center;
+}
 
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+.field_cell--1024 {
+  background: #edc53f;
+  color: #f9f6f2;
+}
 
-    &::after {
-      content: "1024";
-      display: block;
-      text-align: center;
-    }
-  }
+.field_cell--1024::after {
+  content: "1024";
+  display: block;
+  text-align: center;
+}
 
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+.field_cell--2048 {
+  background: #edc22e;
+  color: #f9f6f2;
+}
 
-    &::after {
-      content: "2048";
-      display: block;
-      text-align: center;
-    }
-  }
+.field_cell--2048::after {
+  content: "2048";
+  display: block;
+  text-align: center;
 }
 
 .game_field {
@@ -199,25 +201,24 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-
   transition: 0.25s ease background;
 }
 
 .start {
   background: #1dae28;
   font-size: 20px;
+}
 
-  &:hover {
-    background: #179921;
-  }
+.start:hover {
+  background: #179921;
 }
 
 .restart {
   background: #f1b2b2;
+}
 
-  &:hover {
-    background: #f87474;
-  }
+.restart:hover {
+  background: #f87474;
 }
 
 .message {
@@ -250,4 +251,4 @@ h1 {
 .message_container {
   width: 100%;
   height: 150px;
-}
+}/*# sourceMappingURL=main.css.map */
