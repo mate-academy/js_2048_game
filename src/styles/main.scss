@@ -10,7 +10,7 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
+.field_cell {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
@@ -24,8 +24,8 @@ body {
   &--2 {
     background: #eee4dc;
 
-    &::after{
-      content: '2';
+    &::after {
+      content: "2";
       display: block;
       text-align: center;
     }
@@ -34,8 +34,8 @@ body {
   &--4 {
     background: #ede0c8;
 
-    &::after{
-      content: '4';
+    &::after {
+      content: "4";
       display: block;
       text-align: center;
     }
@@ -45,8 +45,8 @@ body {
     background: #f2b179;
     color: #f9f6f2;
 
-    &::after{
-      content: '8';
+    &::after {
+      content: "8";
       display: block;
       text-align: center;
     }
@@ -56,8 +56,8 @@ body {
     background: #f59563;
     color: #f9f6f2;
 
-    &::after{
-      content: '16';
+    &::after {
+      content: "16";
       display: block;
       text-align: center;
     }
@@ -67,8 +67,8 @@ body {
     background: #f67c5f;
     color: #f9f6f2;
 
-    &::after{
-      content: '32';
+    &::after {
+      content: "32";
       display: block;
       text-align: center;
     }
@@ -78,8 +78,8 @@ body {
     background: #f65e3b;
     color: #f9f6f2;
 
-    &::after{
-      content: '64';
+    &::after {
+      content: "64";
       display: block;
       text-align: center;
     }
@@ -89,8 +89,8 @@ body {
     background: #edcf72;
     color: #f9f6f2;
 
-    &::after{
-      content: '128';
+    &::after {
+      content: "128";
       display: block;
       text-align: center;
     }
@@ -100,8 +100,8 @@ body {
     background: #edcc61;
     color: #f9f6f2;
 
-    &::after{
-      content: '256';
+    &::after {
+      content: "256";
       display: block;
       text-align: center;
     }
@@ -111,8 +111,8 @@ body {
     background: #edc850;
     color: #f9f6f2;
 
-    &::after{
-      content: '512';
+    &::after {
+      content: "512";
       display: block;
       text-align: center;
     }
@@ -122,8 +122,8 @@ body {
     background: #edc53f;
     color: #f9f6f2;
 
-    &::after{
-      content: '1024';
+    &::after {
+      content: "1024";
       display: block;
       text-align: center;
     }
@@ -133,8 +133,8 @@ body {
     background: #edc22e;
     color: #f9f6f2;
 
-    &::after{
-      content: '2048';
+    &::after {
+      content: "2048";
       display: block;
       text-align: center;
     }

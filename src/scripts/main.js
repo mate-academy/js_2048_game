@@ -1,4 +1,45 @@
-import { board, score, cellsMatrix, startBtn, stopBtn, startMessage, winMessage, loseMessage } from './variables.js'
+/* eslint-disable no-param-reassign */
+'use strict';
+
+const [startBtn, stopBtn] = document.querySelectorAll('.button');
+const [loseMessage, winMessage, startMessage]
+  = document.querySelectorAll('.message');
+const cells = [...document.getElementsByClassName('field-cell')];
+const cellsMatrix = [];
+const score = document.getElementById('score');
+
+const board = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+
+let cellsIndex = 0;
+
+class Cell {
+  constructor(index, currentNumber = 0) {
+    this.currentNumber = currentNumber;
+    this.htmlElement = cells[index];
+  }
+
+  setNumber(number) {
+    this.htmlElement.classList.remove(`field_cell--${this.currentNumber}`);
+    this.currentNumber = number;
+    this.htmlElement.classList.add(`field_cell--${this.currentNumber}`);
+
+    return this;
+  }
+}
+
+for (let i = 0; i < 4; i++) {
+  cellsMatrix[i] = [];
+
+  for (let y = 0; y < 4; y++) {
+    cellsMatrix[i].push(new Cell(cellsIndex));
+    cellsIndex++;
+  }
+}
 
 let gameScore = 0;
 
@@ -13,7 +54,7 @@ startBtn.addEventListener('click', () => {
 });
 
 stopBtn.addEventListener('click', function() {
-  for(let row of board) {
+  for (const row of board) {
     row.fill(0, 0, 4);
   }
 
@@ -22,15 +63,15 @@ stopBtn.addEventListener('click', function() {
   updateNumbers();
   spawnCell();
 
-  loseMessage.classList.add('hidden')
+  loseMessage.classList.add('hidden');
 
   window.addEventListener('keydown', eventListener);
 });
 
 function eventListener(key) {
-  switch(key.code) {
+  switch (key.code) {
     case 'ArrowUp':
-      moveCellsUp()
+      moveCellsUp();
       spawnCell();
       break;
 
@@ -52,17 +93,17 @@ function eventListener(key) {
 }
 
 function moveCellsUp() {
-  for (let rowIndex in board) {
+  for (const rowIndex in board) {
     let column = [
       board[0][rowIndex],
       board[1][rowIndex],
       board[2][rowIndex],
       board[3][rowIndex],
-    ]
+    ];
 
     column = moveInRow(column);
 
-    for (let cellIndex in column) {
+    for (const cellIndex in column) {
       board[cellIndex][rowIndex] = column[cellIndex];
     }
   }
@@ -71,18 +112,18 @@ function moveCellsUp() {
 }
 
 function moveCellsDown() {
-  for (let rowIndex in board) {
+  for (const rowIndex in board) {
     let column = [
       board[0][rowIndex],
       board[1][rowIndex],
       board[2][rowIndex],
       board[3][rowIndex],
-    ]
+    ];
 
     column = moveInRow(column.reverse());
     column.reverse();
 
-    for (let cellIndex in column) {
+    for (const cellIndex in column) {
       board[cellIndex][rowIndex] = column[cellIndex];
     }
   }
@@ -91,7 +132,7 @@ function moveCellsDown() {
 }
 
 function moveCellsLeft() {
-  for (let index in board) {
+  for (const index in board) {
     board[index] = moveInRow(board[index]);
   }
 
@@ -99,7 +140,7 @@ function moveCellsLeft() {
 }
 
 function moveCellsRight() {
-  for (let index in board) {
+  for (const index in board) {
     board[index] = moveInRow(board[index].reverse());
     board[index].reverse();
   }
@@ -115,7 +156,7 @@ function moveInRow(row) {
       row[i] *= 2;
       gameScore += row[i];
 
-      if (row[i] === 2048){
+      if (row[i] === 2048) {
         wonGame();
       }
 
@@ -154,8 +195,8 @@ function updateNumbers() {
   cellsMatrix.forEach((row, rowIndex) => {
     row.forEach((cell, cellIndex) => {
       cell.setNumber(board[rowIndex][cellIndex]);
-    })
-  })
+    });
+  });
 }
 
 function spawnCell() {
