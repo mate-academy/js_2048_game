@@ -4,7 +4,7 @@
 const [startBtn, stopBtn] = document.querySelectorAll('.button');
 const [loseMessage, winMessage, startMessage]
   = document.querySelectorAll('.message');
-const cells = [...document.getElementsByClassName('field-cell')];
+const cells = [...document.getElementsByClassName('field_cell')];
 const cellsMatrix = [];
 const score = document.getElementById('score');
 
