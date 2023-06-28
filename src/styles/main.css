@@ -143,13 +143,13 @@ body {
   text-align: center;
 }
 
-.game-field {
+.game_field {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
 }
 
-.game-header {
+.game_header {
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -243,12 +243,12 @@ h1 {
   width: 350px;
 }
 
-.message-win {
+.message_win {
   background: #edc22e;
   color: #f9f6f2;
 }
 
-.message-container {
+.message_container {
   width: 100%;
   height: 150px;
 }/*# sourceMappingURL=main.css.map */
