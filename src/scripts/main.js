@@ -17,26 +17,11 @@ const board = [
 
 let cellsIndex = 0;
 
-class Cell {
-  constructor(index, currentNumber = 0) {
-    this.currentNumber = currentNumber;
-    this.htmlElement = cells[index];
-  }
-
-  setNumber(number) {
-    this.htmlElement.classList.remove(`field_cell--${this.currentNumber}`);
-    this.currentNumber = number;
-    this.htmlElement.classList.add(`field_cell--${this.currentNumber}`);
-
-    return this;
-  }
-}
-
 for (let i = 0; i < 4; i++) {
   cellsMatrix[i] = [];
 
   for (let y = 0; y < 4; y++) {
-    cellsMatrix[i].push(new Cell(cellsIndex));
+    cellsMatrix[i].push(cells[cellsIndex]);
     cellsIndex++;
   }
 }
@@ -194,7 +179,7 @@ function filterZero(row) {
 function updateNumbers() {
   cellsMatrix.forEach((row, rowIndex) => {
     row.forEach((cell, cellIndex) => {
-      cell.setNumber(board[rowIndex][cellIndex]);
+      setNumber(cell, board[rowIndex][cellIndex]);
     });
   });
 }
@@ -249,4 +234,9 @@ function lostGame() {
 function wonGame() {
   winMessage.classList.remove('hidden');
   window.removeEventListener('keydown', eventListener);
+}
+
+function setNumber(cell, number) {
+  cell.classList = 'field_cell';
+  cell.classList.add(`field_cell--${number}`);
 }
