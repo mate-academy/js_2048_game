@@ -20,17 +20,19 @@ let movePossible = false;
 let adjacentCells = false;
 
 function generateRandom() {
-  const randomI = Math.floor(Math.random() * cells.length);
+  const emptyCells = [...cells].filter(cell => cell.textContent === '');
 
-  if (cells[randomI].textContent === '') {
-    const randomNum = Math.random() < probabilityGeneratingNumber
-      ? numberFour : numberTwo;
-
-    cells[randomI].textContent = randomNum;
-    cells[randomI].classList.add('field-cell--' + randomNum);
-  } else {
-    generateRandom();
+  if (emptyCells.length === 0) {
+    return;
   }
+
+  const randomI = Math.floor(Math.random() * emptyCells.length);
+  const randomCell = emptyCells[randomI];
+  const randomNum = Math.random() < probabilityGeneratingNumber
+    ? numberFour : numberTwo;
+
+  randomCell.textContent = randomNum;
+  randomCell.classList.add('field-cell--' + randomNum);
 }
 
 startButton.addEventListener('click', () => {
@@ -41,7 +43,7 @@ startButton.addEventListener('click', () => {
     startButton.classList.remove('start');
     startButton.classList.add('restart');
     startButton.textContent = 'Restart';
-  } else if (startButton.classList.contains('restart')) {
+  } else {
     cells.forEach((cell) => {
       cell.textContent = '';
       cell.className = 'field-cell';
@@ -94,26 +96,29 @@ function filterZero(cellsArray) {
 }
 
 function slide(cellsArray) {
-  let arrayToSlide = filterZero(cellsArray);
+  const arrayToSlide = filterZero(cellsArray);
   let updatedScore = 0;
 
-  for (let i = 0; i < arrayToSlide.length; i++) {
-    if (arrayToSlide[i] === arrayToSlide[i + 1]) {
-      arrayToSlide[i] *= 2;
-      updatedScore += arrayToSlide[i];
+  const newArray = arrayToSlide.map((value, i) => {
+    if (value === arrayToSlide[i + 1]) {
+      updatedScore += value * 2;
       arrayToSlide[i + 1] = '';
+
+      return value * 2;
+    } else {
+      return value;
     }
-  }
+  });
 
-  arrayToSlide = filterZero(arrayToSlide);
+  const finalArray = filterZero(newArray);
 
-  while (arrayToSlide.length < cellsArray.length) {
-    arrayToSlide.push('');
+  while (finalArray.length < cellsArray.length) {
+    finalArray.push('');
   }
 
   gameScore.textContent = parseInt(gameScore.textContent) + updatedScore;
 
-  return arrayToSlide;
+  return finalArray;
 }
 
 function slideLeft() {
@@ -179,8 +184,11 @@ function slideUp() {
     const updatedArray = slide(columnCells);
 
     for (let rowIndex = 0; rowIndex < gameRow.length; rowIndex++) {
-      if (gameRow[rowIndex].children[columnIndex].textContent
-        !== updatedArray[rowIndex]) {
+      const currentCellContent
+      = gameRow[rowIndex].children[columnIndex].textContent;
+      const updatedCellContent = updatedArray[rowIndex];
+
+      if (currentCellContent !== updatedCellContent) {
         movePossible = true;
       }
 
@@ -213,8 +221,11 @@ function slideDown() {
     updatedArray.reverse();
 
     for (let rowIndex = 0; rowIndex < gameRow.length; rowIndex++) {
-      if (gameRow[rowIndex].children[columnIndex].textContent
-        !== updatedArray[rowIndex]) {
+      const currentCellContent
+        = gameRow[rowIndex].children[columnIndex].textContent;
+      const updatedCellContent = updatedArray[rowIndex];
+
+      if (currentCellContent !== updatedCellContent) {
         movePossible = true;
       }
 
@@ -253,8 +264,10 @@ function checkGameOver() {
         ? gameRow[rowIndex + 1].children[i].textContent
         : null;
 
-      if ((rightCell && currentCell === rightCell)
-        || (bottomCell && currentCell === bottomCell)) {
+      const isRightCellSame = rightCell && currentCell === rightCell;
+      const isBottomCellSame = bottomCell && currentCell === bottomCell;
+
+      if (isRightCellSame || isBottomCellSame) {
         adjacentCells = true;
       }
     });
