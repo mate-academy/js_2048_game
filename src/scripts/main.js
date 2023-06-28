@@ -32,26 +32,29 @@ function startGame() {
 }
 
 function resetGame() {
-  button.classList.replace('restart', 'start');
-  button.innerText = 'Start';
-  messageStart.hidden = false;
+  // button.classList.replace('restart', 'start');
+  // button.innerText = 'Start';
+  // messageStart.classList.remove('hidden');
+  // messageStart.hidden = false;
 
   gameGrid = [];
   score = 0;
-  gameOver = true;
+  gameOver = false;
   win = false;
 
-  for (let i = 0; i < 4; i++) {
-    gameGrid[i] = [];
+  // for (let i = 0; i < 4; i++) {
+  //   gameGrid[i] = [];
 
-    for (let j = 0; j < 4; j++) {
-      gameGrid[i][j] = null;
-    }
-  }
+  //   for (let j = 0; j < 4; j++) {
+  //     gameGrid[i][j] = null;
+  //   }
+  // }
+
+  generateInitialCells();
 
   updateUI();
 
-  messageStart.classList.remove('hidden');
+  // messageStart.classList.remove('hidden');
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
 }
@@ -93,18 +96,20 @@ function generateNewCell() {
 
 // Handle keyboard input
 function handleKeyDown(e) {
-  if (e.key === 'ArrowUp') {
-    moveCellsUp();
-  } else if (e.key === 'ArrowDown') {
-    moveCellsDown();
-  } else if (e.key === 'ArrowLeft') {
-    moveCellsLeft();
-  } else if (e.key === 'ArrowRight') {
-    moveCellsRight();
+  switch (e.key) {
+    case 'ArrowUp':
+      moveCellsUp();
+      break;
+    case 'ArrowDown':
+      moveCellsDown();
+      break;
+    case 'ArrowLeft':
+      moveCellsLeft();
+      break;
+    case 'ArrowRight':
+      moveCellsRight();
+      break;
   }
-
-  // Generate new cell after each valid move
-  generateNewCell();
 
   // Update UI
   updateUI();
@@ -149,6 +154,8 @@ function moveCellsUp() {
   }
 
   if (moved) {
+    generateNewCell();
+    generateNewCell();
     updateUI();
   }
 }
@@ -192,6 +199,8 @@ function moveCellsDown() {
   }
 
   if (moved) {
+    generateNewCell();
+    generateNewCell();
     updateUI();
   }
 }
@@ -235,6 +244,8 @@ function moveCellsLeft() {
   }
 
   if (moved) {
+    generateNewCell();
+    generateNewCell();
     updateUI();
   }
 }
@@ -278,6 +289,8 @@ function moveCellsRight() {
   }
 
   if (moved) {
+    generateNewCell();
+    generateNewCell();
     updateUI();
   }
 }
@@ -292,12 +305,12 @@ function updateUI() {
     for (let col = 0; col < 4; col++) {
       const cell = gameGrid[row][col];
       const cellElement
-      = document.querySelector(`.field-row:nth-child(${row + 1})
+        = document.querySelector(`.field-row:nth-child(${row + 1})
       .field-cell:nth-child(${col + 1})`);
 
       if (cell === null) {
         cellElement.textContent = '';
-        cellElement.className = 'field-cell';
+        cellElement.className = "field-cell";
       } else {
         cellElement.textContent = cell;
         cellElement.className = `field-cell field-cell--${cell}`;
