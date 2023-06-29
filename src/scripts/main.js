@@ -11,6 +11,8 @@ let board = [
 
 let score = 0;
 
+scoreEl.innerText = score;
+
 function startGame() {
   board = [
     [0, 0, 0, 0],
@@ -18,6 +20,9 @@ function startGame() {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
+  score = 0;
+  scoreEl.innerText = score;
+
   addNewTile();
   addNewTile();
   updateBoard();
@@ -152,7 +157,7 @@ function moveTiles(direction) {
           board[newRow][newCol] += currentValue;
           board[currentRow][currentCol] = 0;
           tileMoved = true;
-          score += currentValue;
+          score += board[newRow][newCol];
           scoreEl.innerText = score;
           break;
         } else {
@@ -191,18 +196,6 @@ function isGameOver() {
   return true;
 }
 
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowUp') {
-    moveTiles('up');
-  } else if (e.key === 'ArrowDown') {
-    moveTiles('down');
-  } else if (e.key === 'ArrowLeft') {
-    moveTiles('left');
-  } else if (e.key === 'ArrowRight') {
-    moveTiles('right');
-  }
-});
-
 const startButton = document.querySelector('.start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
@@ -211,8 +204,21 @@ messageWin.hidden = true;
 messageLose.hidden = true;
 
 startButton.addEventListener('click', () => {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') {
+      moveTiles('up');
+    } else if (e.key === 'ArrowDown') {
+      moveTiles('down');
+    } else if (e.key === 'ArrowLeft') {
+      moveTiles('left');
+    } else if (e.key === 'ArrowRight') {
+      moveTiles('right');
+    }
+  });
+
   const startMessage = document.querySelector('.message-start');
 
+  score = 0;
   messageWin.hidden = true;
   messageLose.hidden = true;
   startMessage.hidden = true;
@@ -222,3 +228,5 @@ startButton.addEventListener('click', () => {
   startButton.textContent = 'Restart';
   startButton.style.backgroundColor = '';
 });
+
+startGame();

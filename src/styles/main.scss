@@ -21,9 +21,10 @@ body {
   border-radius: 5px;
   color: #776e65;
   margin: 5px;
+  transition: transform 0.3s ease;
 }
 
-.game-field {
+#game-board {
   background: #c8bdae;
   border-spacing: 10px;
   border-radius: 5px;
