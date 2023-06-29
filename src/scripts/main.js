@@ -1,5 +1,8 @@
 'use strict';
 
+const offset = require('./offsetConfig');
+const directions = require('./directionsConfig');
+
 const everySquare = Array.from(document.querySelectorAll('.field-cell'));
 const everyRow = Array.from(document.querySelectorAll('.field-row'));
 const mainButton = document.querySelector('.start');
@@ -10,14 +13,6 @@ let touchStartY = 0;
 let score = 0;
 
 const COLUMN_LENGTH = 4;
-const OFFSET_ONE = 1;
-const OFFSET_TWO = 2;
-const OFFSET_THREE = 3;
-const OFFSET_FOUR = 4;
-const RIGHT_DIRECTION = 'right';
-const LEFT_DIRECTION = 'left';
-const UP_DIRECTION = 'up';
-const DOWN_DIRECTION = 'down';
 
 function appendNumber() {
   const emptySquares = everySquare.filter(square => square.innerHTML === '');
@@ -48,7 +43,7 @@ function getNewRow(column, direction) {
   const unfilled = Array(missing).fill('');
 
   return (
-    direction === DOWN_DIRECTION || direction === RIGHT_DIRECTION
+    direction === directions.down || direction === directions.right
       ? unfilled.concat(filtered)
       : filtered.concat(unfilled)
   );
@@ -67,7 +62,7 @@ function moveDown() {
   for (let i = 0; i < everyRow.length; i++) {
     const filteredColumn = everySquare.filter(td => td.cellIndex === i);
 
-    moveAndCombine(DOWN_DIRECTION, filteredColumn);
+    moveAndCombine(directions.down, filteredColumn);
   };
 
   checkMoveAndFinish();
@@ -77,7 +72,7 @@ function moveUp() {
   for (let i = 0; i < everyRow.length; i++) {
     const filteredColumn = everySquare.filter(td => td.cellIndex === i);
 
-    moveAndCombine(UP_DIRECTION, filteredColumn);
+    moveAndCombine(directions.up, filteredColumn);
   };
 
   checkMoveAndFinish();
@@ -87,7 +82,7 @@ function moveRight() {
   for (let i = 0; i < everyRow.length; i++) {
     const filteredColumn = everyRow.filter(tr => tr.rowIndex === i)[0].cells;
 
-    moveAndCombine(RIGHT_DIRECTION, filteredColumn);
+    moveAndCombine(directions.right, filteredColumn);
   };
 
   checkMoveAndFinish();
@@ -97,7 +92,7 @@ function moveLeft() {
   for (let i = 0; i < everyRow.length; i++) {
     const filteredColumn = everyRow.filter(tr => tr.rowIndex === i)[0].cells;
 
-    moveAndCombine(LEFT_DIRECTION, filteredColumn);
+    moveAndCombine(directions.left, filteredColumn);
   };
 
   checkMoveAndFinish();
@@ -114,98 +109,98 @@ function moveAndCombine(direction, filteredColumn) {
 }
 
 function combine(direction, row, collection) {
-  if (direction === LEFT_DIRECTION || direction === UP_DIRECTION) {
+  if (direction === directions.left || direction === directions.up) {
     for (let k = 1; k < row.length; k++) {
-      const prev = row[k - OFFSET_ONE];
+      const prev = row[k - offset.one];
       const total = row[k] + prev;
       const hasPairs = (
         row[k] === prev
         && prev !== ''
-        && row[k + OFFSET_ONE]
-        && row[k + OFFSET_TWO]
-        && row[k + OFFSET_ONE] === row[k + OFFSET_TWO]
+        && row[k + offset.one]
+        && row[k + offset.two]
+        && row[k + offset.one] === row[k + offset.two]
       );
 
       if (hasPairs) {
-        row[k - OFFSET_ONE] = total;
-        row[k] = row[k + OFFSET_ONE] + row[k + OFFSET_TWO];
-        row[k + OFFSET_ONE] = '';
-        row[k + OFFSET_TWO] = '';
+        row[k - offset.one] = total;
+        row[k] = row[k + offset.one] + row[k + offset.two];
+        row[k + offset.one] = '';
+        row[k + offset.two] = '';
 
         updateScore(total + row[k]);
 
-        setCellValue(collection[k - OFFSET_ONE], total);
+        setCellValue(collection[k - offset.one], total);
         setCellValue(collection[k], row[k]);
-        setCellValue(collection[k + OFFSET_ONE], row[k + OFFSET_ONE]);
-        setCellValue(collection[k + OFFSET_TWO], row[k + OFFSET_TWO]);
+        setCellValue(collection[k + offset.one], row[k + offset.one]);
+        setCellValue(collection[k + offset.two], row[k + offset.two]);
 
         break;
       }
 
       if (row[k] === prev && row[k]) {
-        row[k - OFFSET_ONE] = total;
+        row[k - offset.one] = total;
         row[k] = '';
 
         updateScore(total);
 
-        setCellValue(collection[k - OFFSET_ONE], total);
+        setCellValue(collection[k - offset.one], total);
         setCellValue(collection[k], row[k]);
       }
 
       if (row[k] && prev === '') {
-        row[k - OFFSET_ONE] = row[k];
+        row[k - offset.one] = row[k];
         row[k] = '';
 
-        setCellValue(collection[k - OFFSET_ONE], row[k - OFFSET_ONE]);
+        setCellValue(collection[k - offset.one], row[k - offset.one]);
         setCellValue(collection[k], row[k]);
       }
     }
   }
 
-  if (direction === RIGHT_DIRECTION || direction === DOWN_DIRECTION) {
+  if (direction === directions.right || direction === directions.down) {
     for (let k = row.length - 1; k > 0; k--) {
-      const prev = row[k - OFFSET_ONE];
+      const prev = row[k - offset.one];
       const total = row[k] + prev;
       const hasPairs = (
         row[k] === prev
         && prev !== ''
-        && row[k - OFFSET_TWO]
-        && row[k - OFFSET_THREE]
-        && row[k - OFFSET_TWO] === row[k - OFFSET_THREE]
+        && row[k - offset.two]
+        && row[k - offset.three]
+        && row[k - offset.two] === row[k - offset.three]
       );
 
       if (hasPairs) {
         row[k] = total;
-        row[k - OFFSET_ONE] = row[k - OFFSET_TWO] + row[k - OFFSET_THREE];
-        row[k - OFFSET_TWO] = '';
-        row[k - OFFSET_THREE] = '';
+        row[k - offset.one] = row[k - offset.two] + row[k - offset.three];
+        row[k - offset.two] = '';
+        row[k - offset.three] = '';
 
         updateScore(total + row[k]);
 
         setCellValue(collection[k], total);
-        setCellValue(collection[k - OFFSET_ONE], row[k - OFFSET_ONE]);
-        setCellValue(collection[k - OFFSET_TWO], '');
-        setCellValue(collection[k - OFFSET_THREE], '');
+        setCellValue(collection[k - offset.one], row[k - offset.one]);
+        setCellValue(collection[k - offset.two], '');
+        setCellValue(collection[k - offset.three], '');
 
         break;
       }
 
       if (row[k] === prev && prev) {
-        row[k - OFFSET_ONE] = '';
+        row[k - offset.one] = '';
         row[k] = total;
 
         updateScore(total);
 
         setCellValue(collection[k], total);
-        setCellValue(collection[k - OFFSET_ONE], '');
+        setCellValue(collection[k - offset.one], '');
       }
 
       if (prev && row[k] === '') {
-        row[k] = row[k - OFFSET_ONE];
-        row[k - OFFSET_ONE] = '';
+        row[k] = row[k - offset.one];
+        row[k - offset.one] = '';
 
         setCellValue(collection[k], row[k]);
-        setCellValue(collection[k - OFFSET_ONE], '');
+        setCellValue(collection[k - offset.one], '');
       }
     }
   }
@@ -224,11 +219,11 @@ function move(filteredColumn, row) {
 }
 
 function canMove(direction, column) {
-  if (direction === LEFT_DIRECTION || direction === UP_DIRECTION) {
+  if (direction === directions.left || direction === directions.up) {
     for (let j = 1; j < column.length; j++) {
       const emptyString = column.find(col => col === '');
       const curr = column[j];
-      const prev = column[j - OFFSET_ONE];
+      const prev = column[j - offset.one];
 
       if (prev === emptyString && curr) {
         return markMovementPossible();
@@ -244,11 +239,11 @@ function canMove(direction, column) {
     }
   }
 
-  if (direction === RIGHT_DIRECTION || direction === DOWN_DIRECTION) {
+  if (direction === directions.right || direction === directions.down) {
     for (let j = column.length - 1; j > 0; j--) {
       const emptyString = column.find(col => col === '');
       const curr = column[j];
-      const prev = column[j - OFFSET_ONE];
+      const prev = column[j - offset.one];
 
       if (curr === emptyString && prev) {
         return markMovementPossible();
@@ -281,8 +276,8 @@ function checkIfGameFinished() {
 
   for (let i = 0; i < cells.length; i++) {
     const currCell = cells[i];
-    const rightCell = cells[i + OFFSET_ONE];
-    const bottomCell = cells[i + OFFSET_FOUR];
+    const rightCell = cells[i + offset.one];
+    const bottomCell = cells[i + offset.four];
     const isGameOver = !currCell.innerHTML || (
       rightCell && currCell.cellIndex !== 3
       && currCell.innerHTML === rightCell.innerHTML
