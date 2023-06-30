@@ -155,7 +155,6 @@ function moveCellsUp() {
 
   if (moved) {
     generateNewCell();
-    generateNewCell();
     updateUI();
   }
 }
@@ -199,7 +198,6 @@ function moveCellsDown() {
   }
 
   if (moved) {
-    generateNewCell();
     generateNewCell();
     updateUI();
   }
@@ -245,7 +243,6 @@ function moveCellsLeft() {
 
   if (moved) {
     generateNewCell();
-    generateNewCell();
     updateUI();
   }
 }
@@ -289,7 +286,6 @@ function moveCellsRight() {
   }
 
   if (moved) {
-    generateNewCell();
     generateNewCell();
     updateUI();
   }
