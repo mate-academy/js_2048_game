@@ -56,13 +56,7 @@ function gameClick(e) {
       cell.classList.value = 'field-cell';
     });
 
-    board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-
+    board = board.map(mas => mas.map(el => 0));
     score.innerText = 0;
     gameButton.classList.value = 'button start';
     gameButton.innerText = 'Start';
@@ -192,7 +186,7 @@ function slide(direction) {
     slideVertically(direction);
   }
 
-  if (findNumber(64)) {
+  if (findNumber(2048)) {
     showMessage('win');
 
     return;
