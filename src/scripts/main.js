@@ -1,7 +1,6 @@
 'use strict';
 
 const startBtn = document.querySelector('.button');
-// const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
 const score = document.querySelector('.game-score');
@@ -161,20 +160,27 @@ function slide(row) {
   return clearRow;
 }
 
+const Directions = {
+  ArrowLeft: 'ArrowLeft',
+  ArrowRight: 'ArrowRight',
+  ArrowUp: 'ArrowUp',
+  ArrowDown: 'ArrowDown',
+};
+
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft') {
+  if (e.code === Directions.ArrowLeft) {
     slideLeft();
   }
 
-  if (e.code === 'ArrowRight') {
+  if (e.code === Directions.ArrowRight) {
     slideRight();
   }
 
-  if (e.code === 'ArrowUp') {
+  if (e.code === Directions.ArrowUp) {
     slideUp();
   }
 
-  if (e.code === 'ArrowDown') {
+  if (e.code === Directions.ArrowDown) {
     slideDown();
   }
 });
