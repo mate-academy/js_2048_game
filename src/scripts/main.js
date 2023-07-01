@@ -1,12 +1,13 @@
 'use strict';
 
 const startBtn = document.querySelector('.button');
-const messageLose = document.querySelector('.message-lose');
+// const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
 const score = document.querySelector('.game-score');
 const gameScore = document.querySelector('.game-score');
 const rows = document.querySelectorAll('.field-row');
+const mes = document.querySelector('.message-container');
 
 let arrOfNumbers = [
   ['', '', '', ''],
@@ -16,6 +17,7 @@ let arrOfNumbers = [
 ];
 let moves = 0;
 let maxNum = 0;
+let noEmpty = false;
 
 score.innerText = maxNum;
 
@@ -24,7 +26,15 @@ startBtn.addEventListener('click', (e) => {
 
   if (e.target.textContent === 'Start') {
     e.target.textContent = 'Restart';
+    messageStart.classList.toggle('hidden');
     maxNum = 0;
+    noEmpty = false;
+    score.innerText = maxNum;
+    randomNum();
+    paint();
+  } else {
+    e.target.textContent = 'Start';
+    messageStart.classList.toggle('hidden');
 
     arrOfNumbers = [
       ['', '', '', ''],
@@ -32,19 +42,21 @@ startBtn.addEventListener('click', (e) => {
       ['', '', '', ''],
       ['', '', '', ''],
     ];
-    randomNum();
+    maxNum = 0;
+    noEmpty = false;
+    score.innerText = maxNum;
+    moves = 0;
     paint();
-  } else {
-    e.target.textContent = 'Start';
   }
 });
 
-if (maxNum >= 2048) {
-  messageWin.classList.toggle('hidden');
-  messageStart.classList.toggle('hidden');
-}
-
 function hasEmpty() {
+  for (const item of arrOfNumbers) {
+    if (Math.max(...item) >= 2048) {
+      messageWin.classList.toggle('hidden');
+    }
+  }
+
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
       if (arrOfNumbers[i][j] === '') {
@@ -52,34 +64,26 @@ function hasEmpty() {
       }
     }
   }
+  noEmpty = true;
 
   return false;
 }
 
-function maxValue() {
-  for (const item of arrOfNumbers) {
-    for (const num of item) {
-      if (num !== '' && maxNum < num) {
-        maxNum = num;
-        messageStart.classList.toggle('hidden');
-      }
-    }
-  }
+function randomWithProbability() {
+  const notRandomNumbers = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
+  const idx = Math.floor(Math.random() * notRandomNumbers.length);
 
-  gameScore.innerText = maxNum;
+  return notRandomNumbers[idx];
 }
 
 function randomNum() {
   if (!hasEmpty()) {
-    messageLose.classList.toggle('hidden');
-    messageStart.classList.toggle('hidden');
-
     return;
   }
 
   let x;
   let y;
-  const value = 2;
+  const value = randomWithProbability();
 
   if (moves === 0) {
     x = Math.floor(Math.random() * 4);
@@ -106,6 +110,13 @@ function randomNum() {
 };
 
 function paint() {
+  if (noEmpty) {
+    mes.innerHTML = `<p class="message message-lose">
+    You lose! Restart the game?</p>`;
+
+    return;
+  }
+
   for (let i = 0; i < arrOfNumbers.length; i++) {
     for (let k = 0; k < arrOfNumbers[i].length; k++) {
       const item = arrOfNumbers[i][k];
@@ -135,7 +146,9 @@ function slide(row) {
   for (let i = 0; i < clearRow.length - 1; i++) {
     if (clearRow[i] === clearRow[i + 1]) {
       clearRow[i] *= 2;
+      maxNum += clearRow[i];
       clearRow[i + 1] = '';
+      gameScore.innerText = maxNum;
     }
   }
 
@@ -174,7 +187,6 @@ function slideLeft() {
     arrOfNumbers[i] = newRow;
   }
   randomNum();
-  maxValue();
   paint();
 };
 
@@ -191,7 +203,6 @@ function slideRight() {
     arrOfNumbers[i] = newRow;
   }
   randomNum();
-  maxValue();
   paint();
 };
 
@@ -213,7 +224,6 @@ function slideUp() {
   }
 
   randomNum();
-  maxValue();
   paint();
 };
 
@@ -239,6 +249,5 @@ function slideDown() {
   }
 
   randomNum();
-  maxValue();
   paint();
 };
