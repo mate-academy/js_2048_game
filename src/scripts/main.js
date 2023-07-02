@@ -5,18 +5,24 @@ const bookedCells = [];
 const arrayOfValues = [];
 const newValues = [2, 2, 2, 2, 2, 2, 2, 2, 2];
 
+const up = 'ArrowUp';
+const down = 'ArrowDown';
+const right = 'ArrowRight';
+const left = 'ArrowLeft';
+
 const cells = document.querySelectorAll('.field-cell');
-const messagStart = document.querySelector('.message-start');
+const messageStart = document.querySelector('.message-start');
 const start = document.querySelector('.start');
 
 const messageLose = document.querySelector('.message-lose');
 let lose = false;
 
-const messagWin = document.querySelector('.message-win');
+const messageWin = document.querySelector('.message-win');
 let win = false;
 
 const score = document.querySelector('.game-score');
 let scoreCounter = 0;
+let hasUpdates;
 
 newValues.splice(Math.floor(Math.random() * 10), 0, 4);
 
@@ -45,9 +51,10 @@ const newGame = () => {
   takeStep();
   takeStep();
 
-  start.classList.remove('start');
-  start.classList.add('restart');
+  start.classList.replace('start', 'restart');
   start.innerHTML = 'Restart';
+
+  keepCellsValues();
 };
 
 const clearBoard = () => {
@@ -99,43 +106,41 @@ const handleScore = (value) => {
 };
 
 const handleArrowClick = (side) => {
-  for (let i = 0; i < 4; i++) {
-    let slice;
+  hasUpdates = false;
 
-    if (side === 'ArrowUp' || side === 'ArrowDown') {
-      slice = arrayOfValues.filter(value => value[0] % 4 === i);
-    } else {
-      slice = arrayOfValues.filter(value => Math.floor(value[0] / 4) === i);
-    }
+  for (let i = 0; i < 4; i++) {
+    const slice = side === up || side === down
+      ? arrayOfValues.filter(value => value[0] % 4 === i)
+      : arrayOfValues.filter(value => Math.floor(value[0] / 4) === i);
 
     if (slice.length) {
       let extremeCellStep;
       let extremeCellPosition;
 
       switch (side) {
-        case 'ArrowUp':
+        case up:
           extremeCellPosition = i;
           extremeCellStep = 4;
           break;
 
-        case 'ArrowDown':
+        case down:
           extremeCellPosition = 12 + i;
           extremeCellStep = -4;
           break;
 
-        case 'ArrowRight':
+        case right:
           extremeCellPosition = 4 * i + 3;
           extremeCellStep = -1;
           break;
 
-        case 'ArrowLeft':
+        case left:
           extremeCellPosition = 4 * i;
           extremeCellStep = 1;
           break;
       }
 
       const step = extremeCellStep > 0 ? 1 : -1;
-      const leftOrUp = (side === 'ArrowUp' || side === 'ArrowLeft');
+      const leftOrUp = (side === up || side === left);
 
       for (let j = 0; j < slice.length; j++) {
         const k = leftOrUp ? j : slice.length - j - 1;
@@ -146,6 +151,8 @@ const handleArrowClick = (side) => {
           slice[k][1] = newValue;
           slice.splice(k + step, 1);
           handleScore(newValue);
+
+          hasUpdates = true;
         }
       }
 
@@ -155,6 +162,7 @@ const handleArrowClick = (side) => {
         if (slice[k]) {
           if ((slice[k][0] - extremeCellPosition) * step > 0) {
             slice[k][0] = extremeCellPosition;
+            hasUpdates = true;
           }
           extremeCellPosition += extremeCellStep;
         }
@@ -165,20 +173,23 @@ const handleArrowClick = (side) => {
   }
 
   win = document.querySelector('.field-cell--2048');
-  messagWin.classList.toggle('hidden', !win);
+
+  if (win) {
+    messageWin.classList.remove('hidden');
+  }
 };
 
 const checkNewStepAvailable = (trigger) => {
   if (trigger) {
     let pairs = 0;
 
-    for (let i = 0; i < boardSize && pairs === 0; i += 2) {
+    for (let i = 0; i < boardSize && pairs === 0; i++) {
       const testCell = +cells[i].innerHTML;
-      const rightsCell = +cells[i + 1].innerHTML;
-      const lowerCell = +cells[i + 4].innerHTML;
+      const rightsCell = cells[i + 1] ? +cells[i + 1].innerHTML : undefined;
+      const lowerCell = cells[i + 4] ? +cells[i + 4].innerHTML : undefined;
 
       switch (true) {
-        case (testCell === rightsCell):
+        case (rightsCell && testCell === rightsCell):
           pairs++;
           break;
 
@@ -189,7 +200,10 @@ const checkNewStepAvailable = (trigger) => {
     }
 
     lose = pairs === 0;
-    messageLose.classList.toggle('hidden', !lose);
+
+    if (lose) {
+      messageLose.classList.remove('hidden');
+    }
   }
 };
 
@@ -200,25 +214,25 @@ start.addEventListener('click', () => {
 
   newGame();
 
-  messagWin.classList.toggle('hidden', !win);
-  messageLose.classList.toggle('hidden', !lose);
-  messagStart.classList.toggle('hidden', true);
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
+  messageStart.classList.add('hidden');
 });
 
 document.addEventListener('keydown', evn => {
   if (document.querySelector('.restart') && !lose) {
     const key = evn.key;
 
-    keepCellsValues();
     clearBoard();
     handleArrowClick(key);
     clearArray(arrayOfValues);
     getBookedPositions();
 
-    if (bookedCells.length !== boardSize) {
-      setTimeout(() => takeStep(), 150);
+    if (bookedCells.length !== boardSize && hasUpdates) {
+      takeStep();
     }
 
+    keepCellsValues();
     checkNewStepAvailable(bookedCells.length === boardSize);
   }
 });
