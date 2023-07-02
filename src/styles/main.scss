@@ -1,84 +1,90 @@
+$primary-color: #edc22e;
+$secondary-color: #f9f6f2;
+$background-color: #d6cdc4;
+$cell-color: #776e65;
+
+$cell-width: 75px;
+$cell-height: 75px;
+$cell-border-radius: 5px;
+
+@mixin cell($background) {
+  background-color: $background;
+  color: $secondary-color;
+}
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background-color: #fbf8ef;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  background-color: $background-color;
+  width: $cell-width;
+  height: $cell-height;
+  border-radius: $cell-border-radius;
+  color: $cell-color;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: 0.1s ease-in-out;
 
   &--2 {
-    background: #eee4da;
+    background-color: #eee4da;
   }
 
   &--4 {
-    background: #ede0c8;
+    background-color: #ede0c8;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    @include cell(#f2b179);
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    @include cell(#f59563);
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    @include cell(#f67c5f);
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    @include cell(#f65e3b);
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    @include cell(#edcf72);
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    @include cell(#edcc61);
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    @include cell(#edc850);
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    @include cell(#edc53f);
   }
 
   &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    @include cell(#edc22e);
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background-color: #bbada0;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: $cell-border-radius;
 }
 
 .game-header {
@@ -90,13 +96,12 @@ body {
   box-sizing: border-box;
 }
 
-h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
+.game-name {
+  @include cell($primary-color);
+
+  width: $cell-width;
+  height: $cell-height;
   font-size: 24px;
-  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,11 +114,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  background-color: $background-color;
+  width: $cell-width;
+  height: $cell-height;
+  border-radius: $cell-border-radius;
+  color: $cell-color;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -125,43 +130,42 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: $cell-border-radius;
   cursor: pointer;
-  color: #f9f6f2;
+  color: $secondary-color;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
-
-  transition: 0.25s ease background;
+  width: $cell-width;
+  height: $cell-height;
+  transition: 0.3s ease background-color;
 }
 
 .start {
-  background: #1dae28;
+  background-color: #1dae28;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background-color: #179921;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background-color: #eb7878;
 
   &:hover {
-    background: #f87474;
+    background-color: #f74747;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background-color: $background-color;
+  color: $cell-color;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: $cell-border-radius;
   font-size: 20px;
 }
 
@@ -177,8 +181,7 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  @include cell($primary-color);
 }
 
 .message-container {
