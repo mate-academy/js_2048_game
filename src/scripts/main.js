@@ -10,6 +10,10 @@ const messageWin = document.querySelector('.message-win');
 const cellsInRow = 4;
 let scoreCount = 0;
 let board;
+<<<<<<< HEAD
+=======
+let gameOver = false;
+>>>>>>> 39116bf74805824d701fb461eea65411d834cc90
 
 startButton.addEventListener('click', () => {
   startButton.classList.replace('start', 'restart');
@@ -26,6 +30,13 @@ function hasEmptyTile() {
 }
 
 function placeTiles() {
+<<<<<<< HEAD
+=======
+  if (gameOver) {
+    return;
+  }
+
+>>>>>>> 39116bf74805824d701fb461eea65411d834cc90
   while (hasEmptyTile()) {
     const randomRow = Math.floor(Math.random() * cellsInRow);
     const randomCol = Math.floor(Math.random() * cellsInRow);
@@ -41,6 +52,10 @@ function placeTiles() {
   setCells();
 
   if (!hasEmptyTile() && loseTheGame()) {
+<<<<<<< HEAD
+=======
+    gameOver = true;
+>>>>>>> 39116bf74805824d701fb461eea65411d834cc90
     messageLose.classList.remove('hidden');
   }
 }
@@ -56,7 +71,10 @@ function startTheGame() {
   scoreCount = 0;
   gameScore.innerText = scoreCount;
 
+<<<<<<< HEAD
   setCells();
+=======
+>>>>>>> 39116bf74805824d701fb461eea65411d834cc90
   placeTiles();
   placeTiles();
 }
