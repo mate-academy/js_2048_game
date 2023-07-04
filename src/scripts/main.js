@@ -13,6 +13,11 @@ const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 
+const isCellMovable = (nextCell, currentCell) => {
+
+  return nextCell === null || nextCell === currentCell;
+};
+
 // Start/Restart game
 function startGame() {
   // Reset game state
@@ -32,23 +37,10 @@ function startGame() {
 }
 
 function resetGame() {
-  // button.classList.replace('restart', 'start');
-  // button.innerText = 'Start';
-  // messageStart.classList.remove('hidden');
-  // messageStart.hidden = false;
-
   gameGrid = [];
   score = 0;
   gameOver = false;
   win = false;
-
-  // for (let i = 0; i < 4; i++) {
-  //   gameGrid[i] = [];
-
-  //   for (let j = 0; j < 4; j++) {
-  //     gameGrid[i][j] = null;
-  //   }
-  // }
 
   generateInitialCells();
 
@@ -125,22 +117,27 @@ function moveCellsUp() {
       if (gameGrid[row][col] !== null) {
         let newRow = row;
 
-        while (newRow > 0
-          && (gameGrid[newRow - 1][col] === null
-            || gameGrid[newRow - 1][col] === gameGrid[row][col])) {
-          if (gameGrid[newRow - 1][col] === gameGrid[row][col]) {
-            // Merge cells
-            gameGrid[newRow - 1][col] *= 2;
-            score += gameGrid[newRow - 1][col];
-            gameGrid[row][col] = null;
-            moved = true;
+        while (newRow > 0) {
+          const nextCell = gameGrid[newRow - 1][col];
+          const currentCell = gameGrid[row][col];
 
-            if (gameGrid[newRow - 1][col] === 2048) {
-              win = true;
+          if (isCellMovable(nextCell, currentCell)) {
+            if (nextCell === currentCell) {
+              // Merge cells
+              gameGrid[newRow - 1][col] *= 2;
+              score += gameGrid[newRow - 1][col];
+              gameGrid[row][col] = null;
+              moved = true;
+
+              if (nextCell === 2048) {
+                win = true;
+              }
+              break;
             }
+            newRow--;
+          } else {
             break;
           }
-          newRow--;
         }
 
         if (newRow !== row) {
@@ -169,22 +166,27 @@ function moveCellsDown() {
       if (gameGrid[row][col] !== null) {
         let newRow = row;
 
-        while (newRow < 3
-          && (gameGrid[newRow + 1][col] === null
-            || gameGrid[newRow + 1][col] === gameGrid[row][col])) {
-          if (gameGrid[newRow + 1][col] === gameGrid[row][col]) {
-            // Merge cells
-            gameGrid[newRow + 1][col] *= 2;
-            score += gameGrid[newRow + 1][col];
-            gameGrid[row][col] = null;
-            moved = true;
+        while (newRow < 3) {
+          const nextCell = gameGrid[newRow + 1][col];
+          const currentCell = gameGrid[row][col];
 
-            if (gameGrid[newRow + 1][col] === 2048) {
-              win = true;
+          if (isCellMovable(nextCell, currentCell)) {
+            if (nextCell === currentCell) {
+              // Merge cells
+              gameGrid[newRow + 1][col] *= 2;
+              score += gameGrid[newRow + 1][col];
+              gameGrid[row][col] = null;
+              moved = true;
+
+              if (nextCell === 2048) {
+                win = true;
+              }
+              break;
             }
+            newRow++;
+          } else {
             break;
           }
-          newRow++;
         }
 
         if (newRow !== row) {
@@ -213,22 +215,27 @@ function moveCellsLeft() {
       if (gameGrid[row][col] !== null) {
         let newCol = col;
 
-        while (newCol > 0
-          && (gameGrid[row][newCol - 1] === null
-            || gameGrid[row][newCol - 1] === gameGrid[row][col])) {
-          if (gameGrid[row][newCol - 1] === gameGrid[row][col]) {
-            // Merge cells
-            gameGrid[row][newCol - 1] *= 2;
-            score += gameGrid[row][newCol - 1];
-            gameGrid[row][col] = null;
-            moved = true;
+        while (newCol > 0) {
+          const nextCell = gameGrid[row][newCol - 1];
+          const currentCell = gameGrid[row][col];
 
-            if (gameGrid[row][newCol - 1] === 2048) {
-              win = true;
+          if (isCellMovable(nextCell, currentCell)) {
+            if (nextCell === currentCell) {
+              // Merge cells
+              gameGrid[row][newCol - 1] *= 2;
+              score += gameGrid[row][newCol - 1];
+              gameGrid[row][col] = null;
+              moved = true;
+
+              if (nextCell === 2048) {
+                win = true;
+              }
+              break;
             }
+            newCol--;
+          } else {
             break;
           }
-          newCol--;
         }
 
         if (newCol !== col) {
@@ -257,22 +264,27 @@ function moveCellsRight() {
       if (gameGrid[row][col] !== null) {
         let newCol = col;
 
-        while (newCol < 3
-          && (gameGrid[row][newCol + 1] === null
-            || gameGrid[row][newCol + 1] === gameGrid[row][col])) {
-          if (gameGrid[row][newCol + 1] === gameGrid[row][col]) {
-            // Merge cells
-            gameGrid[row][newCol + 1] *= 2;
-            score += gameGrid[row][newCol + 1];
-            gameGrid[row][col] = null;
-            moved = true;
+        while (newCol < 3) {
+          const nextCell = gameGrid[row][newCol + 1];
+          const currentCell = gameGrid[row][col];
 
-            if (gameGrid[row][newCol + 1] === 2048) {
-              win = true;
+          if (isCellMovable(nextCell, currentCell)) {
+            if (nextCell === currentCell) {
+              // Merge cells
+              gameGrid[row][newCol + 1] *= 2;
+              score += gameGrid[row][newCol + 1];
+              gameGrid[row][col] = null;
+              moved = true;
+
+              if (nextCell === 2048) {
+                win = true;
+              }
+              break;
             }
+            newCol++;
+          } else {
             break;
           }
-          newCol++;
         }
 
         if (newCol !== col) {
@@ -306,7 +318,7 @@ function updateUI() {
 
       if (cell === null) {
         cellElement.textContent = '';
-        cellElement.className = "field-cell";
+        cellElement.className = 'field-cell';
       } else {
         cellElement.textContent = cell;
         cellElement.className = `field-cell field-cell--${cell}`;
