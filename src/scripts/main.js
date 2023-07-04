@@ -121,11 +121,25 @@ function findNumber(number = 0) {
 }
 
 function canMove() {
-  for (let r = 0; r < boardSize - 1; r++) {
-    for (let c = 0; c < boardSize - 1; c++) {
-      if (board[r][c] === board[r][c + 1]
-        || board[r][c] === board[r + 1][c]) {
-        return true;
+  for (let r = 0; r < boardSize; r++) {
+    for (let c = 0; c < boardSize; c++) {
+      if (r < boardSize - 1 && c < boardSize - 1) {
+        if (board[r][c] === board[r][c + 1]
+          || board[r][c] === board[r + 1][c]) {
+          return true;
+        }
+      }
+
+      if (r === boardSize - 1 && c < boardSize - 1) {
+        if (board[r][c] === board[r][c + 1]) {
+          return true;
+        }
+      }
+
+      if (c === boardSize - 1 && r < boardSize - 1) {
+        if (board[r][c] === board[r + 1][c]) {
+          return true;
+        }
       }
     }
   }
