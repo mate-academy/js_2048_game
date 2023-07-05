@@ -7,6 +7,7 @@ const switcherScore = document.querySelector('.game-score');
 let workingArray = Array(16).fill(null);
 let changeIndicator = true;
 let scoreCounter = 0;
+let disableFunctions = false;
 
 function generateInitialValues() {
   let positionX;
@@ -81,6 +82,7 @@ function removeAllModificators() {
   switcherScore.textContent = '0';
   page.querySelector('.message-win').classList.add('hidden');
   page.querySelector('.message-lose').classList.add('hidden');
+  disableFunctions = false;
 
   for (const ch of page.querySelectorAll('.field-cell')) {
     ch.classList.remove('field-cell--2');
@@ -123,11 +125,16 @@ function loseMessage() {
 
     if (noMovesAvailable === false) {
       page.querySelector('.message-lose').classList.remove('hidden');
+      disableFunctions = true;
     }
   }
 }
 
 function upwardMovement() {
+  if (disableFunctions) {
+    return;
+  }
+
   changeIndicator = false;
 
   let allIndices = [];
@@ -193,7 +200,8 @@ function upwardMovement() {
         workingArray[indexThroughOneCell] = null;
         changeIndicator = true;
       }
-    } else if (throughOneAndEqual) {
+    } else if ((throughOneAndEqual)
+    && (workingArray[nearestCellIndex] === null)) {
       page.querySelectorAll('.field-cell')[indexThroughOneCell]
         .classList.remove(currentModifier);
 
@@ -218,7 +226,8 @@ function upwardMovement() {
         workingArray[indexThroughOneCell] = null;
         changeIndicator = true;
       }
-    } else if (throughTwoAndEqual) {
+    } else if ((throughTwoAndEqual) && (workingArray[nearestCellIndex] === null)
+    && (workingArray[indexThroughOneCell] === null)) {
       page.querySelectorAll('.field-cell')[indexThroughTwoCells]
         .classList.remove(currentModifier);
 
@@ -311,6 +320,10 @@ function upwardMovement() {
 };
 
 function downwardMovement() {
+  if (disableFunctions) {
+    return;
+  }
+
   changeIndicator = false;
 
   let allIndices = [];
@@ -376,7 +389,8 @@ function downwardMovement() {
         workingArray[indexThroughOneCell] = null;
         changeIndicator = true;
       }
-    } else if (throughOneAndEqual) {
+    } else if ((throughOneAndEqual)
+    && (workingArray[nearestCellIndex] === null)) {
       page.querySelectorAll('.field-cell')[indexThroughOneCell]
         .classList.remove(currentModifier);
 
@@ -401,7 +415,8 @@ function downwardMovement() {
         workingArray[indexThroughOneCell] = null;
         changeIndicator = true;
       }
-    } else if (throughTwoAndEqual) {
+    } else if ((throughTwoAndEqual) && (workingArray[nearestCellIndex] === null)
+    && (workingArray[indexThroughOneCell] === null)) {
       page.querySelectorAll('.field-cell')[indexThroughTwoCells]
         .classList.remove(currentModifier);
 
@@ -494,6 +509,10 @@ function downwardMovement() {
 };
 
 function leftMovement() {
+  if (disableFunctions) {
+    return;
+  }
+
   changeIndicator = false;
 
   let allIndices = [];
@@ -603,7 +622,8 @@ function leftMovement() {
         workingArray[indexThroughOneCell] = null;
         changeIndicator = true;
       }
-    } else if (throughOneAndEqual) {
+    } else if ((throughOneAndEqual)
+    && (workingArray[nearestCellIndex] === null)) {
       page.querySelectorAll('.field-cell')[indexThroughOneCell]
         .classList.remove(currentModifier);
 
@@ -628,7 +648,8 @@ function leftMovement() {
         workingArray[indexThroughOneCell] = null;
         changeIndicator = true;
       }
-    } else if (throughTwoAndEqual) {
+    } else if ((throughTwoAndEqual) && (workingArray[nearestCellIndex] === null)
+    && (workingArray[indexThroughOneCell] === null)) {
       page.querySelectorAll('.field-cell')[indexThroughTwoCells]
         .classList.remove(currentModifier);
 
@@ -721,6 +742,10 @@ function leftMovement() {
 };
 
 function rightMovement() {
+  if (disableFunctions) {
+    return;
+  }
+
   changeIndicator = false;
 
   let allIndices = [];
@@ -830,7 +855,8 @@ function rightMovement() {
         workingArray[indexThroughOneCell] = null;
         changeIndicator = true;
       }
-    } else if (throughOneAndEqual) {
+    } else if ((throughOneAndEqual)
+    && (workingArray[nearestCellIndex] === null)) {
       page.querySelectorAll('.field-cell')[indexThroughOneCell]
         .classList.remove(currentModifier);
 
@@ -855,7 +881,8 @@ function rightMovement() {
         workingArray[indexThroughOneCell] = null;
         changeIndicator = true;
       }
-    } else if (throughTwoAndEqual) {
+    } else if ((throughTwoAndEqual) && (workingArray[nearestCellIndex] === null)
+    && (workingArray[indexThroughOneCell] === null)) {
       page.querySelectorAll('.field-cell')[indexThroughTwoCells]
         .classList.remove(currentModifier);
 
