@@ -6,6 +6,19 @@ const mainButton = document.querySelector('.start');
 const gameScore = document.querySelector('.game-score');
 let canMoveInAnyDirection = [];
 let score = 0;
+const DIRECTION = {
+  LEFT: 'left',
+  RIGHT: 'right',
+  UP: 'up',
+  DONW: 'down',
+};
+
+const arrowDirection = {
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+  UP: 'ArrowUp',
+  DONW: 'ArrrowDown',
+};
 
 function appendNumber() {
   const emptySquares = everySquare.filter(square => square.innerHTML === '');
@@ -36,8 +49,7 @@ function getNewRow(column, direction) {
   const unfilled = Array(missing).fill('');
 
   return (
-    direction === 'down'
-    || direction === 'right'
+    direction === DIRECTION.DOWN || direction === DIRECTION.RIGHT
       ? unfilled.concat(filtered)
       : filtered.concat(unfilled)
   );
@@ -56,7 +68,7 @@ function moveDown() {
   for (let i = 0; i < everyRow.length; i++) {
     const filteredColumn = everySquare.filter(td => td.cellIndex === i);
 
-    moveAndCombine('down', filteredColumn);
+    moveAndCombine(DIRECTION.DOWN, filteredColumn);
   };
 
   checkMoveAndFinish();
@@ -66,7 +78,7 @@ function moveUp() {
   for (let i = 0; i < everyRow.length; i++) {
     const filteredColumn = everySquare.filter(td => td.cellIndex === i);
 
-    moveAndCombine('up', filteredColumn);
+    moveAndCombine(DIRECTION.UP, filteredColumn);
   };
 
   checkMoveAndFinish();
@@ -76,7 +88,7 @@ function moveRight() {
   for (let i = 0; i < everyRow.length; i++) {
     const filteredColumn = everyRow.filter(tr => tr.rowIndex === i)[0].cells;
 
-    moveAndCombine('right', filteredColumn);
+    moveAndCombine(DIRECTION.RIGHT, filteredColumn);
   };
 
   checkMoveAndFinish();
@@ -86,7 +98,7 @@ function moveLeft() {
   for (let i = 0; i < everyRow.length; i++) {
     const filteredColumn = everyRow.filter(tr => tr.rowIndex === i)[0].cells;
 
-    moveAndCombine('left', filteredColumn);
+    moveAndCombine(DIRECTION.LEFT, filteredColumn);
   };
 
   checkMoveAndFinish();
@@ -103,7 +115,7 @@ function moveAndCombine(direction, filteredColumn) {
 }
 
 function combine(direction, row, collection) {
-  if (direction === 'left' || direction === 'up') {
+  if (direction === DIRECTION.LEFT || direction === DIRECTION.UP) {
     for (let k = 1; k < row.length; k++) {
       const prev = row[k - 1];
       const total = row[k] + prev;
@@ -149,7 +161,7 @@ function combine(direction, row, collection) {
     }
   }
 
-  if (direction === 'right' || direction === 'down') {
+  if (direction === DIRECTION.RIGHT || direction === DIRECTION.RIGHT) {
     for (let k = row.length - 1; k > 0; k--) {
       const prev = row[k - 1];
       const total = row[k] + prev;
@@ -203,7 +215,7 @@ function move(filteredColumn, row) {
 }
 
 function canMove(direction, column) {
-  if (direction === 'left' || direction === 'up') {
+  if (direction === DIRECTION.LEFT || direction === DIRECTION.UP) {
     for (let j = 1; j < column.length; j++) {
       const emptyString = column.find(col => col === '');
       const curr = column[j];
@@ -229,7 +241,7 @@ function canMove(direction, column) {
     }
   }
 
-  if (direction === 'right' || direction === 'down') {
+  if (direction === DIRECTION.DOWN || direction === DIRECTION.RIGHT) {
     for (let j = column.length - 1; j > 0; j--) {
       const emptyString = column.find(col => col === '');
       const curr = column[j];
@@ -326,19 +338,19 @@ mainButton.addEventListener('click', (e) => {
 
 document.addEventListener('keyup', (e) => {
   switch (e.key) {
-    case 'ArrowDown':
+    case arrowDirection.DONW:
       moveDown();
       break;
 
-    case 'ArrowUp':
+    case arrowDirection.UP:
       moveUp();
       break;
 
-    case 'ArrowRight':
+    case arrowDirection.RIGHT:
       moveRight();
       break;
 
-    case 'ArrowLeft':
+    case arrowDirection.LEFT:
       moveLeft();
       break;
 
