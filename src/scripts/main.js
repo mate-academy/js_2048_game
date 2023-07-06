@@ -17,7 +17,7 @@ const arrowDirection = {
   LEFT: 'ArrowLeft',
   RIGHT: 'ArrowRight',
   UP: 'ArrowUp',
-  DONW: 'ArrrowDown',
+  DONW: 'ArrowDown',
 };
 
 function appendNumber() {
@@ -64,44 +64,42 @@ function checkMoveAndFinish() {
   checkIfGameFinished();
 }
 
-function moveDown() {
+// функція для заміни циклу в moveDown() та moveUp()
+function iterationTD(direction, list) {
   for (let i = 0; i < everyRow.length; i++) {
-    const filteredColumn = everySquare.filter(td => td.cellIndex === i);
+    const filteredColumn = list.filter(td => td.cellIndex === i);
 
-    moveAndCombine(DIRECTION.DOWN, filteredColumn);
+    moveAndCombine(direction, filteredColumn);
+  }
+
+  checkMoveAndFinish();
+}
+
+// функція для заміни циклу в moveRight() та moveLeft()
+function iterationTR(direction, list) {
+  for (let i = 0; i < everyRow.length; i++) {
+    const filteredColumn = list.filter(tr => tr.rowIndex === i)[0].cells;
+
+    moveAndCombine(direction, filteredColumn);
   };
 
   checkMoveAndFinish();
+}
+
+function moveDown() {
+  iterationTD(DIRECTION.DOWN, everySquare);
 }
 
 function moveUp() {
-  for (let i = 0; i < everyRow.length; i++) {
-    const filteredColumn = everySquare.filter(td => td.cellIndex === i);
-
-    moveAndCombine(DIRECTION.UP, filteredColumn);
-  };
-
-  checkMoveAndFinish();
+  iterationTD(DIRECTION.UP, everySquare);
 }
 
 function moveRight() {
-  for (let i = 0; i < everyRow.length; i++) {
-    const filteredColumn = everyRow.filter(tr => tr.rowIndex === i)[0].cells;
-
-    moveAndCombine(DIRECTION.RIGHT, filteredColumn);
-  };
-
-  checkMoveAndFinish();
+  iterationTR(DIRECTION.RIGHT, everyRow);
 }
 
 function moveLeft() {
-  for (let i = 0; i < everyRow.length; i++) {
-    const filteredColumn = everyRow.filter(tr => tr.rowIndex === i)[0].cells;
-
-    moveAndCombine(DIRECTION.LEFT, filteredColumn);
-  };
-
-  checkMoveAndFinish();
+  iterationTR(DIRECTION.LEFT, everyRow);
 }
 
 function moveAndCombine(direction, filteredColumn) {
