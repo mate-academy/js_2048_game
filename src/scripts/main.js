@@ -57,8 +57,10 @@ function fillGameField() {
       gameValue.innerText = arrayValue === 0 ? '' : arrayValue;
       gameValue.classList.value = '';
 
-      gameValue.classList.add('field-cell',
-        `field-cell--${gameValue.innerText}`);
+      gameValue.classList.add(
+        'field-cell',
+        `field-cell--${gameValue.innerText}`
+      );
     }
   }
 }
@@ -74,32 +76,38 @@ function newGame() {
   score = 0;
   scoreField.innerText = score;
   generateNewNumber();
+  generateNewNumber();
+
+  fillGameField();
   fillGameField();
 }
 
 document.addEventListener('keydown', (e) => {
   const pressedKey = e.code;
+  const isZeroAvailable
+  = gameSquare.every((row) => row.every((el) => el !== 0));
+  const newBoard = JSON.parse(JSON.stringify(gameSquare));
 
   switch (pressedKey) {
     case 'ArrowRight':
       moveRowsRight();
-      generateNewNumber();
       break;
 
     case 'ArrowLeft':
       moveRowsLeft();
-      generateNewNumber();
       break;
 
     case 'ArrowUp':
       moveRowsUp();
-      generateNewNumber();
       break;
 
     case 'ArrowDown':
       moveRowsDown();
-      generateNewNumber();
       break;
+  }
+
+  if (!isZeroAvailable && compareGameBoards(gameSquare, newBoard)) {
+    generateNewNumber();
   }
 
   fillGameField();
@@ -110,6 +118,18 @@ document.addEventListener('keydown', (e) => {
 
   isGameWon();
 });
+
+function compareGameBoards(prevBoardGame, currentBoardGame) {
+  for (let r = 0; r < gameSize; r++) {
+    for (let c = 0; c < gameSize; c++) {
+      if (prevBoardGame[r][c] !== currentBoardGame[r][c]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
 
 function moveCellsLeft(array) {
   function removeZeros(collection) {
