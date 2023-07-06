@@ -36,7 +36,8 @@ function getNewRow(column, direction) {
   const unfilled = Array(missing).fill('');
 
   return (
-    direction === 'down' || direction === 'right'
+    direction === 'down'
+    || direction === 'right'
       ? unfilled.concat(filtered)
       : filtered.concat(unfilled)
   );
@@ -106,8 +107,11 @@ function combine(direction, row, collection) {
     for (let k = 1; k < row.length; k++) {
       const prev = row[k - 1];
       const total = row[k] + prev;
-      const hasPairs = row[k] === prev && prev !== ''
-        && row[k + 1] === row[k + 2] && row[k + 1] && row[k + 2];
+      const hasPairs = row[k] === prev
+         && prev !== ''
+         && row[k + 1] === row[k + 2]
+         && row[k + 1]
+         && row[k + 2];
 
       if (hasPairs) {
         row[k - 1] = total;
@@ -149,8 +153,11 @@ function combine(direction, row, collection) {
     for (let k = row.length - 1; k > 0; k--) {
       const prev = row[k - 1];
       const total = row[k] + prev;
-      const hasPairs = row[k] === prev && prev !== ''
-        && row[k - 2] === row[k - 3] && row[k - 2] && row[k - 3];
+      const hasPairs = row[k] === prev
+        && prev !== ''
+        && row[k - 2] === row[k - 3]
+        && row[k - 2]
+        && row[k - 3];
 
       if (hasPairs) {
         row[k] = total;
