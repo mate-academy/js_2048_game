@@ -8,6 +8,7 @@ let workingArray = Array(16).fill(null);
 let changeIndicator = true;
 let scoreCounter = 0;
 let disableFunctions = false;
+let direction;
 
 function generateInitialValues() {
   let positionX;
@@ -47,12 +48,10 @@ function generateInitialValues() {
 }
 
 function generateTwoOrFour() {
-  let findAllIndices = [];
-
-  findAllIndices = [];
+  const findAllIndices = [];
 
   for (let i = 0; i < workingArray.length; i++) {
-    if (workingArray[i] !== null) {
+    if (workingArray[i]) {
       findAllIndices.push(i);
     }
   }
@@ -84,19 +83,11 @@ function removeAllModificators() {
   page.querySelector('.message-lose').classList.add('hidden');
   disableFunctions = false;
 
-  for (const ch of page.querySelectorAll('.field-cell')) {
-    ch.classList.remove('field-cell--2');
-    ch.classList.remove('field-cell--4');
-    ch.classList.remove('field-cell--8');
-    ch.classList.remove('field-cell--16');
-    ch.classList.remove('field-cell--32');
-    ch.classList.remove('field-cell--64');
-    ch.classList.remove('field-cell--128');
-    ch.classList.remove('field-cell--256');
-    ch.classList.remove('field-cell--512');
-    ch.classList.remove('field-cell--1024');
-    ch.classList.remove('field-cell--2048');
-  }
+  page.querySelectorAll('.field-cell').forEach((element) => {
+    page.querySelectorAll('.field-cell').forEach((n, i) => {
+      element.classList.remove(`field-cell--${2 ** (i + 1)}`);
+    });
+  });
 }
 
 function winningMessage() {
@@ -130,28 +121,147 @@ function loseMessage() {
   }
 }
 
-function upwardMovement() {
+function move() {
   if (disableFunctions) {
     return;
   }
 
   changeIndicator = false;
 
-  let allIndices = [];
+  const allIndices = [];
 
-  allIndices = [];
+  switch (true) {
+    case (direction === 'ArrowUp') || (direction === 'ArrowDown'):
+      for (let i = 0; i < workingArray.length; i++) {
+        if (workingArray[i] !== null) {
+          allIndices.push(i);
+        }
+      }
 
-  for (let i = 0; i < workingArray.length; i++) {
-    if (workingArray[i] !== null) {
-      allIndices.push(i);
-    }
+      if (direction === 'ArrowDown') {
+        allIndices.reverse();
+      }
+      break;
+
+    case ((direction === 'ArrowLeft') || (direction === 'ArrowRight')):
+      for (let i = 0; i < workingArray.length; i += 4) {
+        if (workingArray[i] !== null) {
+          allIndices.push(i);
+        }
+      }
+
+      for (let i = 1; i < workingArray.length; i += 4) {
+        if (workingArray[i] !== null) {
+          allIndices.push(i);
+        }
+      }
+
+      for (let i = 2; i < workingArray.length; i += 4) {
+        if (workingArray[i] !== null) {
+          allIndices.push(i);
+        }
+      }
+
+      for (let i = 3; i < workingArray.length; i += 4) {
+        if (workingArray[i] !== null) {
+          allIndices.push(i);
+        }
+      }
+
+      if (direction === 'ArrowRight') {
+        allIndices.reverse();
+      }
+      break;
+
+    default:
+      break;
   }
 
   for (let i = 0; i < allIndices.length; i++) {
     const currentCellIndex = allIndices[i];
-    const nearestCellIndex = allIndices[i] - 4;
-    const indexThroughOneCell = allIndices[i] - 8;
-    const indexThroughTwoCells = allIndices[i] - 12;
+    let nearestCellIndex;
+    let indexThroughOneCell;
+    let indexThroughTwoCells;
+
+    switch (true) {
+      case (direction === 'ArrowUp'):
+        nearestCellIndex = allIndices[i] - 4;
+        indexThroughOneCell = allIndices[i] - 8;
+        indexThroughTwoCells = allIndices[i] - 12;
+
+        break;
+      case (direction === 'ArrowDown'):
+        nearestCellIndex = allIndices[i] + 4;
+        indexThroughOneCell = allIndices[i] + 8;
+        indexThroughTwoCells = allIndices[i] + 12;
+
+        break;
+      case (direction === 'ArrowLeft'):
+        nearestCellIndex = allIndices[i] - 1;
+
+        if ((currentCellIndex === 0) || (currentCellIndex === 4)
+        || (currentCellIndex === 8) || (currentCellIndex === 12)) {
+          nearestCellIndex = undefined;
+        };
+
+        indexThroughOneCell = allIndices[i] - 2;
+
+        if ((currentCellIndex === 0) || (currentCellIndex === 1)
+        || (currentCellIndex === 4) || (currentCellIndex === 5)
+        || (currentCellIndex === 8) || (currentCellIndex === 9)
+        || (currentCellIndex === 12) || (currentCellIndex === 13)
+        ) {
+          indexThroughOneCell = undefined;
+        }
+
+        indexThroughTwoCells = allIndices[i] - 3;
+
+        if ((currentCellIndex === 0) || (currentCellIndex === 1)
+        || (currentCellIndex === 2) || (currentCellIndex === 4)
+        || (currentCellIndex === 5) || (currentCellIndex === 6)
+        || (currentCellIndex === 8) || (currentCellIndex === 9)
+        || (currentCellIndex === 10) || (currentCellIndex === 12)
+        || (currentCellIndex === 13) || (currentCellIndex === 14)
+        ) {
+          indexThroughTwoCells = undefined;
+        };
+
+        break;
+
+      case (direction === 'ArrowRight'):
+        nearestCellIndex = allIndices[i] + 1;
+
+        if ((currentCellIndex === 3) || (currentCellIndex === 7)
+          || (currentCellIndex === 11) || (currentCellIndex === 15)) {
+          nearestCellIndex = undefined;
+        };
+
+        indexThroughOneCell = allIndices[i] + 2;
+
+        if ((currentCellIndex === 2) || (currentCellIndex === 3)
+          || (currentCellIndex === 6) || (currentCellIndex === 7)
+          || (currentCellIndex === 10) || (currentCellIndex === 11)
+          || (currentCellIndex === 14) || (currentCellIndex === 15)
+        ) {
+          indexThroughOneCell = undefined;
+        }
+
+        indexThroughTwoCells = allIndices[i] + 3;
+
+        if ((currentCellIndex === 1) || (currentCellIndex === 2)
+          || (currentCellIndex === 3) || (currentCellIndex === 5)
+          || (currentCellIndex === 6) || (currentCellIndex === 7)
+          || (currentCellIndex === 9) || (currentCellIndex === 10)
+          || (currentCellIndex === 11) || (currentCellIndex === 13)
+          || (currentCellIndex === 14) || (currentCellIndex === 15)
+        ) {
+          indexThroughTwoCells = undefined;
+        }
+        break;
+
+      default:
+        break;
+    }
 
     const sideBySideAndEqual = ((workingArray[nearestCellIndex] !== null)
     && (workingArray[nearestCellIndex] === workingArray[currentCellIndex]));
@@ -164,100 +274,28 @@ function upwardMovement() {
     const changeableModifier
     = `field-cell--${workingArray[currentCellIndex] * 2}`;
 
-    if (sideBySideAndEqual) {
-      page.querySelectorAll('.field-cell')[nearestCellIndex]
-        .classList.remove(currentModifier);
-
-      page.querySelectorAll('.field-cell')[nearestCellIndex]
-        .classList.add(changeableModifier);
-
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[nearestCellIndex] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[nearestCellIndex];
-      switcherScore.textContent = scoreCounter;
-
-      if (workingArray[indexThroughOneCell] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.add(changeableModifier);
+    switch (true) {
+      case sideBySideAndEqual:
+        page.querySelectorAll('.field-cell')[nearestCellIndex]
+          .classList.remove(currentModifier);
 
         page.querySelectorAll('.field-cell')[nearestCellIndex]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
-        workingArray[nearestCellIndex] = null;
-        changeIndicator = true;
-      };
-
-      if ((workingArray[indexThroughTwoCells] === null)) {
-        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
           .classList.add(changeableModifier);
-
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughTwoCells] = workingArray[indexThroughOneCell];
-        workingArray[indexThroughOneCell] = null;
-        changeIndicator = true;
-      }
-    } else if ((throughOneAndEqual)
-    && (workingArray[nearestCellIndex] === null)) {
-      page.querySelectorAll('.field-cell')[indexThroughOneCell]
-        .classList.remove(currentModifier);
-
-      page.querySelectorAll('.field-cell')[indexThroughOneCell]
-        .classList.add(changeableModifier);
-
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[indexThroughOneCell] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[indexThroughOneCell];
-      switcherScore.textContent = scoreCounter;
-
-      if (workingArray[indexThroughTwoCells] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-          .classList.add(changeableModifier);
-
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughTwoCells] = workingArray[indexThroughOneCell];
-        workingArray[indexThroughOneCell] = null;
-        changeIndicator = true;
-      }
-    } else if ((throughTwoAndEqual) && (workingArray[nearestCellIndex] === null)
-    && (workingArray[indexThroughOneCell] === null)) {
-      page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-        .classList.remove(currentModifier);
-
-      page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-        .classList.add(changeableModifier);
-
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[indexThroughTwoCells] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[indexThroughTwoCells];
-      switcherScore.textContent = scoreCounter;
-    } else {
-      if (workingArray[nearestCellIndex] === null) {
-        page.querySelectorAll('.field-cell')[nearestCellIndex]
-          .classList.add(currentModifier);
 
         page.querySelectorAll('.field-cell')[currentCellIndex]
           .classList.remove(currentModifier);
-        workingArray[nearestCellIndex] = workingArray[currentCellIndex];
+        workingArray[nearestCellIndex] *= 2;
         workingArray[currentCellIndex] = null;
         changeIndicator = true;
+        scoreCounter += workingArray[nearestCellIndex];
+        switcherScore.textContent = scoreCounter;
 
         if (workingArray[indexThroughOneCell] === null) {
           page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.add(currentModifier);
+            .classList.add(changeableModifier);
 
           page.querySelectorAll('.field-cell')[nearestCellIndex]
-            .classList.remove(currentModifier);
+            .classList.remove(changeableModifier);
           workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
           workingArray[nearestCellIndex] = null;
           changeIndicator = true;
@@ -265,703 +303,141 @@ function upwardMovement() {
 
         if ((workingArray[indexThroughTwoCells] === null)) {
           page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-            .classList.add(currentModifier);
+            .classList.add(changeableModifier);
 
           page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.remove(currentModifier);
+            .classList.remove(changeableModifier);
 
           workingArray[indexThroughTwoCells]
           = workingArray[indexThroughOneCell];
           workingArray[indexThroughOneCell] = null;
           changeIndicator = true;
         }
-      } else if (workingArray[indexThroughOneCell] === null) {
+        break;
+
+      case ((throughOneAndEqual)
+        && (workingArray[nearestCellIndex] === null)):
         page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.add(currentModifier);
+          .classList.remove(currentModifier);
+
+        page.querySelectorAll('.field-cell')[indexThroughOneCell]
+          .classList.add(changeableModifier);
 
         page.querySelectorAll('.field-cell')[currentCellIndex]
           .classList.remove(currentModifier);
-        workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
+        workingArray[indexThroughOneCell] *= 2;
         workingArray[currentCellIndex] = null;
         changeIndicator = true;
+        scoreCounter += workingArray[indexThroughOneCell];
+        switcherScore.textContent = scoreCounter;
 
         if (workingArray[indexThroughTwoCells] === null) {
           page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-            .classList.add(currentModifier);
+            .classList.add(changeableModifier);
 
           page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.remove(currentModifier);
+            .classList.remove(changeableModifier);
 
           workingArray[indexThroughTwoCells]
           = workingArray[indexThroughOneCell];
           workingArray[indexThroughOneCell] = null;
           changeIndicator = true;
         }
-      } else if (workingArray[indexThroughTwoCells] === null) {
+        break;
+
+      case ((throughTwoAndEqual) && (workingArray[nearestCellIndex] === null)
+      && (workingArray[indexThroughOneCell] === null)):
         page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-          .classList.add(currentModifier);
+          .classList.remove(currentModifier);
+
+        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
+          .classList.add(changeableModifier);
 
         page.querySelectorAll('.field-cell')[currentCellIndex]
           .classList.remove(currentModifier);
-        workingArray[indexThroughTwoCells] = workingArray[nearestCellIndex];
+        workingArray[indexThroughTwoCells] *= 2;
         workingArray[currentCellIndex] = null;
         changeIndicator = true;
-      }
-    };
-  };
+        scoreCounter += workingArray[indexThroughTwoCells];
+        switcherScore.textContent = scoreCounter;
+        break;
 
-  winningMessage();
+      default:
+        switch (true) {
+          case (workingArray[nearestCellIndex] === null):
+            page.querySelectorAll('.field-cell')[nearestCellIndex]
+              .classList.add(currentModifier);
 
-  if (changeIndicator) {
-    generateTwoOrFour();
-  }
+            page.querySelectorAll('.field-cell')[currentCellIndex]
+              .classList.remove(currentModifier);
+            workingArray[nearestCellIndex] = workingArray[currentCellIndex];
+            workingArray[currentCellIndex] = null;
+            changeIndicator = true;
 
-  loseMessage();
-};
+            if (workingArray[indexThroughOneCell] === null) {
+              page.querySelectorAll('.field-cell')[indexThroughOneCell]
+                .classList.add(currentModifier);
 
-function downwardMovement() {
-  if (disableFunctions) {
-    return;
-  }
+              page.querySelectorAll('.field-cell')[nearestCellIndex]
+                .classList.remove(currentModifier);
 
-  changeIndicator = false;
+              workingArray[indexThroughOneCell]
+              = workingArray[nearestCellIndex];
+              workingArray[nearestCellIndex] = null;
+              changeIndicator = true;
+            };
 
-  let allIndices = [];
+            if ((workingArray[indexThroughTwoCells] === null)) {
+              page.querySelectorAll('.field-cell')[indexThroughTwoCells]
+                .classList.add(currentModifier);
 
-  allIndices = [];
+              page.querySelectorAll('.field-cell')[indexThroughOneCell]
+                .classList.remove(currentModifier);
 
-  for (let i = workingArray.length - 1; i >= 0; i--) {
-    if (workingArray[i] !== null) {
-      allIndices.push(i);
-    }
-  }
+              workingArray[indexThroughTwoCells]
+                = workingArray[indexThroughOneCell];
+              workingArray[indexThroughOneCell] = null;
+              changeIndicator = true;
+            };
+            break;
 
-  for (let i = 0; i < allIndices.length; i++) {
-    const currentCellIndex = allIndices[i];
-    const nearestCellIndex = allIndices[i] + 4;
-    const indexThroughOneCell = allIndices[i] + 8;
-    const indexThroughTwoCells = allIndices[i] + 12;
+          case (workingArray[indexThroughOneCell] === null):
+            page.querySelectorAll('.field-cell')[indexThroughOneCell]
+              .classList.add(currentModifier);
 
-    const sideBySideAndEqual = ((workingArray[nearestCellIndex] !== null)
-    && (workingArray[nearestCellIndex] === workingArray[currentCellIndex]));
-    const throughOneAndEqual = ((workingArray[indexThroughOneCell] !== null)
-    && (workingArray[indexThroughOneCell] === workingArray[currentCellIndex]));
-    const throughTwoAndEqual = ((workingArray[indexThroughTwoCells] !== null)
-    && (workingArray[indexThroughTwoCells] === workingArray[currentCellIndex]));
+            page.querySelectorAll('.field-cell')[currentCellIndex]
+              .classList.remove(currentModifier);
+            workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
+            workingArray[currentCellIndex] = null;
+            changeIndicator = true;
 
-    const currentModifier = `field-cell--${workingArray[currentCellIndex]}`;
-    const changeableModifier
-    = `field-cell--${workingArray[currentCellIndex] * 2}`;
+            if (workingArray[indexThroughTwoCells] === null) {
+              page.querySelectorAll('.field-cell')[indexThroughTwoCells]
+                .classList.add(currentModifier);
 
-    if (sideBySideAndEqual) {
-      page.querySelectorAll('.field-cell')[nearestCellIndex]
-        .classList.remove(currentModifier);
+              page.querySelectorAll('.field-cell')[indexThroughOneCell]
+                .classList.remove(currentModifier);
 
-      page.querySelectorAll('.field-cell')[nearestCellIndex]
-        .classList.add(changeableModifier);
+              workingArray[indexThroughTwoCells]
+                = workingArray[indexThroughOneCell];
+              workingArray[indexThroughOneCell] = null;
+              changeIndicator = true;
+            }
+            break;
+          case (workingArray[indexThroughTwoCells] === null):
+            page.querySelectorAll('.field-cell')[indexThroughTwoCells]
+              .classList.add(currentModifier);
 
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[nearestCellIndex] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[nearestCellIndex];
-      switcherScore.textContent = scoreCounter;
+            page.querySelectorAll('.field-cell')[currentCellIndex]
+              .classList.remove(currentModifier);
+            workingArray[indexThroughTwoCells] = workingArray[nearestCellIndex];
+            workingArray[currentCellIndex] = null;
+            changeIndicator = true;
+            break;
 
-      if (workingArray[indexThroughOneCell] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.add(changeableModifier);
-
-        page.querySelectorAll('.field-cell')[nearestCellIndex]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
-        workingArray[nearestCellIndex] = null;
-        changeIndicator = true;
-      };
-
-      if ((workingArray[indexThroughTwoCells] === null)) {
-        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-          .classList.add(changeableModifier);
-
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughTwoCells] = workingArray[indexThroughOneCell];
-        workingArray[indexThroughOneCell] = null;
-        changeIndicator = true;
-      }
-    } else if ((throughOneAndEqual)
-    && (workingArray[nearestCellIndex] === null)) {
-      page.querySelectorAll('.field-cell')[indexThroughOneCell]
-        .classList.remove(currentModifier);
-
-      page.querySelectorAll('.field-cell')[indexThroughOneCell]
-        .classList.add(changeableModifier);
-
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[indexThroughOneCell] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[indexThroughOneCell];
-      switcherScore.textContent = scoreCounter;
-
-      if (workingArray[indexThroughTwoCells] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-          .classList.add(changeableModifier);
-
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughTwoCells] = workingArray[indexThroughOneCell];
-        workingArray[indexThroughOneCell] = null;
-        changeIndicator = true;
-      }
-    } else if ((throughTwoAndEqual) && (workingArray[nearestCellIndex] === null)
-    && (workingArray[indexThroughOneCell] === null)) {
-      page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-        .classList.remove(currentModifier);
-
-      page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-        .classList.add(changeableModifier);
-
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[indexThroughTwoCells] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[indexThroughTwoCells];
-      switcherScore.textContent = scoreCounter;
-    } else {
-      if (workingArray[nearestCellIndex] === null) {
-        page.querySelectorAll('.field-cell')[nearestCellIndex]
-          .classList.add(currentModifier);
-
-        page.querySelectorAll('.field-cell')[currentCellIndex]
-          .classList.remove(currentModifier);
-        workingArray[nearestCellIndex] = workingArray[currentCellIndex];
-        workingArray[currentCellIndex] = null;
-        changeIndicator = true;
-
-        if (workingArray[indexThroughOneCell] === null) {
-          page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.add(currentModifier);
-
-          page.querySelectorAll('.field-cell')[nearestCellIndex]
-            .classList.remove(currentModifier);
-          workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
-          workingArray[nearestCellIndex] = null;
-          changeIndicator = true;
+          default:
+            break;
         };
-
-        if ((workingArray[indexThroughTwoCells] === null)) {
-          page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-            .classList.add(currentModifier);
-
-          page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.remove(currentModifier);
-
-          workingArray[indexThroughTwoCells]
-          = workingArray[indexThroughOneCell];
-          workingArray[indexThroughOneCell] = null;
-          changeIndicator = true;
-        }
-      } else if (workingArray[indexThroughOneCell] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.add(currentModifier);
-
-        page.querySelectorAll('.field-cell')[currentCellIndex]
-          .classList.remove(currentModifier);
-        workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
-        workingArray[currentCellIndex] = null;
-        changeIndicator = true;
-
-        if (workingArray[indexThroughTwoCells] === null) {
-          page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-            .classList.add(currentModifier);
-
-          page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.remove(currentModifier);
-
-          workingArray[indexThroughTwoCells]
-          = workingArray[indexThroughOneCell];
-          workingArray[indexThroughOneCell] = null;
-          changeIndicator = true;
-        }
-      } else if (workingArray[indexThroughTwoCells] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-          .classList.add(currentModifier);
-
-        page.querySelectorAll('.field-cell')[currentCellIndex]
-          .classList.remove(currentModifier);
-        workingArray[indexThroughTwoCells] = workingArray[nearestCellIndex];
-        workingArray[currentCellIndex] = null;
-        changeIndicator = true;
-      }
-    };
-  };
-
-  winningMessage();
-
-  if (changeIndicator) {
-    generateTwoOrFour();
-  }
-
-  loseMessage();
-};
-
-function leftMovement() {
-  if (disableFunctions) {
-    return;
-  }
-
-  changeIndicator = false;
-
-  let allIndices = [];
-
-  allIndices = [];
-
-  for (let i = 0; i < workingArray.length; i += 4) {
-    if (workingArray[i] !== null) {
-      allIndices.push(i);
-    }
-  }
-
-  for (let i = 1; i < workingArray.length; i += 4) {
-    if (workingArray[i] !== null) {
-      allIndices.push(i);
-    }
-  }
-
-  for (let i = 2; i < workingArray.length; i += 4) {
-    if (workingArray[i] !== null) {
-      allIndices.push(i);
-    }
-  }
-
-  for (let i = 3; i < workingArray.length; i += 4) {
-    if (workingArray[i] !== null) {
-      allIndices.push(i);
-    }
-  }
-
-  for (let i = 0; i < allIndices.length; i++) {
-    const currentCellIndex = allIndices[i];
-
-    let nearestCellIndex = allIndices[i] - 1;
-
-    if ((currentCellIndex === 0) || (currentCellIndex === 4)
-    || (currentCellIndex === 8) || (currentCellIndex === 12)) {
-      nearestCellIndex = undefined;
-    };
-
-    let indexThroughOneCell = allIndices[i] - 2;
-
-    if ((currentCellIndex === 0) || (currentCellIndex === 1)
-    || (currentCellIndex === 4) || (currentCellIndex === 5)
-    || (currentCellIndex === 8) || (currentCellIndex === 9)
-    || (currentCellIndex === 12) || (currentCellIndex === 13)
-    ) {
-      indexThroughOneCell = undefined;
-    }
-
-    let indexThroughTwoCells = allIndices[i] - 3;
-
-    if ((currentCellIndex === 0) || (currentCellIndex === 1)
-    || (currentCellIndex === 2) || (currentCellIndex === 4)
-    || (currentCellIndex === 5) || (currentCellIndex === 6)
-    || (currentCellIndex === 8) || (currentCellIndex === 9)
-    || (currentCellIndex === 10) || (currentCellIndex === 12)
-    || (currentCellIndex === 13) || (currentCellIndex === 14)
-    ) {
-      indexThroughTwoCells = undefined;
-    };
-
-    const sideBySideAndEqual = ((workingArray[nearestCellIndex] !== null)
-    && (workingArray[nearestCellIndex] === workingArray[currentCellIndex]));
-    const throughOneAndEqual = ((workingArray[indexThroughOneCell] !== null)
-    && (workingArray[indexThroughOneCell] === workingArray[currentCellIndex]));
-    const throughTwoAndEqual = ((workingArray[indexThroughTwoCells] !== null)
-    && (workingArray[indexThroughTwoCells] === workingArray[currentCellIndex]));
-
-    const currentModifier = `field-cell--${workingArray[currentCellIndex]}`;
-    const changeableModifier
-    = `field-cell--${workingArray[currentCellIndex] * 2}`;
-
-    if (sideBySideAndEqual) {
-      page.querySelectorAll('.field-cell')[nearestCellIndex]
-        .classList.remove(currentModifier);
-
-      page.querySelectorAll('.field-cell')[nearestCellIndex]
-        .classList.add(changeableModifier);
-
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[nearestCellIndex] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[nearestCellIndex];
-      switcherScore.textContent = scoreCounter;
-
-      if (workingArray[indexThroughOneCell] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.add(changeableModifier);
-
-        page.querySelectorAll('.field-cell')[nearestCellIndex]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
-        workingArray[nearestCellIndex] = null;
-        changeIndicator = true;
-      };
-
-      if ((workingArray[indexThroughTwoCells] === null)) {
-        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-          .classList.add(changeableModifier);
-
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughTwoCells] = workingArray[indexThroughOneCell];
-        workingArray[indexThroughOneCell] = null;
-        changeIndicator = true;
-      }
-    } else if ((throughOneAndEqual)
-    && (workingArray[nearestCellIndex] === null)) {
-      page.querySelectorAll('.field-cell')[indexThroughOneCell]
-        .classList.remove(currentModifier);
-
-      page.querySelectorAll('.field-cell')[indexThroughOneCell]
-        .classList.add(changeableModifier);
-
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[indexThroughOneCell] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[indexThroughOneCell];
-      switcherScore.textContent = scoreCounter;
-
-      if (workingArray[indexThroughTwoCells] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-          .classList.add(changeableModifier);
-
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughTwoCells] = workingArray[indexThroughOneCell];
-        workingArray[indexThroughOneCell] = null;
-        changeIndicator = true;
-      }
-    } else if ((throughTwoAndEqual) && (workingArray[nearestCellIndex] === null)
-    && (workingArray[indexThroughOneCell] === null)) {
-      page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-        .classList.remove(currentModifier);
-
-      page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-        .classList.add(changeableModifier);
-
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[indexThroughTwoCells] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[indexThroughTwoCells];
-      switcherScore.textContent = scoreCounter;
-    } else {
-      if (workingArray[nearestCellIndex] === null) {
-        page.querySelectorAll('.field-cell')[nearestCellIndex]
-          .classList.add(currentModifier);
-
-        page.querySelectorAll('.field-cell')[currentCellIndex]
-          .classList.remove(currentModifier);
-        workingArray[nearestCellIndex] = workingArray[currentCellIndex];
-        workingArray[currentCellIndex] = null;
-        changeIndicator = true;
-
-        if (workingArray[indexThroughOneCell] === null) {
-          page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.add(currentModifier);
-
-          page.querySelectorAll('.field-cell')[nearestCellIndex]
-            .classList.remove(currentModifier);
-          workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
-          workingArray[nearestCellIndex] = null;
-          changeIndicator = true;
-        };
-
-        if ((workingArray[indexThroughTwoCells] === null)) {
-          page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-            .classList.add(currentModifier);
-
-          page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.remove(currentModifier);
-
-          workingArray[indexThroughTwoCells]
-          = workingArray[indexThroughOneCell];
-          workingArray[indexThroughOneCell] = null;
-          changeIndicator = true;
-        }
-      } else if (workingArray[indexThroughOneCell] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.add(currentModifier);
-
-        page.querySelectorAll('.field-cell')[currentCellIndex]
-          .classList.remove(currentModifier);
-        workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
-        workingArray[currentCellIndex] = null;
-        changeIndicator = true;
-
-        if (workingArray[indexThroughTwoCells] === null) {
-          page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-            .classList.add(currentModifier);
-
-          page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.remove(currentModifier);
-
-          workingArray[indexThroughTwoCells]
-          = workingArray[indexThroughOneCell];
-          workingArray[indexThroughOneCell] = null;
-          changeIndicator = true;
-        }
-      } else if (workingArray[indexThroughTwoCells] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-          .classList.add(currentModifier);
-
-        page.querySelectorAll('.field-cell')[currentCellIndex]
-          .classList.remove(currentModifier);
-        workingArray[indexThroughTwoCells] = workingArray[nearestCellIndex];
-        workingArray[currentCellIndex] = null;
-        changeIndicator = true;
-      }
-    };
-  };
-
-  winningMessage();
-
-  if (changeIndicator) {
-    generateTwoOrFour();
-  }
-
-  loseMessage();
-};
-
-function rightMovement() {
-  if (disableFunctions) {
-    return;
-  }
-
-  changeIndicator = false;
-
-  let allIndices = [];
-
-  allIndices = [];
-
-  for (let i = workingArray.length - 1; i >= 0; i -= 4) {
-    if (workingArray[i] !== null) {
-      allIndices.push(i);
-    }
-  }
-
-  for (let i = workingArray.length - 2; i >= 0; i -= 4) {
-    if (workingArray[i] !== null) {
-      allIndices.push(i);
-    }
-  }
-
-  for (let i = workingArray.length - 3; i >= 0; i -= 4) {
-    if (workingArray[i] !== null) {
-      allIndices.push(i);
-    }
-  }
-
-  for (let i = workingArray.length - 4; i >= 0; i -= 4) {
-    if (workingArray[i] !== null) {
-      allIndices.push(i);
-    }
-  }
-
-  for (let i = 0; i < allIndices.length; i++) {
-    const currentCellIndex = allIndices[i];
-
-    let nearestCellIndex = allIndices[i] + 1;
-
-    if ((currentCellIndex === 3) || (currentCellIndex === 7)
-    || (currentCellIndex === 11) || (currentCellIndex === 15)) {
-      nearestCellIndex = undefined;
-    };
-
-    let indexThroughOneCell = allIndices[i] + 2;
-
-    if ((currentCellIndex === 2) || (currentCellIndex === 3)
-    || (currentCellIndex === 6) || (currentCellIndex === 7)
-    || (currentCellIndex === 10) || (currentCellIndex === 11)
-    || (currentCellIndex === 14) || (currentCellIndex === 15)
-    ) {
-      indexThroughOneCell = undefined;
-    }
-
-    let indexThroughTwoCells = allIndices[i] + 3;
-
-    if ((currentCellIndex === 1) || (currentCellIndex === 2)
-    || (currentCellIndex === 3) || (currentCellIndex === 5)
-    || (currentCellIndex === 6) || (currentCellIndex === 7)
-    || (currentCellIndex === 9) || (currentCellIndex === 10)
-    || (currentCellIndex === 11) || (currentCellIndex === 13)
-    || (currentCellIndex === 14) || (currentCellIndex === 15)
-    ) {
-      indexThroughTwoCells = undefined;
-    };
-
-    const sideBySideAndEqual = ((workingArray[nearestCellIndex] !== null)
-    && (workingArray[nearestCellIndex] === workingArray[currentCellIndex]));
-    const throughOneAndEqual = ((workingArray[indexThroughOneCell] !== null)
-    && (workingArray[indexThroughOneCell] === workingArray[currentCellIndex]));
-    const throughTwoAndEqual = ((workingArray[indexThroughTwoCells] !== null)
-    && (workingArray[indexThroughTwoCells] === workingArray[currentCellIndex]));
-
-    const currentModifier = `field-cell--${workingArray[currentCellIndex]}`;
-    const changeableModifier
-    = `field-cell--${workingArray[currentCellIndex] * 2}`;
-
-    if (sideBySideAndEqual) {
-      page.querySelectorAll('.field-cell')[nearestCellIndex]
-        .classList.remove(currentModifier);
-
-      page.querySelectorAll('.field-cell')[nearestCellIndex]
-        .classList.add(changeableModifier);
-
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[nearestCellIndex] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[nearestCellIndex];
-      switcherScore.textContent = scoreCounter;
-
-      if (workingArray[indexThroughOneCell] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.add(changeableModifier);
-
-        page.querySelectorAll('.field-cell')[nearestCellIndex]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
-        workingArray[nearestCellIndex] = null;
-        changeIndicator = true;
-      };
-
-      if ((workingArray[indexThroughTwoCells] === null)) {
-        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-          .classList.add(changeableModifier);
-
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughTwoCells] = workingArray[indexThroughOneCell];
-        workingArray[indexThroughOneCell] = null;
-        changeIndicator = true;
-      }
-    } else if ((throughOneAndEqual)
-    && (workingArray[nearestCellIndex] === null)) {
-      page.querySelectorAll('.field-cell')[indexThroughOneCell]
-        .classList.remove(currentModifier);
-
-      page.querySelectorAll('.field-cell')[indexThroughOneCell]
-        .classList.add(changeableModifier);
-
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[indexThroughOneCell] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[indexThroughOneCell];
-      switcherScore.textContent = scoreCounter;
-
-      if (workingArray[indexThroughTwoCells] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-          .classList.add(changeableModifier);
-
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.remove(changeableModifier);
-        workingArray[indexThroughTwoCells] = workingArray[indexThroughOneCell];
-        workingArray[indexThroughOneCell] = null;
-        changeIndicator = true;
-      }
-    } else if ((throughTwoAndEqual) && (workingArray[nearestCellIndex] === null)
-    && (workingArray[indexThroughOneCell] === null)) {
-      page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-        .classList.remove(currentModifier);
-
-      page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-        .classList.add(changeableModifier);
-
-      page.querySelectorAll('.field-cell')[currentCellIndex]
-        .classList.remove(currentModifier);
-      workingArray[indexThroughTwoCells] *= 2;
-      workingArray[currentCellIndex] = null;
-      changeIndicator = true;
-      scoreCounter += workingArray[indexThroughTwoCells];
-      switcherScore.textContent = scoreCounter;
-    } else {
-      if (workingArray[nearestCellIndex] === null) {
-        page.querySelectorAll('.field-cell')[nearestCellIndex]
-          .classList.add(currentModifier);
-
-        page.querySelectorAll('.field-cell')[currentCellIndex]
-          .classList.remove(currentModifier);
-        workingArray[nearestCellIndex] = workingArray[currentCellIndex];
-        workingArray[currentCellIndex] = null;
-        changeIndicator = true;
-
-        if (workingArray[indexThroughOneCell] === null) {
-          page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.add(currentModifier);
-
-          page.querySelectorAll('.field-cell')[nearestCellIndex]
-            .classList.remove(currentModifier);
-          workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
-          workingArray[nearestCellIndex] = null;
-          changeIndicator = true;
-        };
-
-        if ((workingArray[indexThroughTwoCells] === null)) {
-          page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-            .classList.add(currentModifier);
-
-          page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.remove(currentModifier);
-
-          workingArray[indexThroughTwoCells]
-          = workingArray[indexThroughOneCell];
-          workingArray[indexThroughOneCell] = null;
-          changeIndicator = true;
-        }
-      } else if (workingArray[indexThroughOneCell] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughOneCell]
-          .classList.add(currentModifier);
-
-        page.querySelectorAll('.field-cell')[currentCellIndex]
-          .classList.remove(currentModifier);
-        workingArray[indexThroughOneCell] = workingArray[nearestCellIndex];
-        workingArray[currentCellIndex] = null;
-        changeIndicator = true;
-
-        if (workingArray[indexThroughTwoCells] === null) {
-          page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-            .classList.add(currentModifier);
-
-          page.querySelectorAll('.field-cell')[indexThroughOneCell]
-            .classList.remove(currentModifier);
-
-          workingArray[indexThroughTwoCells]
-          = workingArray[indexThroughOneCell];
-          workingArray[indexThroughOneCell] = null;
-          changeIndicator = true;
-        }
-      } else if (workingArray[indexThroughTwoCells] === null) {
-        page.querySelectorAll('.field-cell')[indexThroughTwoCells]
-          .classList.add(currentModifier);
-
-        page.querySelectorAll('.field-cell')[currentCellIndex]
-          .classList.remove(currentModifier);
-        workingArray[indexThroughTwoCells] = workingArray[nearestCellIndex];
-        workingArray[currentCellIndex] = null;
-        changeIndicator = true;
-      }
     };
   };
 
@@ -985,20 +461,6 @@ switcherStart.addEventListener('click', () => {
 
 document.addEventListener('keydown', keyEvent => {
   changeIndicator = true;
-
-  if ((keyEvent.key === 'ArrowUp') && (changeIndicator === true)) {
-    upwardMovement();
-  };
-
-  if ((keyEvent.key === 'ArrowDown') && (changeIndicator === true)) {
-    downwardMovement();
-  };
-
-  if ((keyEvent.key === 'ArrowLeft') && (changeIndicator === true)) {
-    leftMovement();
-  };
-
-  if ((keyEvent.key === 'ArrowRight') && (changeIndicator === true)) {
-    rightMovement();
-  };
+  direction = keyEvent.key;
+  move();
 });
