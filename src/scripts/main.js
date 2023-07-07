@@ -13,7 +13,6 @@ let gameSquare = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
-
 ];
 
 startBtn.addEventListener('click', () => {
@@ -66,12 +65,14 @@ function fillGameField() {
 }
 
 function newGame() {
-  gameSquare = [
+  const initialField = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
+
+  gameSquare = initialField;
 
   score = 0;
   scoreField.innerText = score;
