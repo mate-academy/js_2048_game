@@ -1,206 +1,339 @@
 'use strict';
 
-// import { Grid } from './Grid.js';
-// import { Tile } from './Tile.js';
+const GRID_SIZE = 4;
+const CELLS_COUNT = GRID_SIZE * GRID_SIZE;
 
-// const gameBoard = document.getElementById('game-field');
+class Tile {
+  constructor(gridElement) {
+    this.tileElement = document.createElement('div');
+    this.tileElement.classList.add('tile');
+    this.setValue(Math.random() > 0.1 ? 2 : 4);
+    gridElement.append(this.tileElement);
+  }
 
-// const grid = new Grid(gameBoard);
+  setXY(x, y) {
+    this.x = x;
+    this.y = y;
+    this.tileElement.style.setProperty('--x', x);
+    this.tileElement.style.setProperty('--y', y);
+  }
 
-// const startButton = document.getElementById('button-start');
+  setValue(value) {
+    this.value = value;
+    this.tileElement.textContent = value;
+    this.tileElement.classList.add(`tile--${value}`);
+  }
 
-// startButton.addEventListener('click', startGame);
+  getValue() {
+    return this.value;
+  }
 
-// let score = 0;
-// const scoreElement = document.getElementById('score');
+  removeFromDOM() {
+    this.tileElement.remove();
+  }
+}
 
-// function startGame() {
-//   setuptNewGame();
+class Cell {
+  constructor(gridElement, x, y) {
+    const cell = document.createElement('div');
 
-//   document.getElementById('message-start').classList.add('hidden');
+    cell.classList.add('field-cell');
+    gridElement.append(cell);
+    this.x = x;
+    this.y = y;
+  }
 
-//   startButton.classList.remove('start');
-//   startButton.innerHTML = 'Restart';
-//   startButton.classList.add('restart');
+  linkTile(tile) {
+    tile.setXY(this.x, this.y);
+    this.linkedTile = tile;
+  }
 
-//   startButton.removeEventListener('click', startGame);
-//   startButton.addEventListener('click', setuptNewGame);
-// }
+  unlinkTile() {
+    this.linkedTile = null;
+  }
 
-// function setuptNewGame() {
-//   grid.cells.forEach(cell => {
-//     if (!cell.isEmpty()) {
-//       cell.linkedTile.removeFromDOM();
-//       cell.unlinkTile();
-//     }
-//   });
+  isEmpty() {
+    return !this.linkedTile;
+  }
 
-//   grid.getRandomEmptyCell().linkTile(new Tile(gameBoard));
-//   grid.getRandomEmptyCell().linkTile(new Tile(gameBoard));
-//   setupInputOnce();
+  linkTileForMerge(tile) {
+    tile.setXY(this.x, this.y);
+    this.linkedTileForMerge = tile;
+  }
 
-//   score = 0;
-//   scoreElement.innerHTML = score;
+  unlinkTileForMerge() {
+    this.linkedTileForMerge = null;
+  }
 
-//   document.getElementById('message-lose').classList.add('hidden');
-//   document.getElementById('message-win').classList.add('hidden');
-// }
+  hasTileForMerge() {
+    return !!this.linkedTileForMerge;
+  }
 
-// function setupInputOnce() {
-//   window.addEventListener('keydown', handleInput, { once: true });
-// }
+  canAccept(newTile) {
+    return (
+      this.isEmpty()
+      || (!this.hasTileForMerge() && this.linkedTile.value === newTile.value)
+    );
+  }
 
-// function handleInput(event) {
-//   switch (event.key) {
-//     case 'ArrowUp':
-//       if (!canMoveUp()) {
-//         setupInputOnce();
+  mergeTiles() {
+    this.linkedTile
+      .setValue(this.linkedTile.value + this.linkedTileForMerge.value);
 
-//         return;
-//       }
-//       moveUp();
-//       break;
+    this.linkedTileForMerge.removeFromDOM();
+    this.unlinkTileForMerge();
+  }
 
-//     case 'ArrowDown':
-//       if (!canMoveDown()) {
-//         setupInputOnce();
+  getValue() {
+    return this.linkedTile.getValue();
+  }
+}
 
-//         return;
-//       }
-//       moveDown();
-//       break;
+class Grid {
+  constructor(gridElement) {
+    this.cells = [];
 
-//     case 'ArrowLeft':
-//       if (!canMoveLeft()) {
-//         setupInputOnce();
+    for (let i = 0; i < CELLS_COUNT; i++) {
+      this.cells.push(
+        new Cell(gridElement, i % GRID_SIZE, Math.floor(i / GRID_SIZE))
+      );
+    }
 
-//         return;
-//       }
-//       moveLeft();
-//       break;
+    this.cellsGroupedByColumn = this.groupCellsByColumn();
 
-//     case 'ArrowRight':
-//       if (!canMoveRight()) {
-//         setupInputOnce();
+    this.cellsGroupedByReversedColumn = this.groupCellsByColumn()
+      .map(column => [...column].reverse());
 
-//         return;
-//       }
-//       moveRight();
-//       break;
+    this.cellsGroupedByRow = this.groupCellsByRow();
 
-//     default:
-//       setupInputOnce();
+    this.cellsGroupedByReversedRow = this.groupCellsByRow()
+      .map(row => [...row].reverse());
+  }
 
-//       return;
-//   }
+  getRandomEmptyCell() {
+    const emptyCells = this.cells.filter(cell => cell.isEmpty());
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
 
-//   const newTile = new Tile(gameBoard);
+    return emptyCells[randomIndex];
+  }
 
-//   grid.getRandomEmptyCell().linkTile(newTile);
+  groupCellsByColumn() {
+    return this.cells.reduce((groupedCells, cell) => {
+      groupedCells[cell.x] = groupedCells[cell.x] || [];
+      groupedCells[cell.x][cell.y] = cell;
 
-//   if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()) {
-//     document.getElementById('message-lose').classList.remove('hidden');
+      return groupedCells;
+    }, []);
+  }
 
-//     return;
-//   }
+  groupCellsByRow() {
+    return this.cells.reduce((groupedCells, cell) => {
+      groupedCells[cell.y] = groupedCells[cell.y] || [];
+      groupedCells[cell.y][cell.x] = cell;
 
-//   setupInputOnce();
-// }
+      return groupedCells;
+    }, []);
+  }
+}
 
-// function moveUp() {
-//   slideTiles(grid.cellsGroupedByColumn);
-// }
+const gameBoard = document.getElementById('game-field');
+const grid = new Grid(gameBoard);
 
-// function moveDown() {
-//   slideTiles(grid.cellsGroupedByReversedColumn);
-// }
+const startButton = document.getElementById('button-start');
 
-// function moveLeft() {
-//   slideTiles(grid.cellsGroupedByRow);
-// }
+startButton.addEventListener('click', startGame);
 
-// function moveRight() {
-//   slideTiles(grid.cellsGroupedByReversedRow);
-// }
+let score = 0;
+const scoreElement = document.getElementById('score');
 
-// function slideTiles(groupedCells) {
-//   groupedCells.forEach(group => slideTilesInGroup(group));
+function startGame() {
+  setuptNewGame();
 
-//   grid.cells.forEach(cell => {
-//     if (cell.hasTileForMerge()) {
-//       cell.mergeTiles();
-//       score += cell.getValue();
-//       scoreElement.innerHTML = score;
+  document.getElementById('message-start').classList.add('hidden');
 
-//       if (cell.getValue() === 2048) {
-//         document.getElementById('message-win').classList.remove('hidden');
-//       }
-//     }
-//   });
-// }
+  startButton.classList.remove('start');
+  startButton.innerHTML = 'Restart';
+  startButton.classList.add('restart');
 
-// function slideTilesInGroup(group) {
-//   for (let i = 1; i < group.length; i++) {
-//     if (group[i].isEmpty()) {
-//       continue;
-//     }
+  startButton.removeEventListener('click', startGame);
+  startButton.addEventListener('click', setuptNewGame);
+}
 
-//     const cellWithTile = group[i];
+function setuptNewGame() {
+  grid.cells.forEach(cell => {
+    if (!cell.isEmpty()) {
+      cell.linkedTile.removeFromDOM();
+      cell.unlinkTile();
+    }
+  });
 
-//     let targetCell;
-//     let j = i - 1;
+  grid.getRandomEmptyCell().linkTile(new Tile(gameBoard));
+  grid.getRandomEmptyCell().linkTile(new Tile(gameBoard));
+  setupInputOnce();
 
-//     while (j >= 0 && group[j].canAccept(cellWithTile.linkedTile)) {
-//       targetCell = group[j];
-//       j--;
-//     }
+  score = 0;
+  scoreElement.innerHTML = score;
 
-//     if (!targetCell) {
-//       continue;
-//     }
+  document.getElementById('message-lose').classList.add('hidden');
+  document.getElementById('message-win').classList.add('hidden');
+}
 
-//     if (targetCell.isEmpty()) {
-//       targetCell.linkTile(cellWithTile.linkedTile);
-//     } else {
-//       targetCell.linkTileForMerge(cellWithTile.linkedTile);
-//     }
+function setupInputOnce() {
+  window.addEventListener('keydown', handleInput, { once: true });
+}
 
-//     cellWithTile.unlinkTile();
-//   }
-// }
+function handleInput(e) {
+  switch (e.key) {
+    case 'ArrowUp':
+      if (!canMoveUp()) {
+        setupInputOnce();
 
-// function canMoveUp() {
-//   return canMove(grid.cellsGroupedByColumn);
-// }
+        return;
+      }
+      moveUp();
+      break;
 
-// function canMoveDown() {
-//   return canMove(grid.cellsGroupedByReversedColumn);
-// }
+    case 'ArrowDown':
+      if (!canMoveDown()) {
+        setupInputOnce();
 
-// function canMoveLeft() {
-//   return canMove(grid.cellsGroupedByRow);
-// }
+        return;
+      }
+      moveDown();
+      break;
 
-// function canMoveRight() {
-//   return canMove(grid.cellsGroupedByReversedRow);
-// }
+    case 'ArrowLeft':
+      if (!canMoveLeft()) {
+        setupInputOnce();
 
-// function canMove(groupCells) {
-//   return groupCells.some(group => canMoveInGroup(group));
-// }
+        return;
+      }
+      moveLeft();
+      break;
 
-// function canMoveInGroup(group) {
-//   return group.some((cell, index) => {
-//     if (index === 0) {
-//       return false;
-//     }
+    case 'ArrowRight':
+      if (!canMoveRight()) {
+        setupInputOnce();
 
-//     if (cell.isEmpty()) {
-//       return false;
-//     }
+        return;
+      }
+      moveRight();
+      break;
 
-//     const targetCell = group[index - 1];
+    default:
+      setupInputOnce();
 
-//     return targetCell.canAccept(cell.linkedTile);
-//   });
-// }
+      return;
+  }
+
+  const newTile = new Tile(gameBoard);
+
+  grid.getRandomEmptyCell().linkTile(newTile);
+
+  if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()) {
+    document.getElementById('message-lose').classList.remove('hidden');
+
+    return;
+  }
+
+  setupInputOnce();
+}
+
+function moveUp() {
+  slideTiles(grid.cellsGroupedByColumn);
+}
+
+function moveDown() {
+  slideTiles(grid.cellsGroupedByReversedColumn);
+}
+
+function moveLeft() {
+  slideTiles(grid.cellsGroupedByRow);
+}
+
+function moveRight() {
+  slideTiles(grid.cellsGroupedByReversedRow);
+}
+
+function slideTiles(groupedCells) {
+  groupedCells.forEach(group => slideTilesInGroup(group));
+
+  grid.cells.forEach(cell => {
+    if (cell.hasTileForMerge()) {
+      cell.mergeTiles();
+      score += cell.getValue();
+      scoreElement.innerHTML = score;
+
+      if (cell.getValue() === 2048) {
+        document.getElementById('message-win').classList.remove('hidden');
+        window.removeEventListener('keydown');
+      }
+    }
+  });
+}
+
+function slideTilesInGroup(group) {
+  for (let i = 1; i < group.length; i++) {
+    if (group[i].isEmpty()) {
+      continue;
+    }
+
+    const cellWithTile = group[i];
+
+    let targetCell;
+    let j = i - 1;
+
+    while (j >= 0 && group[j].canAccept(cellWithTile.linkedTile)) {
+      targetCell = group[j];
+      j--;
+    }
+
+    if (!targetCell) {
+      continue;
+    }
+
+    if (targetCell.isEmpty()) {
+      targetCell.linkTile(cellWithTile.linkedTile);
+    } else {
+      targetCell.linkTileForMerge(cellWithTile.linkedTile);
+    }
+
+    cellWithTile.unlinkTile();
+  }
+}
+
+function canMoveUp() {
+  return canMove(grid.cellsGroupedByColumn);
+}
+
+function canMoveDown() {
+  return canMove(grid.cellsGroupedByReversedColumn);
+}
+
+function canMoveLeft() {
+  return canMove(grid.cellsGroupedByRow);
+}
+
+function canMoveRight() {
+  return canMove(grid.cellsGroupedByReversedRow);
+}
+
+function canMove(groupCells) {
+  return groupCells.some(group => canMoveInGroup(group));
+}
+
+function canMoveInGroup(group) {
+  return group.some((cell, index) => {
+    if (index === 0) {
+      return false;
+    }
+
+    if (cell.isEmpty()) {
+      return false;
+    }
+
+    const targetCell = group[index - 1];
+
+    return targetCell.canAccept(cell.linkedTile);
+  });
+}
