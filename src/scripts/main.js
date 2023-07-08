@@ -245,8 +245,8 @@ function rotate() {
   board = newBoard;
 }
 
-function handleKeyPress(event) {
-  switch (event.key) {
+function handleKeyPress(keyEvent) {
+  switch (keyEvent.key) {
     case 'ArrowLeft':
       moveLeft();
       
