@@ -1,6 +1,5 @@
 'use strict';
 
-const gameField = document.querySelector('.game-field');
 const cells = document.querySelectorAll('.field-cell');
 const scoreDisplay = document.querySelector('.game-score');
 const startButton = document.querySelector('.button.start');
@@ -247,19 +246,32 @@ function rotate() {
 }
 
 function handleKeyPress(event) {
-  if (event.key === 'ArrowLeft') {
-    moveLeft();
-    displayBoard();
-  } else if (event.key === 'ArrowRight') {
-    moveRight();
-    displayBoard();
-  } else if (event.key === 'ArrowUp') {
-    moveUp();
-    displayBoard();
-  } else if (event.key === 'ArrowDown') {
-    moveDown();
-    displayBoard();
+  switch (event.key) {
+    case 'ArrowLeft':
+      moveLeft();
+      
+      break;
+
+    case 'ArrowRight':
+      moveRight();
+      
+      break;
+
+    case 'ArrowUp':
+      moveUp();
+      
+      break;
+
+    case 'ArrowDown':
+      moveDown();
+      
+      break;
+
+    default: 
+      break;
   }
+
+  displayBoard();
 }
 
 startButton.addEventListener('click', initGame);
