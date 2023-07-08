@@ -10,10 +10,8 @@ const messageWin = document.querySelector('.message-win');
 const cellsInRow = 4;
 let scoreCount = 0;
 let board;
-<<<<<<< HEAD
-=======
-let gameOver = false;
->>>>>>> 39116bf74805824d701fb461eea65411d834cc90
+
+let movesLeft = true;
 
 startButton.addEventListener('click', () => {
   startButton.classList.replace('start', 'restart');
@@ -30,34 +28,26 @@ function hasEmptyTile() {
 }
 
 function placeTiles() {
-<<<<<<< HEAD
-=======
-  if (gameOver) {
-    return;
-  }
+  if (movesLeft) {
+    while (hasEmptyTile()) {
+      const randomRow = Math.floor(Math.random() * cellsInRow);
+      const randomCol = Math.floor(Math.random() * cellsInRow);
 
->>>>>>> 39116bf74805824d701fb461eea65411d834cc90
-  while (hasEmptyTile()) {
-    const randomRow = Math.floor(Math.random() * cellsInRow);
-    const randomCol = Math.floor(Math.random() * cellsInRow);
+      if (board[randomRow][randomCol] === 0) {
+        const numb = Math.random() < 0.9 ? 2 : 4;
 
-    if (board[randomRow][randomCol] === 0) {
-      const numb = Math.random() < 0.9 ? 2 : 4;
-
-      board[randomRow][randomCol] = numb;
-      break;
+        board[randomRow][randomCol] = numb;
+        setCells();
+        break;
+      }
     }
-  }
 
-  setCells();
-
-  if (!hasEmptyTile() && loseTheGame()) {
-<<<<<<< HEAD
-=======
-    gameOver = true;
->>>>>>> 39116bf74805824d701fb461eea65411d834cc90
+    movesLeft = false;
+  } else if (!hasEmptyTile() && loseTheGame()) {
     messageLose.classList.remove('hidden');
   }
+
+  movesLeft = true;
 }
 
 function startTheGame() {
@@ -71,12 +61,10 @@ function startTheGame() {
   scoreCount = 0;
   gameScore.innerText = scoreCount;
 
-<<<<<<< HEAD
   setCells();
-=======
->>>>>>> 39116bf74805824d701fb461eea65411d834cc90
   placeTiles();
   placeTiles();
+  movesLeft = true;
 }
 
 function loseTheGame() {
@@ -150,18 +138,26 @@ function slide(row) {
 }
 
 function slideLeft() {
+  const prevBoard = cloneBoard(board);
+
   for (let r = 0; r < cellsInRow; r++) {
     board[r] = slide(board[r]);
   }
+  movesLeft = !isBoardEqual(board, prevBoard);
 }
 
 function slideRight() {
+  const prevBoard = cloneBoard(board);
+
   for (let r = 0; r < cellsInRow; r++) {
     board[r] = slide(board[r].reverse()).reverse();
   }
+  movesLeft = !isBoardEqual(board, prevBoard);
 }
 
 function slideUp() {
+  const prevBoard = cloneBoard(board);
+
   for (let c = 0; c < cellsInRow; c++) {
     const column = [board[0][c], board[1][c], board[2][c], board[3][c]];
     const newColumn = slide(column);
@@ -170,9 +166,12 @@ function slideUp() {
       board[r][c] = newColumn[r];
     }
   }
+  movesLeft = !isBoardEqual(board, prevBoard);
 }
 
 function slideDown() {
+  const prevBoard = cloneBoard(board);
+
   for (let c = 0; c < cellsInRow; c++) {
     const column = [
       board[0][c],
@@ -186,6 +185,23 @@ function slideDown() {
       board[r][c] = newColumn[r];
     }
   }
+  movesLeft = !isBoardEqual(board, prevBoard);
+}
+
+function cloneBoard(boardCopy) {
+  return boardCopy.map(row => row.slice());
+}
+
+function isBoardEqual(board1, board2) {
+  for (let r = 0; r < cellsInRow; r++) {
+    for (let c = 0; c < cellsInRow; c++) {
+      if (board1[r][c] !== board2[r][c]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 document.addEventListener('keyup', (e) => {
@@ -194,24 +210,21 @@ document.addEventListener('keyup', (e) => {
   switch (e.code) {
     case 'ArrowLeft':
       slideLeft();
-      placeTiles();
       break;
 
     case 'ArrowRight':
       slideRight();
-      placeTiles();
       break;
 
     case 'ArrowUp':
       slideUp();
-      placeTiles();
       break;
 
     case 'ArrowDown':
       slideDown();
-      placeTiles();
       break;
   }
 
+  placeTiles();
   setCells();
 });

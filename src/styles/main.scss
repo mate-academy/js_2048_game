@@ -12,13 +12,10 @@ $cell-border-radius: 5px;
   color: $secondary-color;
 }
 
-<<<<<<< HEAD
 * {
   box-sizing: border-box;
 }
 
-=======
->>>>>>> 39116bf74805824d701fb461eea65411d834cc90
 body {
   margin: 0;
   display: flex;
@@ -37,10 +34,6 @@ body {
   height: $cell-height;
   border-radius: $cell-border-radius;
   color: $cell-color;
-<<<<<<< HEAD
-=======
-  box-sizing: border-box;
->>>>>>> 39116bf74805824d701fb461eea65411d834cc90
   text-align: center;
   vertical-align: center;
   user-select: none;
@@ -110,10 +103,7 @@ body {
 
   width: $cell-width;
   height: $cell-height;
-<<<<<<< HEAD
   border-radius: $cell-border-radius;
-=======
->>>>>>> 39116bf74805824d701fb461eea65411d834cc90
   font-size: 24px;
   display: flex;
   align-items: center;
@@ -131,10 +121,6 @@ body {
   height: $cell-height;
   border-radius: $cell-border-radius;
   color: $cell-color;
-<<<<<<< HEAD
-=======
-  box-sizing: border-box;
->>>>>>> 39116bf74805824d701fb461eea65411d834cc90
   font-size: 16px;
   margin: 0 8px 0 0;
 }
