@@ -124,6 +124,10 @@ h1 {
 }
 
 .button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
   border: none;
   border-radius: 5px;
   cursor: pointer;
