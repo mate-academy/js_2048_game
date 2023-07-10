@@ -2,147 +2,251 @@
 
 const table = document.querySelector('.game-field');
 const rows = table.querySelectorAll('.field-row');
-const score = document.querySelector('.game-score');
-let point = +score.textContent;
+let score = 0;
+
+const numbers = [];
 
 function generateBoard() {
-  const board = [];
+  score = 0;
+
+  const messageStart = document.querySelector('.message-start');
+  const buttonStart = document.querySelector('.start');
+  const messageLose = document.querySelector('.message-lose');
+
+  messageLose.classList = 'message message-lose hidden';
+  messageStart.classList += ' hidden';
+  buttonStart.textContent = 'Reset';
+
+  numbers.length = 0;
 
   rows.forEach(row => {
     const cells = Array.from(row.querySelectorAll('.field-cell'));
+
+    cells.forEach(cell => {
+      cell.textContent = '';
+    });
+
     const rowNumbers = cells.map(cell => parseInt(cell.textContent) || 0);
 
-    board.push(rowNumbers);
+    numbers.push(rowNumbers);
   });
 
-  return board;
+  return numbers;
 }
 
-const numbers = generateBoard();
+const startButton = document.querySelector('.button.start');
+
+startButton.addEventListener('click', function() {
+  generateBoard();
+  updateBoard();
+  generateRandomTile();
+  generateRandomTile();
+});
 
 const WIDTH = 4;
-const ALL_TILES = WIDTH**2;
 
 function isAbleToContinue() {
+  gameWinner();
+
   const messageLoseElement = document.querySelector('.message-lose');
-  let checker = 0;
+
+  let canSlide = false;
 
   for (let row = 0; row < WIDTH; row++) {
     for (let col = 0; col < WIDTH; col++) {
       if (numbers[row][col] === 0) {
-        checker++;
+        return;
+      }
+
+      if (
+        (col < WIDTH - 1 && numbers[row][col] === numbers[row][col + 1])
+        || (row < WIDTH - 1 && numbers[row][col] === numbers[row + 1][col])
+      ) {
+        canSlide = true;
       }
     }
   }
 
-  if (!checker) {
+  if (!canSlide) {
     messageLoseElement.classList.remove('hidden');
   }
 }
 
 function generateRandomTile() {
+  const emptyCells = [];
+
+  for (let i = 0; i < WIDTH; i++) {
+    for (let j = 0; j < WIDTH; j++) {
+      if (numbers[i][j] === 0) {
+        emptyCells.push({
+          row: i,
+          col: j,
+        });
+      }
+    }
+  }
+
+  if (emptyCells.length === 0) {
+    return;
+  }
+
+  const randomIndex = Math.floor(Math.random() * emptyCells.length);
+  const { row, col } = emptyCells[randomIndex];
+
+  numbers[row][col] = Math.random() < 0.9 ? 2 : 4;
+  updateBoard();
+}
+
+function gameWinner() {
+  const claimWin = document.querySelector('.message-win');
+
   for (let row = 0; row < WIDTH; row++) {
-    const onlyZeroes = numbers[row].filter(el => el === 0);
-
-    const randomindexOfRow = Math.floor(Math.random() * onlyZeroes.length);
-    const randomindexOfCol = Math.floor(Math.random() * onlyZeroes.length);
-
-    if (!numbers[randomindexOfRow][randomindexOfCol]) {
-      numbers[randomindexOfRow][randomindexOfCol] = 2;
-      break;
+    for (let col = 0; col < WIDTH; col++) {
+      if (numbers[row][col] === 2048) {
+        claimWin.classList.remove('hidden');
+      }
     }
   }
 }
 
 function slideRight() {
+  let tileGenerated = false;
+
   for (let row = 0; row < WIDTH; row++) {
-    for (let col = 0; col < WIDTH; col++) {
-      if (numbers[row][col + 1] === numbers[row][col]
-        || numbers[row][col + 1] === 0) {
-        numbers[row][col + 1] += numbers[row][col];
-        numbers[row][col] = 0;
+    for (let col = WIDTH - 1; col >= 0; col--) {
+      if (numbers[row][col] !== 0) {
+        let colIndex = col;
+
+        while (colIndex < WIDTH - 1 && numbers[row][colIndex + 1] === 0) {
+          numbers[row][colIndex + 1] = numbers[row][colIndex];
+          numbers[row][colIndex] = 0;
+          colIndex++;
+          tileGenerated = true;
+        }
+
+        if (
+          colIndex < WIDTH - 1
+          && numbers[row][colIndex + 1] === numbers[row][colIndex]
+        ) {
+          numbers[row][colIndex + 1] += numbers[row][colIndex];
+          numbers[row][colIndex] = 0;
+          score += numbers[row][colIndex + 1];
+
+          tileGenerated = true;
+        }
       }
     }
+  }
 
-    while (numbers[row].includes(0)) {
-      numbers[row].splice(numbers[row].indexOf(0), 1);
-    }
-
-    while (numbers[row].length < WIDTH) {
-      numbers[row].unshift(0);
-    }
+  if (tileGenerated) {
+    generateRandomTile();
   }
 
   return numbers;
 }
 
 function slideLeft() {
-  for (let i = 0; i < WIDTH; i++) {
-    for (let j = 0; j < WIDTH - 1; j++) {
-      if (numbers[i][j] === numbers[i][j + 1] || numbers[i][j] === 0) {
-        numbers[i][j] += numbers[i][j + 1];
-        numbers[i][j + 1] = 0;
-      }
+  let tileGenerated = false;
 
-      if (numbers[i].includes(0)) {
-        numbers[i].splice(numbers[i].indexOf(0), 1);
-        numbers[i].push(0);
+  for (let row = 0; row < WIDTH; row++) {
+    for (let col = 1; col < WIDTH; col++) {
+      if (numbers[row][col] !== 0) {
+        let colIndex = col;
+
+        while (colIndex > 0 && numbers[row][colIndex - 1] === 0) {
+          numbers[row][colIndex - 1] = numbers[row][colIndex];
+          numbers[row][colIndex] = 0;
+          colIndex--;
+          tileGenerated = true;
+        }
+
+        if (
+          colIndex > 0
+          && numbers[row][colIndex - 1] === numbers[row][colIndex]
+        ) {
+          numbers[row][colIndex - 1] += numbers[row][colIndex];
+          numbers[row][colIndex] = 0;
+          tileGenerated = true;
+
+          score += numbers[row][colIndex - 1];
+        }
       }
     }
+  }
+
+  if (tileGenerated) {
+    generateRandomTile();
   }
 
   return numbers;
 }
 
 function slideDown() {
-  for (let col = 0; col < WIDTH; col++) {
-    for (let row = 0; row < WIDTH - 1; row++) {
-      if (numbers[row + 1][col] === numbers[row][col]
-        || numbers[row + 1][col] === 0) {
-        numbers[row + 1][col] += numbers[row][col];
-        numbers[row][col] = 0;
-      }
-    }
+  let tileGenerated = false;
 
-    for (let row = WIDTH - 1; row >= 0; row--) {
-      if (numbers[row][col] === 0) {
+  for (let col = 0; col < WIDTH; col++) {
+    for (let row = WIDTH - 2; row >= 0; row--) {
+      if (numbers[row][col] !== 0) {
         let rowIndex = row;
 
-        while (rowIndex > 0 && numbers[rowIndex][col] === 0) {
-          rowIndex--;
+        while (rowIndex < WIDTH - 1 && numbers[rowIndex + 1][col] === 0) {
+          numbers[rowIndex + 1][col] = numbers[rowIndex][col];
+          numbers[rowIndex][col] = 0;
+          rowIndex++;
+          tileGenerated = true;
         }
 
-        numbers[row][col] = numbers[rowIndex][col];
-        numbers[rowIndex][col] = 0;
+        if (
+          rowIndex < WIDTH - 1
+          && numbers[rowIndex + 1][col] === numbers[rowIndex][col]
+        ) {
+          numbers[rowIndex + 1][col] += numbers[rowIndex][col];
+          numbers[rowIndex][col] = 0;
+          tileGenerated = true;
+
+          score += numbers[rowIndex + 1][col];
+        }
       }
     }
+  }
+
+  if (tileGenerated) {
+    generateRandomTile();
   }
 
   return numbers;
 }
 
 function slideUp() {
-  for (let col = 0; col < WIDTH; col++) {
-    for (let row = WIDTH - 1; row > 0; row--) {
-      if (numbers[row - 1][col] === numbers[row][col]
-        || numbers[row - 1][col] === 0) {
-        numbers[row - 1][col] += numbers[row][col];
-        numbers[row][col] = 0;
-      }
-    }
+  let tileGenerated = false;
 
+  for (let col = 0; col < WIDTH; col++) {
     for (let row = 0; row < WIDTH; row++) {
-      if (numbers[row][col] === 0) {
+      if (numbers[row][col] !== 0) {
         let rowIndex = row;
 
-        while (rowIndex < WIDTH - 1 && numbers[rowIndex][col] === 0) {
-          rowIndex++;
+        while (rowIndex > 0 && numbers[rowIndex - 1][col] === 0) {
+          numbers[rowIndex - 1][col] = numbers[rowIndex][col];
+          numbers[rowIndex][col] = 0;
+          rowIndex--;
+          tileGenerated = true;
         }
 
-        numbers[row][col] = numbers[rowIndex][col];
-        numbers[rowIndex][col] = 0;
+        if (
+          rowIndex > 0 && numbers[rowIndex - 1][col] === numbers[rowIndex][col]
+        ) {
+          numbers[rowIndex - 1][col] += numbers[rowIndex][col];
+          numbers[rowIndex][col] = 0;
+          tileGenerated = true;
+
+          score += numbers[rowIndex - 1][col];
+        }
       }
     }
+  }
+
+  if (tileGenerated) {
+    generateRandomTile();
   }
 
   return numbers;
@@ -154,47 +258,81 @@ function updateBoard() {
 
     numbers[i].forEach((number, j) => {
       cells[j].textContent = number !== 0 ? number : '';
+
+      const tileClass = `field-cell--${number}`;
+
+      cells[j].className = `field-cell ${tileClass}`;
     });
   });
+
+  const scoreElement = document.querySelector('.game-score');
+
+  scoreElement.textContent = score.toString();
 }
 
-function handleKeyPress(event) {
-  if (event.key === 'ArrowRight') {
-    // const updatedNumbers = slideRight(numbers);
-
-    //  numbers.splice(0, numbers.length, ...updatedNumbers);
+function handleKeyPress(slide) {
+  if (slide.key === 'ArrowRight') {
+    updateBoard();
     slideRight(numbers);
     isAbleToContinue();
-    generateRandomTile();
-    updateBoard();
   }
 
-  if (event.key === 'ArrowLeft') {
-    //  const updatedNumbers = slideLeft(numbers);
-    //  numbers.splice(0, numbers.length, ...updatedNumbers);
+  if (slide.key === 'ArrowLeft') {
+    updateBoard();
     slideLeft(numbers);
     isAbleToContinue();
-    generateRandomTile();
-    updateBoard();
   }
 
-  if (event.key === 'ArrowDown') {
-    //  const updatedNumbers = slideDown(numbers);
-    //  numbers.splice(0, numbers.length, ...updatedNumbers);
+  if (slide.key === 'ArrowDown') {
+    updateBoard();
     slideDown(numbers);
     isAbleToContinue();
-    generateRandomTile();
-    updateBoard();
   }
 
-  if (event.key === 'ArrowUp') {
-    //  const updatedNumbers = slideUp(numbers);
-    //  numbers.splice(0, numbers.length, ...updatedNumbers);
+  if (slide.key === 'ArrowUp') {
+    updateBoard();
     slideUp(numbers);
     isAbleToContinue();
-    generateRandomTile();
-    updateBoard();
   }
 }
+
+let touchStartX = 0;
+let touchStartY = 0;
+const swipeThreshold = 50;
+
+function handleTouchStart(slide) {
+  touchStartX = slide.touches[0].clientX;
+  touchStartY = slide.touches[0].clientY;
+}
+
+function handleTouchEnd(slide) {
+  const touchEndX = slide.changedTouches[0].clientX;
+  const touchEndY = slide.changedTouches[0].clientY;
+
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+
+  if (Math.abs(deltaX) > swipeThreshold || Math.abs(deltaY) > swipeThreshold) {
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX > 0) {
+        slideRight(numbers);
+      } else {
+        slideLeft(numbers);
+      }
+    } else {
+      if (deltaY > 0) {
+        slideDown(numbers);
+      } else {
+        slideUp(numbers);
+      }
+    }
+
+    updateBoard();
+    isAbleToContinue();
+  }
+}
+
+document.addEventListener('touchstart', handleTouchStart, false);
+document.addEventListener('touchend', handleTouchEnd, false);
 
 document.addEventListener('keydown', handleKeyPress);

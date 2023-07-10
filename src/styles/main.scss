@@ -4,7 +4,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #a98768;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
@@ -177,8 +177,12 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: linear-gradient( #efcc00, #b8860b, #debd00);
+  -webkit-box-shadow: inset -8px 23px 142px -6px rgba(255,255,255,0.45);
+  -moz-box-shadow: inset -8px 23px 142px -6px rgba(255,255,255,0.45);
+  box-shadow: inset -8px 23px 142px -6px rgba(255,255,255,0.45);
+
+  color: #fff;
 }
 
 .message-container {
