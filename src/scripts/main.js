@@ -28,6 +28,8 @@ button.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', keyEvent => {
+  const copyField = clone(field);
+
   switch (keyEvent.key) {
     case 'ArrowUp':
       score = moveUp(field, score);
@@ -53,19 +55,22 @@ document.addEventListener('keydown', keyEvent => {
     messageWin.classList.remove('hidden');
   }
 
+  if (hasEmptyCell(field)
+    && JSON.stringify(copyField) !== JSON.stringify(field)) {
+    fillRandomCell(field);
+  }
+
   if (!hasEmptyCell(field)) {
-    const copyField = clone(field);
+    const copyFieldAfterMove = clone(field);
 
-    moveUp(copyField, 0);
-    moveDown(copyField, 0);
-    moveRight(copyField, 0);
-    moveLeft(copyField, 0);
+    moveUp(copyFieldAfterMove, 0);
+    moveDown(copyFieldAfterMove, 0);
+    moveRight(copyFieldAfterMove, 0);
+    moveLeft(copyFieldAfterMove, 0);
 
-    if (JSON.stringify(copyField) === JSON.stringify(field)) {
+    if (JSON.stringify(copyFieldAfterMove) === JSON.stringify(field)) {
       messageLose.classList.remove('hidden');
     }
-  } else {
-    fillRandomCell(field);
   }
 
   synchronizeCellsAndScore(field);
