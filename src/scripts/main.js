@@ -303,12 +303,9 @@ const swipeThreshold = 50;
 function handleTouchStart(slide) {
   touchStartX = slide.touches[0].clientX;
   touchStartY = slide.touches[0].clientY;
-  slide.preventDefault();
 }
 
 function handleTouchEnd(slide) {
-  slide.preventDefault();
-
   const touchEndX = slide.changedTouches[0].clientX;
   const touchEndY = slide.changedTouches[0].clientY;
 
@@ -335,7 +332,18 @@ function handleTouchEnd(slide) {
   }
 }
 
+function handleTouchMove(slide) {
+  slide.preventDefault();
+}
+
+document.addEventListener('touchmove', handleTouchMove, { passive: false });
+
 document.addEventListener('touchstart', handleTouchStart, false);
 document.addEventListener('touchend', handleTouchEnd, false);
 
 document.addEventListener('keydown', handleKeyPress);
+
+window.addEventListener('beforeunload', function(event) {
+  event.preventDefault();
+  event.returnValue = '';
+});
