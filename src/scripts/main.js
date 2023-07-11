@@ -84,9 +84,15 @@ export function getEmptyMatrixCoordinates() {
 }
 
 export function setBoxToMatrix(box) {
-  const { x, y } = box.position;
+  console.log(box.position);
 
-  matrix[x][y] = box;
+  const x = box.position.x ? box.position.x : 0;
+  const y = box.position.y ? box.position.y : 0;
+  // const { x, y } = box.position;
+
+  if (x !== undefined && y !== undefined) {
+    matrix[x][y] = box;
+  };
 }
 
 export function delFromMatrix(box) {
@@ -161,8 +167,8 @@ export function checkNextMove() {
     return line.some((box, x) => {
       const leftBox = matrix[y] ? matrix[y][x - 1] : undefined;
       const rightBox = matrix[y] ? matrix[y][x + 1] : undefined;
-      const upBox = matrix[y] ? matrix[y - 1][x] : undefined;
-      const downBox = matrix[y] ? matrix[y + 1][x] : undefined;
+      const upBox = matrix[y - 1] ? matrix[y - 1][x] : undefined;
+      const downBox = matrix[y + 1] ? matrix[y + 1][x] : undefined;
 
       if (leftBox || rightBox || upBox || downBox) {
         const canMoved = [leftBox, rightBox, upBox, downBox].some((elem) => {
