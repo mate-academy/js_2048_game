@@ -84,8 +84,6 @@ export function getEmptyMatrixCoordinates() {
 }
 
 export function setBoxToMatrix(box) {
-  console.log(box.position);
-
   const x = box.position.x ? box.position.x : 0;
   const y = box.position.y ? box.position.y : 0;
   // const { x, y } = box.position;
