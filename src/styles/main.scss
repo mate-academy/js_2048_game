@@ -1,3 +1,6 @@
+$cell-size: 75px;
+$cell-margin: 10px;
+
 body {
   margin: 0;
   display: flex;
@@ -10,16 +13,58 @@ body {
   font-weight: 900;
 }
 
+.game-field {
+  background: #bbada0;
+  border-spacing: 10px;
+  border-radius: 5px;
+  position: relative;
+  width: 350px;
+  height: 350px;
+}
+
 .field-cell {
+  position: absolute;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: $cell-size;
+  height: $cell-size;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+
+  @for $i from 0 through 15 {
+    &--pos--#{$i} {
+      top: ($cell-size  + $cell-margin) * floor($i / 4) + $cell-margin;
+      left: ($cell-size  + $cell-margin) * ($i % 4) + $cell-margin;
+    }
+  }
+}
+
+.field-tile {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: yellow;
+  width: $cell-size;
+  height: $cell-size;
+  border-radius: 5px;
+  font-size: 32px;
+  color: #776e65;
+  box-sizing: border-box;
+  user-select: none;
+  transition: all 0.1s linear;
+
+  @for $i from 0 through 3 {
+    @for $j from 0 through 3 {
+      &--pos--#{$i}-#{$j} {
+        top: ($cell-size  + $cell-margin) * $j + $cell-margin;
+        left: ($cell-size  + $cell-margin) * $i + $cell-margin;
+      }
+    }
+  }
 
   &--2 {
     background: #eee4da;
@@ -75,12 +120,6 @@ body {
   }
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
-}
-
 .game-header {
   display: flex;
   width: 100%;
@@ -93,8 +132,8 @@ body {
 h1 {
   background: #edc22e;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
+  width: $cell-size;
+  height: $cell-size;
   font-size: 24px;
   border-radius: 5px;
   display: flex;
@@ -110,13 +149,31 @@ h1 {
   align-items: center;
   justify-content: center;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: $cell-size;
+  height: $cell-size;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+  position: relative;
+}
+
+.fly {
+  position: absolute;
+  left: -5px;
+  animation: move-up 0.6s ease-in;
+}
+
+@keyframes move-up {
+  0% {
+    top: 25px;
+    opacity: 1;
+  }
+  100% {
+    top: -50px;
+    opacity: 0;
+  }
 }
 
 .controls {
@@ -131,8 +188,8 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
+  width: $cell-size;
+  height: $cell-size;
 
   transition: 0.25s ease background;
 }
