@@ -1,8 +1,6 @@
 import { createBox } from './box';
 import { handleInput } from './move';
 
-const GRID = 4;
-const COUNT_GRID = GRID * GRID;
 let matrix = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -47,13 +45,18 @@ gameStart.onclick = function startGame() {
 
   gameField.innerHTML = '';
 
-  for (let i = 0; i < COUNT_GRID; i++) {
-    const cell = document.createElement('div');
+  i = 0;
 
-    cell.classList.add('field-cell');
-    cell.classList.add(`field-cell--pos--${i}`);
-    gameField.append(cell);
-  }
+  matrix.map(line => {
+    line.map(() => {
+      const cell = document.createElement('div');
+
+      cell.classList.add('field-cell');
+      cell.classList.add(`field-cell--pos--${i}`);
+      gameField.append(cell);
+      i++;
+    });
+  });
 
   createBox();
   createBox();
@@ -61,13 +64,18 @@ gameStart.onclick = function startGame() {
   setupInputOnce();
 };
 
-for (let i = 0; i < COUNT_GRID; i++) {
-  const cell = document.createElement('div');
+let i = 0;
 
-  cell.classList.add('field-cell');
-  cell.classList.add(`field-cell--pos--${i}`);
-  gameField.append(cell);
-}
+matrix.map(line => {
+  line.map(() => {
+    const cell = document.createElement('div');
+
+    cell.classList.add('field-cell');
+    cell.classList.add(`field-cell--pos--${i}`);
+    gameField.append(cell);
+    i++;
+  });
+});
 
 export function getEmptyMatrixCoordinates() {
   return matrix.reduce((emptyCoordinates, line, x) => {
@@ -86,7 +94,6 @@ export function getEmptyMatrixCoordinates() {
 export function setBoxToMatrix(box) {
   const x = box.position.x ? box.position.x : 0;
   const y = box.position.y ? box.position.y : 0;
-  // const { x, y } = box.position;
 
   if (x !== undefined && y !== undefined) {
     matrix[x][y] = box;
@@ -132,7 +139,7 @@ export function changeScore(plusScore) {
   const plusPoint = document.createElement('div');
 
   plusPoint.classList.add('fly');
-  plusPoint.innerHTML = '+ ' + plusScore;
+  plusPoint.innerHTML = `+ ${plusScore}`;
   gameScore.append(plusPoint);
 
   setTimeout(() => {

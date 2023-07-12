@@ -15,7 +15,6 @@ body {
 
 .game-field {
   background: #bbada0;
-  border-spacing: 10px;
   border-radius: 5px;
   position: relative;
   width: 350px;
@@ -31,7 +30,7 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
 
   @for $i from 0 through 15 {
@@ -47,7 +46,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: yellow;
   width: $cell-size;
   height: $cell-size;
   border-radius: 5px;
