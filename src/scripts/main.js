@@ -36,23 +36,28 @@ button.addEventListener('click', e => {
 });
 
 function move(e) {
-  newGameField = gameField;
+  newGameField = [...gameField];
+
+  const leftArrow = 'ArrowLeft';
+  const rightArrow = 'ArrowRight';
+  const diwnArrow = 'ArrowDown';
+  const upArrow = 'ArrowUp';
 
   switch (e.key) {
-    case 'ArrowLeft':
-      left();
+    case leftArrow:
+      left(newGameField);
       break;
 
-    case 'ArrowRight':
-      right();
+    case rightArrow:
+      right(newGameField);
       break;
 
-    case 'ArrowDown':
-      down();
+    case diwnArrow:
+      down(newGameField);
       break;
 
-    case 'ArrowUp':
-      up();
+    case upArrow:
+      up(newGameField);
       break;
 
     default:
@@ -119,10 +124,9 @@ function findEmptyCell() {
 }
 
 function render() {
-  for (let row = 0; row < size; row++) {
-    for (let col = 0; col < size; col++) {
-      const elem = fieldRows[row].children[col];
-      const cell = gameField[row][col];
+  gameField.forEach((row, rowIndex) => {
+    row.forEach((cell, colIndex) => {
+      const elem = fieldRows[rowIndex].children[colIndex];
 
       if (cell === 0) {
         elem.textContent = '';
@@ -131,8 +135,8 @@ function render() {
         elem.textContent = cell;
         elem.className = `field-cell field-cell--${cell}`;
       }
-    };
-  };
+    });
+  });
 
   gameScore.textContent = score;
 };
@@ -203,22 +207,27 @@ function isPosibleToMove() {
 }
 
 function checkRows() {
-  for (let i = 0; i < size; i++) {
-    if (newGameField[i].some(cell => cell === 0)
-      || newGameField[i].some((cell, j) => cell === newGameField[i][j + 1])) {
-      return true;
-    }
-  }
+  let hasDuplicates = false;
 
-  return false;
+  newGameField.forEach((row) => {
+    if (row.some((cell, index) => cell === 0 || cell === row[index + 1])) {
+      hasDuplicates = true;
+    }
+  });
+
+  return hasDuplicates;
 }
 
 function checkColumns() {
-  for (let i = 0; i < size; i++) {
-    if (newGameField[i].some((cell, j) => cell === newGameField[i][j + 1])) {
-      return true;
-    }
-  }
+  let hasDuplicates = false;
 
-  return false;
-};
+  newGameField.forEach((row) => {
+    row.forEach((cell, index) => {
+      if (cell === row[index + 1]) {
+        hasDuplicates = true;
+      }
+    });
+  });
+
+  return hasDuplicates;
+}
