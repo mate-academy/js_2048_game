@@ -8,6 +8,11 @@ const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
 const startButton = document.querySelector('.start');
 const showChangeScore = document.querySelector('.show-change-score');
+const cellSound = document.querySelector('#cell__sound');
+const winSound = document.querySelector('#win__sound');
+const loseSound = document.querySelector('#lose__sound');
+const winMessage = document.querySelector('.message-win');
+
 
 let initialScore = 0;
 let oldScore = initialScore;
@@ -34,6 +39,9 @@ function isEmptyCell(cell) {
 }
 
 function updateBoard() {
+
+
+
   cellsNodes.forEach((cell, index) => {
     if (cellsNumbers[index] === 0) {
       cell.innerHTML = '';
@@ -59,7 +67,12 @@ function updateBoard() {
       messageContainer.style.opacity = 0.7;
       startButton.classList.add('restart-lose');
       startButton.innerHTML = 'Restart';
+      loseSound.play();
     }, 1000);
+  }
+
+  if (isWin()) {
+    winMessage.classList.remove('hidden');
   }
 }
 
@@ -100,6 +113,7 @@ function moveColumn(movement) {
       cellsNumbers[row * 4 + col] = updatedColumn[row];
     }
   }
+  cellSound.play();
 }
 
 function moveRow(movement) {
@@ -132,6 +146,7 @@ function moveRow(movement) {
       cellsNumbers[i + j] = updatedRow[j];
     }
   }
+  cellSound.play();
 }
 
 function resetGame() {
@@ -150,6 +165,15 @@ function resetGame() {
   score.innerHTML = '0';
 
   // Reset any other necessary variables or game state
+}
+
+function isWin() {
+  if (cellsNumbers.find(num => num === 2048)) {
+    disableKeyboardEvents();
+    winSound.play();
+
+    return true;
+  }
 }
 
 function isGameOver() {
@@ -186,6 +210,7 @@ function isGameOver() {
 }
 
 startButton.addEventListener('click', () => {
+
   if (isGameOver()) {
     disableKeyboardEvents();
     messageLose.classList.add('hidden');
