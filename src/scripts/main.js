@@ -7,7 +7,11 @@ const messageContainer = document.querySelector('.message-container');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
 const startButton = document.querySelector('.start');
+const showChangeScore = document.querySelector('.show-change-score');
 
+let initialScore = 0;
+let oldScore = initialScore;
+let changeScore;
 const score = document.querySelector('.game-score');
 
 function getRandomCell() {
@@ -29,10 +33,6 @@ function isEmptyCell(cell) {
   return +cell.innerHTML < 2;
 }
 
-function sumScore(array) {
-  return array.reduce((sum, current) => sum + current);
-}
-
 function updateBoard() {
   cellsNodes.forEach((cell, index) => {
     if (cellsNumbers[index] === 0) {
@@ -48,7 +48,8 @@ function updateBoard() {
     cell.classList.add(
       `field-cell`,
       `field-cell--${cellsNumbers[index]}`,
-      'tile');
+      'tile'
+    );
   });
 
   if (isGameOver()) {
@@ -56,7 +57,7 @@ function updateBoard() {
       messageLose.classList.remove('hidden');
       messageStart.classList.remove('hidden');
       messageContainer.style.opacity = 0.7;
-      startButton.classList.add('restart');
+      startButton.classList.add('restart-lose');
       startButton.innerHTML = 'Restart';
     }, 1000);
   }
@@ -76,6 +77,7 @@ function moveColumn(movement) {
 
     for (let index = 0; index < filteredColumn.length; index++) {
       if (filteredColumn[index] === filteredColumn[index + 1]) {
+        initialScore += filteredColumn[index + 1] * 2;
         filteredColumn[index] *= 2;
         filteredColumn[index + 1] = 0;
         ++index;
@@ -107,6 +109,7 @@ function moveRow(movement) {
 
     for (let index = 0; index < filteredRow.length; index++) {
       if (filteredRow[index] === filteredRow[index + 1]) {
+        initialScore += +filteredRow[index + 1] * 2;
         filteredRow[index + 1] *= 2;
         filteredRow[index] = 0;
         index++;
@@ -143,6 +146,7 @@ function resetGame() {
   });
 
   // Reset score
+  initialScore = 0;
   score.innerHTML = '0';
 
   // Reset any other necessary variables or game state
@@ -176,28 +180,33 @@ function isGameOver() {
       }
     }
   }
+  disableKeyboardEvents();
 
   return true;
 }
 
 startButton.addEventListener('click', () => {
   if (isGameOver()) {
+    disableKeyboardEvents();
     messageLose.classList.add('hidden');
     messageStart.classList.add('hidden');
     messageContainer.style.opacity = 0;
     resetGame();
   }
   startButton.innerHTML = 'Start';
-
-  startButton.classList.remove('restart');
+  startButton.classList.add('restart');
+  startButton.innerHTML = 'Restart';
+  startButton.classList.remove('restart-lose');
   resetGame();
 
   getRandomCell(cellsNodes, cellsNumbers);
   getRandomCell(cellsNodes, cellsNumbers);
   updateBoard();
+  // score.innerHTML = sumScore();
+  enableKeyboardEvents();
 });
 
-window.addEventListener('keydown', function(e) {
+function handleKeyDown(e) {
   if (e.defaultPrevented) {
     return; // Do nothing if the event was already processed
   }
@@ -205,45 +214,94 @@ window.addEventListener('keydown', function(e) {
   switch (e.key) {
     case 'Down': // IE/Edge specific value
     case 'ArrowDown':
-      score.innerHTML = sumScore(cellsNumbers);
+      oldScore = initialScore;
       moveColumn('down');
       updateBoard();
       getRandomCell();
       updateBoard();
+      score.innerHTML = initialScore;
+      changeScore = initialScore - oldScore;
+
+      if (changeScore > 0) {
+        showChangeScore.innerHTML = `+${changeScore}`;
+        showChangeScore.style.opacity = 1;
+        showChangeScore.style.transform = 'translateY(-15px)';
+
+        setTimeout(() => {
+          showChangeScore.style.opacity = 0;
+          showChangeScore.style.transform = 'translateY(0)';
+        }, 800);
+      }
+
       break;
     case 'Up': // IE/Edge specific value
     case 'ArrowUp':
-      score.innerHTML = sumScore(cellsNumbers);
+      oldScore = initialScore;
 
       moveColumn('up');
       updateBoard();
       getRandomCell();
       updateBoard();
+      score.innerHTML = initialScore;
+      changeScore = initialScore - oldScore;
+
+      if (changeScore > 0) {
+        showChangeScore.innerHTML = `+${changeScore}`;
+        showChangeScore.style.opacity = 1;
+        showChangeScore.style.transform = 'translateY(-15px)';
+
+        setTimeout(() => {
+          showChangeScore.style.opacity = 0;
+          showChangeScore.style.transform = 'translateY(0)';
+        }, 800);
+      }
+
       break;
 
     case 'Left': // IE/Edge specific value
     case 'ArrowLeft':
-      score.innerHTML = sumScore(cellsNumbers);
+      oldScore = initialScore;
+
       moveRow('left');
       updateBoard();
       getRandomCell();
       updateBoard();
+      score.innerHTML = initialScore;
+      changeScore = initialScore - oldScore;
 
+      if (changeScore > 0) {
+        showChangeScore.innerHTML = `+${changeScore}`;
+        showChangeScore.style.opacity = 1;
+        showChangeScore.style.transform = 'translateY(-15px)';
+
+        setTimeout(() => {
+          showChangeScore.style.opacity = 0;
+          showChangeScore.style.transform = 'translateY(0)';
+        }, 800);
+      }
       break;
     case 'Right': // IE/Edge specific value
     case 'ArrowRight':
-      score.innerHTML = sumScore(cellsNumbers);
+      oldScore = initialScore;
+
       moveRow('right');
       updateBoard();
       getRandomCell();
       updateBoard();
-      break;
-    case 'Enter':
-      score.innerHTML = sumScore(cellsNumbers);
-      break;
-    case 'Esc': // IE/Edge specific value
-    case 'Escape':
-      score.innerHTML = sumScore(cellsNumbers);
+      score.innerHTML = initialScore;
+      changeScore = initialScore - oldScore;
+
+      if (changeScore > 0) {
+        showChangeScore.innerHTML = `+${changeScore}`;
+        showChangeScore.style.opacity = 1;
+        showChangeScore.style.transform = 'translateY(-15px)';
+
+        setTimeout(() => {
+          showChangeScore.style.opacity = 0;
+          showChangeScore.style.transform = 'translateY(0)';
+        }, 800);
+      }
+
       break;
     default:
       return; // Quit when this doesn't handle the key event.
@@ -251,4 +309,12 @@ window.addEventListener('keydown', function(e) {
 
   // Cancel the default action to avoid it being handled twice
   e.preventDefault();
-}, true);
+}
+
+function enableKeyboardEvents() {
+  window.addEventListener('keydown', handleKeyDown);
+}
+
+function disableKeyboardEvents() {
+  window.removeEventListener('keydown', handleKeyDown);
+}

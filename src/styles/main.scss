@@ -148,6 +148,14 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  width: 90px;
+  &:hover {
+    background: #f87474;
+  }
+}
+
+.restart-lose {
+  background: #f1b2b2;
   position: absolute;
   transform: translate(-60%, 590%);
   z-index: 2;
@@ -224,4 +232,35 @@ h1 {
 
 .tile {
   animation: scaleAnimation 0.4s cubic-bezier(0.1, 0.75, 0.4, 1);
+}
+
+.move-up {
+  transform: translateY(-100%);
+  transition: transform 0.2s ease-in-out;
+}
+
+.move-down {
+  transform: translateY(100%);
+  transition: transform 0.2s ease-in-out;
+}
+
+.move-left {
+  transform: translateX(-100%);
+  transition: transform 0.2s ease-in-out;
+}
+
+.move-right {
+  transform: translateX(100%);
+  transition: transform 0.2s ease-in-out;
+}
+
+.show-change-score {
+  position: absolute;
+  top: 15%;
+
+  font-size: 18px;
+
+  opacity: 0;
+  color: #d60b2d;
+  transition: transform 1s ease;
 }
