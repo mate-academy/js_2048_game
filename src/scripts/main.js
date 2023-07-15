@@ -3,16 +3,18 @@
 const gameField = document.querySelector('.game-field');
 const cellsNodes = Array.from(gameField.querySelectorAll('td'));
 const cellsNumbers = cellsNodes.map(cell => +cell.innerHTML.trim());
+
 const messageContainer = document.querySelector('.message-container');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+
 const startButton = document.querySelector('.start');
 const showChangeScore = document.querySelector('.show-change-score');
+
 const cellSound = document.querySelector('#cell__sound');
 const winSound = document.querySelector('#win__sound');
 const loseSound = document.querySelector('#lose__sound');
-const winMessage = document.querySelector('.message-win');
-
 
 let initialScore = 0;
 let oldScore = initialScore;
@@ -39,9 +41,6 @@ function isEmptyCell(cell) {
 }
 
 function updateBoard() {
-
-
-
   cellsNodes.forEach((cell, index) => {
     if (cellsNumbers[index] === 0) {
       cell.innerHTML = '';
@@ -150,21 +149,16 @@ function moveRow(movement) {
 }
 
 function resetGame() {
-  // Clear cellsNumbers array
   cellsNumbers.fill(0);
 
-  // Reset cell HTML and class
   cellsNodes.forEach(cell => {
     cell.innerHTML = '';
     cell.classList.remove(...Array.from(cell.classList));
     cell.classList.add('field-cell');
   });
 
-  // Reset score
   initialScore = 0;
   score.innerHTML = '0';
-
-  // Reset any other necessary variables or game state
 }
 
 function isWin() {
@@ -181,8 +175,6 @@ function isGameOver() {
     return false;
   }
 
-  // horizontal check
-
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 3; col++) {
       const index = row * 4 + col;
@@ -192,8 +184,6 @@ function isGameOver() {
       }
     }
   }
-
-  // vertical  check
 
   for (let row = 0; row < 3; row++) {
     for (let col = 0; col < 4; col++) {
@@ -210,7 +200,6 @@ function isGameOver() {
 }
 
 startButton.addEventListener('click', () => {
-
   if (isGameOver()) {
     disableKeyboardEvents();
     messageLose.classList.add('hidden');
@@ -227,17 +216,17 @@ startButton.addEventListener('click', () => {
   getRandomCell(cellsNodes, cellsNumbers);
   getRandomCell(cellsNodes, cellsNumbers);
   updateBoard();
-  // score.innerHTML = sumScore();
+
   enableKeyboardEvents();
 });
 
 function handleKeyDown(e) {
   if (e.defaultPrevented) {
-    return; // Do nothing if the event was already processed
+    return;
   }
 
   switch (e.key) {
-    case 'Down': // IE/Edge specific value
+    case 'Down':
     case 'ArrowDown':
       oldScore = initialScore;
       moveColumn('down');
@@ -259,7 +248,7 @@ function handleKeyDown(e) {
       }
 
       break;
-    case 'Up': // IE/Edge specific value
+    case 'Up':
     case 'ArrowUp':
       oldScore = initialScore;
 
@@ -283,7 +272,7 @@ function handleKeyDown(e) {
 
       break;
 
-    case 'Left': // IE/Edge specific value
+    case 'Left':
     case 'ArrowLeft':
       oldScore = initialScore;
 
@@ -305,7 +294,7 @@ function handleKeyDown(e) {
         }, 800);
       }
       break;
-    case 'Right': // IE/Edge specific value
+    case 'Right':
     case 'ArrowRight':
       oldScore = initialScore;
 
@@ -329,10 +318,9 @@ function handleKeyDown(e) {
 
       break;
     default:
-      return; // Quit when this doesn't handle the key event.
+      return;
   }
 
-  // Cancel the default action to avoid it being handled twice
   e.preventDefault();
 }
 
@@ -343,3 +331,75 @@ function enableKeyboardEvents() {
 function disableKeyboardEvents() {
   window.removeEventListener('keydown', handleKeyDown);
 }
+
+
+
+
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+function handleTouchStart(e) {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}
+
+function handleTouchMove(e) {
+  e.preventDefault();
+}
+
+function handleTouchEnd(e) {
+  touchEndX = e.changedTouches[0].clientX;
+  touchEndY = e.changedTouches[0].clientY;
+  handleSwipe();
+}
+
+function handleSwipe() {
+  const horizontalDistance = touchEndX - touchStartX;
+  const verticalDistance = touchEndY - touchStartY;
+
+  if (Math.abs(horizontalDistance) > Math.abs(verticalDistance)) {
+    if (horizontalDistance > 0) {
+      // Свайп вправо
+      oldScore = initialScore;
+      moveRow('right');
+    } else {
+      // Свайп вліво
+      oldScore = initialScore;
+      moveRow('left');
+    }
+  } else {
+    if (verticalDistance > 0) {
+      // Свайп вниз
+      oldScore = initialScore;
+      moveColumn('down');
+    } else {
+      // Свайп вверх
+      oldScore = initialScore;
+      moveColumn('up');
+    }
+  }
+
+  updateBoard();
+  getRandomCell();
+  updateBoard();
+  score.innerHTML = initialScore;
+  changeScore = initialScore - oldScore;
+
+  if (changeScore > 0) {
+    showChangeScore.innerHTML = `+${changeScore}`;
+    showChangeScore.style.opacity = 1;
+    showChangeScore.style.transform = 'translateY(-15px)';
+
+    setTimeout(() => {
+      showChangeScore.style.opacity = 0;
+      showChangeScore.style.transform = 'translateY(0)';
+    }, 800);
+  }
+}
+
+// Додайте обробники подій торкання до гри
+gameField.addEventListener('touchstart', handleTouchStart);
+gameField.addEventListener('touchmove', handleTouchMove);
+gameField.addEventListener('touchend', handleTouchEnd);
