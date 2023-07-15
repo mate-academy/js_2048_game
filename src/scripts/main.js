@@ -286,7 +286,7 @@ function moveLeft() {
       } else if (field[i][j] === field[i][j - 1] && field[i][j] !== 0) {
         field[i][j - 1] *= 2;
         field[i][j] = 0;
-        newScore = field[i][j - 1];
+        newScore += field[i][j - 1];
 
         getMove = true;
       }
