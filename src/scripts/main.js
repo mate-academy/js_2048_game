@@ -348,7 +348,7 @@ function checkValidMoves() {
   for (let i = 0; i < field[0].length; i++) {
     for (let j = 0; j < field.length; j++) {
       if (field[i][j] === 0
-        || field[i][j] === [i][j + 1]
+        || field[i][j] === field[i][j + 1]
         || ((i >= 0 && i < field[0].length - 1)
           && field[i][j] === field[i + 1][j])) {
         return false;
