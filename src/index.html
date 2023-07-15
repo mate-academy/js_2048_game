@@ -13,6 +13,7 @@
         <div class="controls">
           <p class="info">
             Score: <span class="game-score">0</span>
+            <span class="show-change-score">2313</span>
           </p>
           <button class="button start">Start</button>
         </div>
@@ -53,11 +54,15 @@
       </table>
 
       <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
+        <p class="message message-lose ">You lose! Restart the game?</p>
         <p class="message message-win hidden">Winner! Congrats! You did it!</p>
         <p class="message message-start">Press "Start" to begin game. Good luck!</p>
       </div>
     </div>
+    <audio src="./music/cell-sound.mp3" id="cell__sound"></audio>
+    <audio src="./music/lose-sound.mp3" id="lose__sound"></audio>
+    <audio src="./music/win-sound.mp3" id="win__sound"></audio>
+
     <script type="text/javascript" src="scripts/main.js"></script>
   </body>
 </html>

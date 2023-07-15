@@ -133,12 +133,12 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-
   transition: 0.25s ease background;
 }
 
 .start {
   background: #1dae28;
+  right: 0;
   font-size: 20px;
 
   &:hover {
@@ -148,6 +148,20 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  width: 90px;
+  &:hover {
+    background: #f87474;
+  }
+}
+
+.restart-lose {
+  background: #f1b2b2;
+  position: absolute;
+  transform: translate(-60%, 590%);
+  z-index: 2;
+  width: 150px;
+  height: 50px;
+  transition: all 1s linear;
 
   &:hover {
     background: #f87474;
@@ -171,17 +185,82 @@ h1 {
 
 .container {
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   width: 350px;
 }
 
 .message-win {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
   background: #edc22e;
   color: #f9f6f2;
 }
 
+.message-lose {
+  color: #19351c;
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+}
+
 .message-container {
+  position: absolute;
+  background-color: #d6cdc4;
+  opacity: 0;
   width: 100%;
-  height: 150px;
+  height: 350px;
+  bottom: 0;
+}
+
+.message-start {
+  position: absolute;
+  bottom: -100px;
+  color: #19351c;
+}
+
+@keyframes scaleAnimation {
+  from {
+    transform: scale(0.85);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.tile {
+  animation: scaleAnimation 0.4s cubic-bezier(0.1, 0.75, 0.4, 1);
+}
+
+.move-up {
+  transform: translateY(-100%);
+  transition: transform 0.2s ease-in-out;
+}
+
+.move-down {
+  transform: translateY(100%);
+  transition: transform 0.2s ease-in-out;
+}
+
+.move-left {
+  transform: translateX(-100%);
+  transition: transform 0.2s ease-in-out;
+}
+
+.move-right {
+  transform: translateX(100%);
+  transition: transform 0.2s ease-in-out;
+}
+
+.show-change-score {
+  position: absolute;
+  top: 15%;
+
+  font-size: 18px;
+
+  opacity: 0;
+  color: #d60b2d;
+  transition: transform 1s ease;
 }
