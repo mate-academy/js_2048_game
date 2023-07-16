@@ -171,6 +171,10 @@ function changeMessage(message) {
 function move(direction) {
   let stopGame = false;
 
+  if (GAME_MESSAGE === 'win') {
+    return;
+  }
+
   switch (direction) {
     case 'ArrowUp':
       stopGame = moveUp();
