@@ -1,4 +1,5 @@
-export const getRandomCell = (gridSize) => Math.floor(Math.random() * gridSize);
+export const getRandomIndex = (gridSize) =>
+  Math.floor(Math.random() * gridSize);
 
 export const getSelectedAxis = (array, y) =>
   array.reduce(
@@ -18,19 +19,19 @@ export const getRows = (cells) => {
   return getSelectedAxis([...cells]);
 };
 
-export const calculatePoints = (cells) =>
+export const getTotalPoints = (cells) =>
   [...cells].reduce(
     (acc, curr) => (+curr.textContent > 2 ? acc + +curr.textContent : acc + 0),
     0
   );
 
-export const checkCellsEqual = (currentCells, newCells) =>
+export const isCellsEqual = (currentCells, newCells) =>
   [...currentCells].some((cell, i) => !cell.isEqualNode(newCells.flat()[i]));
 
-export const checkIfEmptyCell = (cells) =>
-  [...cells].some((cell) => cell.textContent === '');
+export const hasEmptyCell = (cells) =>
+  [...cells].some((cell) => cell.textContent === "");
 
-const checkMergePossible = (cells) => {
+const isMergePossible = (cells) => {
   const rowsAndColumns = [...getRows(cells), ...getColumns(cells)];
 
   for (const subArr of rowsAndColumns) {
@@ -42,13 +43,13 @@ const checkMergePossible = (cells) => {
   }
 };
 
-export const checkGameOver = (cells) => {
-  if (!checkIfEmptyCell(cells)) {
-    return !checkMergePossible(cells);
+export const isGameOver = (cells) => {
+  if (!hasEmptyCell(cells)) {
+    return !isMergePossible(cells);
   }
 
   return false;
 };
 
-export const checkWin = (cells) =>
+export const isWin = (cells) =>
   [...cells].some((cell) => +cell.textContent === 2048);

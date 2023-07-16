@@ -1,4 +1,4 @@
-import { getRandomCell } from './helpers';
+import { getRandomIndex } from './helpers';
 import { rows, cells } from './main';
 
 export const GRID_SIZE = 4;
@@ -35,7 +35,7 @@ export const createEmptyCell = () => {
 
 export const addRandomCell = () => {
   const randomCell
-    = rows[getRandomCell(GRID_SIZE)].children[getRandomCell(GRID_SIZE)];
+    = rows[getRandomIndex(GRID_SIZE)].children[getRandomIndex(GRID_SIZE)];
   const value = Math.random() < 0.1 ? 4 : 2;
 
   if (randomCell.textContent) {
@@ -45,11 +45,11 @@ export const addRandomCell = () => {
   }
 };
 
-export const handleButtonChange = (targetedButton, newButtonType) => {
+export const handleButtonChange = (targetedButton, newButtonLabel) => {
   removeModifierClass(targetedButton);
 
-  targetedButton.classList.add(newButtonType.toLowerCase());
-  targetedButton.textContent = newButtonType;
+  targetedButton.classList.add(newButtonLabel.toLowerCase());
+  targetedButton.textContent = newButtonLabel;
 };
 
 export const updateBoard = (newCells) => {

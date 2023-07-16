@@ -1,6 +1,6 @@
 
 import { addRandomCell, clearCells, handleButtonChange } from './domFunctions';
-import { calculatePoints, checkGameOver, checkWin } from './helpers';
+import { getTotalPoints, isGameOver, isWin } from './helpers';
 import { moveUp, moveDown, moveLeft, moveRight } from './moveFunctions';
 
 export const rows = document.getElementsByClassName('field-row');
@@ -44,7 +44,7 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
-  if (checkGameOver(cells)) {
+  if (isGameOver(cells)) {
     message[0].classList.remove('hidden');
     isPlaying = false;
 
@@ -68,9 +68,9 @@ document.addEventListener('keydown', (e) => {
       break;
   }
 
-  score.textContent = calculatePoints(cells);
+  score.textContent = getTotalPoints(cells);
 
-  if (checkWin(cells)) {
+  if (isWin(cells)) {
     message[1].classList.remove('hidden');
     isPlaying = false;
   }

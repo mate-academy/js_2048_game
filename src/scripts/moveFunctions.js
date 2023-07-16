@@ -1,6 +1,6 @@
 import {
   getSelectedAxis,
-  checkCellsEqual,
+  isCellsEqual,
   getColumns,
   getRows,
 } from './helpers';
@@ -51,7 +51,7 @@ const getNewCells = (cellsGroup, reversed) =>
 const slideCellsHorizontal = (cellsGroup, reversed) => {
   const newRowCells = getNewCells(cellsGroup, reversed);
 
-  if (checkCellsEqual(cells, newRowCells)) {
+  if (isCellsEqual(cells, newRowCells)) {
     updateBoard(newRowCells);
   }
 };
@@ -60,7 +60,7 @@ const slideCellsVertical = (cellsGroup, reversed) => {
   const newColumnCells = getNewCells(cellsGroup, reversed);
   const newColumnCellsToRow = getSelectedAxis(newColumnCells.flat(), true);
 
-  if (checkCellsEqual(cells, newColumnCellsToRow)) {
+  if (isCellsEqual(cells, newColumnCellsToRow)) {
     updateBoard(newColumnCellsToRow);
   }
 };
