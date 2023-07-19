@@ -128,27 +128,87 @@ function handleArrowKey(e) {
 
   switch (e.code) {
     case 'ArrowLeft':
-      slideLeft();
-      setRandom();
+      if (canSlideLeft()) {
+        slideLeft();
+        setRandom();
+      }
       break;
 
     case 'ArrowRight':
-      slideRight();
-      setRandom();
+      if (canSlideRight()) {
+        slideRight();
+        setRandom();
+      }
       break;
 
     case 'ArrowUp':
-      slideUp();
-      setRandom();
+      if (canSlideUp()) {
+        slideUp();
+        setRandom();
+      }
       break;
 
     case 'ArrowDown':
-      slideDown();
-      setRandom();
+      if (canSlideDown()) {
+        slideDown();
+        setRandom();
+      }
       break;
   }
 
   setCells();
+}
+
+function canSlideLeft() {
+  for (let i = 0; i < numOfCells; i++) {
+    for (let v = 1; v < numOfCells; v++) {
+      if (gameField[i][v] !== 0 && (gameField[i][v - 1] === 0
+        || gameField[i][v - 1] === gameField[i][v])) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function canSlideRight() {
+  for (let i = 0; i < numOfCells; i++) {
+    for (let v = 0; v < numOfCells - 1; v++) {
+      if (gameField[i][v] !== 0 && (gameField[i][v + 1] === 0
+        || gameField[i][v + 1] === gameField[i][v])) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function canSlideUp() {
+  for (let i = 1; i < numOfCells; i++) {
+    for (let v = 0; v < numOfCells; v++) {
+      if (gameField[i][v] !== 0 && (gameField[i - 1][v] === 0
+        || gameField[i - 1][v] === gameField[i][v])) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function canSlideDown() {
+  for (let i = 0; i < numOfCells - 1; i++) {
+    for (let v = 0; v < numOfCells; v++) {
+      if (gameField[i][v] !== 0 && (gameField[i + 1][v] === 0
+        || gameField[i + 1][v] === gameField[i][v])) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 function checkZero(row) {
