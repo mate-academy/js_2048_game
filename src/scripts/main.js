@@ -33,6 +33,7 @@ function startGame() {
     [0, 0, 0, 0],
   ];
   scoreCount = 0;
+  score.textContent = scoreCount;
   spawnRandomCell();
   startKeyboardListener();
 }
