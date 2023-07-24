@@ -68,6 +68,29 @@ const buildBoard = () => {
   boardElement.appendChild(boardBG);
 };
 
+const updateBoard = () => {
+  const allCeslls = document.querySelectorAll('.field-cell');
+
+  const allCellsArray = Array.from(allCeslls).filter(
+    (cell) => !cell.classList.contains('field-cell--empty')
+  );
+
+  for (const cell of allCellsArray) {
+    const r = cell.getAttribute('data-row');
+    const c = cell.getAttribute('data-cell');
+
+    cell.classList.remove(`field-cell--${cell.innerHTML}`);
+    cell.classList.add(`field-cell--${board[r][c]}`);
+    cell.innerHTML = board[r][c] || '';
+
+    cell.classList.add(`field-cell--pop`);
+
+    setTimeout(() => {
+      cell.classList.remove(`field-cell--pop`);
+    }, ANIMATION_TIME);
+  }
+};
+
 const setScore = (scoreToSet) => {
   scoreElement.innerHTML = scoreToSet;
 };
@@ -92,22 +115,6 @@ const addRandomCell = () => {
     board[randCell.row][randCell.cell] = Math.random() > 0.9 ? 4 : 2;
   }
 };
-
-const startGame = () => {
-  setScore(score = 0);
-  clearBoard();
-
-  btn.innerHTML = 'Restart';
-  btn.classList.remove('start');
-  btn.classList.add('restart');
-
-  messageElement.classList.add('hidden');
-
-  addRandomCell();
-  buildBoard();
-};
-
-btn.addEventListener('click', startGame);
 
 const slide = (row) => {
   const newRow = row.filter((cell) => cell !== 0);
@@ -222,7 +229,7 @@ const moveCells = (direction) => {
 
   addRandomCell();
 
-  buildBoard();
+  updateBoard();
 
   const increaseScore = board.reduce(
     (acc, row) => acc + row.reduce((acc2, cell) => acc2 + cell, 0), 0
@@ -246,8 +253,6 @@ const proccesInput = (ev) => {
     moveCells(key);
   }
 };
-
-document.addEventListener('keydown', proccesInput);
 
 const winGame = () => {
   const win = board.some((row) => row.some((cell) => cell === 2048));
@@ -305,3 +310,21 @@ const looseGame = () => {
     messageElement.classList.add('message-lose');
   }
 };
+
+const startGame = () => {
+  setScore(score = 0);
+  clearBoard();
+
+  btn.innerHTML = 'Restart';
+  btn.classList.remove('start');
+  btn.classList.add('restart');
+
+  messageElement.classList.add('hidden');
+
+  addRandomCell();
+  buildBoard();
+
+  document.addEventListener('keydown', proccesInput);
+};
+
+btn.addEventListener('click', startGame);

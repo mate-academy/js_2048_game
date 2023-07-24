@@ -27,7 +27,7 @@ body {
   vertical-align: center;
   user-select: none;
 
-  translate: top $animation-time ease-in-out, left $animation-time ease-in-out;
+  transition: top $animation-time ease-in-out, left $animation-time ease-in-out;
 
   &--empty {
     position: static;
