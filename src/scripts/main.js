@@ -15,7 +15,7 @@ document.addEventListener('keydown', (e) => {
     const part = JSON.parse(JSON.stringify(arr));
 
     for (let i = 0; i < arr.length; i++) {
-      arr[i].sort(function sortikLeft(x, y) {
+      arr[i].sort(function sortLeft(x, y) {
         if (x > 0 && y > 0) {
 
         } else {
@@ -200,7 +200,7 @@ document.addEventListener('keydown', (e) => {
     const part = JSON.parse(JSON.stringify(arr));
 
     for (let i = 0; i < arr.length; i++) {
-      arr[i].sort(function sortikRight(x, y) {
+      arr[i].sort(function sortRight(x, y) {
         if (x > 0 && y > 0) {
 
         } else {
@@ -388,7 +388,7 @@ document.addEventListener('keydown', (e) => {
     for (let i = 0; i < rows.length; i++) {
       const mass = [arr[0][i], arr[1][i], arr[2][i], arr[3][i]];
 
-      mass.sort(function sortikLeft(x, y) {
+      mass.sort(function sortLeft(x, y) {
         if (x > 0 && y > 0) {
 
         } else {
@@ -588,7 +588,7 @@ document.addEventListener('keydown', (e) => {
     for (let i = 0; i < rows.length; i++) {
       const mass = [arr[0][i], arr[1][i], arr[2][i], arr[3][i]];
 
-      mass.sort(function sortikRight(x, y) {
+      mass.sort(function sortRight(x, y) {
         if (x > 0 && y > 0) {
 
         } else {
