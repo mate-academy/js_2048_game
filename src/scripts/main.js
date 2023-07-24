@@ -8,7 +8,8 @@ const cells = document.querySelectorAll('.field-cell');
 document.addEventListener('keydown', () => {
   // зробити, щоб реагувало лише на стрілки-клавіші
 
-  if (button.classList.contains('start') && !messageRules.classList.contains('hidden')) {
+  if (button.classList.contains('start')
+    && !messageRules.classList.contains('hidden')) {
     button.classList.remove('start');
     button.classList.add('restart');
     button.textContent = 'Restart';
@@ -29,11 +30,12 @@ button.addEventListener('click', () => {
     // заповнити рандомно поле 2 числами
     for (let i = 0; i < 2; i++) {
       const randomCell = getRandomCell(); // 0-15
-
+      // const firsRandomCell = randomCell;
       const randomNumber = getRandomNumber(); // 2/4
+      const emptyCells = getEmptyCells();
 
-      cells[randomCell].classList.add(`field-cell--${randomNumber}`);
-      cells[randomCell].textContent = `${randomNumber}`;
+      emptyCells[randomCell].classList.add(`field-cell--${randomNumber}`);
+      emptyCells[randomCell].textContent = `${randomNumber}`;
     }
   }
 
@@ -47,7 +49,9 @@ button.addEventListener('click', () => {
 });
 
 function getRandomCell() {
-  return Math.floor(Math.random() * cells.length);
+  const emptyCells = getEmptyCells();
+
+  return Math.floor(Math.random() * emptyCells.length);
 }
 
 function getRandomNumber() {
@@ -55,32 +59,28 @@ function getRandomNumber() {
 }
 
 function clearField() {
-  for (let i = 0; i < cells.length; i++) {
-    const [classToRemove] = [...cells[i].classList]
-      .filter(item => item.startsWith('field-cell--'));
+  const filledCells = getFilledCells();
 
-    cells[i].classList.remove(`${classToRemove}`);
-    cells[i].textContent = '';
-  }
+  filledCells.forEach(item => {
+    item.classList.remove(`${[...item.classList][1]}`);
+    item.textContent = '';
+  });
 
   // for (let i = 0; i < cells.length; i++) {
-  //   const classes = [...cells[i].classList];
+  //   const [classToRemove] = [...cells[i].classList]
+  //     .filter(item => item.startsWith('field-cell--'));
 
-  //   const classesToRemove = classes.filter(item => item.startsWith('field-cell--'));
-
-  //   classesToRemove.forEach(item => {
-  //     cells[i].classList.remove(`${item}`);
+  //   if (classToRemove) {
+  //     cells[i].classList.remove(`${classToRemove}`);
   //     cells[i].textContent = '';
-  //   });
+  //   }
   // }
 }
 
-// function getFilledCells() {
-//   const filledCells = [];
+function getFilledCells() {
+  return [...cells].filter(item => [...item.classList].length > 1);
+}
 
-//   for (let i = 0; i < cells.length; i++) {
-//     const classes = [...cells[i].classList];
-
-//     if ()
-//   }
-// }
+function getEmptyCells() {
+  return [...cells].filter(item => [...item.classList].length === 1);
+}
