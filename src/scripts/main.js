@@ -320,8 +320,13 @@ function moveRight() {
 
 const startButton = document.querySelector('.button.start');
 
+
 startButton.addEventListener('click', function() {
   initGame();
+  startMessage.classList.add('hidden');
+  startButton.classList.remove('start');
+  startButton.classList.add('restart');
+  startButton.innerText = 'Restart';
 });
 
 document.addEventListener('keydown', handleKeyPress);
