@@ -92,9 +92,7 @@ function getRandomNumber() {
 }
 
 function clearCell(cell) {
-  const cssClass = cell.classList[1];
-
-  cell.classList.remove(cssClass);
+  cell.classList.remove(cell.classList[1]);
   cell.textContent = '';
   updateCellLists();
 }
@@ -121,27 +119,31 @@ function setGameRestart() {
 function moveTile(cell, direction) {
   const cellIndex = [...cells].indexOf(cell);
   let emptyCell = cell;
-  let j = cellIndex + direction;
   const isVerticalMove = Math.abs(direction) === 4;
   const maxIndex = isVerticalMove
-    ? cells.length
+    ? [...cells].length - 1
     : (Math.floor(cellIndex / 4) + 1) * 4 - 1;
   const minIndex = isVerticalMove ? 0 : Math.floor(cellIndex / 4) * 4;
   let merged = false;
 
-  while (j >= minIndex && j <= maxIndex && emptyCells.includes(cells[j])) {
-    emptyCell = cells[j];
-    j += direction;
+  for (let j = cellIndex + direction; j >= minIndex && j <= maxIndex; j += direction) {
+    if (cell.textContent === [...cells][j].textContent) {
+      mergeTiles(cell, [...cells][j]);
+      merged = true;
+      updateCellLists();
+      clearCell(cell);
+      shouldAddNewTile = true;
+      break;
+    } else if (emptyCells.includes([...cells][j])) {
+      emptyCell = [...cells][j];
+    } else {
+      break;
+    }
   }
 
-  if (emptyCell !== cell) {
-    if (j >= minIndex && j <= maxIndex && cell.textContent === cells[j].textContent && !merged) {
-      mergeTiles(cell, cells[j]);
-      merged = true;
-    } else {
-      emptyCell.classList.add(cell.classList[1]);
-      emptyCell.textContent = cell.textContent;
-    }
+  if (emptyCell !== cell && !merged) {
+    emptyCell.classList.add(cell.classList[1]);
+    emptyCell.textContent = cell.textContent;
     clearCell(cell);
     shouldAddNewTile = true;
     updateCellLists();
@@ -151,8 +153,10 @@ function moveTile(cell, direction) {
 function mergeTiles(cell, nextCell) {
   const newNumber = cell.textContent * 2;
 
-  nextCell.classList.replace(nextCell.classList.item(1), `field-cell--${newNumber}`);
   nextCell.textContent = newNumber;
+
+  nextCell.classList
+    .replace(nextCell.classList.item(1), `field-cell--${newNumber}`);
 
   clearCell(cell);
   updateCellLists();
