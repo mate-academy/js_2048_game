@@ -3,44 +3,54 @@
 const button = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
 const messageRules = document.querySelector('.message-rules');
-// const cells = [...document.querySelectorAll('.field-cell')];
 const cells = document.querySelectorAll('.field-cell');
+let shouldAddNewTile = false;
 
 let emptyCells = [];
 let filledCells = [];
 
 const arrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
-document.addEventListener('keydown', keydownEvent => {
-  const key = keydownEvent.key;
-
-  if (arrows.includes(key)) {
-    handleArrowKeyAction(key);
-
-    if (button.classList.contains('start')
-      && !messageRules.classList.contains('hidden')) {
-      setGameRestart();
-    }
-  }
-});
+const DIRECTIONS = {
+  'ArrowUp': -4,
+  'ArrowDown': 4,
+  'ArrowLeft': -1,
+  'ArrowRight': 1,
+};
 
 button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
     startGame();
-  }
-
-  if (button.classList.contains('restart')) {
+  } else if (button.classList.contains('restart')) {
     restartGame();
   }
 });
 
-function startGame() {
-  clearField();
+document.addEventListener('keydown', keydownEvent => {
+  const key = keydownEvent.key;
 
-  if (!messageStart.classList.contains('hidden')) {
-    messageStart.classList.add('hidden');
-    messageRules.classList.remove('hidden');
+  shouldAddNewTile = false;
+
+  if (arrows.includes(key)) {
+    if (button.classList.contains('start')
+    && !messageRules.classList.contains('hidden')) {
+      setGameRestart();
+    }
+
+    handleArrowKeyAction(key);
+
+    if (shouldAddNewTile) {
+      addNewTile();
+    }
   }
+});
+
+function startGame() {
+  filledCells.forEach(clearCell);
+  updateCellLists();
+
+  messageStart.classList.add('hidden');
+  messageRules.classList.remove('hidden');
 
   for (let i = 0; i < 2; i++) {
     addNewTile();
@@ -48,7 +58,8 @@ function startGame() {
 }
 
 function restartGame() {
-  clearField();
+  filledCells.forEach(clearCell);
+  updateCellLists();
   setGameStart();
 }
 
@@ -64,202 +75,11 @@ function addNewTile() {
 }
 
 function handleArrowKeyAction(key) {
-  switch (key) {
-    case 'ArrowUp':
-      for (let i = 0; i < filledCells.length; i++) {
-        const cell = filledCells[i];
-        const cellIndex = [...cells].indexOf(cell);
-        let emptyCell = filledCells[i];
+  const direction = DIRECTIONS[key];
+  const cellsToMove = direction > 0 ? [...filledCells].reverse() : filledCells;
 
-        for (let j = cellIndex - 4; j >= 0; j -= 4) {
-          if (emptyCells.includes([...cells][j])) {
-            emptyCell = [...cells][j];
-          } else {
-            break;
-          }
-        }
-
-        // if ([4, 5, 6, 7].includes(cellIndex)) {
-        //   for (let j = cellIndex - 4; j >= 0; j -= 4) {
-        //     if (emptyCells.includes([...cells][j])) {
-        //       emptyCell = [...cells][j];
-        //     } else {
-        //       break;
-        //     }
-        //   }
-        // }
-
-        // if ([8, 9, 10, 11].includes(cellIndex)) {
-        //   for (let j = cellIndex - 4; j >= 0; j -= 4) {
-        //     if (emptyCells.includes([...cells][j])) {
-        //       emptyCell = [...cells][j];
-        //     } else {
-        //       break;
-        //     }
-        //   }
-        // }
-
-        // if ([12, 13, 14, 15].includes(cellIndex)) {
-        //   for (let j = cellIndex - 4; j >= 0; j -= 4) {
-        //     if (emptyCells.includes([...cells][j])) {
-        //       emptyCell = [...cells][j];
-        //     } else {
-        //       break;
-        //     }
-        //   }
-        // }
-
-        if (emptyCell !== cell) {
-          emptyCell.classList.add(cell.classList[1]);
-          emptyCell.textContent = cell.textContent;
-          clearCell([...cells][cellIndex]);
-        }
-      }
-      // updateCellLists();
-      break;
-
-    case 'ArrowDown':
-      for (let i = filledCells.length - 1; i >= 0; i--) {
-        const cell = filledCells[i];
-        const cellIndex = [...cells].indexOf(cell);
-        let emptyCell = filledCells[i];
-
-        for (let j = cellIndex + 4; j <= 15; j += 4) {
-          if (emptyCells.includes([...cells][j])) {
-            emptyCell = [...cells][j];
-          } else {
-            break;
-          }
-        }
-
-        // if ([8, 9, 10, 11].includes(cellIndex)) {
-        //   for (let j = cellIndex + 4; j <= 15; j += 4) {
-        //     if (emptyCells.includes([...cells][j])) {
-        //       emptyCell = [...cells][j];
-        //     } else {
-        //       break;
-        //     }
-        //   }
-        // }
-
-        // if ([4, 5, 6, 7].includes(cellIndex)) {
-        //   for (let j = cellIndex + 4; j <= 15; j += 4) {
-        //     if (emptyCells.includes([...cells][j])) {
-        //       emptyCell = [...cells][j];
-        //     } else {
-        //       break;
-        //     }
-        //   }
-        // }
-
-        // if ([0, 1, 2, 3].includes(cellIndex)) {
-        //   for (let j = cellIndex + 4; j <= 15; j += 4) {
-        //     if (emptyCells.includes([...cells][j])) {
-        //       emptyCell = [...cells][j];
-        //     } else {
-        //       break;
-        //     }
-        //   }
-        // }
-
-        if (emptyCell !== cell) {
-          emptyCell.classList.add(cell.classList[1]);
-          emptyCell.textContent = cell.textContent;
-          clearCell([...cells][cellIndex]);
-        }
-      }
-      // updateCellLists();
-      break;
-
-    case 'ArrowLeft':
-      for (let i = 0; i < filledCells.length; i++) {
-        const cell = filledCells[i];
-        const cellIndex = [...cells].indexOf(cell);
-        let emptyCell = filledCells[i];
-
-        if ([1, 5, 9, 13].includes(cellIndex)) {
-          for (let j = cellIndex - 1; j > cellIndex - 2; j--) {
-            if (emptyCells.includes([...cells][j])) {
-              emptyCell = [...cells][j];
-            } else {
-              break;
-            }
-          }
-        }
-
-        if ([2, 6, 10, 14].includes(cellIndex)) {
-          for (let j = cellIndex - 1; j > cellIndex - 3; j--) {
-            if (emptyCells.includes([...cells][j])) {
-              emptyCell = [...cells][j];
-            } else {
-              break;
-            }
-          }
-        }
-
-        if ([3, 7, 11, 15].includes(cellIndex)) {
-          for (let j = cellIndex - 1; j > cellIndex - 4; j--) {
-            if (emptyCells.includes([...cells][j])) {
-              emptyCell = [...cells][j];
-            } else {
-              break;
-            }
-          }
-        }
-
-        if (emptyCell !== cell) {
-          emptyCell.classList.add(cell.classList[1]);
-          emptyCell.textContent = cell.textContent;
-          clearCell([...cells][cellIndex]);
-        }
-      }
-      // updateCellLists();
-      break;
-
-    case 'ArrowRight':
-      for (let i = filledCells.length - 1; i >= 0; i--) {
-        const cell = filledCells[i];
-        const cellIndex = [...cells].indexOf(cell);
-        let emptyCell = filledCells[i];
-
-        if ([2, 6, 10, 14].includes(cellIndex)) {
-          for (let j = cellIndex + 1; j < cellIndex + 2; j++) {
-            if (emptyCells.includes([...cells][j])) {
-              emptyCell = [...cells][j];
-            } else {
-              break;
-            }
-          }
-        }
-
-        if ([1, 5, 9, 13].includes(cellIndex)) {
-          for (let j = cellIndex + 1; j < cellIndex + 3; j++) {
-            if (emptyCells.includes([...cells][j])) {
-              emptyCell = [...cells][j];
-            } else {
-              break;
-            }
-          }
-        }
-
-        if ([0, 4, 8, 12].includes(cellIndex)) {
-          for (let j = cellIndex + 1; j < cellIndex + 4; j++) {
-            if (emptyCells.includes([...cells][j])) {
-              emptyCell = [...cells][j];
-            } else {
-              break;
-            }
-          }
-        }
-
-        if (emptyCell !== cell) {
-          emptyCell.classList.add(cell.classList[1]);
-          emptyCell.textContent = cell.textContent;
-          clearCell([...cells][cellIndex]);
-        }
-      }
-      // updateCellLists();
-      break;
+  for (const cell of cellsToMove) {
+    moveTile(cell, direction);
   }
 }
 
@@ -269,17 +89,6 @@ function getRandomCellIndex() {
 
 function getRandomNumber() {
   return Math.random() < 0.9 ? 2 : 4;
-}
-
-function clearField() {
-  filledCells.forEach(item => {
-    const cssClass = item.classList[1];
-
-    item.classList.remove(cssClass);
-    item.textContent = '';
-  });
-
-  updateCellLists();
 }
 
 function clearCell(cell) {
@@ -307,4 +116,44 @@ function setGameRestart() {
   button.classList.add('restart');
   button.textContent = 'Restart';
   messageRules.classList.add('hidden');
+}
+
+function moveTile(cell, direction) {
+  const cellIndex = [...cells].indexOf(cell);
+  let emptyCell = cell;
+  let j = cellIndex + direction;
+  const isVerticalMove = Math.abs(direction) === 4;
+  const maxIndex = isVerticalMove
+    ? cells.length
+    : (Math.floor(cellIndex / 4) + 1) * 4 - 1;
+  const minIndex = isVerticalMove ? 0 : Math.floor(cellIndex / 4) * 4;
+  let merged = false;
+
+  while (j >= minIndex && j <= maxIndex && emptyCells.includes(cells[j])) {
+    emptyCell = cells[j];
+    j += direction;
+  }
+
+  if (emptyCell !== cell) {
+    if (j >= minIndex && j <= maxIndex && cell.textContent === cells[j].textContent && !merged) {
+      mergeTiles(cell, cells[j]);
+      merged = true;
+    } else {
+      emptyCell.classList.add(cell.classList[1]);
+      emptyCell.textContent = cell.textContent;
+    }
+    clearCell(cell);
+    shouldAddNewTile = true;
+    updateCellLists();
+  }
+}
+
+function mergeTiles(cell, nextCell) {
+  const newNumber = cell.textContent * 2;
+
+  nextCell.classList.replace(nextCell.classList.item(1), `field-cell--${newNumber}`);
+  nextCell.textContent = newNumber;
+
+  clearCell(cell);
+  updateCellLists();
 }
