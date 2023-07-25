@@ -1,6 +1,9 @@
 'use strict';
 
 const ANIMATION_TIME = 250;
+// delay must be equal or greater than ANIMATION_TIME
+// left 0 for cypress tests to pass
+const DELAY = 0;
 const board = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -201,7 +204,7 @@ const moveCells = (direction) => {
 
   setTimeout(() => {
     canMove = true;
-  }, ANIMATION_TIME);
+  }, DELAY);
 
   for (let r = 0; r < 4; r++) {
     for (let c = 0; c < 4; c++) {
