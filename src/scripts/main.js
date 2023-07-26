@@ -53,9 +53,10 @@ function startGame() {
   filledCells.forEach(clearCell);
   updateCellLists();
 
-  messageStart.classList.add('hidden');
-  messageRules.classList.remove('hidden');
-  messageLose.classList.add('hidden');
+  hideMessage(messageStart);
+  hideMessage(messageLose);
+  hideMessage(messageWin);
+  showMessage(messageRules);
 
   for (let i = 0; i < 2; i++) {
     addNewTile();
@@ -67,7 +68,8 @@ function restartGame() {
   updateCellLists();
   setGameStart();
 
-  messageLose.classList.add('hidden');
+  hideMessage(messageLose);
+  hideMessage(messageWin);
 }
 
 function addNewTile() {
@@ -90,7 +92,7 @@ function handleArrowKeyAction(key) {
   }
 
   if (emptyCells.length === 0 && !checkAvailableMergers()) {
-    messageLose.classList.remove('hidden');
+    showMessage(messageLose);
   }
 }
 
@@ -117,7 +119,7 @@ function setGameStart() {
   button.classList.remove('restart');
   button.classList.add('start');
   button.textContent = 'Start';
-  messageStart.classList.remove('hidden');
+  showMessage(messageStart);
   gameScore.textContent = '0';
 }
 
@@ -125,7 +127,7 @@ function setGameRestart() {
   button.classList.remove('start');
   button.classList.add('restart');
   button.textContent = 'Restart';
-  messageRules.classList.add('hidden');
+  hideMessage(messageRules);
 }
 
 function moveTile(cell, direction) {
@@ -175,8 +177,8 @@ function mergeTiles(cell, nextCell) {
 
   gameScore.textContent = +gameScore.textContent + newNumber;
 
-  if (gameScore.textContent === 2048) {
-    messageWin.classList.toggle('hidden');
+  if (newNumber === 2048) {
+    showMessage(messageWin);
   }
 }
 
@@ -208,4 +210,12 @@ function getNextCellIndex(cellIndex, direction) {
   return nextCellIndex >= minIndex && nextCellIndex <= maxIndex
     ? nextCellIndex
     : null;
+}
+
+function showMessage(messageElement) {
+  messageElement.classList.remove('hidden');
+}
+
+function hideMessage(messageElement) {
+  messageElement.classList.add('hidden');
 }
