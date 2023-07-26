@@ -38,8 +38,6 @@ document.addEventListener('keydown', keydownEvent => {
   if (arrows.includes(key)) {
     handleArrowKeyAction(key);
 
-    // checkAvailableMoves();
-
     if (checkMove) {
       if (button.classList.contains('start')
       && !messageRules.classList.contains('hidden')) {
@@ -91,9 +89,6 @@ function handleArrowKeyAction(key) {
     moveTile(cell, direction);
   }
 
-  // if (emptyCells.length === 0) {
-  //   checkAvailableMoves()
-  // }
   if (emptyCells.length === 0 && !checkAvailableMergers()) {
     messageLose.classList.remove('hidden');
   }
@@ -123,6 +118,7 @@ function setGameStart() {
   button.classList.add('start');
   button.textContent = 'Start';
   messageStart.classList.remove('hidden');
+  gameScore.textContent = '0';
 }
 
 function setGameRestart() {
@@ -148,6 +144,7 @@ function moveTile(cell, direction) {
       updateCellLists();
       clearCell(cell);
       checkMove = true;
+
       break;
     } else if (emptyCells.includes(nextCell)) {
       emptyCell = nextCell;
