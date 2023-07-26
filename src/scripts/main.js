@@ -3,8 +3,12 @@
 const button = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
 const messageRules = document.querySelector('.message-rules');
+const messageWin = document.querySelector('.message-win');
+const messageLose = document.querySelector('.message-lose');
 const cells = document.querySelectorAll('.field-cell');
-let shouldAddNewTile = false;
+const gameScore = document.querySelector('.game-score');
+
+let checkMove = false;
 
 let emptyCells = [];
 let filledCells = [];
@@ -29,17 +33,19 @@ button.addEventListener('click', () => {
 document.addEventListener('keydown', keydownEvent => {
   const key = keydownEvent.key;
 
-  shouldAddNewTile = false;
+  checkMove = false;
 
   if (arrows.includes(key)) {
-    if (button.classList.contains('start')
-    && !messageRules.classList.contains('hidden')) {
-      setGameRestart();
-    }
-
     handleArrowKeyAction(key);
 
-    if (shouldAddNewTile) {
+    // checkAvailableMoves();
+
+    if (checkMove) {
+      if (button.classList.contains('start')
+      && !messageRules.classList.contains('hidden')) {
+        setGameRestart();
+      }
+
       addNewTile();
     }
   }
@@ -51,6 +57,7 @@ function startGame() {
 
   messageStart.classList.add('hidden');
   messageRules.classList.remove('hidden');
+  messageLose.classList.add('hidden');
 
   for (let i = 0; i < 2; i++) {
     addNewTile();
@@ -61,6 +68,8 @@ function restartGame() {
   filledCells.forEach(clearCell);
   updateCellLists();
   setGameStart();
+
+  messageLose.classList.add('hidden');
 }
 
 function addNewTile() {
@@ -80,6 +89,13 @@ function handleArrowKeyAction(key) {
 
   for (const cell of cellsToMove) {
     moveTile(cell, direction);
+  }
+
+  // if (emptyCells.length === 0) {
+  //   checkAvailableMoves()
+  // }
+  if (emptyCells.length === 0 && !checkAvailableMergers()) {
+    messageLose.classList.remove('hidden');
   }
 }
 
@@ -119,23 +135,22 @@ function setGameRestart() {
 function moveTile(cell, direction) {
   const cellIndex = [...cells].indexOf(cell);
   let emptyCell = cell;
-  const isVerticalMove = Math.abs(direction) === 4;
-  const maxIndex = isVerticalMove
-    ? [...cells].length - 1
-    : (Math.floor(cellIndex / 4) + 1) * 4 - 1;
-  const minIndex = isVerticalMove ? 0 : Math.floor(cellIndex / 4) * 4;
   let merged = false;
 
-  for (let j = cellIndex + direction; j >= minIndex && j <= maxIndex; j += direction) {
-    if (cell.textContent === [...cells][j].textContent) {
-      mergeTiles(cell, [...cells][j]);
+  for (let j = getNextCellIndex(cellIndex, direction);
+    j !== null;
+    j = getNextCellIndex(j, direction)) {
+    const nextCell = cells[j];
+
+    if (cell.textContent === nextCell.textContent) {
+      mergeTiles(cell, nextCell);
       merged = true;
       updateCellLists();
       clearCell(cell);
-      shouldAddNewTile = true;
+      checkMove = true;
       break;
-    } else if (emptyCells.includes([...cells][j])) {
-      emptyCell = [...cells][j];
+    } else if (emptyCells.includes(nextCell)) {
+      emptyCell = nextCell;
     } else {
       break;
     }
@@ -145,7 +160,7 @@ function moveTile(cell, direction) {
     emptyCell.classList.add(cell.classList[1]);
     emptyCell.textContent = cell.textContent;
     clearCell(cell);
-    shouldAddNewTile = true;
+    checkMove = true;
     updateCellLists();
   }
 }
@@ -160,4 +175,40 @@ function mergeTiles(cell, nextCell) {
 
   clearCell(cell);
   updateCellLists();
+
+  gameScore.textContent = +gameScore.textContent + newNumber;
+
+  if (gameScore.textContent === 2048) {
+    messageWin.classList.toggle('hidden');
+  }
+}
+
+function checkAvailableMergers() {
+  for (const cell of filledCells) {
+    for (const arrow of arrows) {
+      const direction = DIRECTIONS[arrow];
+      const cellIndex = [...cells].indexOf(cell);
+      const nextCellIndex = getNextCellIndex(cellIndex, direction);
+
+      if (nextCellIndex !== null
+        && cell.textContent === cells[nextCellIndex].textContent) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function getNextCellIndex(cellIndex, direction) {
+  const isVerticalMove = Math.abs(direction) === 4;
+  const maxIndex = isVerticalMove
+    ? cells.length - 1
+    : (Math.floor(cellIndex / 4) + 1) * 4 - 1;
+  const minIndex = isVerticalMove ? 0 : Math.floor(cellIndex / 4) * 4;
+  const nextCellIndex = cellIndex + direction;
+
+  return nextCellIndex >= minIndex && nextCellIndex <= maxIndex
+    ? nextCellIndex
+    : null;
 }
