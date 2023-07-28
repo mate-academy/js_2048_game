@@ -1,82 +1,87 @@
+@import "light-theme";
+
+// if you want to see the dark theme, import 'dark-theme' below:
+// @import 'dark-theme';
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: $backgroundbody;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: $background-ceil;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: $fontcolorsecond-ceil;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: $ceil-2-bg;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: $ceil-4-bg;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: $ceil-8-bg;
+    color: $fontcolor-ceil;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: $ceil-16-bg;
+    color: $fontcolor-ceil;
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    background: $ceil-32-bg;
+    color: $fontcolor-ceil;
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    background: $ceil-64-bg;
+    color: $fontcolor-ceil;
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    background: $ceil-128-bg;
+    color: $fontcolor-ceil;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: $ceil-256-bg;
+    color: $fontcolor-ceil;
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    background: $ceil-512-bg;
+    color: $fontcolor-ceil;
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    background: $ceil-1024-bg;
+    color: $fontcolor-ceil;
   }
 
   &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    background: $ceil-2048-bg;
+    color: $fontcolor-ceil;
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: $bg-gamefield;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -91,8 +96,8 @@ body {
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: $ceil-2048-bg;
+  color: $fontcolor-ceil;
   width: 75px;
   height: 75px;
   font-size: 24px;
@@ -109,11 +114,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: $background-ceil;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: $fontcolorsecond-ceil;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -127,7 +132,7 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: $fontcolor-ceil;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
@@ -138,27 +143,27 @@ h1 {
 }
 
 .start {
-  background: #1dae28;
+  background: $btn-start;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: $btn-start-hover;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: $btn-restart;
 
   &:hover {
-    background: #f87474;
+    background: $btn-restart-hover;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: $background-ceil;
+  color: $fontcolorsecond-ceil;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
@@ -177,8 +182,8 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: $ceil-2048-bg;
+  color: $fontcolor-ceil;
 }
 
 .message-container {
