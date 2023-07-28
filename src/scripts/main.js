@@ -6,22 +6,19 @@ const lose = document.querySelector('.message-lose');
 const win = document.querySelector('.message-win');
 const rows = document.querySelectorAll('tr');
 const allCells = document.querySelectorAll('td');
+const score = document.querySelector('.game-score');
 let buttonClicked = false;
+let gameOver = false;
+let scoreValue = 0;
 
 button.addEventListener('click', () => {
   buttonClicked = true;
   message.classList.add('hidden');
-
-  if (!buttonClicked) {
-    newCell();
-    newCell();
-  } else {
-    reset();
-  }
+  reset();
 });
 
 function isGameOver() {
-  let gameOver = true;
+  gameOver = true;
 
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
@@ -65,20 +62,22 @@ function isGameOver() {
   }
 }
 
-function newCell() {
+function newCell(x = 1) {
   const xPosition = Math.floor(Math.random() * 4);
   const yPosition = Math.floor(Math.random() * 4);
 
-  if (!rows[xPosition].cells[yPosition].textContent) {
-    rows[xPosition].cells[yPosition].textContent = TwoOrFour();
-    classForCell();
-    isGameOver();
-  } else {
-    newCell();
+  for (let i = 0; i < x; i++) {
+    if (!rows[xPosition].cells[yPosition].textContent) {
+      rows[xPosition].cells[yPosition].textContent = twoOrFour();
+      classForCell();
+      isGameOver();
+    } else {
+      newCell();
+    }
   }
 }
 
-function TwoOrFour() {
+function twoOrFour() {
   if (Math.random() <= 0.1) {
     return 4;
   } else {
@@ -91,12 +90,12 @@ function reset() {
   score.textContent = scoreValue;
   win.classList.add('hidden');
   lose.classList.add('hidden');
+  gameOver = false;
 
   allCells.forEach((cell) => {
     cell.textContent = '';
   });
-  newCell();
-  newCell();
+  newCell(2);
 }
 
 function classForCell() {
@@ -109,23 +108,20 @@ function classForCell() {
   });
 }
 
-const score = document.querySelector('.game-score');
-let scoreValue = 0;
-
 document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' && buttonClicked) {
+  if (e.key === 'ArrowRight' && buttonClicked && !gameOver) {
     sortCellsX(rows, 3, -1);
   };
 
-  if (e.key === 'ArrowLeft' && buttonClicked) {
+  if (e.key === 'ArrowLeft' && buttonClicked && !gameOver) {
     sortCellsX(rows, 0, 1);
   };
 
-  if (e.key === 'ArrowUp' && buttonClicked) {
+  if (e.key === 'ArrowUp' && buttonClicked && !gameOver) {
     sortCellsY(rows, 0, 1);
   };
 
-  if (e.key === 'ArrowDown' && buttonClicked) {
+  if (e.key === 'ArrowDown' && buttonClicked && !gameOver) {
     sortCellsY(rows, 3, -1);
   };
 });
