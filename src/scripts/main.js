@@ -157,10 +157,10 @@ function sortCellsY(array, index, y) {
       } else if (checkCell === nextCell && nextCell) {
         array[indexCellToCheck].children[i].textContent = Number(nextCell) * 2;
         array[j + y].children[i].textContent = '';
-        scoreValue += Number(checkCell);
+        scoreValue += Number(array[indexCellToCheck].children[i].textContent);
         score.textContent = scoreValue;
 
-        if (Number(checkCell) === 2048) {
+        if (Number(array[indexCellToCheck].children[i].textContent) === 2048) {
           win.classList.remove('hidden');
         }
         indexCellToCheck += y;
