@@ -1,3 +1,7 @@
+:root {
+  --cell-size: 75px;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -12,8 +16,8 @@ body {
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: var(--cell-size);
+  height: var(--cell-size);
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
