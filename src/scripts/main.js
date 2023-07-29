@@ -1,105 +1,128 @@
 'use strict';
 
-function getRandonCell() {
-  let randomCellIndex;
-
-  do {
-    randomCellIndex = Math.floor(Math.random() * 16);
-  } while (fields[randomCellIndex].classList.length > 1);
-
-  return randomCellIndex;
-}
-
-function appearingTwoCells() {
-  const firstIndex = getRandonCell();
-  const firstField = fields[firstIndex];
-
-  firstField.textContent = `${number1}`;
-
-  if (number1 === '2') {
-    firstField.classList.add('field-cell--2');
-  } else {
-    firstField.classList.add('field-cell--4');
-  }
-
-  const secondIndex = getRandonCell();
-  const secondField = fields[secondIndex];
-
-  secondField.textContent = `${number2}`;
-
-  if (number2 === '2') {
-    secondField.classList.add('field-cell--2');
-  } else {
-    secondField.classList.add('field-cell--4');
-  }
-}
+const table = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 
 const fields = document.querySelectorAll('.field-cell');
-const startButton = document.querySelector('.button');
+const button = document.querySelector('.button');
 
-const arrOfFirstNumbers = ['2', '2', '2', '2', '2', '4', '2', '2', '2', '2'];
-const randomIndex1 = Math.floor(Math.random() * 10);
-const randomIndex2 = Math.floor(Math.random() * 10);
-const number1 = arrOfFirstNumbers[randomIndex1];
-const number2 = arrOfFirstNumbers[randomIndex2];
+function updateGameFields() {
+  for (let i = 0; i < fields.length; i++) {
+    const indexRow = Math.floor(i / 4);
+    const indexCol = i - (indexRow * 4);
+    const tableValue = table[indexRow][indexCol];
 
-startButton.addEventListener('click', () => {
-  startButton.textContent = 'restart';
-  startButton.classList.add('restart');
+    fields[i].textContent = tableValue;
 
-  appearingTwoCells();
+    if (tableValue !== 0) {
+      fields[i].classList = ['field-cell'];
+      fields[i].classList.add(`field-cell--${tableValue}`);
+    }
+  }
+}
+
+updateGameFields();
+
+function appearingOneRandomCell() {
+  updateGameFields();
+
+  const fieldIndex = getRandonCell();
+  const rowIndex = Math.floor(fieldIndex / 4);
+  const colIndex = fieldIndex - (rowIndex * 4);
+
+  const firstRandomNum = Math.floor(Math.random() * 10);
+
+  if (firstRandomNum === 4) {
+    table[rowIndex][colIndex] = 4;
+  } else {
+    table[rowIndex][colIndex] = 2;
+  }
+
+  updateGameFields();
+}
+
+function restart() {
+  updateGameFields();
+
+  for (let i = 0; i < fields.length; i++) {
+    const rowIndex = Math.floor(i / 4);
+    const colIndex = i - (rowIndex * 4);
+
+    table[rowIndex][colIndex] = 0;
+  }
+
+  updateGameFields();
+}
+
+button.addEventListener('click', () => {
+  if (button.classList.contains('start')) {
+    button.classList.remove('start');
+    button.classList.add('restart');
+    button.textContent = 'restart';
+
+    appearingOneRandomCell();
+    appearingOneRandomCell();
+  } else {
+    button.classList.remove('restart');
+    button.classList.add('start');
+    button.textContent = 'start';
+
+    restart();
+  }
 });
 
-// addEventListener('keydown', (event) => {
-//   if (event.code === 'ArrowLeft') {
-//     console.log('left');
-//   }
+function getRandonCell() {
+  updateGameFields();
 
-//   if (event.code === 'ArrowRight') {
-//     console.log('right');
-//   }
+  let randomIndex = Math.floor(Math.random() * 15);
+  const indexRow = Math.floor(randomIndex / 4);
+  const indexCol = randomIndex - (indexRow * 4);
 
-//   if (event.code === 'ArrowUp') {
-//     console.log('up');
-//   }
+  while (
+    table[indexRow][indexCol] !== 0
+  ) {
+    randomIndex = Math.floor(Math.random() * 15);
+  }
 
-//   if (event.code === 'ArrowDown') {
-//     console.log('down');
-//   }
-// });
+  return randomIndex;
+}
 
-// const table = [
-//   [0, 0, 0, 0],
-//   [0, 0, 0, 0],
-//   [0, 0, 0, 0],
-//   [0, 0, 0, 0],
-// ];
+function moveLeft() {
+  console.log('left');
+  console.log(table);
+  appearingOneRandomCell();
+}
 
-// function tableAddValue(index) {
-//   switch (index) {
-//     case 0:
-//       table[0][0] = 2;
+function moveRight() {
+  console.log('right');
+}
 
-//       break;
-//     case 1:
-//       table[0][1] = 2;
+function moveUp() {
+  console.log('up');
+}
 
-//       break;
-//     case 2:
-//       table[0][2] = 2;
+function moveDown() {
+  console.log('down');
+}
 
-//       break;
-//     case 3:
-//       table[0][3] = 2;
+addEventListener('keydown', (event) => {
+  if (event.code === 'ArrowLeft') {
+    moveLeft();
+  }
 
-//       break;
-//     case 4:
-//       table[1][0] = 2;
+  if (event.code === 'ArrowRight') {
+    moveRight();
+  }
 
-//       break;
-//   }
+  if (event.code === 'ArrowUp') {
+    moveUp();
+  }
 
-//   console.log(table);
-// }
-
-// tableAddValue(2);
+  if (event.code === 'ArrowDown') {
+    moveDown();
+  }
+});
