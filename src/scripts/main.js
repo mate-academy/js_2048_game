@@ -92,37 +92,37 @@ function getRandonCell() {
 }
 
 function moveLeft() {
-  console.log('left');
-  console.log(table);
+  // console.log('left');
+  // console.log(table);
   appearingOneRandomCell();
 }
 
 function moveRight() {
-  console.log('right');
+  // console.log('right');
 }
 
 function moveUp() {
-  console.log('up');
+  // console.log('up');
 }
 
 function moveDown() {
-  console.log('down');
+  // console.log('down');
 }
 
-addEventListener('keydown', (event) => {
-  if (event.code === 'ArrowLeft') {
+addEventListener('keydown', (eventParam) => {
+  if (eventParam.code === 'ArrowLeft') {
     moveLeft();
   }
 
-  if (event.code === 'ArrowRight') {
+  if (eventParam.code === 'ArrowRight') {
     moveRight();
   }
 
-  if (event.code === 'ArrowUp') {
+  if (eventParam.code === 'ArrowUp') {
     moveUp();
   }
 
-  if (event.code === 'ArrowDown') {
+  if (eventParam.code === 'ArrowDown') {
     moveDown();
   }
 });
