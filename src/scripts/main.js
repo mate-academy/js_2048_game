@@ -1,3 +1,7 @@
 'use strict';
 
-// write your code here
+const Game = require('./Game');
+
+const game = new Game();
+
+game.load();
