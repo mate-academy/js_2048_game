@@ -192,11 +192,15 @@ button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
     gameStart();
   } else {
-    button.classList.remove('restart');
-    button.classList.add('start');
-    button.textContent = 'Start';
+    // button.classList.remove('restart');
+    // button.classList.add('start');
+    // button.textContent = 'Start';
 
     restart();
+    updateGameFields();
+    appearingOneRandomCell();
+    updateGameFields();
+    appearingOneRandomCell();
     updateGameFields();
   }
 });
