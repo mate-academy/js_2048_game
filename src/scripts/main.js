@@ -149,7 +149,11 @@ function updateGameFields() {
     const indexCol = i - (indexRow * 4);
     const tableValue = table[indexRow][indexCol];
 
-    fields[i].textContent = tableValue;
+    if (tableValue === 0) {
+      fields[i].textContent = '';
+    } else {
+      fields[i].textContent = tableValue;
+    }
 
     fields[i].classList = ['field-cell'];
 
@@ -159,19 +163,17 @@ function updateGameFields() {
   }
 }
 
-updateGameFields();
+// updateGameFields();
 
 function appearingOneRandomCell() {
-  const fieldIndex = getRandonCell();
-  const rowIndex = Math.floor(fieldIndex / 4);
-  const colIndex = fieldIndex - (rowIndex * 4);
+  const [rowIndex, columnIndex] = getRandonCell();
 
   const firstRandomNum = Math.floor(Math.random() * 10);
 
   if (firstRandomNum === 4) {
-    table[rowIndex][colIndex] = 4;
+    table[rowIndex][columnIndex] = 4;
   } else {
-    table[rowIndex][colIndex] = 2;
+    table[rowIndex][columnIndex] = 2;
   }
 }
 
@@ -188,15 +190,7 @@ function restart() {
 
 button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
-    button.classList.remove('start');
-    button.classList.add('restart');
-    button.textContent = 'restart';
-
-    appearingOneRandomCell();
-    updateGameFields();
-    appearingOneRandomCell();
-    updateGameFields();
-    // console.log(table);
+    gameStart();
   } else {
     button.classList.remove('restart');
     button.classList.add('start');
@@ -204,27 +198,21 @@ button.addEventListener('click', () => {
 
     restart();
     updateGameFields();
-    // console.log(table);
   }
 });
 
 function getRandonCell() {
-  const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+  const emptyCells = [];
 
-  for (let i = 15; i >= 0; i--) {
-    const randomIndex = Math.floor(Math.random() * i);
+  table.forEach((row, rowIndex) => {
+    row.forEach((cell, columnIndex) => {
+      if (cell === 0) {
+        emptyCells.push([rowIndex, columnIndex]);
+      }
+    });
+  });
 
-    const value = arr[randomIndex];
-
-    const indexRow = Math.floor(value / 4);
-    const indexCol = value - (indexRow * 4);
-
-    if (table[indexRow][indexCol] === 0) {
-      return value;
-    } else {
-      arr.splice(randomIndex, 1);
-    }
-  }
+  return emptyCells[Math.floor(Math.random() * (emptyCells.length - 1))];
 }
 
 function left(paramArr) {
@@ -438,5 +426,20 @@ gameTable.addEventListener('touchend', (eventPar) => {
   }
 });
 
+document.addEventListener('touchmove', (eventPar) => {
+  eventPar.preventDefault();
+});
 // document.addEventListener('keydown', event => console.log(event.key));
-restart();
+
+function gameStart() {
+  button.classList.remove('start');
+  button.classList.add('restart');
+  button.textContent = 'restart';
+
+  appearingOneRandomCell();
+  updateGameFields();
+  appearingOneRandomCell();
+  updateGameFields();
+}
+
+// gameStart();
