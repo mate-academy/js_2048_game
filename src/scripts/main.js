@@ -31,7 +31,7 @@ function getCellValue() {
 }
 
 function newCell() {
-  if (clearCells.length === undefined) {
+  if (!clearCells.length) {
     return;
   }
 
@@ -79,18 +79,18 @@ button.addEventListener('click', () => {
   }
 });
 
-function canBeMarged() {
+function canBeMerged() {
   const wholeField = [...cellsInRow, ...columns];
 
-  for (const line of wholeField) {
+  return wholeField.forEach((line) => {
     for (let i = 0; i < 3; i++) {
       if (line[i].innerText === line[i + 1].innerText) {
         return true;
       }
     }
-  }
 
-  return false;
+    return false;
+  });
 }
 
 let flipped = false;
@@ -151,35 +151,40 @@ function deleteElement(element) {
 }
 
 function getDirection(direction) {
-  if (!clearCells.length && !canBeMarged()) {
+  if (!clearCells.length && !canBeMerged()) {
     loseMessage.classList.remove('hidden');
     looseSound.currentTime = 0;
     looseSound.play();
   }
 
+  const up = 'ArrowUp';
+  const down = 'ArrowDown';
+  const right = 'ArrowRight';
+  const left = 'ArrowLeft';
+
   switch (direction) {
-    case 'ArrowUp':
-      for (const column of columns) {
+    case up:
+      columns.forEach((column) => {
         flipLine([...column].reverse());
-      }
+      });
       break;
 
-    case 'ArrowDown':
-      for (const column of columns) {
+    case down:
+      columns.forEach((column) => {
         flipLine(column);
-      }
+      });
       break;
 
-    case 'ArrowRight':
-      for (const row of cellsInRow) {
+    case right:
+      cellsInRow.forEach((row) => {
         flipLine(row);
-      }
+      });
       break;
 
-    case 'ArrowLeft':
-      for (const row of cellsInRow) {
+    case left:
+      cellsInRow.forEach((row) => {
         flipLine([...row].reverse());
-      }
+      });
       break;
   }
 
@@ -188,7 +193,7 @@ function getDirection(direction) {
   });
 }
 
-document.addEventListener('keyup', (evnt) => {
+document.body.addEventListener('keydown', (evnt) => {
   const arrowDirections = [
     'ArrowUp',
     'ArrowDown',
