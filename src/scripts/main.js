@@ -399,5 +399,44 @@ document.addEventListener('keydown', eventParam => {
   }
 });
 
+const gameTable = document.querySelector('.game-field');
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+gameTable.addEventListener('touchstart', (eventPar) => {
+  touchStartX = eventPar.touches[0].clientX;
+  touchStartY = eventPar.touches[0].clientY;
+});
+
+gameTable.addEventListener('touchend', (eventPar) => {
+  const touchEndX = eventPar.changedTouches[0].clientX;
+  const touchEndY = eventPar.changedTouches[0].clientY;
+  const touchDiffX = touchEndX - touchStartX;
+  const touchDiffY = touchEndY - touchStartY;
+
+  if (Math.abs(touchDiffX) > Math.abs(touchDiffY)) {
+    if (touchDiffX > 50) {
+      // Swipe right
+      moveRight();
+      loseCheck();
+    } else if (touchDiffX < -50) {
+      // Swipe left
+      moveLeft();
+      loseCheck();
+    }
+  } else {
+    if (touchDiffY > 50) {
+      // Swipe down
+      moveDown();
+      loseCheck();
+    } else if (touchDiffY < -50) {
+      // Swipe up
+      moveUp();
+      loseCheck();
+    }
+  }
+});
+
 // document.addEventListener('keydown', event => console.log(event.key));
 restart();
