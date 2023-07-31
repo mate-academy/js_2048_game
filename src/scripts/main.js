@@ -39,8 +39,10 @@ document.addEventListener('keydown', keydownEvent => {
     handleArrowKeyAction(key);
 
     if (checkMove) {
-      if (button.classList.contains('start')
-      && !messageRules.classList.contains('hidden')) {
+      const isStartButton = button.classList.contains('start');
+      const isMessageHidden = messageRules.classList.contains('hidden');
+
+      if (isStartButton && !isMessageHidden) {
         setGameRestart();
       }
 
@@ -188,9 +190,9 @@ function checkAvailableMergers() {
       const direction = DIRECTIONS[arrow];
       const cellIndex = [...cells].indexOf(cell);
       const nextCellIndex = getNextCellIndex(cellIndex, direction);
+      const nextCell = cells[nextCellIndex];
 
-      if (nextCellIndex !== null
-        && cell.textContent === cells[nextCellIndex].textContent) {
+      if (nextCellIndex !== null && cell.textContent === nextCell.textContent) {
         return true;
       }
     }
@@ -200,11 +202,17 @@ function checkAvailableMergers() {
 }
 
 function getNextCellIndex(cellIndex, direction) {
-  const isVerticalMove = Math.abs(direction) === 4;
+  const ROW_SIZE = 4;
+  const DIRECTION_Y = 4;
+  const DIRECTION_X = 1;
+
+  const isVerticalMove = Math.abs(direction) === DIRECTION_Y;
   const maxIndex = isVerticalMove
     ? cells.length - 1
-    : (Math.floor(cellIndex / 4) + 1) * 4 - 1;
-  const minIndex = isVerticalMove ? 0 : Math.floor(cellIndex / 4) * 4;
+    : (Math.floor(cellIndex / ROW_SIZE) + DIRECTION_X) * ROW_SIZE - DIRECTION_X;
+  const minIndex = isVerticalMove
+    ? 0
+    : Math.floor(cellIndex / ROW_SIZE) * ROW_SIZE;
   const nextCellIndex = cellIndex + direction;
 
   return nextCellIndex >= minIndex && nextCellIndex <= maxIndex
