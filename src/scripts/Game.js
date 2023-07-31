@@ -36,15 +36,7 @@ class Game {
     };
 
     const getRandomValue = (min, max) => {
-      if (min > max) {
-        return 2 ** min;
-      }
-
-      const randomExponent = Math.floor(
-        Math.random() * (Math.log2(max) - Math.log2(min) + 1) + Math.log2(min)
-      );
-
-      return 2 ** randomExponent;
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
     const onLeft = () => {
@@ -88,9 +80,7 @@ class Game {
         return;
       }
 
-      const newValue = getRandomValue(
-        this.START_VALUE, maxValue
-      );
+      const newValue = this.START_VALUE * getRandomValue(1, 2);
 
       this.field.addTile(newValue);
     };
