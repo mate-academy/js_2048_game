@@ -22,7 +22,7 @@ let clearCells = [...cells];
 let started = false;
 let rotated = false;
 
-function randomCellFill() {
+const randomCellFill = () => {
   if (!clearCells.length) {
     return;
   }
@@ -35,7 +35,7 @@ function randomCellFill() {
   randomCell.innerText = randomValue;
 
   clearCells.splice(clearCells.indexOf(randomCell), 1);
-}
+};
 
 const start = () => {
   messageStart.style = 'display: none;';
@@ -62,7 +62,7 @@ const restart = () => {
   randomCellFill();
 };
 
-function isMergePossible() {
+const isMergePossible = () => {
   const wholeField = [...cellsInRow, ...columns];
 
   for (const line of wholeField) {
@@ -72,15 +72,15 @@ function isMergePossible() {
       }
     }
   }
-}
+};
 
-function deleteCell(element) {
+const deleteCell = (element) => {
   element.innerText = '';
   element.className = 'field-cell';
   clearCells.push(element);
-}
+};
 
-function cellMerge(curr, prev) {
+const cellMerge = (curr, prev) => {
   const value = curr.innerText * 2;
 
   curr.innerText = value;
@@ -94,40 +94,40 @@ function cellMerge(curr, prev) {
   if (value === 2048) {
     messageWin.classList.remove('hidden');
   }
-}
+};
 
-function rotateCell(curr, prev) {
+const rotateCell = (curr, prev) => {
   curr.innerText = prev.innerText;
   curr.className = prev.className;
   clearCells.splice(clearCells.indexOf(curr), 1);
   deleteCell(prev);
-}
+};
 
-function arrowUp() {
+const arrowUp = () => {
   for (const column of columns) {
     rotateCells([...column].reverse());
   }
-}
+};
 
-function arrowDown() {
+const arrowDown = () => {
   for (const column of columns) {
     rotateCells(column);
   }
-}
+};
 
-function arrowRight() {
+const arrowRight = () => {
   for (const row of cellsInRow) {
     rotateCells(row);
   }
-}
+};
 
-function arrowLeft() {
+const arrowLeft = () => {
   for (const row of cellsInRow) {
     rotateCells([...row].reverse());
   }
-}
+};
 
-function arrowMove(direction) {
+const arrowMove = (direction) => {
   if (!clearCells.length && !isMergePossible()) {
     messageLose.classList.remove('hidden');
   }
@@ -145,23 +145,24 @@ function arrowMove(direction) {
     case 'ArrowLeft':
       arrowLeft();
       break;
+    default: break;
   }
 
   cells.forEach(cell => {
     cell.removeAttribute('data-blocked');
   });
-}
+};
 
-function rotateCells(line) {
+const rotateCells = (line) => {
   for (let i = 3; i > 0; i--) {
-    const moveAllowed = clearCells.includes(line[i])
+    const isMoveAllowed = clearCells.includes(line[i])
       && !clearCells.includes(line[i - 1]);
 
     const mergeAllowed = line[i].innerText === line[i - 1].innerText
       && line[i].innerText.length
       && !line[i - 1].dataset.blocked;
 
-    if ((mergeAllowed || moveAllowed) && !rotated) {
+    if ((mergeAllowed || isMoveAllowed) && !rotated) {
       rotated = true;
     }
 
@@ -170,12 +171,12 @@ function rotateCells(line) {
       rotateCells(line);
     }
 
-    if (moveAllowed) {
+    if (isMoveAllowed) {
       rotateCell(line[i], line[i - 1]);
       rotateCells(line);
     }
   }
-}
+};
 
 document.addEventListener('keydown', (evt) => {
   const arrowDirections = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
