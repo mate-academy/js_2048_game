@@ -163,8 +163,6 @@ function updateGameFields() {
   }
 }
 
-// updateGameFields();
-
 function appearingOneRandomCell() {
   const [rowIndex, columnIndex] = getRandonCell();
 
@@ -192,10 +190,6 @@ button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
     gameStart();
   } else {
-    // button.classList.remove('restart');
-    // button.classList.add('start');
-    // button.textContent = 'Start';
-
     restart();
     updateGameFields();
     appearingOneRandomCell();
@@ -269,12 +263,12 @@ function right(paramArr) {
   paramArr[3] = mergedArr[3] || 0;
 }
 
-function moveLeft() {
+function moveHorizontally(directionFunctionName) {
   const json = JSON.stringify(table);
   const copyTable = JSON.parse(json);
 
   for (const row of table) {
-    left(row);
+    directionFunctionName(row);
   }
 
   for (let i = 0; i < 16; i++) {
@@ -293,60 +287,14 @@ function moveLeft() {
   }
 }
 
-function moveRight() {
-  const json = JSON.stringify(table);
-  const copyTable = JSON.parse(json);
-
-  for (const row of table) {
-    right(row);
-  }
-
-  for (let i = 0; i < 16; i++) {
-    const rowIndex = Math.floor(i / 4);
-    const colIndex = i - (rowIndex * 4);
-
-    const tableValue = table[rowIndex][colIndex];
-    const copyTableValue = copyTable[rowIndex][colIndex];
-
-    if (tableValue !== copyTableValue) {
-      appearingOneRandomCell();
-      updateGameFields();
-
-      break;
-    }
-  }
-}
-
-function moveUp() {
+function moveVertically(directionFunctionName) {
   const json = JSON.stringify(table);
   const copyTable = JSON.parse(json);
 
   for (let j = 0; j < 4; j++) {
-    up([table[0][j], table[1][j], table[2][j], table[3][j]], j);
-  }
-
-  for (let i = 0; i < 16; i++) {
-    const rowIndex = Math.floor(i / 4);
-    const colIndex = i - (rowIndex * 4);
-
-    const tableValue = table[rowIndex][colIndex];
-    const copyTableValue = copyTable[rowIndex][colIndex];
-
-    if (tableValue !== copyTableValue) {
-      appearingOneRandomCell();
-      updateGameFields();
-
-      break;
-    }
-  }
-}
-
-function moveDown() {
-  const json = JSON.stringify(table);
-  const copyTable = JSON.parse(json);
-
-  for (let j = 0; j < 4; j++) {
-    down([table[0][j], table[1][j], table[2][j], table[3][j]], j);
+    directionFunctionName(
+      [table[0][j], table[1][j], table[2][j], table[3][j]], j
+    );
   }
 
   for (let i = 0; i < 16; i++) {
@@ -367,26 +315,22 @@ function moveDown() {
 
 document.addEventListener('keydown', eventParam => {
   if (eventParam.key === 'ArrowLeft') {
-    moveLeft();
-    // console.log('left');
+    moveHorizontally(left);
     loseCheck();
   }
 
   if (eventParam.key === 'ArrowRight') {
-    moveRight();
-    // console.log('right');
+    moveHorizontally(right);
     loseCheck();
   }
 
   if (eventParam.key === 'ArrowUp') {
-    moveUp();
-    // console.log('up');
+    moveVertically(up);
     loseCheck();
   }
 
   if (eventParam.key === 'ArrowDown') {
-    moveDown();
-    // console.log('down');
+    moveVertically(down);
     loseCheck();
   }
 });
@@ -395,6 +339,14 @@ const gameTable = document.querySelector('.game-field');
 
 let touchStartX = 0;
 let touchStartY = 0;
+
+document.addEventListener('touchmove', (eventPar) => {
+  eventPar.preventDefault();
+});
+
+gameTable.addEventListener('touchmove', (eventPar) => {
+  eventPar.preventDefault();
+});
 
 gameTable.addEventListener('touchstart', (eventPar) => {
   touchStartX = eventPar.touches[0].clientX;
@@ -409,22 +361,18 @@ gameTable.addEventListener('touchend', (eventPar) => {
 
   if (Math.abs(touchDiffX) > Math.abs(touchDiffY)) {
     if (touchDiffX > 50) {
-      // Swipe right
-      moveRight();
+      moveHorizontally(right);
       loseCheck();
     } else if (touchDiffX < -50) {
-      // Swipe left
-      moveLeft();
+      moveHorizontally(left);
       loseCheck();
     }
   } else {
     if (touchDiffY > 50) {
-      // Swipe down
-      moveDown();
+      moveVertically(down);
       loseCheck();
     } else if (touchDiffY < -50) {
-      // Swipe up
-      moveUp();
+      moveVertically(up);
       loseCheck();
     }
   }
@@ -433,7 +381,6 @@ gameTable.addEventListener('touchend', (eventPar) => {
 document.addEventListener('touchmove', (eventPar) => {
   eventPar.preventDefault();
 });
-// document.addEventListener('keydown', event => console.log(event.key));
 
 function gameStart() {
   button.classList.remove('start');
@@ -445,5 +392,3 @@ function gameStart() {
   appearingOneRandomCell();
   updateGameFields();
 }
-
-// gameStart();
