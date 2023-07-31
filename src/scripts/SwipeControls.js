@@ -27,6 +27,7 @@ class SwipeControls extends Controls {
           } else {
             this.onLeft();
           }
+          this.onAction();
         }
       } else {
         // Minimum threshold for a valid vertical swipe
@@ -36,10 +37,9 @@ class SwipeControls extends Controls {
           } else {
             this.onUp();
           }
+          this.onAction();
         }
       }
-
-      this.onAction();
     });
   }
 }

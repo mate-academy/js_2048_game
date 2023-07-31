@@ -9,29 +9,38 @@ class Controls {
     this.onDown = onDown;
     this.onAction = onAction;
 
+    this.KEYS = {
+      LEFT: 'ArrowLeft',
+      RIGHT: 'ArrowRight',
+      UP: 'ArrowUp',
+      DOWN: 'ArrowDown',
+    };
+
     document.addEventListener('keydown', (keyboardEvent) => {
       if (!this.enabled) {
         return;
       }
 
       switch (keyboardEvent.key) {
-        case 'ArrowLeft':
+        case this.KEYS.LEFT:
           this.onLeft();
           break;
-        case 'ArrowRight':
+        case this.KEYS.RIGHT:
           this.onRight();
           break;
-        case 'ArrowUp':
+        case this.KEYS.UP:
           this.onUp();
           break;
-        case 'ArrowDown':
+        case this.KEYS.DOWN:
           this.onDown();
           break;
         default:
           break;
       }
 
-      this.onAction();
+      if (Object.values(this.KEYS).includes(keyboardEvent.key)) {
+        this.onAction();
+      }
     });
   }
 }

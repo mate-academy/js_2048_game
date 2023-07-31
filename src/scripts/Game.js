@@ -10,7 +10,6 @@ class Game {
   constructor() {
     this.START_VALUE = 2;
     this.END_VALUE = 2048;
-    this.DIVIDER = 2;
 
     this.MESSAGES = {
       WIN: 'win',
@@ -90,7 +89,7 @@ class Game {
       }
 
       const newValue = getRandomValue(
-        this.START_VALUE, maxValue / this.DIVIDER
+        this.START_VALUE, maxValue
       );
 
       this.field.addTile(newValue);

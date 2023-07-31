@@ -64,7 +64,6 @@ class Field {
         } else if (cells[i].isEmpty && !cells[j].isEmpty) {
           cells[i].setValue(cells[j].value);
           cells[j].clear();
-          i++;
         }
       }
     }
