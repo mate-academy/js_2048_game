@@ -1,3 +1,9 @@
 'use strict';
 
-// write your code here
+const Game = require('./Game');
+
+function initializeGame() {
+  return new Game();
+}
+
+initializeGame();
