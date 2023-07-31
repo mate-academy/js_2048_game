@@ -103,10 +103,6 @@ class Game {
     this.controls = new SwipeControls(onLeft, onRight, onUp, onDown, onAction);
     this.message.setMessage(this.MESSAGES.START);
   }
-
-  load() {
-    return this;
-  }
 }
 
 module.exports = Game;

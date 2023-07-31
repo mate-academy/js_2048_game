@@ -2,6 +2,8 @@
 
 const Game = require('./Game');
 
-const game = new Game();
+function initializeGame() {
+  return new Game();
+}
 
-game.load();
+initializeGame();

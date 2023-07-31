@@ -8,65 +8,82 @@ class Field {
 
     const rows = element.querySelectorAll('.field-row');
 
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i].querySelectorAll('.field-cell');
+    rows.forEach((row) => {
+      const cellElements = row.querySelectorAll('.field-cell');
+      const rowCells = [...cellElements].map((cell) => new Cell(cell));
 
-      this.cells.push([...row].map((cell) => new Cell(cell)));
-    }
+      this.cells.push(rowCells);
+    });
   }
 
   getMaxValue() {
-    let maxValue = 0;
+    return this.cells.reduce((maxValue, row) => {
+      const rowMaxValue = row.reduce((rowMax, cell) => {
+        return Math.max(rowMax, cell.value);
+      }, 0);
 
-    for (let row = 0; row < this.cells.length; row++) {
-      for (let column = 0; column < this.cells[row].length; column++) {
-        const cellValue = this.cells[row][column].value;
-
-        if (cellValue > maxValue) {
-          maxValue = cellValue;
-        }
-      }
-    }
-
-    return maxValue;
+      return Math.max(maxValue, rowMaxValue);
+    }, 0);
   }
 
   hasAvailableMoves() {
-    for (let row = 0; row < this.cells.length; row++) {
-      for (let column = 0; column < this.cells[row].length; column++) {
-        const cell = this.cells[row][column];
+    let hasEmptyCell = false;
 
-        if (cell.isEmpty) {
-          return true;
+    this.cells.forEach((row, rowIndex) => {
+      row.forEach((cell, columnIndex) => {
+        const isEmpty = cell.isEmpty;
+        const isValueAboveSame = rowIndex > 0
+          && this.cells[rowIndex - 1][columnIndex].value === cell.value;
+        const isValueToLeftSame = columnIndex > 0
+          && this.cells[rowIndex][columnIndex - 1].value === cell.value;
+
+        if (isEmpty || isValueAboveSame || isValueToLeftSame) {
+          hasEmptyCell = true;
         }
+      });
+    });
 
-        if (
-          (row > 0 && this.cells[row - 1][column].value === cell.value)
-          || (column > 0 && this.cells[row][column - 1].value === cell.value)
-        ) {
-          return true;
-        }
-      }
-    }
-
-    return false;
+    return hasEmptyCell;
   }
 
   mergeCells(cells) {
     let score = 0;
+    let currentIndex = 0;
 
-    for (let i = 0; i < cells.length; i++) {
-      for (let j = i + 1; j < cells.length; j++) {
-        if (!cells[i].isEmpty && cells[i].value === cells[j].value) {
-          score += cells[i].value * 2;
-          cells[i].setValue(cells[i].value * 2);
-          cells[j].clear();
-        } else if (cells[i].isEmpty && !cells[j].isEmpty) {
-          cells[i].setValue(cells[j].value);
-          cells[j].clear();
+    cells.forEach((cell, i) => {
+      if (!cell.isEmpty) {
+        cells[currentIndex].setValue(cell.value);
+
+        if (currentIndex !== i) {
+          cell.clear();
         }
+        currentIndex++;
+      }
+    });
+
+    for (let i = 0; i < cells.length - 1; i++) {
+      if (!cells[i].isEmpty && cells[i].value === cells[i + 1].value) {
+        const mergedValue = cells[i].value * 2;
+
+        cells[i].setValue(mergedValue);
+        cells[i + 1].clear();
+        score += mergedValue;
+        i++;
       }
     }
+
+    currentIndex = 0;
+
+    cells.forEach((cell, i) => {
+      if (!cell.isEmpty) {
+        cells[currentIndex].setValue(cell.value);
+
+        if (currentIndex !== i) {
+          cell.clear();
+        }
+        currentIndex++;
+      }
+    });
 
     return score;
   }
@@ -74,9 +91,9 @@ class Field {
   shiftLeft() {
     let totalScore = 0;
 
-    for (let row = 0; row < this.cells.length; row++) {
-      totalScore += this.mergeCells(this.cells[row]);
-    }
+    this.cells.forEach((row) => {
+      totalScore += this.mergeCells(row);
+    });
 
     return totalScore;
   }
@@ -84,11 +101,11 @@ class Field {
   shiftRight() {
     let totalScore = 0;
 
-    for (let row = 0; row < this.cells.length; row++) {
-      const reversedRow = this.cells[row].slice().reverse();
+    this.cells.forEach((row) => {
+      const reversedRow = row.slice().reverse();
 
       totalScore += this.mergeCells(reversedRow);
-    }
+    });
 
     return totalScore;
   }
@@ -96,11 +113,11 @@ class Field {
   shiftUp() {
     let totalScore = 0;
 
-    for (let column = 0; column < this.cells[0].length; column++) {
-      const columnCells = this.cells.map((row) => row[column]);
+    const transposedCells = this.transposeCells();
 
-      totalScore += this.mergeCells(columnCells);
-    }
+    transposedCells.forEach((row) => {
+      totalScore += this.mergeCells(row);
+    });
 
     return totalScore;
   }
@@ -108,27 +125,40 @@ class Field {
   shiftDown() {
     let totalScore = 0;
 
-    for (let column = 0; column < this.cells[0].length; column++) {
-      const columnCells = this.cells.map((row) => row[column]).reverse();
+    const transposedCells = this.transposeCells();
 
-      totalScore += this.mergeCells(columnCells);
-    }
+    transposedCells.forEach((row) => {
+      const reversedRow = row.slice().reverse();
+
+      totalScore += this.mergeCells(reversedRow);
+    });
 
     return totalScore;
+  }
+
+  transposeCells() {
+    const transposedCells = [];
+
+    for (let column = 0; column < this.cells[0].length; column++) {
+      transposedCells.push(this.cells.map((row) => row[column]));
+    }
+
+    return transposedCells;
   }
 
   addTile(value) {
     const emptyCells = [];
 
-    for (let row = 0; row < this.cells.length; row++) {
-      for (let column = 0; column < this.cells[row].length; column++) {
-        if (this.cells[row][column].isEmpty) {
+    this.cells.forEach((row, rowIndex) => {
+      row.forEach((cell, columnIndex) => {
+        if (cell.isEmpty) {
           emptyCells.push({
-            row, column,
+            row: rowIndex,
+            column: columnIndex,
           });
         }
-      }
-    }
+      });
+    });
 
     if (emptyCells.length === 0) {
       return false;
@@ -143,11 +173,11 @@ class Field {
   }
 
   reset() {
-    for (let column = 0; column < this.cells.length; column++) {
-      for (let row = 0; row < this.cells.length; row++) {
-        this.cells[row][column].clear();
-      }
-    }
+    this.cells.forEach((row) => {
+      row.forEach((cell) => {
+        cell.clear();
+      });
+    });
   }
 }
 
