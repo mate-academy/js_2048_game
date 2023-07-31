@@ -82,7 +82,7 @@ button.addEventListener('click', () => {
 function canBeMerged() {
   const wholeField = [...cellsInRow, ...columns];
 
-  return wholeField.forEach((line) => {
+  return wholeField.some((line) => {
     for (let i = 0; i < 3; i++) {
       if (line[i].innerText === line[i + 1].innerText) {
         return true;
@@ -185,6 +185,9 @@ function getDirection(direction) {
       cellsInRow.forEach((row) => {
         flipLine([...row].reverse());
       });
+      break;
+
+    default:
       break;
   }
 
