@@ -41,10 +41,10 @@ document.addEventListener('keydown', (e) => {
   const oldField = deepCopyArray(field);
 
   if (
-    !isMoved(moveUp(oldField))
-    && !isMoved(moveDown(oldField))
-    && !isMoved(moveRight(oldField))
-    && !isMoved(moveLeft(oldField))
+    !isMoved(moveDirection(oldField, 'up'))
+    && !isMoved(moveDirection(oldField, 'down'))
+    && !isMoved(moveDirection(oldField, 'right'))
+    && !isMoved(moveDirection(oldField, 'left'))
   ) {
     loseMessage.classList.remove('hidden');
 
@@ -53,16 +53,16 @@ document.addEventListener('keydown', (e) => {
 
   switch (e.key) {
     case 'ArrowUp':
-      field = deepCopyArray(moveUp(field));
+      field = deepCopyArray(moveDirection(field, 'up'));
       break;
     case 'ArrowDown':
-      field = deepCopyArray(moveDown(field));
+      field = deepCopyArray(moveDirection(field, 'down'));
       break;
     case 'ArrowRight':
-      field = deepCopyArray(moveRight(field));
+      field = deepCopyArray(moveDirection(field, 'right'));
       break;
     case 'ArrowLeft':
-      field = deepCopyArray(moveLeft(field));
+      field = deepCopyArray(moveDirection(field, 'left'));
       break;
   }
 
@@ -104,74 +104,35 @@ function isMoved(oldField) {
   return false;
 }
 
-function moveUp(inputField) {
+function moveDirection(inputField, direction) {
   const movedField = deepCopyArray(inputField);
 
   for (let i = 0; i < rowsCount; i++) {
-    let newColumn = [
-      movedField[0][i],
-      movedField[1][i],
-      movedField[2][i],
-      movedField[3][i],
-    ];
+    let newLine;
 
-    newColumn = move(newColumn.reverse()).reverse();
-
-    for (let j = 0; j < newColumn.length; j++) {
-      movedField[j][i] = newColumn[j];
+    if (direction === 'up' || direction === 'down') {
+      newLine = [
+        movedField[0][i],
+        movedField[1][i],
+        movedField[2][i],
+        movedField[3][i],
+      ];
+    } else if (direction === 'left' || direction === 'right') {
+      newLine = movedField[i];
     }
-  }
 
-  return movedField;
-}
-
-function moveDown(inputField) {
-  const movedField = deepCopyArray(inputField);
-
-  for (let i = 0; i < rowsCount; i++) {
-    let newColumn = [
-      movedField[0][i],
-      movedField[1][i],
-      movedField[2][i],
-      movedField[3][i],
-    ];
-
-    newColumn = move(newColumn);
-
-    for (let j = 0; j < newColumn.length; j++) {
-      movedField[j][i] = newColumn[j];
+    if (direction === 'up' || direction === 'left') {
+      newLine = move(newLine.reverse()).reverse();
+    } else if (direction === 'down' || direction === 'right') {
+      newLine = move(newLine);
     }
-  }
 
-  return movedField;
-}
-
-function moveRight(inputField) {
-  const movedField = deepCopyArray(inputField);
-
-  for (let i = 0; i < rowsCount; i++) {
-    let newRow = movedField[i];
-
-    newRow = move(newRow);
-
-    for (let j = 0; j < newRow.length; j++) {
-      movedField[i][j] = newRow[j];
-    }
-  }
-
-  return movedField;
-}
-
-function moveLeft(inputField) {
-  const movedField = deepCopyArray(inputField);
-
-  for (let i = 0; i < rowsCount; i++) {
-    let newRow = movedField[i];
-
-    newRow = move(newRow.reverse()).reverse();
-
-    for (let j = 0; j < newRow.length; j++) {
-      movedField[i][j] = newRow[j];
+    for (let j = 0; j < newLine.length; j++) {
+      if (direction === 'up' || direction === 'down') {
+        movedField[j][i] = newLine[j];
+      } else if (direction === 'left' || direction === 'right') {
+        movedField[i][j] = newLine[j];
+      }
     }
   }
 
