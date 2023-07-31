@@ -24,10 +24,9 @@ function up(paramArr, index) {
 
   const mergedArr = arr.filter(item => item !== 0);
 
-  table[0][index] = mergedArr[0] || 0;
-  table[1][index] = mergedArr[1] || 0;
-  table[2][index] = mergedArr[2] || 0;
-  table[3][index] = mergedArr[3] || 0;
+  for (let i = 0; i < table.length; i++) {
+    table[i][index] = mergedArr[i] || 0;
+  }
 }
 
 function down(paramArr, index) {
@@ -51,32 +50,35 @@ function down(paramArr, index) {
     mergedArr.unshift(0);
   }
 
-  table[0][index] = mergedArr[0] || 0;
-  table[1][index] = mergedArr[1] || 0;
-  table[2][index] = mergedArr[2] || 0;
-  table[3][index] = mergedArr[3] || 0;
+  for (let i = 0; i < table.length; i++) {
+    table[i][index] = mergedArr[i] || 0;
+  }
 }
 
-const winMessage = document.querySelector('.message-win');
-const loseMessage = document.querySelector('.message-lose');
-const startMessage = document.querySelector('.message-start');
+function showMessage(messageType) {
+  const winMessage = document.querySelector('.message-win');
+  const loseMessage = document.querySelector('.message-lose');
+  const startMessage = document.querySelector('.message-start');
 
-function messageWin() {
-  winMessage.classList = ['message message-win'];
-  loseMessage.classList = ['message message-lose hidden'];
-  startMessage.classList = ['message message-start hidden'];
-}
-
-function messageStart() {
-  winMessage.classList = ['message message-win hidden'];
-  loseMessage.classList = ['message message-lose hidden'];
-  startMessage.classList = ['message message-start'];
-}
-
-function messageLose() {
-  winMessage.classList = ['message message-win hidden'];
-  loseMessage.classList = ['message message-lose'];
-  startMessage.classList = ['message message-start hidden'];
+  switch (messageType) {
+    case 'win':
+      winMessage.classList.remove('hidden');
+      loseMessage.classList.add('hidden');
+      startMessage.classList.add('hidden');
+      break;
+    case 'lose':
+      winMessage.classList.add('hidden');
+      loseMessage.classList.remove('hidden');
+      startMessage.classList.add('hidden');
+      break;
+    case 'start':
+      winMessage.classList.add('hidden');
+      loseMessage.classList.add('hidden');
+      startMessage.classList.remove('hidden');
+      break;
+    default:
+      return 0;
+  }
 }
 
 function noEmptyCell() {
@@ -118,8 +120,10 @@ function noCellToMerge() {
 }
 
 function loseCheck() {
-  if (noEmptyCell() && noCellToMerge()) {
-    messageLose();
+  if (noEmptyCell()) {
+    if (noCellToMerge()) {
+      showMessage('lose');
+    }
   }
 }
 
@@ -129,7 +133,7 @@ function updateScore() {
   for (const row of table) {
     for (const item of row) {
       if (item === 2048) {
-        messageWin();
+        showMessage('win');
       }
     }
   }
@@ -183,7 +187,7 @@ function restart() {
 
   scoreValue = 0;
   updateScore();
-  messageStart();
+  showMessage('start');
 }
 
 button.addEventListener('click', () => {
@@ -230,10 +234,9 @@ function left(paramArr) {
 
   const mergedArr = arr.filter(item => item !== 0);
 
-  paramArr[0] = mergedArr[0] || 0;
-  paramArr[1] = mergedArr[1] || 0;
-  paramArr[2] = mergedArr[2] || 0;
-  paramArr[3] = mergedArr[3] || 0;
+  for (let i = 0; i < table.length; i++) {
+    paramArr[i] = mergedArr[i] || 0;
+  }
 }
 
 function right(paramArr) {
@@ -257,10 +260,9 @@ function right(paramArr) {
     mergedArr.unshift(0);
   }
 
-  paramArr[0] = mergedArr[0] || 0;
-  paramArr[1] = mergedArr[1] || 0;
-  paramArr[2] = mergedArr[2] || 0;
-  paramArr[3] = mergedArr[3] || 0;
+  for (let i = 0; i < table.length; i++) {
+    paramArr[i] = mergedArr[i] || 0;
+  }
 }
 
 function moveHorizontally(directionFunctionName) {
@@ -313,26 +315,24 @@ function moveVertically(directionFunctionName) {
   }
 }
 
-document.addEventListener('keydown', eventParam => {
-  if (eventParam.key === 'ArrowLeft') {
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') {
     moveHorizontally(left);
-    loseCheck();
   }
 
-  if (eventParam.key === 'ArrowRight') {
+  if (e.key === 'ArrowRight') {
     moveHorizontally(right);
-    loseCheck();
   }
 
-  if (eventParam.key === 'ArrowUp') {
+  if (e.key === 'ArrowUp') {
     moveVertically(up);
-    loseCheck();
   }
 
-  if (eventParam.key === 'ArrowDown') {
+  if (e.key === 'ArrowDown') {
     moveVertically(down);
-    loseCheck();
   }
+
+  loseCheck();
 });
 
 const gameTable = document.querySelector('.game-field');
@@ -340,46 +340,47 @@ const gameTable = document.querySelector('.game-field');
 let touchStartX = 0;
 let touchStartY = 0;
 
-document.addEventListener('touchmove', (eventPar) => {
-  eventPar.preventDefault();
+document.addEventListener('touchmove', (e) => {
+  e.preventDefault();
 });
 
-gameTable.addEventListener('touchmove', (eventPar) => {
-  eventPar.preventDefault();
+gameTable.addEventListener('touchmove', (e) => {
+  e.preventDefault();
 });
 
-gameTable.addEventListener('touchstart', (eventPar) => {
-  touchStartX = eventPar.touches[0].clientX;
-  touchStartY = eventPar.touches[0].clientY;
+gameTable.addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
 });
 
-gameTable.addEventListener('touchend', (eventPar) => {
-  const touchEndX = eventPar.changedTouches[0].clientX;
-  const touchEndY = eventPar.changedTouches[0].clientY;
+gameTable.addEventListener('touchend', (e) => {
+  const touchEndX = e.changedTouches[0].clientX;
+  const touchEndY = e.changedTouches[0].clientY;
   const touchDiffX = touchEndX - touchStartX;
   const touchDiffY = touchEndY - touchStartY;
+  const breakPoint = 50;
 
   if (Math.abs(touchDiffX) > Math.abs(touchDiffY)) {
-    if (touchDiffX > 50) {
+    if (touchDiffX > breakPoint) {
       moveHorizontally(right);
       loseCheck();
-    } else if (touchDiffX < -50) {
+    } else if (touchDiffX < -1 * breakPoint) {
       moveHorizontally(left);
       loseCheck();
     }
   } else {
-    if (touchDiffY > 50) {
+    if (touchDiffY > breakPoint) {
       moveVertically(down);
       loseCheck();
-    } else if (touchDiffY < -50) {
+    } else if (touchDiffY < -1 * breakPoint) {
       moveVertically(up);
       loseCheck();
     }
   }
 });
 
-document.addEventListener('touchmove', (eventPar) => {
-  eventPar.preventDefault();
+document.addEventListener('touchmove', (e) => {
+  e.preventDefault();
 });
 
 function gameStart() {
