@@ -17,13 +17,17 @@ class Game {
       START: 'start',
     };
 
+    const getRandomValue = (min, max) => {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
     this.score = new Score(document.querySelector('.game-score'));
     this.message = new Message(document.querySelector('.message-container'));
     this.field = new Field(document.querySelector('.game-field'));
 
     const onStart = () => {
-      this.field.addTile(this.START_VALUE);
-      this.field.addTile(this.START_VALUE);
+      this.field.addTile(this.START_VALUE * getRandomValue(1, 2));
+      this.field.addTile(this.START_VALUE * getRandomValue(1, 2));
       this.message.setMessage();
       this.controls.enabled = true;
     };
@@ -33,10 +37,6 @@ class Game {
       this.message.setMessage(this.MESSAGES.START);
       this.field.reset();
       this.controls.enabled = false;
-    };
-
-    const getRandomValue = (min, max) => {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
     const onLeft = () => {
