@@ -1,8 +1,10 @@
 'use strict';
 
 const GRID_SIZE = 4;
-let gameGrid
-  = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0));
+let gameGrid = Array.from(
+  { length: GRID_SIZE },
+  () => Array(GRID_SIZE).fill(0),
+);
 let score = 0;
 let gameIsOver = false;
 
@@ -102,7 +104,7 @@ function restartGame() {
   restartButton.blur();
 }
 
-restartButton.addEventListener('click', function() {
+restartButton.addEventListener('click', () => {
   restartGame();
 });
 
@@ -133,14 +135,21 @@ function handleKeyPress(move) {
     restartButton.classList.remove('hidden');
   }
 
-  if (key === 'ArrowUp') {
-    moveUp();
-  } else if (key === 'ArrowDown') {
-    moveDown();
-  } else if (key === 'ArrowLeft') {
-    moveLeft();
-  } else if (key === 'ArrowRight') {
-    moveRight();
+  switch (key) {
+    case 'ArrowUp':
+      moveUp();
+      break;
+    case 'ArrowDown':
+      moveDown();
+      break;
+    case 'ArrowLeft':
+      moveLeft();
+      break;
+    case 'ArrowRight':
+      moveRight();
+      break;
+    default:
+      break;
   }
 }
 
