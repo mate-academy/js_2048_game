@@ -5,6 +5,7 @@ const gameFieldTable = document.querySelector('.game-field');
 const gameScore = document.querySelector('.game-score');
 const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
+const startMessage = document.querySelector('.message-start');
 
 let game = getEmptyGame();
 
@@ -19,8 +20,6 @@ function getEmptyGame() {
 
 startButton.addEventListener('click', () => {
   startNewGame();
-
-  const startMessage = document.querySelector('.message-start');
 
   startMessage.classList.add('hidden');
 });
@@ -48,29 +47,14 @@ function keyDownHandler(e) {
 
   const keyType = e.code;
 
-  switch (keyType) {
-    case 'ArrowUp':
-    case 'ArrowDown':
-    case 'ArrowLeft':
-    case 'ArrowRight':
-      handleNewMove(keyType);
-      break;
-
-    default:
-      break;
-  }
+  handleNewMove(keyType);
 }
 
 function renderGame() {
-  let moveAvaliable = false;
-
   game.forEach((row, rowIndex) => row.forEach((cellValue, cellIndex) => {
     if (cellValue === 2048) {
       winMessage.classList.remove('hidden');
     }
-
-    moveAvaliable
-      = moveAvaliable || isMoveAvaliable(rowIndex, cellIndex, cellValue);
 
     const cellNode = gameFieldTable.rows[rowIndex].cells[cellIndex];
 
@@ -82,224 +66,150 @@ function renderGame() {
 
     cellNode.innerHTML = cellValue || '';
   }));
-
-  if (!moveAvaliable) {
-    winMessage.classList.add('hidden');
-
-    loseMessage.classList.remove('hidden');
-  }
-}
-
-function isMoveAvaliable(rowIndex, cellIndex, cellValue) {
-  let result = false;
-
-  if (cellValue === 0) {
-    return true;
-  }
-
-  const toTheRight = cellIndex <= 2
-    ? game[rowIndex][cellIndex + 1]
-    : null;
-
-  const toTheBottom = rowIndex <= 2
-    ? game[rowIndex + 1][cellIndex]
-    : null;
-
-  if (toTheRight === cellValue || toTheBottom === cellValue) {
-    result = true;
-  }
-
-  return result;
 }
 
 function handleNewMove(keyType) {
   const minIndex = 0;
-  const maxIndex = 3;
+  const maxIndex = 4;
 
-  let cellWasMoved = false;
+  switch (keyType) {
+    case 'ArrowLeft':
+      handleMove(minIndex, maxIndex, 'left');
+      break;
 
-  for (let x = minIndex; x <= maxIndex; x++) {
-    if (keyType === 'ArrowUp') {
-      cellWasMoved = handleMoveUp(x, minIndex, maxIndex) || cellWasMoved;
-    }
+    case 'ArrowRight':
+      handleMove(minIndex, maxIndex, 'right');
+      break;
 
-    if (keyType === 'ArrowDown') {
-      cellWasMoved = handleMoveDown(x, minIndex, maxIndex) || cellWasMoved;
-    }
+    case 'ArrowUp':
+      handleMove(minIndex, maxIndex, 'up');
+      break;
 
-    if (keyType === 'ArrowLeft') {
-      cellWasMoved = handleMoveLeft(x, minIndex, maxIndex) || cellWasMoved;
-    }
+    case 'ArrowDown':
+      handleMove(minIndex, maxIndex, 'down');
+      break;
 
-    if (keyType === 'ArrowRight') {
-      cellWasMoved = handleMoveRight(x, minIndex, maxIndex) || cellWasMoved;
-    }
-  }
-
-  if (cellWasMoved) {
-    populateNewCell();
+    default:
+      return;
   }
 
   renderGame();
+
+  const gameIsOver = isGameOver();
+
+  if (gameIsOver) {
+    winMessage.classList.add('hidden');
+
+    loseMessage.classList.remove('hidden');
+  }
 
   startButton.innerHTML = 'Restart';
   startButton.classList.replace('start', 'restart');
 }
 
-function handleMoveUp(x, minIndex, maxIndex) {
-  let swiped;
-  let moveIsPossible = false;
-  const mergedCellCoords = {};
+function isGameOver() {
+  if (gameHasEmptyCell()) {
+    return false;
+  }
 
-  do {
-    swiped = false;
+  for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
+    const row = game[rowIndex];
+    const column = transpose(rowIndex);
 
-    for (let y = minIndex; y < maxIndex; y++) {
-      const cell = game[y][x];
-      const nextCellInCol = game[y + 1][x];
-      const cellsCanBeMerged
-        = mergedCellCoords[x] !== y && mergedCellCoords[x] !== y + 1;
-
-      if (nextCellInCol !== 0 && cell === 0) {
-        game[y][x] = nextCellInCol;
-        game[y + 1][x] = 0;
-
-        swiped = true;
+    for (let colIndex = 0; colIndex < 3; colIndex++) {
+      if (row[colIndex] === row[colIndex + 1]) {
+        return false;
       }
 
-      if (nextCellInCol === cell && cell !== 0 && cellsCanBeMerged) {
-        game[y][x] += nextCellInCol;
-        game[y + 1][x] = 0;
-
-        increaseScore(cell + nextCellInCol);
-
-        mergedCellCoords[x] = y;
-
-        swiped = true;
+      if (column[colIndex] === column[colIndex + 1]) {
+        return false;
       }
     }
+  }
 
-    moveIsPossible = moveIsPossible || swiped;
-  } while (swiped);
-
-  return moveIsPossible;
+  return true;
 }
 
-function handleMoveDown(x, minIndex, maxIndex) {
-  let swiped;
-  let moveIsPossible = false;
-  const mergedCellCoords = {};
+function handleMove(minIndex, maxIndex, direction) {
+  let cellsWasMoved = false;
 
-  do {
-    swiped = false;
+  for (let rowIndex = minIndex; rowIndex < maxIndex; rowIndex++) {
+    let oldRow = game[rowIndex];
 
-    for (let y = maxIndex; y > minIndex; y--) {
-      const cell = game[y][x];
-      const nextCellInCol = game[y - 1][x];
-      const cellsCanBeMerged
-        = mergedCellCoords[x] !== y && mergedCellCoords[x] !== y - 1;
+    let row = [...game[rowIndex]];
 
-      if (nextCellInCol !== 0 && cell === 0) {
-        game[y][x] = nextCellInCol;
-        game[y - 1][x] = 0;
-
-        swiped = true;
-      }
-
-      if (nextCellInCol === cell && cell !== 0 && cellsCanBeMerged) {
-        game[y][x] += nextCellInCol;
-        game[y - 1][x] = 0;
-
-        increaseScore(cell + nextCellInCol);
-
-        mergedCellCoords[x] = y;
-
-        swiped = true;
-      }
+    if (direction === 'up' || direction === 'down') {
+      row = transpose(rowIndex);
+      oldRow = transpose(rowIndex);
     }
 
-    moveIsPossible = moveIsPossible || swiped;
-  } while (swiped);
+    if (direction === 'right' || direction === 'down') {
+      row.reverse();
+    }
 
-  return moveIsPossible;
+    row = slide(row);
+
+    if (direction === 'right' || direction === 'down') {
+      row.reverse();
+    }
+
+    if (!rowsAreEqual(oldRow, row)) {
+      cellsWasMoved = true;
+    }
+
+    if (direction === 'left' || direction === 'right') {
+      game[rowIndex] = row;
+
+      continue;
+    }
+
+    game[0][rowIndex] = row[0];
+    game[1][rowIndex] = row[1];
+    game[2][rowIndex] = row[2];
+    game[3][rowIndex] = row[3];
+  }
+
+  if (cellsWasMoved) {
+    populateNewCell();
+  }
 }
 
-function handleMoveLeft(x, minIndex, maxIndex) {
-  let swiped;
-  let moveIsPossible = false;
-  const mergedCellCoords = {};
-
-  do {
-    swiped = false;
-
-    for (let y = minIndex; y < maxIndex; y++) {
-      const cell = game[x][y];
-      const nextCellInRow = game[x][y + 1];
-      const cellsCanBeMerged
-        = mergedCellCoords[x] !== y && mergedCellCoords[x] !== y + 1;
-
-      if (nextCellInRow !== 0 && cell === 0) {
-        game[x][y] = nextCellInRow;
-        game[x][y + 1] = 0;
-
-        swiped = true;
-      }
-
-      if (nextCellInRow === cell && cell !== 0 && cellsCanBeMerged) {
-        game[x][y] += nextCellInRow;
-        game[x][y + 1] = 0;
-
-        increaseScore(cell + nextCellInRow);
-
-        mergedCellCoords[x] = y;
-
-        swiped = true;
-      }
-    }
-
-    moveIsPossible = moveIsPossible || swiped;
-  } while (swiped);
-
-  return moveIsPossible;
+function transpose(index) {
+  return [
+    game[0][index],
+    game[1][index],
+    game[2][index],
+    game[3][index],
+  ];
 }
 
-function handleMoveRight(x, minIndex, maxIndex) {
-  let swiped;
-  let moveIsPossible = false;
-  const mergedCellCoords = {};
+function slide(row) {
+  let newRow = removeZeroes(row);
 
-  do {
-    swiped = false;
+  for (let i = 0; i < newRow.length - 1; i++) {
+    if (newRow[i] === newRow[i + 1]) {
+      newRow[i] *= 2;
+      newRow[i + 1] = 0;
 
-    for (let y = maxIndex; y > minIndex; y--) {
-      const cell = game[x][y];
-      const nextCellInRow = game[x][y - 1];
-      const cellsCanBeMerged
-        = mergedCellCoords[x] !== y && mergedCellCoords[x] !== y - 1;
-
-      if (nextCellInRow !== 0 && cell === 0) {
-        game[x][y] = nextCellInRow;
-        game[x][y - 1] = 0;
-
-        swiped = true;
-      }
-
-      if (nextCellInRow === cell && cell !== 0 && cellsCanBeMerged) {
-        game[x][y] += nextCellInRow;
-        game[x][y - 1] = 0;
-
-        increaseScore(cell + nextCellInRow);
-
-        mergedCellCoords[x] = y;
-
-        swiped = true;
-      }
+      increaseScore(newRow[i]);
     }
+  }
 
-    moveIsPossible = moveIsPossible || swiped;
-  } while (swiped);
+  newRow = removeZeroes(newRow);
 
-  return moveIsPossible;
+  while (newRow.length < 4) {
+    newRow.push(0);
+  }
+
+  return newRow;
+}
+
+function rowsAreEqual(oldRow, newRow) {
+  return oldRow.join('.') === newRow.join('.');
+}
+
+function removeZeroes(row) {
+  return row.filter(value => value !== 0);
 }
 
 function increaseScore(value) {
@@ -308,16 +218,19 @@ function increaseScore(value) {
   gameScore.innerHTML = currentScoreNumber + value;
 }
 
+function gameHasEmptyCell() {
+  return game.flat().some(cell => cell === 0);
+}
+
 function populateNewCell() {
+  if (!gameHasEmptyCell()) {
+    return;
+  }
+
   let rowIndex = getRandomCellPosition();
   let colIndex = getRandomCellPosition();
 
   let currentCellValue = game[rowIndex][colIndex];
-  const hasEmptyCell = game.flat().some(cell => cell === 0);
-
-  if (!hasEmptyCell) {
-    return;
-  }
 
   while (currentCellValue !== 0) {
     rowIndex = getRandomCellPosition();
