@@ -6,6 +6,8 @@ const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 const scoreCounter = document.querySelector('.game-score');
 
+const tableRows = document.querySelector('tbody').rows;
+
 const fieldCells = document.querySelectorAll('td');
 
 const matrix = createMatrix();
@@ -27,7 +29,6 @@ buttonToPlay.addEventListener('click', () => {
 
   if (buttonToPlay.classList.contains('restart')) {
     iterateMatrix(element => restoreCell(element));
-
     spawnStartNumber();
   }
 });
@@ -73,56 +74,40 @@ function createMatrix() {
 
 function spawnStartNumber() {
   for (let i = 0; i < 2; i++) {
-    // const randomIndex = getRandomIndex(fieldCells.length - 1);
-
-    // fieldCells[randomIndex].classList.add('field-cell--2');
-    // fieldCells[randomIndex].innerHTML = '2';
     spawnNewNumber(2);
   }
 
   paintCell();
 }
 
-function getRandomIndex(max) {
-  let index;
-  // Масив для зберігання вибраних рандомних індексів
-  const chosenIndexes = [];
+function spawnNewNumber() {
+  if (!checkForEmpty()) {
+    return;
+  }
 
-  do {
-    index = Math.floor(Math.random() * 15);
-  } while (chosenIndexes.includes(index));
+  const randomValue = Math.random() < 0.9 ? 2 : 4;
 
-  chosenIndexes.push(index);
+  while (true) {
+    const row = Math.floor(Math.random() * 4);
+    const col = Math.floor(Math.random() * 4);
 
-  return index;
-}
-
-function spawnNewNumber(numberToSpawn) {
-  const emptyCells = [];
-
-  iterateMatrix(element => {
-    if (element.innerHTML === '') {
-      emptyCells.push(element);
+    if (matrix[row][col].innerHTML === '') {
+      matrix[row][col].innerHTML = randomValue;
+      break;
     }
-  });
 
-  if (emptyCells.length > 0) {
-    const randomIndex = getRandomIndex(emptyCells.length - 1);
-    const randomNumber = numberToSpawn;
-    // Імітована ймовірність для числа 2 і 4
-
-    emptyCells[randomIndex].innerHTML = randomNumber;
+    updateGame();
   }
 }
 
 function paintCell() {
   iterateMatrix((element) => {
-    for (let num = 2; num <= 2048; num *= 2) {
-      if (parseInt(element.innerHTML) === num) {
-        const classStr = 'field-cell--' + num;
+    const cellValue = element.innerHTML;
 
-        element.classList.add(classStr);
-      }
+    if (cellValue !== '') {
+      element.classList = `field-cell field-cell--${cellValue}`;
+    } else {
+      element.classList = 'field-cell';
     }
   });
 }
@@ -138,8 +123,7 @@ function compareCells(element1, element2) {
 
 function restoreCell(arrElement) {
   arrElement.innerHTML = '';
-  arrElement.classList.remove(...arrElement.classList);
-  arrElement.classList.add('field-cell');
+  arrElement.classList.remove(`field-cell--${arrElement.innerHTML}`);
 }
 
 function iterateMatrix(callback) {
@@ -150,11 +134,34 @@ function iterateMatrix(callback) {
   }
 }
 
+function updateCell(cell, num) {
+  cell.innerText = '';
+  cell.classList.value = '';
+  cell.classList.add('field-cell');
+
+  if (num > 0) {
+    cell.innerText = num.toString();
+    cell.classList.add(`field-cell--${num.toString()}`);
+  }
+}
+
+function updateGame() {
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      const currentCell = tableRows[r].cells[c];
+      const num = parseInt(matrix[r][c].innerHTML);
+
+      updateCell(currentCell, num);
+    }
+  }
+
+  scoreCounter.innerText = score.toString();
+}
+
 function callMove() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowUp') {
       moveUp();
-      paintCell();
     }
 
     if (e.key === 'ArrowDown') {
@@ -195,8 +202,7 @@ function moveRight() {
 
         while (k < matrix[i].length) {
           if (!merged && compareCells(matrix[i][k], matrix[i][k - 1])) {
-            matrix[i][k].innerHTML
-            = `${parseInt(matrix[i][k].innerHTML) * 2}`;
+            matrix[i][k].innerHTML = `${parseInt(matrix[i][k].innerHTML) * 2}`;
             matrix[i][k - 1].innerHTML = '';
             restoreCell(matrix[i][k - 1]);
 
@@ -213,16 +219,13 @@ function moveRight() {
     }
   }
 
-  // Генеруємо нове число після зсуву
-
   const newValues = createMatrixValueCopy();
 
   if (isChanged(pastValues, newValues)) {
-    spawnNewNumber(requiredNumber());
-    paintCell();
+    spawnNewNumber();
   }
 
-  paintCell();
+  updateGame();
 }
 
 function moveLeft() {
@@ -260,16 +263,13 @@ function moveLeft() {
     }
   }
 
-  // Генеруємо нове число після зсуву
-
   const newValues = createMatrixValueCopy();
 
   if (isChanged(pastValues, newValues)) {
-    spawnNewNumber(requiredNumber());
-    paintCell();
+    spawnNewNumber();
   }
 
-  paintCell();
+  updateGame();
 }
 
 function moveUp() {
@@ -310,10 +310,10 @@ function moveUp() {
   const newValues = createMatrixValueCopy();
 
   if (isChanged(pastValues, newValues)) {
-    spawnNewNumber(requiredNumber());
-    paintCell();
+    spawnNewNumber();
   }
-  paintCell();
+
+  updateGame();
 }
 
 function moveDown() {
@@ -354,11 +354,10 @@ function moveDown() {
   const newValues = createMatrixValueCopy();
 
   if (isChanged(pastValues, newValues)) {
-    spawnNewNumber(requiredNumber());
-    paintCell();
+    spawnNewNumber();
   }
 
-  paintCell();
+  updateGame();
 }
 
 function isChanged(matrixA, matrixB) {
@@ -407,19 +406,15 @@ function gameLost() {
 }
 
 function checkForEmpty() {
+  const newValues = createMatrixValueCopy();
+
   for (let r = 0; r < 4; r++) {
     for (let c = 0; c < 4; c++) {
-      if (matrix[r][c].innerHTML === '') {
+      if (newValues[r][c] === '') {
         return true;
       }
     }
   }
 
   return false;
-}
-
-function requiredNumber() {
-  const requiredNumberIn = Math.random() < 0.9 ? 2 : 4;
-
-  return requiredNumberIn;
 }
