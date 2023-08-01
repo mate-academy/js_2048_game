@@ -16,6 +16,14 @@ let score = 0;
 const rows = 4;
 const columns = 4;
 let gameStarted = false;
+let prevBoard = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+
+let prevScore = 0;
 
 window.onload = function() {
   setGame();
@@ -54,7 +62,7 @@ function setGame() {
   }
 
   messages.forEach(elem => elem.classList.add('hidden'));
-  startMessage.classList.toggle('hidden');
+  startMessage.classList.remove('hidden');
 }
 
 function restartGame() {
@@ -79,16 +87,28 @@ function updateTile(ceil, num) {
     } else {
       ceil.classList.add('game-ceil--8192');
     }
-  }
 
-  if (score >= 25 && !win) {
-    winMessage.classList.remove('hidden');
-    startMessage.classList.add('hidden');
-    win = true;
+    if (num >= 2048 && !win) {
+      winMessage.classList.remove('hidden');
+      startMessage.classList.add('hidden');
+      win = true;
+    }
   }
 }
 
-document.addEventListener('keyup', (e) => {
+function gameLose() {
+  loseMessage.classList.remove('hidden');
+
+  if (!winMessage.classList.contains('hidden')) {
+    winMessage.classList.add('hidden');
+  }
+
+  if (!startMessage.classList.contains('hidden')) {
+    startMessage.classList.add('hidden');
+  }
+}
+
+app.addEventListener('keyup', (e) => {
   if (gameStarted) {
     switch (e.code) {
       case 'ArrowLeft' :
@@ -124,6 +144,7 @@ function slide(row) {
       rowSlide[i] *= 2;
       rowSlide[i + 1] = 0;
       score += rowSlide[i];
+      // prevScore = score;
     }
   }
   rowSlide = filterZero(rowSlide);
@@ -207,6 +228,12 @@ function slideDown() {
 
 function setTwoOrFour() {
   if (!hasEmptyTile()) {
+    if (prevBoard === board && prevScore === score) {
+      gameLose();
+    }
+    prevScore = score;
+    prevBoard = board;
+
     return;
   }
 
@@ -243,16 +270,6 @@ function hasEmptyTile() {
     }
   }
 
-  loseMessage.classList.remove('hidden');
-
-  if (!winMessage.classList.contains('hidden')) {
-    winMessage.classList.add('hidden');
-  }
-
-  if (!startMessage.classList.contains('hidden')) {
-    startMessage.classList.add('hidden');
-  }
-
   return false;
 }
 
@@ -261,14 +278,12 @@ let touchstartY = 0;
 let touchendX = 0;
 let touchendY = 0;
 
-const gesuredZone = document.getElementById('gesuredZone');
-
-gesuredZone.addEventListener('touchstart', function(a) {
+app.addEventListener('touchstart', function(a) {
   touchstartX = a.screenX;
   touchstartY = a.screenY;
 }, false);
 
-gesuredZone.addEventListener('touchend', function(a) {
+app.addEventListener('touchend', function(a) {
   touchendX = a.screenX;
   touchendY = a.screenY;
   handleGesure();
