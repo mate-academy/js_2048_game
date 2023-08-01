@@ -27,7 +27,7 @@ class GameField {
     this.gameWon = false;
     this.gameLose = false;
     this.cells = [];
-    this.score = document.getElementsByClassName('game-score')[0];
+    this.score = document.querySelector('.game-score');
     this.score.textContent = 0;
     this.moveUpPossible = true;
     this.moveDownPossible = true;
@@ -75,6 +75,7 @@ class GameField {
   }
 
   showCells(upCell, cell) {
+    cell.value = null;
     this.setUIValue(upCell);
     this.setUIValue(cell);
   }
@@ -142,38 +143,150 @@ class GameField {
       || this.moveDownPossible || this.moveLeftPossible;
   }
 
+  shouldFindNextIndex(direction, nextCellIndex, x, y) {
+    let limitCondition;
+
+    if (direction === directions.up || direction === directions.left) {
+      limitCondition = nextCellIndex > 0;
+    } else {
+      limitCondition = nextCellIndex < 3;
+    }
+
+    return limitCondition && this.getCell(x, y).value === null;
+  }
+
+  isMerged(nextCellIndex, y, cellValue, mergedCells) {
+    const checkedCell = this.getCell(nextCellIndex, y);
+
+    return checkedCell.value === cellValue
+    && mergedCells.includes(checkedCell);
+  }
+
+  findNextCellIndex(direction, cellStartX, cellStartY, mergedCells) {
+    let nextCellIndex;
+
+    switch (direction) {
+      case directions.up:
+        nextCellIndex = cellStartY - 1;
+
+        while (this.shouldFindNextIndex(
+          direction,
+          nextCellIndex,
+          cellStartX,
+          nextCellIndex
+        )) {
+          nextCellIndex--;
+        }
+        break;
+      case directions.down:
+        nextCellIndex = cellStartY + 1;
+
+        while (this.shouldFindNextIndex(
+          direction,
+          nextCellIndex,
+          cellStartX,
+          nextCellIndex
+        )) {
+          nextCellIndex++;
+        }
+        break;
+      case directions.left:
+        nextCellIndex = cellStartX - 1;
+
+        while (this.shouldFindNextIndex(
+          direction,
+          nextCellIndex,
+          nextCellIndex,
+          cellStartY,
+        )) {
+          nextCellIndex--;
+        }
+
+        if (this.isMerged(nextCellIndex, cellStartY, mergedCells)) {
+          nextCellIndex++;
+        }
+        break;
+      default:
+        nextCellIndex = cellStartX + 1;
+
+        while (this.shouldFindNextIndex(
+          direction,
+          nextCellIndex,
+          nextCellIndex,
+          cellStartY,
+        )) {
+          nextCellIndex++;
+        }
+
+        if (this.isMerged(nextCellIndex, cellStartY, mergedCells)) {
+          nextCellIndex--;
+        }
+        break;
+    }
+
+    return nextCellIndex;
+  }
+
+  tryMove(direction, cellStartX, cellStartY, mergedCells) {
+    const cell = this.getCell(cellStartX, cellStartY);
+    const cellValue = cell.value;
+
+    if (cellValue !== null) {
+      const nextCellIndex = this.findNextCellIndex(
+        direction,
+        cellStartX,
+        cellStartY,
+        mergedCells
+      );
+      let nextCell;
+      let areNotNeighbours;
+
+      if (direction === directions.up || direction === directions.down) {
+        nextCell = this.getCell(cellStartX, nextCellIndex);
+        areNotNeighbours = Math.abs(cellStartY - nextCellIndex) > 1;
+      } else {
+        nextCell = this.getCell(nextCellIndex, cellStartY);
+        areNotNeighbours = Math.abs(cellStartX - nextCellIndex) > 1;
+      }
+
+      const nextCellValue = nextCell.value;
+
+      if (nextCellValue === null) {
+        nextCell.value = cellValue;
+        this.showCells(nextCell, cell);
+      } else if (nextCellValue === cellValue) {
+        nextCell.value += cellValue;
+        this.addPoints(2 * cellValue);
+        this.showCells(nextCell, cell);
+
+        if (direction === directions.left || direction === directions.right) {
+          mergedCells.push(nextCell);
+        }
+      } else if (nextCellValue !== cellValue && areNotNeighbours) {
+        switch (direction) {
+          case directions.up:
+            nextCell = this.getCell(cellStartX, nextCellIndex + 1);
+            break;
+          case directions.down:
+            nextCell = this.getCell(cellStartX, nextCellIndex - 1);
+            break;
+          case directions.left:
+            nextCell = this.getCell(nextCellIndex + 1, cellStartY);
+            break;
+          default:
+            nextCell = this.getCell(nextCellIndex - 1, cellStartY);
+            break;
+        }
+        nextCell.value = cellValue;
+        this.showCells(nextCell, cell);
+      }
+    }
+  }
+
   moveUp() {
     for (let x = 0; x < 4; x++) {
       for (let y = 1; y < 4; y++) {
-        const cell = this.getCell(x, y);
-        const cellValue = cell.value;
-
-        if (cellValue !== null) {
-          let upCellY = y - 1;
-
-          while (upCellY > 0 && this.getCell(x, upCellY).value === null) {
-            upCellY--;
-          }
-
-          let upCell = this.getCell(x, upCellY);
-          const upCellValue = upCell.value;
-
-          if (upCellValue === null) {
-            upCell.value = cellValue;
-            cell.value = null;
-            this.showCells(upCell, cell);
-          } else if (upCellValue === cellValue) {
-            upCell.value += cellValue;
-            this.addPoints(2 * cellValue);
-            cell.value = null;
-            this.showCells(upCell, cell);
-          } else if (upCellValue !== cellValue && y - upCellY > 1) {
-            upCell = this.getCell(x, upCellY + 1);
-            upCell.value = cellValue;
-            cell.value = null;
-            this.showCells(upCell, cell);
-          }
-        }
+        this.tryMove(directions.up, x, y);
       }
     }
   }
@@ -181,35 +294,7 @@ class GameField {
   moveDown() {
     for (let x = 0; x < 4; x++) {
       for (let y = 2; y >= 0; y--) {
-        const cell = this.getCell(x, y);
-        const cellValue = cell.value;
-
-        if (cellValue !== null) {
-          let downCellY = y + 1;
-
-          while (downCellY < 3 && this.getCell(x, downCellY).value === null) {
-            downCellY++;
-          }
-
-          let downCell = this.getCell(x, downCellY);
-          const downCellValue = downCell.value;
-
-          if (downCellValue === null) {
-            downCell.value = cellValue;
-            cell.value = null;
-            this.showCells(downCell, cell);
-          } else if (downCellValue === cellValue) {
-            downCell.value += cellValue;
-            this.addPoints(2 * cellValue);
-            cell.value = null;
-            this.showCells(downCell, cell);
-          } else if (downCellValue !== cellValue && downCellY - y > 1) {
-            downCell = this.getCell(x, downCellY - 1);
-            downCell.value = cellValue;
-            cell.value = null;
-            this.showCells(downCell, cell);
-          }
-        }
+        this.tryMove(directions.down, x, y);
       }
     }
   }
@@ -219,41 +304,7 @@ class GameField {
       const mergedCells = [];
 
       for (let x = 1; x < 4; x++) {
-        const cell = this.getCell(x, y);
-        const cellValue = cell.value;
-
-        if (cellValue !== null) {
-          let leftCellX = x - 1;
-
-          while (leftCellX > 0 && this.getCell(leftCellX, y).value === null) {
-            leftCellX--;
-          }
-
-          if (this.getCell(leftCellX, y).value === cellValue
-            && mergedCells.includes(this.getCell(leftCellX, y))) {
-            leftCellX++;
-          }
-
-          let leftCell = this.getCell(leftCellX, y);
-          const leftCellValue = leftCell.value;
-
-          if (leftCellValue === null) {
-            leftCell.value = cellValue;
-            cell.value = null;
-            this.showCells(leftCell, cell);
-          } else if (leftCellValue === cellValue) {
-            leftCell.value += cellValue;
-            this.addPoints(2 * cellValue);
-            cell.value = null;
-            this.showCells(leftCell, cell);
-            mergedCells.push(leftCell);
-          } else if (leftCellValue !== cellValue && x - leftCellX > 1) {
-            leftCell = this.getCell(leftCellX + 1, y);
-            leftCell.value = cellValue;
-            cell.value = null;
-            this.showCells(leftCell, cell);
-          }
-        }
+        this.tryMove(directions.left, x, y, mergedCells);
       }
     }
   }
@@ -263,41 +314,7 @@ class GameField {
       const mergedCells = [];
 
       for (let x = 2; x >= 0; x--) {
-        const cell = this.getCell(x, y);
-        const cellValue = cell.value;
-
-        if (cellValue !== null) {
-          let rightCellX = x + 1;
-
-          while (rightCellX < 3 && this.getCell(rightCellX, y).value === null) {
-            rightCellX++;
-          }
-
-          if (this.getCell(rightCellX, y).value === cellValue
-            && mergedCells.includes(this.getCell(rightCellX, y))) {
-            rightCellX--;
-          }
-
-          let rightCell = this.getCell(rightCellX, y);
-          const rightCellValue = rightCell.value;
-
-          if (rightCellValue === null) {
-            rightCell.value = cellValue;
-            cell.value = null;
-            this.showCells(rightCell, cell);
-          } else if (rightCellValue === cellValue) {
-            rightCell.value += cellValue;
-            this.addPoints(2 * cellValue);
-            cell.value = null;
-            this.showCells(rightCell, cell);
-            mergedCells.push(rightCell);
-          } else if (rightCellValue !== cellValue && rightCellX - x > 1) {
-            rightCell = this.getCell(rightCellX - 1, y);
-            rightCell.value = cellValue;
-            cell.value = null;
-            this.showCells(rightCell, cell);
-          }
-        }
+        this.tryMove(directions.right, x, y, mergedCells);
       }
     }
   }
@@ -345,10 +362,10 @@ function playGame() {
   gameField.insertRandomNumber();
 }
 
-const buttonPlay = document.getElementsByClassName('button')[0];
-const messagStart = document.getElementsByClassName('message-start')[0];
-const messagWin = document.getElementsByClassName('message-win')[0];
-const messagLose = document.getElementsByClassName('message-lose')[0];
+const buttonPlay = document.querySelector('.button');
+const messagStart = document.querySelector('.message-start');
+const messagWin = document.querySelector('.message-win');
+const messagLose = document.querySelector('.message-lose');
 const gameField = new GameField();
 
 buttonPlay.addEventListener('click', playGame);
