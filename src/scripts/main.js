@@ -55,6 +55,9 @@ class Cell {
 
 const gridSize = 4;
 const cellsCount = gridSize * gridSize;
+const tileTwo = 2;
+const tileFour = 4;
+const chanceToGetOneOfTiles = 0.9;
 
 class Grid {
   constructor(gridElement) {
@@ -107,7 +110,10 @@ class Tile {
   constructor(gridElement) {
     this.tileElement = document.createElement('div');
     this.tileElement.classList.add('tile');
-    this.setValue(Math.random() >= 0.9 ? 4 : 2);
+
+    this.setValue(
+      Math.random() >= chanceToGetOneOfTiles ? tileFour : tileTwo
+    );
     gridElement.append(this.tileElement);
   }
 
@@ -148,6 +154,7 @@ class Tile {
 }
 
 let scoreValue = 0;
+const scoreToWin = 2048;
 const button = document.querySelector('.button');
 const score = document.querySelector('.game-score');
 const messageStart = document.querySelector('.message-start');
@@ -279,7 +286,7 @@ async function slideTiles(groupedCells) {
       score.textContent = scoreValue;
     }
 
-    if (cell.getCellValue() === 2048) {
+    if (cell.getCellValue() === scoreToWin) {
       messageWin.classList.remove('hidden');
     }
   });
