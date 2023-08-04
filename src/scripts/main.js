@@ -107,7 +107,7 @@ function setRandomTwo() {
 };
 
 function filterZero(row) {
-  return row.filter(num => num !== 0);
+  return row.filter(num => num);
 };
 
 function moved(row) {
@@ -223,20 +223,12 @@ function isGameOver(board) {
   for (let row = 0; row < size; row++) {
     for (let col = 0; col < size; col++) {
       const currentCell = board[row][col];
+      const checkUp = row > 0 && board[row - 1][col] === currentCell;
+      const checkDown = row < size - 1 && board[row + 1][col] === currentCell;
+      const checkLeft = col > 0 && board[row][col - 1] === currentCell;
+      const checkRight = col < size - 1 && board[row][col + 1] === currentCell;
 
-      if (row > 0 && board[row - 1][col] === currentCell) {
-        return false;
-      }
-
-      if (row < size - 1 && board[row + 1][col] === currentCell) {
-        return false;
-      }
-
-      if (col > 0 && board[row][col - 1] === currentCell) {
-        return false;
-      }
-
-      if (col < size - 1 && board[row][col + 1] === currentCell) {
+      if (checkUp || checkDown || checkLeft || checkRight) {
         return false;
       }
     }
