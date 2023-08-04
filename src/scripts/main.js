@@ -187,11 +187,7 @@ function canMove(groupedCells) {
 
 function canMoveInGroup(group) {
   return group.some((cell, index) => {
-    if (index === 0) {
-      return false;
-    }
-
-    if (cell.isEmpty()) {
+    if (index === 0 || cell.isEmpty()) {
       return false;
     }
 
