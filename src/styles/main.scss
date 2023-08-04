@@ -152,6 +152,10 @@ h1 {
   &:hover {
     background: #f87474;
   }
+
+  &__active {
+    background-color: #f87474;
+  }
 }
 
 .message {
