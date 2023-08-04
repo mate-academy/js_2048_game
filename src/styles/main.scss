@@ -1,3 +1,13 @@
+:root {
+  --cell-size: 75px;
+  --cell-gap: 10px;
+  --border-radius: 5px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -10,75 +20,102 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
+.game-board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, var(--cell-size));
+  grid-template-rows: repeat(4, var(--cell-size));
+  gap: var(--cell-gap);
+  border-radius: var(--border-radius);
+  background-color: #bbada0;
+  padding: var(--cell-gap);
+}
+
+.cell {
+  background-color: #d6cdc4;
+  border-radius: var(--border-radius);
   color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
+
+}
+
+.tile {
+  --y: 0;
+  --x: 0;
+
+  position: absolute;
+  top: calc(var(--y) * (var(--cell-size) + var(--cell-gap)) + var(--cell-gap));
+  left: calc(var(--x) * (var(--cell-size) + var(--cell-gap)) + var(--cell-gap));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border-radius: var(--border-radius);
+  background-color: #d6cdc4;
+  color: #776e65;
+
+  transition: 0.1s;
+  animation: appearance 0.2s;
 
   &--2 {
-    background: #eee4da;
+    background-color: #eee4da;
   }
 
   &--4 {
-    background: #ede0c8;
+    background-color: #ede0c8;
   }
 
   &--8 {
-    background: #f2b179;
+    background-color: #f2b179;
     color: #f9f6f2;
   }
 
   &--16 {
-    background: #f59563;
+    background-color: #f59563;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    background-color: #f67c5f;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
+    background-color: #f65e3b;
     color: #f9f6f2;
   }
 
   &--128 {
-    background: #edcf72;
+    background-color: #edcf72;
     color: #f9f6f2;
   }
 
   &--256 {
-    background: #edcc61;
+    background-color: #edcc61;
     color: #f9f6f2;
   }
 
   &--512 {
-    background: #edc850;
+    background-color: #edc850;
     color: #f9f6f2;
   }
 
   &--1024 {
-    background: #edc53f;
+    background-color: #edc53f;
     color: #f9f6f2;
   }
 
   &--2048 {
-    background: #edc22e;
+    background-color: #edc22e;
     color: #f9f6f2;
   }
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+@keyframes appearance {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
 }
 
 .game-header {
@@ -91,10 +128,10 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background-color: #edc22e;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
+  width: var(--cell-size);
+  height: var(--cell-size);
   font-size: 24px;
   border-radius: 5px;
   display: flex;
@@ -109,10 +146,10 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
+  background-color: #d6cdc4;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border-radius: var(--border-radius);
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
@@ -125,43 +162,43 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  outline: none;
+  border-radius: var(--border-radius);
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
+  width: var(--cell-size);
+  height: var(--cell-size);
 
-  transition: 0.25s ease background;
+  transition: 0.25s ease background-color;
 }
 
 .start {
-  background: #1dae28;
+  background-color: #1dae28;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background-color: #179921;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background-color: #f1b2b2;
 
   &:hover {
-    background: #f87474;
+    background-color: #f87474;
   }
 }
 
 .message {
-  box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
+  background-color: #d6cdc4;
   color: #776e65;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   font-size: 20px;
 }
 
@@ -177,7 +214,7 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
+  background-color: #edc22e;
   color: #f9f6f2;
 }
 
