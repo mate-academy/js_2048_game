@@ -1,3 +1,6 @@
-'use strict';
 
-// write your code here
+import View from './view';
+
+const view = new View();
+
+view.init();
