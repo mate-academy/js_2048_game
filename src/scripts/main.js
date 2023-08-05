@@ -184,36 +184,37 @@ function callMove() {
   });
 }
 
-function moveRight() {
+function forMoves(startIndex, endIndex, startFunction, moveFunction) {
   const pastValues = createMatrixValueCopy();
 
-  for (let i = 0; i < matrix.length; i++) {
+  for (let i = startIndex; i !== endIndex; i = moveFunction(i)) {
     let merged = false;
 
-    for (let j = matrix[i].length - 2; j >= 0; j--) {
+    for (let j = startFunction(i); j !== endIndex; j = moveFunction(j)) {
       if (matrix[i][j].innerHTML !== '') {
-        let k = j + 1;
+        let k = moveFunction(j);
 
-        while (k < matrix[i].length && matrix[i][k].innerHTML === '') {
-          matrix[i][k].innerHTML = matrix[i][k - 1].innerHTML;
-          restoreCell(matrix[i][k - 1]);
-          k++;
+        while (k !== endIndex && matrix[i][k].innerHTML === '') {
+          matrix[i][k].innerHTML = matrix[i][k - moveFunction(1)].innerHTML;
+          restoreCell(matrix[i][k - moveFunction(1)]);
+          k = moveFunction(k);
         }
 
-        while (k < matrix[i].length) {
-          if (!merged && compareCells(matrix[i][k], matrix[i][k - 1])) {
+        while (k !== endIndex) {
+          if (!merged
+            && compareCells(matrix[i][k], matrix[i][k - moveFunction(1)])) {
             matrix[i][k].innerHTML = `${parseInt(matrix[i][k].innerHTML) * 2}`;
-            matrix[i][k - 1].innerHTML = '';
-            restoreCell(matrix[i][k - 1]);
+            matrix[i][k - moveFunction(1)].innerHTML = '';
+            restoreCell(matrix[i][k - moveFunction(1)]);
 
             score += parseInt(matrix[i][k].innerHTML);
 
-            // Встановлюємо прапорець "merged" на t
+            // Встановлюємо прапорець "merged" на true
             merged = true;
           } else {
             merged = false; // Скидаємо прапорець, якщо злиття не відбулось
           }
-          k++;
+          k = moveFunction(k);
         }
       }
     }
@@ -226,139 +227,199 @@ function moveRight() {
   }
 
   updateGame();
+}
+
+function moveRight() {
+  forMoves(0, matrix.length, i => i, j => j - 1);
 }
 
 function moveLeft() {
-  const pastValues = createMatrixValueCopy();
-
-  for (let i = 0; i < matrix.length; i++) {
-    let merged = false;
-
-    for (let j = 1; j < matrix[i].length; j++) {
-      if (matrix[i][j].innerHTML !== '') {
-        let k = j - 1;
-
-        while (k >= 0 && matrix[i][k].innerHTML === '') {
-          matrix[i][k].innerHTML = matrix[i][k + 1].innerHTML;
-          restoreCell(matrix[i][k + 1]);
-          k--;
-        }
-
-        while (k >= 0) {
-          if (!merged && compareCells(matrix[i][k], matrix[i][k + 1])) {
-            matrix[i][k].innerHTML = `${parseInt(matrix[i][k].innerHTML) * 2}`;
-            matrix[i][k + 1].innerHTML = '';
-            restoreCell(matrix[i][k + 1]);
-
-            score += parseInt(matrix[i][k].innerHTML);
-
-            // Встановлюємо прапорець "merged" на true
-            merged = true;
-          } else {
-            merged = false; // Скидаємо прапорець, якщо злиття не відбулось
-          }
-          k--;
-        }
-      }
-    }
-  }
-
-  const newValues = createMatrixValueCopy();
-
-  if (isChanged(pastValues, newValues)) {
-    spawnNewNumber(requiredNumber());
-  }
-
-  updateGame();
+  forMoves(0, matrix.length, i => i, j => j + 1);
 }
 
 function moveUp() {
-  const pastValues = createMatrixValueCopy();
-
-  for (let j = 0; j < matrix[0].length; j++) {
-    let merged = false;
-
-    for (let i = 1; i < matrix.length; i++) {
-      if (matrix[i][j].innerHTML !== '') {
-        let k = i - 1;
-
-        while (k >= 0 && matrix[k][j].innerHTML === '') {
-          matrix[k][j].innerHTML = matrix[k + 1][j].innerHTML;
-          restoreCell(matrix[k + 1][j]);
-          k--;
-        }
-
-        while (k >= 0) {
-          if (!merged && compareCells(matrix[k][j], matrix[k + 1][j])) {
-            matrix[k][j].innerHTML = `${parseInt(matrix[k][j].innerHTML) * 2}`;
-            matrix[k + 1][j].innerHTML = '';
-            restoreCell(matrix[k + 1][j]);
-
-            score += parseInt(matrix[k][j].innerHTML);
-
-            // Встановлюємо прапорець "merged" на true
-            merged = true;
-          } else {
-            merged = false; // Скидаємо прапорець, якщо злиття не відбулось
-          }
-          k--;
-        }
-      }
-    }
-  }
-
-  const newValues = createMatrixValueCopy();
-
-  if (isChanged(pastValues, newValues)) {
-    spawnNewNumber(requiredNumber());
-  }
-
-  updateGame();
+  forMoves(0, matrix[0].length, j => j, i => i + 1);
 }
 
 function moveDown() {
-  const pastValues = createMatrixValueCopy();
-
-  for (let j = 0; j < matrix[0].length; j++) {
-    let merged = false;
-
-    for (let i = matrix.length - 2; i >= 0; i--) {
-      if (matrix[i][j].innerHTML !== '') {
-        let k = i + 1;
-
-        while (k < matrix.length && matrix[k][j].innerHTML === '') {
-          matrix[k][j].innerHTML = matrix[k - 1][j].innerHTML;
-          restoreCell(matrix[k - 1][j]);
-          k++;
-        }
-
-        while (k < matrix.length) {
-          if (!merged && compareCells(matrix[k][j], matrix[k - 1][j])) {
-            matrix[k][j].innerHTML = `${parseInt(matrix[k][j].innerHTML) * 2}`;
-            matrix[k - 1][j].innerHTML = '';
-            restoreCell(matrix[k - 1][j]);
-
-            score += parseInt(matrix[k][j].innerHTML);
-
-            // Встановлюємо прапорець "merged" на true
-            merged = true;
-          } else {
-            merged = false; // Скидаємо прапорець, якщо злиття не відбулось
-          }
-          k++;
-        }
-      }
-    }
-  }
-
-  const newValues = createMatrixValueCopy();
-
-  if (isChanged(pastValues, newValues)) {
-    spawnNewNumber(requiredNumber());
-  }
-
-  updateGame();
+  forMoves(matrix.length - 1, -1, j => j, i => i - 1);
 }
+
+// function moveRight() {
+//   const pastValues = createMatrixValueCopy();
+
+//   for (let i = 0; i < matrix.length; i++) {
+//     let merged = false;
+
+//     for (let j = matrix[i].length - 2; j >= 0; j--) {
+//       if (matrix[i][j].innerHTML !== '') {
+//         let k = j + 1;
+
+//         while (k < matrix[i].length && matrix[i][k].innerHTML === '') {
+//           matrix[i][k].innerHTML = matrix[i][k - 1].innerHTML;
+//           restoreCell(matrix[i][k - 1]);
+//           k++;
+//         }
+
+//         while (k < matrix[i].length) {
+//           if (!merged && compareCells(matrix[i][k], matrix[i][k - 1])) {
+//             matrix[i][k].innerHTML = `${parseInt(matrix[i][k].innerHTML) * 2}`;
+//             matrix[i][k - 1].innerHTML = '';
+//             restoreCell(matrix[i][k - 1]);
+
+//             score += parseInt(matrix[i][k].innerHTML);
+
+//             // Встановлюємо прапорець "merged" на t
+//             merged = true;
+//           } else {
+//             merged = false; // Скидаємо прапорець, якщо злиття не відбулось
+//           }
+//           k++;
+//         }
+//       }
+//     }
+//   }
+
+//   const newValues = createMatrixValueCopy();
+
+//   if (isChanged(pastValues, newValues)) {
+//     spawnNewNumber(requiredNumber());
+//   }
+
+//   updateGame();
+// }
+
+// function moveLeft() {
+//   const pastValues = createMatrixValueCopy();
+
+//   for (let i = 0; i < matrix.length; i++) {
+//     let merged = false;
+
+//     for (let j = 1; j < matrix[i].length; j++) {
+//       if (matrix[i][j].innerHTML !== '') {
+//         let k = j - 1;
+
+//         while (k >= 0 && matrix[i][k].innerHTML === '') {
+//           matrix[i][k].innerHTML = matrix[i][k + 1].innerHTML;
+//           restoreCell(matrix[i][k + 1]);
+//           k--;
+//         }
+
+//         while (k >= 0) {
+//           if (!merged && compareCells(matrix[i][k], matrix[i][k + 1])) {
+//             matrix[i][k].innerHTML = `${parseInt(matrix[i][k].innerHTML) * 2}`;
+//             matrix[i][k + 1].innerHTML = '';
+//             restoreCell(matrix[i][k + 1]);
+
+//             score += parseInt(matrix[i][k].innerHTML);
+
+//             // Встановлюємо прапорець "merged" на true
+//             merged = true;
+//           } else {
+//             merged = false; // Скидаємо прапорець, якщо злиття не відбулось
+//           }
+//           k--;
+//         }
+//       }
+//     }
+//   }
+
+//   const newValues = createMatrixValueCopy();
+
+//   if (isChanged(pastValues, newValues)) {
+//     spawnNewNumber(requiredNumber());
+//   }
+
+//   updateGame();
+// }
+
+// function moveUp() {
+//   const pastValues = createMatrixValueCopy();
+
+//   for (let j = 0; j < matrix[0].length; j++) {
+//     let merged = false;
+
+//     for (let i = 1; i < matrix.length; i++) {
+//       if (matrix[i][j].innerHTML !== '') {
+//         let k = i - 1;
+
+//         while (k >= 0 && matrix[k][j].innerHTML === '') {
+//           matrix[k][j].innerHTML = matrix[k + 1][j].innerHTML;
+//           restoreCell(matrix[k + 1][j]);
+//           k--;
+//         }
+
+//         while (k >= 0) {
+//           if (!merged && compareCells(matrix[k][j], matrix[k + 1][j])) {
+//             matrix[k][j].innerHTML = `${parseInt(matrix[k][j].innerHTML) * 2}`;
+//             matrix[k + 1][j].innerHTML = '';
+//             restoreCell(matrix[k + 1][j]);
+
+//             score += parseInt(matrix[k][j].innerHTML);
+
+//             // Встановлюємо прапорець "merged" на true
+//             merged = true;
+//           } else {
+//             merged = false; // Скидаємо прапорець, якщо злиття не відбулось
+//           }
+//           k--;
+//         }
+//       }
+//     }
+//   }
+
+//   const newValues = createMatrixValueCopy();
+
+//   if (isChanged(pastValues, newValues)) {
+//     spawnNewNumber(requiredNumber());
+//   }
+
+//   updateGame();
+// }
+
+// function moveDown() {
+//   const pastValues = createMatrixValueCopy();
+
+//   for (let j = 0; j < matrix[0].length; j++) {
+//     let merged = false;
+
+//     for (let i = matrix.length - 2; i >= 0; i--) {
+//       if (matrix[i][j].innerHTML !== '') {
+//         let k = i + 1;
+
+//         while (k < matrix.length && matrix[k][j].innerHTML === '') {
+//           matrix[k][j].innerHTML = matrix[k - 1][j].innerHTML;
+//           restoreCell(matrix[k - 1][j]);
+//           k++;
+//         }
+
+//         while (k < matrix.length) {
+//           if (!merged && compareCells(matrix[k][j], matrix[k - 1][j])) {
+//             matrix[k][j].innerHTML = `${parseInt(matrix[k][j].innerHTML) * 2}`;
+//             matrix[k - 1][j].innerHTML = '';
+//             restoreCell(matrix[k - 1][j]);
+
+//             score += parseInt(matrix[k][j].innerHTML);
+
+//             // Встановлюємо прапорець "merged" на true
+//             merged = true;
+//           } else {
+//             merged = false; // Скидаємо прапорець, якщо злиття не відбулось
+//           }
+//           k++;
+//         }
+//       }
+//     }
+//   }
+
+//   const newValues = createMatrixValueCopy();
+
+//   if (isChanged(pastValues, newValues)) {
+//     spawnNewNumber(requiredNumber());
+//   }
+
+//   updateGame();
+// }
 
 function isChanged(matrixA, matrixB) {
   for (let i = 0; i < matrixA.length; i++) {
