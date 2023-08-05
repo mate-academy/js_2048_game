@@ -116,8 +116,46 @@ function setCells() {
 function removeEmptyTiles(row) {
   return row.filter(num => num !== 0);
 }
+/* first version of slide function
+function slide(row) {
+  let newRow = removeEmptyTiles(row);
+
+  for (let i = 0; i < newRow.length - 1; i++) {
+    if (newRow[i] === newRow[i + 1]) {
+      newRow[i] *= 2;
+      newRow[i + 1] = 0;
+      scoreCount += newRow[i];
+
+      gameScore.innerText = scoreCount;
+    }
+  }
+
+  newRow = removeEmptyTiles(newRow);
+
+  while (newRow.length < cellsInRow) {
+    newRow.push(0);
+  }
+
+  return newRow;
+}
+*/
 
 function slide(row) {
+  const hasEmptyCells = hasEmptyTile();
+
+  let canMerge = false;
+
+  for (let i = 0; i < row.length - 1; i++) {
+    if (row[i] === row[i + 1]) {
+      canMerge = true;
+      break;
+    }
+  }
+
+  if (!hasEmptyCells && !canMerge) {
+    return row;
+  }
+
   let newRow = removeEmptyTiles(row);
 
   for (let i = 0; i < newRow.length - 1; i++) {
