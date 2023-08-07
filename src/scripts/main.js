@@ -196,6 +196,8 @@ button.addEventListener('click', () => {
     messageStart.classList.add('hidden');
   }
 
+  scoreCounter = 0;
+  score.textContent = scoreCounter;
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
   button.classList.remove('restart.active');
