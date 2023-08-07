@@ -1,5 +1,13 @@
 'use strict';
 
+const page = document.documentElement;
+const score = document.querySelector('.game-score');
+const button = document.querySelector('.button');
+const table = document.querySelector('.game-field');
+const messageStart = document.querySelector('.message-start');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
+
 // #region functions
 const randomInt = function(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -46,12 +54,14 @@ const randomNew = function() {
 const pageRefresh = function() {
   for (let row = 0; row < field.length; row++) {
     for (let cell = 0; cell < field[row].length; cell++) {
-      table.rows[row].cells[cell].className = '';
-      table.rows[row].cells[cell].classList.add('field-cell');
+      if (table.rows[row].cells[cell] !== field[row][cell]) {
+        table.rows[row].cells[cell].className = '';
+        table.rows[row].cells[cell].classList.add('field-cell');
 
-      table.rows[row].cells[cell]
-        .classList.add(`field-cell--${field[row][cell]}`);
-      table.rows[row].cells[cell].textContent = field[row][cell] || '';
+        table.rows[row].cells[cell]
+          .classList.add(`field-cell--${field[row][cell]}`);
+        table.rows[row].cells[cell].textContent = field[row][cell] || '';
+      }
     }
   }
 
@@ -175,14 +185,6 @@ const loseCheck = function() {
 };
 // #endregion
 // #region interactivePage
-const page = document.documentElement;
-const score = document.querySelector('.game-score');
-const button = document.querySelector('.button');
-const table = document.querySelector('.game-field');
-const messageStart = document.querySelector('.message-start');
-const messageLose = document.querySelector('.message-lose');
-const messageWin = document.querySelector('.message-win');
-
 let field;
 let scoreCounter = 0;
 
@@ -215,32 +217,27 @@ page.addEventListener('keydown', (eve) => {
   switch (eve.key) {
     case 'ArrowUp': {
       moveUp();
-      randomNew();
-      pageRefresh();
       break;
     }
 
     case 'ArrowDown': {
       moveDown();
-      randomNew();
-      pageRefresh();
       break;
     }
 
     case 'ArrowLeft': {
       moveLeft();
-      randomNew();
-      pageRefresh();
       break;
     }
 
     case 'ArrowRight': {
       moveRight();
-      randomNew();
-      pageRefresh();
       break;
     }
   }
+
+  randomNew();
+  pageRefresh();
 
   if (loseCheck()) {
     messageLose.classList.remove('hidden');
