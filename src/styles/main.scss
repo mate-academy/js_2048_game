@@ -10,6 +10,24 @@ body {
   font-weight: 900;
 }
 
+@keyframes fadeAndScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+.movable-cell {
+  --y: 2;
+  --x: 2;
+  position: absolute;
+  top: calc(var(--y) * 75px + 10px + var(--y) * 10px);
+  left: calc(var(--x) * 75px + 10px + var(--x) * 10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -20,6 +38,8 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: 0.1s;
+  animation: fadeAndScaleIn 1s;
 
   &--2 {
     background: #eee4da;
@@ -79,6 +99,7 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  position: relative;
 }
 
 .game-header {
@@ -133,6 +154,7 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
+  outline: 0;
 
   transition: 0.25s ease background;
 }
