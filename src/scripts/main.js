@@ -43,22 +43,18 @@ document.addEventListener('keydown', (e) => {
   switch (e.key) {
     case 'ArrowLeft':
       movedLeft();
-      setRandomTwo();
       break;
 
     case 'ArrowRight':
       movedRight();
-      setRandomTwo();
       break;
 
     case 'ArrowUp':
       movedUp();
-      setRandomTwo();
       break;
 
     case 'ArrowDown':
       movedDown();
-      setRandomTwo();
       break;
   }
 
@@ -110,6 +106,10 @@ function filterZero(row) {
   return row.filter(num => num);
 };
 
+function compareArr(prevField, fields) {
+  return JSON.stringify(prevField) !== JSON.stringify(fields);
+};
+
 function moved(row) {
   let newRow = row;
 
@@ -133,17 +133,25 @@ function moved(row) {
 };
 
 function movedLeft() {
+  const prevField = JSON.parse(JSON.stringify(field));
+
   for (let r = 0; r < rows; r++) {
     let row = field[r];
 
     row = moved(row);
     field[r] = row;
-
-    renderField();
   };
+
+  if (compareArr(prevField, field)) {
+    setRandomTwo();
+  }
+
+  renderField();
 };
 
 function movedRight() {
+  const prevField = JSON.parse(JSON.stringify(field));
+
   for (let r = 0; r < rows; r++) {
     let row = field[r];
 
@@ -153,12 +161,18 @@ function movedRight() {
 
     row.reverse();
     field[r] = row;
-
-    renderField();
   };
+
+  if (compareArr(prevField, field)) {
+    setRandomTwo();
+  }
+
+  renderField();
 };
 
 function movedUp() {
+  const prevField = JSON.parse(JSON.stringify(field));
+
   for (let c = 0; c < columns; c++) {
     let row = [field[0][c], field[1][c], field[2][c], field[3][c]];
 
@@ -167,11 +181,18 @@ function movedUp() {
     for (let r = 0; r < rows; r++) {
       field[r][c] = row[r];
     }
-    renderField();
   };
+
+  if (compareArr(prevField, field)) {
+    setRandomTwo();
+  }
+
+  renderField();
 };
 
 function movedDown() {
+  const prevField = JSON.parse(JSON.stringify(field));
+
   for (let c = 0; c < columns; c++) {
     let row = [field[0][c], field[1][c], field[2][c], field[3][c]];
 
@@ -182,8 +203,13 @@ function movedDown() {
     for (let r = 0; r < rows; r++) {
       field[r][c] = row[r];
     }
-    renderField();
   };
+
+  if (compareArr(prevField, field)) {
+    setRandomTwo();
+  }
+
+  renderField();
 };
 
 function renderField() {
