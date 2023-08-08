@@ -8,6 +8,8 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  --cell-width: 75px;
+  --cell-gap: 10px;
 }
 
 @keyframes fadeAndScaleIn {
@@ -21,8 +23,10 @@ body {
   --y: 2;
   --x: 2;
   position: absolute;
-  top: calc(var(--y) * 75px + 10px + var(--y) * 10px);
-  left: calc(var(--x) * 75px + 10px + var(--x) * 10px);
+  top: calc(var(--y) * var(--cell-width) + var(--cell-gap)
+  + var(--y) * var(--cell-gap));
+  left: calc(var(--x) * var(--cell-width)
+  + var(--cell-gap) + var(--x) * var(--cell-gap));
   display: flex;
   align-items: center;
   justify-content: center;

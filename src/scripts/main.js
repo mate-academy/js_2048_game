@@ -1,8 +1,11 @@
 /* eslint-disable max-len */
 'use strict';
 
-// const CELL_WIDTH = 75;
-// const CELL_BORDER = 10;
+// const ROW_COUNT = 4;
+// const COL_COUNT = 4;
+// const PERCENT_FOR_4 = 0.1;
+// const MAIN_START_VALUE = 2;
+// const SECONDATY_START_VALUE = 4;
 
 const cells = document.querySelectorAll('.field-cell');
 const startButton = document.querySelector('.button');
