@@ -183,6 +183,22 @@ const loseCheck = function() {
 
   return true;
 };
+
+const spawnCheck = function() {
+  let counter = 0;
+
+  for (let row = 0; row < field.length; row++) {
+    for (let cell = 0; cell < field[row].length; cell++) {
+      if (field[row][cell] !== +table.rows[row].cells[cell].textContent) {
+        counter++;
+      }
+    }
+  }
+
+  if (counter !== 0) {
+    randomNew();
+  }
+};
 // #endregion
 // #region interactivePage
 let field;
@@ -238,7 +254,7 @@ page.addEventListener('keydown', (eve) => {
     }
   }
 
-  randomNew();
+  spawnCheck();
   pageRefresh();
 
   if (loseCheck()) {
