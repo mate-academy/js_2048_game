@@ -1,3 +1,7 @@
+* {
+  outline: none;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -151,6 +155,10 @@ h1 {
 
   &:hover {
     background: #f87474;
+  }
+
+  &__active {
+    background-color: #f87474;
   }
 }
 
