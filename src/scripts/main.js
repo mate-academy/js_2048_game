@@ -9,6 +9,7 @@ const messages = document.querySelectorAll('.message');
 const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
+const backButton = gameHeader.querySelector('.back');
 
 let win = false;
 let board;
@@ -16,14 +17,6 @@ let score = 0;
 const rows = 4;
 const columns = 4;
 let gameStarted = false;
-let prevBoard = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
-
-let prevScore = 0;
 
 window.onload = function() {
   setGame();
@@ -35,6 +28,25 @@ startButton.addEventListener('click', () => {
   startButton.classList.add('restart');
   startButton.innerHTML = 'Restart';
   restartGame();
+});
+
+backButton.addEventListener('click', () => {
+  const allCeils = gameField.querySelectorAll(`.game-ceil`);
+
+  allCeils.forEach(elem => elem.remove());
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      const ceil = document.createElement('div');
+
+      ceil.id = `${r}-${c}`;
+
+      const num = board[r][c];
+
+      updateTile(ceil, num);
+      gameField.append(ceil);
+    }
+  }
 });
 
 function setGame() {
@@ -108,30 +120,6 @@ function gameLose() {
   }
 }
 
-app.addEventListener('keyup', (e) => {
-  if (gameStarted) {
-    switch (e.code) {
-      case 'ArrowLeft' :
-        slideLeft();
-        setTwoOrFour();
-        break;
-      case 'ArrowRight' :
-        slideRight();
-        setTwoOrFour();
-        break;
-      case 'ArrowUp' :
-        slideUp();
-        setTwoOrFour();
-        break;
-      case 'ArrowDown' :
-        slideDown();
-        setTwoOrFour();
-        break;
-    }
-  }
-  scoreElem.innerHTML = score;
-});
-
 function filterZero(row) {
   return row.filter(num => num !== 0);
 }
@@ -144,7 +132,6 @@ function slide(row) {
       rowSlide[i] *= 2;
       rowSlide[i + 1] = 0;
       score += rowSlide[i];
-      // prevScore = score;
     }
   }
   rowSlide = filterZero(rowSlide);
@@ -154,6 +141,51 @@ function slide(row) {
   };
 
   return rowSlide;
+}
+// #region arrows slide
+
+app.addEventListener('keyup', (e) => {
+  if (gameStarted) {
+    switch (e.code) {
+      case 'ArrowLeft' :
+        slideLeft();
+        setTwoOrFour();
+        checkForLose();
+        break;
+      case 'ArrowRight' :
+        slideRight();
+        setTwoOrFour();
+        checkForLose();
+        break;
+      case 'ArrowUp' :
+        slideUp();
+        setTwoOrFour();
+        checkForLose();
+        break;
+      case 'ArrowDown' :
+        slideDown();
+        checkForLose();
+        checkForLose();
+        break;
+    }
+  }
+  scoreElem.innerHTML = score;
+});
+
+function checkForLose() {
+  if (!hasEmptyTile()) {
+    for (let r = 0; r < rows - 1; r++) {
+      for (let c = 0; c < columns - 1; c++) {
+        if (board[r][c] === board[r + 1][c]
+          || board[r][c] === board[r][c + 1]
+          || board[r][c + 1] === board[r + 1][c + 1]
+          || board[r + 1][c] === board[r + 1][c + 1]) {
+          return;
+        }
+      }
+    }
+    gameLose();
+  }
 }
 
 function slideLeft() {
@@ -226,14 +258,10 @@ function slideDown() {
   }
 }
 
+// #endregion
+
 function setTwoOrFour() {
   if (!hasEmptyTile()) {
-    if (prevBoard === board && prevScore === score) {
-      gameLose();
-    }
-    prevScore = score;
-    prevBoard = board;
-
     return;
   }
 
@@ -273,6 +301,7 @@ function hasEmptyTile() {
   return false;
 }
 
+// #region MobileControls
 let touchstartX = 0;
 let touchstartY = 0;
 let touchendX = 0;
@@ -312,3 +341,5 @@ function handleGesure() {
     }
   }
 }
+
+// #endregion
