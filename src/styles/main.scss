@@ -1,6 +1,3 @@
-$cell-width: 75px;
-$cell-gap: 10px;
-
 body {
   margin: 0;
   display: flex;
@@ -41,16 +38,16 @@ body {
 .movable-cell {
   --y: 2;
   --x: 2;
-  width: $cell-width;
-  height: $cell-width;
+  position: absolute;
+  top: calc(var(--x) * 75px + 10px + var(--x) * 10px);
+  left: calc(var(--y) * 75px + 10px + var(--y) * 10px);
+  width: 75px;
+  height: 75px;
   color: #776e65;
   border-radius: 5px;
-  position: absolute;
   box-sizing: border-box;
   animation: fadeAndScaleIn 0.25s;
   user-select: none;
-  top: calc(var(--x) * 75px + 10px + var(--x) * 10px);
-  left: calc(var(--y) * 75px + 10px + var(--y) * 10px);
   display: flex;
   align-items: center;
   justify-content: center;
