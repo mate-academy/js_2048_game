@@ -1,5 +1,7 @@
 'use strict';
 
+const WINNING_SCORE = 2048;
+
 const columns = [[], [], [], []];
 const rows = [...document.querySelectorAll('.field-row')];
 const cells = document.querySelectorAll('.field-cell');
@@ -116,6 +118,8 @@ function arrowMove(direction) {
     case 'ArrowLeft':
       leftArrow();
       break;
+    default:
+      break;
   }
 
   cells.forEach(cell => {
@@ -147,7 +151,7 @@ function cellMerge(curr, prev) {
   curr.dataset.blocked = true;
   prev.dataset.blocked = true;
 
-  if (value === 2048) {
+  if (value === WINNING_SCORE) {
     winMessage.classList.remove('hidden');
   }
 }
