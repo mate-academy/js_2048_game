@@ -49,10 +49,8 @@ body {
   box-sizing: border-box;
   animation: fadeAndScaleIn 0.25s;
   user-select: none;
-  top: calc(var(--x) * #{$cell-width} + #{$cell-gap}
-  + var(--x) * #{$cell-gap});
-  left: calc(var(--y) * #{$cell-width}
-  + #{$cell-gap} + var(--y) * #{$cell-gap});
+  top: calc(var(--x) * 75px + 10px + var(--x) * 10px);
+  left: calc(var(--y) * 75px + 10px + var(--y) * 10px);
   display: flex;
   align-items: center;
   justify-content: center;
