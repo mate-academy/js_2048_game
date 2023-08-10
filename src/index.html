@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="64x64"
+      href="images/2048logo.png"
+    >
     <link rel="stylesheet" href="./styles/main.scss">
   </head>
   <body>
@@ -14,6 +20,11 @@
           <p class="info">
             Score: <span class="game-score">0</span>
           </p>
+
+          <p class="info">
+            Best: <span class="game-score" id="max-score">0</span>
+          </p>
+
           <button class="button start">Start</button>
         </div>
       </div>
@@ -50,12 +61,8 @@
             <td class="field-cell"></td>
           </tr>
 
-          <!-- <tr class="field-row">
-            <td class="field-cell movable-cell" style="--x: 2; --y: 0">2048</td>
-            <td class="field-cell movable-cell">B</td>
-            <td class="field-cell movable-cell">C</td>
-            <td class="field-cell movable-cell">D</td>
-          </tr> -->
+          <tr class="field-row field-row-movable">
+          </tr>
         </tbody>
       </table>
 
