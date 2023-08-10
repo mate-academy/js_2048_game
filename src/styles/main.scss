@@ -1,3 +1,6 @@
+$cell-width: 75px;
+$cell-gap: 10px;
+
 body {
   margin: 0;
   display: flex;
@@ -8,8 +11,9 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
-  --cell-width: 75px;
-  --cell-gap: 10px;
+
+  --cell-width: #{$cell-width};
+  --cell-gap: #{$cell-gap};
 }
 
 @keyframes fadeAndScaleIn {
@@ -40,17 +44,17 @@ body {
 .movable-cell {
   --y: 2;
   --x: 2;
-  width: 75px;
-  height: 75px;
+  width: $cell-width;
+  height: $cell-width;
   color: #776e65;
   border-radius: 5px;
   position: absolute;
   box-sizing: border-box;
   animation: fadeAndScaleIn 0.25s;
   user-select: none;
-  top: calc(var(--x) * var(--cell-width) + var(--cell-gap)
+  top: calc(var(--x) * #{$cell-width} + var(--cell-gap)
   + var(--x) * var(--cell-gap));
-  left: calc(var(--y) * var(--cell-width)
+  left: calc(var(--y) * #{$cell-width}
   + var(--cell-gap) + var(--y) * var(--cell-gap));
   display: flex;
   align-items: center;
