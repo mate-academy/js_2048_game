@@ -1,3 +1,6 @@
+$cell-height-width: 75px;
+$transition-animation-time: 0.3s;
+
 body {
   margin: 0;
   display: flex;
@@ -11,22 +14,57 @@ body {
 }
 
 .field-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  padding: 0;
+  width: $cell-height-width;
+  height: $cell-height-width;
   border-radius: 5px;
-  color: #776e65;
+}
+
+.running-cell {
+  position: absolute;
+  z-index: 1;
+  height: $cell-height-width;
+  width: $cell-height-width;
+  line-height: $cell-height-width;
+  color: rgba(255, 255, 255, 0);
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
   user-select: none;
+  border-radius: 5px;
+  animation: appear $transition-animation-time;
+  transition: all $transition-animation-time;
+
+  @keyframes appear {
+    0% {
+      height: 0px;
+      width: 0px;
+      line-height: 0px;
+      font-size: 0px;
+      border-radius: 50%;
+    }
+
+    100% {
+      height: $cell-height-width;
+      width: $cell-height-width;
+      line-height: $cell-height-width;
+      font-size: 24px;
+      border-radius: 5px;
+    }
+  }
 
   &--2 {
     background: #eee4da;
+    color: #776e65;
+    transition: all $transition-animation-time;
   }
 
   &--4 {
     background: #ede0c8;
+    color: #776e65;
   }
 
   &--8 {
@@ -76,8 +114,14 @@ body {
 }
 
 .game-field {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  width: 350px;
+  height: 350px;
+  justify-content: space-evenly;
+  align-content: space-evenly;
   background: #bbada0;
-  border-spacing: 10px;
   border-radius: 5px;
 }
 
@@ -163,6 +207,7 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+  transition: all $transition-animation-time;
 }
 
 .hidden {
