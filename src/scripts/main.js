@@ -83,6 +83,8 @@ class MovableCell {
     this.y = y;
     this.cell.style.setProperty('--x', x);
     this.cell.style.setProperty('--y', y);
+    this.cell.style.setProperty('top', 'calc(var(--x) * 75px + 10px + var(--x) * 10px)');
+    this.cell.style.setProperty('left', 'calc(var(--y) * 75px + 10px + var(--y) * 10px)');
 
     this.cell.addEventListener('animationend', function() {
       cell.classList.remove('merged');

@@ -39,8 +39,6 @@ body {
   --y: 2;
   --x: 2;
   position: absolute;
-  top: calc(var(--x) * 75px + 10px + var(--x) * 10px);
-  left: calc(var(--y) * 75px + 10px + var(--y) * 10px);
   width: 75px;
   height: 75px;
   color: #776e65;
