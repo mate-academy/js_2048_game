@@ -534,3 +534,53 @@ document.addEventListener('keydown', key => {
     }, 100);
   }
 });
+
+let startX;
+let startY;
+
+document.addEventListener('touchstart', touchStartHandler, { passive: false });
+
+function touchStartHandler(e) {
+  if (gameIsActive === true) {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }
+}
+
+document.addEventListener('touchend', touchEndHandler, { passive: false });
+
+function touchEndHandler(e) {
+  if (gameIsActive === true) {
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+
+    let change = false;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX > 0) {
+        // Swipe right
+        change = moveRight();
+      } else {
+        // Swipe left
+        change = moveLeft();
+      }
+    } else {
+      if (deltaY > 0) {
+        // Swipe down
+        change = moveDown();
+      } else {
+        // Swipe up
+        change = moveUp();
+      }
+    }
+
+    if (change) {
+      setTimeout(() => {
+        addRandomPlate();
+      }, 100);
+    }
+  }
+}
