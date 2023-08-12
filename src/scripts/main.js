@@ -119,10 +119,10 @@ function updateScore() {
 }
 
 function renderBoard() {
-  for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
-    for (let cellIndex = 0; cellIndex < cells; cellIndex++) {
-      const tile = gameField.rows[rowIndex].cells[cellIndex];
-      const cellValue = gameBoard[rowIndex][cellIndex];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cells; c++) {
+      const tile = gameField.rows[r].cells[c];
+      const cellValue = gameBoard[r][c];
 
       updateTile(tile, cellValue);
     }
@@ -196,7 +196,7 @@ function moveUp() {
   isLoser();
   moveScore = 0;
 
-  for (let columnIndex = 0; columnIndex < 4; columnIndex++) {
+  for (let columnIndex = 0; columnIndex < cells; columnIndex++) {
     let newColumn = [
       gameBoard[0][columnIndex],
       gameBoard[1][columnIndex],
@@ -224,7 +224,7 @@ function moveDown() {
   isLoser();
   moveScore = 0;
 
-  for (let columnIndex = 0; columnIndex < 4; columnIndex++) {
+  for (let columnIndex = 0; columnIndex < cells; columnIndex++) {
     let newColumn = [
       gameBoard[3][columnIndex],
       gameBoard[2][columnIndex],
@@ -248,21 +248,16 @@ function moveDown() {
 };
 
 function keyHandler(keyEvent) {
-  switch (keyEvent.code) {
-    case 'ArrowLeft':
-      moveLeft();
-      break;
+  const keyActions = {
+    ArrowLeft: moveLeft,
+    ArrowRight: moveRight,
+    ArrowUp: moveUp,
+    ArrowDown: moveDown,
+  };
 
-    case 'ArrowRight':
-      moveRight();
-      break;
+  const action = keyActions[keyEvent.code];
 
-    case 'ArrowUp':
-      moveUp();
-      break;
-
-    case 'ArrowDown':
-      moveDown();
-      break;
+  if (action) {
+    action();
   }
-};
+}
