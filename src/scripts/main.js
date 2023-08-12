@@ -68,25 +68,32 @@ function renderGame() {
   }));
 }
 
+const DIRECTION = {
+  up: 'up',
+  down: 'down',
+  left: 'left',
+  right: 'right',
+};
+
 function handleNewMove(keyType) {
   const minIndex = 0;
   const maxIndex = 4;
 
   switch (keyType) {
     case 'ArrowLeft':
-      handleMove(minIndex, maxIndex, 'left');
+      handleMove(minIndex, maxIndex, DIRECTION.left);
       break;
 
     case 'ArrowRight':
-      handleMove(minIndex, maxIndex, 'right');
+      handleMove(minIndex, maxIndex, DIRECTION.right);
       break;
 
     case 'ArrowUp':
-      handleMove(minIndex, maxIndex, 'up');
+      handleMove(minIndex, maxIndex, DIRECTION.up);
       break;
 
     case 'ArrowDown':
-      handleMove(minIndex, maxIndex, 'down');
+      handleMove(minIndex, maxIndex, DIRECTION.down);
       break;
 
     default:
@@ -138,18 +145,18 @@ function handleMove(minIndex, maxIndex, direction) {
 
     let row = [...game[rowIndex]];
 
-    if (direction === 'up' || direction === 'down') {
+    if (direction === DIRECTION.up || direction === DIRECTION.down) {
       row = transpose(rowIndex);
       oldRow = transpose(rowIndex);
     }
 
-    if (direction === 'right' || direction === 'down') {
+    if (direction === DIRECTION.right || direction === DIRECTION.down) {
       row.reverse();
     }
 
     row = slide(row);
 
-    if (direction === 'right' || direction === 'down') {
+    if (direction === DIRECTION.right || direction === DIRECTION.down) {
       row.reverse();
     }
 
@@ -157,7 +164,7 @@ function handleMove(minIndex, maxIndex, direction) {
       cellsWasMoved = true;
     }
 
-    if (direction === 'left' || direction === 'right') {
+    if (direction === DIRECTION.left || direction === DIRECTION.right) {
       game[rowIndex] = row;
 
       continue;
