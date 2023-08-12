@@ -146,38 +146,55 @@ function handleMove(minIndex, maxIndex, direction) {
     let row = [...game[rowIndex]];
 
     if (direction === DIRECTION.up || direction === DIRECTION.down) {
-      row = transpose(rowIndex);
       oldRow = transpose(rowIndex);
     }
 
-    if (direction === DIRECTION.right || direction === DIRECTION.down) {
-      row.reverse();
-    }
+    row = transformRow(direction, row, rowIndex);
 
-    row = slide(row);
-
-    if (direction === DIRECTION.right || direction === DIRECTION.down) {
-      row.reverse();
-    }
+    returnRow(direction, row, rowIndex);
 
     if (!rowsAreEqual(oldRow, row)) {
       cellsWasMoved = true;
     }
-
-    if (direction === DIRECTION.left || direction === DIRECTION.right) {
-      game[rowIndex] = row;
-
-      continue;
-    }
-
-    game[0][rowIndex] = row[0];
-    game[1][rowIndex] = row[1];
-    game[2][rowIndex] = row[2];
-    game[3][rowIndex] = row[3];
   }
 
   if (cellsWasMoved) {
     populateNewCell();
+  }
+}
+
+function transformRow(direction, row, rowIndex) {
+  switch (direction) {
+    case DIRECTION.up:
+      return slide(transpose(rowIndex));
+
+    case DIRECTION.down:
+      return slide(transpose(rowIndex).reverse()).reverse();
+
+    case DIRECTION.right:
+      return slide(row.reverse()).reverse();
+
+    case DIRECTION.left:
+      return slide(row);
+
+    default:
+      return row;
+  }
+}
+
+function returnRow(direction, row, rowIndex) {
+  switch (direction) {
+    case DIRECTION.left:
+    case DIRECTION.right:
+      game[rowIndex] = row;
+      break;
+
+    default:
+      game[0][rowIndex] = row[0];
+      game[1][rowIndex] = row[1];
+      game[2][rowIndex] = row[2];
+      game[3][rowIndex] = row[3];
+      break;
   }
 }
 
