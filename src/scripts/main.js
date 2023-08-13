@@ -4,6 +4,7 @@ const cellsArray = [...document.querySelectorAll('.field-cell')];
 const usedCells = [];
 const startButton = document.querySelector('button.button');
 const startMessage = document.querySelector('.message-start');
+const transitionTime = 150;
 
 function randomizer(numberToRandom = 9) {
   return Math.floor(Math.random() * numberToRandom);
@@ -62,7 +63,7 @@ startButton.addEventListener('click', () => {
   addNumberToFreeCell(2);
 });
 
-document.addEventListener('keyup', (e) => {
+document.addEventListener('keydown', (e) => {
   if (startButton.classList.contains('restart')) {
     const runningCellsArray = [...document.querySelectorAll('.running-cell')];
 
@@ -75,9 +76,10 @@ document.addEventListener('keyup', (e) => {
       cellsTops.map(cellsTop => {
         const changedCellsRow = [];
         const cellsToRemove = [];
-        const runCellsRow = runningCellsArray
-          .filter(runCell => runCell.offsetTop === cellsTop);
-        const fieldCellsRow = cellsArray
+        const runCellsRow = [...runningCellsArray]
+          .filter(runCell => runCell.offsetTop === cellsTop)
+          .sort((a, b) => a.offsetLeft - b.offsetLeft);
+        const fieldCellsRow = [...cellsArray]
           .filter(cell => cell.offsetTop === cellsTop);
 
         if (runCellsRow.length > 0) {
@@ -113,16 +115,85 @@ document.addEventListener('keyup', (e) => {
             usedCells.push(cellToMove);
           }
 
-          changedCellsRow.map(({ cell, number }) => setTimeout(() => {
-            cell.classList.add(`running-cell--${number}`);
-            cell.innerText = number;
-          }, 300));
-          cellsToRemove.map(cell => setTimeout(() => cell.remove(), 300));
+          setTimeout(() => {
+            cellsToRemove.map(cell => cell.remove());
+
+            changedCellsRow.map(({ cell, number }) => {
+              cell.classList.remove(cell.classList[cell.classList.length - 1]);
+              cell.classList.add(`running-cell--${number}`);
+              cell.innerText = number;
+            });
+          }, transitionTime);
         }
       });
 
       if (cellsMoveTimes > 0) {
-        setTimeout(() => addNumberToFreeCell(1), 300);
+        setTimeout(() => addNumberToFreeCell(1), transitionTime);
+      }
+    }
+
+    if (e.keyCode === 38) {
+      const cellsLefts = [10, 95, 180, 265];
+      let cellsMoveTimes = 0;
+
+      usedCells.length = 0;
+
+      cellsLefts.map(cellsLeft => {
+        const changedCellsRow = [];
+        const cellsToRemove = [];
+        const runCellsRow = [...runningCellsArray]
+          .filter(runCell => runCell.offsetLeft === cellsLeft)
+          .sort((a, b) => a.offsetTop - b.offsetTop);
+        const fieldCellsRow = [...cellsArray]
+          .filter(cell => cell.offsetLeft === cellsLeft);
+
+        if (runCellsRow.length > 0) {
+          for (let i = 0; i < runCellsRow.length; i++) {
+            const cellToMove = fieldCellsRow[i];
+            const curRunCell = runCellsRow[i];
+            const nextRunCell = runCellsRow[i + 1];
+
+            if (nextRunCell !== undefined && curRunCell
+              .classList[curRunCell.classList.length - 1] === nextRunCell
+              .classList[nextRunCell.classList.length - 1]) {
+              changedCellsRow.push({
+                cell: nextRunCell,
+                number: (+nextRunCell
+                  .classList[curRunCell.classList.length - 1]
+                  .slice(14) * 2),
+              });
+              curRunCell.style.top = `${cellToMove.offsetTop}px`;
+              nextRunCell.style.top = `${cellToMove.offsetTop}px`;
+              cellsToRemove.push(curRunCell);
+              usedCells.push(cellToMove);
+              runCellsRow.splice(i, 1);
+              cellsMoveTimes += 1;
+
+              continue;
+            }
+
+            if (curRunCell.offsetTop > cellToMove.offsetTop) {
+              curRunCell.style.top = `${cellToMove.offsetTop}px`;
+              cellsMoveTimes += 1;
+            }
+
+            usedCells.push(cellToMove);
+          }
+
+          setTimeout(() => {
+            cellsToRemove.map(cell => cell.remove());
+
+            changedCellsRow.map(({ cell, number }) => {
+              cell.classList.remove(cell.classList[cell.classList.length - 1]);
+              cell.classList.add(`running-cell--${number}`);
+              cell.innerText = number;
+            });
+          }, transitionTime);
+        }
+      });
+
+      if (cellsMoveTimes > 0) {
+        setTimeout(() => addNumberToFreeCell(1), transitionTime);
       }
     }
 
@@ -136,15 +207,17 @@ document.addEventListener('keyup', (e) => {
         const changedCellsRow = [];
         const cellsToRemove = [];
         const runCellsRow = [...runningCellsArray]
-          .filter(runCell => runCell.offsetTop === cellsTop);
+          .filter(runCell => runCell.offsetTop === cellsTop)
+          .sort((a, b) => b.offsetLeft - a.offsetLeft);
         const fieldCellsRow = [...cellsArray]
-          .filter(cell => cell.offsetTop === cellsTop);
+          .filter(cell => cell.offsetTop === cellsTop)
+          .reverse();
 
         if (runCellsRow.length > 0) {
           for (let i = 0; i < runCellsRow.length; i++) {
-            const cellToMove = fieldCellsRow[fieldCellsRow.length - 1 - i];
-            const curRunCell = runCellsRow[runCellsRow.length - i - 1];
-            const nextRunCell = runCellsRow[runCellsRow.length - i - 2];
+            const cellToMove = fieldCellsRow[i];
+            const curRunCell = runCellsRow[i];
+            const nextRunCell = runCellsRow[i + 1];
 
             if (nextRunCell !== undefined && curRunCell
               .classList[curRunCell.classList.length - 1] === nextRunCell
@@ -159,7 +232,7 @@ document.addEventListener('keyup', (e) => {
               nextRunCell.style.left = `${cellToMove.offsetLeft}px`;
               cellsToRemove.push(nextRunCell);
               usedCells.push(cellToMove);
-              runCellsRow.splice(runCellsRow.length - i - 2, 1);
+              runCellsRow.splice(i + 1, 1);
               cellsMoveTimes += 1;
 
               continue;
@@ -173,16 +246,86 @@ document.addEventListener('keyup', (e) => {
             usedCells.push(cellToMove);
           }
 
-          changedCellsRow.map(({ cell, number }) => setTimeout(() => {
-            cell.classList.add(`running-cell--${number}`);
-            cell.innerText = number;
-          }, 300));
-          cellsToRemove.map(cell => setTimeout(() => cell.remove(), 300));
+          setTimeout(() => {
+            cellsToRemove.map(cell => cell.remove());
+
+            changedCellsRow.map(({ cell, number }) => {
+              cell.classList.remove(cell.classList[cell.classList.length - 1]);
+              cell.classList.add(`running-cell--${number}`);
+              cell.innerText = number;
+            });
+          }, transitionTime);
         }
       });
 
       if (cellsMoveTimes > 0) {
-        setTimeout(() => addNumberToFreeCell(1), 300);
+        setTimeout(() => addNumberToFreeCell(1), transitionTime);
+      }
+    }
+
+    if (e.keyCode === 40) {
+      const cellsLefts = [10, 95, 180, 265];
+      let cellsMoveTimes = 0;
+
+      usedCells.length = 0;
+
+      cellsLefts.map(cellsLeft => {
+        const changedCellsRow = [];
+        const cellsToRemove = [];
+        const runCellsRow = [...runningCellsArray]
+          .filter(runCell => runCell.offsetLeft === cellsLeft)
+          .sort((a, b) => b.offsetTop - a.offsetTop);
+        const fieldCellsRow = [...cellsArray]
+          .filter(cell => cell.offsetLeft === cellsLeft)
+          .reverse();
+
+        if (runCellsRow.length > 0) {
+          for (let i = 0; i < runCellsRow.length; i++) {
+            const cellToMove = fieldCellsRow[i];
+            const curRunCell = runCellsRow[i];
+            const nextRunCell = runCellsRow[i + 1];
+
+            if (nextRunCell !== undefined && curRunCell
+              .classList[curRunCell.classList.length - 1] === nextRunCell
+              .classList[nextRunCell.classList.length - 1]) {
+              changedCellsRow.push({
+                cell: nextRunCell,
+                number: (+nextRunCell
+                  .classList[curRunCell.classList.length - 1]
+                  .slice(14) * 2),
+              });
+              curRunCell.style.top = `${cellToMove.offsetTop}px`;
+              nextRunCell.style.top = `${cellToMove.offsetTop}px`;
+              cellsToRemove.push(curRunCell);
+              usedCells.push(cellToMove);
+              runCellsRow.splice(i, 1);
+              cellsMoveTimes += 1;
+
+              continue;
+            }
+
+            if (curRunCell.offsetTop !== cellToMove.offsetTop) {
+              curRunCell.style.top = `${cellToMove.offsetTop}px`;
+              cellsMoveTimes += 1;
+            }
+
+            usedCells.push(cellToMove);
+          }
+
+          setTimeout(() => {
+            cellsToRemove.map(cell => cell.remove());
+
+            changedCellsRow.map(({ cell, number }) => {
+              cell.classList.remove(cell.classList[cell.classList.length - 1]);
+              cell.classList.add(`running-cell--${number}`);
+              cell.innerText = number;
+            });
+          }, transitionTime);
+        }
+      });
+
+      if (cellsMoveTimes > 0) {
+        setTimeout(() => addNumberToFreeCell(1), transitionTime);
       }
     }
   }
