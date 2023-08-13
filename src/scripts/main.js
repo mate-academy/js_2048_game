@@ -119,7 +119,6 @@ function arrowMove(direction) {
       leftArrow();
       break;
     default:
-      break;
   }
 
   cells.forEach(cell => {
