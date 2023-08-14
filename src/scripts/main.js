@@ -1,190 +1,238 @@
 'use strict';
 
-const field = document.querySelector('.game-field').firstElementChild;
-const cellList = document.querySelectorAll('TD');
 const startButton = document.querySelector('.start');
-const score = document.querySelector('.game-score');
-const rows = [...field.rows].reduce((res, el, index) => {
-  if (!res[index]) {
-    res[index] = [];
-  };
+const tableRows = document.querySelector('tbody').rows;
+const totalScore = document.querySelector('.game-score');
 
-  [...el.children].forEach((item) => {
-    res[index].push(item);
-  });
+let board;
+let score = 0;
+const rows = 4;
+const columns = 4;
+const goalNumber = 2048;
+const cellTwo = 2;
+const cellFour = 4;
 
-  return res;
-}, []);
-const cols = [...field.rows].reduce((res, el) => {
-  [...el.children].forEach((item, index) => {
-    if (!res[index]) {
-      res[index] = [];
-    };
+startButton.addEventListener('click', () => {
+  board = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
 
-    res[index].push(item);
-  });
+  score = 0;
+  showMessage('start');
+  startButton.classList.add('restart');
+  startButton.innerText = 'Restart';
+  showMessage();
 
-  return res;
-}, []);
+  generateNewCell();
+  generateNewCell();
+});
 
-startButton.addEventListener('click', e => {
-  if (!startButton.toggle) {
-    document.addEventListener('keydown', game);
-    showMessage();
-    start();
-    startButton.innerText = 'Restart';
-    startButton.classList.remove('start');
-    startButton.classList.add('restart');
-    startButton.toggle = !startButton.toggle;
-  } else {
-    document.removeEventListener('keydown', game);
-    document.addEventListener('keydown', game);
-    score.innerText = 0;
-    cellList.forEach(el => (el.innerText = ''));
-    start();
-    showMessage();
+function updateCell(cell, num) {
+  cell.innerText = '';
+  cell.classList.value = '';
+  cell.classList.add('field-cell');
+
+  if (num > 0) {
+    cell.innerText = num.toString();
+    cell.classList.add(`field-cell--${num.toString()}`);
+  }
+}
+
+function updateGame() {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      const currentCell = tableRows[i].cells[j];
+      const num = board[i][j];
+
+      updateCell(currentCell, num);
+    }
+  }
+
+  totalScore.innerText = score.toString();
+}
+
+function checkForEmpty() {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      if (board[i][j] === 0) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function generateNewCell() {
+  if (!checkForEmpty()) {
+    return;
+  }
+
+  const randomValue = Math.random() > 0.5 ? cellTwo : cellFour;
+
+  while (true) {
+    const row = Math.floor(Math.random() * rows);
+    const col = Math.floor(Math.random() * columns);
+
+    if (board[row][col] === 0) {
+      board[row][col] = randomValue;
+      break;
+    }
+
+    updateGame();
+  }
+}
+
+document.addEventListener('keyup', direction => {
+  switch (direction.code) {
+    case 'ArrowLeft':
+      moveLeft();
+      generateNewCell();
+      break;
+
+    case 'ArrowRight':
+      moveRight();
+      generateNewCell();
+      break;
+
+    case 'ArrowUp':
+      moveUp();
+      generateNewCell();
+      break;
+
+    case 'ArrowDown':
+      moveDown();
+      generateNewCell();
+      break;
+  }
+
+  if (gameLost()) {
+    showMessage('loser');
   }
 });
 
-function game(e) {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-    move(rows, e.key);
-  };
+function gameLost() {
+  let check = false;
 
-  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-    move(cols, e.key);
-  };
+  for (let i = 0; i < rows - 1; i++) {
+    for (let j = 0; j < columns - 1; j++) {
+      if (i < rows - 1) {
+        if (board[i][j] === board[i + 1][j]
+          || board[i][j] === board[i][j + 1]) {
+          check = true;
+        }
+      }
+    }
+  }
 
-  addNewNumber(rows);
-  cellClassHandler();
+  if (!check && !checkForEmpty()) {
+    return true;
+  }
+
+  return false;
 }
 
-function move(arr, direction) {
-  arr.forEach(el => {
-    let clear = getClearArray(el);
+function filterZero(row) {
+  return row.filter(el => el !== 0);
+}
 
-    for (let i = clear.length; i > 0; i--) {
-      if (clear[i - 1] && clear[i] === clear[i - 1]) {
-        clear[i] = +clear[i] + +clear[i - 1];
-        clear[i - 1] = '';
-      };
-    }
+function move(row) {
+  let newRow = filterZero(row);
 
-    clear = clear.filter(item => {
-      if (item) {
-        return item;
+  for (let i = 0; i < row.length - 1; i++) {
+    if (newRow[i] === newRow[i + 1] && isFinite(newRow[i])) {
+      newRow[i] *= 2;
+      newRow[i + 1] = 0;
+      score += newRow[i];
+
+      if (newRow[i] === goalNumber) {
+        showMessage('winner');
       }
-    });
-
-    switch (direction) {
-      case 'ArrowRight':
-      case 'ArrowDown':
-        for (let index = el.length - 1; index >= 0; index--) {
-          clear.length
-            ? el[index].innerText = clear.pop()
-            : el[index].innerText = '';
-        }
-        break;
-      case 'ArrowLeft':
-      case 'ArrowUp':
-        for (let ind = 0; ind < el.length; ind++) {
-          clear.length
-            ? el[ind].innerText = clear.shift()
-            : el[ind].innerText = '';
-        }
-        break;
     }
-  });
-
-  cellClassHandler();
-
-  cellList.forEach(el => {
-    if (+el.innerText === 2048) {
-      showMessage('win');
-    }
-  });
-};
-
-function findEmptyCell(arr) {
-  const result = [];
-
-  arr.forEach(el => {
-    el.forEach(cell => {
-      if (!cell.innerText) {
-        result.push(cell);
-      }
-    });
-  });
-
-  return result;
-};
-
-function randomCell(max) {
-  return Math.floor(Math.random() * max);
-};
-
-function addNewNumber(array) {
-  const emptyCells = findEmptyCell(array);
-  const position = randomCell(emptyCells.length);
-  let number = randomCell(10);
-
-  if (number <= 1) {
-    number = 4;
-  } else {
-    number = 2;
   }
 
-  try {
-    emptyCells[position].innerText = number;
-    score.innerText = +score.innerText + +number;
-  } catch (error) {
-    document.removeEventListener('keydown', game);
-    showMessage('lose');
+  newRow = filterZero(newRow);
+
+  while (newRow.length < columns) {
+    newRow.push(0);
   }
-};
 
-function getClearArray(arr = []) {
-  const result = [];
+  return newRow;
+}
 
-  arr.forEach(el => {
-    if (el.innerText) {
-      result.push(el.innerText);
+function moveLeft() {
+  for (let r = 0; r < rows; r++) {
+    let row = board[r];
+
+    row = move(row);
+    board[r] = row;
+  }
+
+  updateGame();
+}
+
+function moveRight() {
+  for (let r = 0; r < rows; r++) {
+    let row = board[r];
+
+    row = move(row.reverse());
+    board[r] = row.reverse();
+  }
+
+  updateGame();
+}
+
+function moveUp() {
+  for (let c = 0; c < columns; c++) {
+    let row = [];
+
+    for (let r = 0; r < rows; r++) {
+      row.push(board[r][c]);
     }
-  });
 
-  return result;
-};
+    row = move(row);
 
-function cellClassHandler() {
-  cellList.forEach(el => {
-    while (el.classList.length > 0) {
-      el.classList.remove(el.classList.item(0));
+    for (let r = 0; r < rows; r++) {
+      board[r][c] = row[r];
     }
-    el.classList.add(`field-cell`);
+  }
 
-    if (el.innerText) {
-      el.classList.add(`field-cell--${el.innerText}`);
+  updateGame();
+}
+
+function moveDown() {
+  for (let c = 0; c < columns; c++) {
+    let row = [];
+
+    for (let r = 0; r < rows; r++) {
+      row.push(board[r][c]);
     }
-  });
-};
 
-function start() {
-  addNewNumber(rows);
-  addNewNumber(rows);
-  cellClassHandler();
-};
+    row = move(row.reverse());
+    row.reverse();
+
+    for (let r = 0; r < rows; r++) {
+      board[r][c] = row[r];
+    }
+  }
+
+  updateGame();
+}
 
 function showMessage(type) {
-  const allMsg = document.querySelectorAll('.message');
+  const allMessage = document.querySelectorAll('.message');
 
   if (!type) {
-    allMsg.forEach(el => el.classList.add('hidden'));
+    allMessage.forEach(el => el.classList.add('hidden'));
 
     return;
   }
 
-  const msg = document.querySelector(`.message-${type}`);
+  const message = document.querySelector(`.message-${type}`);
 
-  allMsg.forEach(el => el.classList.add('hidden'));
-  msg.classList.remove('hidden');
+  allMessage.forEach(el => el.classList.add('hidden'));
+  message.classList.remove('hidden');
 };
