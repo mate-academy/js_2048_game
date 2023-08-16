@@ -316,6 +316,8 @@ function move(e) {
       mergeLeft(field);
       moveLeft(field);
       break;
+
+    default:
   }
 
   if (isFieldChanged(field, fieldCopy)) {
