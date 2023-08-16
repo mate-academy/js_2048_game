@@ -182,30 +182,39 @@ function moveDown() {
   }
 }
 
+function saveBoardState() {
+  return JSON.parse(JSON.stringify(board));
+}
+
+function isBoardStateChanged(originalBoard, newBoard) {
+  return JSON.stringify(originalBoard) !== JSON.stringify(newBoard);
+}
+
 document.addEventListener('keyup', (e) => {
   e.preventDefault();
+
+  const originalBoard = saveBoardState();
 
   switch (e.code) {
     case 'ArrowLeft':
       moveLeft();
-      placeBlocks();
       break;
 
     case 'ArrowRight':
       moveRight();
-      placeBlocks();
       break;
 
     case 'ArrowUp':
       moveUp();
-      placeBlocks();
       break;
 
     case 'ArrowDown':
       moveDown();
-      placeBlocks();
       break;
   }
 
-  setCells();
+  if (isBoardStateChanged(originalBoard, board)) {
+    placeBlocks();
+    setCells();
+  }
 });
