@@ -9,7 +9,7 @@ const messages = document.querySelectorAll('.message');
 const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
-const backButton = gameHeader.querySelector('.back');
+// const backButton = gameHeader.querySelector('.back');
 
 let win = false;
 let board;
@@ -17,6 +17,8 @@ let score = 0;
 const rows = 4;
 const columns = 4;
 let gameStarted = false;
+
+let techCheckBoard;
 
 window.onload = function() {
   setGame();
@@ -30,24 +32,24 @@ startButton.addEventListener('click', () => {
   restartGame();
 });
 
-backButton.addEventListener('click', () => {
-  const allCeils = gameField.querySelectorAll(`.game-ceil`);
+// backButton.addEventListener('click', () => {
+//   const allCeils = gameField.querySelectorAll(`.game-ceil`);
 
-  allCeils.forEach(elem => elem.remove());
+//   allCeils.forEach(elem => elem.remove());
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      const ceil = document.createElement('div');
+//   for (let r = 0; r < rows; r++) {
+//     for (let c = 0; c < columns; c++) {
+//       const ceil = document.createElement('div');
 
-      ceil.id = `${r}-${c}`;
+//       ceil.id = `${r}-${c}`;
 
-      const num = board[r][c];
+//       const num = board[r][c];
 
-      updateTile(ceil, num);
-      gameField.append(ceil);
-    }
-  }
-});
+//       updateTile(ceil, num);
+//       gameField.append(ceil);
+//     }
+//   }
+// });
 
 function setGame() {
   score = 0;
@@ -146,31 +148,48 @@ function slide(row) {
 
 app.addEventListener('keyup', (e) => {
   if (gameStarted) {
+    techCheckBoard = [
+      [ ...board[0] ],
+      [ ...board[1] ],
+      [ ...board[2] ],
+      [ ...board[3] ],
+    ];
+
     switch (e.code) {
       case 'ArrowLeft' :
         slideLeft();
-        setTwoOrFour();
-        checkForLose();
+        CanBeMoved();
         break;
       case 'ArrowRight' :
         slideRight();
-        setTwoOrFour();
-        checkForLose();
+        CanBeMoved();
         break;
       case 'ArrowUp' :
         slideUp();
-        setTwoOrFour();
-        checkForLose();
+        CanBeMoved();
         break;
       case 'ArrowDown' :
         slideDown();
-        checkForLose();
-        checkForLose();
+        CanBeMoved();
         break;
     }
   }
   scoreElem.innerHTML = score;
 });
+
+function CanBeMoved() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (techCheckBoard[r][c] !== board[r][c]) {
+        checkForLose();
+        setTwoOrFour();
+        checkForLose();
+
+        return;
+      }
+    }
+  }
+}
 
 function checkForLose() {
   if (!hasEmptyTile()) {
