@@ -10,75 +10,107 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+.game-ceil {
+  width: 100px;
+  height: 100px;
+  border: 5px solid #bbada0;
   border-radius: 5px;
-  color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
+  background-color: #bbada0;
+
+  font-size: 40px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &--2 {
     background: #eee4da;
+    border: 0;
   }
 
   &--4 {
     background: #ede0c8;
+    border: 0;
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
+    border: 0;
   }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+    border: 0;
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+    border: 0;
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+    border: 0;
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    border: 0;
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    border: 0;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    border: 0;
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+    border: 0;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    border: 0;
+  }
+
+  &--4096 {
+    background: #974d11;
+    color: #f9f6f2;
+    border: 0;
+  }
+
+  &--8192 {
+    background: #69230d;
+    color: #f9f6f2;
+    border: 0;
   }
 }
 
 .game-field {
-  background: #bbada0;
-  border-spacing: 10px;
+  height: 421px;
+  width: 421px;
+  background: #8b8177;
+  border: 10px solid #8b8177;
   border-radius: 5px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
 }
 
 .game-header {
@@ -88,6 +120,7 @@ body {
   margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
+
 }
 
 h1 {
@@ -116,7 +149,7 @@ h1 {
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
-  margin: 0 8px 0 0;
+  margin: 0 10px 0 0;
 }
 
 .controls {
@@ -151,6 +184,14 @@ h1 {
 
   &:hover {
     background: #f87474;
+  }
+}
+
+.back {
+  background: #123561;
+
+  &:hover {
+    background: hsla(237, 54%, 56%, 0.38);
   }
 }
 
