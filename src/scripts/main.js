@@ -238,7 +238,6 @@ gameBoard.addEventListener('keydown', function(move) {
     }
 
     scoreBoard.textContent = `${score}`;
-    console.log(arrayCells);
   }
 });
 
