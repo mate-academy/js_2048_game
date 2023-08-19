@@ -10,7 +10,7 @@ body {
   font-weight: 900;
 }
 
-.field_cell {
+.field-cell {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
@@ -75,13 +75,13 @@ body {
   }
 }
 
-.game_field {
+.game-field {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
 }
 
-.game_header {
+.game-header {
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -176,7 +176,7 @@ h1 {
   width: 350px;
 }
 
-.message_win {
+.message-win {
   background: #edc22e;
   color: #f9f6f2;
 }

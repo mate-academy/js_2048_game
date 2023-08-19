@@ -3,10 +3,10 @@
 // write your code here
 
 const start = document.querySelector('.start');
-const gameBoard = document;
-const cells = document.querySelectorAll('.field_cell');
-const messageStart = document.querySelector('.message_start');
-const messageWin = document.querySelector('.message_win');
+const cells = document.querySelectorAll('.field-cell');
+const messageStart = document.querySelector('.message-start');
+const messageWin = document.querySelector('.message-win');
+const messageLose = document.querySelector('.message-lose');
 const scoreBoard = document.querySelector('.game-score');
 let score = 0;
 
@@ -18,17 +18,17 @@ let arrayCells = [
 ];
 
 const cellToRemove = [
-  'field_cell--2',
-  'field_cell--4',
-  'field_cell--8',
-  'field_cell--16',
-  'field_cell--32',
-  'field_cell--64',
-  'field_cell--128',
-  'field_cell--256',
-  'field_cell--512',
-  'field_cell--1024',
-  'field_cell--2048',
+  'field-cell--2',
+  'field-cell--4',
+  'field-cell--8',
+  'field-cell--16',
+  'field-cell--32',
+  'field-cell--64',
+  'field-cell--128',
+  'field-cell--256',
+  'field-cell--512',
+  'field-cell--1024',
+  'field-cell--2048',
 ];
 
 start.addEventListener('click', function() {
@@ -47,6 +47,7 @@ start.addEventListener('click', function() {
     this.classList.remove('restart');
     this.classList.add('start');
     messageWin.classList.add('hidden');
+    messageLose.classList.add('hidden');
     messageStart.classList.remove('hidden');
 
     cleaner();
@@ -58,61 +59,26 @@ function randomizer(min, max) {
 }
 
 function addRandomValues() {
-  const value = randomizer(0, cells.length - 1);
-  let abc;
+  const value1 = randomizer(0, cells.length - 1);
+  const value2 = randomizer(0, cells.length - 1);
 
-  const val = value % 4;
+  const row = value1 % 4;
+  const col = value2 % 4;
 
-  if (value <= 3) {
-    abc = arrayCells[0][val] > 0;
-  } else if (value <= 7) {
-    abc = arrayCells[1][val] > 0;
-  } else if (value <= 11) {
-    abc = arrayCells[2][val] > 0;
-  } else if (value <= 15) {
-    abc = arrayCells[3][val] > 0;
-  }
+  const position = col * 4 + row;
 
-  if (!abc) {
+  if (arrayCells[col][row] === 0) {
     if (randomizer(1, 10) === 10) {
-      cells[value].textContent = '4';
-      cells[value].classList.add('field_cell--4');
-      toArrayCells(value, 4);
+      cells[position].textContent = '4';
+      cells[position].classList.add('field-cell--4');
+      arrayCells[col][row] = 4;
     } else {
-      cells[value].textContent = '2';
-      cells[value].classList.add('field_cell--2');
-      toArrayCells(value);
+      cells[position].textContent = '2';
+      cells[position].classList.add('field-cell--2');
+      arrayCells[col][row] = 2;
     }
   } else {
     addRandomValues();
-  }
-}
-
-function toArrayCells(value, num = 2) {
-  const val = value % 4;
-
-  if (num === 2) {
-    if (value <= 3) {
-      arrayCells[0][val] = 2;
-    } else if (value <= 7) {
-      arrayCells[1][val] = 2;
-    } else if (value <= 11) {
-      arrayCells[2][val] = 2;
-    } else if (value <= 15) {
-      arrayCells[3][val] = 2;
-    }
-  }
-
-  if (num === 4) {
-    if (value <= 3) {
-      arrayCells[0][val] = 4;
-    } else if (value <= 7) {
-      arrayCells[1][val] = 4;
-    } else if (value <= 11) {
-      arrayCells[2][val] = 4;
-    } else if (value <= 15) {
-      arrayCells[3][val] = 4;
-    }
   }
 }
 
@@ -139,9 +105,14 @@ function cleaner() {
 function refresh() {
   for (let i = 0; i < arrayClassCells.length; i++) {
     for (let j = 0; j < arrayClassCells[i].length; j++) {
-      arrayClassCells[i][j] = `field_cell--${arrayCells[i][j]}`;
+      arrayClassCells[i][j] = `field-cell--${arrayCells[i][j]}`;
 
       const value = i * 4 + j;
+
+      cellToRemove.forEach(Name => {
+        cells[value].classList.remove(Name);
+      });
+      cells[value].textContent = ``;
 
       if (arrayCells[i][j] !== 0) {
         cells[value].classList.add(arrayClassCells[i][j]);
@@ -160,28 +131,28 @@ function refresh() {
 
 const arrayClassCells = [
   [
-    `field_cell--${0}`,
-    `field_cell--${0}`,
-    `field_cell--${0}`,
-    `field_cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
   ],
   [
-    `field_cell--${0}`,
-    `field_cell--${0}`,
-    `field_cell--${0}`,
-    `field_cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
   ],
   [
-    `field_cell--${0}`,
-    `field_cell--${0}`,
-    `field_cell--${0}`,
-    `field_cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
   ],
   [
-    `field_cell--${0}`,
-    `field_cell--${0}`,
-    `field_cell--${0}`,
-    `field_cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
+    `field-cell--${0}`,
   ],
 ];
 
@@ -195,13 +166,48 @@ function victory() {
   }
 }
 
-gameBoard.addEventListener('keydown', function(move) {
+function defeat() {
+  let canMove = false;
+
+  for (let i = 0; i < arrayCells.length; i++) {
+    for (let j = 0; j < arrayCells[i].length; j++) {
+      if (
+        arrayCells[i][j] === arrayCells[i][j + 1]
+        || arrayCells[i][j] === arrayCells[i][j - 1]
+        || arrayCells[i][j - 1] === 0
+        || arrayCells[i][j + 1] === 0
+      ) {
+        canMove = true;
+      }
+    }
+  }
+
+  for (let j = 0; j < arrayCells[0].length; j++) {
+    for (let i = 0; i < arrayCells.length; i++) {
+      if (
+        (i < 3 && arrayCells[i][j] === arrayCells[i + 1][j])
+        || (i > 0 && arrayCells[i][j] === arrayCells[i - 1][j])
+        || (i > 0 && arrayCells[i - 1][j] === 0)
+        || (i < 3 && arrayCells[i + 1][j] === 0)
+      ) {
+        canMove = true;
+      }
+    }
+  }
+
+  if (!canMove) {
+    messageLose.classList.remove('hidden');
+  }
+}
+
+document.addEventListener('keydown', function(move) {
   if (
     start.classList.contains('restart')
     && messageWin.classList.contains('hidden')
+    && messageLose.classList.contains('hidden')
   ) {
     const arrayCellsOld = JSON.parse(JSON.stringify(arrayCells));
-    let result = false;
+    let canMove = false;
 
     if (move.key === 'ArrowUp') {
       moveUp();
@@ -224,16 +230,17 @@ gameBoard.addEventListener('keydown', function(move) {
     }
 
     victory();
+    defeat();
 
     for (let i = 0; i < arrayCells.length; i++) {
       for (let j = 0; j < arrayCells[i].length; j++) {
         if (arrayCells[i][j] !== arrayCellsOld[i][j]) {
-          result = true;
+          canMove = true;
         }
       }
     }
 
-    if (result) {
+    if (canMove) {
       addRandomValues();
     }
 
@@ -244,19 +251,6 @@ gameBoard.addEventListener('keydown', function(move) {
 function moveUp() {
   for (let j = 3; j >= 0; j--) {
     const merger = [true, true, true, true];
-
-    for (let i = 3; i >= 0; i--) { // переміщення по пустих значеннях
-      if (
-        i < 3
-        && arrayCells[i + 1][j] !== undefined
-        && arrayCells[i + 1][j] !== 0
-        && arrayCells[i][j] === 0
-      ) {
-        arrayCells[i][j] = arrayCells[i + 1][j];
-        arrayCells[i + 1][j] = 0;
-        continue;
-      }
-    }
 
     for (let i = 3; i >= 0; i--) {
       if (
@@ -302,6 +296,18 @@ function moveUp() {
 
       //
 
+      // переміщення по пустих значеннях
+      if (
+        i < 3
+        && arrayCells[i + 1][j] !== undefined
+        && arrayCells[i + 1][j] !== 0
+        && arrayCells[i][j] === 0
+      ) {
+        arrayCells[i][j] = arrayCells[i + 1][j];
+        arrayCells[i + 1][j] = 0;
+        continue;
+      }
+
       if ( // Для додавання
         i < 3
         && arrayCells[i + 1][j] !== undefined
@@ -336,20 +342,6 @@ function moveUp() {
 function moveDown() {
   for (let j = 0; j < arrayCells[0].length; j++) {
     const merger = [true, true, true, true];
-
-    for (let i = 0; i < arrayCells.length; i++) {
-      // переміщення по пустих значеннях
-      if (
-        i > 0
-        && arrayCells[i][j] === 0
-        && arrayCells[i - 1][j] !== 0
-        && arrayCells[i - 1][j] !== undefined
-      ) {
-        arrayCells[i][j] = arrayCells[i - 1][j];
-        arrayCells[i - 1][j] = 0;
-        continue;
-      }
-    }
 
     for (let i = 0; i < arrayCells.length; i++) {
       if (
@@ -395,6 +387,18 @@ function moveDown() {
 
       //
 
+      // переміщення по пустих значеннях
+      if (
+        i > 0
+        && arrayCells[i][j] === 0
+        && arrayCells[i - 1][j] !== 0
+        && arrayCells[i - 1][j] !== undefined
+      ) {
+        arrayCells[i][j] = arrayCells[i - 1][j];
+        arrayCells[i - 1][j] = 0;
+        continue;
+      }
+
       if ( // Для додавання
         i > 0
         && arrayCells[i - 1][j] !== 0
@@ -432,19 +436,6 @@ function moveRight() {
     const merger = [true, true, true, true];
 
     for (let j = 0; j < arrayCells[i].length; j++) {
-      // переміщення по пустих значеннях
-      if (
-        arrayCells[i][j] === 0
-        && arrayCells[i][j - 1] !== 0
-        && arrayCells[i][j - 1] !== undefined
-      ) {
-        arrayCells[i][j] = arrayCells[i][j - 1];
-        arrayCells[i][j - 1] = 0;
-        continue;
-      }
-    }
-
-    for (let j = 0; j < arrayCells[i].length; j++) {
       if (// Для переміщення трьох нерівних
         arrayCells[i][j + 1] !== 0
         && arrayCells[i][j + 2] !== 0
@@ -472,6 +463,17 @@ function moveRight() {
       }
 
       //
+
+      // Переміщення по пустих значеннях
+      if (
+        arrayCells[i][j] === 0
+        && arrayCells[i][j - 1] !== 0
+        && arrayCells[i][j - 1] !== undefined
+      ) {
+        arrayCells[i][j] = arrayCells[i][j - 1];
+        arrayCells[i][j - 1] = 0;
+        continue;
+      }
 
       if ( // Для додавання
         arrayCells[i][j - 1] !== 0
@@ -508,18 +510,6 @@ function moveLeft() {
     const merger = [true, true, true, true];
 
     for (let j = arrayCells[i].length - 1; j >= 0; j--) {
-      if ( // Для проходження пустих значень
-        arrayCells[i][j] === 0
-        && arrayCells[i][j + 1] !== 0
-        && arrayCells[i][j + 1] !== undefined
-      ) {
-        arrayCells[i][j] = arrayCells[i][j + 1];
-        arrayCells[i][j + 1] = 0;
-        continue;
-      }
-    }
-
-    for (let j = arrayCells[i].length - 1; j >= 0; j--) {
       if ( // Для переміщення трьох нерівних
         arrayCells[i][j - 1] !== 0
         && arrayCells[i][j - 2] !== 0
@@ -547,6 +537,16 @@ function moveLeft() {
       }
 
       //
+
+      if ( // Для проходження пустих значень
+        arrayCells[i][j] === 0
+        && arrayCells[i][j + 1] !== 0
+        && arrayCells[i][j + 1] !== undefined
+      ) {
+        arrayCells[i][j] = arrayCells[i][j + 1];
+        arrayCells[i][j + 1] = 0;
+        continue;
+      }
 
       if ( // Для додавання
         arrayCells[i][j + 1] !== 0
