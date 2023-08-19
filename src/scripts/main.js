@@ -1,8 +1,6 @@
 'use strict';
 
 const startBtn = document.querySelector('.button');
-const messageWin = document.querySelector('.message-win');
-const messageStart = document.querySelector('.message-start');
 const score = document.querySelector('.game-score');
 const gameScore = document.querySelector('.game-score');
 const rows = document.querySelectorAll('.field-row');
@@ -25,7 +23,10 @@ startBtn.addEventListener('click', (e) => {
 
   if (e.target.textContent === 'Start') {
     e.target.textContent = 'Restart';
-    messageStart.classList.toggle('hidden');
+
+    mes.innerHTML = `<p class="message message-start">
+    Press "Start" to begin game. Good luck!</p>`;
+
     maxNum = 0;
     noEmpty = false;
     score.innerText = maxNum;
@@ -33,7 +34,9 @@ startBtn.addEventListener('click', (e) => {
     paint();
   } else {
     e.target.textContent = 'Start';
-    messageStart.classList.toggle('hidden');
+
+    mes.innerHTML = `<p class="message message-start">
+    Press "Start" to begin game. Good luck!</p>`;
 
     arrOfNumbers = [
       ['', '', '', ''],
@@ -51,8 +54,9 @@ startBtn.addEventListener('click', (e) => {
 
 function hasEmpty() {
   for (const item of arrOfNumbers) {
-    if (Math.max(...item) >= 2048) {
-      messageWin.classList.toggle('hidden');
+    if (Math.max(...item) >= 64) {
+      mes.innerHTML = `<p class="message message-win">
+      Winner! Congrats! You did it!</p>`;
     }
   }
 
