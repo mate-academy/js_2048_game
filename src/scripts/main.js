@@ -5,6 +5,7 @@ const score = document.querySelector('.game-score');
 const gameScore = document.querySelector('.game-score');
 const rows = document.querySelectorAll('.field-row');
 const mes = document.querySelector('.message-container');
+const tableSize = 4;
 
 let arrOfNumbers = [
   ['', '', '', ''],
@@ -172,6 +173,8 @@ const Directions = {
 };
 
 document.addEventListener('keyup', (e) => {
+  const fieldCopy = arrOfNumbers.map(arr => arr.slice());
+
   if (e.code === Directions.ArrowLeft) {
     slideLeft();
   }
@@ -187,6 +190,12 @@ document.addEventListener('keyup', (e) => {
   if (e.code === Directions.ArrowDown) {
     slideDown();
   }
+
+  if (fieldChange(arrOfNumbers, fieldCopy)) {
+    randomNum();
+  }
+
+  paint();
 });
 
 function slideLeft() {
@@ -196,7 +205,7 @@ function slideLeft() {
 
     arrOfNumbers[i] = newRow;
   }
-  randomNum();
+  // randomNum();
   paint();
 };
 
@@ -212,7 +221,7 @@ function slideRight() {
 
     arrOfNumbers[i] = newRow;
   }
-  randomNum();
+  // randomNum();
   paint();
 };
 
@@ -233,7 +242,7 @@ function slideUp() {
     arrOfNumbers[3][i] = newRow[3];
   }
 
-  randomNum();
+  // randomNum();
   paint();
 };
 
@@ -258,6 +267,22 @@ function slideDown() {
     arrOfNumbers[3][i] = newRow[3];
   }
 
-  randomNum();
+  // randomNum();
   paint();
 };
+
+function fieldChange(fieldGame, fieldCopy) {
+  if (moves === 2) {
+    return true;
+  }
+
+  for (let i = 0; i < tableSize; i++) {
+    for (let k = 0; k < tableSize; k++) {
+      if (fieldGame[i][k] !== fieldCopy[i][k]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
