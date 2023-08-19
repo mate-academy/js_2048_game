@@ -55,7 +55,7 @@ startBtn.addEventListener('click', (e) => {
 
 function hasEmpty() {
   for (const item of arrOfNumbers) {
-    if (Math.max(...item) >= 64) {
+    if (Math.max(...item) >= 2048) {
       mes.innerHTML = `<p class="message message-win">
       Winner! Congrats! You did it!</p>`;
     }
@@ -68,6 +68,7 @@ function hasEmpty() {
       }
     }
   }
+
   noEmpty = true;
 
   return false;
@@ -81,9 +82,9 @@ function randomWithProbability() {
 }
 
 function randomNum() {
-  if (!hasEmpty()) {
-    return;
-  }
+  // if (!hasEmpty()) {
+  //   return;
+  // }
 
   let x;
   let y;
@@ -282,6 +283,10 @@ function fieldChange(fieldGame, fieldCopy) {
         return true;
       }
     }
+  }
+
+  if (!hasEmpty()) {
+    return;
   }
 
   return false;
