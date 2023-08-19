@@ -10,8 +10,6 @@ class Game {
     this.initListeners();
   }
 
-  // find selectors
-
   initSelectors() {
     this.tableEl = document.querySelector('table');
     this.scoreEl = document.querySelector('.game-score');
@@ -20,8 +18,6 @@ class Game {
     this.messageStartEl = document.querySelector('.message-start');
     this.startButtonEl = document.querySelector('.button');
   }
-
-  // initialize event listeners
 
   initListeners() {
     window.addEventListener('keyup', this.handleMove);
@@ -43,8 +39,6 @@ class Game {
       }
     }
   }
-
-  // start game
 
   start() {
     this.score = 0;
@@ -70,13 +64,9 @@ class Game {
     this.render();
   }
 
-  // get 2 or 4
-
   getRandomNumber() {
     return Math.random() >= 0.9 ? 4 : 2;
   }
-
-  // free cell
 
   getRandomCell() {
     const freeCells = this.getFreeCells();
@@ -84,10 +74,6 @@ class Game {
     return freeCells[Math.floor(Math.random() * freeCells.length)];
   }
 
-  /**
-     * look for cells with value of 0
-     * and save their coordinates as [y, x]
-     */
   getFreeCells() {
     return this.matrix.reduce((freeCells, row, rowIndex) => {
       row.forEach(
@@ -98,8 +84,6 @@ class Game {
     }, []);
   }
 
-  // add random number (2 or 4) into a random free cell
-
   addNumber() {
     // get coordinates of a random free cell
     const [y, x] = this.getRandomCell();
@@ -109,8 +93,6 @@ class Game {
     this.render();
   }
 
-  // heck if it's possible to make a move
-
   canMove() {
     // first check if there are free cells
     const freeCells = this.getFreeCells();
@@ -119,8 +101,6 @@ class Game {
       return true;
     }
 
-    // check if there are two same numbers in a row
-    // (both horizontally and vertically)
     for (let y = 0; y < this.tableSize; y++) {
       for (let x = 0; x < this.tableSize; x++) {
         if (
@@ -134,13 +114,9 @@ class Game {
       }
     }
 
-    // finally return false
     return false;
   }
 
-  /**
-     * shift all non-zero elements of each row to the left
-     */
   matrixShift() {
     const emptyCells = new Array(this.tableSize).fill(0);
 
@@ -152,9 +128,6 @@ class Game {
     });
   }
 
-  /**
-     * rotate matrix to the given degree
-     */
   matrixRotate(degree) {
     switch (degree) {
       case 90:
@@ -182,16 +155,6 @@ class Game {
     }
   }
 
-  /**
-     * trigger matrix shift by rotating it
-     * to emulate shifts in different directions
-     *
-     * Examples:
-     * 0 - to emulate shift left
-     * 90 - to emulate shift down
-     * 180 - to emulate shift right
-     * 270 - to emulate shift up
-     */
   handleMove(even) {
     // don't do anything if the game is over
     if (this.gameOver) {
@@ -224,15 +187,11 @@ class Game {
     }
   }
 
-  // compare matrix
-
   hasMatrixChanged(matrixRef) {
     return this.matrix.some((row, y) =>
       row.some((val, x) => val !== matrixRef[y][x])
     );
   }
-
-  // shift matrix and merge pairs
 
   merge() {
     // deeply clone matrix
@@ -250,15 +209,10 @@ class Game {
       }
     }
 
-    // We don't need to add a new number when nothing has changed
-    // after the move e.g. when all numbers were aligned to the left
-    // and a user pressed the ArrowLeft key
     if (this.hasMatrixChanged(matrixRef)) {
       this.addNumber();
     }
   }
-
-  // render the matrix and show win/lose messages
 
   render() {
     const { rows } = this.tableEl;
@@ -282,7 +236,6 @@ class Game {
       })
     );
 
-    // show a win massage when 2048 has been collected
     if (
       this.matrix.some((row) => row.some((el) => el === 2048))
       && !this.hasWon
@@ -295,7 +248,6 @@ class Game {
       }, 8000);
     }
 
-    // show a game over massage when there are no possible moves left
     if (!this.canMove()) {
       this.messageLoseEl.classList.remove('hidden');
       this.gameOver = true;
