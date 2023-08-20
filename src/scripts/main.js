@@ -82,10 +82,6 @@ function randomWithProbability() {
 }
 
 function randomNum() {
-  // if (!hasEmpty()) {
-  //   return;
-  // }
-
   let x;
   let y;
   const value = randomWithProbability();
@@ -206,7 +202,7 @@ function slideLeft() {
 
     arrOfNumbers[i] = newRow;
   }
-  // randomNum();
+
   paint();
 };
 
@@ -222,7 +218,7 @@ function slideRight() {
 
     arrOfNumbers[i] = newRow;
   }
-  // randomNum();
+
   paint();
 };
 
@@ -243,7 +239,6 @@ function slideUp() {
     arrOfNumbers[3][i] = newRow[3];
   }
 
-  // randomNum();
   paint();
 };
 
@@ -268,7 +263,6 @@ function slideDown() {
     arrOfNumbers[3][i] = newRow[3];
   }
 
-  // randomNum();
   paint();
 };
 
