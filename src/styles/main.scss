@@ -136,6 +136,11 @@ body {
   margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
+
+  @media (max-width: 640px) {
+    justify-content: center;
+    gap: 10px;
+  }
 }
 
 h1 {
@@ -182,6 +187,9 @@ h1 {
   width: 75px;
   height: 75px;
   outline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   transition: 0.25s ease background;
 }
