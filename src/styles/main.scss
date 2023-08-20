@@ -1,3 +1,7 @@
+html {
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -10,16 +14,46 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
-  background: #d6cdc4;
+@keyframes fadeAndScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@keyframes merging {
+  from {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.merged {
+  animation: merging 0.2s ease;
+}
+
+.movable-cell {
+  --y: 2;
+  --x: 2;
+  position: absolute;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
   color: #776e65;
+  border-radius: 5px;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
+  animation: fadeAndScaleIn 0.25s;
   user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: top 0.2s ease, left 0.2s ease, transform 0.1s ease;
 
   &--2 {
     background: #eee4da;
@@ -75,10 +109,24 @@ body {
   }
 }
 
+.field-cell {
+  background: #d6cdc4;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  color: #776e65;
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: center;
+  user-select: none;
+  animation: fadeAndScaleIn 1s;
+}
+
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  position: relative;
 }
 
 .game-header {
@@ -88,6 +136,11 @@ body {
   margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
+
+  @media (max-width: 640px) {
+    justify-content: center;
+    gap: 10px;
+  }
 }
 
 h1 {
@@ -133,6 +186,10 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
+  outline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   transition: 0.25s ease background;
 }
