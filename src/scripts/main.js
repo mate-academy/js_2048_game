@@ -83,8 +83,8 @@ class MovableCell {
     this.y = y;
     this.cell.style.setProperty('--x', x);
     this.cell.style.setProperty('--y', y);
-    this.cell.style.setProperty('top', 'calc(var(--x) * 75px + 10px + var(--x) * 10px)');
-    this.cell.style.setProperty('left', 'calc(var(--y) * 75px + 10px + var(--y) * 10px)');
+    this.cell.style.setProperty('top', 'calc(var(--x) * 60px + 10px + var(--x) * 10px)');
+    this.cell.style.setProperty('left', 'calc(var(--y) * 60px + 10px + var(--y) * 10px)');
 
     this.cell.addEventListener('animationend', function() {
       cell.classList.remove('merged');
@@ -550,6 +550,8 @@ function touchStartHandler(e) {
 document.addEventListener('touchend', touchEndHandler, { passive: false });
 
 function touchEndHandler(e) {
+  e.preventDefault();
+
   if (gameIsActive === true) {
     const endX = e.changedTouches[0].clientX;
     const endY = e.changedTouches[0].clientY;
