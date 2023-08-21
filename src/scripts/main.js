@@ -28,7 +28,7 @@ function addNumberToFreeCell(cellNumber) {
     const freeCells = cellsArray.filter(cell => !usedCells.includes(cell));
     const randomCell = freeCells[randomizer(freeCells.length - 1)];
     const randomCellClass = randomizer() === 4
-      ? 'running-cell--1024' : 'running-cell--512';
+      ? 'running-cell--4' : 'running-cell--2';
 
     usedCells.push(randomCell);
     runningCell.classList.add('running-cell', randomCellClass);
