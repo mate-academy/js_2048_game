@@ -51,36 +51,41 @@ function clearGame() {
 function checkForLose() {
   const tops = [10, 95, 180, 265];
   const runningCellsArray = [...document.querySelectorAll('.running-cell')];
-  const filteredAndSortedRunCells = [];
 
-  tops.forEach(topValue => runningCellsArray
-    .filter(cell => cell.offsetTop === topValue)
-    .sort((a, b) => a.offsetLeft - b.offsetLeft)
-    .forEach(cell => filteredAndSortedRunCells.push(cell))
-  );
+  if (runningCellsArray.length === 16) {
+    const filteredAndSortedRunCells = [];
 
-  let canContinueGame = false;
+    tops.forEach(topValue => runningCellsArray
+      .filter(cell => cell.offsetTop === topValue)
+      .sort((a, b) => a.offsetLeft - b.offsetLeft)
+      .forEach(cell => filteredAndSortedRunCells.push(cell))
+    );
 
-  for (let i = 0; i < filteredAndSortedRunCells.length; i++) {
-    const cell = filteredAndSortedRunCells[i];
-    const nextCell = filteredAndSortedRunCells[i + 1];
-    const nextUpCell = filteredAndSortedRunCells[i + 4];
+    let canContinueGame = false;
 
-    if (nextCell !== undefined && nextCell.innerText === cell.innerText) {
-      canContinueGame = true;
+    for (let i = 0; i < filteredAndSortedRunCells.length; i++) {
+      const cell = filteredAndSortedRunCells[i];
+      const nextCell = filteredAndSortedRunCells[i + 1];
+      const nextUpCell = filteredAndSortedRunCells[i + 4];
 
-      break;
+      if (nextCell !== undefined && nextCell.offsetTop === cell.offsetTop
+        && nextCell.innerText === cell.innerText) {
+        canContinueGame = true;
+
+        break;
+      }
+
+      if (nextUpCell !== undefined && nextUpCell.offsetLeft === cell.offsetLeft
+        && nextUpCell.innerText === cell.innerText) {
+        canContinueGame = true;
+
+        break;
+      }
     }
 
-    if (nextUpCell !== undefined && nextUpCell.innerText === cell.innerText) {
-      canContinueGame = true;
-
-      break;
+    if (canContinueGame === false) {
+      loseMessage.classList.remove('hidden');
     }
-  }
-
-  if (canContinueGame === false) {
-    loseMessage.classList.remove('hidden');
   }
 }
 
@@ -239,15 +244,14 @@ function moveCell(way) {
   });
 
   if ((cellsMoveTimes > 0 && !isWinMessage) && runningCellsArray.length < 16) {
-    setTimeout(() => addNumberToFreeCell(1), transitionTime);
-  }
-
-  if (runningCellsArray.length === 16) {
-    checkForLose();
+    setTimeout(() => {
+      addNumberToFreeCell(1);
+      checkForLose();
+    }, transitionTime);
   }
 
   if (!isWinMessage) {
-    setTimeout(() => setMove(), transitionTime);
+    setTimeout(() => setMove(), transitionTime * 1.05);
   }
 }
 
