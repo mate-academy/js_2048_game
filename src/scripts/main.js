@@ -68,14 +68,14 @@ function checkForLose() {
       const nextCell = filteredAndSortedRunCells[i + 1];
       const nextUpCell = filteredAndSortedRunCells[i + 4];
 
-      if (nextCell !== undefined && nextCell.offsetTop === cell.offsetTop
+      if (nextCell && nextCell.offsetTop === cell.offsetTop
         && nextCell.innerText === cell.innerText) {
         canContinueGame = true;
 
         break;
       }
 
-      if (nextUpCell !== undefined && nextUpCell.offsetLeft === cell.offsetLeft
+      if (nextUpCell && nextUpCell.offsetLeft === cell.offsetLeft
         && nextUpCell.innerText === cell.innerText) {
         canContinueGame = true;
 
@@ -83,7 +83,7 @@ function checkForLose() {
       }
     }
 
-    if (canContinueGame === false) {
+    if (!canContinueGame) {
       loseMessage.classList.remove('hidden');
     }
   }
