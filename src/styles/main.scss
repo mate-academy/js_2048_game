@@ -188,7 +188,8 @@ h1 {
 }
 
 .show {
-  animation: 1.2s ease-in-out infinite showAnim;
+  scale: 0;
+  animation: 0.5s ease-in-out 0.02s forwards showAnim;
 }
 
 .summed {
@@ -206,12 +207,9 @@ h1 {
 
 @keyframes showAnim {
   0% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 0.85;
+    scale: 0.3;
   }
   100% {
-    opacity: 0.5;
+    scale: 1;
   }
 }

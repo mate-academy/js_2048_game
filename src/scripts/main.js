@@ -243,6 +243,8 @@ class Game {
       ? this.columns
       : this.rows;
 
+    const currentField = this.field.splice(0);
+
     const cells = direction.map((row, y) => {
       let resultRow = row.filter(item => !item.isEmpty);
 
@@ -289,10 +291,19 @@ class Game {
     });
 
     this.setField(cells.flat());
+
+    const fieldChanged = !currentField.every((item, index, array) =>
+      item.value === this.field[index].value
+    );
+
+    if (!fieldChanged) {
+      this.refresh();
+
+      return;
+    }
+
     this.randomFill();
     this.refresh();
-
-    return this.isGameOver;
   }
 };
 
@@ -341,7 +352,7 @@ DOM_SELECTORS.START.addEventListener('click', e => {
 });
 
 document.addEventListener('keydown', e => {
-  if (!game.isGameOver) {
+  if (game.field.length > 0 && !game.isGameOver) {
     switch (e.key) {
       case BUTTONS.UP:
         game.swipe(SWIPE_STATES.TOP);
