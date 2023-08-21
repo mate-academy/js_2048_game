@@ -358,7 +358,7 @@ function moveDown() {
         continue;
       }
 
-      if ( // Для переміщення трьох  нерівних
+      if ( // Для переміщення трьох нерівних
         i === 0
         && arrayCells[i][j] !== 0
         && arrayCells[i + 1][j] !== 0
