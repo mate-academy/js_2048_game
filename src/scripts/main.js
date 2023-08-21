@@ -59,11 +59,39 @@ class Game {
   }
 
   get isGameOver() {
-    return this.score >= 2048
+    return this.winCheck()
       ? this.win() && true
-      : !this.getEmptyCells()
+      : this.loseCheck()
         ? this.lose() && true
         : false;
+  }
+
+  winCheck() {
+    return this.field.some(item => item.value >= 2048);
+  }
+
+  loseCheck() {
+    const hasEqualInRow = this.rows
+      .map(row =>
+        row.filter(item => !item.isEmpty)
+      )
+      .some(row => row.some((current, index, array) => {
+        const next = array[index + 1];
+
+        return next && next.value === current.value;
+      }));
+
+    const hasEqualInColumn = this.columns
+      .map(row =>
+        row.filter(item => !item.isEmpty)
+      )
+      .some(row => row.some((current, index, array) => {
+        const next = array[index + 1];
+
+        return next && next.value === current.value;
+      }));
+
+    return !hasEqualInColumn && !hasEqualInRow && !this.getEmptyCells();
   }
 
   win() {
@@ -180,85 +208,91 @@ class Game {
   }
 
   randomFill() {
-    const cellsToFill = [...this.getEmptyCells()];
-    const randomIndex = Math.floor(Math.random() * cellsToFill.length);
+    const cellsToFill = this.getEmptyCells();
 
-    cellsToFill[randomIndex].value = this.randomNumber();
-    cellsToFill[randomIndex].isAdded = true;
+    if (cellsToFill) {
+      const randomIndex = Math.floor(Math.random() * cellsToFill.length);
+
+      cellsToFill[randomIndex].value = this.randomNumber();
+      cellsToFill[randomIndex].isAdded = true;
+    }
   }
 
   mergeRow(row) {
     return row.map((item, x, array) => {
       const next = array[x + 1];
+      const itemEqualsNext = next && next.value === item.value;
 
-      next
-        && next.value === item.value
-        && (item.value *= 2)
-        && (item.isSummed = true)
-        && (this.score += item.value)
-        && (array.splice(x + 1, 1));
+      if (itemEqualsNext) {
+        item.value *= 2;
+        item.isSummed = true;
+        this.score += item.value;
+        array.splice(x + 1, 1);
+      }
 
       return item;
     });
   }
 
   swipe(state) {
-    if (!this.isGameOver) {
-      const direction = state === SWIPE_STATES.TOP
-        || state === SWIPE_STATES.BOTTOM
-        ? this.columns
-        : this.rows;
+    const topOrBottom = state === SWIPE_STATES.TOP
+      || state === SWIPE_STATES.BOTTOM;
+    const rightOrBottom = state === SWIPE_STATES.RIGHT
+      || state === SWIPE_STATES.BOTTOM;
+    const direction = topOrBottom
+      ? this.columns
+      : this.rows;
 
-      const cells = direction.map((row, y) => {
-        let resultRow = row.filter(item => !item.isEmpty);
+    const cells = direction.map((row, y) => {
+      let resultRow = row.filter(item => !item.isEmpty);
 
-        if (state === SWIPE_STATES.RIGHT
-          || state === SWIPE_STATES.BOTTOM) {
-          resultRow = this
-            .mergeRow([...resultRow].reverse())
-            .filter(item => item)
-            .reverse();
-        } else {
-          resultRow = this
-            .mergeRow(resultRow)
-            .filter(item => item);
+      if (rightOrBottom) {
+        resultRow = this
+          .mergeRow([...resultRow].reverse())
+          .filter(item => item)
+          .reverse();
+      } else {
+        resultRow = this
+          .mergeRow(resultRow)
+          .filter(item => item);
+      }
+
+      resultRow.forEach((item, x, array) => {
+        const fromEnd = [...array].reverse()[x];
+
+        switch (state) {
+          case SWIPE_STATES.TOP :
+            item.x = y;
+            item.y = x;
+            break;
+
+          case SWIPE_STATES.BOTTOM :
+            fromEnd.x = y;
+            fromEnd.y = (FIELD_SIZE.COLUMNS - 1) - x;
+            break;
+
+          case SWIPE_STATES.LEFT :
+            item.x = x;
+            item.y = y;
+            break;
+
+          case SWIPE_STATES.RIGHT :
+            fromEnd.x = (FIELD_SIZE.ROWS - 1) - x;
+            fromEnd.y = y;
+            break;
+
+          default: break;
         }
-
-        resultRow.forEach((item, x, array) => {
-          const fromEnd = [...array].reverse()[x];
-
-          switch (state) {
-            case SWIPE_STATES.TOP :
-              item.x = y;
-              item.y = x;
-              break;
-
-            case SWIPE_STATES.BOTTOM :
-              fromEnd.x = y;
-              fromEnd.y = (FIELD_SIZE.COLUMNS - 1) - x;
-              break;
-
-            case SWIPE_STATES.LEFT :
-              item.x = x;
-              item.y = y;
-              break;
-
-            case SWIPE_STATES.RIGHT :
-              fromEnd.x = (FIELD_SIZE.ROWS - 1) - x;
-              fromEnd.y = y;
-              break;
-
-            default: break;
-          }
-        });
-
-        return resultRow;
       });
 
-      this.setField(cells.flat());
-      this.randomFill();
-      this.refresh();
-    }
+      return resultRow;
+    });
+
+    this.setField(cells.flat());
+    this.randomFill();
+    this.refresh();
+
+    return this.isGameOver;
   }
 };
 
@@ -307,24 +341,26 @@ DOM_SELECTORS.START.addEventListener('click', e => {
 });
 
 document.addEventListener('keydown', e => {
-  switch (e.key) {
-    case BUTTONS.UP:
-      game.swipe(SWIPE_STATES.TOP);
-      break;
+  if (!game.isGameOver) {
+    switch (e.key) {
+      case BUTTONS.UP:
+        game.swipe(SWIPE_STATES.TOP);
+        break;
 
-    case BUTTONS.DOWN:
-      game.swipe(SWIPE_STATES.BOTTOM);
-      break;
+      case BUTTONS.DOWN:
+        game.swipe(SWIPE_STATES.BOTTOM);
+        break;
 
-    case BUTTONS.LEFT:
-      game.swipe(SWIPE_STATES.LEFT);
-      break;
+      case BUTTONS.LEFT:
+        game.swipe(SWIPE_STATES.LEFT);
+        break;
 
-    case BUTTONS.RIGHT:
-      game.swipe(SWIPE_STATES.RIGHT);
-      break;
+      case BUTTONS.RIGHT:
+        game.swipe(SWIPE_STATES.RIGHT);
+        break;
 
-    default:
-      break;
+      default:
+        break;
+    }
   }
 });
