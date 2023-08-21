@@ -201,6 +201,17 @@ h1 {
   border-radius: 5px;
   font-size: 20px;
   transition: all $transition-animation-time;
+  animation: showMessage $transition-animation-time;
+
+  @keyframes showMessage {
+    0% {
+      transform: scale(0);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
 }
 
 .hidden {

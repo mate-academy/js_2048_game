@@ -4,10 +4,11 @@ const cellsArray = [...document.querySelectorAll('.field-cell')];
 const usedCells = [];
 const startButton = document.querySelector('button.button');
 const startMessage = document.querySelector('.message-start');
-// const loseMessage = document.querySelector('.message-lose');
-// const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
+const winMessage = document.querySelector('.message-win');
 const score = document.querySelector('.game-score');
 const transitionTime = 300;
+let isWinMessage = false;
 
 function randomizer(numberToRandom = 9) {
   return Math.floor(Math.random() * numberToRandom);
@@ -27,23 +28,69 @@ function addNumberToFreeCell(cellNumber) {
     const freeCells = cellsArray.filter(cell => !usedCells.includes(cell));
     const randomCell = freeCells[randomizer(freeCells.length - 1)];
     const randomCellClass = randomizer() === 4
-      ? 'running-cell--4' : 'running-cell--2';
+      ? 'running-cell--1024' : 'running-cell--512';
 
     usedCells.push(randomCell);
     runningCell.classList.add('running-cell', randomCellClass);
     runningCell.style.top = `${randomCell.offsetTop}px`;
     runningCell.style.left = `${randomCell.offsetLeft}px`;
-    runningCell.innerText = randomCellClass.slice(-1);
+    runningCell.innerText = randomCellClass.slice(14);
     cellsArray[0].parentElement.append(runningCell);
   }
 };
 
 function clearGame() {
   [...document.querySelectorAll('.running-cell')].map(cell => cell.remove());
-  // loseMessage.classList.add('hidden');
+  isWinMessage = false;
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
   usedCells.length = 0;
   score.innerHTML = 0;
 };
+
+function checkForLose() {
+  const tops = [10, 95, 180, 265];
+  const runningCellsArray = [...document.querySelectorAll('.running-cell')];
+  const filteredAndSortedRunCells = [];
+
+  tops.forEach(topValue => runningCellsArray
+    .filter(cell => cell.offsetTop === topValue)
+    .sort((a, b) => a.offsetLeft - b.offsetLeft)
+    .forEach(cell => filteredAndSortedRunCells.push(cell))
+  );
+
+  let canContinueGame = false;
+
+  for (let i = 0; i < filteredAndSortedRunCells.length; i++) {
+    const cell = filteredAndSortedRunCells[i];
+    const nextCell = filteredAndSortedRunCells[i + 1];
+    const nextUpCell = filteredAndSortedRunCells[i + 4];
+
+    if (nextCell !== undefined && nextCell.innerText === cell.innerText) {
+      canContinueGame = true;
+
+      break;
+    }
+
+    if (nextUpCell !== undefined && nextUpCell.innerText === cell.innerText) {
+      canContinueGame = true;
+
+      break;
+    }
+  }
+
+  if (canContinueGame === false) {
+    loseMessage.classList.remove('hidden');
+  }
+}
+
+function checkForWin(numberOfCell) {
+  if (numberOfCell === 2048) {
+    isWinMessage = true;
+    document.removeEventListener('keydown', handleInput);
+    setTimeout(() => winMessage.classList.remove('hidden'), transitionTime);
+  }
+}
 
 function moveCell(way) {
   const cellsTops = [10, 95, 180, 265];
@@ -106,21 +153,27 @@ function moveCell(way) {
         if (nextRunCell !== undefined
           && +curRunCell.innerHTML === +nextRunCell.innerHTML) {
           if (way === 37 || way === 38) {
+            const number = +nextRunCell.innerHTML * 2;
+
             changedCellsRow.push({
               cell: nextRunCell,
-              number: +nextRunCell.innerHTML * 2,
+              number: number,
             });
             cellsToRemove.push(curRunCell);
             runCellsRow.splice(i, 1);
+            checkForWin(number);
           }
 
           if (way === 39 || way === 40) {
+            const number = +curRunCell.innerHTML * 2;
+
             changedCellsRow.push({
               cell: curRunCell,
-              number: +curRunCell.innerHTML * 2,
+              number: number,
             });
             cellsToRemove.push(nextRunCell);
             runCellsRow.splice(i + 1, 1);
+            checkForWin(number);
           }
 
           if (way === 37 || way === 39) {
@@ -185,290 +238,18 @@ function moveCell(way) {
     }
   });
 
-  if (cellsMoveTimes > 0) {
+  if ((cellsMoveTimes > 0 && !isWinMessage) && runningCellsArray.length < 16) {
     setTimeout(() => addNumberToFreeCell(1), transitionTime);
   }
 
-  setTimeout(() => setMove(), transitionTime * 1.2);
+  if (runningCellsArray.length === 16) {
+    checkForLose();
+  }
+
+  if (!isWinMessage) {
+    setTimeout(() => setMove(), transitionTime);
+  }
 }
-
-// function moveLeft() {
-//   const cellsTops = [10, 95, 180, 265];
-//   const runningCellsArray = [...document.querySelectorAll('.running-cell')];
-//   let cellsMoveTimes = 0;
-
-//   usedCells.length = 0;
-
-//   cellsTops.map(cellsTop => {
-//     const runCellsRow = [...runningCellsArray]
-//       .filter(runCell => runCell.offsetTop === cellsTop)
-//       .sort((a, b) => a.offsetLeft - b.offsetLeft);
-//     const fieldCellsRow = [...cellsArray]
-//       .filter(cell => cell.offsetTop === cellsTop);
-
-//     if (runCellsRow.length > 0) {
-//       const changedCellsRow = [];
-//       const cellsToRemove = [];
-
-//       for (let i = 0; i < runCellsRow.length; i++) {
-//         const cellToMove = fieldCellsRow[i];
-//         const curRunCell = runCellsRow[i];
-//         const nextRunCell = runCellsRow[i + 1];
-
-//         if (nextRunCell !== undefined
-//           && +curRunCell.innerHTML === +nextRunCell.innerHTML) {
-//           changedCellsRow.push({
-//             cell: nextRunCell,
-//             number: +nextRunCell.innerHTML * 2,
-//           });
-//           curRunCell.style.left = `${cellToMove.offsetLeft}px`;
-//           nextRunCell.style.left = `${cellToMove.offsetLeft}px`;
-//           cellsToRemove.push(curRunCell);
-//           usedCells.push(cellToMove);
-//           runCellsRow.splice(i, 1);
-//           cellsMoveTimes += 1;
-
-//           continue;
-//         }
-
-//         if (cellToMove.offsetLeft < curRunCell.offsetLeft) {
-//           curRunCell.style.left = `${cellToMove.offsetLeft}px`;
-//           cellsMoveTimes += 1;
-//         }
-
-//         usedCells.push(cellToMove);
-//       }
-
-//       setTimeout(() => {
-//         let scoreValue = 0;
-
-//         changedCellsRow.map(({ cell, number }) => {
-//           cell.classList.remove(`running-cell--${number / 2}`);
-//           cell.classList.add(`running-cell--${number}`);
-//           cell.innerText = number;
-//           scoreValue += number;
-//         });
-//         cellsToRemove.map(cell => cell.remove());
-//         score.innerHTML = +score.innerHTML + scoreValue;
-//       }, transitionTime);
-//     }
-//   });
-
-//   if (cellsMoveTimes > 0) {
-//     setTimeout(() => addNumberToFreeCell(1), transitionTime);
-//   }
-
-//   setTimeout(() => setMove(), transitionTime * 1.2);
-// }
-
-// function moveUp() {
-//   const cellsLefts = [10, 95, 180, 265];
-//   const runningCellsArray = [...document.querySelectorAll('.running-cell')];
-//   let cellsMoveTimes = 0;
-
-//   usedCells.length = 0;
-
-//   cellsLefts.map(cellsLeft => {
-//     const runCellsRow = [...runningCellsArray]
-//       .filter(runCell => runCell.offsetLeft === cellsLeft)
-//       .sort((a, b) => a.offsetTop - b.offsetTop);
-//     const fieldCellsRow = [...cellsArray]
-//       .filter(cell => cell.offsetLeft === cellsLeft);
-
-//     if (runCellsRow.length > 0) {
-//       const changedCellsRow = [];
-//       const cellsToRemove = [];
-
-//       for (let i = 0; i < runCellsRow.length; i++) {
-//         const cellToMove = fieldCellsRow[i];
-//         const curRunCell = runCellsRow[i];
-//         const nextRunCell = runCellsRow[i + 1];
-
-//         if (nextRunCell !== undefined
-//           && +curRunCell.innerHTML === +nextRunCell.innerHTML) {
-//           changedCellsRow.push({
-//             cell: nextRunCell,
-//             number: (+nextRunCell.innerHTML * 2),
-//           });
-//           curRunCell.style.top = `${cellToMove.offsetTop}px`;
-//           nextRunCell.style.top = `${cellToMove.offsetTop}px`;
-//           cellsToRemove.push(curRunCell);
-//           usedCells.push(cellToMove);
-//           runCellsRow.splice(i, 1);
-//           cellsMoveTimes += 1;
-
-//           continue;
-//         }
-
-//         if (cellToMove.offsetTop < curRunCell.offsetTop) {
-//           curRunCell.style.top = `${cellToMove.offsetTop}px`;
-//           cellsMoveTimes += 1;
-//         }
-
-//         usedCells.push(cellToMove);
-//       }
-
-//       setTimeout(() => {
-//         let scoreValue = 0;
-
-//         changedCellsRow.map(({ cell, number }) => {
-//           cell.classList.remove(`running-cell--${number / 2}`);
-//           cell.classList.add(`running-cell--${number}`);
-//           cell.innerText = number;
-//           scoreValue += number;
-//         });
-//         cellsToRemove.map(cell => cell.remove());
-//         score.innerHTML = +score.innerHTML + scoreValue;
-//       }, transitionTime);
-//     }
-//   });
-
-//   if (cellsMoveTimes > 0) {
-//     setTimeout(() => addNumberToFreeCell(1), transitionTime);
-//   }
-
-//   setTimeout(() => setMove(), transitionTime * 1.2);
-// }
-
-// function moveRight() {
-//   const cellsTops = [10, 95, 180, 265];
-//   const runningCellsArray = [...document.querySelectorAll('.running-cell')];
-//   let cellsMoveTimes = 0;
-
-//   usedCells.length = 0;
-
-//   cellsTops.map(cellsTop => {
-//     const runCellsRow = [...runningCellsArray]
-//       .filter(runCell => runCell.offsetTop === cellsTop)
-//       .sort((a, b) => b.offsetLeft - a.offsetLeft);
-//     const fieldCellsRow = [...cellsArray]
-//       .filter(cell => cell.offsetTop === cellsTop)
-//       .reverse();
-
-//     if (runCellsRow.length > 0) {
-//       const changedCellsRow = [];
-//       const cellsToRemove = [];
-
-//       for (let i = 0; i < runCellsRow.length; i++) {
-//         const cellToMove = fieldCellsRow[i];
-//         const curRunCell = runCellsRow[i];
-//         const nextRunCell = runCellsRow[i + 1];
-
-//         if (nextRunCell !== undefined
-//           && +curRunCell.innerHTML === +nextRunCell.innerHTML) {
-//           changedCellsRow.push({
-//             cell: curRunCell,
-//             number: (+curRunCell.innerHTML * 2),
-//           });
-//           curRunCell.style.left = `${cellToMove.offsetLeft}px`;
-//           nextRunCell.style.left = `${cellToMove.offsetLeft}px`;
-//           cellsToRemove.push(nextRunCell);
-//           usedCells.push(cellToMove);
-//           runCellsRow.splice(i + 1, 1);
-//           cellsMoveTimes += 1;
-
-//           continue;
-//         }
-
-//         if (curRunCell.offsetLeft < cellToMove.offsetLeft) {
-//           curRunCell.style.left = `${cellToMove.offsetLeft}px`;
-//           cellsMoveTimes += 1;
-//         }
-
-//         usedCells.push(cellToMove);
-//       }
-
-//       setTimeout(() => {
-//         let scoreValue = 0;
-
-//         changedCellsRow.map(({ cell, number }) => {
-//           cell.classList.remove(`running-cell--${number / 2}`);
-//           cell.classList.add(`running-cell--${number}`);
-//           cell.innerText = number;
-//           scoreValue += number;
-//         });
-//         cellsToRemove.map(cell => cell.remove());
-//         score.innerHTML = +score.innerHTML + scoreValue;
-//       }, transitionTime);
-//     }
-//   });
-
-//   if (cellsMoveTimes > 0) {
-//     setTimeout(() => addNumberToFreeCell(1), transitionTime);
-//   }
-
-//   setTimeout(() => setMove(), transitionTime * 1.2);
-// }
-
-// function moveDown() {
-//   const cellsLefts = [10, 95, 180, 265];
-//   const runningCellsArray = [...document.querySelectorAll('.running-cell')];
-//   let cellsMoveTimes = 0;
-
-//   usedCells.length = 0;
-
-//   cellsLefts.map(cellsLeft => {
-//     const runCellsRow = [...runningCellsArray]
-//       .filter(runCell => runCell.offsetLeft === cellsLeft)
-//       .sort((a, b) => b.offsetTop - a.offsetTop);
-//     const fieldCellsRow = [...cellsArray]
-//       .filter(cell => cell.offsetLeft === cellsLeft)
-//       .reverse();
-
-//     if (runCellsRow.length > 0) {
-//       const changedCellsRow = [];
-//       const cellsToRemove = [];
-
-//       for (let i = 0; i < runCellsRow.length; i++) {
-//         const cellToMove = fieldCellsRow[i];
-//         const curRunCell = runCellsRow[i];
-//         const nextRunCell = runCellsRow[i + 1];
-
-//         if (nextRunCell !== undefined
-//           && +curRunCell.innerHTML === +nextRunCell.innerHTML) {
-//           changedCellsRow.push({
-//             cell: curRunCell,
-//             number: (+curRunCell.innerHTML * 2),
-//           });
-//           curRunCell.style.top = `${cellToMove.offsetTop}px`;
-//           nextRunCell.style.top = `${cellToMove.offsetTop}px`;
-//           cellsToRemove.push(nextRunCell);
-//           usedCells.push(cellToMove);
-//           runCellsRow.splice(i + 1, 1);
-//           cellsMoveTimes += 1;
-
-//           continue;
-//         }
-
-//         if (curRunCell.offsetTop < cellToMove.offsetTop) {
-//           curRunCell.style.top = `${cellToMove.offsetTop}px`;
-//           cellsMoveTimes += 1;
-//         }
-
-//         usedCells.push(cellToMove);
-//       }
-
-//       setTimeout(() => {
-//         let scoreValue = 0;
-
-//         changedCellsRow.map(({ cell, number }) => {
-//           cell.classList.remove(`running-cell--${number / 2}`);
-//           cell.classList.add(`running-cell--${number}`);
-//           cell.innerText = number;
-//           scoreValue += number;
-//         });
-//         cellsToRemove.map(cell => cell.remove());
-//         score.innerHTML = +score.innerHTML + scoreValue;
-//       }, transitionTime);
-//     }
-//   });
-
-//   if (cellsMoveTimes > 0) {
-//     setTimeout(() => addNumberToFreeCell(1), transitionTime);
-//   }
-
-//   setTimeout(() => setMove(), transitionTime * 1.2);
-// }
 
 startButton.addEventListener('click', () => {
   if (startButton.classList.contains('start')) {
