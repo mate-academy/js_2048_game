@@ -61,9 +61,10 @@ document.addEventListener('keydown', (e) => {
   }
 
   if (move > 0) {
-    setTimeout(addCard, 150);
-
-    move = 0;
+    setTimeout(() => {
+      addCard();
+      move = 0;
+    }, 150);
   }
 
   function goDown() {
@@ -235,35 +236,6 @@ document.addEventListener('keydown', (e) => {
     leftMerge();
     leftShift();
 
-    function leftShift() {
-      let min = 0;
-
-      for (let i = 0; i < cells.length; i++) {
-        if (i === (min + 4)) {
-          min += 4;
-        }
-
-        if (filledCheck(cells[i])) {
-          let newIndex;
-
-          for (let j = (i - 1); j >= min; j--) {
-            if (emptyCheck(cells[j])) {
-              newIndex = j;
-            } else {
-              break;
-            }
-          }
-
-          if (newIndex >= 0) {
-            const steps = i - newIndex;
-            const currentCard = cells[i].children[0];
-
-            shift(currentCard, newIndex, steps, 'left');
-          }
-        }
-      }
-    }
-
     function leftMerge() {
       let max = 4;
 
@@ -288,6 +260,35 @@ document.addEventListener('keydown', (e) => {
 
               break;
             }
+          }
+        }
+      }
+    }
+
+    function leftShift() {
+      let min = 0;
+
+      for (let i = 0; i < cells.length; i++) {
+        if (i === (min + 4)) {
+          min += 4;
+        }
+
+        if (filledCheck(cells[i])) {
+          let newIndex;
+
+          for (let j = (i - 1); j >= min; j--) {
+            if (emptyCheck(cells[j])) {
+              newIndex = j;
+            } else {
+              break;
+            }
+          }
+
+          if (newIndex >= 0) {
+            const steps = i - newIndex;
+            const currentCard = cells[i].children[0];
+
+            shift(currentCard, newIndex, steps, 'left');
           }
         }
       }
@@ -431,71 +432,9 @@ function addCard() {
 
   // checking if is there any possible moves
   // to discover whether the game is lost
-  if (maxIndex === 1) {
-    const currentMove = move;
 
-    for (let i = (cells.length - 1); i >= 0; i--) {
-      if (filledCheck(cells[i])) {
-        const sumCard = cells[i].children[0];
-        const current = sumCard.textContent;
-
-        for (let j = (i - 4); j >= 0; j -= 4) {
-          if (filledCheck(cells[j])) {
-            const addedCard = cells[j].children[0];
-
-            if (addedCard.textContent === current) {
-              move++;
-            }
-
-            break;
-          }
-        }
-      }
-    }
-
-    for (let i = 0; i < cells.length; i++) {
-      if (filledCheck(cells[i])) {
-        const sumCard = cells[i].children[0];
-        const current = sumCard.textContent;
-
-        for (let j = (i + 4); j < cells.length; j += 4) {
-          if (filledCheck(cells[j])) {
-            const addedCard = cells[j].children[0];
-
-            if (addedCard.textContent === current) {
-              move++;
-            }
-
-            break;
-          }
-        }
-      }
-    }
-
-    let min = cells.length - 4;
-
-    for (let i = (cells.length - 1); i >= 0; i--) {
-      if (i < min) {
-        min -= 4;
-      }
-
-      if (filledCheck(cells[i])) {
-        const sumCard = cells[i].children[0];
-        const current = sumCard.textContent;
-
-        for (let j = (i - 1); j >= min; j--) {
-          if (filledCheck(cells[j])) {
-            const addedCard = cells[j].children[0];
-
-            if (addedCard.textContent === current) {
-              move++;
-            }
-
-            break;
-          }
-        }
-      }
-    }
+  if ([...cells].every(cell => filledCheck(cell))) {
+    move = 0;
 
     let max = 4;
 
@@ -504,25 +443,24 @@ function addCard() {
         max += 4;
       }
 
-      if (filledCheck(cells[i])) {
-        const sumCard = cells[i].children[0];
-        const current = sumCard.textContent;
+      const current = cells[i].children[0].textContent;
 
-        for (let j = (i + 1); j < max; j++) {
-          if (filledCheck(cells[j])) {
-            const addedCard = cells[j].children[0];
+      if ((i + 1) < max) {
+        if (cells[i + 1].children[0].textContent === current) {
+          move++;
+          break;
+        }
+      }
 
-            if (addedCard.textContent === current) {
-              move++;
-            }
-
-            break;
-          }
+      if ((i + 4) < cells.length) {
+        if (cells[i + 4].children[0].textContent === current) {
+          move++;
+          break;
         }
       }
     }
 
-    if (currentMove === move) {
+    if (move === 0) {
       if (!winMessage.classList.contains('hidden')) {
         winMessage.classList.add('hidden');
       }
