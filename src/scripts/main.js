@@ -155,10 +155,6 @@ class Game {
     });
 
     DOM_SELECTORS.SCORE.innerHTML = this.score;
-
-    if (this.score >= 2048) {
-      this.win();
-    }
   }
 
   start() {

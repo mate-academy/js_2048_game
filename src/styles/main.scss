@@ -189,7 +189,7 @@ h1 {
 
 .show {
   scale: 0;
-  animation: 0.5s ease-in-out 0.02s forwards showAnim;
+  animation: 0.5s ease-in-out forwards showAnim;
 }
 
 .summed {
