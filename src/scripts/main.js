@@ -34,24 +34,24 @@ button.addEventListener('click', e => {
   render();
 });
 
-function move(e) {
+function move(element) {
   newGameField = gameField;
 
-  switch (e.key) {
+  switch (element.key) {
     case 'ArrowLeft':
-      left();
+      goLeft();
       break;
 
     case 'ArrowRight':
-      right();
+      goRight();
       break;
 
     case 'ArrowDown':
-      down();
+      goDown();
       break;
 
     case 'ArrowUp':
-      up();
+      goUp();
       break;
 
     default:
@@ -136,7 +136,7 @@ function render() {
   gameScore.textContent = score;
 };
 
-function left() {
+function goLeft() {
   if (!checkRows()) {
     return;
   }
@@ -160,13 +160,13 @@ function left() {
   });
 }
 
-function right() {
+function goRight() {
   if (!checkRows()) {
     return;
   }
 
   reverseRows();
-  left();
+  goLeft();
   reverseRows();
 }
 
@@ -174,15 +174,15 @@ function reverseRows() {
   newGameField.forEach(row => row.reverse());
 }
 
-function down() {
+function goDown() {
   transposeGameField();
-  right();
+  goRight();
   transposeGameField();
 }
 
-function up() {
+function goUp() {
   transposeGameField();
-  left();
+  goLeft();
   transposeGameField();
 }
 
