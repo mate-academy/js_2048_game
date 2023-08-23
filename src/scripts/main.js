@@ -10,6 +10,7 @@ let scoreAmount = 0;
 let isGameStarted = false;
 let isGameWon = false;
 let isGameLost = false;
+let isGameFieldChanged = false;
 
 let currentScore = 0;
 
@@ -43,7 +44,7 @@ function initStartData() {
   isGameLost = false;
   isGameWon = false;
   startButton.innerText = 'Restart';
-  startButton.classList.add('restart')
+  startButton.classList.add('restart');
   winMessage.classList.add('hidden');
   loseMessage.classList.add('hidden');
   render();
@@ -59,9 +60,10 @@ function render() {
 
     for (let j = 0; j < cells.length; j++) {
       const cell = cells[j];
-      cell.classList.remove(`field-cell--${cell.innerText}`) 
+
+      cell.classList.remove(`field-cell--${cell.innerText}`);
       cell.innerText = gameFieldX[i][j] === 0 ? '' : gameFieldX[i][j];
-      cell.classList.add(`field-cell--${gameFieldX[i][j]}`) 
+      cell.classList.add(`field-cell--${gameFieldX[i][j]}`);
     }
   }
 }
@@ -142,7 +144,11 @@ document.addEventListener('keydown', (arrowEvent) => {
 
   if (isGameStarted && keys.includes(arrowEvent.key)) {
     normalizeGameField(gameFieldX, arrowEvent.key);
-    setSpecificValueIntoGameField(gameFieldX);
+
+    if (isGameFieldChanged) {
+      setSpecificValueIntoGameField(gameFieldX);
+      isGameFieldChanged = false;
+    }
 
     if (isGameWon) {
       isGameStarted = false;
@@ -175,6 +181,7 @@ function normalizeRow(row) {
         if (!isGameWon) {
           isGameWon = currentScore === WIN_SCORE;
         }
+        isGameFieldChanged = true;
       } else {
         prevValueIndex = i;
       }
@@ -183,6 +190,7 @@ function normalizeRow(row) {
         row[zeroIndex] = row[i];
         row[i] = 0;
         prevValueIndex = zeroIndex;
+        isGameFieldChanged = true;
       }
       zeroIndex = row.findIndex(el => el === 0);
     }
