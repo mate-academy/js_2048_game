@@ -10,10 +10,10 @@ const size = 4;
 let score = 0;
 let isWin = false;
 let newGameField;
-const DIRECTION_LEFT = 'ArrowLeft';
-const DIRECTION_RIGHT = 'ArrowRight';
-const DIRECTION_DOWN = 'ArrowDown';
-const DIRECTION_UP = 'ArrowUp';
+const RUN_LEFT = 'ArrowLeft';
+const RUN_RIGHT = 'ArrowRight';
+const RUN_DOWN = 'ArrowDown';
+const RUN_UP = 'ArrowUp';
 let gameField = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -42,19 +42,19 @@ function move(element) {
   newGameField = gameField;
 
   switch (element.key) {
-    case DIRECTION_LEFT:
+    case RUN_LEFT:
       goLeft();
       break;
 
-    case DIRECTION_RIGHT:
+    case RUN_RIGHT:
       goRight();
       break;
 
-    case DIRECTION_DOWN:
+    case RUN_DOWN:
       goDown();
       break;
 
-    case DIRECTION_UP:
+    case RUN_UP:
       goUp();
       break;
 
