@@ -228,24 +228,28 @@ function slideRight() {
 document.addEventListener('keydown', (el) => {
   el.preventDefault();
 
-  switch (el.code) {
-    case arrowLeft:
-      slideLeft();
-      break;
+  const allowedArrowKeys = [arrowLeft, arrowRight, arrowUp, arrowDown];
 
-    case arrowRight:
-      slideRight();
-      break;
+  if (allowedArrowKeys.includes(el.code)) {
+    switch (el.code) {
+      case arrowLeft:
+        slideLeft();
+        break;
 
-    case arrowUp:
-      slideUp();
-      break;
+      case arrowRight:
+        slideRight();
+        break;
 
-    case arrowDown:
-      slideDown();
-      break;
+      case arrowUp:
+        slideUp();
+        break;
+
+      case arrowDown:
+        slideDown();
+        break;
+    }
+
+    placeCells();
+    setSells();
   }
-
-  placeCells();
-  setSells();
 });
