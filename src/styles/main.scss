@@ -23,6 +23,7 @@ body {
 
   &--2 {
     background: #eee4da;
+
   }
 
   &--4 {
@@ -73,6 +74,94 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  &--animation-left {
+    transform-origin: right;
+    animation: move-left 0.5s ease;
+    @keyframes move-left {
+      0% {
+        transform: scaleX(0);
+      }
+      100% {
+        transform: scaleX(1);
+      }
+    }
+  }
+
+  &--animation-right {
+    transform-origin: left;
+    animation: move-right 0.5s ease;
+    @keyframes move-right {
+      0% {
+        transform: scaleX(0);
+      }
+      100% {
+        transform: scaleX(1);
+      }
+    }
+  }
+
+  &--animation-up {
+    transform-origin: bottom;
+    animation: move-up 0.5s ease;
+    @keyframes move-up {
+      0% {
+        transform: scaleY(0);
+      }
+      100% {
+        transform: scaleY(1);
+      }
+    }
+  }
+
+  &--animation-down {
+    transform-origin: top;
+    animation: move-down 0.5s ease;
+    @keyframes move-down {
+      0% {
+        transform: scaleY(0);
+      }
+      100% {
+        transform: scaleY(1);
+      }
+    }
+  }
+
+  &--animation-new-cell {
+    animation: new-cell 0.5s ease;
+    @keyframes new-cell {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  }
+
+  &--animation-remove-cell-in {
+    animation: remove-cell-in 0.5s ease-out;
+    @keyframes remove-cell-in {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(0);
+      }
+    }
+  }
+
+  &--animation-remove-cell-out {
+    animation: remove-cell-out 0.5s ease-out;
+    @keyframes remove-cell-out {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  }
 }
 
 .game-field {
@@ -105,6 +194,7 @@ h1 {
 }
 
 .info {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -117,6 +207,24 @@ h1 {
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+}
+
+.current-score-animation {
+  position: absolute;
+  transform: translateY(10px);
+  font-size: 20px;
+  color: #684e33;
+  animation: jump 0.5s ease-in;
+}
+
+@keyframes jump {
+  0% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
 }
 
 .controls {
