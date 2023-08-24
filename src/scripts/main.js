@@ -16,6 +16,12 @@ const valuesMatrix = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
+const animationNames = {
+  left: 'animation left',
+  right: 'animation right',
+  up: 'animation up',
+  down: 'animation down',
+};
 let score = 0;
 let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
 
@@ -31,7 +37,6 @@ button.addEventListener('click', () => {
     messageStart.classList.add('hidden');
     randomNum();
     randomNum();
-    rendering();
   } else {
     button.classList.remove('restart');
     button.classList.add('start');
@@ -56,12 +61,24 @@ function randomNum() {
   const randomCell = Math.floor(Math.random() * 4);
   const chanceOfFour = +Math.random().toFixed(2);
   const value = valuesMatrix[randomRow][randomCell];
+  const startNumbFour = 4;
+  const startNumbTwo = 2;
 
   if (value === 0) {
     if (chanceOfFour <= 0.1) {
-      valuesMatrix[randomRow][randomCell] = 4;
+      valuesMatrix[randomRow][randomCell] = startNumbFour;
+      gameFiledMatrix[randomRow][randomCell].textContent = startNumbFour;
+
+      gameFiledMatrix[randomRow][randomCell]
+        .className = `field-cell field-cell--${startNumbFour} `
+        + `field-cell--animation-new-cell`;
     } else {
-      valuesMatrix[randomRow][randomCell] = 2;
+      valuesMatrix[randomRow][randomCell] = startNumbTwo;
+      gameFiledMatrix[randomRow][randomCell].textContent = startNumbTwo;
+
+      gameFiledMatrix[randomRow][randomCell]
+        .className = `field-cell field-cell--${startNumbTwo} `
+        + `field-cell--animation-new-cell`;
     };
   } else {
     return randomNum();
@@ -75,8 +92,7 @@ function cellsClear() {
   valuesMatrix.forEach((line, rowIndex) => line.forEach((value, cellIndex) => {
     if (value !== 0) {
       valuesMatrix[rowIndex][cellIndex] = 0;
-      gameFiledMatrix[rowIndex][cellIndex].textContent = '';
-      gameFiledMatrix[rowIndex][cellIndex].className = 'field-cell';
+      removeCells(gameFiledMatrix[rowIndex][cellIndex]);
     }
   }));
 }
@@ -106,7 +122,7 @@ function handleKeyDown(keyboard) {
     case arrowLeftKey:
       if (moveLeft(valuesMatrix, 'updateScore')) {
         randomNum();
-        rendering();
+        rendering(animationNames.left);
         findWinNum();
       };
       break;
@@ -114,7 +130,7 @@ function handleKeyDown(keyboard) {
     case arrowRightKey:
       if (moveRight(valuesMatrix, 'updateScore')) {
         randomNum();
-        rendering();
+        rendering(animationNames.right);
         findWinNum();
       };
       break;
@@ -122,7 +138,7 @@ function handleKeyDown(keyboard) {
     case arrowUpKey:
       if (moveUp(valuesMatrix, 'updateScore')) {
         randomNum();
-        rendering();
+        rendering(animationNames.up);
         findWinNum();
       };
       break;
@@ -130,7 +146,7 @@ function handleKeyDown(keyboard) {
     case arrowDownKey:
       if (moveDown(valuesMatrix, 'updateScore')) {
         randomNum();
-        rendering();
+        rendering(animationNames.down);
         findWinNum();
       };
       break;
@@ -215,7 +231,7 @@ function moveDown(matrix, shouldUpdateScore, shouldMergeRight) {
   return result;
 }
 
-function rendering() {
+function rendering(animation) {
   if (score > bestScore) {
     bestScore = score;
     bestScoreElement.textContent = bestScore;
@@ -230,19 +246,37 @@ function rendering() {
       const cellValue = gameFiledMatrix[row][cell].textContent;
 
       if (!matrixValue && cellValue) {
-        gameFiledMatrix[row][cell].textContent = '';
-
-        gameFiledMatrix[row][cell]
-          .className = `field-cell`;
-
+        removeCells(gameFiledMatrix[row][cell]);
         continue;
       }
 
       if (matrixValue !== +cellValue) {
         gameFiledMatrix[row][cell].textContent = matrixValue;
 
-        gameFiledMatrix[row][cell]
-          .className = `field-cell field-cell--${matrixValue}`;
+        switch (animation) {
+          case animationNames.right:
+            gameFiledMatrix[row][cell]
+              .className = `field-cell field-cell--${matrixValue} `
+              + `field-cell--animation-right`;
+            break;
+
+          case animationNames.left:
+            gameFiledMatrix[row][cell]
+              .className = `field-cell field-cell--${matrixValue} `
+              + `field-cell--animation-left`;
+            break;
+
+          case animationNames.up:
+            gameFiledMatrix[row][cell]
+              .className = `field-cell field-cell--${matrixValue} `
+              + `field-cell--animation-up`;
+            break;
+
+          case animationNames.down:
+            gameFiledMatrix[row][cell]
+              .className = `field-cell field-cell--${matrixValue} `
+              + `field-cell--animation-down`;
+        }
       }
     }
   }
@@ -326,4 +360,16 @@ function addScoreAnimation(value) {
   setTimeout(() => {
     scoreAnimation.classList.add('hidden');
   }, 500);
+}
+
+function removeCells(fieldMatrix) {
+  fieldMatrix.classList
+    .add('field-cell--animation-remove-cell-in');
+
+  setTimeout(() => {
+    fieldMatrix.textContent = '';
+
+    fieldMatrix
+      .className = `field-cell field-cell--animation-remove-cell-out`;
+  }, 400);
 }
