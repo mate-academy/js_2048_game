@@ -11,6 +11,10 @@ const size = 4;
 let score = 0;
 let board;
 let leftMove = true;
+const arrowDown = 'ArrowDown';
+const arrowUp = 'ArrowUp';
+const arrowRight = 'ArrowRight';
+const arrowLeft = 'ArrowLeft';
 
 button.addEventListener('click', () => {
   button.classList.replace('start', 'restart');
@@ -225,19 +229,19 @@ document.addEventListener('keydown', (el) => {
   el.preventDefault();
 
   switch (el.code) {
-    case 'ArrowLeft':
+    case arrowLeft:
       slideLeft();
       break;
 
-    case 'ArrowRight':
+    case arrowRight:
       slideRight();
       break;
 
-    case 'ArrowUp':
+    case arrowUp:
       slideUp();
       break;
 
-    case 'ArrowDown':
+    case arrowDown:
       slideDown();
       break;
   }
