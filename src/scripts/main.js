@@ -85,6 +85,10 @@ document.addEventListener('keydown', handleKeyDown);
 
 function handleKeyDown(keyboard) {
   const shallowCopy = valuesMatrix.map(row => row.map(cell => cell));
+  const arrowLeftKey = 'ArrowLeft';
+  const arrowRightKey = 'ArrowRight';
+  const arrowUpKey = 'ArrowUp';
+  const arrowDownKey = 'ArrowDown';
 
   if (button.classList.contains('start')) {
     return;
@@ -99,7 +103,7 @@ function handleKeyDown(keyboard) {
   }
 
   switch (keyboard.code) {
-    case 'ArrowLeft':
+    case arrowLeftKey:
       if (moveLeft(valuesMatrix, 'updateScore')) {
         randomNum();
         rendering();
@@ -107,7 +111,7 @@ function handleKeyDown(keyboard) {
       };
       break;
 
-    case 'ArrowRight':
+    case arrowRightKey:
       if (moveRight(valuesMatrix, 'updateScore')) {
         randomNum();
         rendering();
@@ -115,7 +119,7 @@ function handleKeyDown(keyboard) {
       };
       break;
 
-    case 'ArrowUp':
+    case arrowUpKey:
       if (moveUp(valuesMatrix, 'updateScore')) {
         randomNum();
         rendering();
@@ -123,7 +127,7 @@ function handleKeyDown(keyboard) {
       };
       break;
 
-    case 'ArrowDown':
+    case arrowDownKey:
       if (moveDown(valuesMatrix, 'updateScore')) {
         randomNum();
         rendering();
