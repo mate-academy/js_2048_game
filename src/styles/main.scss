@@ -20,6 +20,14 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all 0.2s ease;
+
+  @keyframes show {
+    0% {
+      opacity: 0.5;
+      transform: scale(0);
+    }
+  }
 
   &--2 {
     background: #eee4da;
