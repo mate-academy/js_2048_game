@@ -20,8 +20,8 @@ button.addEventListener('click', () => {
     startGame();
   } else {
     startGame();
-    messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
   }
 });
 
@@ -149,7 +149,7 @@ function haveMoves() {
   let haveMerges = false;
 
   for (let r = 0; r < cellsInRow; r++) {
-    for (let c = 0; c < cellsInRow; c++) {
+    for (let c = 0; c < cellsInRow - 1; c++) {
       if (field[r][c] === field[r][c + 1]) {
         haveMerges = true;
         break;
@@ -157,7 +157,7 @@ function haveMoves() {
     }
   }
 
-  for (let r = 0; r < cellsInRow; r++) {
+  for (let r = 0; r < cellsInRow - 1; r++) {
     for (let c = 0; c < cellsInRow; c++) {
       if (field[r][c] === field[r + 1][c]) {
         haveMerges = true;
