@@ -4,7 +4,9 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background-image: url(../images/bbgg.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
@@ -20,6 +22,9 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: transform 0.2s ease-in-out;
+  transform: translate(0, 0);
+  will-change: transform;
 
   &--2 {
     background: #eee4da;
@@ -76,7 +81,7 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background-color: rgba($color: #000000, $alpha: 0.5);
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -121,6 +126,7 @@ h1 {
 
 .controls {
   display: flex;
+  opacity: 0.5;
 }
 
 .button {
@@ -133,8 +139,13 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
+  opacity: 0.5;
 
-  transition: 0.25s ease background;
+  transition: 0.25s ease all;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .start {
@@ -157,8 +168,8 @@ h1 {
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background-color: rgba($color: #000000, $alpha: 0.5);
+  color: #f3f3f7;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
