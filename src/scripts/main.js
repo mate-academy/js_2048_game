@@ -2,7 +2,7 @@
 
 const button = document.querySelector('.button');
 const fieldCells = document.querySelectorAll('.field_cell');
-const gameScore = document.querySelector('.game_score');
+const gameScore = document.querySelector('.game-score');
 const messageLose = document.querySelector('.message_lose');
 const messageWin = document.querySelector('.message_win');
 const messageStart = document.querySelector('.message_start');
