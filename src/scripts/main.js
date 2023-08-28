@@ -11,6 +11,10 @@ let score = 0;
 let playGame = true;
 let mergedCells = [];
 
+function randomNumbers() {
+  return Math.floor(Math.random() * 4);
+}
+
 function getRandomNumber() {
   return Math.random() < 0.9 ? 2 : 4;
 };
@@ -22,6 +26,13 @@ function generateRandomNumbers() {
     for (let col = 0; col < 4; col++) {
       if (board[row][col] === 0) {
         gameOver = false;
+      } else {
+        if ((row - 1 >= 0 && board[row - 1][col] === board[row][col])
+        || (row + 1 < 4 && board[row + 1][col] === board[row][col])
+        || (col - 1 >= 0 && board[row][col - 1] === board[row][col])
+        || (col + 1 < 4 && board[row][col + 1] === board[row][col])) {
+          gameOver = false;
+        }
       }
     }
   }
@@ -30,8 +41,8 @@ function generateRandomNumbers() {
     messageLose.classList.remove('hidden');
   } else {
     for (let i = 0; i < 1; i++) {
-      const row = Math.floor(Math.random() * 4);
-      const col = Math.floor(Math.random() * 4);
+      const row = randomNumbers();
+      const col = randomNumbers();
 
       if (board[row][col] === 0) {
         board[row][col] = getRandomNumber();
@@ -61,20 +72,26 @@ function createField() {
   generateRandomNumbers(board);
 };
 
+function inRage(row, col) {
+  if (row >= 0 && row < 4 && col >= 0 && col < 4) {
+    return true;
+  }
+
+  return false;
+}
+
 function mergeAndMove(row, col, rowChange, colChange) {
   if (board[row][col] !== 0) {
     let kRow = row + rowChange;
     let kCol = col + colChange;
 
-    while (kRow >= 0 && kRow < 4 && kCol >= 0
-      && kCol < 4 && board[kRow][kCol] === 0) {
+    while (inRage(kRow, kCol) && board[kRow][kCol] === 0) {
       kRow += rowChange;
       kCol += colChange;
     }
 
-    if (kRow >= 0 && kRow < 4 && kCol >= 0
-      && kCol < 4 && board[kRow][kCol] === board[row][col]
-      && !mergedCells[kRow][kCol]) {
+    if (inRage(kRow, kCol) && board[kRow][kCol] === board[row][col]
+    && !mergedCells[kRow][kCol]) {
       board[kRow][kCol] *= 2;
       mergedCells[kRow][kCol] = true;
 
@@ -187,15 +204,17 @@ document.addEventListener('keydown', events => {
   if (playGame) {
     const pressedKey = events.key;
 
-    if (pressedKey === 'ArrowUp') {
-      moveUp();
-    } else if (pressedKey === 'ArrowDown') {
-      moveDown();
-    } else if (pressedKey === 'ArrowLeft') {
-      moveLeft();
-    } else if (pressedKey === 'ArrowRight') {
-      moveRight();
-    }
+    switch (pressedKey) {
+      case 'ArrowUp': moveUp();
+        break;
+      case 'ArrowDown': moveDown();
+        break;
+      case 'ArrowLeft': moveLeft();
+        break;
+      case 'ArrowRight': moveRight();
+        break;
+    };
+
     generateRandomNumbers();
     resetMergedCells();
   }
@@ -207,11 +226,7 @@ function updateCell(row, col) {
 
   gameScore.textContent = score;
 
-  if (value === 0) {
-    cell.textContent = '';
-  } else {
-    cell.textContent = value;
-  }
+  cell.textContent = value || '';
 
   cell.className = 'field_cell';
 
