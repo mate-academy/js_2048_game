@@ -7,8 +7,8 @@ const messageLose = document.querySelector('.message_lose');
 const messageWin = document.querySelector('.message_win');
 const messageStart = document.querySelector('.message_start');
 let board = [];
-let score = 0;
 let playGame = true;
+let score = 0;
 let mergedCells = [];
 
 function randomNumbers() {
