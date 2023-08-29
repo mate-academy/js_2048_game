@@ -19,36 +19,41 @@ function getRandomNumber() {
   return Math.random() < 0.9 ? 2 : 4;
 };
 
-function generateRandomNumbers() {
-  let gameOver = true;
+function youLose() {
+  let hasEmptyCell = false;
+  let hasSimilarNeibhour = false;
 
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
       if (board[row][col] === 0) {
-        gameOver = false;
-      } else {
-        if ((row - 1 >= 0 && board[row - 1][col] === board[row][col])
+        hasEmptyCell = true;
+      }
+
+      if ((row - 1 >= 0 && board[row - 1][col] === board[row][col])
         || (row + 1 < 4 && board[row + 1][col] === board[row][col])
         || (col - 1 >= 0 && board[row][col - 1] === board[row][col])
         || (col + 1 < 4 && board[row][col + 1] === board[row][col])) {
-          gameOver = false;
-        }
+        hasSimilarNeibhour = true;
       }
     }
   }
 
-  if (gameOver) {
+  if (hasEmptyCell) {
+    generateRandomNumbers();
+  } else if (!hasSimilarNeibhour) {
     messageLose.classList.remove('hidden');
-  } else {
-    for (let i = 0; i < 1; i++) {
-      const row = randomNumbers();
-      const col = randomNumbers();
+  }
+};
 
-      if (board[row][col] === 0) {
-        board[row][col] = getRandomNumber();
-      } else {
-        i--;
-      }
+function generateRandomNumbers() {
+  for (let i = 0; i < 1; i++) {
+    const row = randomNumbers();
+    const col = randomNumbers();
+
+    if (board[row][col] === 0) {
+      board[row][col] = getRandomNumber();
+    } else {
+      i--;
     }
   }
 };
@@ -68,8 +73,8 @@ function createField() {
     [false, false, false, false],
   ];
 
-  generateRandomNumbers(board);
-  generateRandomNumbers(board);
+  generateRandomNumbers();
+  generateRandomNumbers();
 };
 
 function inRage(row, col) {
@@ -206,17 +211,22 @@ document.addEventListener('keydown', events => {
 
     switch (pressedKey) {
       case 'ArrowUp': moveUp();
+        youLose();
+        resetMergedCells();
         break;
       case 'ArrowDown': moveDown();
+        youLose();
+        resetMergedCells();
         break;
       case 'ArrowLeft': moveLeft();
+        youLose();
+        resetMergedCells();
         break;
       case 'ArrowRight': moveRight();
+        youLose();
+        resetMergedCells();
         break;
     };
-
-    generateRandomNumbers();
-    resetMergedCells();
   }
 });
 
@@ -290,6 +300,7 @@ button.addEventListener('click', () => {
   }
   score = 0;
   messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
   createField();
 
   for (let row = 0; row < 4; row++) {
