@@ -293,10 +293,12 @@ button.addEventListener('click', () => {
     button.classList.remove('restart');
     button.classList.add('start');
     button.textContent = 'Start';
+    playGame = false;
   } else {
     button.classList.remove('start');
     button.classList.add('restart');
     button.textContent = 'Restart';
+    playGame = true;
   }
   score = 0;
   messageLose.classList.add('hidden');
