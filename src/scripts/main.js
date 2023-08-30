@@ -10,6 +10,7 @@ let board = [];
 let playGame = true;
 let score = 0;
 let mergedCells = [];
+let prevBoard = [];
 
 function randomNumbers() {
   return Math.floor(Math.random() * 4);
@@ -38,7 +39,7 @@ function youLose() {
     }
   }
 
-  if (hasEmptyCell) {
+  if (hasEmptyCell && JSON.stringify(prevBoard) !== JSON.stringify(board)) {
     generateRandomNumbers();
   } else if (!hasSimilarNeibhour) {
     messageLose.classList.remove('hidden');
@@ -72,9 +73,6 @@ function createField() {
     [false, false, false, false],
     [false, false, false, false],
   ];
-
-  generateRandomNumbers();
-  generateRandomNumbers();
 };
 
 function inRage(row, col) {
@@ -209,6 +207,8 @@ document.addEventListener('keydown', events => {
   if (playGame) {
     const pressedKey = events.key;
 
+    prevBoard = JSON.parse(JSON.stringify(board));
+
     switch (pressedKey) {
       case 'ArrowUp': moveUp();
         youLose();
@@ -294,16 +294,19 @@ button.addEventListener('click', () => {
     button.classList.add('start');
     button.textContent = 'Start';
     playGame = false;
+    createField();
   } else {
     button.classList.remove('start');
     button.classList.add('restart');
     button.textContent = 'Restart';
     playGame = true;
+    score = 0;
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
+    createField();
+    generateRandomNumbers();
+    generateRandomNumbers();
   }
-  score = 0;
-  messageLose.classList.add('hidden');
-  messageWin.classList.add('hidden');
-  createField();
 
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
