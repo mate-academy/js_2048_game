@@ -8,7 +8,9 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+
 }
+$color-white: #fff;
 
 .field_cell {
   background: #d6cdc4;
@@ -21,25 +23,22 @@ body {
   vertical-align: center;
   user-select: none;
 
+  &--defaultMove {
+    transition: transform 0.3s linear;
+    color: $color-white;
+  }
+
   &--moveRight {
-    transform: translate(254px, 0);
-    transition: transform 0.5s linear;
-    color: #fff;
+    transform: translate(200px, 0);
   }
   &--moveLeft {
-    transform: translate(-254px, 0);
-    transition: transform 0.5s linear;
-    color: #fff;
+    transform: translate(-200px, 0);
   }
   &--moveDown {
-    transform: translate(0, 254px);
-    transition: transform 0.5s linear;
-    color: #fff;
+    transform: translate(0, 200px);
   }
   &--moveUp {
-    transform: translate(0, -254px);
-    transition: transform 0.5s linear;
-    color: #fff;
+    transform: translate(0, -200px);
   }
   @keyframes merge-animation {
     0% {
@@ -115,6 +114,7 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  overflow: hidden;
 }
 
 .game_header {

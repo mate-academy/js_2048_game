@@ -11,29 +11,32 @@ let playGame = true;
 let score = 0;
 let mergedCells = [];
 let prevBoard = [];
+const endField = 4;
+const tenPercent = 0.9;
+const numTwo = 2;
 
 function randomNumbers() {
-  return Math.floor(Math.random() * 4);
+  return Math.floor(Math.random() * endField);
 }
 
 function getRandomNumber() {
-  return Math.random() < 0.9 ? 2 : 4;
+  return Math.random() < tenPercent ? numTwo : endField;
 };
 
 function youLose() {
   let hasEmptyCell = false;
   let hasSimilarNeibhour = false;
 
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
+  for (let row = 0; row < endField; row++) {
+    for (let col = 0; col < endField; col++) {
       if (board[row][col] === 0) {
         hasEmptyCell = true;
       }
 
       if ((row - 1 >= 0 && board[row - 1][col] === board[row][col])
-        || (row + 1 < 4 && board[row + 1][col] === board[row][col])
+        || (row + 1 < endField && board[row + 1][col] === board[row][col])
         || (col - 1 >= 0 && board[row][col - 1] === board[row][col])
-        || (col + 1 < 4 && board[row][col + 1] === board[row][col])) {
+        || (col + 1 < endField && board[row][col + 1] === board[row][col])) {
         hasSimilarNeibhour = true;
       }
     }
@@ -76,7 +79,7 @@ function createField() {
 };
 
 function inRage(row, col) {
-  if (row >= 0 && row < 4 && col >= 0 && col < 4) {
+  if (row >= 0 && row < endField && col >= 0 && col < endField) {
     return true;
   }
 
@@ -105,7 +108,7 @@ function mergeAndMove(row, col, rowChange, colChange) {
       score += board[kRow][kCol];
       board[row][col] = 0;
 
-      const cellMerged = fieldCells[kRow * 4 + kCol];
+      const cellMerged = fieldCells[kRow * endField + kCol];
 
       cellMerged.classList.add('field_cell--merge');
 
@@ -121,7 +124,9 @@ function mergeAndMove(row, col, rowChange, colChange) {
       if (kRow !== row || kCol !== col) {
         board[row][col] = 0;
 
-        const cellMoved = fieldCells[row * 4 + col];
+        const cellMoved = fieldCells[row * endField + col];
+
+        cellMoved.classList.add('field_cell--defaultMove');
 
         if (colChange === 1) {
           cellMoved.classList.add('field_cell--moveRight');
@@ -164,7 +169,7 @@ function mergeAndMove(row, col, rowChange, colChange) {
 }
 
 function moveRight() {
-  for (let row = 0; row < 4; row++) {
+  for (let row = 0; row < endField; row++) {
     for (let col = 2; col >= 0; col--) {
       mergeAndMove(row, col, 0, 1);
     }
@@ -172,15 +177,15 @@ function moveRight() {
 }
 
 function moveLeft() {
-  for (let row = 0; row < 4; row++) {
-    for (let col = 1; col < 4; col++) {
+  for (let row = 0; row < endField; row++) {
+    for (let col = 1; col < endField; col++) {
       mergeAndMove(row, col, 0, -1);
     }
   }
 }
 
 function moveDown() {
-  for (let col = 0; col < 4; col++) {
+  for (let col = 0; col < endField; col++) {
     for (let row = 2; row >= 0; row--) {
       mergeAndMove(row, col, 1, 0);
     }
@@ -188,16 +193,16 @@ function moveDown() {
 }
 
 function moveUp() {
-  for (let col = 0; col < 4; col++) {
-    for (let row = 1; row < 4; row++) {
+  for (let col = 0; col < endField; col++) {
+    for (let row = 1; row < endField; row++) {
       mergeAndMove(row, col, -1, 0);
     }
   }
 }
 
 function resetMergedCells() {
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
+  for (let row = 0; row < endField; row++) {
+    for (let col = 0; col < endField; col++) {
       mergedCells[row][col] = false;
     }
   }
@@ -231,7 +236,7 @@ document.addEventListener('keydown', events => {
 });
 
 function updateCell(row, col) {
-  const cell = fieldCells[row * 4 + col];
+  const cell = fieldCells[row * endField + col];
   const value = board[row][col];
 
   gameScore.textContent = score;
@@ -240,46 +245,14 @@ function updateCell(row, col) {
 
   cell.className = 'field_cell';
 
-  switch (value) {
-    case 2:
-      cell.classList.add('field_cell--2');
-      break;
-    case 4:
-      cell.classList.add('field_cell--4');
-      break;
-    case 8:
-      cell.classList.add('field_cell--8');
-      break;
-    case 16:
-      cell.classList.add('field_cell--16');
-      break;
-    case 32:
-      cell.classList.add('field_cell--32');
-      break;
-    case 64:
-      cell.classList.add('field_cell--64');
-      break;
-    case 128:
-      cell.classList.add('field_cell--128');
-      break;
-    case 256:
-      cell.classList.add('field_cell--256');
-      break;
-    case 512:
-      cell.classList.add('field_cell--512');
-      break;
-    case 1024:
-      cell.classList.add('field_cell--1024');
-      break;
-    case 2048:
-      cell.classList.add('field_cell--2048');
-      break;
+  if (value !== 0) {
+    cell.classList.add(`field_cell--${value}`);
   }
 }
 
 function updateBoard() {
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
+  for (let row = 0; row < endField; row++) {
+    for (let col = 0; col < endField; col++) {
       updateCell(row, col);
     }
   }
@@ -308,8 +281,8 @@ button.addEventListener('click', () => {
     generateRandomNumbers();
   }
 
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
+  for (let row = 0; row < endField; row++) {
+    for (let col = 0; col < endField; col++) {
       updateCell(row, col);
     }
   }
