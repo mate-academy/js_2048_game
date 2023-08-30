@@ -1,5 +1,5 @@
 1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
+    - [DEMO LINK](https://NikolaienkoN.github.io/js_2048_game/)
 2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
     - Run `npm run test` command to test your code;
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
@@ -38,7 +38,7 @@ Hints:
 - You have class `field-cell--%cell_value%`, for styling cell in the game.
 - Use `hidden` class for hiding elements on page.
 - Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
+- Use  `field-cell--%cell_value%` class like additional class, don't replace the main class.
 - Use `keydown` event and `event.key` property to handle arrow buttons presses
     ```js
     document.addEventListener('keydown', event => console.log(event.key));
