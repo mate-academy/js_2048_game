@@ -183,17 +183,20 @@ document.addEventListener('keyup', (e) => {
   switch (e.code) {
     case 'ArrowLeft':
       slideLeft();
+      tilePlace();
       break;
     case 'ArrowRight':
       slideRight();
+      tilePlace();
       break;
     case 'ArrowUp':
       slideUp();
+      tilePlace();
       break;
     case 'ArrowDown':
       slideDown();
+      tilePlace();
       break;
   }
-  tilePlace();
   setCells();
 });
