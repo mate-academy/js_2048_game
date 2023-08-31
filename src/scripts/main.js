@@ -14,11 +14,11 @@ function startGame() {
   field = Array.from({ length: cellsInRow }, () => Array(cellsInRow).fill(0));
   scoreCount = 0;
   gameScore.innerText = scoreCount;
-  tilePlace();
-  tilePlace();
+  placeTile();
+  placeTile();
 }
 
-function tilePlace() {
+function placeTile() {
   if (!hasEmptyCells()) {
     return;
   }
@@ -183,19 +183,19 @@ document.addEventListener('keyup', (e) => {
   switch (e.code) {
     case 'ArrowLeft':
       slideLeft();
-      tilePlace();
+      placeTile();
       break;
     case 'ArrowRight':
       slideRight();
-      tilePlace();
+      placeTile();
       break;
     case 'ArrowUp':
       slideUp();
-      tilePlace();
+      placeTile();
       break;
     case 'ArrowDown':
       slideDown();
-      tilePlace();
+      placeTile();
       break;
   }
   setCells();
