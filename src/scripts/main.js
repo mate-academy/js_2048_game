@@ -7,6 +7,20 @@ const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
 const startMessage = document.querySelector('.message-start');
 
+const DIRECTION = {
+  UP: 'up',
+  DOWN: 'down',
+  LEFT: 'left',
+  RIGHT: 'right',
+};
+
+const KEYTYPES = {
+  ARROW_LEFT: 'ArrowLeft',
+  ARROW_RIGHT: 'ArrowRight',
+  ARROW_UP: 'ArrowUp',
+  ARROW_DOWN: 'ArrowDown',
+};
+
 let game = getEmptyGame();
 
 function getEmptyGame() {
@@ -41,7 +55,7 @@ function startNewGame() {
 }
 
 function keyDownHandler(e) {
-  if (e.repeat === true) {
+  if (e.repeat) {
     return;
   }
 
@@ -68,32 +82,25 @@ function renderGame() {
   }));
 }
 
-const DIRECTION = {
-  up: 'up',
-  down: 'down',
-  left: 'left',
-  right: 'right',
-};
-
 function handleNewMove(keyType) {
   const minIndex = 0;
   const maxIndex = 4;
 
   switch (keyType) {
-    case 'ArrowLeft':
-      handleMove(minIndex, maxIndex, DIRECTION.left);
+    case KEYTYPES.ARROW_LEFT:
+      handleMove(minIndex, maxIndex, DIRECTION.LEFT);
       break;
 
-    case 'ArrowRight':
-      handleMove(minIndex, maxIndex, DIRECTION.right);
+    case KEYTYPES.ARROW_RIGHT:
+      handleMove(minIndex, maxIndex, DIRECTION.RIGHT);
       break;
 
-    case 'ArrowUp':
-      handleMove(minIndex, maxIndex, DIRECTION.up);
+    case KEYTYPES.ARROW_UP:
+      handleMove(minIndex, maxIndex, DIRECTION.UP);
       break;
 
-    case 'ArrowDown':
-      handleMove(minIndex, maxIndex, DIRECTION.down);
+    case KEYTYPES.ARROW_DOWN:
+      handleMove(minIndex, maxIndex, DIRECTION.DOWN);
       break;
 
     default:
@@ -145,7 +152,7 @@ function handleMove(minIndex, maxIndex, direction) {
 
     let row = [...game[rowIndex]];
 
-    if (direction === DIRECTION.up || direction === DIRECTION.down) {
+    if (direction === DIRECTION.UP || direction === DIRECTION.DOWN) {
       oldRow = transpose(rowIndex);
     }
 
@@ -165,16 +172,16 @@ function handleMove(minIndex, maxIndex, direction) {
 
 function transformRow(direction, row, rowIndex) {
   switch (direction) {
-    case DIRECTION.up:
+    case DIRECTION.UP:
       return slide(transpose(rowIndex));
 
-    case DIRECTION.down:
+    case DIRECTION.DOWN:
       return slide(transpose(rowIndex).reverse()).reverse();
 
-    case DIRECTION.right:
+    case DIRECTION.RIGHT:
       return slide(row.reverse()).reverse();
 
-    case DIRECTION.left:
+    case DIRECTION.LEFT:
       return slide(row);
 
     default:
@@ -184,8 +191,8 @@ function transformRow(direction, row, rowIndex) {
 
 function returnRow(direction, row, rowIndex) {
   switch (direction) {
-    case DIRECTION.left:
-    case DIRECTION.right:
+    case DIRECTION.LEFT:
+    case DIRECTION.RIGHT:
       game[rowIndex] = row;
       break;
 
