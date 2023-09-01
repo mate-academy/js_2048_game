@@ -17,9 +17,8 @@ body {
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
   user-select: none;
+  text-align: center;
 
   &--2 {
     background: #eee4da;
@@ -79,6 +78,7 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  position: relative;
 }
 
 .game-header {
@@ -117,6 +117,18 @@ h1 {
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+  position: relative;
+}
+
+.local-score {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  bottom: 0;
+  font-size: 16px;
+  color: #179921;
+  opacity: 0.8;
+  transition-property: all;
 }
 
 .controls {
@@ -174,6 +186,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
+  position: relative;
 }
 
 .message-win {
@@ -184,4 +197,16 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.supporting-field {
+  position: absolute;
+}
+
+.active-cell {
+  position: absolute;
+  transition: all;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
