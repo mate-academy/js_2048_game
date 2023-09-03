@@ -137,7 +137,7 @@ h1 {
   transition: 0.25s ease background;
 }
 
-.start {
+.game-start {
   background: #1dae28;
   font-size: 20px;
 
@@ -146,7 +146,7 @@ h1 {
   }
 }
 
-.restart {
+.game-restart {
   background: #f1b2b2;
 
   &:hover {
