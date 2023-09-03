@@ -12,50 +12,50 @@
         <h1>2048</h1>
         <div class="controls">
           <p class="info">
-            Score: <span class="game-score">0</span>
+            Score: <span id="game-score" class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button id="button-start" class="button start">Start</button>
         </div>
       </div>
 
       <table class="game-field">
         <tbody>
           <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+            <td id="0-0" class="field-cell"></td>
+            <td id="0-1" class="field-cell"></td>
+            <td id="0-2" class="field-cell"></td>
+            <td id="0-3" class="field-cell"></td>
           </tr>
 
           <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+            <td id="1-0" class="field-cell"></td>
+            <td id="1-1" class="field-cell"></td>
+            <td id="1-2" class="field-cell"></td>
+            <td id="1-3" class="field-cell"></td>
           </tr>
 
 
           <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+            <td id="2-0" class="field-cell"></td>
+            <td id="2-1" class="field-cell"></td>
+            <td id="2-2" class="field-cell"></td>
+            <td id="2-3" class="field-cell"></td>
+          </tr>
+
+
+          <tr class="field-row">
+            <td id="3-0" class="field-cell"></td>
+            <td id="3-1" class="field-cell"></td>
+            <td id="3-2" class="field-cell"></td>
+            <td id="3-3" class="field-cell"></td>
           </tr>
         </tbody>
       </table>
 
       <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+        <p id="lose-message" class="message message-lose hidden">You lose! Restart the game?</p>
+        <p id="won-message" class="message message-win hidden">Winner! Congrats! You did it!</p>
+        <p id="start-message" class="message message-start">Press "Start" to begin game. Good luck!</p>
       </div>
     </div>
     <script type="text/javascript" src="scripts/main.js"></script>
