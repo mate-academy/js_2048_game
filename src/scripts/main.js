@@ -4,11 +4,11 @@ let board;
 let score = 0;
 const rows = 4;
 const columns = 4;
-const messageLost = document.getElementById('lose-message');
-const startButton = document.getElementById('button-start');
-const messageStart = document.getElementById('start-message');
-const messageWon = document.getElementById('won-message');
-const gameScore = document.getElementById('game-score');
+const messageLost = document.getElementsByClassName('message-lose')[0];
+const startButton = document.getElementsByClassName('start')[0];
+const messageStart = document.getElementsByClassName('message-start')[0];
+const messageWon = document.getElementsByClassName('message-win')[0];
+const gameScore = document.getElementsByClassName('game-score')[0];
 
 startButton.addEventListener('click', (e) => {
   setGame();
