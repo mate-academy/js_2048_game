@@ -1,84 +1,104 @@
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
-  font-size: 24px;
-  font-weight: 900;
+  padding: 0;
+}
+
+.page {
+  font-size: 7.5vmin;
+  font-family: Arial, Helvetica, sans-serif;
+
+  &__body {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #333;
+    font-family: sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+  }
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  background-color: #444;
+  width: 15vmin;
+  height: 15vmin;
+  border-radius: 2vmin;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: 0.3s;
+  animation: show 0.3s;
+  font-size: 5vmin;
 
   &--2 {
-    background: #eee4da;
+    background: hsl(25, 60%, 91);
+    color: hsl(20, 25%, 5);
   }
 
   &--4 {
-    background: #ede0c8;
+    background: hsl(25, 60%, 82);
+    color: hsl(20, 25%, 5);
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: hsl(25, 60%, 73);
+    color: hsl(20, 25%, 5);
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: hsl(25, 60%, 64);
+    color: hsl(20, 25%, 10);
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    background: hsl(25, 60%, 55);
+    color: hsl(20, 25%, 10);
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    background: hsl(25, 60%, 46);
+    color: hsl(20, 25%, 80);
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    background: hsl(25, 60%, 37);
+    color: hsl(20, 25%, 80);
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: hsl(25, 60%, 28);
+    color: hsl(20, 25%, 90);
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    background: hsl(25, 60%, 19);
+    color: hsl(20, 25%, 90);
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    background: hsl(25, 60%, 10);
+    color: hsl(20, 25%, 90);
   }
 
   &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    background: hsl(25, 60%, 1);
+    color: hsl(20, 25%, 90);
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
   }
 }
 
 .game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+  border-spacing: 2vmin;
 }
 
 .game-header {
@@ -91,17 +111,17 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background: #555;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
+  width: 15vmin;
+  height: 15vmin;
+  border-radius: 2vmin;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  font-size: 5vmin;
 }
 
 .info {
@@ -110,13 +130,14 @@ h1 {
   align-items: center;
   justify-content: center;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
+  width: 15vmin;
+  height: 15vmin;
+  border-radius: 2vmin;
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+  font-size: 3.5vmin;
 }
 
 .controls {
@@ -125,21 +146,25 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 2vmin;
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
+  width: 15vmin;
+  height: 15vmin;
 
-  transition: 0.25s ease background;
+  transition: 0.3s ease background;
 }
 
 .start {
   background: #1dae28;
   font-size: 20px;
+  border-radius: 2vmin;
+  width: 15vmin;
+  height: 15vmin;
+  font-size: 3.5vmin;
 
   &:hover {
     background: #179921;
@@ -148,6 +173,9 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  width: 15vmin;
+  height: 15vmin;
+  font-size: 3.5vmin;
 
   &:hover {
     background: #f87474;
@@ -169,13 +197,6 @@ h1 {
   display: none;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
-}
-
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
@@ -185,3 +206,5 @@ h1 {
   width: 100%;
   height: 150px;
 }
+
+
