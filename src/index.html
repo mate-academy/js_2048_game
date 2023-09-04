@@ -1,63 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048</title>
-    <link rel="stylesheet" href="./styles/main.scss">
-  </head>
-  <body>
-    <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score: <span class="game-score">0</span>
-          </p>
-          <button class="button start">Start</button>
-        </div>
-      </div>
-
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">Press "Start" to begin game. Good luck!</p>
-      </div>
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="scripts/2048.js"></script>
+</head>
+<body>
+    <h1>2048</h1>
+    <hr>
+    <h2>Score: <span id="score">0</span></h2>
+    <button id="startButton">Start</button>
+    <div id="board"></div>
+    <!-- Winner message with initial style.display set to 'none' -->
+    <div id="winnerMessage" style="display: none;">
+        <h2>Winner! Congrats! You did it!</h2>
+        <!-- Unique ID for the Winner message restart button -->
+        <button id="winnerRestartButton">Restart</button>
     </div>
-    <script type="text/javascript" src="scripts/main.js"></script>
-  </body>
+    <!-- Game Over message with initial style.display set to 'none' -->
+    <div id="gameOverMessage" style="display: none;">
+        <h2>Game Over</h2>
+        <p>No more moves available!</p>
+        <!-- Unique ID for the Game Over message restart button -->
+        <button id="gameOverRestartButton">Restart</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add an event listener to the "Start" button
+            document.getElementById('startButton').addEventListener('click', function () {
+                // Call the resetGame() function to restart the game
+                resetGame();
+            });
+
+            // Add an event listener to the Winner message restart button
+            document.getElementById('winnerRestartButton').addEventListener('click', function () {
+                // Call the resetGame() function to restart the game
+                resetGame();
+            });
+
+            // Add an event listener to the Game Over message restart button
+            document.getElementById('gameOverRestartButton').addEventListener('click', function () {
+                // Call the resetGame() function to restart the game
+                resetGame();
+            });
+        });
+    </script>
+</body>
 </html>
