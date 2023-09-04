@@ -126,7 +126,7 @@ function sumCell(arr) {
   }
 }
 
-function newCell() {
+function newCell(StateBefore, StateAfter) {
   const blanckCell = [...document.querySelectorAll('td')]
     .filter(element => element.classList.length === 1);
 
@@ -135,6 +135,10 @@ function newCell() {
       document.querySelector('.message-lose').classList.remove('hidden');
     }
 
+    return;
+  }
+
+  if (JSON.stringify(StateBefore) === JSON.stringify(StateAfter)) {
     return;
   }
 
@@ -154,6 +158,7 @@ function moveCell(line) {
       }
     }
   }
+
   sumCell(line);
 
   if (document.querySelector('[data-status]')) {
@@ -163,37 +168,60 @@ function moveCell(line) {
 
 addEventListener('keydown', e => {
   if (gameTable.dataset.value === 'on') {
+    let boardStateBefore = [];
+    let boardStateAfter = [];
+
     switch (e.key) {
       case 'ArrowLeft':
+        boardStateBefore = plaseRow.map(row => row.map(cell => cell.innerText));
+
         for (const row of plaseRow) {
           moveCell([...row].reverse());
         };
 
-        newCell();
+        boardStateAfter = plaseRow.map(row => row.map(cell => cell.innerText));
+
+        newCell(boardStateBefore, boardStateAfter);
         break;
 
       case 'ArrowRight':
+        boardStateBefore = plaseRow.map(row => row.map(cell => cell.innerText));
+
         for (const row of plaseRow) {
           moveCell(row);
         };
 
-        newCell();
+        boardStateAfter = plaseRow.map(row => row.map(cell => cell.innerText));
+
+        newCell(boardStateBefore, boardStateAfter);
         break;
 
       case 'ArrowUp':
+        boardStateBefore = placeColums
+          .map(colum => colum.map(cell => cell.innerText));
+
         for (const column of placeColums) {
           moveCell([...column].reverse());
         };
 
-        newCell();
+        boardStateAfter = placeColums
+          .map(colum => colum.map(cell => cell.innerText));
+
+        newCell(boardStateBefore, boardStateAfter);
         break;
 
       case 'ArrowDown':
+        boardStateBefore = placeColums
+          .map(colum => colum.map(cell => cell.innerText));
+
         for (const column of placeColums) {
           moveCell(column);
         };
 
-        newCell();
+        boardStateAfter = placeColums
+          .map(colum => colum.map(cell => cell.innerText));
+
+        newCell(boardStateBefore, boardStateAfter);
         break;
 
       default:
