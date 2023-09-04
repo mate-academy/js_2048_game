@@ -31,10 +31,12 @@ function setGame() {
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      const tile = document.getElementById(
-        r.toString() + '-' + c.toString());
+      const arrOfRows = document.getElementsByClassName('field-row');
+      const arrRow = arrOfRows[r].children;
+      const tile = arrRow[c];
       const num = board[r][c];
 
+      tile.id = (r.toString() + '-' + c.toString());
       updateTile(tile, num);
     }
   }
