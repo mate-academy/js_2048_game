@@ -1,28 +1,28 @@
 'use strict';
 
-const cells = Array.from(document.getElementsByClassName('field-cell'));
+const cells = Array.from(document.getElementsByClassName('field_cell'));
 const buttonStart = document.querySelector('.start');
 const buttonRestart = document.querySelector('.restart');
-const messageStart = document.querySelector('.message-start');
-const messageWin = document.querySelector('.message-win');
-const messageLose = document.querySelector('.message-lose');
-const gameScore = document.querySelector('.game-score');
+const messageStart = document.querySelector('.message_start');
+const messageWin = document.querySelector('.message_win');
+const messageLose = document.querySelector('.message_lose');
+const gameScore = document.querySelector('.game_score');
 
 function getRandomIndex() {
   return Math.floor(Math.random() * cells.length);
 }
 
 function getRandomNumber() {
-  return Math.random() > 0.5 ? 2 : 4;
+  return Math.random() > 0.1 ? 2 : 4;
 }
 
 function setStyles() {
   for (const cell of cells) {
     const textContent = cell.textContent;
-    const styleClass = `field-cell--${textContent}`;
+    const styleClass = `field_cell--${textContent}`;
 
     for (let i = 1; i <= 2048; i *= 2) {
-      cell.classList.remove(`field-cell--${i}`);
+      cell.classList.remove(`field_cell--${i}`);
     }
 
     if (textContent) {
@@ -60,11 +60,12 @@ function start() {
   getScore();
 
   messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
 }
 
 function restart() {
   for (const cell of cells) {
-    cell.classList.remove(`field-cell--${cell.textContent}`);
+    cell.classList.remove(`field_cell--${cell.textContent}`);
     cell.textContent = '';
   }
 
@@ -210,6 +211,10 @@ function slideTiles(groupedCells) {
 }
 
 function slideTilesInGroup(group) {
+  if (!canMove()) {
+    messageLose.classList.remove('hidden');
+  }
+
   let moved = false;
 
   for (let i = 1; i < group.length; i++) {
@@ -218,10 +223,10 @@ function slideTilesInGroup(group) {
     }
 
     const cellWithTile = group[i];
+    const neighborTile = group[i - 1];
 
-    if (group[i].textContent
-      && group[i - 1].textContent
-      && group[i].textContent !== group[i - 1].textContent) {
+    if (cellWithTile.textContent && neighborTile.textContent
+      && cellWithTile.textContent !== neighborTile.textContent) {
       continue;
     }
 
@@ -232,14 +237,16 @@ function slideTilesInGroup(group) {
         continue;
       }
 
-      if (!targetCell.textContent) {
+      const { textContent, merged } = targetCell;
+
+      if (!textContent) {
         targetCell.textContent = cellWithTile.textContent;
         cellWithTile.textContent = '';
         moved = true;
-      } else if (targetCell.textContent === cellWithTile.textContent
-          && !cellWithTile.merged && !targetCell.merged) {
-        targetCell.textContent = +targetCell.textContent
-        + +cellWithTile.textContent;
+      } else if (textContent === cellWithTile.textContent
+          && !cellWithTile.merged && !merged) {
+        targetCell.textContent = +textContent
+        + (+cellWithTile.textContent);
         cellWithTile.textContent = '';
         cellWithTile.merged = true;
         targetCell.merged = true;
@@ -249,4 +256,54 @@ function slideTilesInGroup(group) {
   }
 
   return moved;
+}
+
+function canMove() {
+  for (let i = 0; i < cells.length; i++) {
+    if (!cells[i].textContent) {
+      return true;
+    }
+  }
+
+  for (let i = 0; i < cells.length; i++) {
+    const currentCell = cells[i];
+    const neighbors = getNeighbors(currentCell);
+
+    for (const neighbor of neighbors) {
+      if (neighbor.textContent === currentCell.textContent) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function getNeighbors(cell) {
+  const neighbors = [];
+  const index = cells.indexOf(cell);
+  const rowLength = 4;
+
+  const canGoLeft = index % rowLength !== 0;
+  const canGoUp = index >= rowLength;
+  const canGoRight = index % rowLength !== rowLength - 1;
+  const canGoDown = index < cells.length - rowLength;
+
+  if (canGoLeft) {
+    neighbors.push(cells[index - 1]);
+  }
+
+  if (canGoUp) {
+    neighbors.push(cells[index - rowLength]);
+  }
+
+  if (canGoRight) {
+    neighbors.push(cells[index + 1]);
+  }
+
+  if (canGoDown) {
+    neighbors.push(cells[index + rowLength]);
+  }
+
+  return neighbors;
 }
