@@ -25,14 +25,14 @@ const resetGameFieldCells = function() {
   });
 };
 
-addRandomCell();
-addRandomCell();
-
-function setButtonStatus(status) {
-  buttonStart.textContent = status === 'Start' ? 'Start' : 'Restart';
-  buttonStart.classList.toggle('game-restart', status === 'Restart');
-  buttonStart.classList.toggle('game-start', status === 'Start');
+function setButtonStatus(condition) {
+  buttonStart.textContent = condition;
+  buttonStart.classList.toggle('game-start', condition === 'Start');
+  buttonStart.classList.toggle('game-restart', condition === 'Restart');
 }
+
+addRandomCell();
+addRandomCell();
 
 buttonStart.addEventListener('click', () => {
   if (buttonStart.classList.contains('game-start')) {
@@ -88,6 +88,20 @@ function addRandomCell() {
   }
 }
 
+function matrixEquals(newMatrix, prevMatrix = matrix) {
+  for (let row = 0; row < ROW_LENGTH; row++) {
+    for (let col = 0; col < ROW_LENGTH; col++) {
+      if (newMatrix[row][col] !== prevMatrix[row][col]) {
+        matrix = newMatrix;
+
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 function upgradeFeilds() {
   resetGameFieldCells();
 
@@ -105,7 +119,7 @@ function upgradeFeilds() {
   infoScore.textContent = gameScore;
 }
 
-document.addEventListener('keydown', event => {
+document.addEventListener('keydown', click => {
   if (!areMovesAvailable()) {
     message[2].classList.remove('hidden');
     message[0].classList.add('hidden');
@@ -113,7 +127,7 @@ document.addEventListener('keydown', event => {
     return;
   }
 
-  switch (event.key) {
+  switch (click.key) {
     case 'ArrowLeft':
       return moveLeft();
 
@@ -164,6 +178,7 @@ function areMovesAvailable() {
 
 function moveLeft() {
   let count = 0;
+
   const result = matrix.map(row => {
     return row.filter(col => col !== 0);
   });
@@ -184,10 +199,12 @@ function moveLeft() {
     }
   });
 
-  gameScore += count;
-  matrix = result;
-  upgradeFeilds();
-  addRandomCell();
+  if (!matrixEquals(result)) {
+    gameScore += count;
+    matrix = result;
+    upgradeFeilds();
+    addRandomCell();
+  }
 }
 
 function moveRight() {
@@ -221,11 +238,12 @@ function moveRight() {
     }
   });
 
-  gameScore += count;
-  matrix = result;
-
-  upgradeFeilds();
-  addRandomCell();
+  if (!matrixEquals(result)) {
+    gameScore += count;
+    matrix = result;
+    upgradeFeilds();
+    addRandomCell();
+  }
 }
 
 function moveUp() {
@@ -253,11 +271,12 @@ function moveUp() {
     }
   }
 
-  gameScore += count;
-  matrix = result;
-
-  upgradeFeilds();
-  addRandomCell();
+  if (!matrixEquals(result)) {
+    gameScore += count;
+    matrix = result;
+    upgradeFeilds();
+    addRandomCell();
+  }
 }
 
 function moveDown() {
@@ -284,9 +303,11 @@ function moveDown() {
       }
     }
   }
-  gameScore += count;
-  matrix = result;
 
-  upgradeFeilds();
-  addRandomCell();
+  if (!matrixEquals(result)) {
+    gameScore += count;
+    matrix = result;
+    upgradeFeilds();
+    addRandomCell();
+  }
 }
