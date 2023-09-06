@@ -1,45 +1,25 @@
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://BogdanParubchenk01.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+- [DEMO LINK](https://BogdanParubchenk01.github.io/js_2048_game/)
 
-### Task: 2048 game
+## Description
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+2048 is a popular puzzle game where you combine tiles with the same number to reach the ultimate goal of creating a tile with the number 2048. The game is played on a 4x4 grid, and you can move the tiles in four directions: up, down, left, and right. New tiles with the number 2 or 4 appear on the grid after each move.
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+This implementation of 2048 is built using HTML, CSS, and JavaScript, making it accessible and playable in any modern web browser.
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Reference.
+## How to Play
 
-That's it!
+- Use the arrow keys on your keyboard to move the tiles in the respective direction.
+- Tiles with the same number will merge into one when they collide.
+- The game ends when you cannot make any more moves, either because the grid is full, or you cannot combine any more tiles.
+- Your objective is to reach the 2048 tile, but don't stop there; see if you can achieve an even higher score!
 
-Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) Increase score with each move. The score should be increased by the sum of all merged cells.
+## Features
 
-Hints:
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
+- Responsive design: Play the game on both desktop.
+- Score tracking: Keep track of your highest score.
+- Restart option: Restart the game at any time.
+- Sound effects (optional): Enable or disable game sound effects.
 
-You can change the HTM/CSS layout if you need it.
+## Controls
 
-![Preview](./src/images/reference.png)
+- Use the arrow keys (Up, Down, Left, Right) to move the tiles.
