@@ -48,19 +48,16 @@ export default class PlayingField {
   }
 
   uncorrectSwipe(copyField) {
-    let result = true;
+    let result = false;
 
     for (let i = 0; i < copyField.length; i++) {
       if (copyField[i] !== this.field.flat()[i]) {
-        result = false;
+        result = true;
+        continue;
       }
     }
 
-    if (result === true) {
-      return false;
-    }
-
-    return true;
+    return result;
   }
 
   left() {
@@ -97,7 +94,7 @@ export default class PlayingField {
       if (this.uncorrectSwipe(copyField) === true) {
         this.generateExtraNumber();
       } else {
-
+        return;
       }
     } catch (e) {
 
@@ -138,7 +135,7 @@ export default class PlayingField {
       if (this.uncorrectSwipe(copyField) === true) {
         this.generateExtraNumber();
       } else {
-
+        return;
       }
     } catch (el) {}
   }

@@ -1,3 +1,4 @@
+'use strict';
 
 import PlayingField from './playinfField';
 window.PlayingField = PlayingField;
@@ -29,32 +30,39 @@ document.querySelector('.message.message-lose').addEventListener('click', functi
   startGame();
 });
 
-document.addEventListener('keydown', function(occurrent) {
-  switch (occurrent.key) {
-    case 'ArrowUp':
-      playingField.up();
-      draw();
-      break;
-    case 'ArrowDown':
-      playingField.down();
-      draw();
-      break;
-    case 'ArrowRight':
-      try {
-        playingField.right();
-      } catch (e) {}
-      draw();
-      break;
-    case 'ArrowLeft':
-      try {
-        playingField.left();
-      } catch (el) {}
-      draw();
-      break;
-    default:
-      break;
+const gameKeys = function(occurrent) {
+  const loseMessage = document.querySelector('.message.message-lose');
+  if (loseMessage && !loseMessage.classList.contains('hidden')) {
+    return;
+  } else {
+    switch (occurrent.key) {
+      case 'ArrowUp':
+        playingField.up();
+        draw();
+        break;
+      case 'ArrowDown':
+        playingField.down();
+        draw();
+        break;
+      case 'ArrowRight':
+        try {
+          playingField.right();
+        } catch (e) {}
+        draw();
+        break;
+      case 'ArrowLeft':
+        try {
+          playingField.left();
+        } catch (el) {}
+        draw();
+        break;
+      default:
+        break;
+    }
   }
-});
+}
+
+document.addEventListener('keydown', gameKeys);
 
 function draw() {
   const fieldCeils = document.querySelectorAll('.field-cell');
@@ -83,7 +91,7 @@ function changeScore() {
 function loseGame() {
   const currentField = playingField.field.flat();
 
-  if (currentField.every(el => el !== 0) && !(notAdded(playingField.field))) {
+  if (currentField.every(el => el !== 0) && notAdded(playingField.field)) {
     document.querySelector('.message.message-lose.hidden').classList.remove('hidden');
     document.querySelector('.message.message-lose').style.cursor = 'pointer';
   }
@@ -98,24 +106,24 @@ function notAdded(matrix) {
       const currentValue = matrix[i][j];
 
       if (i > 0 && matrix[i - 1][j] === currentValue) {
-        return true;
+        return false;
       }
 
       if (i < n - 1 && matrix[i + 1][j] === currentValue) {
-        return true;
+        return false;
       }
 
       if (j > 0 && matrix[i][j - 1] === currentValue) {
-        return true;
+        return false;
       }
 
       if (j < m - 1 && matrix[i][j + 1] === currentValue) {
-        return true;
+        return false;
       }
     }
   }
 
-  return false;
+  return true;
 }
 
 function winner() {
