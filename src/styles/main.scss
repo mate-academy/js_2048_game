@@ -4,7 +4,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #a98768;
+  background: #2c2c2ccc;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
@@ -15,63 +15,58 @@ body {
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #f9f6f2;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #53dfd3;
+    color: #000;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #88bfff;
+    color: #000;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #b293fb;
+    color: #000;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: #b84dee;
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    background: #8633be;
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    background: #67f867;
+    color: #000;
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    background: #f45777;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: #43526b;
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    background: #515e8e;
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    background: #0097e3;
   }
 
   &--2048 {
     background: #edc22e;
-    color: #f9f6f2;
   }
 }
 

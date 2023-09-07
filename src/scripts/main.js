@@ -343,7 +343,7 @@ document.addEventListener('touchend', handleTouchEnd, false);
 
 document.addEventListener('keydown', handleKeyPress);
 
-window.addEventListener('beforeunload', function(event) {
-  event.preventDefault();
-  event.returnValue = '';
+window.addEventListener('beforeunload', function(reload) {
+  reload.preventDefault();
+  reload.returnValue = '';
 });
