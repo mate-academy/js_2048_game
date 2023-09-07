@@ -47,6 +47,6 @@ export class Cell {
   }
 
   getValue() {
-    return this.linkedTile ? this.linkedTile.getValue() : 0;
+    return this.linkedTile?.getValue() || 0;
   }
 }

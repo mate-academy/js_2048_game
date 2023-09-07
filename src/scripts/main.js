@@ -43,9 +43,14 @@ function setupNewGame() {
   document.querySelector('.message-win').classList.add('hidden');
 }
 
+const ARROW_UP = 'ArrowUp';
+const ARROW_DOWN = 'ArrowDown';
+const ARROW_LEFT = 'ArrowLeft';
+const ARROW_RIGHT = 'ArrowRight';
+
 function handleInput(e) {
   switch (e.key) {
-    case 'ArrowUp':
+    case ARROW_UP:
       if (!canMoveUp()) {
         setupInputOnce();
 
@@ -54,7 +59,7 @@ function handleInput(e) {
       moveUp();
       break;
 
-    case 'ArrowDown':
+    case ARROW_DOWN:
       if (!canMoveDown()) {
         setupInputOnce();
 
@@ -63,7 +68,7 @@ function handleInput(e) {
       moveDown();
       break;
 
-    case 'ArrowLeft':
+    case ARROW_LEFT:
       if (!canMoveLeft()) {
         setupInputOnce();
 
@@ -72,7 +77,7 @@ function handleInput(e) {
       moveLeft();
       break;
 
-    case 'ArrowRight':
+    case ARROW_RIGHT:
       if (!canMoveRight()) {
         setupInputOnce();
 
@@ -134,11 +139,9 @@ function slideTilesInGroup(group) {
       continue;
     }
 
-    if (targetCell.isEmpty()) {
-      targetCell.linkTile(cellWithTail.linkedTile);
-    } else {
-      targetCell.linkTileForMerge(cellWithTail.linkedTile);
-    }
+    targetCell.isEmpty()
+      ? targetCell.linkTile(cellWithTail.linkedTile)
+      : targetCell.linkTileForMerge(cellWithTail.linkedTile);
 
     cellWithTail.unlinkTile();
   }
