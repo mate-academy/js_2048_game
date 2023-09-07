@@ -9,6 +9,12 @@ export default class PlayingField {
     this.score = 0;
   }
 
+  start() {
+    this.field[this.randomIndex()][this.randomIndex()] = this.randomNumber();
+
+    this.generateExtraNumber();
+  }
+
   randomNumber() {
     return Math.random() < 0.5 ? 2 : 4;
   }
