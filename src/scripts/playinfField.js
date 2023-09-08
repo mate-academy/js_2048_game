@@ -94,7 +94,7 @@ export default class PlayingField {
       if (this.uncorrectSwipe(copyField) === true) {
         this.generateExtraNumber();
       } else {
-        return;
+
       }
     } catch (e) {
 
@@ -135,7 +135,7 @@ export default class PlayingField {
       if (this.uncorrectSwipe(copyField) === true) {
         this.generateExtraNumber();
       } else {
-        return;
+
       }
     } catch (el) {}
   }

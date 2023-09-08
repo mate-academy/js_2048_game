@@ -1,4 +1,3 @@
-'use strict';
 
 import PlayingField from './playinfField';
 window.PlayingField = PlayingField;
@@ -16,12 +15,13 @@ function startGame() {
   playingField.start();
   draw();
   document.querySelector('.message.message-lose').classList.add('hidden');
+  document.querySelector('.message.message-win').classList.add('hidden');
+  document.querySelector('.start').classList.add('hidden');
+  document.querySelector('.restart').classList.remove('hidden');
 }
 
 document.querySelector('.start').addEventListener('click', function() {
   document.querySelector('.message.message-start').classList.add('hidden');
-  document.querySelector('.message.message-win').classList.add('hidden');
-  document.querySelector('.start').classList.add('hidden');
 
   startGame();
 });
@@ -30,10 +30,20 @@ document.querySelector('.message.message-lose').addEventListener('click', functi
   startGame();
 });
 
+document.querySelector('.restart').addEventListener('click', function() {
+  startGame();
+});
+
 const gameKeys = function(occurrent) {
   const loseMessage = document.querySelector('.message.message-lose');
-  if (loseMessage && !loseMessage.classList.contains('hidden')) {
-    return;
+  const winMassage = document.querySelector('.message.message-win');
+
+  if (loseMessage && !(loseMessage.classList.contains('hidden'))) {
+      return;
+  }
+
+  if (winMassage && !(winMassage.classList.contains('hidden'))) {
+      return;
   } else {
     switch (occurrent.key) {
       case 'ArrowUp':
@@ -60,7 +70,7 @@ const gameKeys = function(occurrent) {
         break;
     }
   }
-}
+};
 
 document.addEventListener('keydown', gameKeys);
 
@@ -78,8 +88,8 @@ function draw() {
   });
 
   loseGame();
-  changeScore();
   winner();
+  changeScore();
 }
 
 function changeScore() {
@@ -127,9 +137,7 @@ function notAdded(matrix) {
 }
 
 function winner() {
-  if (playingField.field.flat().some(el => el === 2048)) {
+  if (playingField.field.flat().some(el => el === 2048) && playingField.score === 2048) {
     document.querySelector('.message.message-win.hidden').classList.remove('hidden');
-    document.querySelector('.message.message-start.hidden').classList.remove('hidden');
-    document.querySelector('.start').classList.remove('hidden');
   }
 }
