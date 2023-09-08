@@ -1,3 +1,12 @@
+@mixin rulesForMassages() {
+  position: absolute;
+  top: calc(50% - 45px);
+  left: calc(50% - 174px);
+  width: 348px;
+  transform: translateY(-50%);
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -79,6 +88,7 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  position: relative;
 }
 
 .game-header {
@@ -163,6 +173,16 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+
+  &-lose {
+    @include rulesForMassages();
+  }
+
+  &-win {
+    background: #edc22e;
+    color: #f9f6f2;
+    @include rulesForMassages();
+  }
 }
 
 .hidden {
@@ -174,11 +194,6 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
-}
-
-.message-win {
-  background: #edc22e;
-  color: #f9f6f2;
 }
 
 .message-container {
