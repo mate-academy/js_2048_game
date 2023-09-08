@@ -16,11 +16,8 @@ export default class PlayingField {
   }
 
   randomNumber() {
-    return Math.random() < 2 ? 64 : 4;
+    return Math.random() < 0.5 ? 2 : 4;
   }
-  // randomNumber() {
-  //   return Math.random() < 0.5 ? 2 : 4;
-  // }
 
   randomIndex(lengthOfLine = 4) {
     return Math.floor(Math.random() * lengthOfLine);

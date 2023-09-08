@@ -43,7 +43,7 @@ const gameKeys = function(occurrent) {
   }
 
   if (winMassage && !(winMassage.classList.contains('hidden'))) {
-    return;
+
   } else {
     switch (occurrent.key) {
       case 'ArrowUp':
