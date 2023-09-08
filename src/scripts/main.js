@@ -39,11 +39,11 @@ const gameKeys = function(occurrent) {
   const winMassage = document.querySelector('.message.message-win');
 
   if (loseMessage && !(loseMessage.classList.contains('hidden'))) {
-      return;
+    return;
   }
 
   if (winMassage && !(winMassage.classList.contains('hidden'))) {
-      return;
+    return;
   } else {
     switch (occurrent.key) {
       case 'ArrowUp':
@@ -137,7 +137,7 @@ function notAdded(matrix) {
 }
 
 function winner() {
-  if (playingField.field.flat().some(el => el === 2048) && playingField.score === 2048) {
+  if (playingField.field.flat().some(el => el === 2048)) {
     document.querySelector('.message.message-win.hidden').classList.remove('hidden');
   }
 }
