@@ -9,7 +9,7 @@ const fieldRows = document.querySelectorAll('.field-row');
 const size = 4;
 let score = 0;
 let isWin = false;
-let newGameField;
+
 let gameField = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -35,8 +35,6 @@ button.addEventListener('click', e => {
 });
 
 function move(e) {
-  newGameField = gameField;
-
   switch (e.key) {
     case 'ArrowLeft':
       left();
@@ -56,16 +54,6 @@ function move(e) {
 
     default:
       return;
-  }
-
-  for (let row = 0; row < size; row++) {
-    for (let col = 0; col < size; col++) {
-      if (newGameField[row][col] !== gameField[row][col]) {
-        gameField = newGameField;
-        addNumber();
-        render();
-      }
-    }
   }
 
   if (isWin) {
@@ -137,58 +125,126 @@ function render() {
 };
 
 function left() {
-  if (!checkRows()) {
-    return;
+  const prevBoard = JSON.parse(JSON.stringify(gameField));
+
+  for (let r = 0; r < size; r++) {
+    let row = gameField[r];
+
+    row = slide(row);
+    gameField[r] = row;
+  };
+
+  if (compareArr(prevBoard, gameField)) {
+    addNumber();
   }
 
-  newGameField = newGameField.map(row => {
-    const newRow = row.filter(cell => cell !== 0);
+  render();
+}
 
-    newRow.forEach((cell, index) => {
-      if (cell === newRow[index + 1]) {
-        newRow[index] *= 2;
-        newRow.splice(index + 1, 1);
-        score += newRow[index];
+function compareArr(prevBoard, boards) {
+  return JSON.stringify(prevBoard) !== JSON.stringify(boards);
+};
 
-        if (newRow[index] === 2048) {
-          isWin = true;
-        }
-      }
-    });
+function filterZero(row) {
+  return row.filter(num => num);
+}
 
-    return newRow.concat(Array(size - newRow.length).fill(0));
-  });
+function slide(row) {
+  let newRow = row;
+
+  newRow = filterZero(newRow);
+
+  for (let i = 0; i < newRow.length - 1; i++) {
+    if (newRow[i] === newRow[i + 1]) {
+      newRow[i] *= 2;
+      newRow[i + 1] = 0;
+      score += newRow[i];
+    }
+  }
+  newRow = filterZero(newRow);
+
+  while (newRow.length < size) {
+    newRow.push(0);
+  }
+
+  return newRow;
 }
 
 function right() {
-  if (!checkRows()) {
-    return;
+  const prevBoard = JSON.parse(JSON.stringify(gameField));
+
+  for (let r = 0; r < size; r++) {
+    let row = gameField[r];
+
+    row.reverse();
+    row = slide(row);
+
+    row.reverse();
+    gameField[r] = row;
+  };
+
+  if (compareArr(prevBoard, gameField)) {
+    addNumber();
   }
 
-  reverseRows();
-  left();
-  reverseRows();
-}
-
-function reverseRows() {
-  newGameField.forEach(row => row.reverse());
+  render();
 }
 
 function down() {
-  transposeGameField();
-  right();
-  transposeGameField();
+  const prevBoard = JSON.parse(JSON.stringify(gameField));
+
+  for (let c = 0; c < size; c++) {
+    let row = [
+      gameField[0][c],
+      gameField[1][c],
+      gameField[2][c],
+      gameField[3][c],
+    ];
+
+    row.reverse();
+    row = slide(row);
+    row.reverse();
+
+    for (let r = 0; r < size; r++) {
+      gameField[r][c] = row[r];
+    };
+  };
+
+  if (compareArr(prevBoard, gameField)) {
+    addNumber();
+  }
+
+  render();
 }
 
 function up() {
-  transposeGameField();
-  left();
-  transposeGameField();
+  const prevBoard = JSON.parse(JSON.stringify(gameField));
+
+  for (let c = 0; c < size; c++) {
+    let row = [
+      gameField[0][c],
+      gameField[1][c],
+      gameField[2][c],
+      gameField[3][c],
+    ];
+
+    row = slide(row);
+
+    for (let r = 0; r < size; r++) {
+      gameField[r][c] = row[r];
+    };
+  };
+
+  if (compareArr(prevBoard, gameField)) {
+    addNumber();
+  }
+
+  render();
 }
 
 function transposeGameField() {
-  newGameField = newGameField[0]
-    .map((_, colIndex) => newGameField.map(row => row[colIndex]));
+  gameField = gameField[0]
+    .map((_, colIndex) => gameField.map(row => row[colIndex]));
 }
 
 function isPosibleToMove() {
@@ -203,8 +259,8 @@ function isPosibleToMove() {
 
 function checkRows() {
   for (let i = 0; i < size; i++) {
-    if (newGameField[i].some(cell => cell === 0)
-      || newGameField[i].some((cell, j) => cell === newGameField[i][j + 1])) {
+    if (gameField[i].some(cell => cell === 0)
+      || gameField[i].some((cell, j) => cell === gameField[i][j + 1])) {
       return true;
     }
   }
@@ -214,7 +270,7 @@ function checkRows() {
 
 function checkColumns() {
   for (let i = 0; i < size; i++) {
-    if (newGameField[i].some((cell, j) => cell === newGameField[i][j + 1])) {
+    if (gameField[i].some((cell, j) => cell === gameField[i][j + 1])) {
       return true;
     }
   }
