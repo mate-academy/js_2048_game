@@ -15,11 +15,19 @@ body {
   width: 75px;
   height: 75px;
   border-radius: 5px;
+}
+
+.field-tile {
+  display: flex;
+  position: absolute;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
   color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
+  animation: appear 0.3s ease-in-out;
+  transition: all 0.1s ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -75,10 +83,21 @@ body {
   }
 }
 
+@keyframes appear {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
+}
+
 .game-field {
   background: #bbada0;
-  border-spacing: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
   border-radius: 5px;
+  position: relative;
 }
 
 .game-header {
@@ -121,6 +140,15 @@ h1 {
 
 .controls {
   display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.score-increase {
+  width: 75px;
+  height: 75px;
+  color: #268dee;
+  opacity: 0.8;
 }
 
 .button {
@@ -133,6 +161,7 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
+  outline: none;
 
   transition: 0.25s ease background;
 }
