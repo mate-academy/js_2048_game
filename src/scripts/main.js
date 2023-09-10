@@ -231,6 +231,7 @@ function restartGame() {
   gameWon = false;
   scoreElement.textContent = score;
   winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
 }
 
 function setInput() {
