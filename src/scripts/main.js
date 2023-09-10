@@ -180,22 +180,39 @@ button.addEventListener('click', () => {
 document.addEventListener('keyup', (e) => {
   e.preventDefault();
 
+  const previousField = JSON.stringify(field);
+
   switch (e.code) {
     case 'ArrowLeft':
       slideLeft();
-      placeTile();
+
+      if (JSON.stringify(field) !== previousField) {
+        placeTile();
+      }
       break;
     case 'ArrowRight':
       slideRight();
-      placeTile();
+
+      if (JSON.stringify(field) !== previousField) {
+        placeTile();
+      }
       break;
     case 'ArrowUp':
       slideUp();
-      placeTile();
+
+      if (JSON.stringify(field) !== previousField) {
+        placeTile();
+      }
       break;
     case 'ArrowDown':
       slideDown();
-      placeTile();
+
+      if (JSON.stringify(field) !== previousField) {
+        placeTile();
+      }
+      break;
+
+    default:
       break;
   }
   setCells();
