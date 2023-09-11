@@ -14,11 +14,13 @@ function setGame() {
   changeButtontoRestart(startButton);
 
   board = [
-    [2, 0, 0, 2],
+    [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
+  addCell();
+  addCell();
   clearScore();
   gameEnded = false;
 
@@ -48,11 +50,6 @@ function updateCell(num, cells) {
     }
   }
 }
-
-document.addEventListener('keyup', function() {
-  winGameMessage(board);
-  loseGameMessage(board);
-});
 
 function winGameMessage(boards) {
   if (boards.find((row) => row.includes(2048))) {
@@ -127,6 +124,9 @@ document.addEventListener('keydown', (event) => {
     if (JSON.stringify(board) !== previousBoard) {
       addCell();
     }
+
+    winGameMessage(board);
+    loseGameMessage(board);
   }
 });
 
