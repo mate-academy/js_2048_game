@@ -212,7 +212,7 @@ function displayNextScoreIncrease() {
     scoreIncreaseElement.textContent = '';
     scoreIncreaseQueue.shift();
     displayNextScoreIncrease();
-  }, 500);
+  }, 300);
 }
 
 function restartGame() {
