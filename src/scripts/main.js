@@ -102,11 +102,11 @@ function startGameMessage() {
 }
 
 document.addEventListener('keydown', (event) => {
-  const name = event.key;
+  const eventName = event.key;
   const previousBoard = JSON.stringify(board);
 
   if (!gameEnded) {
-    switch (name) {
+    switch (eventName) {
       case 'ArrowUp':
         moveUp();
         break;
@@ -131,22 +131,22 @@ document.addEventListener('keydown', (event) => {
 });
 
 function move(row) {
-  row = filterZero(row);
+  let boardRow = filterZero(row);
 
-  for (let i = 0; i < row.length - 1; i++) {
-    if (row[i] === row[i + 1]) {
-      row[i] *= 2;
-      row[i + 1] = 0;
-      updateScore(row[i]);
+  for (let i = 0; i < boardRow.length - 1; i++) {
+    if (boardRow[i] === boardRow[i + 1]) {
+      boardRow[i] *= 2;
+      boardRow[i + 1] = 0;
+      updateScore(boardRow[i]);
     }
   }
-  row = filterZero(row);
+  boardRow = filterZero(boardRow);
 
-  while (row.length < COLUMNS) {
-    row.push(0);
+  while (boardRow.length < COLUMNS) {
+    boardRow.push(0);
   }
 
-  return row;
+  return boardRow;
 }
 
 function filterZero(row) {
