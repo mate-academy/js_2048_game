@@ -106,25 +106,26 @@ function startGameMessage() {
 
 document.addEventListener('keydown', (event) => {
   const name = event.key;
+  const previousBoard = JSON.stringify(board);
 
   if (!gameEnded) {
     switch (name) {
       case 'ArrowUp':
         moveUp();
-        addCell();
         break;
       case 'ArrowDown':
         moveDown();
-        addCell();
         break;
       case 'ArrowRight':
         moveRight();
-        addCell();
         break;
       case 'ArrowLeft':
         moveLeft();
-        addCell();
         break;
+    }
+
+    if (JSON.stringify(board) !== previousBoard) {
+      addCell();
     }
   }
 });
@@ -192,8 +193,6 @@ function moveRight() {
 }
 
 function moveUp() {
-  let cellIndex = 0;
-
   for (let i = 0; i < COLUMNS; i++) {
     let column = board.map((d) => d[i]);
 
@@ -207,14 +206,11 @@ function moveUp() {
       const num = board[j][i];
 
       updateCell(num, cell);
-      cellIndex++;
     }
   }
 }
 
 function moveDown() {
-  let cellIndex = 0;
-
   for (let i = 0; i < COLUMNS; i++) {
     let column = board.map((d) => d[i]);
 
@@ -230,7 +226,6 @@ function moveDown() {
       const num = board[j][i];
 
       updateCell(num, cell);
-      cellIndex++;
     }
   }
 }
@@ -253,8 +248,6 @@ function generateCellNumber() {
 function addCell() {
   let found = false;
 
-  let cellIndex = 0;
-
   if (!emptyCellsInBoard()) {
     return;
   }
@@ -273,7 +266,6 @@ function addCell() {
       found = true;
     }
   }
-  cellIndex++;
 }
 
 function emptyCellsInBoard() {
