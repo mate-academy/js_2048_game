@@ -9,36 +9,37 @@ const startButton = document.querySelector('.start');
 const messageStart = document.querySelector('.message-start');
 const messageWon = document.querySelector('.message-win');
 const gameScore = document.querySelector('.game-score');
-
-startButton.addEventListener('click', setGame);
-
-function setGame() {
-  score = 0;
-  gameScore.innerText = score;
-  messageStart.classList.add('hidden');
-  startButton.classList.remove('start');
-  startButton.classList.add('restart');
-  startButton.innerText = 'Restart';
-
-  board = Array.from({ length: rows }, () => Array(columns).fill(0));
-
-  const fieldRows = document.querySelectorAll('.field-row');
-
-  fieldRows.forEach((row, r) => {
-    const tiles = row.querySelectorAll('.field-cell');
-
-    tiles.forEach((tile, c) => {
-      tile.id = `${r}-${c}`;
-      updateTile(tile, 0);
-    });
-  });
-
-  setRandom();
-  setRandom();
-}
+let gameActive = false; // Додали змінну для відстеження активності гри
 
 function hasEmpty() {
   return board.some(row => row.includes(0));
+}
+
+function filterZero(row) {
+  return row.filter(num => num !== 0);
+}
+
+function slide(row) {
+  let rowCopy = [...row];
+
+  rowCopy = filterZero(rowCopy);
+
+  for (let i = 0; i < rowCopy.length - 1; i++) {
+    if (rowCopy[i] === rowCopy[i + 1]) {
+      rowCopy[i] *= 2;
+      rowCopy[i + 1] = 0;
+      score += rowCopy[i];
+      gameScore.innerText = score;
+    }
+  }
+
+  rowCopy = filterZero(rowCopy);
+
+  while (rowCopy.length < columns) {
+    rowCopy.push(0);
+  }
+
+  return rowCopy;
 }
 
 function setRandom() {
@@ -88,8 +89,42 @@ function updateTile(tile, num) {
   }
 }
 
-document.addEventListener('keyup', handleKey);
+startButton.addEventListener('click', setGame);
 
+function setGame() {
+  score = 0;
+  gameScore.innerText = score;
+  messageStart.classList.add('hidden');
+  startButton.classList.remove('start');
+  startButton.classList.add('restart');
+  startButton.innerText = 'Restart';
+
+  board = Array.from({ length: rows }, () => Array(columns).fill(0));
+
+  const fieldRows = document.querySelectorAll('.field-row');
+
+  fieldRows.forEach((row, r) => {
+    const tiles = row.querySelectorAll('.field-cell');
+
+    tiles.forEach((tile, c) => {
+      tile.id = `${r}-${c}`;
+      updateTile(tile, 0);
+    });
+  });
+
+  setRandom();
+  setRandom();
+
+  // Додати обробник подій після рестарту
+  messageLost.classList.add('hidden');
+
+  if (!gameActive) {
+    document.addEventListener('keyup', handleKey);
+    gameActive = true;
+  }
+}
+
+// Розділити функцію handleKey на окремі функції для обробки різних клавіш
 function handleKey(e) {
   if (messageLost.classList.contains('hidden')
   && messageWon.classList.contains('hidden')) {
@@ -116,41 +151,17 @@ function handleKey(e) {
 
     if (isFull(board) && noMoves(board)) {
       messageLost.classList.remove('hidden');
+      // gameActive = false; // Вимкнути гру після програшу
     }
 
     if (won(board)) {
       messageWon.classList.remove('hidden');
+      gameActive = false; // Вимкнути гру після перемоги
     }
   }
 }
 
-function filterZero(row) {
-  return row.filter(num => num !== 0);
-}
-
-function slide(row) {
-  let rowCopy = [...row];
-
-  rowCopy = filterZero(rowCopy);
-
-  for (let i = 0; i < rowCopy.length - 1; i++) {
-    if (rowCopy[i] === rowCopy[i + 1]) {
-      rowCopy[i] *= 2;
-      rowCopy[i + 1] = 0;
-      score += rowCopy[i];
-      gameScore.innerText = score;
-    }
-  }
-
-  rowCopy = filterZero(rowCopy);
-
-  while (rowCopy.length < columns) {
-    rowCopy.push(0);
-  }
-
-  return rowCopy;
-}
-
+// Змініть обробник подій на відповідні функції
 function slideLeft() {
   board = board.map(row => slide(row));
   updateBoard();
@@ -202,6 +213,7 @@ function slideDown() {
   updateBoard();
 }
 
+// Додайте видалення обробника подій при програші або перемозі
 function updateBoard() {
   const fieldRows = document.querySelectorAll('.field-row');
 
