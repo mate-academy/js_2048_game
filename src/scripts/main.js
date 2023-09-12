@@ -213,21 +213,33 @@ document.addEventListener('keydown', (e) => {
 });
 
 arrDown.addEventListener('click', e => {
+  if (!isGameStarted) {
+    return;
+  }
   slideDown();
   placeTile();
 });
 
 arrLeft.addEventListener('click', e => {
+  if (!isGameStarted) {
+    return;
+  }
   slideLeft();
   placeTile();
 });
 
 arrRight.addEventListener('click', e => {
+  if (!isGameStarted) {
+    return;
+  }
   slideRight();
   placeTile();
 });
 
 arrUp.addEventListener('click', e => {
+  if (!isGameStarted) {
+    return;
+  }
   slideUp();
   placeTile();
 });
