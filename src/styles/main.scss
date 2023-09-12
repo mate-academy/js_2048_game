@@ -1,3 +1,5 @@
+@import "animations";
+
 body {
   margin: 0;
   display: flex;
@@ -8,6 +10,7 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  overflow: hidden;
 }
 
 .field-cell {
@@ -21,57 +24,70 @@ body {
   vertical-align: center;
   user-select: none;
 
+  transition: 0.5s ease-in-out;
+
   &--2 {
     background: #eee4da;
+    animation: show 0.2s ease-in-out;
   }
 
   &--4 {
     background: #ede0c8;
+    animation: show 0.2s ease-in-out;
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
+    animation: show 0.2s ease-in-out;
   }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+    animation: show 0.2s ease-in-out;
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+    animation: show 0.2s ease-in-out;
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+    animation: show 0.2s ease-in-out;
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    animation: show 0.2s ease-in-out;
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    animation: show 0.2s ease-in-out;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    animation: show 0.2s ease-in-out;
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+    animation: show 0.2s ease-in-out;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    animation: show 0.2s ease-in-out;
   }
 }
 
@@ -105,6 +121,8 @@ h1 {
 }
 
 .info {
+  position: relative;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -119,20 +137,32 @@ h1 {
   margin: 0 8px 0 0;
 }
 
+.score-update {
+  position: absolute;
+  z-index: 100;
+
+  animation: move-up 0.6s ease-in;
+  animation-fill-mode: both;
+}
+
 .controls {
   display: flex;
 }
 
 .button {
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  color: #f9f6f2;
-  font-family: sans-serif;
-  font-weight: 700;
-  font-size: 16px;
   width: 75px;
   height: 75px;
+
+  font-size: 16px;
+  font-family: sans-serif;
+  font-weight: 700;
+  color: #f9f6f2;
+
+  border: none;
+  border-radius: 5px;
+
+  cursor: pointer;
+  outline: none;
 
   transition: 0.25s ease background;
 }
@@ -154,17 +184,6 @@ h1 {
   }
 }
 
-.message {
-  box-sizing: border-box;
-  width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
-  padding: 10px;
-  text-align: center;
-  border-radius: 5px;
-  font-size: 20px;
-}
-
 .hidden {
   display: none;
 }
@@ -176,12 +195,42 @@ h1 {
   width: 350px;
 }
 
+.game-container {
+  position: relative;
+}
+
+.message {
+  box-sizing: border-box;
+  padding: 10px;
+
+  font-size: 20px;
+  color: #776e65;
+
+  border-radius: 5px;
+}
+
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
 }
 
 .message-container {
-  width: 100%;
-  height: 150px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  background: rgba(238, 228, 218, 0.73);
+  border-radius: 5px;
+
+  animation: fade-in 0.8s ease 0.3s;
+  animation-fill-mode: both;
 }

@@ -3,6 +3,31 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="images/icons/favicon/apple-touch-icon.png"
+    >
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="images/icons/favicon/favicon-32x32.png"
+    >
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="images/icons/favicon/favicon-16x16.png"
+    >
+    <link rel="manifest" href="images/icons/favicon/site.webmanifest">
+    <link
+      rel="mask-icon"
+      href="images/icons/favicon/safari-pinned-tab.svg"
+      color="#5bbad5"
+    >
     <title>2048</title>
     <link rel="stylesheet" href="./styles/main.scss">
   </head>
@@ -15,47 +40,48 @@
             Score: <span class="game-score">0</span>
           </p>
           <button class="button start">Start</button>
+          <button class="button restart" hidden>Restart</button>
         </div>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+      <div class="game-container">
+        <div class="message-container">
+          <p class="message message-lose hidden">You lose! Restart the game?</p>
+          <p class="message message-win hidden">Winner! Congrats! You did it!</p>
+          <p class="message message-start">HOW TO PLAY: Use your arrow keys to move the tiles. Tiles with the same number merge into one when they touch. Add them up to reach 2048! Good luck!</p>
+        </div>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+        <table class="game-field">
+          <tbody>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <script type="text/javascript" src="scripts/main.js"></script>

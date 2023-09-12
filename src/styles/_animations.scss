@@ -1,0 +1,26 @@
+@keyframes show {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes move-up {
+  0% {
+    top: 25px;
+    opacity: 1;
+  }
+  100% {
+    top: -50px;
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
