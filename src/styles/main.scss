@@ -183,5 +183,46 @@ h1 {
 
 .message-container {
   width: 100%;
-  height: 150px;
+  height: 100px;
+}
+
+.arrows {
+
+  &__container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+  }
+}
+
+.arrow {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  &-1 {
+    position: absolute;
+    left: 100px;
+    background-image: url(../images/up-arrow.png);
+  }
+  &-2 {
+    position: absolute;
+    right: 0;
+    top: 100px;
+    background-image: url(../images/arrow-right.png);
+  }
+  &-3 {
+    position: absolute;
+    bottom: 0;
+    left: 100px;
+    background-image: url(../images/arrow-down.png);
+  }
+  &-4 {
+    position: absolute;
+    top: 100px;
+    background-image: url(../images/left.png);
+  }
 }

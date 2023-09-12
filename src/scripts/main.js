@@ -6,6 +6,10 @@ const button = document.querySelector('.button');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
+const arrUp = document.querySelector('.arrow-1');
+const arrRight = document.querySelector('.arrow-2');
+const arrDown = document.querySelector('.arrow-3');
+const arrLeft = document.querySelector('.arrow-4');
 const cellsInRow = 4;
 let scoreCount = 0;
 let field;
@@ -206,4 +210,24 @@ document.addEventListener('keydown', (e) => {
       break;
   }
   setCells();
+});
+
+arrDown.addEventListener('click', e => {
+  slideDown();
+  placeTile();
+});
+
+arrLeft.addEventListener('click', e => {
+  slideLeft();
+  placeTile();
+});
+
+arrRight.addEventListener('click', e => {
+  slideRight();
+  placeTile();
+});
+
+arrUp.addEventListener('click', e => {
+  slideUp();
+  placeTile();
 });
