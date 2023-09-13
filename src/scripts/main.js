@@ -8,6 +8,13 @@ const startMessage = document.querySelector('.message-start');
 const rows = Array.from(document.querySelectorAll('.field-row'));
 const board = Array(4).fill(0).map(x => Array(4).fill(0));
 
+const KEY_DIRECTIONS = {
+  UP: 'ArrowUp',
+  DOWN: 'ArrowDown',
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+};
+
 function findEmptyCell() {
   const boardSize = {
     row: 0,
@@ -80,7 +87,7 @@ function setScore() {
 function normalizeArr(move, initialArray, useReverse = false) {
   const normalizedArray = [[], [], [], []];
 
-  if (move === 'ArrowUp' || move === 'ArrowDown') {
+  if (move === KEY_DIRECTIONS.UP || move === KEY_DIRECTIONS.DOWN) {
     for (let row = 0; row < 4; row++) {
       for (let column = 0; column < 4; column++) {
         normalizedArray[column][row] = initialArray[row][column];
@@ -88,7 +95,7 @@ function normalizeArr(move, initialArray, useReverse = false) {
     }
   }
 
-  if (move === 'ArrowLeft' || move === 'ArrowRight') {
+  if (move === KEY_DIRECTIONS.LEFT || move === KEY_DIRECTIONS.RIGHT) {
     for (let row = 0; row < 4; row++) {
       for (let column = 0; column < 4; column++) {
         normalizedArray[row][column] = initialArray[row][column];
@@ -96,7 +103,8 @@ function normalizeArr(move, initialArray, useReverse = false) {
     }
   }
 
-  if (useReverse && (move === 'ArrowRight' || move === 'ArrowDown')) {
+  if (useReverse && (move === KEY_DIRECTIONS.RIGHT
+    || move === KEY_DIRECTIONS.DOWN)) {
     normalizedArray.map(row => row.reverse());
   }
 
@@ -128,7 +136,7 @@ function makeMove(move) {
     return false;
   }
 
-  if (move === 'ArrowRight' || move === 'ArrowDown') {
+  if (move === KEY_DIRECTIONS.RIGHT || move === KEY_DIRECTIONS.DOWN) {
     newArr.map(row => row.reverse());
   }
 
@@ -139,7 +147,7 @@ initializeGameBtn.addEventListener('click', startGame);
 
 document.addEventListener('keydown', (pressEvent) => {
   let anyMovesLeft = board.some(row => row.some(cell => cell === 0));
-  const moves = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+  const moves = Object.values(KEY_DIRECTIONS);
 
   const move = moves.includes(pressEvent.key) ? pressEvent.key : '';
   let receivedArray = [];
