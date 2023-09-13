@@ -7,17 +7,18 @@ const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
 const startMessage = document.querySelector('.message-start');
 
+const rows = 4;
+const cells = 4;
+let score = 0;
+let moveScore = 0;
+let moveMade = false;
+
 const gameBoard = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
-
-const rows = 4;
-const cells = 4;
-let score = 0;
-let moveScore = 0;
 
 function getRandomTileValue() {
   return Math.round(Math.random()) < 0.9 ? 2 : 4;
@@ -64,6 +65,7 @@ function resetBoard() {
 startButton.addEventListener('click', (buttonEvent) => {
   resetBoard();
   score = 0;
+  moveMade = false;
 
   startMessage.classList.add('hidden');
   winMessage.classList.add('hidden');
@@ -154,6 +156,7 @@ function move(row) {
 }
 
 function moveLeft() {
+  moveMade = false;
   isWinner();
   isLoser();
   moveScore = 0;
@@ -161,10 +164,18 @@ function moveLeft() {
   for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
     const newRow = gameBoard[rowIndex];
 
-    gameBoard[rowIndex] = move(newRow);
+    const movedRow = move(newRow);
+
+    if (!arraysEqual(newRow, movedRow)) {
+      moveMade = true;
+    }
+
+    gameBoard[rowIndex] = movedRow;
   }
 
-  appendTile();
+  if (moveMade) {
+    appendTile();
+  }
   score += moveScore;
 
   updateScore();
@@ -172,6 +183,7 @@ function moveLeft() {
 }
 
 function moveRight() {
+  moveMade = false;
   isWinner();
   isLoser();
   moveScore = 0;
@@ -179,12 +191,21 @@ function moveRight() {
   for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
     const newRow = gameBoard[rowIndex];
 
-    newRow.reverse();
+    const reversedRow = newRow.slice().reverse();
+    const movedRow = move(reversedRow);
+    const finalRow = movedRow.reverse();
 
-    gameBoard[rowIndex] = move(newRow).reverse();
+    if (!arraysEqual(newRow, finalRow)) {
+      moveMade = true;
+    }
+
+    gameBoard[rowIndex] = finalRow;
   }
 
-  appendTile();
+  if (moveMade) {
+    appendTile();
+  }
+
   score += moveScore;
 
   updateScore();
@@ -192,27 +213,35 @@ function moveRight() {
 };
 
 function moveUp() {
+  moveMade = false;
   isWinner();
   isLoser();
   moveScore = 0;
 
   for (let columnIndex = 0; columnIndex < cells; columnIndex++) {
-    let newColumn = [
+    const newColumn = [
       gameBoard[0][columnIndex],
       gameBoard[1][columnIndex],
       gameBoard[2][columnIndex],
       gameBoard[3][columnIndex],
     ];
 
-    newColumn = move(newColumn);
+    const column = move(newColumn);
 
-    gameBoard[0][columnIndex] = newColumn[0];
-    gameBoard[1][columnIndex] = newColumn[1];
-    gameBoard[2][columnIndex] = newColumn[2];
-    gameBoard[3][columnIndex] = newColumn[3];
+    if (!arraysEqual(newColumn, column)) {
+      moveMade = true;
+    }
+
+    gameBoard[0][columnIndex] = column[0];
+    gameBoard[1][columnIndex] = column[1];
+    gameBoard[2][columnIndex] = column[2];
+    gameBoard[3][columnIndex] = column[3];
   }
 
-  appendTile();
+  if (moveMade) {
+    appendTile();
+  }
+
   score += moveScore;
 
   updateScore();
@@ -220,32 +249,54 @@ function moveUp() {
 };
 
 function moveDown() {
+  moveMade = false;
   isWinner();
   isLoser();
   moveScore = 0;
 
   for (let columnIndex = 0; columnIndex < cells; columnIndex++) {
-    let newColumn = [
+    const newColumn = [
       gameBoard[3][columnIndex],
       gameBoard[2][columnIndex],
       gameBoard[1][columnIndex],
       gameBoard[0][columnIndex],
     ];
 
-    newColumn = move(newColumn);
+    const column = move(newColumn);
 
-    gameBoard[3][columnIndex] = newColumn[0];
-    gameBoard[2][columnIndex] = newColumn[1];
-    gameBoard[1][columnIndex] = newColumn[2];
-    gameBoard[0][columnIndex] = newColumn[3];
+    if (!arraysEqual(newColumn, column)) {
+      moveMade = true;
+    }
+
+    gameBoard[3][columnIndex] = column[0];
+    gameBoard[2][columnIndex] = column[1];
+    gameBoard[1][columnIndex] = column[2];
+    gameBoard[0][columnIndex] = column[3];
   }
 
-  appendTile();
+  if (moveMade) {
+    appendTile();
+  }
+
   score += moveScore;
 
   updateScore();
   renderBoard();
 };
+
+function arraysEqual(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 function keyHandler(keyEvent) {
   const keyActions = {
