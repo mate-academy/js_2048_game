@@ -17,15 +17,11 @@ const loseMessage = document.querySelector('.message-lose');
 const gameBoard = document.querySelector('.game-field');
 const rows = gameBoard.querySelectorAll('.field-row');
 
-window.addEventListener('load', () => {
-  initializedBoard();
-  generateTwoTile();
-  upDateBoard();
-});
-
 document.addEventListener('keydown', changeKey);
 
 startButton.addEventListener('click', () => {
+  toggleButton(startButton, restartButton);
+  hideElem(startMessage);
   startGame();
 }
 );
@@ -35,17 +31,12 @@ restartButton.addEventListener('click', () => {
 });
 
 function startGame() {
-  toggleButton(startButton, restartButton);
-  hideElem(startMessage);
   resetGame();
-  generateTwoTile();
+  generateRandomTile();
+  generateRandomTile();
   upDateBoard();
-}
 
-function restartGame() {
-  toggleButton(restartButton, startButton);
-  startGame();
-  hideElem(loseMessage);
+  gameStarted = true;
 }
 
 function resetGame() {
@@ -55,16 +46,15 @@ function resetGame() {
   gameOver = false;
 }
 
+function restartGame() {
+  startGame();
+  hideElem(loseMessage);
+}
+
 function changeKey(evt) {
   evt.preventDefault();
 
-  if (!gameStarted) {
-    startGame();
-  }
-
-  gameStarted = true;
-
-  if (!gameOver) {
+  if (!gameOver && gameStarted) {
     switch (evt.key) {
       case 'ArrowUp':
         moveUp();
@@ -79,9 +69,10 @@ function changeKey(evt) {
         moveRight();
         break;
     }
-    generateTwoTile();
+
+    generateRandomTile();
     upDateBoard();
-    checkBoard();
+    isGameOver();
   }
 }
 
@@ -93,67 +84,6 @@ function initializedBoard() {
       board[row].push(0);
     }
   }
-}
-
-function getEmptyCell() {
-  const cells = [];
-
-  for (let row = 0; row < boardSize; row++) {
-    for (let col = 0; col < boardSize; col++) {
-      if (board[row][col] === 0) {
-        cells.push({
-          row,
-          col,
-        });
-      }
-    }
-  }
-
-  return cells;
-}
-
-function generateRandomTile() {
-  const emptyCells = getEmptyCell();
-
-  if (emptyCells.length) {
-    const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    const randomCell = emptyCells[randomIndex];
-    const randomNumber = Math.random() < 0.9 ? 2 : 4;
-
-    board[randomCell.row][randomCell.col] = randomNumber;
-  }
-}
-
-function generateTwoTile() {
-  generateRandomTile();
-  generateRandomTile();
-}
-
-function upDateBoard() {
-  scoreEl.innerHTML = score;
-
-  rows.forEach((row, indexRow) => {
-    const cells = row.querySelectorAll('.field-cell');
-
-    cells.forEach((cell, indexCol) => {
-      const cellValue = board[indexRow][indexCol];
-
-      if (cell.textContent) {
-        cell.classList.remove(`field-cell--${cell.textContent}`);
-      }
-
-      if (cellValue) {
-        cell.classList.add(`field-cell--${cellValue}`);
-      }
-
-      cell.textContent = cellValue > 0 ? cellValue : '';
-
-      if (cellValue === 2048) {
-        showElem(winMessage);
-        document.removeEventListener('keydown', changeKey);
-      }
-    });
-  });
 }
 
 function moveUp() {
@@ -316,33 +246,83 @@ function moveLeft() {
   }
 }
 
-function checkBoard() {
-  const emptyCells = getEmptyCell();
+function generateRandomTile() {
+  const emptyCells = [];
 
-  if (!emptyCells.length
-    && (!isAvailableMove(moveUp)
-      || !isAvailableMove(moveDown)
-      || !isAvailableMove(moveLeft)
-      || !isAvailableMove(moveRight)
-    )) {
-    gameOver = true;
+  for (let row = 0; row < boardSize; row++) {
+    for (let col = 0; col < boardSize; col++) {
+      if (board[row][col] === 0) {
+        emptyCells.push({
+          row,
+          col,
+        });
+      }
+    }
   }
 
-  if (gameOver) {
-    showElem(loseMessage);
-  }
+  const randomIndex = Math.floor(Math.random() * emptyCells.length);
+  const randomCell = emptyCells[randomIndex];
+  const randomNumber = Math.random() < 0.9 ? 2 : 4;
+
+  board[randomCell.row][randomCell.col] = randomNumber;
 }
 
-function isAvailableMove(move) {
-  move();
+function upDateBoard() {
+  scoreEl.innerHTML = score;
 
-  const emptyCells = getEmptyCell();
+  rows.forEach((row, indexRow) => {
+    const cells = row.querySelectorAll('.field-cell');
 
-  if (emptyCells.length) {
-    return true;
+    cells.forEach((cell, indexCol) => {
+      const cellValue = board[indexRow][indexCol];
+
+      if (cell.textContent) {
+        cell.classList.remove(`field-cell--${cell.textContent}`);
+      }
+
+      if (cellValue) {
+        cell.classList.add(`field-cell--${cellValue}`);
+      }
+
+      cell.textContent = cellValue > 0 ? cellValue : '';
+
+      if (cellValue === 2048) {
+        showElem(winMessage);
+        document.removeEventListener('keydown', changeKey);
+      }
+    });
+  });
+}
+
+function isGameOver() {
+  // Check for empty cells
+  for (let row = 0; row < boardSize; row++) {
+    for (let col = 0; col < boardSize; col++) {
+      if (board[row][col] === 0) {
+        return;
+      }
+    }
   }
 
-  return false;
+  // Check for possible merges
+  for (let row = 0; row < boardSize; row++) {
+    for (let col = 0; col < boardSize; col++) {
+      // Check adjacent cells (up, down, left, right)
+      const currentTile = board[row][col];
+
+      if (
+        (row > 0 && board[row - 1][col] === currentTile)
+        || (row < boardSize - 1 && board[row + 1][col] === currentTile)
+        || (col > 0 && board[row][col - 1] === currentTile)
+        || (col < boardSize - 1 && board[row][col + 1] === currentTile)
+      ) {
+        return;
+      }
+    }
+  }
+
+  gameOver = true;
+  showElem(loseMessage);
 }
 
 function showElem(elem) {
