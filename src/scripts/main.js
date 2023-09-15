@@ -251,9 +251,13 @@ function handleInput(e) {
       break;
   }
 
-  const newTile = new Tile(gameBoard);
+  const keys = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowLeft'];
 
-  grid.getRandomEmptyCell().linkTile(newTile);
+  if (keys.some((k) => e.key === k)) {
+    const newTile = new Tile(gameBoard);
+
+    grid.getRandomEmptyCell().linkTile(newTile);
+  }
 
   if (checkWinCondition() || checkLoseCondition()) {
     return;
