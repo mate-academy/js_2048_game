@@ -2,7 +2,7 @@
 
 const GRID_SIZE = 4;
 const GRID_COUNT = GRID_SIZE * GRID_SIZE;
-const CELL_SIZE = 20;
+const CELL_SIZE = 12;
 const GAP = 1;
 
 class Grid {

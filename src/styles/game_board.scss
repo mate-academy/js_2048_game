@@ -32,7 +32,7 @@
   height: var(--cell-size);
   border-radius: 1vmin;
   font-weight: bold;
-  font-size: 10vmin;
+  font-size: calc(var(--cell-size) / 2);
   color: $text-grey;
   animation: show 0.2s ease-in-out;
   transition: 0.1s ease-in-out;
@@ -53,7 +53,7 @@
 
     @if $key > 64 {
       &--#{$key} {
-        font-size: 8vmin;
+        font-size: calc(var(--cell-size) / 3);
       }
     }
   }
