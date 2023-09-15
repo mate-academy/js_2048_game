@@ -206,6 +206,8 @@ function setupInputOnce() {
 function handleInput(e) {
   switch (e.key) {
     case 'ArrowUp':
+      e.preventDefault();
+
       if (!canUp()) {
         setupInputOnce();
 
@@ -214,7 +216,10 @@ function handleInput(e) {
       moveUp();
       break;
     case 'ArrowDown':
+      e.preventDefault();
+
       if (!canDown()) {
+        e.preventDefault();
         setupInputOnce();
 
         return;
@@ -222,6 +227,8 @@ function handleInput(e) {
       moveDown();
       break;
     case 'ArrowLeft':
+      e.preventDefault();
+
       if (!canLeft()) {
         setupInputOnce();
 
@@ -230,6 +237,8 @@ function handleInput(e) {
       moveLeft();
       break;
     case 'ArrowRight':
+      e.preventDefault();
+
       if (!canRight()) {
         setupInputOnce();
 
