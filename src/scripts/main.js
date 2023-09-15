@@ -149,6 +149,12 @@ startButton.addEventListener('click', startGame);
 const grid = new Grid(gameBoard);
 
 let score = 0;
+const Directions = {
+  ArrowUp: 'ArrowUp',
+  ArrowDown: 'ArrowDown',
+  ArrowLeft: 'ArrowLeft',
+  ArrowRight: 'ArrowRight',
+};
 
 function startGame() {
   resetGame();
@@ -167,6 +173,7 @@ function resetGame() {
   loseMessage.classList.add('hidden');
 
   score = 0;
+
   updateScoreValue();
 
   startButton.textContent = 'Restart';
@@ -205,7 +212,7 @@ function setupInputOnce() {
 
 function handleInput(e) {
   switch (e.key) {
-    case 'ArrowUp':
+    case Directions.ArrowUp:
       e.preventDefault();
 
       if (!canUp()) {
@@ -215,7 +222,7 @@ function handleInput(e) {
       }
       moveUp();
       break;
-    case 'ArrowDown':
+    case Directions.ArrowDown:
       e.preventDefault();
 
       if (!canDown()) {
@@ -226,7 +233,7 @@ function handleInput(e) {
       }
       moveDown();
       break;
-    case 'ArrowLeft':
+    case Directions.ArrowLeft:
       e.preventDefault();
 
       if (!canLeft()) {
@@ -236,7 +243,7 @@ function handleInput(e) {
       }
       moveLeft();
       break;
-    case 'ArrowRight':
+    case Directions.ArrowRight:
       e.preventDefault();
 
       if (!canRight()) {
@@ -251,9 +258,7 @@ function handleInput(e) {
       break;
   }
 
-  const keys = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowLeft'];
-
-  if (keys.some((k) => e.key === k)) {
+  if (Object.keys(Directions).some((k) => e.key === k)) {
     const newTile = new Tile(gameBoard);
 
     grid.getRandomEmptyCell().linkTile(newTile);

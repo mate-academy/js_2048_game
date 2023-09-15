@@ -1,7 +1,4 @@
 .game-board {
-  --grid-size: 4;
-  --cell-size: 20vmin;
-  --gap-size: 1vmin;
   display: grid;
   grid-template-columns: repeat(var(--grid-size), var(--cell-size));
   grid-template-rows: repeat(var(--grid-size), var(--cell-size));
@@ -19,8 +16,6 @@
 }
 
 .tile {
-  --x: 0;
-  --y: 0;
   position: absolute;
   z-index: 10;
   top: calc(var(--gap-size) + var(--y) * (var(--cell-size) + var(--gap-size)));
