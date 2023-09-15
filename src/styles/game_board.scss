@@ -1,0 +1,79 @@
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-size), var(--cell-size));
+  grid-template-rows: repeat(var(--grid-size), var(--cell-size));
+  background-color: $board_bg;
+  gap: var(--gap-size);
+  border-radius: 1vmin;
+  border: 1vmin;
+  padding: var(--gap-size);
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.cell {
+  background-color: $cell_bg;
+  border-radius: 1vmin;
+}
+
+.tile {
+  position: absolute;
+  z-index: 10;
+  top: calc(var(--gap-size) + var(--y) * (var(--cell-size) + var(--gap-size)));
+  left: calc(var(--gap-size) + var(--x) * (var(--gap-size) + var(--cell-size)));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border-radius: 1vmin;
+  font-weight: bold;
+  font-size: calc(var(--cell-size) / 2);
+  color: $text-grey;
+  animation: show 0.2s ease-in-out;
+  transition: 0.1s ease-in-out;
+
+  &--merge {
+    animation: merge 0.2s ease-in-out;
+  }
+
+  @each $key, $value in $tiles_bg {
+    &--#{$key} {
+      background-color: $value;
+    }
+    @if $key >= 8 {
+      &--#{$key} {
+        color: $text-white;
+      }
+    }
+
+    @if $key > 64 {
+      &--#{$key} {
+        font-size: calc(var(--cell-size) / 3);
+      }
+    }
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes merge {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
