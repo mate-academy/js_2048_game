@@ -10,17 +10,25 @@ const gameScore = document.querySelector('.game_score');
 const GRID_SIZE = 4;
 
 document.addEventListener('keydown', (e) => {
-  switch (e.key) {
-    case 'ArrowUp':
+  const key = e.key;
+  const keys = {
+    ArrowUp: 'ArrowUp',
+    ArrowLeft: 'ArrowLeft',
+    ArrowDown: 'ArrowDown',
+    ArrowRight: 'ArrowRight',
+  };
+
+  switch (key) {
+    case keys.ArrowUp:
       grid.slideUp();
       break;
-    case 'ArrowLeft':
+    case keys.ArrowLeft:
       grid.slideLeft();
       break;
-    case 'ArrowDown':
+    case keys.ArrowDown:
       grid.slideDown();
       break;
-    case 'ArrowRight':
+    case keys.ArrowRight:
       grid.slideRight();
       break;
   }
@@ -106,20 +114,16 @@ class Grid2048 {
           return false;
         }
 
-        if (rowIndex !== GRID_SIZE - 1) {
-          if (
-            fieldCopy[rowIndex][colIndex] === fieldCopy[rowIndex + 1][colIndex]
-          ) {
-            return false;
-          }
+        if (rowIndex !== GRID_SIZE - 1
+          && fieldCopy[rowIndex][colIndex] === fieldCopy[rowIndex + 1][colIndex]
+        ) {
+          return false;
         }
 
-        if (colIndex !== GRID_SIZE - 1) {
-          if (
-            fieldCopy[rowIndex][colIndex] === fieldCopy[rowIndex][colIndex + 1]
-          ) {
-            return false;
-          }
+        if (colIndex !== GRID_SIZE - 1
+          && fieldCopy[rowIndex][colIndex] === fieldCopy[rowIndex][colIndex + 1]
+        ) {
+          return false;
         }
       }
     }
@@ -154,17 +158,17 @@ class Grid2048 {
   }
 
   combine(row) {
-    for (let i = GRID_SIZE - 1; i >= 1; i--) {
+    for (let i = 0; i <= GRID_SIZE - 1; i++) {
       const a = row[i];
-      const b = row[i - 1];
+      const b = row[i + 1];
 
       if (a === b) {
         row[i] = a + b;
-        row[i - 1] = 0;
+        row[i + 1] = 0;
         this.score += row[i];
-        gameScore.textContent = this.score;
       }
     }
+    gameScore.textContent = this.score;
 
     return row;
   }
