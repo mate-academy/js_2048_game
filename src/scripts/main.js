@@ -10,14 +10,19 @@ const gameScore = document.querySelector('.game_score');
 const GRID_SIZE = 4;
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowUp') {
-    grid.slideUp();
-  } else if (e.key === 'ArrowLeft') {
-    grid.slideLeft();
-  } else if (e.key === 'ArrowDown') {
-    grid.slideDown();
-  } else if (e.key === 'ArrowRight') {
-    grid.slideRight();
+  switch (e.key) {
+    case 'ArrowUp':
+      grid.slideUp();
+      break;
+    case 'ArrowLeft':
+      grid.slideLeft();
+      break;
+    case 'ArrowDown':
+      grid.slideDown();
+      break;
+    case 'ArrowRight':
+      grid.slideRight();
+      break;
   }
 });
 
