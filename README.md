@@ -1,4 +1,5 @@
-- [DEMO LINK](https://sheva10barca.github.io/js_2048_game/)
+- [DEMO LINK](https://sheva10barca.github.io/js_2048_game/) 
+
 Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
   - Run `npm run test` command to test your code;
   - Run `npm run test:only -- -n` to run fast test ignoring linter;
