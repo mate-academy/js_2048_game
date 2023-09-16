@@ -53,6 +53,7 @@ function goStart() {
 function goEnd() {
   setButtonStatus('Start');
   message[0].classList.remove('hidden');
+  message[2].classList.add('hidden');
   matrix = matrix.map(row => row.map(() => 0));
   resetGameFieldCells();
   gameScore = 0;
@@ -120,6 +121,11 @@ function upgradeFeilds() {
 }
 
 document.addEventListener('keydown', click => {
+  if (buttonStart.classList.contains('game-start')) {
+    setButtonStatus('Restart');
+    message[0].classList.add('hidden');
+  }
+
   if (!areMovesAvailable()) {
     message[2].classList.remove('hidden');
     message[0].classList.add('hidden');
@@ -180,23 +186,25 @@ function moveLeft() {
   let count = 0;
 
   const result = matrix.map(row => {
-    return row.filter(col => col !== 0);
-  });
+    const nonZeroElements = row.filter(col => col !== 0);
+    const newRow = [];
 
-  result.forEach(row => {
-    row.forEach((col, index) => {
-      if (row[index] === row[index + 1]) {
-        row[index] = row[index] * 2;
-        count += row[index];
-        row[index + 1] = 0;
+    for (let i = 0; i < nonZeroElements.length; i++) {
+      if (i < nonZeroElements.length - 1
+        && nonZeroElements[i] === nonZeroElements[i + 1]) {
+        newRow.push(nonZeroElements[i] * 2);
+        count += nonZeroElements[i] * 2;
+        i++;
+      } else {
+        newRow.push(nonZeroElements[i]);
       }
-    });
-  });
-
-  result.forEach(row => {
-    while (row.length < ROW_LENGTH) {
-      row.push(0);
     }
+
+    while (newRow.length < ROW_LENGTH) {
+      newRow.push(0);
+    }
+
+    return newRow;
   });
 
   if (!matrixEquals(result)) {
@@ -210,14 +218,17 @@ function moveLeft() {
 function moveRight() {
   let count = 0;
 
-  const result = [];
-
-  matrix.forEach(row => {
+  const result = matrix.map(row => {
+    const nonZeroElements = row.filter(col => col !== 0);
     const newRow = [];
 
-    for (let i = ROW_LENGTH - 1; i >= 0; i--) {
-      if (row[i] !== 0) {
-        newRow.unshift(row[i]);
+    for (let i = nonZeroElements.length - 1; i >= 0; i--) {
+      if (i > 0 && nonZeroElements[i] === nonZeroElements[i - 1]) {
+        newRow.unshift(nonZeroElements[i] * 2);
+        count += nonZeroElements[i] * 2;
+        i--;
+      } else {
+        newRow.unshift(nonZeroElements[i]);
       }
     }
 
@@ -225,17 +236,7 @@ function moveRight() {
       newRow.unshift(0);
     }
 
-    result.push(newRow);
-  });
-
-  result.forEach((row, rowIndex) => {
-    for (let i = ROW_LENGTH - 1; i > 0; i--) {
-      if (row[i] === row[i - 1]) {
-        row[i] *= 2;
-        count += row[i];
-        row[i - 1] = 0;
-      }
-    }
+    return newRow;
   });
 
   if (!matrixEquals(result)) {
@@ -249,31 +250,48 @@ function moveRight() {
 function moveUp() {
   let count = 0;
 
-  const result = matrix.map(row => [...row]);
+  const result = [];
 
-  for (let col = 0; col < result[0].length; col++) {
-    for (let row = 1; row < result.length; row++) {
-      if (result[row][col] !== 0) {
-        for (let prevRow = row - 1; prevRow >= 0; prevRow--) {
-          if (result[prevRow][col] === 0) {
-            result[prevRow][col] = result[prevRow + 1][col];
-            result[prevRow + 1][col] = 0;
-          } else if (result[prevRow][col] === result[prevRow + 1][col]) {
-            result[prevRow][col] *= 2;
-            count += result[prevRow][col];
-            result[prevRow + 1][col] = 0;
-            break;
-          } else {
-            break;
-          }
-        }
+  for (let col = 0; col < matrix[0].length; col++) {
+    const nonZeroElements = [];
+
+    for (let row = 0; row < matrix.length; row++) {
+      if (matrix[row][col] !== 0) {
+        nonZeroElements.push(matrix[row][col]);
       }
+    }
+
+    const newRow = [];
+
+    for (let i = 0; i < nonZeroElements.length; i++) {
+      if (i < nonZeroElements.length - 1
+        && nonZeroElements[i] === nonZeroElements[i + 1]) {
+        newRow.push(nonZeroElements[i] * 2);
+        count += nonZeroElements[i] * 2;
+        i++;
+      } else {
+        newRow.push(nonZeroElements[i]);
+      }
+    }
+
+    while (newRow.length < ROW_LENGTH) {
+      newRow.push(0);
+    }
+
+    result.push(newRow);
+  }
+
+  const transposedResult = Array.from({ length: ROW_LENGTH }, () => []);
+
+  for (let row = 0; row < ROW_LENGTH; row++) {
+    for (let col = 0; col < ROW_LENGTH; col++) {
+      transposedResult[row].push(result[col][row]);
     }
   }
 
-  if (!matrixEquals(result)) {
+  if (!matrixEquals(transposedResult)) {
     gameScore += count;
-    matrix = result;
+    matrix = transposedResult;
     upgradeFeilds();
     addRandomCell();
   }
