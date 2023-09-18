@@ -23,8 +23,7 @@ startButton.addEventListener('click', () => {
   toggleButton(startButton, restartButton);
   hideElem(startMessage);
   startGame();
-}
-);
+});
 
 restartButton.addEventListener('click', () => {
   restartGame();
@@ -59,14 +58,20 @@ function changeKey(evt) {
       case 'ArrowUp':
         moveUp();
         break;
+
       case 'ArrowDown':
         moveDown();
         break;
+
       case 'ArrowLeft':
         moveLeft();
         break;
+
       case 'ArrowRight':
         moveRight();
+        break;
+
+      default:
         break;
     }
 
@@ -96,30 +101,24 @@ function moveUp() {
       merged = false;
 
       if (currentCell !== 0) {
-        let currentRow = row;
+        while (row > 0) {
+          const nextCellIsEmpty = board[row - 1][col] === 0;
+          const canMerge = (board[row - 1][col] === board[row][col] && !merged);
 
-        while (
-          currentRow > 0
-          && (board[row - 1][col] === 0
-            || (board[row - 1][col] === board[row][col]
-              && !merged))
-        ) {
-          if (board[row - 1][col] === 0) {
+          if (nextCellIsEmpty) {
             board[row - 1][col] = board[row][col];
             board[row][col] = 0;
-            merged = false;
-            row = currentRow - 1;
-          } else if (board[row - 1][col] === board[row][col]) {
-            if (!merged) {
-              board[row - 1][col] *= 2;
-              board[row][col] = 0;
-              score += board[row - 1][col];
-              merged = true;
-              row = currentRow - 1;
-            }
+            row--;
+          } else if (canMerge) {
+            board[row - 1][col] *= 2;
+            board[row][col] = 0;
+            score += board[row - 1][col];
+            merged = true;
+            row--;
+            break;
+          } else {
+            break;
           }
-
-          currentRow--;
         }
       }
     }
@@ -136,30 +135,25 @@ function moveDown() {
       merged = false;
 
       if (currentCell !== 0) {
-        let currentRow = row;
+        while (row < boardSize - 1) {
+          const nextCellIsEmpty = board[row + 1][col] === 0;
+          const canMerge = board[row + 1][col] === board[row][col] && !merged;
 
-        while (
-          currentRow < boardSize - 1
-          && (board[row + 1][col] === 0
-            || (board[row + 1][col] === board[row][col]
-              && !merged))
-        ) {
-          if (board[row + 1][col] === 0) {
+          if (nextCellIsEmpty) {
             board[row + 1][col] = board[row][col];
             board[row][col] = 0;
             merged = false;
-            row = currentRow + 1;
-          } else if (board[row + 1][col] === board[row][col]) {
-            if (!merged) {
-              board[row + 1][col] *= 2;
-              board[row][col] = 0;
-              score += board[row + 1][col];
-              merged = true;
-              row = currentRow + 1;
-            }
+            row++;
+          } else if (canMerge) {
+            board[row + 1][col] *= 2;
+            board[row][col] = 0;
+            score += board[row + 1][col];
+            merged = true;
+            row++;
+            break;
+          } else {
+            break;
           }
-
-          currentRow++;
         }
       }
     }
@@ -176,30 +170,25 @@ function moveRight() {
       merged = false;
 
       if (currentCell !== 0) {
-        let currentCol = col;
+        while (col < boardSize - 1) {
+          const nextCellIsEmpty = board[row][col + 1] === 0;
+          const canMerge = board[row][col + 1] === board[row][col] && !merged;
 
-        while (
-          currentCol < boardSize - 1
-          && (board[row][col + 1] === 0
-            || (board[row][col + 1] === board[row][col]
-              && !merged))
-        ) {
-          if (board[row][col + 1] === 0) {
+          if (nextCellIsEmpty) {
             board[row][col + 1] = board[row][col];
             board[row][col] = 0;
             merged = false;
-            col = currentCol + 1;
-          } else if (board[row][col + 1] === board[row][col]) {
-            if (!merged) {
-              board[row][col + 1] *= 2;
-              board[row][col] = 0;
-              score += board[row][col + 1];
-              merged = true;
-              col = currentCol + 1;
-            }
+            col++;
+          } else if (canMerge) {
+            board[row][col + 1] *= 2;
+            board[row][col] = 0;
+            score += board[row][col + 1];
+            merged = true;
+            col++;
+            break;
+          } else {
+            break;
           }
-
-          currentCol++;
         }
       }
     }
@@ -216,30 +205,25 @@ function moveLeft() {
       merged = false;
 
       if (currentCell !== 0) {
-        let currentCol = col;
+        while (col > 0) {
+          const nextCellIsEmpty = board[row][col - 1] === 0;
+          const canMerge = board[row][col - 1] === board[row][col] && !merged;
 
-        while (
-          currentCol > 0
-          && (board[row][col - 1] === 0
-            || (board[row][col - 1] === board[row][col]
-              && !merged))
-        ) {
-          if (board[row][col - 1] === 0) {
+          if (nextCellIsEmpty) {
             board[row][col - 1] = board[row][col];
             board[row][col] = 0;
             merged = false;
-            col = currentCol - 1;
-          } else if (board[row][col - 1] === board[row][col]) {
-            if (!merged) {
-              board[row][col - 1] *= 2;
-              board[row][col] = 0;
-              score += board[row][col - 1];
-              merged = true;
-              col = currentCol - 1;
-            }
+            col--;
+          } else if (canMerge) {
+            board[row][col - 1] *= 2;
+            board[row][col] = 0;
+            score += board[row][col - 1];
+            merged = true;
+            col--;
+            break;
+          } else {
+            break;
           }
-
-          currentCol--;
         }
       }
     }
@@ -308,13 +292,13 @@ function isGameOver() {
   for (let row = 0; row < boardSize; row++) {
     for (let col = 0; col < boardSize; col++) {
       // Check adjacent cells (up, down, left, right)
-      const currentTile = board[row][col];
+      const currentCell = board[row][col];
 
       if (
-        (row > 0 && board[row - 1][col] === currentTile)
-        || (row < boardSize - 1 && board[row + 1][col] === currentTile)
-        || (col > 0 && board[row][col - 1] === currentTile)
-        || (col < boardSize - 1 && board[row][col + 1] === currentTile)
+        (row > 0 && board[row - 1][col] === currentCell)
+        || (row < boardSize - 1 && board[row + 1][col] === currentCell)
+        || (col > 0 && board[row][col - 1] === currentCell)
+        || (col < boardSize - 1 && board[row][col + 1] === currentCell)
       ) {
         return;
       }
