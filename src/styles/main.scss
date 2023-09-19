@@ -4,13 +4,11 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fefefe;
-  font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
   background: no-repeat center url("../images/background.png");
   background-size: cover;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .field-cell {
@@ -65,13 +63,13 @@ body {
   }
 
   &--512 {
-    background: #edc850;
+    background: #81d602;
     color: #f9f6f2;
     animation: 0.3s ease alternate appear;
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #3fa4ed;
     color: #f9f6f2;
     animation: 0.3s ease alternate appear;
   }
