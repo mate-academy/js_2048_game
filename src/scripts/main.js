@@ -181,25 +181,25 @@ const winGame = () => {
 };
 
 const checkFields = (fieldToCheck) => {
-  for (const row of fieldToCheck) {
-    const duplicates = row.filter((item, index) => row.indexOf(item) !== index);
-
-    if (duplicates.length !== 0) {
-      return true;
+  for (let i = 0; i < cellsInRow; i++) {
+    for (let j = 0; j < cellsInRow - 1; j++) {
+      if (fieldToCheck[i][j] === fieldToCheck[i][j + 1]) {
+        return true;
+      }
     }
   }
 
   return false;
 };
 
-const gameOver = (desk) => {
+const gameOver = (boardToCheck) => {
   if (hasEmptyCell()) {
     return false;
   }
 
-  const newDesk = transponseField(desk);
+  const newDesk = transponseField(boardToCheck);
 
-  if (checkFields(desk) || checkFields(newDesk)) {
+  if (checkFields(boardToCheck) || checkFields(newDesk)) {
     return false;
   };
 
