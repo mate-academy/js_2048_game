@@ -76,8 +76,10 @@ function changeKey(evt) {
     }
 
     generateRandomTile();
-    upDateBoard();
-    isGameOver();
+
+    if (!gameOver) {
+      upDateBoard();
+    }
   }
 }
 
@@ -244,11 +246,15 @@ function generateRandomTile() {
     }
   }
 
-  const randomIndex = Math.floor(Math.random() * emptyCells.length);
-  const randomCell = emptyCells[randomIndex];
-  const randomNumber = Math.random() < 0.9 ? 2 : 4;
+  if (emptyCells.length > 0) {
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+    const randomCell = emptyCells[randomIndex];
+    const randomNumber = Math.random() < 0.9 ? 2 : 4;
 
-  board[randomCell.row][randomCell.col] = randomNumber;
+    board[randomCell.row][randomCell.col] = randomNumber;
+  } else {
+    isGameOver();
+  }
 }
 
 function upDateBoard() {
@@ -279,15 +285,6 @@ function upDateBoard() {
 }
 
 function isGameOver() {
-  // Check for empty cells
-  for (let row = 0; row < boardSize; row++) {
-    for (let col = 0; col < boardSize; col++) {
-      if (board[row][col] === 0) {
-        return;
-      }
-    }
-  }
-
   // Check for possible merges
   for (let row = 0; row < boardSize; row++) {
     for (let col = 0; col < boardSize; col++) {
