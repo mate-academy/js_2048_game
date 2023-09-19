@@ -1,122 +1,70 @@
-/* eslint-disable no-console */
-import { move } from './movement.js';
+'use strict';
 
-export const board = [
+const board = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
 
-// export const board = [
-//   [4, 8, 8, 2],
-//   [2, 2, 2, 0],
-//   [0, 0, 0, 0],
-//   [0, 0, 0, 2],
-// ];
-
-// eslint-disable-next-line no-unused-vars, prefer-const
 let score = 0;
 
-function placeRandomNumber() {
+function createTile(row, col, value) {
+  const tile = document.createElement('div');
+
+  tile.classList.add('tile');
+  tile.classList.add(`tile--${value}`);
+  tile.textContent = value;
+
+  const cell = document.querySelector(`[data-row='${row}'][data-col='${col}']`);
+
+  cell.appendChild(tile);
+}
+
+function populateRandomCell() {
   const emptyCells = [];
 
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
-      if (board[row][col] === 0) {
-        emptyCells.push([row, col]);
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (board[i][j] === 0) {
+        emptyCells.push([i, j]);
       }
     }
   }
 
-  const [x, y] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  if (emptyCells.length > 0) {
+    const [randRow, randCol]
+      = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    const value = Math.random() < 0.9 ? 2 : 4;
 
-  board[x][y] = Math.random() < 0.9 ? 2 : 4;
+    board[randRow][randCol] = value;
+    createTile(randRow, randCol, value);
+  }
 }
 
-placeRandomNumber();
-placeRandomNumber();
+function initializeBoard() {
+  const gameField = document.querySelector('.game-field');
 
-console.log(board, ': numbers board');
+  for (let i = 0; i < 4; i++) {
+    const row = document.createElement('div');
 
-function updateBoard() {
-  const rows = document.querySelectorAll('.field-row');
+    row.classList.add('row');
 
-  // loop through each row
-  rows.forEach((row, i) => {
-    const cells = row.querySelectorAll('.field-cell');
+    for (let j = 0; j < 4; j++) {
+      const cell = document.createElement('div');
 
-    cells.forEach((cell, j) => {
-      // Clear the cell's text content and remove additional classes
-      cell.textContent = '';
-      cell.className = 'field-cell';
-
-      const value = board[i][j];
-
-      console.log(value, ': current values');
-
-      if (value !== 0) {
-        cell.textContent = value;
-        cell.classList.add(`field-cell--${value}`);
-      }
-    });
-  });
-}
-
-updateBoard();
-
-function hasEmptyCells(input) {
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
-      if (board[row][col] === 0) {
-        return true;
-      }
+      cell.classList.add('field-cell');
+      cell.setAttribute('data-row', i);
+      cell.setAttribute('data-col', j);
+      row.appendChild(cell);
     }
+    gameField.appendChild(row);
   }
 
-  return false;
-};
-
-document.addEventListener('keydown', function(e) {
-  if (hasEmptyCells(board)) {
-    placeRandomNumber();
-  }
-
-  const oldBoard = JSON.parse(JSON.stringify(board));
-
-  if (e.key === 'ArrowUp') {
-    moveUp();
-  }
-
-  if (e.key === 'ArrowDown') {
-    moveDown();
-  }
-
-  if (e.key === 'ArrowRight') {
-    moveRight();
-  }
-
-  if (e.key === 'ArrowLeft') {
-    moveLeft();
-  }
-
-  if (JSON.stringify(oldBoard) !== JSON.stringify(board)) {
-    updateBoard();
-  }
-});
-
-function moveUp() {
-  move('Up');
+  // Populate two random cells to start
+  populateRandomCell();
+  populateRandomCell();
 }
 
-function moveDown() {
-  move('Down');
-}
-
-function moveLeft() {
-  move('Left');
-}
-
-function moveRight() {
-  move('Right');
-}
+// Call the function to initialize the board
+initializeBoard();

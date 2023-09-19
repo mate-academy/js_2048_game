@@ -35,18 +35,11 @@ h1 {
 
 .game-field {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   background: #bbada0;
+  border-spacing: 10px;
   border-radius: 5px;
-  padding: 10px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .field-cell {
@@ -56,16 +49,12 @@ h1 {
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
+  vertical-align: center;
   user-select: none;
-  margin: 5px;
+
 }
 
 .tile {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
   text-align: center;
   transition: all 0.3s ease;
 
