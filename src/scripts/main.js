@@ -66,7 +66,6 @@ document.addEventListener('keyup', e => {
 
     case 'ArrowDown':
       moveDown();
-      // moves(e.code);
       break;
 
     default:
