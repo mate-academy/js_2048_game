@@ -4,10 +4,11 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  background: no-repeat center url("../images/background.png");
+  background-size: cover;
+  font-family: "Roboto", sans-serif;
 }
 
 .field-cell {
@@ -15,63 +16,78 @@ body {
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #fff;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #00f;
+    animation: 0.3s ease alternate appear;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #60f;
+    animation: 0.3s ease alternate appear;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #12a370;
+    animation: 0.3s ease alternate appear;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: #14b6b7;
+    animation: 0.3s ease alternate appear;
   }
 
   &--32 {
     background: #f67c5f;
-    color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--64 {
     background: #f65e3b;
-    color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    background: #580e0a;
+    animation: 0.3s ease alternate appear;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: #e61fdd;
+    animation: 0.3s ease alternate appear;
   }
 
   &--512 {
-    background: #edc850;
+    background: #81d602;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #3fa4ed;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
+  }
+
+  @keyframes appear {
+    from {
+      transform: scale(0.2);
+    }
+    to {
+      /* returns the sun to its default position */
+      transform: scale(1);
+    }
   }
 }
 
@@ -91,12 +107,12 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background: purple;
   color: #f9f6f2;
   width: 75px;
   height: 75px;
   font-size: 24px;
-  border-radius: 5px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,9 +187,13 @@ h1 {
 
 .container {
   display: flex;
+  padding: 50px;
   flex-direction: column;
   align-items: center;
   width: 350px;
+  background-color: #d6cdc4;
+  border: 10px solid #bbada0;
+  border-radius: 40px;
 }
 
 .message-win {
