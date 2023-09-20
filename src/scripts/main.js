@@ -225,7 +225,7 @@ class Board extends Array {
 const board = new Board();
 const buttonHTML = document.querySelector('.button');
 const messagesHTML = document.getElementsByClassName('message');
-const scoreHTML = document.querySelector('.game_score');
+const scoreHTML = document.querySelector('.game-score');
 let firstMove = false;
 
 // Reset the board and update HTML
@@ -278,11 +278,11 @@ function updateHTML() {
 // Updates HTML cell with value
 function updateHTMLTile(tile, num) {
   tile.innerHTML = '';
-  tile.classList.value = 'field_cell';
+  tile.classList.value = 'field-cell';
 
   if (num > 0) {
     tile.innerHTML = num;
-    tile.classList.add(`field_cell_${num}`);
+    tile.classList.add(`field-cell-${num}`);
   }
 }
 
@@ -308,15 +308,15 @@ function random2or4() {
 function messageUdate() {
   for (const message of messagesHTML) {
     switch (message.classList[1]) {
-      case 'message_start': {
+      case 'message-start': {
         if (firstMove) {
           message.classList.add('hidden');
         }
         break;
       }
 
-      case 'message_lose': {
-        if (board.isFull) {
+      case 'message-lose': {
+        if (board.noMoves) {
           message.classList.remove('hidden');
         }
 
@@ -326,7 +326,7 @@ function messageUdate() {
         break;
       }
 
-      case 'message_win': {
+      case 'message-win': {
         if (board.isWin) {
           message.classList.remove('hidden');
         }

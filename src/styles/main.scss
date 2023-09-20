@@ -10,7 +10,7 @@ body {
   font-weight: 900;
 }
 
-.field_cell {
+.field-cell {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
@@ -21,67 +21,67 @@ body {
   vertical-align: center;
   user-select: none;
 
-  &_2 {
+  &-2 {
     background: #eee4da;
   }
 
-  &_4 {
+  &-4 {
     background: #ede0c8;
   }
 
-  &_8 {
+  &-8 {
     background: #f2b179;
     color: #f9f6f2;
   }
 
-  &_16 {
+  &-16 {
     background: #f59563;
     color: #f9f6f2;
   }
 
-  &_32 {
+  &-32 {
     background: #f67c5f;
     color: #f9f6f2;
   }
 
-  &_64 {
+  &-64 {
     background: #f65e3b;
     color: #f9f6f2;
   }
 
-  &_128 {
+  &-128 {
     background: #edcf72;
     color: #f9f6f2;
   }
 
-  &_256 {
+  &-256 {
     background: #edcc61;
     color: #f9f6f2;
   }
 
-  &_512 {
+  &-512 {
     background: #edc850;
     color: #f9f6f2;
   }
 
-  &_1024 {
+  &-1024 {
     background: #edc53f;
     color: #f9f6f2;
   }
 
-  &_2048 {
+  &-2048 {
     background: #edc22e;
     color: #f9f6f2;
   }
 }
 
-.game_field {
+.game-field {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
 }
 
-.game_header {
+.game-header {
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -176,12 +176,12 @@ h1 {
   width: 350px;
 }
 
-.message_win {
+.message-win {
   background: #edc22e;
   color: #f9f6f2;
 }
 
-.message_container {
+.message-container {
   width: 100%;
   height: 150px;
 }
