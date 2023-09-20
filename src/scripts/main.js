@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
   startButton.addEventListener('click', function() {
     resetBoard();
     resetScore();
-    board[0][0] = 2048;
 
     populateRandomCell();
     populateRandomCell();
