@@ -282,7 +282,7 @@ function updateHTMLTile(tile, num) {
 
   if (num > 0) {
     tile.innerHTML = num;
-    tile.classList.add(`field-cell-${num}`);
+    tile.classList.add(`field-cell--${num}`);
   }
 }
 
