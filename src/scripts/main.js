@@ -196,26 +196,40 @@ function slideDown() {
   }
 }
 
+function compareBoards(a, b) {
+  for (let i = 0; i < cellsInRow; i++) {
+    for (let j = 0; j < cellsInRow; j++) {
+      if (a[i][j] !== b[i][j]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 document.addEventListener('keyup', (e) => {
   e.preventDefault();
+
+  const pastBoard = JSON.parse(JSON.stringify(board));
 
   switch (e.code) {
     case 'ArrowLeft':
       slideLeft();
-      placeTiles();
       break;
     case 'ArrowRight':
       slideRight();
-      placeTiles();
       break;
     case 'ArrowUp':
       slideUp();
-      placeTiles();
       break;
     case 'ArrowDown':
       slideDown();
-      placeTiles();
       break;
+  }
+
+  if (!compareBoards(pastBoard, board)) {
+    placeTiles();
   }
 
   setCells();
