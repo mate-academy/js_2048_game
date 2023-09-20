@@ -6,6 +6,11 @@ let gameOver = false;
 document.addEventListener('DOMContentLoaded', function() {
   initializeBoard();
 
+  // createTile(0, 0, 2);
+  // createTile(0, 1, 4);
+  // createTile(1, 0, 8);
+  // createTile(1, 1, 16);
+
   let gameStarted = false;
   const startButton = document.querySelector('.start');
 
@@ -62,18 +67,34 @@ const board = [
   [0, 0, 0, 0],
 ];
 
+const newTiles = Array(4).fill().map(() => Array(4).fill(false));
+
+console.log(newTiles);
+
 let score = 0;
 
 function createTile(row, col, value) {
+  newTiles[row][col] = true;
+
   const tile = document.createElement('div');
 
   tile.classList.add('tile');
   tile.classList.add(`tile--${value}`);
+
+  if (newTiles[row][col]) {
+    tile.classList.add('tile--new');
+  }
+
   tile.textContent = value;
 
   const cell = document.querySelector(`[data-row='${row}'][data-col='${col}']`);
 
   cell.appendChild(tile);
+
+  setTimeout(() => {
+    tile.classList.remove('tile--new');
+    newTiles[row][col] = false; // Reset the new tile flag
+  }, 300);
 }
 
 function populateRandomCell() {
@@ -141,7 +162,18 @@ function updateBoardDOM() {
         tile.classList.add(`tile--${board[i][j]}`);
         tile.textContent = board[i][j];
 
+        if (newTiles[i][j]) {
+          tile.classList.add('tile--new');
+        }
+
         cell.appendChild(tile);
+
+        if (newTiles[i][j]) {
+          setTimeout(() => {
+            tile.classList.remove('tile--new');
+            newTiles[i][j] = false; // Reset the new tile flag
+          }, 300);
+        }
       }
     }
   }
