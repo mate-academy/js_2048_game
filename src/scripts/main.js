@@ -1,10 +1,36 @@
+/* eslint-disable no-console */
 'use strict';
+
+let gameOver = false;
 
 document.addEventListener('DOMContentLoaded', function() {
   initializeBoard();
-  updateBoardDOM();
+
+  let gameStarted = false;
+  const startButton = document.querySelector('.start');
+
+  startButton.addEventListener('click', function() {
+    resetBoard();
+    resetScore();
+    board[0][0] = 2048;
+
+    populateRandomCell();
+    populateRandomCell();
+
+    updateBoardDOM();
+    updateScore();
+
+    hideMessages();
+    gameStarted = true;
+
+    startButton.textContent = 'Restart';
+  });
 
   document.addEventListener('keydown', function(e) {
+    if (!gameStarted || gameOver) {
+      return;
+    }
+
     let moved = false;
 
     if (e.key === 'ArrowUp') {
@@ -90,10 +116,6 @@ function initializeBoard() {
     }
     gameField.appendChild(row);
   }
-
-  // Populate two random cells to start
-  populateRandomCell();
-  populateRandomCell();
 }
 
 function clearBoardDOM() {
@@ -126,12 +148,24 @@ function updateBoardDOM() {
   }
 }
 
+function resetBoard() {
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      board[row][col] = 0;
+    }
+  }
+
+  clearBoardDOM();
+}
+
 function checkForWin() {
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
       if (board[row][col] === 2048) {
-        alert('You won!');
-        // Here you can also reset the game or take other actions
+        const messageWin = document.querySelector('.message-win');
+
+        messageWin.classList.remove('hidden');
+        gameOver = true;
       }
     }
   }
@@ -154,7 +188,9 @@ function checkForGameOver() {
     }
   }
 
-  alert('Game Over!');
+  const messageLose = document.querySelector('.message-lose');
+
+  messageLose.classList.remove('hidden');
 
   // Here you can also reset the game or take other actions
   return true;
@@ -163,6 +199,19 @@ function checkForGameOver() {
 function updateScore() {
   document.querySelector('.game-score').textContent = score;
 }
+
+function resetScore() {
+  score = 0;
+  document.querySelector('.game-score').textContent = score;
+}
+
+function hideMessages() {
+  document.querySelector('.message-lose').classList.add('hidden');
+  document.querySelector('.message-win').classList.add('hidden');
+  document.querySelector('.message-start').classList.add('hidden');
+}
+
+// figure better how to explain move logic
 
 function moveRight() {
   let moved = false;
