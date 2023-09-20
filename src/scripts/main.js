@@ -96,78 +96,38 @@ const transponseField = (currentField) => {
   return transponsedBoard;
 };
 
-const moveLeft = () => {
-  const prevBoard = JSON.parse(JSON.stringify(board));
-
+const moveLeft = (transponsedField = board) => {
   for (let r = 0; r < cellsInRow; r++) {
-    let row = board[r];
+    let row = transponsedField[r];
 
     row = slide(row);
-    board[r] = row;
+    transponsedField[r] = row;
   };
-
-  if (compareFields(prevBoard, board)) {
-    spawnRandomCell();
-  }
-
-  renderField();
 };
 
-const moveRight = () => {
-  const prevBoard = JSON.parse(JSON.stringify(board));
-
+const moveRight = (transponsedField = board) => {
   for (let r = 0; r < cellsInRow; r++) {
-    let row = board[r].reverse();
+    let row = transponsedField[r].reverse();
 
     row = slide(row);
-    board[r] = row.reverse();
+    transponsedField[r] = row.reverse();
   };
-
-  if (compareFields(prevBoard, board)) {
-    spawnRandomCell();
-  }
-
-  renderField();
 };
 
 const moveUp = () => {
-  const prevBoard = JSON.parse(JSON.stringify(board));
   const newField = transponseField(board);
 
-  for (let r = 0; r < cellsInRow; r++) {
-    let row = newField[r];
-
-    row = slide(row);
-    newField[r] = row;
-  };
+  moveLeft(newField);
 
   board = transponseField(newField);
-
-  if (compareFields(prevBoard, board)) {
-    spawnRandomCell();
-  }
-
-  renderField();
 };
 
 const moveDown = () => {
-  const prevBoard = JSON.parse(JSON.stringify(board));
   const newField = transponseField(board);
 
-  for (let r = 0; r < cellsInRow; r++) {
-    let row = newField[r].reverse();
-
-    row = slide(row);
-    newField[r] = row.reverse();
-  };
+  moveRight(newField);
 
   board = transponseField(newField);
-
-  if (compareFields(prevBoard, board)) {
-    spawnRandomCell();
-  }
-
-  renderField();
 };
 
 const winGame = () => {
@@ -248,6 +208,8 @@ document.addEventListener('keydown', (e) => {
 
     renderField();
   } else {
+    const prevBoard = JSON.parse(JSON.stringify(board));
+
     switch (e.key) {
       case 'ArrowLeft':
         moveLeft();
@@ -265,6 +227,12 @@ document.addEventListener('keydown', (e) => {
         moveDown();
         break;
     }
+
+    if (compareFields(prevBoard, board)) {
+      spawnRandomCell();
+    }
+
+    renderField();
   }
 
   scoreText.textContent = score;
