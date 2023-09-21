@@ -10,80 +10,82 @@ let board = [];
 let playGame = true;
 let score = 0;
 let mergedCells = [];
-let prevBoard = [];
 const numFour = 4;
 const tenPercent = 0.1;
 const numTwo = 2;
 
-function randomNumbers() {
-  return Math.floor(Math.random() * numFour);
-}
-
 function getRandomNumber() {
   return Math.random() > tenPercent ? numTwo : numFour;
-};
+}
 
 function youLose() {
   let hasEmptyCell = false;
-  let hasSimilarNear = false;
 
   for (let row = 0; row < numFour; row++) {
     for (let col = 0; col < numFour; col++) {
       if (board[row][col] === 0) {
         hasEmptyCell = true;
+        break;
       }
+    }
 
-      if ((row - 1 >= 0 && board[row - 1][col] === board[row][col])
-        || (row + 1 < numFour && board[row + 1][col] === board[row][col])
-        || (col - 1 >= 0 && board[row][col - 1] === board[row][col])
-        || (col + 1 < numFour && board[row][col + 1] === board[row][col])) {
-        hasSimilarNear = true;
+    if (hasEmptyCell) {
+      break;
+    }
+  }
+
+  if (hasEmptyCell) {
+    return;
+  }
+
+  for (let row = 0; row < numFour; row++) {
+    for (let col = 0; col < numFour; col++) {
+      const current = board[row][col];
+
+      if (
+        (row > 0 && board[row - 1][col] === current)
+        || (row < numFour - 1 && board[row + 1][col] === current)
+        || (col > 0 && board[row][col - 1] === current)
+        || (col < numFour - 1 && board[row][col + 1] === current)
+      ) {
+        return;
       }
     }
   }
 
-  if (hasEmptyCell && JSON.stringify(prevBoard) !== JSON.stringify(board)) {
-    generateRandomNumbers();
-  } else if (!hasSimilarNear) {
-    messageLose.classList.remove('hidden');
-  }
-};
+  messageLose.classList.remove('hidden');
+}
 
 function generateRandomNumbers() {
-  for (let i = 0; i < 1; i++) {
-    const row = randomNumbers();
-    const col = randomNumbers();
+  const availableCells = [];
 
-    if (board[row][col] === 0) {
-      board[row][col] = getRandomNumber();
-    } else {
-      i--;
+  for (let i = 0; i < numFour; i++) {
+    for (let j = 0; j < numFour; j++) {
+      if (board[i][j] === 0) {
+        availableCells.push({
+          row: i, col: j,
+        });
+      }
     }
   }
-};
+
+  if (availableCells.length > 0) {
+    const randomCell
+      = availableCells[Math.floor(Math.random() * availableCells.length)];
+
+    board[randomCell.row][randomCell.col] = getRandomNumber();
+  }
+}
 
 function createField() {
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  board = Array.from({ length: numFour }, () => Array(numFour).fill(0));
 
-  mergedCells = [
-    [false, false, false, false],
-    [false, false, false, false],
-    [false, false, false, false],
-    [false, false, false, false],
-  ];
-};
+  mergedCells = Array.from({ length: numFour },
+    () => Array(numFour).fill(false));
+}
 
 function inRange(row, col) {
-  if (row >= 0 && row < numFour && col >= 0 && col < numFour) {
-    return true;
-  }
-
-  return false;
+  return row >= 0 && row < numFour && col >= 0 && col < numFour;
 }
 
 function mergeAndMove(row, col, rowChange, colChange) {
@@ -170,10 +172,17 @@ function mergeAndMove(row, col, rowChange, colChange) {
 
 function moveRight() {
   for (let row = 0; row < numFour; row++) {
-    for (let col = 2; col >= 0; col--) {
+    for (let col = numFour - 2; col >= 0; col--) {
       mergeAndMove(row, col, 0, 1);
     }
   }
+
+  setTimeout(() => {
+    updateBoard();
+    youLose();
+    generateRandomNumbers();
+    updateBoard();
+  }, 200);
 }
 
 function moveLeft() {
@@ -182,14 +191,28 @@ function moveLeft() {
       mergeAndMove(row, col, 0, -1);
     }
   }
+
+  setTimeout(() => {
+    updateBoard();
+    youLose();
+    generateRandomNumbers();
+    updateBoard();
+  }, 200);
 }
 
 function moveDown() {
   for (let col = 0; col < numFour; col++) {
-    for (let row = 2; row >= 0; row--) {
+    for (let row = numFour - 2; row >= 0; row--) {
       mergeAndMove(row, col, 1, 0);
     }
   }
+
+  setTimeout(() => {
+    updateBoard();
+    youLose();
+    generateRandomNumbers();
+    updateBoard();
+  }, 200);
 }
 
 function moveUp() {
@@ -198,6 +221,13 @@ function moveUp() {
       mergeAndMove(row, col, -1, 0);
     }
   }
+
+  setTimeout(() => {
+    updateBoard();
+    youLose();
+    generateRandomNumbers();
+    updateBoard();
+  }, 200);
 }
 
 function resetMergedCells() {
@@ -207,33 +237,6 @@ function resetMergedCells() {
     }
   }
 }
-
-document.addEventListener('keydown', events => {
-  if (playGame) {
-    const pressedKey = events.key;
-
-    prevBoard = JSON.parse(JSON.stringify(board));
-
-    switch (pressedKey) {
-      case 'ArrowRight': moveRight();
-        youLose();
-        resetMergedCells();
-        break;
-      case 'ArrowLeft': moveLeft();
-        youLose();
-        resetMergedCells();
-        break;
-      case 'ArrowUp': moveUp();
-        youLose();
-        resetMergedCells();
-        break;
-      case 'ArrowDown': moveDown();
-        youLose();
-        resetMergedCells();
-        break;
-    };
-  }
-});
 
 function updateCell(row, col) {
   const cell = fieldCells[row * numFour + col];
@@ -256,7 +259,7 @@ function updateBoard() {
       updateCell(row, col);
     }
   }
-};
+}
 
 button.addEventListener('click', () => {
   playGame = true;
@@ -285,5 +288,30 @@ button.addEventListener('click', () => {
     for (let col = 0; col < numFour; col++) {
       updateCell(row, col);
     }
+  }
+});
+
+document.addEventListener('keydown', events => {
+  if (playGame) {
+    const pressedKey = events.key;
+
+    switch (pressedKey) {
+      case 'ArrowRight': moveRight();
+        resetMergedCells();
+        youLose();
+        break;
+      case 'ArrowLeft': moveLeft();
+        resetMergedCells();
+        youLose();
+        break;
+      case 'ArrowUp': moveUp();
+        resetMergedCells();
+        youLose();
+        break;
+      case 'ArrowDown': moveDown();
+        resetMergedCells();
+        youLose();
+        break;
+    };
   }
 });
