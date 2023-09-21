@@ -76,30 +76,25 @@ let score = 0;
 function createTile(row, col, value) {
   newTiles[row][col] = true;
 
-  const cell = document.querySelector(`[data-row='${row}'][data-col='${col}']`);
-
-  addNewTileToDOM(cell, row, col, value);
-}
-
-function addNewTileToDOM(cell, row, col, value) {
   const tile = document.createElement('div');
 
   tile.classList.add('tile');
   tile.classList.add(`tile--${value}`);
-  tile.textContent = value;
 
   if (newTiles[row][col]) {
     tile.classList.add('tile--new');
   }
 
+  tile.textContent = value;
+
+  const cell = document.querySelector(`[data-row='${row}'][data-col='${col}']`);
+
   cell.appendChild(tile);
 
-  if (newTiles[row][col]) {
-    setTimeout(() => {
-      tile.classList.remove('tile--new');
-      newTiles[row][col] = false; // Reset the new tile flag
-    }, 300);
-  }
+  setTimeout(() => {
+    tile.classList.remove('tile--new');
+    newTiles[row][col] = false; // Reset the new tile flag
+  }, 300);
 }
 
 function populateRandomCell() {
@@ -161,8 +156,24 @@ function updateBoardDOM() {
         const cell = document.querySelector(
           `[data-row='${i}'][data-col='${j}']`
         );
+        const tile = document.createElement('div');
 
-        addNewTileToDOM(cell, i, j, board[i][j]);
+        tile.classList.add('tile');
+        tile.classList.add(`tile--${board[i][j]}`);
+        tile.textContent = board[i][j];
+
+        if (newTiles[i][j]) {
+          tile.classList.add('tile--new');
+        }
+
+        cell.appendChild(tile);
+
+        if (newTiles[i][j]) {
+          setTimeout(() => {
+            tile.classList.remove('tile--new');
+            newTiles[i][j] = false; // Reset the new tile flag
+          }, 300);
+        }
       }
     }
   }
