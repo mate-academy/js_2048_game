@@ -16,6 +16,7 @@ let best = localStorage.getItem('best') || 0;
 
 let xTouchStartPoint = null;
 let yToucStartPoint = null;
+let lastY = 1;
 
 function isPossibleToMove() {
   if (getEmptyCells().length > 0) {
@@ -129,7 +130,7 @@ function makeNewCell() {
   tiles[id].classList.add(`tile--${emptyCell.dataset.num}`);
   tiles[id].classList.add('anim-show');
 
-  setTimeout(() => tiles[id].classList.remove('anim-show'), 1000);
+  setTimeout(() => tiles[id].classList.remove('anim-show'), 500);
 }
 
 function replaceEmptyCells(arrOfCells) {
@@ -190,7 +191,7 @@ function slide(groupedCells) {
         tileToDouble.classList.add(`tile--${newNumber}`);
         tileToDouble.classList.add(`anim-merge`);
 
-        setTimeout(() => tileToDouble.classList.remove(`anim-merge`), 1000);
+        setTimeout(() => tileToDouble.classList.remove(`anim-merge`), 500);
 
         wasAnyCellReplaced = true;
         score += newNumber;
@@ -254,6 +255,20 @@ function slideLeft() {
   }
 }
 
+function endMove() {
+  if (score > best) {
+    localStorage.setItem('best', score);
+    best = score;
+  }
+
+  scoreBlock.textContent = score;
+  bestBlock.textContent = best;
+
+  if (!isPossibleToMove()) {
+    document.querySelector('.message-lose').classList.remove('hidden');
+  }
+}
+
 function handleButtonClick(e) {
   e.target.textContent = 'Restart';
   e.target.classList.remove('start');
@@ -296,17 +311,7 @@ function handleInput(e) {
       break;
   }
 
-  if (score > best) {
-    localStorage.setItem('best', score);
-    best = score;
-  }
-
-  scoreBlock.textContent = score;
-  bestBlock.textContent = best;
-
-  if (!isPossibleToMove()) {
-    document.querySelector('.message-lose').classList.remove('hidden');
-  };
+  endMove();
 }
 
 function handleTouchStart(e) {
@@ -343,6 +348,19 @@ function handleTouchMove(e) {
 
   xTouchStartPoint = null;
   yToucStartPoint = null;
+
+  endMove();
+}
+
+function disableScrollReload(e) {
+  const lastS = document.documentElement.scrollTop;
+
+  if (lastS === 0 && (lastY - e.touches[0].clientY) < 0 && e.cancelable) {
+    e.preDefault();
+    e.stopPropagation();
+  }
+
+  lastY = e.touches[0].clientY;
 }
 
 bestBlock.textContent = best;
@@ -351,5 +369,6 @@ initTilesAndCells();
 
 document.querySelector('.button').addEventListener('click', handleButtonClick);
 document.addEventListener('keyup', handleInput);
-document.addEventListener('touchstart', handleTouchStart, false);
-document.addEventListener('touchmove', handleTouchMove, false);
+gameField.addEventListener('touchstart', handleTouchStart, false);
+gameField.addEventListener('touchmove', handleTouchMove, false);
+document.addEventListener('touchmove', disableScrollReload, { passive: false });
