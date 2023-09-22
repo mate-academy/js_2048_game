@@ -297,19 +297,18 @@ button.addEventListener('click', () => {
   messageStart.classList.add('hidden');
 
   if (button.classList.contains('restart')) {
-    button.classList.remove('restart');
-    button.classList.add('start');
-    button.textContent = 'Start';
-    playGame = false;
+    score = 0;
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
     createField();
+    generateRandomNumbers();
+    generateRandomNumbers();
+    updateBoard();
   } else {
     button.classList.remove('start');
     button.classList.add('restart');
     button.textContent = 'Restart';
     playGame = true;
-    score = 0;
-    messageLose.classList.add('hidden');
-    messageWin.classList.add('hidden');
     createField();
     generateRandomNumbers();
     generateRandomNumbers();
