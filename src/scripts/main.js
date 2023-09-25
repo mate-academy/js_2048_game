@@ -11,13 +11,17 @@ const calculateScore = () => {
 const isGameOver = (field) => {
   const messages = document.getElementsByClassName('message');
 
-  if (Math.max(...field) === 2048) {
-    messages[1].classList.remove('hidden');
-  }
-
   if (game.isLose()) {
     messages[0].classList.remove('hidden');
     document.removeEventListener('keydown', mooveField);
+  }
+};
+
+const isWin = (field) => {
+  const messages = document.getElementsByClassName('message');
+
+  if (Math.max(...field) === 2048) {
+    messages[1].classList.remove('hidden');
   }
 };
 
@@ -34,6 +38,8 @@ const renderScreen = () => {
   if (Math.max(...field) === 2048 || Math.min(...field) !== 0) {
     isGameOver(field);
   }
+
+  isWin(field);
 };
 
 const start = () => {
