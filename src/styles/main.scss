@@ -23,23 +23,64 @@ h1 {
   margin: 0;
 }
 
-.game-header {
+.container {
   display: flex;
-  width: 100%;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
-  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  width: 350px;
 }
 
-.game-field {
+.info {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #bbada0;
+  background: #d6cdc4;
+  width: 75px;
   border-radius: 5px;
-  padding: 10px;
+  color: #776e65;
+  font-size: 16px;
+  margin: 0 8px 0 0;
+}
+
+.game {
+  &-header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 10px;
+  }
+
+  &-field {
+    flex-direction: column;
+    align-items: center;
+    background: #bbada0;
+    border-radius: 5px;
+    padding: 10px;
+  }
+
+  &-score {
+    position: relative;
+    display: inline-block;
+    transition: transform 0.3s ease-in-out;
+    margin-top: 2rem;
+
+    &--title {
+      position: absolute;
+      top: 10%;
+    }
+
+    &--added {
+      position: absolute;
+      top: 40%;
+      left: 15%;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      font-weight: bold;
+    }
+  }
 }
 
 .row {
@@ -70,11 +111,9 @@ h1 {
 
 .tile {
   display: flex;
-  width: 100%;
   height: 100%;
   justify-content: center;
   align-items: center;
-  text-align: center;
 
   transition: all 0.3s ease-in-out;
 
@@ -136,21 +175,6 @@ h1 {
   }
 }
 
-.info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
-}
-
 .controls {
   display: flex;
 }
@@ -188,32 +212,24 @@ h1 {
 
 .message {
   box-sizing: border-box;
-  width: 100%;
   background: #d6cdc4;
   color: #776e65;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+
+  &-container {
+    width: 100%;
+    height: 150px;
+  }
+
+  &-win {
+    background: #edc22e;
+    color: #f9f6f2;
+  }
 }
 
 .hidden {
   display: none;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
-}
-
-.message-win {
-  background: #edc22e;
-  color: #f9f6f2;
-}
-
-.message-container {
-  width: 100%;
-  height: 150px;
 }
