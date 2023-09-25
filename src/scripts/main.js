@@ -124,7 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let skipMerge = false;
 
     for (const tile of tiles) {
-      if (mergedTiles.length && mergedTiles[mergedTiles.length - 1] === tile
+      if (mergedTiles.length
+          && mergedTiles[mergedTiles.length - 1]
+          === tile
           && !skipMerge) {
         mergedTiles[mergedTiles.length - 1] += tile;
         score += tile * 2;
@@ -199,12 +201,15 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'ArrowUp':
         move('up');
         break;
+
       case 'ArrowDown':
         move('down');
         break;
+
       case 'ArrowLeft':
         move('left');
         break;
+
       case 'ArrowRight':
         move('right');
         break;
