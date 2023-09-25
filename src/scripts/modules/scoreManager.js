@@ -42,14 +42,6 @@ export function updateScoreDisplay(addedScore = 0) {
     setTimeout(() => {
       addedScoreElement.style.opacity = '0';
     }, 500);
-
-    // setTimeout(() => {
-    //   addedScoreElement.style.opacity = '1';
-
-    //   setTimeout(() => {
-    //     addedScoreElement.style.opacity = '0';
-    //   }, 500);
-    // }, 100);
   }
 }
 
@@ -62,6 +54,3 @@ function animateScoreChange() {
     scoreElement.style.transform = '';
   }, 300);
 }
-
-// add changes to movement logic to
-// calculate total combined values and then add them to score
