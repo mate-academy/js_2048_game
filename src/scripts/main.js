@@ -8,7 +8,12 @@ const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
 
-let board = [];
+let board = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 let score = 0;
 const rows = 4;
 const columns = 4;
@@ -31,9 +36,7 @@ function setGame() {
     for (let c = 0; c < columns; c++) {
       fieldRowCells[c].id = `${r}-${c}`;
 
-      const num = board[r][c];
-
-      updateCell(fieldRowCells[c], num);
+      updateCell(fieldRowCells[c], board[r][c]);
     }
   }
 
@@ -82,11 +85,8 @@ function generateRandomCell() {
 
     if (board[r][c] === 0) {
       board[r][c] = randomCellNum;
-
-      const cell = document.getElementById(`${r}-${c}`);
-
       found = true;
-      updateCell(cell, randomCellNum);
+      updateCell(document.getElementById(`${r}-${c}`), randomCellNum);
     }
   }
 }
@@ -140,17 +140,22 @@ function updateCell(cell, num) {
 }
 
 document.addEventListener('keydown', (e) => {
+  const arrowLeft = 'ArrowLeft';
+  const arrowRight = 'ArrowRight';
+  const arrowUp = 'ArrowUp';
+  const arrowDown = 'ArrowDown';
+
   switch (e.code) {
-    case 'ArrowLeft':
+    case arrowLeft:
       slideLeft();
       break;
-    case 'ArrowRight':
+    case arrowRight:
       slideRight();
       break;
-    case 'ArrowUp':
+    case arrowUp:
       slideUp();
       break;
-    case 'ArrowDown':
+    case arrowDown:
       slideDown();
       break;
   }
@@ -196,10 +201,7 @@ function slideLeft() {
     board[r] = row;
 
     for (let c = 0; c < columns; c++) {
-      const cell = document.getElementById(`${r}-${c}`);
-      const num = board[r][c];
-
-      updateCell(cell, num);
+      updateCell(document.getElementById(`${r}-${c}`), board[r][c]);
     }
   }
 }
@@ -216,10 +218,7 @@ function slideRight() {
     board[r] = row;
 
     for (let c = 0; c < columns; c++) {
-      const cell = document.getElementById(`${r}-${c}`);
-      const num = board[r][c];
-
-      updateCell(cell, num);
+      updateCell(document.getElementById(`${r}-${c}`), board[r][c]);
     }
   }
 }
@@ -233,10 +232,7 @@ function slideUp() {
     for (let r = 0; r < rows; r++) {
       board[r][c] = row[r];
 
-      const cell = document.getElementById(`${r}-${c}`);
-      const num = board[r][c];
-
-      updateCell(cell, num);
+      updateCell(document.getElementById(`${r}-${c}`), board[r][c]);
     }
   }
 }
@@ -251,11 +247,7 @@ function slideDown() {
 
     for (let r = 0; r < rows; r++) {
       board[r][c] = row[r];
-
-      const cell = document.getElementById(`${r}-${c}`);
-      const num = board[r][c];
-
-      updateCell(cell, num);
+      updateCell(document.getElementById(`${r}-${c}`), board[r][c]);
     }
   }
 }
