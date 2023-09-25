@@ -6,10 +6,12 @@ const scoreText = document.querySelector('.game-score');
 const field = document.querySelector('.game-field');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
+const BOARD_SIZE = 4;
+const INITIAL_CELL_VALUE = 2;
+const WINNING_NUMBER = 2048;
 
 let board;
 let score = 0;
-const cellsInRow = 4;
 
 const filterZero = (row) => {
   return row.filter(num => num !== 0);
@@ -30,7 +32,7 @@ const slide = (row) => {
     }
   }
 
-  while (newRow.length < cellsInRow) {
+  while (newRow.length < BOARD_SIZE) {
     newRow.push(0);
   }
 
@@ -38,8 +40,8 @@ const slide = (row) => {
 };
 
 const hasEmptyCell = () => {
-  for (let r = 0; r < cellsInRow; r++) {
-    for (let c = 0; c < cellsInRow; c++) {
+  for (let r = 0; r < BOARD_SIZE; r++) {
+    for (let c = 0; c < BOARD_SIZE; c++) {
       if (board[r][c] === 0) {
         return true;
       }
@@ -50,8 +52,8 @@ const hasEmptyCell = () => {
 };
 
 const renderField = () => {
-  for (let r = 0; r < cellsInRow; r++) {
-    for (let c = 0; c < cellsInRow; c++) {
+  for (let r = 0; r < BOARD_SIZE; r++) {
+    for (let c = 0; c < BOARD_SIZE; c++) {
       field.rows[r].cells[c].className = '';
 
       field.rows[r].cells[c].classList.add(
@@ -71,11 +73,11 @@ const spawnRandomCell = () => {
   let found = false;
 
   while (!found) {
-    const r = Math.floor(Math.random() * cellsInRow);
-    const c = Math.floor(Math.random() * cellsInRow);
+    const randomRowIndex = Math.floor(Math.random() * BOARD_SIZE);
+    const randomColIndex = Math.floor(Math.random() * BOARD_SIZE);
 
-    if (board[r][c] === 0) {
-      board[r][c] = 2;
+    if (board[randomRowIndex][randomColIndex] === 0) {
+      board[randomRowIndex][randomColIndex] = INITIAL_CELL_VALUE;
       renderField();
 
       found = true;
@@ -83,56 +85,56 @@ const spawnRandomCell = () => {
   }
 };
 
-const transponseField = (currentField) => {
-  let transponsedBoard = currentField;
+const transposeField = (currentField) => {
+  let transposedBoard = currentField;
 
-  transponsedBoard = transponsedBoard[0].map(
-    (_, colIndex) => transponsedBoard.map(
+  transposedBoard = transposedBoard[0].map(
+    (_, colIndex) => transposedBoard.map(
       row => row[colIndex]
     )
   );
 
-  return transponsedBoard;
+  return transposedBoard;
 };
 
-const moveLeft = (transponsedField = board) => {
-  for (let r = 0; r < cellsInRow; r++) {
-    let row = transponsedField[r];
+const moveLeft = (transposedField = board) => {
+  for (let r = 0; r < BOARD_SIZE; r++) {
+    let row = transposedField[r];
 
     row = slide(row);
-    transponsedField[r] = row;
-  };
+    transposedField[r] = row;
+  }
 };
 
-const moveRight = (transponsedField = board) => {
-  for (let r = 0; r < cellsInRow; r++) {
-    let row = transponsedField[r].reverse();
+const moveRight = (transposedField = board) => {
+  for (let r = 0; r < BOARD_SIZE; r++) {
+    let row = transposedField[r].reverse();
 
     row = slide(row);
-    transponsedField[r] = row.reverse();
-  };
+    transposedField[r] = row.reverse();
+  }
 };
 
 const moveUp = () => {
-  const newField = transponseField(board);
+  const newField = transposeField(board);
 
   moveLeft(newField);
 
-  board = transponseField(newField);
+  board = transposeField(newField);
 };
 
 const moveDown = () => {
-  const newField = transponseField(board);
+  const newField = transposeField(board);
 
   moveRight(newField);
 
-  board = transponseField(newField);
+  board = transposeField(newField);
 };
 
 const winGame = () => {
-  for (let i = 0; i < board[0].length; i++) {
-    for (let j = 0; j < board.length; j++) {
-      if (board[i][j] === 2048) {
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    for (let j = 0; j < BOARD_SIZE; j++) {
+      if (board[i][j] === WINNING_NUMBER) {
         return true;
       }
     }
@@ -140,8 +142,8 @@ const winGame = () => {
 };
 
 const checkFields = (fieldToCheck) => {
-  for (let i = 0; i < cellsInRow; i++) {
-    for (let j = 0; j < cellsInRow - 1; j++) {
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    for (let j = 0; j < BOARD_SIZE - 1; j++) {
       if (fieldToCheck[i][j] === fieldToCheck[i][j + 1]) {
         return true;
       }
@@ -156,11 +158,11 @@ const gameOver = (boardToCheck) => {
     return false;
   }
 
-  const newDesk = transponseField(boardToCheck);
+  const newDesk = transposeField(boardToCheck);
 
   if (checkFields(boardToCheck) || checkFields(newDesk)) {
     return false;
-  };
+  }
 
   return true;
 };
@@ -174,14 +176,9 @@ button.addEventListener('click', () => {
   } else {
     winMessage.classList.add('hidden');
     loseMessage.classList.add('hidden');
-  };
+  }
 
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  board = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(0));
 
   score = 0;
   scoreText.textContent = score;
@@ -198,12 +195,10 @@ document.addEventListener('keydown', (e) => {
   if (winGame()) {
     winMessage.classList.remove('hidden');
 
-    board = [
-      [2, 0, 4, 8],
-      [2, 0, 4, 8],
-      [2, 0, 4, 8],
-      [2, 0, 4, 8],
-    ];
+    board = Array.from(
+      { length: BOARD_SIZE }, () => Array.from({ length: BOARD_SIZE }, () => {
+        return Math.random() < 0.9 ? 2 : 4;
+      }));
 
     renderField();
   } else {
