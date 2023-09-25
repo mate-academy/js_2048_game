@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tiles.push(board[row][col]);
           }
         }
+
         tiles = mergeTiles(tiles, direction);
 
         for (let row = 0; row < 4; row++) {
@@ -95,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tiles.push(board[row][col]);
           }
         }
+
         tiles = mergeTiles(tiles, direction);
 
         for (let col = 0; col < 4; col++) {
@@ -125,9 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     for (const tile of tiles) {
       if (mergedTiles.length
-          && mergedTiles[mergedTiles.length - 1]
-          === tile
-          && !skipMerge) {
+        && mergedTiles[mergedTiles.length - 1]
+        === tile
+        && !skipMerge) {
         mergedTiles[mergedTiles.length - 1] += tile;
         score += tile * 2;
         skipMerge = true;
