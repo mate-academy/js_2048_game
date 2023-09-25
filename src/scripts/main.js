@@ -17,6 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
     startBtn.classList.remove('start');
     startBtn.classList.add('restart');
     startBtn.textContent = 'Restart';
+
+    score = 0;
+    gameScore.textContent = score;
+
+    document.querySelector('.message-start').classList.add('hidden');
+    winMessage.classList.add('hidden');
+    loseMessage.classList.add('hidden');
   }
 
   function renderBoard() {
