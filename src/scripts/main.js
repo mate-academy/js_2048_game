@@ -76,7 +76,7 @@ function updateBoard() {
 
   checkWin();
 
-  if (!canMove()) {
+  if (isLost()) {
     messageLose.classList.remove('hidden');
   }
 }
@@ -220,18 +220,34 @@ function checkWin() {
   }
 }
 
-function canMove() {
-  const arr = [];
-
-  for (let i = 0; i < rows; i++) {
-    const row = board[i];
-
-    arr.push(...row);
+function isLost() {
+  if (hasSpace()) {
+    return false;
   }
 
-  if (!arr.includes(0)) {
+  if (sameTileInRow() || sameTileInColumn()) {
     return false;
   }
 
   return true;
+}
+
+function sameTileInRow() {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns - 1; j++) {
+      if (board[i][j] === board[i][j + 1]) {
+        return true;
+      }
+    }
+  }
+}
+
+function sameTileInColumn() {
+  for (let i = 0; i < columns; i++) {
+    for (let j = 0; j < rows - 1; j++) {
+      if (board[j][i] === board[j + 1][i]) {
+        return true;
+      }
+    }
+  }
 }
