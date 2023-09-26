@@ -17,12 +17,13 @@ function countScore(sum) {
 
   const showScore = document.querySelector('.game-score');
 
-  showScore.textContent = score;
-  showScore.classList.add('animated-score');
+  showScore.classList.add('zoom-in');
 
   showScore.addEventListener('animationend', () => {
-    showScore.classList.remove('animated-score');
+    showScore.classList.remove('zoom-in');
   });
+
+  showScore.textContent = score;
 }
 
 function gameOn() {
