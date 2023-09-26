@@ -10,6 +10,7 @@ const COLUNM_NUMBER = 4;
 const BOARD = createBoard();
 
 let score = 0;
+let GameStatus = '';
 
 setFiledGame();
 
@@ -83,6 +84,8 @@ mainButton.addEventListener('click', () => {
     switchMessage('win');
   }
 
+  GameStatus = '';
+
   startGame();
 });
 
@@ -131,6 +134,7 @@ function addValueToField() {
 
 function keyDownHandler() {
   const keyCode = event.keyCode;
+  const initialBoard = JSON.parse(JSON.stringify(BOARD));
 
   switch (keyCode) {
     case 40:
@@ -150,12 +154,16 @@ function keyDownHandler() {
       break;
   }
 
-  addValueToField();
-  renderScore();
-  renderFiledGame();
+  const currentBoard = JSON.parse(JSON.stringify(BOARD));
 
-  isWin();
-  isLose();
+  if (JSON.stringify(initialBoard) !== JSON.stringify(currentBoard)) {
+    addValueToField();
+    renderScore();
+    renderFiledGame();
+
+    isWin();
+    isLose();
+  }
 }
 
 function moveUp() {
@@ -276,9 +284,8 @@ function isLose() {
   loseGame();
 }
 
-let GameStatus = '';
-
 function winGame() {
+  document.removeEventListener('keydown', keyDownHandler);
   switchMessage('win');
   GameStatus = 'win';
 }
