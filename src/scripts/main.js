@@ -35,26 +35,23 @@ function startGame() {
 }
 
 function addRandomTile() {
-  const num = Math.random() > 0.9 ? 4 : 2;
+  const value = Math.random() < 0.9 ? 2 : 4;
 
-  const emptyCell = getEmptyCell();
+  while (hasSpace()) {
+    const randomRow = Math.floor(Math.random() * rows);
+    const randomColumn = Math.floor(Math.random() * columns);
 
-  if (emptyCell) {
-    board[emptyCell.row][emptyCell.column] = num;
-  };
+    if (board[randomRow][randomColumn] === 0) {
+      board[randomRow][randomColumn] = value;
+      break;
+    }
+  }
 
   updateBoard();
 }
 
-function getEmptyCell() {
-  const ramdomRow = Math.floor(Math.random() * rows);
-  const randomColumn = Math.floor(Math.random() * columns);
-
-  if (board[ramdomRow][randomColumn] === 0) {
-    return {
-      row: ramdomRow, column: randomColumn,
-    };
-  }
+function hasSpace() {
+  return board.some(row => row.includes(0));
 }
 
 function updateBoard() {
@@ -87,7 +84,7 @@ function updateBoard() {
 document.addEventListener('keydown', handleArrows);
 
 function handleArrows(e) {
-  const copyBoard = JSON.parse(JSON.stringify(board));
+  const copyBoard = JSON.stringify(board);
 
   switch (e.key) {
     case 'ArrowUp':
@@ -105,17 +102,11 @@ function handleArrows(e) {
     case 'ArrowRight':
       moveRight();
       break;
-
-    default:
-      addRandomTile();
-
-      return;
   }
 
-  if (JSON.stringify(copyBoard) !== JSON.stringify(board)) {
+  if (copyBoard !== JSON.stringify(board)) {
     addRandomTile();
   }
-
   updateBoard();
 }
 
