@@ -1,7 +1,5 @@
 import 'regenerator-runtime/runtime';
 
-// Cell
-
 const score = document.querySelector('.game_score');
 let scoreValue = 0;
 
@@ -60,8 +58,6 @@ class Cell {
   }
 }
 
-// Grid
-
 const GRID_SIZE = 4;
 
 class Grid {
@@ -75,15 +71,21 @@ class Grid {
     }
 
     this.cellsGroupedByColumn = this.groupCellsByColumn();
+    this.cellsGroupedByRow = this.groupCellsByRow();
+    this.cellsGroupedByReversedColumn = this.groupByReversedColumn();
+    this.cellsGroupedByReversedRow = this.groupByReversedRow();
+  }
 
-    this.cellsGroupedByReversedColumn = this.cellsGroupedByColumn.map(
+  groupByReversedColumn() {
+    return this.cellsGroupedByColumn.map(
       (column) => {
         return [...column].reverse();
       }
     );
-    this.cellsGroupedByRow = this.groupCellsByRow();
+  }
 
-    this.cellsGroupedByReversedRow = this.cellsGroupedByRow.map(
+  groupByReversedRow() {
+    return this.cellsGroupedByRow.map(
       (row) => {
         return [...row].reverse();
       }
@@ -116,7 +118,9 @@ class Grid {
   }
 }
 
-// Tile
+const DARK_TEXT_LIGHTNESS = 80;
+const LIGHT_TEXT_LIGHTNESS = 20;
+const TEXT_LIGHTNESS_DIVIDER = 50;
 
 class Tile {
   constructor(gridElement) {
@@ -143,7 +147,10 @@ class Tile {
     this.tileElement.style.setProperty('--bg-lightness', `${bgLightness}%`);
 
     this.tileElement.style.setProperty(
-      '--text-lightness', `${bgLightness < 50 ? 80 : 20}%`
+      '--text-lightness',
+      `${bgLightness < TEXT_LIGHTNESS_DIVIDER
+        ? DARK_TEXT_LIGHTNESS
+        : LIGHT_TEXT_LIGHTNESS}%`
     );
 
     if (this.value === 2048) {
@@ -173,8 +180,6 @@ class Tile {
     });
   }
 }
-
-// Main
 
 window.CSS.registerProperty({
   name: '--border-angle',
@@ -328,11 +333,9 @@ function slideTilesInGroup(group, promises) {
 
     promises.push(cellWithTile.linkedTile.waitForTransitionEnd());
 
-    if (targetCell.isEmpty()) {
-      targetCell.linkTile(cellWithTile.linkedTile);
-    } else {
-      targetCell.linkTileForMerge(cellWithTile.linkedTile);
-    }
+    targetCell.isEmpty()
+      ? targetCell.linkTile(cellWithTile.linkedTile)
+      : targetCell.linkTileForMerge(cellWithTile.linkedTile);
 
     cellWithTile.unlinkTile();
   }
