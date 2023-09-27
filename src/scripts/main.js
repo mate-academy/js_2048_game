@@ -1,6 +1,180 @@
 import 'regenerator-runtime/runtime';
-import { Grid } from './grid.js';
-import { Tile } from './tile.js';
+
+// Cell
+
+const score = document.querySelector('.game_score');
+let scoreValue = 0;
+
+class Cell {
+  constructor(gridElement, x, y) {
+    const cell = document.createElement('div');
+
+    cell.classList.add('field_cell');
+    gridElement.append(cell);
+    this.x = x;
+    this.y = y;
+  }
+
+  restartScore() {
+    scoreValue = 0;
+    score.innerHTML = scoreValue;
+  }
+
+  linkTile(tile) {
+    tile.setXY(this.x, this.y);
+    this.linkedTile = tile;
+  }
+
+  unlinkTile() {
+    this.linkedTile = null;
+  }
+
+  isEmpty() {
+    return !this.linkedTile;
+  }
+
+  linkTileForMerge(tile) {
+    tile.setXY(this.x, this.y);
+    this.linkedTileForMerge = tile;
+  }
+
+  unlinkTileForMerge() {
+    this.linkedTileForMerge = null;
+  }
+
+  hasTileForMerge() {
+    return !!this.linkedTileForMerge;
+  }
+
+  canAccept(newTile) {
+    return this.isEmpty()
+    || (!this.hasTileForMerge() && this.linkedTile.value === newTile.value);
+  }
+
+  mergeTiles() {
+    this.linkedTile.setValue(this.linkedTile.value * 2);
+    scoreValue += this.linkedTile.value;
+    score.innerHTML = scoreValue;
+    this.linkedTileForMerge.removeFromDOM();
+    this.unlinkTileForMerge();
+  }
+}
+
+// Grid
+
+const GRID_SIZE = 4;
+
+class Grid {
+  constructor(gridElement) {
+    this.cells = [];
+
+    for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+      this.cells.push(
+        new Cell(gridElement, i % GRID_SIZE, Math.floor(i / GRID_SIZE))
+      );
+    }
+
+    this.cellsGroupedByColumn = this.groupCellsByColumn();
+
+    this.cellsGroupedByReversedColumn = this.cellsGroupedByColumn.map(
+      (column) => {
+        return [...column].reverse();
+      }
+    );
+    this.cellsGroupedByRow = this.groupCellsByRow();
+
+    this.cellsGroupedByReversedRow = this.cellsGroupedByRow.map(
+      (row) => {
+        return [...row].reverse();
+      }
+    );
+  }
+
+  getRandomEmptyCell() {
+    const emptyCells = this.cells.filter(cell => cell.isEmpty());
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+
+    return emptyCells[randomIndex];
+  }
+
+  groupCellsByColumn() {
+    return this.cells.reduce((groupedCells, cell) => {
+      groupedCells[cell.x] = groupedCells[cell.x] || [];
+      groupedCells[cell.x][cell.y] = cell;
+
+      return groupedCells;
+    }, []);
+  }
+
+  groupCellsByRow() {
+    return this.cells.reduce((groupedCells, cell) => {
+      groupedCells[cell.y] = groupedCells[cell.y] || [];
+      groupedCells[cell.y][cell.x] = cell;
+
+      return groupedCells;
+    }, []);
+  }
+}
+
+// Tile
+
+class Tile {
+  constructor(gridElement) {
+    this.tileElement = document.createElement('div');
+    this.tileElement.classList.add('field_tile');
+    this.setValue(Math.random() > 0.1 ? 2 : 4);
+
+    gridElement.append(this.tileElement);
+  }
+
+  setXY(x, y) {
+    this.x = x;
+    this.y = y;
+    this.tileElement.style.setProperty('--x', x);
+    this.tileElement.style.setProperty('--y', y);
+  }
+
+  setValue(value) {
+    this.value = value;
+    this.tileElement.textContent = this.value;
+
+    const bgLightness = 100 - Math.log2(value) * 7;
+
+    this.tileElement.style.setProperty('--bg-lightness', `${bgLightness}%`);
+
+    this.tileElement.style.setProperty(
+      '--text-lightness', `${bgLightness < 50 ? 80 : 20}%`
+    );
+
+    if (this.value === 2048) {
+      const winMessage = document.querySelector('.message_win');
+
+      winMessage.classList.remove('hidden');
+    }
+  }
+
+  removeFromDOM() {
+    this.tileElement.remove();
+  }
+
+  waitForTransitionEnd() {
+    return new Promise(resolve => {
+      this.tileElement.addEventListener(
+        'transitionend', resolve, { once: true }
+      );
+    });
+  }
+
+  waitForAnimationEnd() {
+    return new Promise(resolve => {
+      this.tileElement.addEventListener(
+        'animationend', resolve, { once: true }
+      );
+    });
+  }
+}
+
+// Main
 
 window.CSS.registerProperty({
   name: '--border-angle',
