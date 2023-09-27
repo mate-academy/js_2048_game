@@ -48,21 +48,17 @@ function gameOff() {
   showBoardToUser(gameBoard);
 
   const infoStart = document.querySelector('.message-start');
-
   infoStart.classList.remove('hidden');
 
   const infoLose = document.querySelector('.message-lose');
-
   infoLose.classList.add('hidden');
 
   const infoWin = document.querySelector('.message-win');
-
   infoWin.classList.add('hidden');
 
   score = 0;
 
   const showScore = document.querySelector('.game-score');
-
   showScore.textContent = score;
 }
 
@@ -391,26 +387,29 @@ document.addEventListener('keydown', keyEvent => {
       keyEvent.preventDefault();
     }
 
-    if (up) {
-      moveUp();
-      showBoardToUser(gameBoard);
-      isGameOver();
-      isWin();
-    } else if (right) {
-      moveRight();
-      showBoardToUser(gameBoard);
-      isGameOver();
-      isWin();
-    } else if (down) {
-      moveDown();
-      showBoardToUser(gameBoard);
-      isGameOver();
-      isWin();
-    } else if (left) {
-      moveLeft();
-      showBoardToUser(gameBoard);
-      isGameOver();
-      isWin();
+    switch (true) {
+      case up:
+        moveUp();
+        break;
+
+      case right:
+        moveRight();
+        break;
+
+      case down:
+        moveDown();
+        break;
+
+      case left:
+        moveLeft();
+        break;
+
+      default:
+
     }
+
+    showBoardToUser(gameBoard);
+    isGameOver();
+    isWin();
   }
 });

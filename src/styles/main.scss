@@ -188,6 +188,7 @@ h1 {
 
 .zoom-in {
   animation: zoom 0.2s ease-in;
+  transform: translate(100, 100);
 }
 
 @keyframes zoom {
