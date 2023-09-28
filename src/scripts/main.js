@@ -188,15 +188,11 @@ function moveUp() {
 
   // console.log(matrix);
 
-  if (cellsChanged) {
-    if (shouldAddOneCell()) {
-      addRandomCell();
-    } else {
-      addRandomCells();
-    }
-  }
-
   isWinner();
+
+  if (cellsChanged) {
+    addRandomCell();
+  }
   updateUI();
 
   if (isGameOver()) {
@@ -226,10 +222,6 @@ function moveUp() {
         }
       }
     }
-  }
-
-  if (cellsChanged) {
-    addRandomCells();
   }
 }
 
@@ -266,15 +258,11 @@ function moveDown() {
   score.innerHTML = count;
   console.log(matrix);
 
-  if (cellsChanged) {
-    if (shouldAddOneCell()) {
-      addRandomCell();
-    } else {
-      addRandomCells();
-    }
-  }
-
   isWinner();
+
+  if (cellsChanged) {
+    addRandomCell();
+  }
   updateUI();
 
   function updateUI() {
@@ -300,10 +288,6 @@ function moveDown() {
         }
       }
     }
-  }
-
-  if (cellsChanged) {
-    addRandomCells();
   }
 }
 
@@ -340,15 +324,11 @@ function moveLeft() {
   score.innerHTML = count;
   console.log(matrix);
 
-  if (cellsChanged) {
-    if (shouldAddOneCell()) {
-      addRandomCell();
-    } else {
-      addRandomCells();
-    }
-  }
-
   isWinner();
+
+  if (cellsChanged) {
+    addRandomCell();
+  }
   updateUI();
 
   function updateUI() {
@@ -374,10 +354,6 @@ function moveLeft() {
         }
       }
     }
-  }
-
-  if (cellsChanged) {
-    addRandomCells();
   }
 }
 
@@ -414,15 +390,11 @@ function moveRight() {
   score.innerHTML = count;
   console.log(matrix);
 
-  if (cellsChanged) {
-    if (shouldAddOneCell()) {
-      addRandomCell();
-    } else {
-      addRandomCells();
-    }
-  }
-
   isWinner();
+
+  if (cellsChanged) {
+    addRandomCell();
+  }
   updateUI();
 
   function updateUI() {
@@ -449,39 +421,35 @@ function moveRight() {
       }
     }
   }
-
-  if (cellsChanged) {
-    addRandomCells();
-  }
 }
 
-function addRandomCells() {
-  const emptyCells = [];
+// function addRandomCells() {
+//   const emptyCells = [];
 
-  for (let row = 0; row < numRows; row++) {
-    for (let col = 0; col < numCols; col++) {
-      if (matrix[row][col] === 0) {
-        emptyCells.push({ row, col });
-      }
-    }
-  }
+//   for (let row = 0; row < numRows; row++) {
+//     for (let col = 0; col < numCols; col++) {
+//       if (matrix[row][col] === 0) {
+//         emptyCells.push({ row, col });
+//       }
+//     }
+//   }
 
-  if (emptyCells.length > 0) {
-    const randomIndices = [];
+//   if (emptyCells.length > 0) {
+//     const randomIndices = [];
 
-    while (randomIndices.length < 2) {
-      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+//     while (randomIndices.length < 2) {
+//       const randomIndex = Math.floor(Math.random() * emptyCells.length);
 
-      randomIndices.push(randomIndex);
-    }
+//       randomIndices.push(randomIndex);
+//     }
 
-    for (const index of randomIndices) {
-      const { row, col } = emptyCells[index];
+//     for (const index of randomIndices) {
+//       const { row, col } = emptyCells[index];
 
-      matrix[row][col] = 2;
-    }
-  }
-}
+//       matrix[row][col] = 2;
+//     }
+//   }
+// }
 
 function addRandomCell() {
   const emptyCells = [];
@@ -502,19 +470,19 @@ function addRandomCell() {
   }
 }
 
-function shouldAddOneCell() {
-  let filledCells = 0;
+// function shouldAddOneCell() {
+//   let filledCells = 0;
 
-  for (let row = 0; row < numRows; row++) {
-    for (let col = 0; col < numCols; col++) {
-      if (matrix[row][col] !== 0) {
-        filledCells++;
-      }
-    }
-  }
+//   for (let row = 0; row < numRows; row++) {
+//     for (let col = 0; col < numCols; col++) {
+//       if (matrix[row][col] !== 0) {
+//         filledCells++;
+//       }
+//     }
+//   }
 
-  return filledCells >= numRows * numCols * 0.5;
-}
+//   return filledCells >= numRows * numCols * 0.5;
+// }
 // #endregion
 
 // #region Setting key logic
