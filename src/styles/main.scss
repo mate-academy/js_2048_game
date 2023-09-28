@@ -15,6 +15,7 @@ body {
 }
 
 .field-cell {
+  // position: relative;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
@@ -146,6 +147,23 @@ body {
     text-align: center;
   }
 }
+
+.field-cell.move-up {
+  animation: moveUpAnimation 0.3s ease-in-out;
+}
+
+@keyframes moveUpAnimation {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+
+
+
 
 .game-field {
   background: #bbada0;

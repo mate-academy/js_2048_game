@@ -4,13 +4,13 @@ const score = document.querySelector('.game-score');
 let count = 0;
 const button = document.querySelector('.button');
 let isRestart = false;
+let gameOver = false;
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const fieldCell = document.querySelectorAll('.field-cell');
 let cellElement;
 let cellsChanged = false;
-let currentMerge = 0;
 
 // #region Creating matrix with all fields
 const fieldCells
@@ -41,8 +41,6 @@ function start() {
   if (!isRestart) {
     button.innerHTML = 'Restart';
     button.style.fontSize = '18px';
-
-    // Добавляем класс 'hidden' к сообщению о победе
     messageWin.classList.add('hidden');
 
     let numEmptyCells = 0;
@@ -154,6 +152,13 @@ function isWinner() {
 
 // #region key functions
 function moveUp() {
+  let currentMerge = 0;
+  const animatedCells = [];
+
+  if (gameOver) {
+    return;
+  }
+
   for (let col = 0; col < numCols; col++) {
     for (let row = 1; row < numRows; row++) {
       const currentValue = matrix[row][col];
@@ -161,71 +166,64 @@ function moveUp() {
       if (currentValue !== 0) {
         let newRow = row - 1;
 
-        while (newRow >= 0 && matrix[newRow][col] === 0) {
-          matrix[newRow][col] = currentValue;
-          matrix[row][col] = 0;
+        while (newRow >= 0 && (matrix[newRow][col] === 0 || matrix[newRow][col] === currentValue)) {
+          if (matrix[newRow][col] === currentValue) {
+            matrix[newRow][col] *= 2;
+            matrix[row][col] = 0;
+            cellsChanged = true;
+
+            const mergedValue = matrix[newRow][col];
+
+            currentMerge += mergedValue;
+          } else {
+            matrix[newRow][col] = currentValue;
+            matrix[row][col] = 0;
+            cellsChanged = true;
+          }
+
           row = newRow;
           newRow--;
-          cellsChanged = true;
-        }
 
-        if (newRow >= 0 && matrix[newRow][col] === currentValue) {
-          matrix[newRow][col] *= 2;
-          matrix[row][col] = 0;
-          cellsChanged = true;
-
-          const mergedValue = currentValue * 2;
-
-          currentMerge += mergedValue;
+          animatedCells.push({ row, col });
         }
       }
     }
   }
 
-  count += currentMerge;
-  score.innerHTML = count;
-  console.log(matrix);
+  score.innerHTML = Number(score.innerHTML) + currentMerge;
 
-  // console.log(matrix);
+  animatedCells.forEach(({ row, col }) => {
+    cellElement = fieldCells[row * numCols + col];
+    cellElement.classList.add('move-up');
+  });
 
-  isWinner();
+  setTimeout(() => {
+    animatedCells.forEach(({ row, col }) => {
+      cellElement = fieldCells[row * numCols + col];
+      cellElement.classList.remove('move-up');
+    });
 
-  if (cellsChanged) {
-    addRandomCell();
-  }
-  updateUI();
+    updateUI();
+    isWinner();
 
-  if (isGameOver()) {
-    messageLose.classList.remove('hidden');
-  }
-
-  function updateUI() {
-    for (let row = 0; row < numRows; row++) {
-      for (let col = 0; col < numCols; col++) {
-        cellElement = fieldCells[row * numCols + col];
-        matrixValue = matrix[row][col];
-
-        cellElement.classList.remove('field-cell--2',
-          'field-cell--4',
-          'field-cell--8',
-          'field-cell--16',
-          'field-cell--32',
-          'field-cell--64',
-          'field-cell--128',
-          'field-cell--256',
-          'field-cell--512',
-          'field-cell--1024'
-        );
-
-        if (matrixValue > 0) {
-          cellElement.classList.add(`field-cell--${matrixValue}`);
-        }
-      }
+    if (cellsChanged) {
+      addRandomCell();
     }
-  }
+
+    if (isGameOver()) {
+      messageLose.classList.remove('hidden');
+      gameOver = true;
+    }
+  }, 300);
 }
 
 function moveDown() {
+  let currentMerge = 0;
+
+  if (gameOver) {
+    return;
+  }
+
   for (let col = 0; col < numCols; col++) {
     for (let row = numRows - 2; row >= 0; row--) {
       const currentValue = matrix[row][col];
@@ -246,52 +244,35 @@ function moveDown() {
           matrix[row][col] = 0;
           cellsChanged = true;
 
-          const mergedValue = currentValue * 2;
+          const mergedValue = matrix[newRow][col];
 
           currentMerge += mergedValue;
         }
       }
     }
   }
-
-  count += currentMerge;
-  score.innerHTML = count;
-  console.log(matrix);
-
+  score.innerHTML = Number(score.innerHTML) + currentMerge;
   isWinner();
+
+  if (isGameOver()) {
+    messageLose.classList.remove('hidden');
+    gameOver = true;
+  }
 
   if (cellsChanged) {
     addRandomCell();
   }
   updateUI();
 
-  function updateUI() {
-    for (let row = 0; row < numRows; row++) {
-      for (let col = 0; col < numCols; col++) {
-        cellElement = fieldCells[row * numCols + col];
-        matrixValue = matrix[row][col];
-
-        cellElement.classList.remove('field-cell--2',
-          'field-cell--4',
-          'field-cell--8',
-          'field-cell--16',
-          'field-cell--32',
-          'field-cell--64',
-          'field-cell--128',
-          'field-cell--256',
-          'field-cell--512',
-          'field-cell--1024'
-        );
-
-        if (matrixValue > 0) {
-          cellElement.classList.add(`field-cell--${matrixValue}`);
-        }
-      }
-    }
+  if (isGameOver()) {
+    messageLose.classList.remove('hidden');
+    gameOver = true;
   }
 }
 
 function moveLeft() {
+  let currentMerge = 0;
+
   for (let row = 0; row < numRows; row++) {
     for (let col = 1; col < numCols; col++) {
       const currentValue = matrix[row][col];
@@ -309,20 +290,18 @@ function moveLeft() {
 
         if (newCol >= 0 && matrix[row][newCol] === currentValue) {
           matrix[row][newCol] *= 2;
+
+          const mergedValue = matrix[row][newCol];
+
           matrix[row][col] = 0;
           cellsChanged = true;
-
-          const mergedValue = currentValue * 2;
 
           currentMerge += mergedValue;
         }
       }
     }
   }
-
-  count += currentMerge;
-  score.innerHTML = count;
-  console.log(matrix);
+  score.innerHTML = Number(score.innerHTML) + currentMerge;
 
   isWinner();
 
@@ -330,34 +309,15 @@ function moveLeft() {
     addRandomCell();
   }
   updateUI();
-
-  function updateUI() {
-    for (let row = 0; row < numRows; row++) {
-      for (let col = 0; col < numCols; col++) {
-        cellElement = fieldCells[row * numCols + col];
-        matrixValue = matrix[row][col];
-
-        cellElement.classList.remove('field-cell--2',
-          'field-cell--4',
-          'field-cell--8',
-          'field-cell--16',
-          'field-cell--32',
-          'field-cell--64',
-          'field-cell--128',
-          'field-cell--256',
-          'field-cell--512',
-          'field-cell--1024'
-        );
-
-        if (matrixValue > 0) {
-          cellElement.classList.add(`field-cell--${matrixValue}`);
-        }
-      }
-    }
-  }
 }
 
 function moveRight() {
+  let currentMerge = 0;
+
+  if (gameOver) {
+    return;
+  }
+
   for (let row = 0; row < numRows; row++) {
     for (let col = numCols - 2; col >= 0; col--) {
       const currentValue = matrix[row][col];
@@ -375,21 +335,18 @@ function moveRight() {
 
         if (newCol < numCols && matrix[row][newCol] === currentValue) {
           matrix[row][newCol] *= 2;
+
+          const mergedValue = matrix[row][newCol];
+
           matrix[row][col] = 0;
           cellsChanged = true;
-
-          const mergedValue = currentValue * 2;
 
           currentMerge += mergedValue;
         }
       }
     }
   }
-
-  count += currentMerge;
-  score.innerHTML = count;
-  console.log(matrix);
-
+  score.innerHTML = Number(score.innerHTML) + currentMerge;
   isWinner();
 
   if (cellsChanged) {
@@ -397,59 +354,11 @@ function moveRight() {
   }
   updateUI();
 
-  function updateUI() {
-    for (let row = 0; row < numRows; row++) {
-      for (let col = 0; col < numCols; col++) {
-        cellElement = fieldCells[row * numCols + col];
-        matrixValue = matrix[row][col];
-
-        cellElement.classList.remove('field-cell--2',
-          'field-cell--4',
-          'field-cell--8',
-          'field-cell--16',
-          'field-cell--32',
-          'field-cell--64',
-          'field-cell--128',
-          'field-cell--256',
-          'field-cell--512',
-          'field-cell--1024'
-        );
-
-        if (matrixValue > 0) {
-          cellElement.classList.add(`field-cell--${matrixValue}`);
-        }
-      }
-    }
+  if (isGameOver()) {
+    messageLose.classList.remove('hidden');
+    gameOver = true;
   }
 }
-
-// function addRandomCells() {
-//   const emptyCells = [];
-
-//   for (let row = 0; row < numRows; row++) {
-//     for (let col = 0; col < numCols; col++) {
-//       if (matrix[row][col] === 0) {
-//         emptyCells.push({ row, col });
-//       }
-//     }
-//   }
-
-//   if (emptyCells.length > 0) {
-//     const randomIndices = [];
-
-//     while (randomIndices.length < 2) {
-//       const randomIndex = Math.floor(Math.random() * emptyCells.length);
-
-//       randomIndices.push(randomIndex);
-//     }
-
-//     for (const index of randomIndices) {
-//       const { row, col } = emptyCells[index];
-
-//       matrix[row][col] = 2;
-//     }
-//   }
-// }
 
 function addRandomCell() {
   const emptyCells = [];
@@ -470,19 +379,31 @@ function addRandomCell() {
   }
 }
 
-// function shouldAddOneCell() {
-//   let filledCells = 0;
+function updateUI() {
+  for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numCols; col++) {
+      cellElement = fieldCells[row * numCols + col];
+      matrixValue = matrix[row][col];
 
-//   for (let row = 0; row < numRows; row++) {
-//     for (let col = 0; col < numCols; col++) {
-//       if (matrix[row][col] !== 0) {
-//         filledCells++;
-//       }
-//     }
-//   }
+      cellElement.classList.remove('field-cell--2',
+        'field-cell--4',
+        'field-cell--8',
+        'field-cell--16',
+        'field-cell--32',
+        'field-cell--64',
+        'field-cell--128',
+        'field-cell--256',
+        'field-cell--512',
+        'field-cell--1024'
+      );
 
-//   return filledCells >= numRows * numCols * 0.5;
-// }
+      if (matrixValue > 0) {
+        cellElement.classList.add(`field-cell--${matrixValue}`);
+      }
+    }
+  }
+}
+
 // #endregion
 
 // #region Setting key logic
