@@ -1,12 +1,12 @@
 import { moveUp, moveDown, moveLeft, moveRight } from './movement.js';
 import * as GameControlModule from './gameControl.js';
-import * as GameStateModule from './gameState.js';
+import { GameState } from './gameState.js';
 
 export function listenForKeyboardEvents() {
   document.addEventListener('keydown', function(e) {
     if (
-      !GameStateModule.isGameStarted()
-      || GameStateModule.isGameOver()
+      !GameState.isGameStarted()
+      || GameState.isGameOver()
     ) {
       return;
     }

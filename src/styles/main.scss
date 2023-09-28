@@ -64,8 +64,8 @@ h1 {
   &-score {
     position: relative;
     display: inline-block;
-    transition: transform 0.3s ease-in-out;
-    margin-top: 2rem;
+    transition: transform 0.2s ease-in-out;
+    margin-top: 2.5rem;
 
     &--title {
       position: absolute;
@@ -75,10 +75,11 @@ h1 {
     &--added {
       position: absolute;
       top: 40%;
-      left: 15%;
+      left: 55%;
       opacity: 0;
-      transition: opacity 0.5s ease-in-out;
+      transition: opacity 0.5s ease-in-out, transform 0.7s ease-in-out;
       font-weight: bold;
+      font-size: 14px;
     }
   }
 }

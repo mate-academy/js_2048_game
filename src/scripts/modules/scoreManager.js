@@ -41,14 +41,15 @@ export function updateScoreDisplay(addedScore = 0) {
 
     setTimeout(() => {
       addedScoreElement.style.opacity = '0';
-    }, 500);
+      addedScoreElement.style.transform = 'translateY(+2px)';
+    }, 400);
   }
 }
 
 function animateScoreChange() {
   const scoreElement = document.querySelector('.game-score');
 
-  scoreElement.style.transform = 'translateY(-5px)';
+  scoreElement.style.transform = 'translateY(-3px)';
 
   setTimeout(() => {
     scoreElement.style.transform = '';

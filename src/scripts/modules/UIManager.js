@@ -1,6 +1,6 @@
 import * as ScoreManager from './scoreManager.js';
 import * as GameControlModule from './gameControl.js';
-import * as GameStateModule from './gameState.js';
+import { GameState } from './gameState.js';
 import * as BoardModule from './board.js';
 
 export function hideMessages() {
@@ -19,7 +19,7 @@ export function hideMessages() {
 
 export function updateStartButton(startButton) {
   startButton.textContent
-    = GameStateModule.isGameStarted() ? 'Restart' : 'Start';
+    = GameState.isGameStarted() ? 'Restart' : 'Start';
 
   startButton.addEventListener('click', function() {
     BoardModule.resetBoard();
@@ -32,7 +32,7 @@ export function updateStartButton(startButton) {
     ScoreManager.updateScoreDisplay();
 
     hideMessages();
-    GameStateModule.setGameStarted(true);
+    GameState.setGameStarted(true);
 
     startButton.textContent = 'Restart';
   });

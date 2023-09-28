@@ -1,18 +1,20 @@
-let gameStarted = false;
-let gameOver = false;
+export const GameState = {
+  gameStarted: false,
+  gameOver: false,
 
-export function setGameStarted(value) {
-  gameStarted = value;
-}
+  setGameStarted(value) {
+    this.gameStarted = value;
+  },
 
-export function isGameStarted() {
-  return gameStarted;
-}
+  isGameStarted() {
+    return this.gameStarted;
+  },
 
-export function setGameOver(value) {
-  gameOver = value;
-}
+  setGameOver(value) {
+    this.gameOver = value;
+  },
 
-export function isGameOver() {
-  return gameOver;
-}
+  isGameOver() {
+    return this.gameOver;
+  },
+};

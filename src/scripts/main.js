@@ -1,5 +1,5 @@
 import * as BoardModule from './modules/board.js';
-import * as GameStateModule from './modules/gameState.js';
+import { GameState } from './modules/gameState.js';
 import * as InputHandler from './modules/inputHandler.js';
 import * as UIManager from './modules/UIManager.js';
 
@@ -13,4 +13,4 @@ document.addEventListener('DOMContentLoaded', function() {
 UIManager.updateStartButton(startButton);
 InputHandler.listenForKeyboardEvents();
 
-GameStateModule.setGameStarted(false);
+GameState.setGameStarted(false);
