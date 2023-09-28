@@ -9,6 +9,13 @@ const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 let canMove = false;
 
+const direction = {
+  left: 'ArrowLeft',
+  right: 'ArrowRight',
+  up: 'ArrowUp',
+  down: 'ArrowDown',
+};
+
 startButton.addEventListener('click', () => {
   if (startButton.classList.contains('start')) {
     generateRandom();
@@ -36,22 +43,22 @@ document.addEventListener('keydown', (e) => {
   e.preventDefault();
 
   switch (e.key) {
-    case 'ArrowLeft':
+    case direction.left:
       slideLeft();
       checkGameOver();
       break;
 
-    case 'ArrowRight':
+    case direction.right:
       slideRight();
       checkGameOver();
       break;
 
-    case 'ArrowUp':
+    case direction.up:
       slideUp();
       checkGameOver();
       break;
 
-    case 'ArrowDown':
+    case direction.down:
       slideDown();
       checkGameOver();
       break;
