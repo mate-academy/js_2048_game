@@ -1,3 +1,7 @@
+$fontSize: 50px;
+$fontWeight: bold;
+$white: #fff;
+
 body {
   margin: 0;
   display: flex;
@@ -8,9 +12,11 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  overflow: hidden;
 }
 
 .field-cell {
+  // position: relative;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
@@ -20,60 +26,153 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: 0.3s ease-in;
 
   &--2 {
     background: #eee4da;
+    content: '2';
+  }
+  &--2::before {
+    content: '2';
+    font-size: $fontSize;
+    font-weight: $fontWeight;
+    text-align: center;
   }
 
   &--4 {
     background: #ede0c8;
+  }
+  &--4::before {
+    content: '4';
+    font-size: $fontSize;
+    font-weight: $fontWeight;
+    text-align: center;
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
   }
+  &--8::before {
+    content: '8';
+    font-size: $fontSize;
+    font-weight: $fontWeight;
+    text-align: center;
+  }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+  }
+  &--16::before {
+    content: '16';
+    font-size: $fontSize;
+    font-weight: $fontWeight;
+    text-align: center;
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
   }
+  &--32::before {
+    content: '32';
+    font-size: $fontSize;
+    font-weight: $fontWeight;
+    text-align: center;
+  }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+  }
+  &--64::before {
+    content: '64';
+    font-size: $fontSize;
+    font-weight: $fontWeight;
+    text-align: center;
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
   }
+  &--128::before {
+    content: '128';
+    font-size: 40px;
+    font-weight: $fontWeight;
+    text-align: center;
+  }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+  }
+  &--256::before {
+    content: '256';
+    font-size: 40px;
+    font-weight: $fontWeight;
+    text-align: center;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
   }
+  &--512::before {
+    content: '512';
+    font-size: 40px;
+    font-weight: $fontWeight;
+    text-align: center;
+  }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+  }
+  &--1024::before {
+    content: '1024';
+    font-size: 30px;
+    font-weight: $fontWeight;
+    text-align: center;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
   }
+  &--2048::before {
+    content: '2048';
+    font-size: 30px;
+    font-weight: $fontWeight;
+    text-align: center;
+  }
 }
+
+@for $row from 1 through 4 {
+  @for $col from 1 through 4 {
+    .field-cell.field-cell-position-#{$col}-#{$row} {
+      transition: transform 0.3s;
+    }
+
+    .field-cell.field-cell-position-#{$col}-#{$row}.move-up {
+      transform: translate(0, -121px);
+    }
+
+    .field-cell.field-cell-position-#{$col}-#{$row}.move-down {
+      transform: translate(0, 121px);
+    }
+
+    .field-cell.field-cell-position-#{$col}-#{$row}.move-left {
+      transform: translate(-121px, 0);
+    }
+
+    .field-cell.field-cell-position-#{$col}-#{$row}.move-right {
+      transform: translate(121px, 0);
+    }
+  }
+}
+
 
 .game-field {
   background: #bbada0;
@@ -147,10 +246,10 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #f4020e;
 
   &:hover {
-    background: #f87474;
+    background: #ee5d65;
   }
 }
 
