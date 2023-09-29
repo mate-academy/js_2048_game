@@ -7,6 +7,7 @@ const table = document.querySelector('.game-field');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 
+const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 const rows = 4;
 const columns = 4;
 let board;
@@ -39,7 +40,6 @@ button.addEventListener('click', () => {
 
 document.addEventListener('keydown', e => {
   const pressedKey = e.key;
-  const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
   if (arrowKeys.includes(pressedKey)) {
     move(pressedKey);
@@ -130,19 +130,20 @@ function generateTile(isFirst = false) {
 
 function move(pressedKey) {
   const prevBoard = [...board];
+  const [ up, down, left, right ] = arrowKeys;
   let isReversed = false;
 
-  if (pressedKey === 'ArrowDown' || pressedKey === 'ArrowRight') {
+  if (pressedKey === down || pressedKey === right) {
     isReversed = true;
   }
 
   switch (pressedKey) {
-    case 'ArrowUp':
-    case 'ArrowDown':
+    case up:
+    case down:
       updateColumn(isReversed);
       break;
-    case 'ArrowLeft':
-    case 'ArrowRight':
+    case left:
+    case right:
       updateRow(isReversed);
       break;
     default:
