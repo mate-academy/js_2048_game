@@ -55,3 +55,11 @@ function animateScoreChange() {
     scoreElement.style.transform = '';
   }, 300);
 }
+
+export function updateScore(value) {
+  if (value > 0) {
+    setTimeout(() => {
+      addScore(value);
+    }, 200);
+  }
+}

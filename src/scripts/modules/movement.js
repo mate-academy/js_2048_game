@@ -1,23 +1,14 @@
 import { board } from './board.js';
-import { addScore } from './scoreManager.js';
+import { updateScore } from './scoreManager.js';
+import { moveTile, mergeTiles, canMerge } from '../_utils.js';
 
 /**
- * Moves tiles on the board to the left. The function loops through
- * each row of the board, attempting to move each tile as far left as
- * possible. If a tile has an adjacent tile to its left with the same
- * value, they are merged together, their values are summed, and the
- * resulting tile is placed to the leftmost position of the two.
- *
- * If any tile is moved or merged, the function sets the `moved` flag
- * to `true`. After iterating through all rows and columns, the function
- * returns the `moved` flag, indicating whether any tiles were moved
- * or merged.
+ * Moves tiles on the board to the left.
  *
  * @returns {boolean} - Returns `true` if any tile was moved or merged;
- *                      otherwise, `false`.
- *
- * @sideEffects - Modifies the state of the 'board' variable and may
- *                update the game's score if any tiles are merged.
+ *    otherwise, `false`.
+ * @sideEffects - Modifies the state of the 'board' variable
+ *    and may update the game's score if any tiles are merged.
  */
 
 export function moveLeft() {
@@ -30,24 +21,17 @@ export function moveLeft() {
     for (let col = 0; col < 4; col++) {
       if (board[row][col] === 0) {
         continue;
-      };
+      }
 
       if (emptyCol !== col) {
-        board[row][emptyCol] = board[row][col];
-        board[row][col] = 0;
+        moveTile(row, col, row, emptyCol);
         moved = true;
       }
 
       if (
-        emptyCol !== 0
-        && board[row][emptyCol] === board[row][emptyCol - 1]
+        emptyCol !== 0 && canMerge(row, emptyCol, row, emptyCol - 1)
       ) {
-        const mergedValue = board[row][emptyCol - 1] * 2;
-
-        board[row][emptyCol - 1] = mergedValue;
-        board[row][emptyCol] = 0;
-        totalCombinedValue += mergedValue;
-
+        totalCombinedValue += mergeTiles(row, emptyCol, row, emptyCol - 1);
         moved = true;
       } else {
         emptyCol++;
@@ -55,24 +39,18 @@ export function moveLeft() {
     }
   }
 
-  if (totalCombinedValue > 0) {
-    setTimeout(() => {
-      addScore(totalCombinedValue);
-    }, 100);
-  }
+  updateScore(totalCombinedValue);
 
   return moved;
 }
 
 /**
- * Moves tiles on the board to the right, following the same mechanics
- * as `moveLeft()`. The primary difference is in the direction of movement.
+ * Moves tiles on the board to the right.
  *
  * @returns {boolean} - Returns `true` if any tile was moved or merged;
- *                      otherwise, `false`.
- *
- * @sideEffects - Modifies the state of the 'board' variable and may
- *                update the game's score if any tiles are merged.
+ *    otherwise, `false`.
+ * @sideEffects - Modifies the state of the 'board' variable
+ *    and may update the game's score if any tiles are merged.
  */
 
 export function moveRight() {
@@ -88,22 +66,15 @@ export function moveRight() {
       }
 
       if (emptyCol !== col) {
-        board[row][emptyCol] = board[row][col];
-        board[row][col] = 0;
+        moveTile(row, col, row, emptyCol);
         moved = true;
       }
 
-      // Merge tiles if they are the same and next to each other
       if (
         emptyCol !== 3
-        && board[row][emptyCol] === board[row][emptyCol + 1]
+        && canMerge(row, emptyCol, row, emptyCol + 1)
       ) {
-        const mergedValue = board[row][emptyCol + 1] * 2;
-
-        board[row][emptyCol + 1] = mergedValue;
-        board[row][emptyCol] = 0;
-        totalCombinedValue += mergedValue;
-
+        totalCombinedValue += mergeTiles(row, emptyCol, row, emptyCol + 1);
         moved = true;
       } else {
         emptyCol--;
@@ -111,25 +82,18 @@ export function moveRight() {
     }
   }
 
-  if (totalCombinedValue > 0) {
-    setTimeout(() => {
-      addScore(totalCombinedValue);
-    }, 100);
-  }
+  updateScore(totalCombinedValue);
 
   return moved;
 }
 
 /**
  * Moves tiles on the board upwards.
- * This function works by traversing each column and moving the tiles upward,
- * combining them if they are of the same value.
  *
  * @returns {boolean} - Returns `true` if any tile was moved or merged;
- *                      otherwise, `false`.
- *
- * @sideEffects - Modifies the state of the 'board' variable and may
- *                update the game's score if any tiles are merged.
+ *    otherwise, `false`.
+ * @sideEffects - Modifies the state of the 'board' variable
+ *    and may update the game's score if any tiles are merged.
  */
 
 export function moveUp() {
@@ -145,20 +109,15 @@ export function moveUp() {
       }
 
       if (emptyRow !== row) {
-        board[emptyRow][col] = board[row][col];
-        board[row][col] = 0;
+        moveTile(row, col, emptyRow, col);
         moved = true;
       }
 
       if (
         emptyRow !== 0
-        && board[emptyRow][col] === board[emptyRow - 1][col]
+        && canMerge(emptyRow, col, emptyRow - 1, col)
       ) {
-        const mergedValue = board[emptyRow - 1][col] * 2;
-
-        board[emptyRow - 1][col] = mergedValue;
-        board[emptyRow][col] = 0;
-        totalCombinedValue += mergedValue;
+        totalCombinedValue += mergeTiles(emptyRow, col, emptyRow - 1, col);
         moved = true;
       } else {
         emptyRow++;
@@ -166,26 +125,18 @@ export function moveUp() {
     }
   }
 
-  if (totalCombinedValue > 0) {
-    setTimeout(() => {
-      addScore(totalCombinedValue);
-    }, 100);
-  }
+  updateScore(totalCombinedValue);
 
   return moved;
 }
 
 /**
  * Moves tiles on the board downwards.
- * This function works by traversing each column and moving the tiles downward,
- * combining them if they are of the same value.
- * The logic is similar to `moveUp()`, but the traversal order is reversed.
  *
  * @returns {boolean} - Returns `true` if any tile was moved or merged;
- *                      otherwise, `false`.
- *
- * @sideEffects - Modifies the state of the 'board' variable and may
- *                update the game's score if any tiles are merged.
+ *    otherwise, `false`.
+ * @sideEffects - Modifies the state of the 'board' variable
+ *    and may update the game's score if any tiles are merged.
  */
 
 export function moveDown() {
@@ -193,41 +144,33 @@ export function moveDown() {
   let totalCombinedValue = 0;
 
   for (let col = 0; col < 4; col++) {
-    let emptyRow = 3;
+    let emptyRow = 3; // Start from the bottom row
 
-    for (let row = 3; row >= 0; row--) {
+    for (let row = 3; row >= 0; row--) { // Traverse upwards from the bottom
       if (board[row][col] === 0) {
         continue;
-      };
+      }
 
       if (emptyRow !== row) {
-        board[emptyRow][col] = board[row][col];
-        board[row][col] = 0;
+        moveTile(row, col, emptyRow, col);
         moved = true;
       }
 
       if (
-        emptyRow !== 3
-        && board[emptyRow][col] === board[emptyRow + 1][col]
+        emptyRow !== 3 // Ensure we're not on the bottom-most row
+        && canMerge(emptyRow, col, emptyRow + 1, col)
       ) {
-        const mergedValue = board[emptyRow + 1][col] * 2;
-
-        board[emptyRow + 1][col] = mergedValue;
-        board[emptyRow][col] = 0;
-        totalCombinedValue += mergedValue;
-
+        totalCombinedValue += mergeTiles(emptyRow, col, emptyRow + 1, col);
         moved = true;
       } else {
-        emptyRow--;
+        emptyRow--; // Move the emptyRow pointer upwards for the next iteration
       }
     }
   }
 
-  if (totalCombinedValue > 0) {
-    setTimeout(() => {
-      addScore(totalCombinedValue);
-    }, 100);
-  }
+  updateScore(totalCombinedValue);
 
   return moved;
-};
+}
+
+// still having issue with score, maybe consider some async
