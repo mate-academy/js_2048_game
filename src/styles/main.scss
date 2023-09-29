@@ -148,11 +148,30 @@ body {
   }
 }
 
-.field-cell.move-up {
-  transition: 0.3s ease-in-out;
-  transform: translateY(-100%);
-  overflow: hidden;
+@for $row from 1 through 4 {
+  @for $col from 1 through 4 {
+    .field-cell.field-cell-position-#{$col}-#{$row} {
+      transition: transform 0.3s;
+    }
+
+    .field-cell.field-cell-position-#{$col}-#{$row}.move-up {
+      transform: translate(0, -121px);
+    }
+
+    .field-cell.field-cell-position-#{$col}-#{$row}.move-down {
+      transform: translate(0, 121px);
+    }
+
+    .field-cell.field-cell-position-#{$col}-#{$row}.move-left {
+      transform: translate(-121px, 0);
+    }
+
+    .field-cell.field-cell-position-#{$col}-#{$row}.move-right {
+      transform: translate(121px, 0);
+    }
+  }
 }
+
 
 .game-field {
   background: #bbada0;

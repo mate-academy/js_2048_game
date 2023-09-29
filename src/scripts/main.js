@@ -133,19 +133,14 @@ function isGameOver() {
 }
 
 function isWinner() {
-  for (let row = 0; row < numRows; row++) {
-    for (let col = 0; col < numCols; col++) {
-      matrixValue = matrix[row][col];
+  const has2048Cell = document.querySelector('.field-cell--2048');
 
-      if (matrixValue === 2048) {
-        messageWin.classList.remove('hidden');
-
-        return true;
-      }
-    }
+  if (has2048Cell) {
+    messageWin.classList.remove('hidden');
+    gameOver = true;
   }
 
-  return false;
+  return gameOver;
 }
 
 // #endregion
@@ -156,6 +151,10 @@ function moveUp() {
   const animatedCells = [];
 
   if (gameOver) {
+    return;
+  }
+
+  if (isWinner()) {
     return;
   }
 
@@ -192,29 +191,18 @@ function moveUp() {
 
   score.innerHTML = Number(score.innerHTML) + currentMerge;
 
-  animatedCells.forEach(({ row, col }) => {
-    cellElement = fieldCells[row * numCols + col];
-    cellElement.classList.add('move-up');
-  });
+  isWinner();
 
-  setTimeout(() => {
-    animatedCells.forEach(({ row, col }) => {
-      cellElement = fieldCells[row * numCols + col];
-      cellElement.classList.remove('move-up');
-    });
+  if (cellsChanged) {
+    addRandomCell();
+  }
 
-    updateUI();
-    isWinner();
+  updateUI();
 
-    if (cellsChanged) {
-      addRandomCell();
-    }
-
-    if (isGameOver()) {
-      messageLose.classList.remove('hidden');
-      gameOver = true;
-    }
-  }, 300);
+  if (isGameOver()) {
+    messageLose.classList.remove('hidden');
+    gameOver = true;
+  }
 }
 
 function moveDown() {
@@ -253,11 +241,6 @@ function moveDown() {
   }
   score.innerHTML = Number(score.innerHTML) + currentMerge;
   isWinner();
-
-  if (isGameOver()) {
-    messageLose.classList.remove('hidden');
-    gameOver = true;
-  }
 
   if (cellsChanged) {
     addRandomCell();
@@ -309,6 +292,11 @@ function moveLeft() {
     addRandomCell();
   }
   updateUI();
+
+  if (isGameOver()) {
+    messageLose.classList.remove('hidden');
+    gameOver = true;
+  }
 }
 
 function moveRight() {
@@ -407,6 +395,8 @@ function updateUI() {
 // #endregion
 
 // #region Setting key logic
+let touchStartX, touchStartY, touchEndX, touchEndY;
+
 document.addEventListener('keydown', function(event) {
   if (event.key === 'ArrowUp' && isRestart) {
     event.preventDefault();
@@ -420,6 +410,36 @@ document.addEventListener('keydown', function(event) {
   } else if (event.key === 'ArrowRight' && isRestart) {
     event.preventDefault();
     moveRight();
+  }
+});
+
+document.addEventListener('touchstart', function(event) {
+  touchStartX = event.touches[0].clientX;
+  touchStartY = event.touches[0].clientY;
+});
+
+document.addEventListener('touchmove', function(event) {
+  event.preventDefault();
+  touchEndX = event.touches[0].clientX;
+  touchEndY = event.touches[0].clientY;
+});
+
+document.addEventListener('touchend', function(event) {
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > 0 && isRestart) {
+      moveRight();
+    } else if (deltaX < 0 && isRestart) {
+      moveLeft();
+    }
+  } else {
+    if (deltaY > 0 && isRestart) {
+      moveDown();
+    } else if (deltaY < 0 && isRestart) {
+      moveUp();
+    }
   }
 });
 // #endregion
