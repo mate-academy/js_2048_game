@@ -112,7 +112,7 @@ document.addEventListener('keydown', e => {
 
   fillRandom(maxStart, emptyCells);
 
-  if (emptyCells.length === 0 && checkMove()) {
+  if (!emptyCells.length && checkMove()) {
     messageLose.classList.remove('hidden');
   }
 });
@@ -197,11 +197,11 @@ function getEmptyCells() {
         return [i, j];
       }
     })];
-  }, []).filter(cell => cell !== undefined);
+  }, []).filter(cell => cell);
 }
 
 function fillRandom(maxStart, emptyCells) {
-  if (emptyCells.length === 0) {
+  if (!emptyCells.length) {
     return;
   }
 
