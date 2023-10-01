@@ -7,10 +7,13 @@ const rows = 4;
 const columns = 4;
 const start = document.querySelector('.start');
 const startText = document.querySelector('.message_start');
+const gameOverMessage = document.querySelector('.message_lose');
 
 window.onload = function() {
   start.addEventListener('click', () => {
     if (!gameRunning) {
+      gameOverMessage.classList.add('hidden');
+
       setGame();
       gameRunning = true;
 
@@ -26,6 +29,8 @@ window.onload = function() {
       start.classList.remove('restart');
       start.classList.add('start');
       start.innerText = 'Start';
+
+      gameOverMessage.classList.add('hidden');
     }
   });
 };
@@ -66,6 +71,10 @@ function setGame() {
     [0, 0, 0, 0],
   ];
 
+  const boardElement = document.getElementById('board');
+
+  boardElement.innerHTML = '';
+
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       const tile = document.createElement('div');
@@ -76,7 +85,7 @@ function setGame() {
 
       updateTile(tile, num);
 
-      document.getElementById('board').append(tile);
+      boardElement.append(tile);
     }
   }
 
@@ -92,10 +101,6 @@ function checkForGameLoss() {
   }
 }
 
-function gameLose() {
-  startText.innerText = 'You lose! Restart the game?';
-}
-
 function hasEmptyTile() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
@@ -109,7 +114,22 @@ function hasEmptyTile() {
 }
 
 function canMergeTiles() {
-  return true;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      const currentValue = board[r][c];
+
+      if (
+        (r > 0 && board[r - 1][c] === currentValue)
+        || (r < rows - 1 && board[r + 1][c] === currentValue)
+        || (c > 0 && board[r][c - 1] === currentValue)
+        || (c < columns - 1 && board[r][c + 1] === currentValue)
+      ) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 function setTwo() {
@@ -190,6 +210,11 @@ function slide(row) {
   return newRow;
 }
 
+function gameLose() {
+  gameOverMessage.classList.remove('hidden');
+  gameRunning = false;
+}
+
 function slideLeft() {
   for (let r = 0; r < rows; r++) {
     let row = board[r];
@@ -205,6 +230,8 @@ function slideLeft() {
       updateTile(tile, num);
     }
   }
+
+  checkForGameLoss();
 }
 
 function slideRight() {
@@ -226,6 +253,8 @@ function slideRight() {
       updateTile(tile, num);
     }
   }
+
+  checkForGameLoss();
 }
 
 function slideUp() {
@@ -243,6 +272,8 @@ function slideUp() {
       updateTile(tile, num);
     }
   }
+
+  checkForGameLoss();
 }
 
 function slideDown() {
@@ -264,4 +295,6 @@ function slideDown() {
       updateTile(tile, num);
     }
   }
+
+  checkForGameLoss();
 }
