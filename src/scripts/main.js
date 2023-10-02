@@ -8,13 +8,6 @@ const columns = 4;
 const start = document.querySelector('.start');
 const startText = document.querySelector('.message_start');
 const gameOverMessage = document.querySelector('.message_lose');
-let slideCounts = {
-  left: 0,
-  right: 0,
-  up: 0,
-  down: 0,
-};
-let lastSlideDirection = null;
 
 window.onload = function() {
   initializeBoard();
@@ -41,16 +34,6 @@ window.onload = function() {
   });
 };
 
-function resetSlideCounts() {
-  slideCounts = {
-    left: 0,
-    right: 0,
-    up: 0,
-    down: 0,
-  };
-  lastSlideDirection = null;
-}
-
 function resetGame() {
   stopGame();
   setGame();
@@ -60,7 +43,6 @@ function resetGame() {
   start.innerText = 'Restart';
   score = 0;
   document.getElementById('score').innerText = score;
-  resetSlideCounts();
 }
 
 function stopGame() {
@@ -234,33 +216,13 @@ function updateTile(tile, num) {
 
 document.addEventListener('keyup', (e) => {
   if (e.code === 'ArrowLeft') {
-    if (lastSlideDirection !== 'left' || slideCounts.left < 5) {
-      slideLeft();
-      setTwo();
-      lastSlideDirection = 'left';
-      slideCounts.left++;
-    }
+    slideLeft();
   } else if (e.code === 'ArrowRight') {
-    if (lastSlideDirection !== 'right' || slideCounts.right < 5) {
-      slideRight();
-      setTwo();
-      lastSlideDirection = 'right';
-      slideCounts.right++;
-    }
+    slideRight();
   } else if (e.code === 'ArrowUp') {
-    if (lastSlideDirection !== 'up' || slideCounts.up < 5) {
-      slideUp();
-      setTwo();
-      lastSlideDirection = 'up';
-      slideCounts.up++;
-    }
+    slideUp();
   } else if (e.code === 'ArrowDown') {
-    if (lastSlideDirection !== 'down' || slideCounts.down < 5) {
-      slideDown();
-      setTwo();
-      lastSlideDirection = 'down';
-      slideCounts.down++;
-    }
+    slideDown();
   }
   document.getElementById('score').innerText = score;
 });
@@ -293,110 +255,160 @@ function gameLose() {
 }
 
 function slideLeft() {
-  if (!canSlide('left')) {
-    return;
-  }
+  if (canSlideLeft()) {
+    for (let r = 0; r < rows; r++) {
+      let row = board[r];
 
-  for (let r = 0; r < rows; r++) {
-    let row = board[r];
+      row = slide(row);
 
-    row = slide(row);
+      board[r] = row;
 
-    board[r] = row;
+      for (let c = 0; c < columns; c++) {
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
+        const num = board[r][c];
 
-    for (let c = 0; c < columns; c++) {
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-      const num = board[r][c];
-
-      updateTile(tile, num);
+        updateTile(tile, num);
+      }
     }
-  }
 
-  checkForGameLoss();
+    setTwo();
+    checkForGameLoss();
+  }
 }
 
 function slideRight() {
-  for (let r = 0; r < rows; r++) {
-    let row = board[r];
+  if (canSlideRight()) {
+    for (let r = 0; r < rows; r++) {
+      let row = board[r];
 
-    row.reverse();
+      row.reverse();
 
-    row = slide(row);
+      row = slide(row);
 
-    row.reverse();
+      row.reverse();
 
-    board[r] = row;
+      board[r] = row;
 
-    for (let c = 0; c < columns; c++) {
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-      const num = board[r][c];
+      for (let c = 0; c < columns; c++) {
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
+        const num = board[r][c];
 
-      updateTile(tile, num);
+        updateTile(tile, num);
+      }
     }
-  }
 
-  checkForGameLoss();
+    setTwo();
+    checkForGameLoss();
+  }
 }
 
 function slideUp() {
-  for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+  if (canSlideUp()) {
+    for (let c = 0; c < columns; c++) {
+      let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
 
-    row = slide(row);
+      row = slide(row);
 
-    for (let r = 0; r < columns; r++) {
-      board[r][c] = row[r];
+      for (let r = 0; r < columns; r++) {
+        board[r][c] = row[r];
 
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-      const num = board[r][c];
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
+        const num = board[r][c];
 
-      updateTile(tile, num);
+        updateTile(tile, num);
+      }
     }
-  }
 
-  checkForGameLoss();
+    setTwo();
+    checkForGameLoss();
+  }
 }
 
 function slideDown() {
-  for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+  if (canSlideDown()) {
+    for (let c = 0; c < columns; c++) {
+      let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
 
-    row.reverse();
+      row.reverse();
 
-    row = slide(row);
+      row = slide(row);
 
-    row.reverse();
+      row.reverse();
 
-    for (let r = 0; r < columns; r++) {
-      board[r][c] = row[r];
+      for (let r = 0; r < columns; r++) {
+        board[r][c] = row[r];
 
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-      const num = board[r][c];
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
+        const num = board[r][c];
 
-      updateTile(tile, num);
+        updateTile(tile, num);
+      }
     }
-  }
 
-  checkForGameLoss();
+    setTwo();
+    checkForGameLoss();
+  }
 }
 
-function canSlide(direction) {
+function canSlideLeft() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       const currentValue = board[r][c];
 
       if (currentValue !== 0) {
-        if (direction === 'left'
-        && (c > 0 && board[r][c - 1] === currentValue)) {
+        if (c > 0 && (board[r][c - 1] === 0
+          || board[r][c - 1] === currentValue)) {
           return true;
-        } else if (direction === 'right'
-        && (c < columns - 1 && board[r][c + 1] === currentValue)) {
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+function canSlideRight() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      const currentValue = board[r][c];
+
+      if (currentValue !== 0) {
+        if (c < columns - 1 && (board[r][c + 1] === 0
+          || board[r][c + 1] === currentValue)) {
           return true;
-        } else if (direction === 'up'
-        && (r > 0 && board[r - 1][c] === currentValue)) {
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+function canSlideUp() {
+  for (let c = 0; c < columns; c++) {
+    for (let r = 0; r < rows; r++) {
+      const currentValue = board[r][c];
+
+      if (currentValue !== 0) {
+        if (r > 0 && (board[r - 1][c] === 0
+          || board[r - 1][c] === currentValue)) {
           return true;
-        } else if (direction === 'down'
-        && (r < rows - 1 && board[r + 1][c] === currentValue)) {
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+function canSlideDown() {
+  for (let c = 0; c < columns; c++) {
+    for (let r = rows - 1; r >= 0; r--) {
+      const currentValue = board[r][c];
+
+      if (currentValue !== 0) {
+        if (r < rows - 1 && (board[r + 1][c] === 0
+          || board[r + 1][c] === currentValue)) {
           return true;
         }
       }
