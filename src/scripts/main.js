@@ -8,6 +8,13 @@ const columns = 4;
 const start = document.querySelector('.start');
 const startText = document.querySelector('.message_start');
 const gameOverMessage = document.querySelector('.message_lose');
+let slideCounts = {
+  left: 0,
+  right: 0,
+  up: 0,
+  down: 0,
+};
+let lastSlideDirection = null;
 
 window.onload = function() {
   initializeBoard();
@@ -34,6 +41,16 @@ window.onload = function() {
   });
 };
 
+function resetSlideCounts() {
+  slideCounts = {
+    left: 0,
+    right: 0,
+    up: 0,
+    down: 0,
+  };
+  lastSlideDirection = null;
+}
+
 function resetGame() {
   stopGame();
   setGame();
@@ -43,6 +60,7 @@ function resetGame() {
   start.innerText = 'Restart';
   score = 0;
   document.getElementById('score').innerText = score;
+  resetSlideCounts();
 }
 
 function stopGame() {
@@ -216,17 +234,33 @@ function updateTile(tile, num) {
 
 document.addEventListener('keyup', (e) => {
   if (e.code === 'ArrowLeft') {
-    slideLeft();
-    setTwo();
+    if (lastSlideDirection !== 'left' || slideCounts.left < 5) {
+      slideLeft();
+      setTwo();
+      lastSlideDirection = 'left';
+      slideCounts.left++;
+    }
   } else if (e.code === 'ArrowRight') {
-    slideRight();
-    setTwo();
+    if (lastSlideDirection !== 'right' || slideCounts.right < 5) {
+      slideRight();
+      setTwo();
+      lastSlideDirection = 'right';
+      slideCounts.right++;
+    }
   } else if (e.code === 'ArrowUp') {
-    slideUp();
-    setTwo();
+    if (lastSlideDirection !== 'up' || slideCounts.up < 5) {
+      slideUp();
+      setTwo();
+      lastSlideDirection = 'up';
+      slideCounts.up++;
+    }
   } else if (e.code === 'ArrowDown') {
-    slideDown();
-    setTwo();
+    if (lastSlideDirection !== 'down' || slideCounts.down < 5) {
+      slideDown();
+      setTwo();
+      lastSlideDirection = 'down';
+      slideCounts.down++;
+    }
   }
   document.getElementById('score').innerText = score;
 });
@@ -259,6 +293,10 @@ function gameLose() {
 }
 
 function slideLeft() {
+  if (!canSlide('left')) {
+    return;
+  }
+
   for (let r = 0; r < rows; r++) {
     let row = board[r];
 
@@ -340,4 +378,30 @@ function slideDown() {
   }
 
   checkForGameLoss();
+}
+
+function canSlide(direction) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      const currentValue = board[r][c];
+
+      if (currentValue !== 0) {
+        if (direction === 'left'
+        && (c > 0 && board[r][c - 1] === currentValue)) {
+          return true;
+        } else if (direction === 'right'
+        && (c < columns - 1 && board[r][c + 1] === currentValue)) {
+          return true;
+        } else if (direction === 'up'
+        && (r > 0 && board[r - 1][c] === currentValue)) {
+          return true;
+        } else if (direction === 'down'
+        && (r < rows - 1 && board[r + 1][c] === currentValue)) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
 }
