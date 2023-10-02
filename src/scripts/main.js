@@ -10,9 +10,13 @@ const startText = document.querySelector('.message_start');
 const gameOverMessage = document.querySelector('.message_lose');
 
 window.onload = function() {
+  initializeBoard();
+
   start.addEventListener('click', () => {
-    if (!gameRunning) {
+    if (!gameRunning || isGameLost()) {
       gameOverMessage.classList.add('hidden');
+      score = 0;
+      document.getElementById('score').innerText = score;
 
       setGame();
       gameRunning = true;
@@ -20,20 +24,26 @@ window.onload = function() {
       start.classList.remove('start');
       start.classList.add('restart');
       start.innerText = 'Restart';
-      startText.textContent = '';
+      startText.classList.remove('message_start');
+      startText.classList.add('hidden');
 
       checkForGameWin();
     } else {
-      stopGame();
-
-      start.classList.remove('restart');
-      start.classList.add('start');
-      start.innerText = 'Start';
-
-      gameOverMessage.classList.add('hidden');
+      resetGame();
     }
   });
 };
+
+function resetGame() {
+  stopGame();
+  setGame();
+  gameRunning = true;
+  startText.classList.remove('message_start');
+  startText.classList.add('hidden');
+  start.innerText = 'Restart';
+  score = 0;
+  document.getElementById('score').innerText = score;
+}
 
 function stopGame() {
   const boardElement = document.getElementById('board');
@@ -41,8 +51,6 @@ function stopGame() {
   boardElement.innerHTML = '';
   score = 0;
   document.getElementById('score').innerText = score;
-
-  gameRunning = false;
 }
 
 function checkForGameWin() {
@@ -63,13 +71,8 @@ function gameWin() {
   startText.innerText = 'Winner! Congrats! You did it!';
 }
 
-function setGame() {
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+function initializeBoard() {
+  board = Array.from({ length: rows }, () => Array(columns).fill(0));
 
   const boardElement = document.getElementById('board');
 
@@ -88,17 +91,49 @@ function setGame() {
       boardElement.append(tile);
     }
   }
+}
 
-  setTwo();
-  setTwo();
+function setGame() {
+  initializeBoard();
+
+  setInitialTiles(2);
 
   checkForGameLoss();
+}
+
+function setInitialTiles(count) {
+  for (let i = 0; i < count; i++) {
+    if (!hasEmptyTile()) {
+      return;
+    }
+
+    let found = false;
+
+    while (!found) {
+      const r = Math.floor(Math.random() * rows);
+      const c = Math.floor(Math.random() * columns);
+
+      if (board[r][c] === 0) {
+        board[r][c] = 2;
+
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
+
+        tile.innerText = '2';
+        tile.classList.add('x2');
+        found = true;
+      }
+    }
+  }
 }
 
 function checkForGameLoss() {
   if (!hasEmptyTile() && !canMergeTiles()) {
     gameLose();
   }
+}
+
+function isGameLost() {
+  return !hasEmptyTile() && !canMergeTiles();
 }
 
 function hasEmptyTile() {
@@ -133,6 +168,10 @@ function canMergeTiles() {
 }
 
 function setTwo() {
+  if (!gameRunning) {
+    return;
+  }
+
   if (!hasEmptyTile()) {
     return;
   }
@@ -144,12 +183,16 @@ function setTwo() {
     const c = Math.floor(Math.random() * columns);
 
     if (board[r][c] === 0) {
-      board[r][c] = 2;
+      const randomNumber = Math.random();
+
+      const tileValue = randomNumber < 0.9 ? 2 : 4;
+
+      board[r][c] = tileValue;
 
       const tile = document.getElementById(r.toString() + '-' + c.toString());
 
-      tile.innerText = '2';
-      tile.classList.add('x2');
+      tile.innerText = tileValue.toString();
+      tile.classList.add('x' + tileValue.toString());
       found = true;
     }
   }
@@ -189,7 +232,7 @@ document.addEventListener('keyup', (e) => {
 });
 
 function filterZero(row) {
-  return row.filter(num => num !== 0);
+  return row.filter((num) => num !== 0);
 }
 
 function slide(row) {
