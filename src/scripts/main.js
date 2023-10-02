@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let crntScore = 0;
   const gameBoard = Array.from({ length: rows },
     () => Array.from({ length: cols }, () => null));
+  let prevGameBoard = gameBoard.flat();
   const emptyCells = [];
 
   btnStart.addEventListener('click', () => {
@@ -37,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function arrowHandler(evt) {
+    evt.preventDefault();
+
     switch (evt.key) {
       case 'ArrowUp':
         moveCol('up');
@@ -58,9 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    addTile();
+    if (isNeedAdd()) {
+      addTile();
+    }
+
     drawBoard();
     verifyWinLose();
+    prevGameBoard = gameBoard.flat();
   }
 
   function verifyWinLose() {
@@ -120,6 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
       gameBoard[randRow][randCol] = (Math.random() < 0.9) ? 2 : 4;
       emptyCells.splice(randIndx, 1);
     }
+  }
+
+  function isNeedAdd() {
+    const result = prevGameBoard.toString() !== gameBoard.flat().toString();
+
+    return result;
   }
 
   function randInt(to = Number.MAX_SAFE_INTEGER, from = 0) {
