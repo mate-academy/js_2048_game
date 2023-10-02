@@ -326,7 +326,7 @@ function isGameOver() {
         || (col > 0 && gameGrid[row][col - 1] === currentTile)
         || (col < gridSize - 1 && gameGrid[row][col + 1] === currentTile)
       ) {
-        ;
+        return;
       }
     }
   }
