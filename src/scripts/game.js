@@ -1,5 +1,4 @@
 'use strict';
-// export class Game {
 
 module.exports = class Game {
   static getRandomNumber(start, end) {

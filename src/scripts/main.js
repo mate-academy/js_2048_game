@@ -1,5 +1,4 @@
 'use strict';
-// import { Game } from './game.js';
 
 const Game = require('./game.js');
 
