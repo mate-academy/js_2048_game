@@ -54,7 +54,9 @@ function createNewCell() {
 
   const [x, y] = emptyCellCoord;
 
-  setCell([y, x], 2);
+  const randomValue = Math.random() < 0.1 ? 4 : 2;
+
+  setCell([y, x], randomValue);
 }
 
 function resetCells(grid) {
