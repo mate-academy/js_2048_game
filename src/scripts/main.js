@@ -1,4 +1,3 @@
-
 import { messageText } from './mesageText';
 
 const message = document.querySelector('.message');
@@ -101,7 +100,7 @@ function setTwoTiles() {
   }
 }
 
-startButton.addEventListener('click', () => {
+function handleStartGame() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       const tile = document.getElementById(`${r}-${c}`);
@@ -122,17 +121,28 @@ startButton.addEventListener('click', () => {
   startButton.classList.remove('start');
   startButton.classList.add('restart');
   startButton.innerText = 'Restart';
-});
+}
 
-document.addEventListener('keyup', (keyEvent) => {
-  if (keyEvent.code === 'ArrowLeft') {
-    slideLeft();
-  } else if (keyEvent.code === 'ArrowRight') {
-    slideRight();
-  } else if (keyEvent.code === 'ArrowUp') {
-    slideUp();
-  } else if (keyEvent.code === 'ArrowDown') {
-    slideDown();
+function handleKeyUpEvent(keyEvent) {
+  switch (keyEvent.code) {
+    case 'ArrowLeft':
+      slideLeft();
+      break;
+
+    case 'ArrowRight':
+      slideRight();
+      break;
+
+    case 'ArrowUp':
+      slideUp();
+      break;
+
+    case 'ArrowDown':
+      slideDown();
+      break;
+
+    default:
+      messageText('wrong-key');
   }
 
   if (tilesMoved) {
@@ -143,7 +153,7 @@ document.addEventListener('keyup', (keyEvent) => {
 
   tilesMoved = false;
   gameScore.innerText = score;
-});
+}
 
 function filterZero(row) {
   return row.filter(currentNumber => currentNumber !== 0);
@@ -193,6 +203,15 @@ function canTilesSlide() {
       }
 
       if (r < rows - 1 && tile === board[r + 1][c]) {
+        return true;
+      }
+
+      if (
+        (c > 0 && tile === board[r][c - 1])
+        || (c < columns - 1 && tile === board[r][c + 1])
+        || (r > 0 && tile === board[r - 1][c])
+        || (r < rows - 1 && tile === board[r + 1][c])
+      ) {
         return true;
       }
     }
@@ -316,3 +335,6 @@ function slideDown() {
     }
   }
 }
+
+startButton.addEventListener('click', handleStartGame);
+document.addEventListener('keyup', handleKeyUpEvent);

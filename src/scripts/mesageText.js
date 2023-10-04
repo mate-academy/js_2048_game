@@ -1,5 +1,11 @@
 const message = document.querySelector('.message');
 
+function hideMesagge() {
+  setTimeout(() => {
+    message.classList.add('hidden');
+  }, 1000);
+}
+
 export function messageText(eventMessage) {
   switch (eventMessage) {
     case 'start': {
@@ -15,6 +21,15 @@ export function messageText(eventMessage) {
       message.classList
         .add('message')
         .add('message-win');
+      break;
+    }
+
+    case 'wrong-key': {
+      message.innerText = 'Wooops wrong key!';
+      message.classList.remove('hidden');
+
+      message.classList.add('message');
+      hideMesagge();
       break;
     }
 
