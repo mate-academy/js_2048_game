@@ -21,6 +21,9 @@ body {
   vertical-align: center;
   user-select: none;
 
+  transition: all 0.2s ease-in-out;
+  // animation: merge-cell 0.3s ease-in-out;
+
   &--2 {
     background: #eee4da;
   }
