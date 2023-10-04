@@ -22,6 +22,7 @@ body {
 }
 
 .game-field {
+  position: relative;
   display: flex;
   background: #bbada0;
   border-spacing: 10px;
