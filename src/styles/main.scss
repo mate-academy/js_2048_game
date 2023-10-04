@@ -10,6 +10,10 @@ body {
   font-weight: 900;
 }
 
+button:focus {
+  outline: none;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -123,6 +127,11 @@ h1 {
   display: flex;
 }
 
+.buttons {
+  display: flex;
+  gap: 8px;
+}
+
 .button {
   border: none;
   border-radius: 5px;
@@ -143,6 +152,17 @@ h1 {
 
   &:hover {
     background: #179921;
+  }
+}
+
+.skip {
+  background: #d6cdc4;
+  color: #776e65;
+  font-size: 20px;
+
+  &:hover {
+    background: #c0a993;
+    color: #f0eded;
   }
 }
 

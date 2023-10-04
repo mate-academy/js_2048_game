@@ -3,10 +3,13 @@ import { messageText } from './mesageText';
 const message = document.querySelector('.message');
 
 const startButton = document.querySelector('#start');
+const skipButton = document.querySelector('#skip');
 
 const gameScore = document.querySelector('.game-score');
 const fieldRows = document.querySelectorAll('.field-row');
-const finalCell = document.querySelector('.field-cell--2048');
+
+let isWon = false;
+let isLose = false;
 
 const rows = 4;
 const columns = 4;
@@ -20,6 +23,16 @@ window.onload = function() {
   messageText('start');
 };
 
+function updateTile(tile, num) {
+  tile.innerText = '';
+  tile.classList.value = 'field-cell';
+
+  if (num > 0) {
+    tile.innerText = num;
+    tile.classList.add(`field-cell--${num}`);
+  }
+}
+
 function setGame() {
   board = [
     [0, 0, 0, 0],
@@ -27,17 +40,6 @@ function setGame() {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
-
-  // eslint-disable-next-line no-shadow
-  function updateTile(tile, num) {
-    tile.innerText = '';
-    tile.classList.value = 'field-cell';
-
-    if (num > 0) {
-      tile.innerText = num;
-      tile.classList.add(`field-cell--${num}`);
-    }
-  }
 
   for (let r = 0; r < fieldRows.length; r++) {
     const fieldRowCells = fieldRows[r].querySelectorAll('.field-cell');
@@ -53,14 +55,18 @@ function setGame() {
 }
 
 function isGameWon() {
+  const finalCell = document.querySelector('.field-cell--2048');
+
   if (finalCell) {
     messageText('win');
+    isWon = true;
   }
 }
 
 function gameOver() {
   if (!canTilesSlide()) {
     messageText('lose');
+    isLose = true;
   }
 }
 
@@ -117,32 +123,59 @@ function handleStartGame() {
   setTwoTiles();
   setTwoTiles();
 
+  isWon = false;
+  isLose = false;
+
   message.classList.value = 'hidden';
+
   startButton.classList.remove('start');
   startButton.classList.add('restart');
   startButton.innerText = 'Restart';
+
+  skipButton.classList.remove('hidden');
+}
+
+function handleSkip() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      const tile = document.getElementById(`${r}-${c}`);
+
+      tile.innerText = '128';
+      tile.classList.value = 'field-cell field-cell--128';
+      board[r][c] = 128;
+    }
+
+    score = 0;
+  }
+
+  isLose = false;
+
+  messageText('skip');
+  skipButton.classList.add('hidden');
 }
 
 function handleKeyUpEvent(keyEvent) {
-  switch (keyEvent.code) {
-    case 'ArrowLeft':
-      slideLeft();
-      break;
+  if (!isWon && !isLose) {
+    switch (keyEvent.code) {
+      case 'ArrowLeft':
+        slideLeft();
+        break;
 
-    case 'ArrowRight':
-      slideRight();
-      break;
+      case 'ArrowRight':
+        slideRight();
+        break;
 
-    case 'ArrowUp':
-      slideUp();
-      break;
+      case 'ArrowUp':
+        slideUp();
+        break;
 
-    case 'ArrowDown':
-      slideDown();
-      break;
+      case 'ArrowDown':
+        slideDown();
+        break;
 
-    default:
-      messageText('wrong-key');
+      default:
+        messageText('wrong-key');
+    }
   }
 
   if (tilesMoved) {
@@ -190,22 +223,6 @@ function canTilesSlide() {
     for (let c = 0; c < columns; c++) {
       const tile = board[r][c];
 
-      if (c > 0 && tile === board[r][c - 1]) {
-        return true;
-      }
-
-      if (c < columns - 1 && tile === board[r][c + 1]) {
-        return true;
-      }
-
-      if (r > 0 && tile === board[r - 1][c]) {
-        return true;
-      }
-
-      if (r < rows - 1 && tile === board[r + 1][c]) {
-        return true;
-      }
-
       if (
         (c > 0 && tile === board[r][c - 1])
         || (c < columns - 1 && tile === board[r][c + 1])
@@ -218,16 +235,6 @@ function canTilesSlide() {
   }
 
   return false;
-}
-
-function updateTile(tile, num) {
-  tile.innerText = '';
-  tile.classList.value = 'field-cell';
-
-  if (num > 0) {
-    tile.innerText = num;
-    tile.classList.add(`field-cell--${num}`);
-  }
 }
 
 function arraysEqual(originalRow, row) {
@@ -337,4 +344,5 @@ function slideDown() {
 }
 
 startButton.addEventListener('click', handleStartGame);
+skipButton.addEventListener('click', handleSkip);
 document.addEventListener('keyup', handleKeyUpEvent);
