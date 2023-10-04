@@ -18,6 +18,7 @@ function startGame() {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
+
   score = 0;
   gameScore.textContent = score;
   addNumbers();
@@ -158,39 +159,6 @@ function canMove(row) {
 
   return false;
 }
-
-// function haveMoves() {
-//   const hasFreeCells = field.some(row => row.some(cell => cell === 0));
-//   let hasMerged = false;
-
-//   for (let x = 0; x < cells - 1; x++) {
-//     for (let y = 0; y < cells; y++) {
-//       if (field[x][y] === field[x][y + 1] && field[x][y] !== 0) {
-//         hasMerged = true;
-//         fieldRows.rows[x].cells[y].classList.add('field-cell--merged');
-//         fieldRows.rows[x].cells[y + 1].classList.add('field-cell--merged');
-//       }
-//     }
-//   }
-
-//   for (let x = 0; x < cells; x++) {
-//     for (let y = 0; y < cells - 1; y++) {
-//       if (field[x][y] === field[x][y + 1] && field[x][y] !== 0) {
-//         hasMerged = true;
-//         fieldRows.rows[x].cells[y].classList.add('field-cell--merged');
-//         fieldRows.rows[x].cells[y + 1].classList.add('field-cell--merged');
-//       }
-//     }
-//   }
-
-//   setTimeout(() => {
-//     document.querySelectorAll('.field-cell--merged').forEach(cell => {
-//       cell.classList.remove('field-cell--merged');
-//     });
-//   }, 300);
-
-//   return hasFreeCells || hasMerged;
-// }
 
 function haveMoves() {
   const hasFreeCells = field.some(row => row.some(cell => cell === 0));

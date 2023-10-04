@@ -21,7 +21,7 @@ body {
   vertical-align: center;
   user-select: none;
 
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
   // animation: merge-cell 0.3s ease-in-out;
 
   &--2 {
@@ -75,22 +75,6 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
-  }
-}
-
-.field-cell--merged {
-  animation: merge-cell 0.3s;
-}
-
-@keyframes merge-cell {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
   }
 }
 
