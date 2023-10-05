@@ -18,6 +18,9 @@ let board;
 let score = 0;
 let tilesMoved = false;
 
+let xDown = null;
+let yDown = null;
+
 window.onload = function() {
   setGame();
   messageText('start');
@@ -152,6 +155,58 @@ function handleSkip() {
 
   messageText('skip');
   skipButton.classList.add('hidden');
+}
+
+function handleTouchStart(evt) {
+  const firstTouch = evt.touches[0];
+
+  xDown = firstTouch.clientX;
+  yDown = firstTouch.clientY;
+}
+
+function handleTouchMove(evt) {
+  if (!xDown || !yDown) {
+    return;
+  }
+
+  const xUp = evt.touches[0].clientX;
+  const yUp = evt.touches[0].clientY;
+
+  const xDiff = xDown - xUp;
+  const yDiff = yDown - yUp;
+
+  if (!isWon && !isLose) {
+    if (Math.abs(xDiff) > Math.abs(yDiff)) {
+      if (xDiff > 0) {
+        slideLeft();
+      } else {
+        slideRight();
+      }
+    } else {
+      if (yDiff > 0) {
+        slideUp();
+      } else {
+        slideDown();
+      }
+    }
+  }
+
+  xDown = null;
+  yDown = null;
+
+  if (tilesMoved) {
+    setTwoTiles();
+    gameOver();
+    isGameWon();
+  }
+
+  tilesMoved = false;
+  gameScore.innerText = score;
+}
+
+function handleTouchEnd() {
+  xDown = null;
+  yDown = null;
 }
 
 function handleKeyUpEvent(keyEvent) {
@@ -346,3 +401,7 @@ function slideDown() {
 startButton.addEventListener('click', handleStartGame);
 skipButton.addEventListener('click', handleSkip);
 document.addEventListener('keyup', handleKeyUpEvent);
+
+document.addEventListener('touchstart', handleTouchStart, false);
+document.addEventListener('touchmove', handleTouchMove, false);
+document.addEventListener('touchend', handleTouchEnd, false);
