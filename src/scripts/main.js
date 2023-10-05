@@ -1,3 +1,5 @@
+'use strict'
+
 const BUTTON_CLASS = 'button';
 const FIELD_ROW_CLASS = 'field-row';
 const FIELD_CELL_CLASS = 'field-cell';
