@@ -20,7 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
-  transition: 300ms ease-in-out background;
+  transition: 0.3s ease-in-out background;
 
   &--2 {
     background: #eee4da;
@@ -205,13 +205,13 @@ h1 {
 }
 
 .scale {
-  animation: scale 250ms ease-in-out;
-  transition: 250ms ease-in-out;
+  animation: scale 0.2s ease-in-out;
+  transition:200ms ease-in-out;
 }
 
 @keyframes scale {
   0% {
-    opacity: 0.1;
+    opacity: 0.5;
     transform: scale(0.1);
   }
 }

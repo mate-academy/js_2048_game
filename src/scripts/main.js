@@ -105,11 +105,7 @@ function updateTile(tile, num) {
   if (num > 0) {
     tile.innerText = num;
 
-    if (num <= 2048) {
-      tile.classList.add(`field-cell--${num}`);
-    } else {
-      tile.classList.add('field-cel--2048');
-    }
+    tile.classList.add(num <= 2048 ? `field-cell--${num}` : 'field-cel--2048');
   }
 }
 
@@ -158,8 +154,12 @@ function setRandomNumber() {
 }
 
 document.addEventListener('keyup', (e) => {
-  if (started && (e.code === 'ArrowLeft' || e.code === 'ArrowRight'
-  || e.code === 'ArrowUp' || e.code === 'ArrowDown')) {
+  if (
+    started && (e.code === 'ArrowLeft'
+    || e.code === 'ArrowRight'
+    || e.code === 'ArrowUp'
+    || e.code === 'ArrowDown')
+  ) {
     changeStart();
   }
 
