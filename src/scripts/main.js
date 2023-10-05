@@ -1,16 +1,19 @@
 'use strict'
 
-const BUTTON_CLASS = 'button';
+const BUTTON_CLASS = '.start';
 const FIELD_ROW_CLASS = 'field-row';
 const FIELD_CELL_CLASS = 'field-cell';
-const GAME_SCORE_CLASS = 'game-score';
-const START_MESSAGE_CLASS = 'message-start';
-const LOSE_MESSAGE_CLASS = 'message-lose';
-const WIN_MESSAGE_CLASS = 'message-win';
+const GAME_SCORE_CLASS = '.game-score';
+const START_MESSAGE_CLASS = '.message-start';
+const LOSE_MESSAGE_CLASS = '.message-lose';
+const WIN_MESSAGE_CLASS = '.message-win';
 const HIDDEN_CLASS = 'hidden';
 
 const RESTART_TEXT = 'Restart';
 const START_TEXT = 'Start';
+
+const RESTART_CLASS = RESTART_TEXT.toLocaleLowerCase();
+const START_CLASS = START_TEXT.toLocaleUpperCase();
 
 const FIELD_SIZE = 4;
 const WIN_SCORE = 2048;
@@ -21,21 +24,17 @@ class BaseClass {
     this.fields = [];
     this.isGameOver = false;
     this.isGameStart = false;
-    this.restartClass = RESTART_TEXT.toLocaleLowerCase();
-    this.startClass = START_TEXT.toLocaleLowerCase();
 
     this.setSelectors();
   }
 
   setSelectors() {
-    this.buttonEl = document.getElementsByClassName(BUTTON_CLASS)[0];
+    this.buttonEl = document.querySelector(BUTTON_CLASS);
     this.fieldRowsEl = document.getElementsByClassName(FIELD_ROW_CLASS);
-    this.gameScoreEl = document.getElementsByClassName(GAME_SCORE_CLASS)[0];
-    this.loseMessageEl = document.getElementsByClassName(LOSE_MESSAGE_CLASS)[0];
-    this.winMessageEl = document.getElementsByClassName(WIN_MESSAGE_CLASS)[0];
-
-    this.startMessageEl
-      = document.getElementsByClassName(START_MESSAGE_CLASS)[0];
+    this.gameScoreEl = document.querySelector(GAME_SCORE_CLASS);
+    this.loseMessageEl = document.querySelector(LOSE_MESSAGE_CLASS);
+    this.winMessageEl = document.querySelector(WIN_MESSAGE_CLASS);
+    this.startMessageEl = document.querySelector(START_MESSAGE_CLASS);
   }
 
   setInitData() {
@@ -56,9 +55,9 @@ class BaseClass {
 
   startGame() {
     this.buttonEl.textContent = RESTART_TEXT;
-    this.buttonEl.classList.remove(this.startClass);
+    this.buttonEl.classList.remove(START_CLASS);
     this.startMessageEl.classList.add(HIDDEN_CLASS);
-    this.buttonEl.classList.add(this.restartClass);
+    this.buttonEl.classList.add(RESTART_CLASS);
 
     this.setRandomNumbers();
     this.setRandomNumbers();
@@ -67,8 +66,8 @@ class BaseClass {
 
   restartGame() {
     this.buttonEl.textContent = START_TEXT;
-    this.buttonEl.classList.remove(this.restartClass);
-    this.buttonEl.classList.add(this.startClass);
+    this.buttonEl.classList.remove(RESTART_CLASS);
+    this.buttonEl.classList.add(START_CLASS);
     this.startMessageEl.classList.remove(HIDDEN_CLASS);
 
     this.setInitData();
@@ -139,6 +138,46 @@ class BaseClass {
 }
 
 class Move extends BaseClass {
+  constructor() {
+    super();
+
+    this.isCellMoved = false;
+  }
+
+  setNewRowValues({ cell, rowIndex, cellIndex, prevCellIndex }) {
+    const value = cell * 2;
+
+    this.fields[rowIndex][prevCellIndex] = value;
+    this.fields[rowIndex][cellIndex] = 0;
+
+    this.score += value;
+  }
+
+  setNewColumnValues({ cell, columnIndex, prevColumnIndex, cellIndex }) {
+    const value = cell * 2;
+
+    this.fields[prevColumnIndex][cellIndex] = value;
+    this.fields[columnIndex][cellIndex] = 0;
+
+    this.score += value;
+  }
+
+  setPrevRowValues({ cell, rowIndex, cellIndex, index }) {
+    this.fields[rowIndex][index] = cell;
+
+    if (index !== cellIndex) {
+      this.fields[rowIndex][cellIndex] = 0;
+    }
+  }
+
+  setPrevColumnValues({ cell, columnIndex, cellIndex, index }) {
+    this.fields[index][cellIndex] = cell;
+
+    if (index !== columnIndex) {
+      this.fields[columnIndex][cellIndex] = 0;
+    }
+  }
+
   goLeft() {
     for (let rowIndex = 0; rowIndex < FIELD_SIZE; rowIndex++) {
       let index = 0;
@@ -151,22 +190,21 @@ class Move extends BaseClass {
           continue;
         }
 
+        if (cell && index === cellIndex && prevCell !== cell) {
+          index++;
+          continue;
+        }
+
         if (index && prevCell === cell) {
-          const value = cell * 2;
-
-          this.fields[rowIndex][index - 1] = value;
-          this.fields[rowIndex][cellIndex] = 0;
-
-          this.score += value;
+          this.setNewRowValues({ cell, rowIndex, cellIndex, prevCellIndex: index - 1 });
         } else {
-          this.fields[rowIndex][index] = cell;
-
-          if (index !== cellIndex) {
-            this.fields[rowIndex][cellIndex] = 0;
-          }
+          this.setPrevRowValues({ cell, rowIndex, cellIndex, index });
           index++;
         }
+
+        this.isCellMoved = true;
       }
+
     }
   }
 
@@ -182,21 +220,19 @@ class Move extends BaseClass {
           continue;
         }
 
+        if (cell && index === cellIndex && prevCell !== cell) {
+          index--;
+          continue;
+        }
+
         if (index !== FIELD_SIZE - 1 && prevCell === cell) {
-          const value = cell * 2;
-
-          this.fields[rowIndex][index + 1] = value;
-          this.fields[rowIndex][cellIndex] = 0;
-
-          this.score += value;
+          this.setNewRowValues({ cell, rowIndex, cellIndex, prevCellIndex: index + 1 });
         } else {
-          this.fields[rowIndex][index] = cell;
-
-          if (index !== cellIndex) {
-            this.fields[rowIndex][cellIndex] = 0;
-          }
+          this.setPrevRowValues({ cell, rowIndex, cellIndex, index });
           index--;
         }
+
+        this.isCellMoved = true;
       }
     }
   }
@@ -207,27 +243,25 @@ class Move extends BaseClass {
 
       for (let columnIndex = 0; columnIndex < FIELD_SIZE; columnIndex++) {
         const cell = this.fields[columnIndex][cellIndex];
-        const prevCell = index ? this.fields[index - 1][cellIndex] : undefined;
+        const prevCell = index ? this.fields[index - 1][cellIndex] : null;
 
         if (!cell) {
           continue;
         }
 
-        if (index && prevCell === cell) {
-          const value = cell * 2;
-
-          this.fields[index - 1][cellIndex] = value;
-          this.fields[columnIndex][cellIndex] = 0;
-
-          this.score += value;
-        } else {
-          this.fields[index][cellIndex] = cell;
-
-          if (index !== columnIndex) {
-            this.fields[columnIndex][cellIndex] = 0;
-          }
-          index += 1;
+        if (cell && index === columnIndex && prevCell !== cell) {
+          index++;
+          continue;
         }
+
+        if (index && prevCell === cell) {
+          this.setNewColumnValues({ cell, columnIndex, prevColumnIndex: index - 1, cellIndex });
+        } else {
+          this.setPrevColumnValues({ cell, columnIndex, cellIndex, index });
+          index++;
+        }
+
+        this.isCellMoved = true;
       }
     }
   }
@@ -235,7 +269,7 @@ class Move extends BaseClass {
   goDown() {
     for (let cellIndex = FIELD_SIZE - 1; cellIndex >= 0; cellIndex--) {
       let index = FIELD_SIZE - 1;
-
+      
       for (let columnIndex = FIELD_SIZE - 1; columnIndex >= 0; columnIndex--) {
         const cell = this.fields[columnIndex][cellIndex];
         const prevCell
@@ -245,21 +279,19 @@ class Move extends BaseClass {
           continue;
         }
 
+        if (cell && index === columnIndex && prevCell !== cell) {
+          index--;
+          continue;
+        }
+
         if (index !== FIELD_SIZE - 1 && prevCell === cell) {
-          const value = cell * 2;
-
-          this.fields[index + 1][cellIndex] = value;
-          this.fields[columnIndex][cellIndex] = 0;
-
-          this.score += value;
+          this.setNewColumnValues({ cell, columnIndex, prevColumnIndex: index + 1, cellIndex });
         } else {
-          this.fields[index][cellIndex] = cell;
-
-          if (index !== columnIndex) {
-            this.fields[columnIndex][cellIndex] = 0;
-          }
+          this.setPrevColumnValues({ cell, columnIndex, cellIndex, index });
           index -= 1;
         }
+
+        this.isCellMoved = true;
       }
     }
   }
@@ -278,6 +310,8 @@ class Game extends Move {
   }
 
   handleKeydown({ key }) {
+    this.isCellMoved = false;
+
     switch (key) {
       case 'ArrowDown':
         this.goDown();
@@ -299,7 +333,7 @@ class Game extends Move {
         return;
     }
 
-    if (!this.isGameOver) {
+    if (!this.isGameOver && this.isCellMoved) {
       this.setRandomNumbers();
       this.updateCells();
       this.updateScore();
