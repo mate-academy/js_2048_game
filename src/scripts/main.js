@@ -1,4 +1,3 @@
-'use strict'
 
 const BUTTON_CLASS = '.start';
 const FIELD_ROW_CLASS = 'field-row';
@@ -196,15 +195,18 @@ class Move extends BaseClass {
         }
 
         if (index && prevCell === cell) {
-          this.setNewRowValues({ cell, rowIndex, cellIndex, prevCellIndex: index - 1 });
+          this.setNewRowValues({
+            cell, rowIndex, cellIndex, prevCellIndex: index - 1,
+          });
         } else {
-          this.setPrevRowValues({ cell, rowIndex, cellIndex, index });
+          this.setPrevRowValues({
+            cell, rowIndex, cellIndex, index,
+          });
           index++;
         }
 
         this.isCellMoved = true;
       }
-
     }
   }
 
@@ -226,9 +228,13 @@ class Move extends BaseClass {
         }
 
         if (index !== FIELD_SIZE - 1 && prevCell === cell) {
-          this.setNewRowValues({ cell, rowIndex, cellIndex, prevCellIndex: index + 1 });
+          this.setNewRowValues({
+            cell, rowIndex, cellIndex, prevCellIndex: index + 1,
+          });
         } else {
-          this.setPrevRowValues({ cell, rowIndex, cellIndex, index });
+          this.setPrevRowValues({
+            cell, rowIndex, cellIndex, index,
+          });
           index--;
         }
 
@@ -255,9 +261,13 @@ class Move extends BaseClass {
         }
 
         if (index && prevCell === cell) {
-          this.setNewColumnValues({ cell, columnIndex, prevColumnIndex: index - 1, cellIndex });
+          this.setNewColumnValues({
+            cell, columnIndex, prevColumnIndex: index - 1, cellIndex,
+          });
         } else {
-          this.setPrevColumnValues({ cell, columnIndex, cellIndex, index });
+          this.setPrevColumnValues({
+            cell, columnIndex, cellIndex, index,
+          });
           index++;
         }
 
@@ -269,7 +279,7 @@ class Move extends BaseClass {
   goDown() {
     for (let cellIndex = FIELD_SIZE - 1; cellIndex >= 0; cellIndex--) {
       let index = FIELD_SIZE - 1;
-      
+
       for (let columnIndex = FIELD_SIZE - 1; columnIndex >= 0; columnIndex--) {
         const cell = this.fields[columnIndex][cellIndex];
         const prevCell
@@ -285,9 +295,13 @@ class Move extends BaseClass {
         }
 
         if (index !== FIELD_SIZE - 1 && prevCell === cell) {
-          this.setNewColumnValues({ cell, columnIndex, prevColumnIndex: index + 1, cellIndex });
+          this.setNewColumnValues({
+            cell, columnIndex, prevColumnIndex: index + 1, cellIndex,
+          });
         } else {
-          this.setPrevColumnValues({ cell, columnIndex, cellIndex, index });
+          this.setPrevColumnValues({
+            cell, columnIndex, cellIndex, index,
+          });
           index -= 1;
         }
 
