@@ -113,20 +113,21 @@ function updateTile(tile, num) {
 }
 
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft') {
-    slideLeft();
-  }
-
-  if (e.code === 'ArrowRight') {
-    slideRight();
-  }
-
-  if (e.code === 'ArrowUp') {
-    slideUp();
-  }
-
-  if (e.code === 'ArrowDown') {
-    slideDown();
+  switch (e.code) {
+    case 'ArrowLeft':
+      slideLeft();
+      break;
+    case 'ArrowRight':
+      slideRight();
+      break;
+    case 'ArrowUp':
+      slideUp();
+      break;
+    case 'ArrowDown':
+      slideDown();
+      break;
+    default:
+      break;
   }
 
   if (tilesMoved) {
