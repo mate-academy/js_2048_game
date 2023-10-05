@@ -4,7 +4,7 @@
   width: 75px;
   height: 75px;
 
-@include onMobile {
+  @include onMobile {
     width: 65px;
     height: 65px;
   }
