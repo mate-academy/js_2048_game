@@ -136,6 +136,10 @@ function handleStartGame() {
   startButton.innerText = 'Restart';
 
   skipButton.classList.remove('hidden');
+
+  setTimeout(() => {
+    skipButton.classList.add('hidden');
+  }, 5000);
 }
 
 function handleSkip() {
