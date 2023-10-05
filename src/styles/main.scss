@@ -145,6 +145,10 @@ h1 {
 .button {
   @extend %block;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   border: none;
   border-radius: 5px;
   cursor: pointer;
