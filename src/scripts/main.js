@@ -353,6 +353,7 @@ startButton.addEventListener('click', function() {
   startButton.innerText = 'Restart';
 });
 
+// eslint-disable-next-line no-shadow
 document.addEventListener('keydown', event => {
   switch (true) {
     case event.key === 'ArrowUp':
