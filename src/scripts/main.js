@@ -1,3 +1,4 @@
+'use strict'
 
 const BUTTON_CLASS = '.start';
 const FIELD_ROW_CLASS = 'field-row';
