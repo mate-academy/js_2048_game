@@ -97,6 +97,24 @@ class BaseClass {
     });
   }
 
+  checkForPossibilityToContinue() {
+    const possibilityToContinue = this.fields.filter((row, rowIndex) => (
+      row.some((cell, cellIndex) => {
+        if (!cell) {
+          return false;
+        }
+
+        const isSameNextCell = cell === row[cellIndex + 1];
+        const isSameCellNextRow
+          = row[rowIndex + 1] && cell === row[rowIndex + 1][cellIndex];
+
+        return isSameNextCell || isSameCellNextRow;
+      })
+    ));
+
+    return possibilityToContinue.length;
+  }
+
   checkIfGameIsOver() {
     const freeRows = this.fields.filter((row) => row.some((cell) => !cell));
     const winFieldsRow = this.fields.filter((row) => row.some((cell) => (
@@ -108,7 +126,7 @@ class BaseClass {
       this.isGameOver = true;
     }
 
-    if (!freeRows.length) {
+    if (!freeRows.length && !this.checkForPossibilityToContinue()) {
       this.loseMessageEl.classList.remove(HIDDEN_CLASS);
       this.isGameOver = true;
     }
