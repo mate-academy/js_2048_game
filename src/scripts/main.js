@@ -20,11 +20,6 @@ const WIN_SCORE = 2048;
 
 class BaseClass {
   constructor() {
-    this.score = 0;
-    this.fields = [];
-    this.isGameOver = false;
-    this.isGameStart = false;
-
     this.setSelectors();
   }
 
@@ -39,6 +34,8 @@ class BaseClass {
 
   setInitData() {
     this.score = 0;
+    this.isGameOver = false;
+    this.isGameStart = false;
 
     this.fields = Array(FIELD_SIZE).fill([]).map(() => (
       Array(FIELD_SIZE).fill(0)
