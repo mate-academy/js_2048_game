@@ -105,8 +105,8 @@ class BaseClass {
         }
 
         const isSameNextCell = cell === row[cellIndex + 1];
-        const isSameCellNextRow
-          = row[rowIndex + 1] && cell === row[rowIndex + 1][cellIndex];
+        const nextRow = this.fields[rowIndex + 1];
+        const isSameCellNextRow = nextRow && cell === nextRow[cellIndex];
 
         return isSameNextCell || isSameCellNextRow;
       })
