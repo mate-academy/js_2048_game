@@ -16,6 +16,13 @@ let score = 0;
 let bestScore = 0;
 let started = false;
 
+const ARROW = {
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+  UP: 'ArrowUp',
+  DOWN: 'ArrowDown',
+};
+
 const getValue = () => Math.random() > 0.1 ? 2 : 4;
 const getIndex = () => Math.floor(Math.random() * side);
 
@@ -155,28 +162,28 @@ function setRandomNumber() {
 
 document.addEventListener('keyup', (e) => {
   if (
-    started && (e.code === 'ArrowLeft'
-    || e.code === 'ArrowRight'
-    || e.code === 'ArrowUp'
-    || e.code === 'ArrowDown')
+    started && (e.code === ARROW.LEFT
+    || e.code === ARROW.RIGHT
+    || e.code === ARROW.UP
+    || e.code === ARROW.DOWN)
   ) {
     changeStart();
   }
 
   switch (e.code) {
-    case 'ArrowLeft':
+    case ARROW.LEFT:
       slideLeft();
       break;
 
-    case 'ArrowRight':
+    case ARROW.RIGHT:
       slideRight();
       break;
 
-    case 'ArrowUp':
+    case ARROW.UP:
       slideUp();
       break;
 
-    case 'ArrowDown':
+    case ARROW.DOWN:
       slideDown();
       break;
   }
