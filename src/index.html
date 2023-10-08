@@ -11,6 +11,9 @@
       <div class="game-header">
         <h1>2048</h1>
         <div class="controls">
+          <p class="info high-score">
+            Best: <span class="best-score">0</span>
+          </p>
           <p class="info">
             Score: <span class="game-score">0</span>
           </p>
@@ -19,7 +22,7 @@
       </div>
 
       <table class="game-field">
-        <tbody>
+        <tbody class="tbody">
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
@@ -53,7 +56,7 @@
       </table>
 
       <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
+        <p class="message message-lose hidden">You lose! <br>Restart the game?</p>
         <p class="message message-win hidden">Winner! Congrats! You did it!</p>
         <p class="message message-start">Press "Start" to begin game. Good luck!</p>
       </div>
