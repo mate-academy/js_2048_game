@@ -12,7 +12,7 @@ let table = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
-  [0, 0, 1024, 1024],
+  [0, 0, 0, 0],
 ];
 
 const tableLength = table.length;
