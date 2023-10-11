@@ -1,25 +1,29 @@
 'use strict';
 
+const ARROW_UP = 'ArrowUp';
+const ARROW_DOWN = 'ArrowDown';
+const ARROW_RIGHT = 'ArrowRight';
+const ARROW_LEFT = 'ArrowLeft';
+
 const game = document.querySelector('.game-field');
 const score = document.querySelector('.game-score');
 const buttonStart = document.querySelector('.start');
-// const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
 const winner = document.querySelector('.message-win');
 let scoreCount = 0;
 let movePass = false;
 let cells = [];
-
-let matrix = [
+const EMPTY_MATRIX = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
 
+let matrix = EMPTY_MATRIX;
+
 buttonStart.addEventListener('click', (e) => {
   messageStart.classList.add('hidden');
-  // messageLose.classList.remove('hidden');
   movePass = true;
 
   if (buttonStart.classList.contains('start')) {
@@ -37,12 +41,7 @@ buttonStart.addEventListener('click', (e) => {
     cells = [];
     cellsGroup();
 
-    matrix = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    matrix = EMPTY_MATRIX;
   }
 
   if (movePass) {
@@ -112,40 +111,26 @@ function setRandomCell() {
   const maxCellValue = Math.max.apply(null, maxCell);
 
   if (maxCellValue >= 2048) {
-    // messageStart.classList.add('hidden');
     winner.classList.remove('hidden');
   }
-
-  // console.log(largestOfFour(matrix))
 }
-
-// function largestOfFour(arr) {
-//   let maxValue;
-//   let arrMax = [];
-
-//   for(let i = 0 ; i < arr.length ; i++){
-//   maxValue = Math.max.apply(null ,arr[i])
-//   arrMax.push(maxValue)
-// }
-//   return  arrMax;
-// }
 
 function handleInput(events) {
   if (movePass) {
     switch (events.key) {
-      case 'ArrowUp':
+      case ARROW_UP:
         moveUp();
         break;
 
-      case 'ArrowDown':
+      case ARROW_DOWN:
         moveDown();
         break;
 
-      case 'ArrowRight':
+      case ARROW_RIGHT:
         moveRigth();
         break;
 
-      case 'ArrowLeft':
+      case ARROW_LEFT:
         moveLeft();
         break;
     }
@@ -219,7 +204,7 @@ function getRandomEmptyCell() {
 
 function sliderCellsInGroup(group) {
   for (let i = 0; i < group.length; i++) {
-    if (isEmpti(group[i])) {
+    if (group[i].isEmpty === true) {
       continue;
     }
 
@@ -229,9 +214,9 @@ function sliderCellsInGroup(group) {
     let j = i - 1;
 
     while (j >= 0
-          && (isEmpti(group[j])
-          || isEmptiForMerg(group[j], cellWithVelue))) {
-      if (isEmptiForMerg(group[j], cellWithVelue)) {
+          && (group[j].isEmpty === true
+          || isEmptyForMerg(group[j], cellWithVelue))) {
+      if (isEmptyForMerg(group[j], cellWithVelue)) {
         scoreCount += matrix[cellWithVelue.x][cellWithVelue.y] * 2;
       }
 
@@ -247,7 +232,7 @@ function sliderCellsInGroup(group) {
 
     matrix[cellWithVelue.x][cellWithVelue.y] = 0;
 
-    replacementIsEmptiValue(cellWithVelue, targetCell);
+    replacementIsEmptyValue(cellWithVelue, targetCell);
 
     matrix[targetCell.x][targetCell.y] += prevValue;
 
@@ -255,24 +240,18 @@ function sliderCellsInGroup(group) {
   }
 }
 
-function replacementIsEmptiValue(cellWithVelue, targetCell) {
-  for (const tile of cells) {
-    if (tile.x === cellWithVelue.x && tile.y === cellWithVelue.y) {
-      tile.isEmpty = true;
-    }
-  }
-
+function replacementIsEmptyValue(cellWithVelue, targetCell) {
   for (const tile of cells) {
     if (tile.x === targetCell.x && tile.y === targetCell.y) {
       tile.isEmpty = false;
     }
+
+    if (tile.x === cellWithVelue.x && tile.y === cellWithVelue.y) {
+      tile.isEmpty = true;
+    }
   }
 }
 
-function isEmpti(tile) {
-  return tile.isEmpty === true;
-}
-
-function isEmptiForMerg(tile, cellWithVelue) {
+function isEmptyForMerg(tile, cellWithVelue) {
   return matrix[tile.x][tile.y] === matrix[cellWithVelue.x][cellWithVelue.y];
 }
