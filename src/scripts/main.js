@@ -111,7 +111,7 @@ function setRandomCell() {
 
   const maxCellValue = Math.max.apply(null, maxCell);
 
-  if (maxCellValue >= 10) {
+  if (maxCellValue >= 2048) {
     // messageStart.classList.add('hidden');
     winner.classList.remove('hidden');
   }
