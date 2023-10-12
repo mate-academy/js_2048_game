@@ -22,12 +22,6 @@ for (let i = 0; i < rowsAmount; i++) {
 }
 
 document.addEventListener('keydown', e => {
-  if (isLost(fieldMatrix)) {
-    looseMessage.classList.remove('hidden');
-
-    return;
-  }
-
   if (e.key === 'ArrowUp') {
     moveUp(fieldMatrix);
   }
@@ -42,6 +36,10 @@ document.addEventListener('keydown', e => {
 
   if (e.key === 'ArrowRight') {
     moveRight(fieldMatrix);
+  }
+
+  if (isLost(fieldMatrix)) {
+    looseMessage.classList.remove('hidden');
   }
 
   if (isWon(fieldMatrix)) {
@@ -78,21 +76,24 @@ mainButton.addEventListener('click', e => {
 function moveUp(field) {
   let isPossible = false;
 
-  for (let i = 1; i < field.length; i++) {
-    for (let j = 0; j < field[i].length; j++) {
-      if (!field[i][j].innerHTML) {
+  for (let i = 0; i < field.length; i++) {
+    let lastDoubledIndex = null;
+
+    for (let j = 1; j < field.length; j++) {
+      if (!field[j][i].innerHTML) {
         continue;
       }
 
-      let prevIndex = i - 1;
+      let upIndex = j - 1;
       let isDoubled = false;
-      let cellScore = field[i][j].innerHTML;
+      let cellScore = field[j][i].innerHTML;
 
-      while (prevIndex >= 0) {
-        const prevCellScore = field[prevIndex][j].innerHTML;
+      while (upIndex >= 0
+          && (upIndex > lastDoubledIndex || lastDoubledIndex === null)) {
+        const upCellScore = field[upIndex][i].innerHTML;
 
-        if ((cellScore === prevCellScore && isDoubled)
-          || (cellScore !== prevCellScore && prevCellScore)) {
+        if ((cellScore === upCellScore && isDoubled)
+          || (cellScore !== upCellScore && upCellScore)) {
           break;
         }
 
@@ -100,20 +101,21 @@ function moveUp(field) {
           isPossible = true;
         }
 
-        if (cellScore === prevCellScore && !isDoubled) {
-          const doubledNumber = (+prevCellScore) + (+cellScore);
+        if (cellScore === upCellScore && !isDoubled) {
+          const doubledNumber = (+upCellScore) + (+cellScore);
 
-          swapCells(field[prevIndex + 1][j]
-            , field[prevIndex][j]
+          swapCells(field[upIndex + 1][i]
+            , field[upIndex][i]
             , doubledNumber);
           cellScore = doubledNumber;
           isDoubled = true;
           scoreInner += doubledNumber;
-          continue;
+          lastDoubledIndex = upIndex;
+        } else {
+          swapCells(field[upIndex + 1][i], field[upIndex][i], cellScore);
         }
 
-        swapCells(field[prevIndex + 1][j], field[prevIndex][j], cellScore);
-        prevIndex--;
+        upIndex--;
       }
     }
   }
@@ -126,18 +128,20 @@ function moveUp(field) {
 function moveDown(field) {
   let isPossible = false;
 
-  for (let i = field.length - 2; i >= 0; i--) {
-    for (let j = 0; j < field[i].length; j++) {
-      if (!field[i][j].innerHTML) {
+  for (let i = 0; i < field.length; i++) {
+    let lastDoubledIndex = null;
+
+    for (let j = field.length - 2; j >= 0; j--) {
+      if (!field[j][i].innerHTML) {
         continue;
       }
 
-      let downIndex = i + 1;
+      let downIndex = j + 1;
       let isDoubled = false;
-      let cellScore = field[i][j].innerHTML;
+      let cellScore = field[j][i].innerHTML;
 
-      while (downIndex <= field.length - 1) {
-        const downCellScore = field[downIndex][j].innerHTML;
+      while (downIndex < (lastDoubledIndex || field.length)) {
+        const downCellScore = field[downIndex][i].innerHTML;
 
         if ((cellScore === downCellScore && isDoubled)
           || (cellScore !== downCellScore && downCellScore)) {
@@ -152,15 +156,16 @@ function moveDown(field) {
           const doubledNumber = (+downCellScore) + (+cellScore);
 
           swapCells(
-            field[downIndex - 1][j], field[downIndex][j], doubledNumber
+            field[downIndex - 1][i], field[downIndex][i], doubledNumber
           );
           cellScore = doubledNumber;
           scoreInner += doubledNumber;
+          lastDoubledIndex = downIndex;
           isDoubled = true;
-          continue;
+        } else {
+          swapCells(field[downIndex - 1][i], field[downIndex][i], cellScore);
         }
 
-        swapCells(field[downIndex - 1][j], field[downIndex][j], cellScore);
         downIndex++;
       }
     }
@@ -175,6 +180,8 @@ function moveLeft(field) {
   let isPossible = false;
 
   for (let i = 0; i < field.length; i++) {
+    let lastDoubledIndex = null;
+
     for (let j = 1; j < field[i].length; j++) {
       if (!field[i][j].innerHTML) {
         continue;
@@ -184,7 +191,8 @@ function moveLeft(field) {
       let isDoubled = false;
       let cellScore = field[i][j].innerHTML;
 
-      while (leftIndex >= 0) {
+      while (leftIndex >= 0
+          && (leftIndex > lastDoubledIndex || lastDoubledIndex === null)) {
         const leftCellScore = field[i][leftIndex].innerHTML;
 
         if ((cellScore === leftCellScore && isDoubled)
@@ -205,10 +213,11 @@ function moveLeft(field) {
           cellScore = doubledNumber;
           isDoubled = true;
           scoreInner += doubledNumber;
-          continue;
+          lastDoubledIndex = leftIndex;
+        } else {
+          swapCells(field[i][leftIndex + 1], field[i][leftIndex], cellScore);
         }
 
-        swapCells(field[i][leftIndex + 1], field[i][leftIndex], cellScore);
         leftIndex--;
       }
     }
@@ -223,6 +232,8 @@ function moveRight(field) {
   let isPossible = false;
 
   for (let i = 0; i < field.length; i++) {
+    let lastDoubledIndex = null;
+
     for (let j = field[i].length - 2; j >= 0; j--) {
       if (!field[i][j].innerHTML) {
         continue;
@@ -232,7 +243,7 @@ function moveRight(field) {
       let isDoubled = false;
       let cellScore = field[i][j].innerHTML;
 
-      while (rightIndex <= field[i].length - 1) {
+      while (rightIndex < (lastDoubledIndex || field[i].length)) {
         const rightCellScore = field[i][rightIndex].innerHTML;
 
         if ((cellScore === rightCellScore && isDoubled)
@@ -253,10 +264,11 @@ function moveRight(field) {
           cellScore = doubledNumber;
           isDoubled = true;
           scoreInner += doubledNumber;
-          continue;
+          lastDoubledIndex = rightIndex;
+        } else {
+          swapCells(field[i][rightIndex - 1], field[i][rightIndex], cellScore);
         }
 
-        swapCells(field[i][rightIndex - 1], field[i][rightIndex], cellScore);
         rightIndex++;
       }
     }
