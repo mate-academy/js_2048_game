@@ -22,6 +22,11 @@ for (let i = 0; i < rowsAmount; i++) {
 }
 
 document.addEventListener('keydown', e => {
+  if (isLost(fieldMatrix)) {
+    looseMessage.classList.remove('hidden');
+    return;
+  }
+
   if (e.key === 'ArrowUp') {
     moveUp(fieldMatrix);
   }
@@ -33,20 +38,16 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') {
     moveLeft(fieldMatrix);
   }
-
+  
   if (e.key === 'ArrowRight') {
     moveRight(fieldMatrix);
-  }
-
-  score.innerText = scoreInner;
-
-  if (isLost(fieldMatrix)) {
-    looseMessage.classList.remove('hidden');
   }
 
   if (isWon(fieldMatrix)) {
     winMessage.classList.remove('hidden');
   }
+  
+  score.innerText = scoreInner;
 });
 
 mainButton.addEventListener('click', e => {
@@ -296,16 +297,12 @@ function isLost(field) {
 }
 
 function isWon(field) {
-  for (let i = 0; i < field.length; i++) {
-    if (field[i].findIndex(cell => {
-      if (cell.innerHTML === WIN_SCORE) {
+  for(let i = 0; i < field.length; i++) {
+    for(let j = 0; j < field[i].length; j++) {
+      if (field[i][j].innerHTML === WIN_SCORE) {
         return true;
       }
-    }) !== -1) {
-      return true;
     }
-
-    return false;
   }
 
   return false;
