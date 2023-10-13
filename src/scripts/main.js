@@ -13,14 +13,14 @@ const winner = document.querySelector('.message-win');
 let scoreCount = 0;
 let movePass = false;
 let cells = [];
-const EMPTY_MATRIX = [
+let isMoved = false;
+
+let matrix = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
-
-let matrix = EMPTY_MATRIX;
 
 buttonStart.addEventListener('click', (e) => {
   messageStart.classList.add('hidden');
@@ -41,7 +41,12 @@ buttonStart.addEventListener('click', (e) => {
     cells = [];
     cellsGroup();
 
-    matrix = EMPTY_MATRIX;
+    matrix = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
   }
 
   if (movePass) {
@@ -135,7 +140,9 @@ function handleInput(events) {
         break;
     }
 
-    setRandomCell();
+    if (isMoved) {
+      setRandomCell();
+    }
     setDataToTable();
   }
 }
@@ -221,7 +228,14 @@ function sliderCellsInGroup(group) {
       }
 
       targetCell = group[j];
+
       j--;
+    }
+
+    if (!targetCell) {
+      isMoved = false;
+    } else {
+      isMoved = true;
     }
 
     const prevValue = matrix[cellWithVelue.x][cellWithVelue.y];
