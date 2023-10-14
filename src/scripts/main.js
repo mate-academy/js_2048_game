@@ -1,11 +1,11 @@
 import { Tile } from './tile.js';
 
 const button = document.querySelector('.button');
-const score = document.querySelector('.game-score');
-const messageWin = document.querySelector('.message-win');
+// const score = document.querySelector('.game-score');
+// const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
-const gameField = document.querySelector('.game-field');
+// const gameField = document.querySelector('.game-field');
 
 function keydownFunction(e) {
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
