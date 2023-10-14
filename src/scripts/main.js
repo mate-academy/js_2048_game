@@ -1,13 +1,14 @@
-'use strict';
+import { Tile } from './tile.js';
 
-const cellsList = document.querySelectorAll('.field-cell');
 const cellsMatrix = fillCellsMatrixWithCells();
 let valuesMatrix = fillValuesMatrix();
+
 const button = document.querySelector('.button');
-const score = document.querySelector('.game-score');
-const messageWin = document.querySelector('.message-win');
+// const score = document.querySelector('.game-score');
+// const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
+const gameField = document.querySelector('.game-field');
 
 function keydownFunction(e) {
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
@@ -20,9 +21,10 @@ function keydownFunction(e) {
     }
   }
 
+  let isCellMoved = false;
+
   switch (e.key) {
     case 'ArrowLeft':
-      let isCellMoved = false;
 
       for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
@@ -94,10 +96,12 @@ function buttonClickFunction() {
 }
 
 function clearField() {
-  cellsList.forEach((cell) => {
-    cell.removeAttribute('class');
-    cell.setAttribute('class', 'field-cell');
-    cell.textContent = '';
+  cellsMatrix.forEach((row) => {
+    row.forEach((cell) => {
+      cell.removeAttribute('class');
+      cell.setAttribute('class', 'field-cell');
+      cell.textContent = '';
+    });
   });
 }
 
@@ -110,6 +114,8 @@ function getCellValue() {
 }
 
 function fillCellsMatrixWithCells() {
+  const cellsList = document.querySelectorAll('.field-cell');
+
   const cellsInARow = 4;
   const cellsCount = cellsList.length;
   const cellsMatrixToReturn = [];

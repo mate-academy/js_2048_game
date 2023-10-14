@@ -75,11 +75,10 @@ body {
   }
 }
 
-.game-cell {
-  
-}
-
 .game-field {
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   position: relative;
   background: #bbada0;
   border-spacing: 10px;
