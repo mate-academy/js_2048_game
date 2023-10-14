@@ -75,7 +75,12 @@ body {
   }
 }
 
+.game-cell {
+  
+}
+
 .game-field {
+  position: relative;
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
