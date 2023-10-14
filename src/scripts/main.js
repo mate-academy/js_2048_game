@@ -1,4 +1,4 @@
-import { Tile } from './tile.js';
+// import { Tile } from './tile.js';
 
 const cellsMatrix = fillCellsMatrixWithCells();
 let valuesMatrix = fillValuesMatrix();
@@ -8,7 +8,7 @@ const button = document.querySelector('.button');
 // const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
-const gameField = document.querySelector('.game-field');
+// const gameField = document.querySelector('.game-field');
 
 function keydownFunction(e) {
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
