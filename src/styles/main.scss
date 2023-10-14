@@ -10,17 +10,20 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
+.field-cell, .tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
   user-select: none;
+}
 
+.field-cell {
   &--2 {
     background: #eee4da;
   }
@@ -75,13 +78,32 @@ body {
   }
 }
 
+.tile {
+  --index-x: 0;
+  --index-y: 0;
+
+  position: absolute;
+  top: calc(10px + (var(--index-y) * (75px + 10px)));
+  left: calc(10px + (var(--index-x) * (75px + 10px)));
+
+  transition: 200ms;
+  animation: show 200ms;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
 .game-field {
+  position: relative;
   display: grid;
   grid-template-rows: repeat(4, 1fr);
   grid-template-columns: repeat(4, 1fr);
-  padding: 5px;
-  gap: 5px;
-  position: relative;
+  padding: 10px;
+  gap: 10px;
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
