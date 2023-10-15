@@ -8,6 +8,7 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  overflow: hidden;
 }
 
 .field-cell,
@@ -98,6 +99,37 @@ body {
   }
 }
 
+.game-score-add {
+  position: absolute;
+  left: 17px;
+  top: 53px;
+  font-size: 16px;
+  color: #60574e;
+  opacity: 0;
+  animation: score-show 1000ms;
+  transition: 200ms;
+}
+
+@keyframes score-show {
+  0% {
+    opacity: 1;
+  }
+
+  20% {
+    opacity: 1;
+    transform: none;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+}
+
 .game-field {
   position: relative;
   display: grid;
@@ -149,6 +181,7 @@ h1 {
 }
 
 .controls {
+  position: relative;
   display: flex;
 }
 
