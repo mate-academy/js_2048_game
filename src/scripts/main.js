@@ -1,210 +1,192 @@
 'use strict';
 
-const gameField = document.querySelector('tbody');
-const button = document.querySelector('.button');
-const gameScore = document.querySelector('.game-score');
-const messageStart = document.querySelector('.message-start');
-const messageLose = document.querySelector('.message-lose');
-const messageWin = document.querySelector('.message-win');
+const score = document.querySelector('.game-score');
+const initializeGameBtn = document.querySelector('.button.start');
+const gameOver = document.querySelector('.message-lose');
+const youWin = document.querySelector('.message-win');
+const startMessage = document.querySelector('.message-start');
+const rows = Array.from(document.querySelectorAll('.field-row'));
+const board = Array(4)
+  .fill(0)
+  .map((x) => Array(4).fill(0));
 
-const cellsInRow = 4;
-let scoreCount = 0;
-let board;
+const KEY_DIRECTIONS = {
+  UP: 'ArrowUp',
+  DOWN: 'ArrowDown',
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+};
 
-button.addEventListener('click', () => {
-  button.classList.replace('start', 'restart');
-  button.innerText = 'Restart';
-  messageStart.classList.add('hidden');
-  messageLose.classList.add('hidden');
-  messageWin.classList.add('hidden');
+function findEmptyCell() {
+  const boardSize = {
+    row: 0,
+    column: 0,
+  };
 
-  startTheGame();
-});
+  do {
+    boardSize.row = Math.floor(Math.random() * 4);
+    boardSize.column = Math.floor(Math.random() * 4);
+  } while (board[boardSize.row][boardSize.column] !== 0);
 
-function hasEmptyTile() {
-  for (let i = 0; i < cellsInRow; i++) {
-    if (board[i].includes(0)) {
-      return true;
+  return boardSize;
+}
+
+function addNumber() {
+  const { row, column } = findEmptyCell();
+
+  board[row][column] = Math.random() < 0.9 ? 2 : 4;
+}
+
+function render() {
+  board.map((row, rowIdx) => {
+    row.map((cell, columnIdx) => {
+      const elem = rows[rowIdx].children[columnIdx];
+
+      if (cell === 0) {
+        elem.textContent = '';
+        elem.classList = 'field-cell';
+      } else {
+        elem.textContent = cell;
+        elem.classList = `field-cell field-cell--${cell}`;
+      }
+    });
+  });
+
+  score.textContent = setScore();
+}
+
+function startGame() {
+  board.map((row) =>
+    row.map((cell, cellIdx, cellArr) => (cellArr[cellIdx] = 0))
+  );
+
+  render();
+  startMessage.classList.add('hidden');
+  initializeGameBtn.classList.remove('start');
+  initializeGameBtn.classList.add('restart');
+  initializeGameBtn.textContent = 'Restart';
+  score.textContent = '0';
+
+  if (!youWin.classList.contains('hidden')) {
+    youWin.classList.add('hidden');
+  }
+
+  if (!gameOver.classList.contains('hidden')) {
+    gameOver.classList.add('hidden');
+  }
+
+  addNumber();
+  addNumber();
+  render();
+}
+
+function setScore() {
+  return board.reduce(
+    (prev, row) => prev + row.reduce((sum, cell) => sum + cell),
+    0
+  );
+}
+
+function normalizeArr(move, initialArray, useReverse = false) {
+  const normalizedArray = [[], [], [], []];
+
+  if (move === KEY_DIRECTIONS.UP || move === KEY_DIRECTIONS.DOWN) {
+    for (let row = 0; row < 4; row++) {
+      for (let column = 0; column < 4; column++) {
+        normalizedArray[column][row] = initialArray[row][column];
+      }
     }
   }
 
-  return false;
-}
-
-function setRandom() {
-  while (hasEmptyTile()) {
-    const randomRow = Math.floor(Math.random() * cellsInRow);
-    const randomCol = Math.floor(Math.random() * cellsInRow);
-
-    if (board[randomRow][randomCol] === 0) {
-      const numb = Math.random() < 0.9 ? 2 : 4;
-
-      board[randomRow][randomCol] = numb;
-      break;
+  if (move === KEY_DIRECTIONS.LEFT || move === KEY_DIRECTIONS.RIGHT) {
+    for (let row = 0; row < 4; row++) {
+      for (let column = 0; column < 4; column++) {
+        normalizedArray[row][column] = initialArray[row][column];
+      }
     }
   }
 
-  setCells();
+  if (
+    useReverse
+    && (move === KEY_DIRECTIONS.RIGHT || move === KEY_DIRECTIONS.DOWN)
+  ) {
+    normalizedArray.map((row) => row.reverse());
+  }
+
+  return normalizedArray;
 }
 
-function startTheGame() {
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+function makeMove(move) {
+  const newArr = normalizeArr(move, board, true);
+  let moveMaded = false;
 
-  scoreCount = 0;
-  gameScore.innerText = scoreCount;
+  newArr.map((row, rowInd) => {
+    const cellsWithData = row.filter((cell) => cell !== 0);
 
-  setRandom();
-  setRandom();
-}
+    cellsWithData.map((cell, cellIdx, cellArr) => {
+      if (cell === cellArr[cellIdx + 1]) {
+        cellArr[cellIdx] *= 2;
+        cellArr.splice(cellIdx + 1, 1);
+        moveMaded = true;
+      }
+    });
+    moveMaded = moveMaded || cellsWithData.length !== 4;
 
-function loseTheGame() {
-  if (hasEmptyTile()) {
+    row.map((cell, cellIdx, cellArr) => {
+      cellArr[cellIdx] = cellsWithData[cellIdx] || 0;
+    });
+  });
+
+  if (!moveMaded) {
     return false;
   }
 
-  for (let r = 0; r < cellsInRow; r++) {
-    for (let c = 0; c < cellsInRow; c++) {
-      if (board[r][c] === board[r][c + 1]) {
-        return false;
+  if (move === KEY_DIRECTIONS.RIGHT || move === KEY_DIRECTIONS.DOWN) {
+    newArr.map((row) => row.reverse());
+  }
+
+  return normalizeArr(move, newArr);
+}
+
+initializeGameBtn.addEventListener('click', startGame);
+
+document.addEventListener('keydown', (pressEvent) => {
+  let anyMovesLeft = board.some((row) => row.some((cell) => cell === 0));
+  const moves = Object.values(KEY_DIRECTIONS);
+
+  const move = moves.includes(pressEvent.key) ? pressEvent.key : '';
+  let receivedArray = [];
+
+  if (move) {
+    receivedArray = makeMove(move);
+
+    if (!receivedArray || !anyMovesLeft) {
+      anyMovesLeft = moves.some((shift) => {
+        if (move === shift) {
+          return false;
+        }
+
+        return !!makeMove(shift);
+      });
+    }
+
+    if (!anyMovesLeft) {
+      gameOver.classList.remove('hidden');
+    }
+
+    if (receivedArray) {
+      board.map((row, rowIdx, rowArr) => {
+        row.map((cell, columnIdx) => {
+          rowArr[rowIdx][columnIdx] = receivedArray[rowIdx][columnIdx];
+        });
+      });
+
+      if (board.some((row) => row.some((cell) => cell === 2048))) {
+        youWin.classList.remove('hidden');
       }
+
+      addNumber();
+      render();
     }
   }
-
-  for (let r = 0; r < cellsInRow - 1; r++) {
-    for (let c = 0; c < cellsInRow; c++) {
-      if (board[r][c] === board[r + 1][c]) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
-function setCells() {
-  for (let r = 0; r < cellsInRow; r++) {
-    for (let c = 0; c < cellsInRow; c++) {
-      const currentCell = gameField.rows[r].cells[c];
-      const num = board[r][c];
-
-      currentCell.innerText = '';
-      currentCell.classList.value = '';
-      currentCell.classList.add('field-cell');
-
-      if (num > 0) {
-        currentCell.innerText = num;
-        currentCell.classList.add(`field-cell--${num}`);
-      }
-
-      if (num === 2048) {
-        messageWin.classList.remove('hidden');
-        button.classList.replace('restart', 'start');
-      }
-    }
-  }
-
-  if (loseTheGame()) {
-    messageLose.classList.remove('hidden');
-  }
-}
-
-function removeEmptyTiles(row) {
-  return row.filter((num) => num !== 0);
-}
-
-function slide(row) {
-  let newRow = removeEmptyTiles(row);
-
-  for (let i = 0; i < newRow.length - 1; i++) {
-    if (newRow[i] === newRow[i + 1]) {
-      newRow[i] *= 2;
-      newRow[i + 1] = 0;
-      scoreCount += newRow[i];
-
-      gameScore.innerText = scoreCount;
-    }
-  }
-
-  newRow = removeEmptyTiles(newRow);
-
-  while (newRow.length < cellsInRow) {
-    newRow.push(0);
-  }
-
-  return newRow;
-}
-
-function slideLeft() {
-  for (let r = 0; r < cellsInRow; r++) {
-    let row = board[r];
-
-    row = slide(row);
-    board[r] = row;
-  }
-}
-
-function slideRight() {
-  for (let r = 0; r < cellsInRow; r++) {
-    let row = board[r].reverse();
-
-    row = slide(row).reverse();
-    board[r] = row;
-  }
-}
-
-function slideUp() {
-  for (let c = 0; c < cellsInRow; c++) {
-    let column = [board[0][c], board[1][c], board[2][c], board[3][c]];
-
-    column = slide(column);
-
-    for (let r = 0; r < cellsInRow; r++) {
-      board[r][c] = column[r];
-    }
-  }
-}
-
-function slideDown() {
-  for (let c = 0; c < cellsInRow; c++) {
-    let column = [board[0][c], board[1][c], board[2][c], board[3][c]].reverse();
-
-    column = slide(column).reverse();
-
-    for (let r = 0; r < cellsInRow; r++) {
-      board[r][c] = column[r];
-    }
-  }
-}
-
-document.addEventListener('keyup', (e) => {
-  e.preventDefault();
-
-  switch (e.code) {
-    case 'ArrowLeft':
-      slideLeft();
-      setRandom();
-      break;
-
-    case 'ArrowRight':
-      slideRight();
-      setRandom();
-      break;
-
-    case 'ArrowUp':
-      slideUp();
-      setRandom();
-      break;
-
-    case 'ArrowDown':
-      slideDown();
-      setRandom();
-      break;
-  }
-
-  setCells();
 });
