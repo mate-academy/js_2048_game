@@ -44,5 +44,7 @@
   "mateAcademy": {
     "projectType": "layoutDOM"
   },
-  "dependencies": {}
+  "dependencies": {
+    "underscore": "^1.13.6"
+  }
 }

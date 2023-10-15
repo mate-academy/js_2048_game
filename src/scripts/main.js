@@ -12,6 +12,7 @@ const game = {
   lose: false,
   process: false,
   firstMove: false,
+  isMoved: false,
   freeCells: 16,
   score: 0,
   gameField: [
@@ -72,24 +73,28 @@ const game = {
     const emptyCoords = [];
     let newPosition;
 
-    this.gameField.map((row, rowIndex) => {
-      row.map((cell, cellIndex) => {
-        if (cell === 0) {
-          emptyCoords.push([rowIndex, cellIndex]);
-        }
+    if (this.isMoved) {
+      this.gameField.map((row, rowIndex) => {
+        row.map((cell, cellIndex) => {
+          if (cell === 0) {
+            emptyCoords.push([rowIndex, cellIndex]);
+          }
+        });
       });
-    });
-
-    this.freeCells = emptyCoords.length - 1;
-
-    if (emptyCoords.length > 0) {
-      newPosition = emptyCoords[this.getRandomIndex(emptyCoords.length - 1)];
-
-      if (probability < 0.1) {
-        this.gameField[newPosition[0]][newPosition[1]] = 4;
-      } else {
-        this.gameField[newPosition[0]][newPosition[1]] = 2;
+  
+      this.freeCells = emptyCoords.length - 1;
+  
+      if (emptyCoords.length > 0) {
+        newPosition = emptyCoords[this.getRandomIndex(emptyCoords.length - 1)];
+  
+        if (probability < 0.1) {
+          this.gameField[newPosition[0]][newPosition[1]] = 4;
+        } else {
+          this.gameField[newPosition[0]][newPosition[1]] = 2;
+        }
       }
+    } else {
+      return
     }
   },
   transpose(matrix) {
@@ -115,33 +120,51 @@ const game = {
     }
   },
   moveRight() {
+    this.isMoved = false;
+
     this.gameField.map(row => {
       const mergedCells = [false, false, false, false];
 
       for (let i = row.length - 1; i > 0; i--) {
-        row.sort((current, prev) => current - 1);
+        row.sort((current, prev) => {
+          if ((current - prev) < 0) {
+            this.isMoved = true;
+          }
 
-        if (row[i] === row[i - 1] && !mergedCells[i]) {
+          return current - prev;
+        });
+
+        if (row[i] === row[i - 1] && !mergedCells[i] && row[i] !== 0) {
           row[i] = row[i - 1] + row[i];
           row[i - 1] = 0;
           mergedCells[i] = true;
           this.score = this.score + row[i];
+          this.isMoved = true;
         }
-      }
+      } 
     });
   },
   moveLeft() {
+    this.isMoved = false;
+
     this.gameField.map(row => {
       const mergedСells = [false, false, false, false];
 
       for (let i = 1; i < row.length; i++) {
-        row.sort((current, prev) => prev - 1);
+        row.sort((current, prev) => {
+          if ((prev - current) < 0) {
+            this.isMoved = true;
+          }
 
-        if (row[i] === row[i - 1] && !mergedСells[i - 1]) {
+          return prev - current;
+        });
+
+        if (row[i] === row[i - 1] && !mergedСells[i - 1] && row[i] > 0) {
           row[i - 1] = row[i - 1] + row[i];
           row[i] = 0;
           mergedСells[i - 1] = true;
           this.score = this.score + row[i - 1];
+          this.isMoved = true;
         }
       }
     });
@@ -158,6 +181,7 @@ body.addEventListener('click', action => {
     buttonElement.disabled = true;
     buttonElement.style.opacity = 0.5;
     game.process = true;
+    game.isMoved = true;
   }
 
   if (action.target.matches('.restart')) {
