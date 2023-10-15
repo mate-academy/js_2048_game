@@ -1,0 +1,65 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-size: 7.5vmin;
+}
+
+#game-board {
+  --grid-cize: 4;
+  --cell-cize: 20vmin;
+  --cell-gap: 2vmin;
+
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cize), var(--cell-cize));
+  grid-template-rows: repeat(var(--grid-cize), var(--cell-cize));
+  gap: var(--cell-gap);
+  background-color: #ccc;
+  border-radius: 1vmin;
+  padding: 2vmin;
+  position: relative;
+}
+
+.cell {
+  background-color: #aaa;
+  border-radius: 1vmin;
+}
+
+.tile {
+  --x: 0;
+  --y: 0;
+  --background-lightness: 80%;
+  --text-lightness: 20%;
+
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--cell-cize);
+  height: var(--cell-cize);
+  border-radius: 1vmin;
+  top: calc(var(--y) * (var(--cell-cize) + var(--cell-gap)) + var(--cell-gap));
+  left: calc(var(--x) * (var(--cell-cize) + var(--cell-gap)) + var(--cell-gap));
+  font-weight: bold;
+  background-color: hsl(200, 50%, var(--background-lightness));
+  color: hsl(200, 25%, var(--text-lightness));
+  animation: show 200ms ease-in-out;
+  transition: 100ms ease-in-out;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
+}
