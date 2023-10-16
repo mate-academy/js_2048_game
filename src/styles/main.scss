@@ -139,6 +139,11 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+
+  &--hidden {
+    cursor: auto;
+    pointer-events: none;
+  }
 }
 
 .start {

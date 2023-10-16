@@ -47,6 +47,7 @@ const game = {
       buttonElement.classList.add('restart');
       buttonElement.textContent = 'Restart';
       buttonElement.disabled = false;
+      buttonElement.classList.remove('button--hidden');
       buttonElement.style.opacity = 1;
       this.firstMove = false;
     }
@@ -178,6 +179,7 @@ body.addEventListener('click', action => {
 
   if (action.target.matches('.start')) {
     startMessage.classList.add('hidden');
+    buttonElement.classList.add('button--hidden');
     buttonElement.disabled = true;
     buttonElement.style.opacity = 0.5;
     game.process = true;
@@ -188,6 +190,7 @@ body.addEventListener('click', action => {
     game.win = false;
     game.lose = false;
     buttonElement.disabled = true;
+    buttonElement.classList.add('button--hidden');
     buttonElement.style.opacity = 0.5;
     game.score = 0;
 
