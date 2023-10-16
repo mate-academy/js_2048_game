@@ -8,19 +8,24 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  overflow: hidden;
 }
 
-.field-cell {
+.field-cell,
+.tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
   user-select: none;
+}
 
+.field-cell {
   &--2 {
     background: #eee4da;
   }
@@ -75,7 +80,63 @@ body {
   }
 }
 
+.tile {
+  --index-x: 0;
+  --index-y: 0;
+
+  position: absolute;
+  top: calc(10px + (var(--index-y) * (75px + 10px)));
+  left: calc(10px + (var(--index-x) * (75px + 10px)));
+
+  transition: 200ms;
+  animation: show 200ms;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+.game-score-add {
+  position: absolute;
+  left: 17px;
+  top: 53px;
+  font-size: 16px;
+  color: #60574e;
+  opacity: 0;
+  animation: score-show 1000ms;
+  transition: 200ms;
+}
+
+@keyframes score-show {
+  0% {
+    opacity: 1;
+  }
+
+  20% {
+    opacity: 1;
+    transform: none;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+}
+
 .game-field {
+  position: relative;
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+  padding: 10px;
+  gap: 10px;
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
@@ -120,6 +181,7 @@ h1 {
 }
 
 .controls {
+  position: relative;
   display: flex;
 }
 
