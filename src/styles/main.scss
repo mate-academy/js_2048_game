@@ -73,6 +73,10 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  &--cell_value {
+    background-color: #179921;
+  }
 }
 
 .game-field {
@@ -135,6 +139,11 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+
+  &--hidden {
+    cursor: auto;
+    pointer-events: none;
+  }
 }
 
 .start {
@@ -179,6 +188,10 @@ h1 {
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
+}
+
+.message-lose {
+  cursor: pointer;
 }
 
 .message-container {
