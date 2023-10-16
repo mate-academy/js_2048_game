@@ -6,8 +6,13 @@ const gameControlsBlock = document.querySelector('.controls');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
+let gameStarted = false;
 
 function keydownFunction(e) {
+  if (!gameStarted) {
+    return null;
+  }
+
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
     if (button.classList.contains('start')) {
       button.classList.remove('start');
@@ -170,14 +175,15 @@ function keydownFunction(e) {
 }
 
 function buttonClickFunction() {
+  gameStarted = true;
+  messageStart.classList.add('hidden');
+
   if (button.classList.contains('restart')) {
     button.classList.remove('restart');
     button.classList.add('start');
     button.textContent = 'Start';
     messageLose.classList.add('hidden');
     messageWin.classList.add('hidden');
-
-    messageStart.classList.remove('hidden');
   }
 
   Tile.clearField();
@@ -188,8 +194,6 @@ function buttonClickFunction() {
 }
 
 window.onload = () => {
-  buttonClickFunction();
-
   let touchStartX, touchStartY;
   let touchEndX, touchEndY;
 
