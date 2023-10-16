@@ -45,9 +45,9 @@ const game = {
     if (this.firstMove) {
       buttonElement.classList.remove('start');
       buttonElement.classList.add('restart');
+      buttonElement.classList.remove('button--hidden');
       buttonElement.textContent = 'Restart';
       buttonElement.disabled = false;
-      buttonElement.classList.remove('button--hidden');
       buttonElement.style.opacity = 1;
       this.firstMove = false;
     }
@@ -82,12 +82,12 @@ const game = {
           }
         });
       });
-  
+
       this.freeCells = emptyCoords.length - 1;
-  
+
       if (emptyCoords.length > 0) {
         newPosition = emptyCoords[this.getRandomIndex(emptyCoords.length - 1)];
-  
+
         if (probability < 0.1) {
           this.gameField[newPosition[0]][newPosition[1]] = 4;
         } else {
@@ -95,7 +95,7 @@ const game = {
         }
       }
     } else {
-      return
+
     }
   },
   transpose(matrix) {
@@ -142,7 +142,7 @@ const game = {
           this.score = this.score + row[i];
           this.isMoved = true;
         }
-      } 
+      }
     });
   },
   moveLeft() {
@@ -187,10 +187,10 @@ body.addEventListener('click', action => {
   }
 
   if (action.target.matches('.restart')) {
+    buttonElement.classList.add('button--hidden');
     game.win = false;
     game.lose = false;
     buttonElement.disabled = true;
-    buttonElement.classList.add('button--hidden');
     buttonElement.style.opacity = 0.5;
     game.score = 0;
 
