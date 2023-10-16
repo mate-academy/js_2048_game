@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Frontend boilerplate based on gulp",
   "main": "index.js",
+  "type": "module",
+  "sourceType": "module",
   "scripts": {
     "init": "mate-scripts init",
     "start": "mate-scripts start",

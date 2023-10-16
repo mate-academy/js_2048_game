@@ -16,13 +16,9 @@ body {
 }
 
 #game-board {
-  --grid-cize: 4;
-  --cell-cize: 20vmin;
-  --cell-gap: 2vmin;
-
   display: grid;
-  grid-template-columns: repeat(var(--grid-cize), var(--cell-cize));
-  grid-template-rows: repeat(var(--grid-cize), var(--cell-cize));
+  grid-template-columns: repeat(var(--grid-size), var(--cell-size));
+  grid-template-rows: repeat(var(--grid-size), var(--cell-size));
   gap: var(--cell-gap);
   background-color: #ccc;
   border-radius: 1vmin;
@@ -36,10 +32,10 @@ body {
 }
 
 .tile {
-  --x: 0;
+  /* --x: 0;
   --y: 0;
   --background-lightness: 80%;
-  --text-lightness: 20%;
+  --text-lightness: 20%; */
 
   position: absolute;
   display: flex;
