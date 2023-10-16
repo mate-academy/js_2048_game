@@ -55,78 +55,66 @@ function randomNumber(size) {
 }
 
 function changeFontSize(el) {
-  el.style.fontSize = '30px';
+  el.style.fontSize = '27px';
 
   setTimeout(() => {
-    el.style.fontSize = '24px';
+    el.style.fontSize = '22px';
   }, 300);
+}
+
+function horizontalShift(callback) {
+  isChanged = false;
+
+  for (const row of rows) {
+    const rowCells = [...row.cells];
+
+    lastMergedCell = -1;
+
+    callback(rowCells);
+  }
+}
+
+function verticalShift(callback) {
+  isChanged = false;
+
+  for (let i = 0; i < rows.length; i += 1) {
+    const columnCells = [
+      rows[0].cells[i],
+      rows[1].cells[i],
+      rows[2].cells[i],
+      rows[3].cells[i],
+    ];
+
+    rowIndex = -1;
+
+    callback(columnCells);
+  }
 }
 
 document.addEventListener('keydown', (e) => {
   switch (e.code) {
     case 'KeyA':
     case 'ArrowLeft':
-      isChanged = false;
-
-      for (const row of rows) {
-        const rowCells = [...row.cells];
-
-        lastMergedCell = -1;
-
-        checkCellLeft(rowCells);
-      }
+      horizontalShift(checkCellLeft);
 
       break;
 
     case 'KeyD':
     case 'ArrowRight':
-      isChanged = false;
-
-      for (const row of rows) {
-        const rowCells = [...row.cells];
-
-        lastMergedCell = -1;
-
-        checkCellRight(rowCells);
-      }
+      horizontalShift(checkCellRight);
 
       break;
 
     case 'KeyW':
     case 'ArrowUp':
-      isChanged = false;
-
-      for (let i = 0; i < rows.length; i += 1) {
-        const columnCells = [
-          rows[0].cells[i],
-          rows[1].cells[i],
-          rows[2].cells[i],
-          rows[3].cells[i],
-        ];
-
-        rowIndex = -1;
-
-        checkCellUp(columnCells);
-      }
+      verticalShift(checkCellUp);
 
       break;
 
     case 'KeyS':
     case 'ArrowDown':
-      isChanged = false;
+      verticalShift(checkCellDown);
 
-      for (let i = 0; i < rows.length; i += 1) {
-        const columnCells = [
-          rows[0].cells[i],
-          rows[1].cells[i],
-          rows[2].cells[i],
-          rows[3].cells[i],
-        ];
-
-        rowIndex = -1;
-
-        checkCellDown(columnCells);
-      }
       break;
 
     default:
@@ -169,7 +157,7 @@ function changeTile(current, previous, mult = 1) {
 
 function checkCellRight(cell) {
   for (let i = cell.length - 1; i >= 0; i -= 1) {
-    if (cell[i].nextElementSibling === null) {
+    if (!cell[i].nextElementSibling) {
       continue;
     }
 
@@ -183,20 +171,21 @@ function checkCellRight(cell) {
 
     while (next.innerHTML.length === 0 && current.innerHTML.length > 0) {
       changeTile(current, next);
+      isChanged = true;
 
-      if (next.nextElementSibling === null) {
+      if (!next.nextElementSibling) {
         break;
       }
 
       current = next;
       next = current.nextElementSibling;
-
-      isChanged = true;
     };
 
-    const isSame = next.innerHTML === current.innerHTML;
+    const canMerge = next.innerHTML === current.innerHTML
+      && next.innerHTML
+      && lastMergedCell !== next.cellIndex;
 
-    if (isSame && next.innerHTML && lastMergedCell !== next.cellIndex) {
+    if (canMerge) {
       changeTile(current, next, 2);
       lastMergedCell = next.cellIndex;
       isChanged = true;
@@ -206,7 +195,7 @@ function checkCellRight(cell) {
 
 function checkCellLeft(cell) {
   for (let i = 1; i < cell.length; i += 1) {
-    if (cell[i].previousElementSibling === null) {
+    if (!cell[i].previousElementSibling) {
       continue;
     }
 
@@ -220,20 +209,21 @@ function checkCellLeft(cell) {
 
     while (previous.innerHTML.length === 0 && current.innerHTML.length > 0) {
       changeTile(current, previous);
+      isChanged = true;
 
-      if (previous.previousElementSibling === null) {
+      if (!previous.previousElementSibling) {
         break;
       }
 
       current = previous;
       previous = current.previousElementSibling;
-
-      isChanged = true;
     };
 
-    const isSame = previous.innerHTML === current.innerHTML;
+    const canMerge = previous.innerHTML === current.innerHTML
+      && previous.innerHTML
+      && lastMergedCell !== previous.cellIndex;
 
-    if (isSame && previous.innerHTML && lastMergedCell !== previous.cellIndex) {
+    if (canMerge) {
       changeTile(current, previous, 2);
       lastMergedCell = previous.cellIndex;
       isChanged = true;
@@ -258,6 +248,7 @@ function checkCellUp(column) {
 
     while (previous.innerHTML.length === 0 && current.innerHTML.length > 0) {
       changeTile(current, previous);
+      isChanged = true;
 
       if (!column[column.indexOf(current) - 2]) {
         break;
@@ -268,13 +259,13 @@ function checkCellUp(column) {
 
       currentRow = previousRow;
       previousRow = rows[rows.indexOf(currentRow) - 1];
-
-      isChanged = true;
     };
 
-    const isSame = previous.innerHTML === current.innerHTML;
+    const canMerge = previous.innerHTML === current.innerHTML
+      && previous.innerHTML
+      && rowIndex !== previousRow.rowIndex;
 
-    if (isSame && previous.innerHTML && rowIndex !== previousRow.rowIndex) {
+    if (canMerge) {
       changeTile(current, previous, 2);
       rowIndex = previousRow.rowIndex;
       isChanged = true;
@@ -299,6 +290,7 @@ function checkCellDown(column) {
 
     while (previous.innerHTML.length === 0 && current.innerHTML.length > 0) {
       changeTile(current, previous);
+      isChanged = true;
 
       if (!column[column.indexOf(current) + 2]) {
         break;
@@ -309,13 +301,13 @@ function checkCellDown(column) {
 
       currentRow = previousRow;
       previousRow = rows[rows.indexOf(currentRow) + 1];
-
-      isChanged = true;
     };
 
-    const isSame = previous.innerHTML === current.innerHTML;
+    const canMerge = previous.innerHTML === current.innerHTML
+      && previous.innerHTML
+      && rowIndex !== previousRow.rowIndex;
 
-    if (isSame && previous.innerHTML && rowIndex !== previousRow.rowIndex) {
+    if (canMerge) {
       changeTile(current, previous, 2);
       rowIndex = previousRow.rowIndex;
       isChanged = true;
@@ -323,7 +315,7 @@ function checkCellDown(column) {
   }
 }
 
-const checkLose = function(rows1) {
+function checkLose(rows1) {
   const loseFlag = [];
 
   for (let r = 0; r < rows1.length; r += 1) {
