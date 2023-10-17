@@ -12,7 +12,7 @@ const messageStart = document.querySelector('.message-start');
 const winner = document.querySelector('.message-win');
 const lose = document.querySelector('.message-lose');
 let scoreCount = 0;
-let movePass = false;
+// let movePass = false;
 let cells = [];
 
 let matrix = [
@@ -24,35 +24,30 @@ let matrix = [
 
 buttonStart.addEventListener('click', (e) => {
   messageStart.classList.add('hidden');
-  movePass = true;
+  // movePass = true;
   lose.classList.add('hidden');
 
   if (buttonStart.classList.contains('start')) {
     buttonStart.classList.replace('start', 'restart');
     buttonStart.innerText = 'Restart';
 
-    setRandomCell();
-    setRandomCell();
-  } else {
-    buttonStart.classList.replace('restart', 'start');
     winner.classList.add('hidden');
-    buttonStart.innerText = 'Start';
-    scoreCount = 0;
-    movePass = false;
-    cells = [];
-    cellsGroup();
-
-    matrix = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
   }
 
-  if (movePass) {
-    document.addEventListener('keydown', handleInput);
-  }
+  scoreCount = 0;
+  cells = [];
+  cellsGroup();
+
+  matrix = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+  setRandomCell();
+  setRandomCell();
+
+  document.addEventListener('keydown', handleInput);
 
   setDataToTable();
 });
@@ -126,48 +121,46 @@ function setupInputOnce() {
 }
 
 function handleInput(events) {
-  if (movePass) {
-    switch (events.key) {
-      case ARROW_UP:
-        if (!canMuveUp()) {
-          return setupInputOnce();
-        }
+  switch (events.key) {
+    case ARROW_UP:
+      if (!canMuveUp()) {
+        return setupInputOnce();
+      }
 
-        moveUp();
-        break;
+      moveUp();
+      break;
 
-      case ARROW_DOWN:
-        if (!canMuveDown()) {
-          return setupInputOnce();
-        }
+    case ARROW_DOWN:
+      if (!canMuveDown()) {
+        return setupInputOnce();
+      }
 
-        moveDown();
-        break;
+      moveDown();
+      break;
 
-      case ARROW_RIGHT:
-        if (!canMuveRigth()) {
-          return setupInputOnce();
-        }
+    case ARROW_RIGHT:
+      if (!canMuveRigth()) {
+        return setupInputOnce();
+      }
 
-        moveRigth();
-        break;
+      moveRigth();
+      break;
 
-      case ARROW_LEFT:
-        if (!canMuveLeft()) {
-          return setupInputOnce();
-        }
+    case ARROW_LEFT:
+      if (!canMuveLeft()) {
+        return setupInputOnce();
+      }
 
-        moveLeft();
-        break;
-    }
-    setRandomCell();
-
-    if (!canMuveUp() && !canMuveDown() && !canMuveLeft() && !canMuveRigth()) {
-      lose.classList.remove('hidden');
-    }
-
-    setDataToTable();
+      moveLeft();
+      break;
   }
+  setRandomCell();
+
+  if (!canMuveUp() && !canMuveDown() && !canMuveLeft() && !canMuveRigth()) {
+    lose.classList.remove('hidden');
+  }
+
+  setDataToTable();
 }
 
 function groupCellsColum() {
