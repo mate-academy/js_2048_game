@@ -12,7 +12,6 @@ const messageStart = document.querySelector('.message-start');
 const winner = document.querySelector('.message-win');
 const lose = document.querySelector('.message-lose');
 let scoreCount = 0;
-// let movePass = false;
 let cells = [];
 
 let matrix = [
@@ -24,7 +23,6 @@ let matrix = [
 
 buttonStart.addEventListener('click', (e) => {
   messageStart.classList.add('hidden');
-  // movePass = true;
   lose.classList.add('hidden');
 
   if (buttonStart.classList.contains('start')) {
@@ -53,7 +51,7 @@ buttonStart.addEventListener('click', (e) => {
 });
 
 function getVelue() {
-  return Math.random() > 0.8 ? 4 : 2;
+  return Math.random() > 0.9 ? 4 : 2;
 }
 
 function setDataToTable() {
