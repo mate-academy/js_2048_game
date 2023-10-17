@@ -10,10 +10,10 @@ const score = document.querySelector('.game-score');
 const buttonStart = document.querySelector('.start');
 const messageStart = document.querySelector('.message-start');
 const winner = document.querySelector('.message-win');
+const lose = document.querySelector('.message-lose');
 let scoreCount = 0;
 let movePass = false;
 let cells = [];
-let isMoved = false;
 
 let matrix = [
   [0, 0, 0, 0],
@@ -25,6 +25,7 @@ let matrix = [
 buttonStart.addEventListener('click', (e) => {
   messageStart.classList.add('hidden');
   movePass = true;
+  lose.classList.add('hidden');
 
   if (buttonStart.classList.contains('start')) {
     buttonStart.classList.replace('start', 'restart');
@@ -120,29 +121,51 @@ function setRandomCell() {
   }
 }
 
+function setupInputOnce() {
+  window.addEventListener('keydown', handleInput, { once: true });
+}
+
 function handleInput(events) {
   if (movePass) {
     switch (events.key) {
       case ARROW_UP:
+        if (!canMuveUp()) {
+          return setupInputOnce();
+        }
+
         moveUp();
         break;
 
       case ARROW_DOWN:
+        if (!canMuveDown()) {
+          return setupInputOnce();
+        }
+
         moveDown();
         break;
 
       case ARROW_RIGHT:
+        if (!canMuveRigth()) {
+          return setupInputOnce();
+        }
+
         moveRigth();
         break;
 
       case ARROW_LEFT:
+        if (!canMuveLeft()) {
+          return setupInputOnce();
+        }
+
         moveLeft();
         break;
     }
+    setRandomCell();
 
-    if (isMoved) {
-      setRandomCell();
+    if (!canMuveUp() && !canMuveDown() && !canMuveLeft() && !canMuveRigth()) {
+      lose.classList.remove('hidden');
     }
+
     setDataToTable();
   }
 }
@@ -193,6 +216,8 @@ function moveRigth() {
     .map(row => [...row].reverse());
 
   sliderTile(groupCellsRowReverse);
+
+  return groupCellsRowReverse;
 }
 
 function sliderTile(groupCell) {
@@ -232,12 +257,6 @@ function sliderCellsInGroup(group) {
       j--;
     }
 
-    if (!targetCell) {
-      isMoved = false;
-    } else {
-      isMoved = true;
-    }
-
     const prevValue = matrix[cellWithVelue.x][cellWithVelue.y];
 
     if (!targetCell) {
@@ -268,4 +287,57 @@ function replacementIsEmptyValue(cellWithVelue, targetCell) {
 
 function isEmptyForMerg(tile, cellWithVelue) {
   return matrix[tile.x][tile.y] === matrix[cellWithVelue.x][cellWithVelue.y];
+}
+
+function canMuveUp() {
+  const groups = groupCellsColum();
+
+  return canMuve(groups);
+}
+
+function canMuveDown() {
+  const groupCells = groupCellsColum();
+
+  const groupCellsColumReverse = groupCells
+    .map(colum => [...colum].reverse());
+
+  return canMuve(groupCellsColumReverse);
+}
+
+function canMuveRigth() {
+  const groupCells = groupCellsRow();
+
+  const groupCellsRowReverse = groupCells
+    .map(row => [...row].reverse());
+
+  return canMuve(groupCellsRowReverse);
+}
+
+function canMuveLeft() {
+  const groups = groupCellsRow();
+
+  return canMuve(groups);
+}
+
+function canMuve(groups) {
+  return groups.some(group => canMuveInGroup(group));
+}
+
+function canMuveInGroup(group) {
+  return group.some((cell, index) => {
+    if (index === 0) {
+      return false;
+    }
+
+    if (cell.isEmpty === true) {
+      return false;
+    }
+
+    const targetCell = group[index - 1];
+
+    setDataToTable();
+
+    return targetCell.isEmpty === true
+      || isEmptyForMerg(cell, targetCell);
+  });
 }
