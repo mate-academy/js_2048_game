@@ -1,45 +1,51 @@
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+# 2048 Game Project
 
-### Task: 2048 game
+## Project Description:
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+This is a simple implementation of the classic 2048 game created using HTML, CSS (with SCSS), and JavaScript. The game provides a grid of cells in which the player can merge numbers to reach the winning score of 2048. The game grid consists of 16 cells, and the player can move the tiles in four directions: up, down, left, and right. After each move, a new tile with a value of either 2 or 4 is added to an empty cell.
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+## Features:
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Reference.
+- Start or restart the game.
+- Move tiles in all four directions.
+- Merge tiles with the same value to increase the score.
+- Keep track of the player's score.
+- Display a win message when the player reaches 2048.
+- Display a lose message when there are no more valid moves.
 
-That's it!
+## Technologies Used
 
-Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) Increase score with each move. The score should be increased by the sum of all merged cells.
+- HTML: For creating the game structure.
+- CSS and SCSS: For styling the game and user interface.
+- JavaScript: For game logic and interactivity.
 
-Hints:
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
+## DEMO Link
+[DEMO LINK](https://HannaVasylieva.github.io/js_2048_game/)
 
-You can change the HTM/CSS layout if you need it.
+## Example
+[EXAMPLE](https://play2048.co/)
 
-![Preview](./src/images/reference.png)
+## Getting Started
+
+To run this project locally, follow these steps:
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) must be installed on your computer. If it's not already installed, download and install it from the official website.
+
+### Clone the Repository
+
+1. Open your terminal or command prompt.
+2. Change the current working directory to the location where you want to store the project.
+3. Clone the repository from GitHub using the following command:
+   ```bash
+   git clone <your-repo-url>
+
+### Install Dependencies
+1. Navigate to the project's directory using the cd command:
+cd your-project-directory
+2. Install project dependencies using npm:
+npm install
+3. Once the dependencies are installed, start the development server with:
+npm start
+4. Your project should now be running locally.
