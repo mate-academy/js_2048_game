@@ -38,6 +38,8 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
+  const firstMask = JSON.stringify(makeSchema());
+
   if (e.key === 'ArrowLeft') {
     move('left');
     merge('left');
@@ -72,7 +74,11 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
-  addRandomNumber();
+  const secondMask = JSON.stringify(makeSchema());
+
+  if (firstMask !== secondMask) {
+    addRandomNumber();
+  }
 
   if (!isPossibleMove()) {
     messageLose.classList.remove('hidden');
