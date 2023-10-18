@@ -9,9 +9,9 @@ let score = 0;
 const rows = 4;
 const columns = 4;
 
-window.onload = function() {
-  setGame();
-};
+// window.onload = function() {
+//   setGame();
+// };
 
 function setGame() {
   board = [
@@ -19,13 +19,6 @@ function setGame() {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
-  ];
-
-  board = [
-    [4, 16, 8, 256],
-    [256, 128, 128, 512],
-    [128, 256, 128, 2],
-    [8, 512, 128, 256],
   ];
 
   for (let r = 0; r < rows; r++) {
@@ -47,6 +40,7 @@ function setGame() {
 
 mainButton.addEventListener('click', e => {
   if (mainButton.classList.contains('start')) {
+    setGame();
     mainButton.classList.remove('start');
     mainButton.classList.add('restart');
     mainButton.innerHTML = 'Restart';
