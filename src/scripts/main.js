@@ -1,7 +1,6 @@
 'use strict';
 
 const mainButton = document.querySelector('.button');
-const rowsAmount = document.querySelectorAll('.field-row').length;
 const looseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
 
@@ -20,6 +19,13 @@ function setGame() {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
+  ];
+
+  board = [
+    [4, 16, 8, 256],
+    [256, 128, 128, 512],
+    [128, 256, 128, 2],
+    [8, 512, 128, 256],
   ];
 
   for (let r = 0; r < rows; r++) {
@@ -47,6 +53,7 @@ mainButton.addEventListener('click', e => {
     document.querySelector('.message-start').classList.add('hidden');
   }
 
+  clearField(board);
   score = 0;
   document.querySelector('.game-score').innerText = score;
 
@@ -58,7 +65,25 @@ mainButton.addEventListener('click', e => {
     winMessage.classList.add('hidden');
   }
 
+  setTwo();
+  setTwo();
 });
+
+function clearField(gameBoard) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      gameBoard[r][c] = 0;
+
+      const newTile = document.getElementById(
+        r.toString() + '-' + c.toString()
+      );
+
+      newTile.classList = '';
+      newTile.innerText = '';
+      newTile.classList.add('tile');
+    }
+  }
+}
 
 function hasEmptyTile() {
   for (let r = 0; r < rows; r++) {
@@ -125,7 +150,51 @@ document.addEventListener('keyup', (e) => {
   }
 
   document.getElementsByClassName('game-score')[0].innerText = score;
+
+  if (isLost(board)) {
+    looseMessage.classList.remove('hidden');
+  }
+
+  if (isWon(board)) {
+    winMessage.classList.remove('hidden');
+  }
 });
+
+function isLost(field) {
+  for (let i = 0; i < field.length; i++) {
+    for (let j = 0; j < field[i].length; j++) {
+      if (field[i][j] === 0) {
+        return false;
+      }
+    }
+  }
+
+  for (let i = 0; i < field.length; i++) {
+    for (let j = 0; j < field[i].length; j++) {
+      const currentCell = field[i][j];
+
+      if (j < field[i].length - 1 && currentCell === field[i][j + 1]) {
+        return false;
+      }
+
+      if (i < field.length - 1 && currentCell === field[i + 1][j]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function isWon(field) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (field[r][c] === 2048) {
+        return true;
+      }
+    }
+  }
+}
 
 function filterZero(row) {
   return row.filter(num => num !== 0);
@@ -220,4 +289,3 @@ function slideDown() {
     }
   }
 }
-
