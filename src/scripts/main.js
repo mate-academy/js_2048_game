@@ -58,19 +58,17 @@ document.addEventListener('keydown', () => {
     nextCell = document.getElementById(`${+row + 1}-${+col}`);
 
     const num = cell.textContent;
-    // const nextNum = nextCell.textContent;
 
     if (row < FIELD.rows.length
       && cell.classList.contains(`field-cell--${num}`)) {
-      // console.log(nextCell);
+      // console.log(nextCell.innerText);
       nextCell.classList.add(`field-cell--${num}`);
       nextCell.innerHTML = `${num}`;
       cell.classList.remove(`field-cell--${num}`);
       cell.innerHTML = '';
     }
     // else if (cell.classList.contains(`field-cell--${num}`)
-    // && num === +nextCell.outerText
-    // && nextCell.outerText) {
+    // && nextCell.classList.contains(`field-cell--${num}`)) {
     //   nextCell.innerHTML = +nextCell.textContent * 2;
     //   cell.classList.remove(`field-cell${num}`);
     //   cell.innerHTML = '';
