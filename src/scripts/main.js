@@ -9,7 +9,7 @@ let score = 0;
 const rows = 4;
 const columns = 4;
 
-window.onload(setGame());
+// window.onload(setGame());
 
 function setGame() {
   board = [
