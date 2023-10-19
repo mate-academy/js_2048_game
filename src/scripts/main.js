@@ -291,8 +291,9 @@ function slideDown() {
 function canMoveUp(field) {
   for (let col = 0; col < 4; col++) {
     for (let row = 1; row < 4; row++) {
-      if (board[row][col] !== 0) {
-        if (board[row - 1][col] === 0 || board[row][col] === board[row - 1][col]) {
+      if (field[row][col] !== 0) {
+        if (field[row - 1][col] === 0
+          || field[row][col] === field[row - 1][col]) {
           return true;
         }
       }
@@ -305,8 +306,9 @@ function canMoveUp(field) {
 function canMoveDown(field) {
   for (let col = 0; col < 4; col++) {
     for (let row = 2; row >= 0; row--) {
-      if (board[row][col] !== 0) {
-        if (board[row + 1][col] === 0 || board[row][col] === board[row + 1][col]) {
+      if (field[row][col] !== 0) {
+        if (field[row + 1][col] === 0
+          || field[row][col] === field[row + 1][col]) {
           return true;
         }
       }
@@ -319,8 +321,9 @@ function canMoveDown(field) {
 function canMoveLeft(field) {
   for (let row = 0; row < 4; row++) {
     for (let col = 1; col < 4; col++) {
-      if (board[row][col] !== 0) {
-        if (board[row][col - 1] === 0 || board[row][col] === board[row][col - 1]) {
+      if (field[row][col] !== 0) {
+        if (field[row][col - 1] === 0
+          || field[row][col] === field[row][col - 1]) {
           return true;
         }
       }
@@ -333,8 +336,9 @@ function canMoveLeft(field) {
 function canMoveRight(field) {
   for (let row = 0; row < 4; row++) {
     for (let col = 2; col >= 0; col--) {
-      if (board[row][col] !== 0) {
-        if (board[row][col + 1] === 0 || board[row][col] === board[row][col + 1]) {
+      if (field[row][col] !== 0) {
+        if (field[row][col + 1] === 0
+          || field[row][col] === field[row][col + 1]) {
           return true;
         }
       }
