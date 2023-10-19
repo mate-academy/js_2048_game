@@ -118,7 +118,6 @@ h1 {
 #board {
   width: 400px;
   height: 400px;
-
   background-color: #cdc1b5;
   border: 6px solid #bbada0;
   margin: 0 auto;
@@ -126,6 +125,7 @@ h1 {
   flex-wrap: wrap;
   border-radius: 1vmin;
 }
+
 
 .tile {
   width: 90px;
@@ -136,7 +136,7 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 2vmin;
+  border-radius: 1vmin;
   animation: show 200ms ease-in-out;
   transition: 100ms ease-in-out;
 }
