@@ -44,7 +44,7 @@ BT_START.addEventListener('click', () => {
 });
 
 let row;
-let cow;
+let col;
 let nextCell;
 
 document.addEventListener('keydown', () => {
@@ -54,8 +54,8 @@ document.addEventListener('keydown', () => {
 
   for (const cell of CELLS) {
     row = cell.getAttribute('id').split('-')[0];
-    cow = cell.getAttribute('id').split('-')[1];
-    nextCell = document.getElementById(`${+row + 1}-${+cow}`);
+    col = cell.getAttribute('id').split('-')[1];
+    nextCell = document.getElementById(`${+row + 1}-${+col}`);
 
     const num = cell.textContent;
     // const nextNum = nextCell.textContent;
