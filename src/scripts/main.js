@@ -154,19 +154,15 @@ document.addEventListener('keyup', (e) => {
   switch (e.key) {
     case 'ArrowLeft':
       slideLeft();
-      setTile();
       break;
     case 'ArrowRight':
       slideRight();
-      setTile();
       break;
     case 'ArrowUp':
       slideUp();
-      setTile();
       break;
     case 'ArrowDown':
       slideDown();
-      setTile();
       break;
   }
 });
@@ -199,6 +195,8 @@ function slide(newRow) {
 }
 
 function slideLeft() {
+  const initialBoard = board.map(row => [...row]);
+
   for (let r = 0; r < rows; r++) {
     let row = board[r];
 
@@ -209,9 +207,15 @@ function slideLeft() {
       updateTile(r, c);
     }
   }
+
+  if (hasChanges(initialBoard, board)) {
+    setTile();
+  }
 }
 
 function slideRight() {
+  const initialBoard = board.map(row => [...row]);
+
   for (let r = 0; r < rows; r++) {
     let row = board[r];
 
@@ -223,9 +227,15 @@ function slideRight() {
       updateTile(r, c);
     }
   }
+
+  if (hasChanges(initialBoard, board)) {
+    setTile();
+  }
 }
 
 function slideUp() {
+  const initialBoard = board.map(row => [...row]);
+
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
 
@@ -236,10 +246,16 @@ function slideUp() {
 
       updateTile(r, c);
     }
+  }
+
+  if (hasChanges(initialBoard, board)) {
+    setTile();
   }
 }
 
 function slideDown() {
+  const initialBoard = board.map(row => [...row]);
+
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
 
@@ -253,4 +269,20 @@ function slideDown() {
       updateTile(r, c);
     }
   }
+
+  if (hasChanges(initialBoard, board)) {
+    setTile();
+  }
+}
+
+function hasChanges(arrayA, arrayB) {
+  for (let i = 0; i < arrayA.length; i++) {
+    for (let j = 0; j < arrayA[i].length; j++) {
+      if (arrayA[i][j] !== arrayB[i][j]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
