@@ -9,10 +9,6 @@ let score = 0;
 const rows = 4;
 const columns = 4;
 
-// window.onload = function() {
-//   setGame();
-// };
-
 function setGame() {
   board = [
     [0, 0, 0, 0],
@@ -130,17 +126,25 @@ function updateTile(tile, num) {
 
 document.addEventListener('keyup', (e) => {
   if (e.code === 'ArrowLeft') {
-    slideLeft();
-    setTwo();
+    if (canMoveLeft(board)) {
+      slideLeft();
+      setTwo();
+    };
   } else if (e.code === 'ArrowRight') {
-    slideRight();
-    setTwo();
+    if (canMoveRight(board)) {
+      slideRight();
+      setTwo();
+    }
   } else if (e.code === 'ArrowUp') {
-    slideUp();
-    setTwo();
+    if (canMoveUp(board)) {
+      slideUp();
+      setTwo();
+    }
   } else if (e.code === 'ArrowDown') {
-    slideDown();
-    setTwo();
+    if (canMoveDown(board)) {
+      slideDown();
+      setTwo();
+    }
   }
 
   document.getElementsByClassName('game-score')[0].innerText = score;
@@ -282,4 +286,60 @@ function slideDown() {
       updateTile(tile, num);
     }
   }
+}
+
+function canMoveUp(field) {
+  for (let col = 0; col < 4; col++) {
+    for (let row = 1; row < 4; row++) {
+      if (board[row][col] !== 0) {
+        if (board[row - 1][col] === 0 || board[row][col] === board[row - 1][col]) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+function canMoveDown(field) {
+  for (let col = 0; col < 4; col++) {
+    for (let row = 2; row >= 0; row--) {
+      if (board[row][col] !== 0) {
+        if (board[row + 1][col] === 0 || board[row][col] === board[row + 1][col]) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+function canMoveLeft(field) {
+  for (let row = 0; row < 4; row++) {
+    for (let col = 1; col < 4; col++) {
+      if (board[row][col] !== 0) {
+        if (board[row][col - 1] === 0 || board[row][col] === board[row][col - 1]) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+function canMoveRight(field) {
+  for (let row = 0; row < 4; row++) {
+    for (let col = 2; col >= 0; col--) {
+      if (board[row][col] !== 0) {
+        if (board[row][col + 1] === 0 || board[row][col] === board[row][col + 1]) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
 }
