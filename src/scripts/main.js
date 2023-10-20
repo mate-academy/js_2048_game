@@ -9,7 +9,7 @@ let score = 0;
 const rows = 4;
 const columns = 4;
 
-// window.onload(setGame());
+window.onload = setGame;
 
 function setGame() {
   board = [
@@ -31,14 +31,10 @@ function setGame() {
       document.getElementById('board').append(tile);
     }
   }
-
-  setTwo();
-  setTwo();
 }
 
 mainButton.addEventListener('click', e => {
   if (mainButton.classList.contains('start')) {
-    setGame();
     mainButton.classList.remove('start');
     mainButton.classList.add('restart');
     mainButton.innerHTML = 'Restart';
