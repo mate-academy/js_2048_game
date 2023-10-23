@@ -20,7 +20,7 @@ const table = document.querySelector('.game-field');
 const trs = [];
 const trsTbody = [...document.querySelector('tbody').children];
 
-trsTbody.map(tr => {
+trsTbody.forEach(tr => {
   trs.push([...tr.children]);
 });
 
