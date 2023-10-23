@@ -160,7 +160,7 @@ function notEmptyTile() {
 
 function notMergeTile() {
   for (const row of table) {
-    for (let i = 0; i < row.length - 1; i++) {
+    for (let i = 0; i < row.length; i++) {
       const tile = row[i];
       const nextTile = row[i + 1];
 
