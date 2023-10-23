@@ -8,7 +8,7 @@
 ### Task: 2048 game
 
 Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+If you are still here, let's do it. 
 
 In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
 Don't play for too long! We need you to write the code!
