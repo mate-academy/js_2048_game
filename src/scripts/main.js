@@ -82,7 +82,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (grid[i + di][j + dj] === 0) {
           grid[i + di][j + dj] = grid[i][j];
           grid[i][j] = 0;
+          // eslint-disable-next-line
           i += di;
+          // eslint-disable-next-line
           j += dj;
           moved = true;
         } else if (grid[i + di][j + dj] === grid[i][j]
