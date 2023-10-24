@@ -30,8 +30,8 @@ button.addEventListener('click', () => {
   } else {
     messageWin.classList.add('hidden');
     won = false;
+    resetFields();
     setGame();
-    clearBoard();
   }
 });
 
@@ -90,6 +90,14 @@ const loseGame = () => {
   }
 
   return true;
+};
+
+const resetFields = () => {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      board[r][c] = 0;
+    }
+  }
 };
 
 const clearBoard = () => {
