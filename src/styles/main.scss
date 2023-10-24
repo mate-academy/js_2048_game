@@ -23,55 +23,84 @@ body {
 
   &--2 {
     background: #eee4da;
+    animation: show 300ms ease-in-out;
+    transition: 100ms ease-in-out;
   }
 
   &--4 {
     background: #ede0c8;
+    animation: show 300ms ease-in-out;
+    transition: 100ms ease-in-out;
   }
 
   &--8 {
+    animation: show 300ms ease-in-out;
+    transition: 100ms ease-in-out;
     background: #f2b179;
     color: #f9f6f2;
   }
 
   &--16 {
+    animation: show 300ms ease-in-out;
+    transition: 100ms ease-in-out;
     background: #f59563;
     color: #f9f6f2;
   }
 
   &--32 {
+    animation: show 300ms ease-in-out;
+    transition: 100ms ease-in-out;
     background: #f67c5f;
     color: #f9f6f2;
   }
 
   &--64 {
+    animation: show 300ms ease-in-out;
+    transition: 100ms ease-in-out;
     background: #f65e3b;
     color: #f9f6f2;
   }
 
   &--128 {
+    animation: show 300ms ease-in-out;
+    transition: 100ms ease-in-out;
     background: #edcf72;
     color: #f9f6f2;
   }
 
   &--256 {
+    animation: show 300ms ease-in-out;
+    transition: 100ms ease-in-out;
     background: #edcc61;
     color: #f9f6f2;
   }
 
   &--512 {
+    animation: show 300ms ease-in-out;
+    transition: 100ms ease-in-out;
     background: #edc850;
     color: #f9f6f2;
   }
 
   &--1024 {
+    animation: show 300ms ease-in-out;
+    transition: 100ms ease-in-out;
     background: #edc53f;
     color: #f9f6f2;
   }
 
   &--2048 {
+    animation: show 300ms ease-in-out;
+    transition: 100ms ease-in-out;
     background: #edc22e;
     color: #f9f6f2;
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: .5;
+    transform: scale(0);
   }
 }
 
