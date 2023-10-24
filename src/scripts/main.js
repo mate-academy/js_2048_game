@@ -7,8 +7,8 @@ const button = document.querySelector('.button');
 const score = document.querySelector('.game-score');
 
 const board = [
-  [1024, 256, 256, 0],
-  [0, 256, 256, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
@@ -17,20 +17,22 @@ const columns = 4;
 let scoreCount = 0;
 let won = false;
 const initialBoard = board.map(row => [...row]);
+let isInitialSetup = true;
 
 button.addEventListener('click', () => {
-  messageStart.classList.add('hidden');
-  button.innerText = 'Restart';
-  button.classList.replace('start', 'restart');
+  if (isInitialSetup) {
+    messageStart.classList.add('hidden');
+    button.innerText = 'Restart';
+    button.classList.replace('start', 'restart');
 
-  setGame();
-});
-
-button.addEventListener('click', e => {
-  messageWin.classList.add('hidden');
-  won = false;
-  setGame();
-  clearBoard();
+    setGame();
+    isInitialSetup = false;
+  } else {
+    messageWin.classList.add('hidden');
+    won = false;
+    setGame();
+    clearBoard();
+  }
 });
 
 const table = document.querySelector('.game-field');
@@ -43,7 +45,7 @@ const setGame = () => {
     for (let c = 0; c < columns; c++) {
       const cell = cells[c];
 
-      cell.setAttribute('id', `${r}-${c}`);
+      cell.setAttribute('id', `row_${r}-column_${c}`);
 
       const number = board[r][c];
 
@@ -72,15 +74,15 @@ const loseGame = () => {
   }
 
   for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
+    for (let c = 0; c < rows; c++) {
       if (board[r][c] === board[r][c + 1]) {
         return false;
       }
     }
   }
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
+  for (let r = 0; r < rows - 1; r++) {
+    for (let c = 0; c < rows; c++) {
       if (board[r][c] === board[r + 1][c]) {
         return false;
       }
@@ -93,7 +95,7 @@ const loseGame = () => {
 const clearBoard = () => {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      const cell = document.getElementById(`${r}-${c}`);
+      const cell = document.getElementById(`row_${r}-column_${c}`);
 
       cell.innerText = '';
       cell.classList.value = '';
@@ -119,7 +121,7 @@ const setCell = () => {
     if (board[row][column] === 0) {
       board[row][column] = 2;
 
-      const cell = document.getElementById(`${row}-${column}`);
+      const cell = document.getElementById(`row_${row}-column_${column}`);
 
       cell.innerText = `${number}`;
       cell.classList.add(`field-cell--${number}`);
@@ -219,7 +221,7 @@ const slideLeft = () => {
     board[r] = row;
 
     for (let c = 0; c < columns; c++) {
-      const cell = document.getElementById(`${r}-${c}`);
+      const cell = document.getElementById(`row_${r}-column_${c}`);
       const number = board[r][c];
 
       updateCell(cell, number);
@@ -241,7 +243,7 @@ const slideRight = () => {
     board[r] = row;
 
     for (let c = 0; c < columns; c++) {
-      const cell = document.getElementById(`${r}-${c}`);
+      const cell = document.getElementById(`row_${r}-column_${c}`);
       const number = board[r][c];
 
       updateCell(cell, number);
@@ -262,7 +264,7 @@ const slideUp = () => {
     for (let r = 0; r < rows; r++) {
       board[r][c] = row[r];
 
-      const cell = document.getElementById(`${r}-${c}`);
+      const cell = document.getElementById(`row_${r}-column_${c}`);
       const number = board[r][c];
 
       updateCell(cell, number);
@@ -285,7 +287,7 @@ const slideDown = () => {
     for (let r = 0; r < rows; r++) {
       board[r][c] = row[r];
 
-      const cell = document.getElementById(`${r}-${c}`);
+      const cell = document.getElementById(`row_${r}-column_${c}`);
       const number = board[r][c];
 
       updateCell(cell, number);
