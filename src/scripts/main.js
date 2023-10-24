@@ -1,5 +1,7 @@
 'use strict';
 
+const MAGIC_NUMBER = 2048;
+
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
@@ -19,21 +21,7 @@ let won = false;
 const initialBoard = board.map(row => [...row]);
 let isInitialSetup = true;
 
-button.addEventListener('click', () => {
-  if (isInitialSetup) {
-    messageStart.classList.add('hidden');
-    button.innerText = 'Restart';
-    button.classList.replace('start', 'restart');
-
-    setGame();
-    isInitialSetup = false;
-  } else {
-    messageWin.classList.add('hidden');
-    won = false;
-    resetFields();
-    setGame();
-  }
-});
+button.addEventListener('click', restartGame);
 
 const table = document.querySelector('.game-field');
 
@@ -57,15 +45,7 @@ const setGame = () => {
 };
 
 const hasEmptyCell = () => {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      if (board[r][c] === 0) {
-        return true;
-      }
-    }
-  }
-
-  return false;
+  return board.some(row => row.some(cell => cell === 0));
 };
 
 const loseGame = () => {
@@ -92,18 +72,12 @@ const loseGame = () => {
   return true;
 };
 
-const resetFields = () => {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      board[r][c] = 0;
-    }
-  }
-};
-
 const clearBoard = () => {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       const cell = document.getElementById(`row_${r}-column_${c}`);
+
+      board[r][c] = 0;
 
       cell.innerText = '';
       cell.classList.value = '';
@@ -127,7 +101,7 @@ const setCell = () => {
     const column = Math.floor(Math.random() * columns);
 
     if (board[row][column] === 0) {
-      board[row][column] = 2;
+      board[row][column] = number;
 
       const cell = document.getElementById(`row_${row}-column_${column}`);
 
@@ -144,7 +118,7 @@ const setCell = () => {
       messageLose.classList.add('hidden');
 
       clearBoard();
-      setGame();
+      restartGame();
     });
   }
 };
@@ -164,7 +138,7 @@ const updateCell = (cell, number) => {
     }
   }
 
-  if (number === 2048) {
+  if (number === MAGIC_NUMBER) {
     messageWin.classList.remove('hidden');
     won = true;
   }
@@ -221,12 +195,42 @@ const slide = (row) => {
   return initialRow;
 };
 
+const slideHorizontal = (row, direction) => {
+  let newRow = [...row];
+
+  if (direction === 'right') {
+    newRow.reverse();
+  }
+
+  newRow = filterZero(newRow);
+
+  for (let i = 0; i < newRow.length - 1; i++) {
+    if (newRow[i] === newRow[i + 1]) {
+      newRow[i] *= 2;
+      newRow[i + 1] = 0;
+      scoreCount += newRow[i];
+    }
+  }
+
+  newRow = filterZero(newRow);
+
+  while (newRow.length < columns) {
+    newRow.push(0);
+  }
+
+  if (direction === 'right') {
+    newRow.reverse();
+  }
+
+  return newRow;
+};
+
 const slideLeft = () => {
   for (let r = 0; r < rows; r++) {
-    let row = board[r];
+    const row = board[r];
+    const newRow = slideHorizontal(row, 'left');
 
-    row = slide(row);
-    board[r] = row;
+    board[r] = newRow;
 
     for (let c = 0; c < columns; c++) {
       const cell = document.getElementById(`row_${r}-column_${c}`);
@@ -243,12 +247,10 @@ const slideLeft = () => {
 
 const slideRight = () => {
   for (let r = 0; r < rows; r++) {
-    let row = board[r];
+    const row = board[r];
+    const newRow = slideHorizontal(row, 'right');
 
-    row.reverse();
-    row = slide(row);
-    row.reverse();
-    board[r] = row;
+    board[r] = newRow;
 
     for (let c = 0; c < columns; c++) {
       const cell = document.getElementById(`row_${r}-column_${c}`);
@@ -318,3 +320,26 @@ const hasChanges = (arrayA, arrayB) => {
 
   return false;
 };
+
+button.removeEventListener('click', restartGame);
+
+function restartGame() {
+  messageWin.classList.add('hidden');
+  won = false;
+  clearBoard();
+  setGame();
+}
+
+if (isInitialSetup) {
+  messageStart.classList.add('hidden');
+  button.innerText = 'Restart';
+  button.classList.replace('start', 'restart');
+
+  setGame();
+  isInitialSetup = false;
+} else {
+  messageWin.classList.add('hidden');
+  won = false;
+  clearBoard();
+  setGame();
+}
