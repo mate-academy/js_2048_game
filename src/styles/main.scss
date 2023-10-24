@@ -73,6 +73,16 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  &--4096 {
+    background: #fe3d3d;
+    color: #f9f6f2;
+  }
+
+  &--8192 {
+    background: #ff2020;
+    color: #f9f6f2;
+  }
 }
 
 .game-field {
@@ -143,6 +153,10 @@ h1 {
 
   &:hover {
     background: #179921;
+  }
+
+  &:focus {
+    outline: none;
   }
 }
 
