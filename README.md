@@ -7,6 +7,8 @@ With each addition  score incresses by this amound and writed in the header.
 If you created a tile with the number 2048 - you will win.
 If you don't have free cells and ability to move - you will lose.
 
+All helper functions have been moved to the appropriate folder.
+
 ## DEMO LINK:
 https://Soi4An.github.io/js_2048_game/
 
