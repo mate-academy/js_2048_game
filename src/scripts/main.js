@@ -336,16 +336,19 @@ function restartGame() {
   setGame();
 }
 
-if (isInitialSetup) {
-  messageStart.classList.add('hidden');
-  button.innerText = 'Restart';
-  button.classList.replace('start', 'restart');
+button.addEventListener('click', () => {
+  if (isInitialSetup) {
+    messageStart.classList.add('hidden');
+    button.innerText = 'Restart';
+    button.classList.replace('start', 'restart');
 
-  setGame();
-  isInitialSetup = false;
-} else {
-  messageWin.classList.add('hidden');
-  won = false;
-  clearBoard();
-  setGame();
+    setGame();
+    isInitialSetup = false;
+  } else {
+    messageWin.classList.add('hidden');
+    won = false;
+    clearBoard();
+    setGame();
+  }
 }
+);
