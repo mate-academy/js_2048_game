@@ -237,7 +237,17 @@ document.addEventListener('keydown', e => {
       break;
     }
 
+    case 'ArrowLeft': {
+      moveHorizontally(left);
+      break;
+    }
+
     case 'd': {
+      moveHorizontally(right);
+      break;
+    }
+
+    case 'ArrowRight': {
       moveHorizontally(right);
       break;
     }
@@ -247,7 +257,17 @@ document.addEventListener('keydown', e => {
       break;
     }
 
+    case 'ArrowUp': {
+      moveVertically(up);
+      break;
+    }
+
     case 's': {
+      moveVertically(down);
+      break;
+    }
+
+    case 'ArrowDown': {
       moveVertically(down);
       break;
     }
@@ -262,69 +282,6 @@ function loseCheck() {
     }
   }
 }
-
-// const gameTable = document.querySelector('.game-field');
-
-// let touchStartX = 0;
-// let touchStartY = 0;
-
-// document.addEventListener('touchmove', (e) => {
-//   e.preventDefault();
-// });
-
-// gameTable.addEventListener('touchmove', (e) => {
-//   e.preventDefault();
-// });
-
-// gameTable.addEventListener('touchstart', (e) => {
-//   touchStartX = e.touches[0].clientX;
-//   touchStartY = e.touches[0].clientY;
-// });
-
-// gameTable.addEventListener('touchend', (e) => {
-//   const touchEndX = e.changedTouches[0].clientX;
-//   const touchEndY = e.changedTouches[0].clientY;
-//   const touchDiffX = touchEndX - touchStartX;
-//   const touchDiffY = touchEndY - touchStartY;
-//   const breakPoint = 50;
-
-//   if (Math.abs(touchDiffX) > Math.abs(touchDiffY)) {
-//     if (touchDiffX > breakPoint) {
-//       moveHorizontally(right);
-//       loseCheck();
-//     } else if (touchDiffX < -1 * breakPoint) {
-//       moveHorizontally(left);
-//       loseCheck();
-//     } else if (touchDiffY > breakPoint) {
-//       moveVertically(down);
-//       loseCheck();
-//     } else if (touchDiffY < -1 * breakPoint) {
-//       moveVertically(up);
-//       loseCheck();
-//     }
-
-//     switch (true) {
-//       case (touchDiffX > breakPoint):
-//         moveHorizontally(right);
-//         break;
-//       case (touchDiffX < -1 * breakPoint):
-//         moveHorizontally(left);
-//         break;
-//       case (touchDiffY > breakPoint):
-//         moveVertically(down);
-//         break;
-//       case (touchDiffY < -1 * breakPoint):
-//         moveVertically(up);
-//         break;
-//       default: return 0;
-//     }
-//     loseCheck();
-//   }
-// });
-
-// document.addEventListener('touchmove', (e) => {
-//   e.preventDefault();
-// });
 
 function updateGameFields() {
   for (let i = 0; i < fields.length; i++) {
