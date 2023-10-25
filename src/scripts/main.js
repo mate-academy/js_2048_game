@@ -25,6 +25,15 @@ function updateBoard() {
       const number = matrix[i][j];
       const cell = gameField.rows[i].cells[j];
 
+      if (number === 2048) {
+        messageWin.classList.remove('hidden');
+        gameField.classList.add('game-over');
+
+        return;
+      } else {
+        messageWin.classList.add('hidden');
+        gameField.classList.remove('game-over');
+      }
       cell.textContent = '';
       cell.classList.value = '';
       cell.classList.add('field-cell');
@@ -39,7 +48,6 @@ function updateBoard() {
 
 startButton.addEventListener('click', () => {
   if (startButton.classList.contains('restart')) {
-    // Якщо кнопка має клас "restart", очистити всі клітинки
     startButton.classList.remove('restart');
     startButton.textContent = 'Start';
     score = 0;
@@ -56,7 +64,7 @@ startButton.addEventListener('click', () => {
     startButton.textContent = 'Restart';
     messageLose.classList.add('hidden');
     messageStart.classList.add('hidden');
-    messageWin.classList.add('hidden');
+
     score = 0;
     gameScore.textContent = score;
 
@@ -114,8 +122,6 @@ function canMerge() {
 
       if (c < numCols - 1 && matrix[r][c] === matrix[r][c + 1]) {
         return true;
-      } else if (matrix[r][c] === 2048) {
-        return messageWin.classList.remove('hidden');
       }
     }
   }
@@ -125,9 +131,12 @@ function canMerge() {
 
 document.addEventListener('keydown', (movement) => {
   const key = movement.key;
+  const originalMatrix = JSON.parse(JSON.stringify(matrix));
 
-  if (!hasEmptyCell() && !canMerge()) {
-    return messageLose.classList.remove('hidden');
+  if (!hasEmptyCell() && !canMerge() && key.startsWith('Arrow')) {
+    messageLose.classList.remove('hidden');
+
+    return;
   }
 
   switch (key) {
@@ -146,10 +155,15 @@ document.addEventListener('keydown', (movement) => {
     default:
   }
 
-  gameScore.textContent = score;
-  startButton.classList.add('restart');
-  startButton.textContent = 'Restart';
-  generateRandomCells();
+  if (JSON.stringify(matrix) !== JSON.stringify(originalMatrix)) {
+    gameScore.textContent = score;
+    messageLose.classList.add('hidden');
+    messageStart.classList.add('hidden');
+    startButton.classList.add('restart');
+    startButton.textContent = 'Restart';
+    gameField.classList.remove('game-over');
+    generateRandomCells();
+  }
 });
 
 function moveUp() {
