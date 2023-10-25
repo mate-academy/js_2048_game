@@ -170,7 +170,7 @@ function notMergeTile() {
     }
   }
 
-  for (let j = 0; j < 3; j++) {
+  for (let j = 0; j < 4; j++) {
     for (let k = 0; k < 3; k++) {
       const tile = table[k][j];
       const nextRowTile = table[k + 1][j];
