@@ -4,79 +4,82 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #7f6373;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #b1a4a8;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #b1a4a8;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  // vertical-align: center;
   user-select: none;
+  transition: 100ms;
 
   &--2 {
     background: #eee4da;
+    color: #706577;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #ebcbdc;
+    color: #706577;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #f0b9db;
+    color: #706577;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: #f0a3e0;
+    color: #706577;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #f074e2;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
+    background: #f25ec1;
     color: #f9f6f2;
   }
 
   &--128 {
-    background: #edcf72;
+    background: #f449a8;
     color: #f9f6f2;
   }
 
   &--256 {
-    background: #edcc61;
+    background: #c34789;
     color: #f9f6f2;
   }
 
   &--512 {
-    background: #edc850;
+    background: #ed506b;
     color: #f9f6f2;
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #ed3f3f;
     color: #f9f6f2;
   }
 
   &--2048 {
-    background: #edc22e;
+    background: #ac2039;
     color: #f9f6f2;
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: #8a7d8f;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -91,7 +94,7 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background: #ac2039;
   color: #f9f6f2;
   width: 75px;
   height: 75px;
@@ -109,7 +112,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: rgb(222, 175, 200);
   width: 75px;
   height: 75px;
   border-radius: 5px;
@@ -147,7 +150,7 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #9e4141;
 
   &:hover {
     background: #f87474;
