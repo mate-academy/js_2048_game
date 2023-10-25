@@ -1,6 +1,12 @@
 'use strict';
 
-const MAGIC_NUMBER = 2048;
+const WINNER_SCORE = 2048;
+const ARROW = {
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+  UP: 'ArrowUp',
+  DOWN: 'ArrowDown',
+};
 
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
@@ -138,7 +144,7 @@ const updateCell = (cell, number) => {
     }
   }
 
-  if (number === MAGIC_NUMBER) {
+  if (number === WINNER_SCORE) {
     messageWin.classList.remove('hidden');
     won = true;
   }
@@ -152,16 +158,16 @@ document.addEventListener('keyup', arrow => {
   }
 
   switch (arrow.key) {
-    case 'ArrowLeft':
+    case ARROW.LEFT:
       slideLeft();
       break;
-    case 'ArrowRight':
+    case ARROW.RIGHT:
       slideRight();
       break;
-    case 'ArrowUp':
+    case ARROW.UP:
       slideUp();
       break;
-    case 'ArrowDown':
+    case ARROW.DOWN:
       slideDown();
       break;
     default:
