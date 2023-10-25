@@ -130,7 +130,7 @@ h1 {
   color: #f9f6f2;
   font-family: sans-serif;
   font-weight: 700;
-  font-size: 16px;
+
   width: 75px;
   height: 75px;
 
@@ -147,6 +147,7 @@ h1 {
 }
 
 .restart {
+  font-size: 18px;
   background: #f1b2b2;
 
   &:hover {
@@ -184,4 +185,9 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.game-over {
+  pointer-events: none;
+  opacity: 0.5;
 }
