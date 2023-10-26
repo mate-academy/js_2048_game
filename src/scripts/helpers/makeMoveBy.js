@@ -1,8 +1,7 @@
-
 import { moveCell } from './moveCell';
 import { quantityRows, quantityCols, board, trs } from '../main';
 
-export const realizeAlgorithmBy = (
+export const makeMoveBy = (
   firstLoopParamIsRow, secondLoopIsIncrease,
 ) => {
   switch (true) {

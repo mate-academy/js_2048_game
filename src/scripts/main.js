@@ -3,7 +3,7 @@ import { checkLose } from './helpers/checkLose';
 import { createCleanBoard } from './helpers/createCleanBoard';
 import { resetBeforeMove, afterMove } from './helpers/beforeAfterMove';
 import { addNewTile } from './helpers/addNewTile';
-import { makeMove } from './helpers/makeMove';
+import { makeMoveBy } from './helpers/makeMoveBy';
 
 export const rows = 4;
 export const cols = 4;
@@ -60,34 +60,38 @@ button.addEventListener('click', () => {
     messageStart.innerText = 'Press "Restart" to new game';
     addEventsKeyboard();
   }
+
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
+  messageStart.classList.remove('hidden');
 });
 
 function addEventsKeyboard() {
   document.addEventListener('keyup', e => {
     if (e.code === 'ArrowLeft') {
       resetBeforeMove();
-      makeMove(true, true);
+      makeMoveBy(true, true);
       afterMove();
       checkLose();
     }
 
     if (e.code === 'ArrowRight') {
       resetBeforeMove();
-      makeMove(true, false);
+      makeMoveBy(true, false);
       afterMove();
       checkLose();
     }
 
     if (e.code === 'ArrowDown') {
       resetBeforeMove();
-      makeMove(false, false);
+      makeMoveBy(false, false);
       afterMove();
       checkLose();
     }
 
     if (e.code === 'ArrowUp') {
       resetBeforeMove();
-      makeMove(false, true);
+      makeMoveBy(false, true);
       afterMove();
       checkLose();
     }
