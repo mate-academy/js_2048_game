@@ -10,6 +10,7 @@ const messageWin = document.querySelector('.message-win');
 const cellsInRow = 4;
 let scoreCount = 0;
 let board;
+let move;
 
 button.addEventListener('click', () => {
   button.classList.replace('start', 'restart');
@@ -136,7 +137,23 @@ function slide(row) {
     newRow.push(0);
   }
 
-  return newRow;
+  if (hasFieldChanged(row, newRow)) {
+    move = true;
+
+    return newRow;
+  }
+
+  return row;
+}
+
+function hasFieldChanged(oldrow, second) {
+  for (let c = 0; c < cellsInRow; c++) {
+    if (oldrow[c] !== second[c]) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function slideLeft() {
@@ -183,26 +200,41 @@ function slideDown() {
 
 document.addEventListener('keyup', (e) => {
   e.preventDefault();
+  move = '';
 
   switch (e.code) {
     case 'ArrowLeft':
       slideLeft();
-      setRandom();
+
+      if (move) {
+        setRandom();
+      }
+
       break;
 
     case 'ArrowRight':
       slideRight();
-      setRandom();
+
+      if (move) {
+        setRandom();
+      }
       break;
 
     case 'ArrowUp':
       slideUp();
-      setRandom();
+
+      if (move) {
+        setRandom();
+      }
       break;
 
     case 'ArrowDown':
       slideDown();
-      setRandom();
+
+      if (move) {
+        setRandom();
+      }
+
       break;
   }
 
