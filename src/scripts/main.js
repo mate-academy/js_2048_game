@@ -32,6 +32,7 @@ function startGame() {
   score.innerHTML = scoreCount;
 
   createCell();
+  createCell();
 }
 
 function createCell() {
@@ -184,26 +185,85 @@ document.addEventListener('keydown', (e) => {
 
   switch (e.code) {
     case 'ArrowLeft':
-      slideLeft();
-      createCell();
+      if (canSlideLeft()) {
+        slideLeft();
+        createCell();
+      }
       break;
 
     case 'ArrowRight':
-      slideRight();
-      createCell();
+      if (canSlideRight()) {
+        slideRight();
+        createCell();
+      }
       break;
 
     case 'ArrowUp':
-      slideUp();
-      createCell();
+      if (canSlideUp()) {
+        slideUp();
+        createCell();
+      }
       break;
 
     case 'ArrowDown':
-      slideDown();
-      createCell();
+      if (canSlideDown()) {
+        slideDown();
+        createCell();
+      }
       break;
   }
 
   renderCells();
 });
 
+function canSlideLeft() {
+  for (let r = 0; r < CELLS_IN_ROW; r++) {
+    for (let c = 1; c < CELLS_IN_ROW; c++) {
+      if (field[r][c] !== 0 && (field[r][c - 1] === 0
+          || field[r][c - 1] === field[r][c])) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function canSlideRight() {
+  for (let r = 0; r < CELLS_IN_ROW; r++) {
+    for (let c = CELLS_IN_ROW - 2; c >= 0; c--) {
+      if (field[r][c] !== 0 && (field[r][c + 1]
+          === 0 || field[r][c + 1] === field[r][c])) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function canSlideUp() {
+  for (let c = 0; c < CELLS_IN_ROW; c++) {
+    for (let r = 1; r < CELLS_IN_ROW; r++) {
+      if (field[r][c] !== 0 && (field[r - 1][c]
+          === 0 || field[r - 1][c] === field[r][c])) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function canSlideDown() {
+  for (let c = 0; c < CELLS_IN_ROW; c++) {
+    for (let r = CELLS_IN_ROW - 2; r >= 0; r--) {
+      if (field[r][c] !== 0 && (field[r + 1][c]
+          === 0 || field[r + 1][c] === field[r][c])) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
