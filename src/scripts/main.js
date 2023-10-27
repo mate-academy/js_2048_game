@@ -22,9 +22,9 @@ const COLUMNS = 4;
 
 let board = [];
 let score = 0;
-let lose = false;
-let won = false;
-let init = false;
+let isLose = false;
+let isWon = false;
+let isInit = false;
 
 function loseGame() {
   for (let row = 0; row < ROWS; row++) {
@@ -33,8 +33,9 @@ function loseGame() {
         return false;
       }
 
-      if (board[row][column + 1] !== undefined
-        && board[row][column] === board[row][column + 1]) {
+      const nextColumn = board[row][column + 1];
+
+      if (nextColumn !== undefined && board[row][column] === nextColumn) {
         return false;
       }
     }
@@ -42,8 +43,9 @@ function loseGame() {
 
   for (let column = 0; column < COLUMNS; column++) {
     for (let row = 0; row < ROWS - 1; row++) {
-      if (board[row + 1][column] !== undefined
-        && board[row][column] === board[row + 1][column]) {
+      const nextRow = board[row + 1][column];
+
+      if (nextRow !== undefined && board[row][column] === nextRow) {
         return false;
       }
     }
@@ -94,8 +96,8 @@ function transposeMatrix(arr, columnCount, rowsCount) {
 }
 
 function wonGame() {
-  won = true;
-  init = false;
+  isWon = true;
+  isInit = false;
   WIN_MESSAGE.classList.remove('hidden');
 }
 
@@ -114,8 +116,8 @@ function setNewCell() {
   }
 
   if (loseGame()) {
-    lose = true;
-    init = false;
+    isLose = true;
+    isInit = false;
     LOSE_MESSAGE.classList.remove('hidden');
   }
 }
@@ -149,9 +151,9 @@ function initGame() {
   WIN_MESSAGE.classList.add('hidden');
   SCORE.textContent = 0;
 
-  init = true;
-  lose = false;
-  won = false;
+  isInit = true;
+  isLose = false;
+  isWon = false;
   score = 0;
 
   board = [
@@ -288,7 +290,7 @@ function moveLeft() {
 document.addEventListener('keydown', (e) => {
   e.preventDefault();
 
-  if (!init || lose || won) {
+  if (!isInit || isLose || isWon) {
     return;
   }
 
