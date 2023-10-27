@@ -1,70 +1,98 @@
 'use strict';
 
-let isStarted = false;
+const allCells = [...document.querySelectorAll('.field-cell')];
 
-const allCells = document.querySelectorAll('.field-cell');
-const startButton = document.querySelector('.button.start');
+function createFieldCell(
+  cellWeight = Math.random() <= 0.2 ? 4 : 2
+) {
+  const filledCell = document.createElement('div');
 
-function getRandomCells(cells, amount = 1) {
+  filledCell.classList.add('cell', `cell--${cellWeight}`);
+  filledCell.textContent = `${cellWeight}`;
+
+  return filledCell;
+}
+
+function getAllFreeCells() {
+  return allCells.filter(cell => !cell.hasChildNodes());
+}
+
+function getFreeRandomCells(needFilledCells = 1) {
+  const freeCells = getAllFreeCells();
   const randomCells = [];
 
-  let fitsCellsAmount = 0;
+  for (let i = 0; i < needFilledCells; i++) {
+    const randomCellIndex = Math.floor(Math.random() * freeCells.length);
 
-  while (fitsCellsAmount < amount) {
-    const randomCell = cells[Math.floor(Math.random() * cells.length)];
+    const randomCell = freeCells[randomCellIndex];
 
-    if (!randomCells.includes(randomCell)) {
-      randomCells.push(randomCell);
-      fitsCellsAmount++;
-    }
+    randomCells.push(randomCell);
+
+    freeCells.splice(randomCellIndex, 1);
   }
 
   return randomCells;
 }
 
+function genFilledCells(needGenAmount = 1) {
+  const freeRandomCells = getFreeRandomCells(needGenAmount);
+
+  freeRandomCells.forEach(cell => {
+    const fieldCell = createFieldCell();
+
+    cell.appendChild(fieldCell);
+  });
+}
+
+function clearBoard() {
+  allCells.forEach(cell => cell.replaceChildren());
+}
+
+let isStarted = false;
+
+const startButton = document.querySelector('.button.start');
+const firstGenCellsCount = 2;
+
+startButton.restartStyle = function() {
+  this.textContent = 'Restart';
+  this.classList.remove('start');
+  this.classList.add('restart');
+};
+
+startButton.startStyle = function() {
+  this.textContent = 'Start';
+  this.classList.remove('restart');
+  this.classList.add('start');
+};
+
 startButton.addEventListener('click', () => {
   event.preventDefault();
 
-  if (!isStarted) {
-    startButton.textContent = 'Restart';
-    startButton.classList.add('restart');
-
-    const firstGenCellsCount = 2;
-    const firstGenRandomCells = getRandomCells(allCells, firstGenCellsCount);
-
-    for (const cell of firstGenRandomCells) {
-      const cellWeight = Math.random() <= 0.2 ? 4 : 2;
-
-      cell.textContent = cellWeight;
-      cell.classList.add(`field-cell--${cellWeight}`);
-    }
+  if (isStarted) {
+    startButton.startStyle();
+    clearBoard();
   } else {
-    startButton.classList.remove('restart');
-    startButton.textContent = 'Start';
-
-    allCells.forEach(cell => {
-      cell.className = 'field-cell';
-      cell.textContent = '';
-    });
+    startButton.restartStyle();
+    genFilledCells(firstGenCellsCount);
   }
 
   isStarted = !isStarted;
 });
 
-document.addEventListener('keydown', function() {
+document.addEventListener('keydown', () => {
   if (isStarted) {
     switch (event.key) {
       case 'ArrowUp':
-        // console.log('Верхня стрілка натиснута');
+        genFilledCells();
         break;
       case 'ArrowDown':
-        // console.log('Нижня стрілка натиснута');
+        genFilledCells();
         break;
       case 'ArrowLeft':
-        // console.log('Ліва стрілка натиснута');
+        genFilledCells();
         break;
       case 'ArrowRight':
-        // console.log('Права стрілка натиснута');
+        genFilledCells();
         break;
       default:
         break;

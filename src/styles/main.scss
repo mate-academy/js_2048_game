@@ -15,63 +15,37 @@ body {
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
+  padding: 0;
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  color: #fff;
   user-select: none;
+  background-color: rgb(226, 108, 108);
 
-  &--2 {
-    background: #eee4da;
-  }
+  @for $i from 2 through 12 {
+    $base: 2;
+    $weight: 1;
 
-  &--4 {
-    background: #ede0c8;
-  }
+    @for $j from 2 through $i {
+      $weight: $weight * $base;
+    }
 
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    &--#{$weight} {
+      --i: #{$i};
+      background-color: color-mix(
+        in oklab,
+        #f10000 calc(100% - (12 - var(--i)) * 9%),
+        #edef66 calc((12 - var(--i)) * 9%),
+      );
+    }
   }
 }
 
