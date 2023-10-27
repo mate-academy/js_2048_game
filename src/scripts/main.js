@@ -24,6 +24,29 @@ let board = [];
 let score = 0;
 let lose = false;
 let won = false;
+let init = false;
+
+function sameBoards(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    for (let j = 0; j < arr1[i].length; j++) {
+      if (arr1[i][j] !== arr2[i][j]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function nextStep(newBoard) {
+  board = newBoard;
+  setNewCell();
+  updateBoard();
+}
 
 function deleteZeros(item) {
   return item.filter(cell => cell !== 0);
@@ -46,11 +69,13 @@ function transposeMatrix(arr, columnCount, rowsCount) {
 
 function loseGame() {
   lose = true;
+  init = false;
   LOSE_MESSAGE.classList.remove('hidden');
 }
 
 function wonGame() {
   won = true;
+  init = false;
   WIN_MESSAGE.classList.remove('hidden');
 }
 
@@ -106,6 +131,7 @@ function initGame() {
   WIN_MESSAGE.classList.add('hidden');
   SCORE.textContent = 0;
 
+  init = true;
   lose = false;
   won = false;
   score = 0;
@@ -136,7 +162,7 @@ function moveUp() {
   const tempBoard = [];
 
   matrix.forEach(col => {
-    const column = deleteZeros(col);
+    let column = deleteZeros(col);
 
     for (let i = 0; i < column.length; i++) {
       if (column[i] === column[i + 1]) {
@@ -145,6 +171,7 @@ function moveUp() {
         column[i + 1] = 0;
       }
     }
+    column = deleteZeros(column);
 
     while (column.length < ROWS) {
       column.push(0);
@@ -153,14 +180,16 @@ function moveUp() {
     tempBoard.push(column);
   });
 
-  board = transposeMatrix(tempBoard, COLUMNS, ROWS);
+  if (!sameBoards(board, transposeMatrix(tempBoard, COLUMNS, ROWS))) {
+    nextStep(transposeMatrix(tempBoard, COLUMNS, ROWS));
+  }
 }
 
 function moveRight() {
   const tempBoard = [];
 
   board.forEach(item => {
-    const row = deleteZeros(item);
+    let row = deleteZeros(item);
 
     for (let i = row.length - 1; i >= 0; i--) {
       if (row[i] === row[i - 1]) {
@@ -169,6 +198,7 @@ function moveRight() {
         row[i - 1] = 0;
       }
     }
+    row = deleteZeros(row);
 
     while (row.length < ROWS) {
       row.unshift(0);
@@ -177,7 +207,9 @@ function moveRight() {
     tempBoard.push(row);
   });
 
-  board = tempBoard;
+  if (!sameBoards(board, tempBoard)) {
+    nextStep(tempBoard);
+  }
 }
 
 function moveDown() {
@@ -185,7 +217,7 @@ function moveDown() {
   const tempBoard = [];
 
   matrix.forEach(item => {
-    const column = deleteZeros(item);
+    let column = deleteZeros(item);
 
     for (let i = column.length - 1; i >= 0; i--) {
       if (column[i] === column[i - 1]) {
@@ -194,6 +226,7 @@ function moveDown() {
         column[i - 1] = 0;
       }
     }
+    column = deleteZeros(column);
 
     while (column.length < ROWS) {
       column.unshift(0);
@@ -202,14 +235,16 @@ function moveDown() {
     tempBoard.push(column);
   });
 
-  board = transposeMatrix(tempBoard, COLUMNS, ROWS);
+  if (!sameBoards(board, transposeMatrix(tempBoard, COLUMNS, ROWS))) {
+    nextStep(transposeMatrix(tempBoard, COLUMNS, ROWS));
+  }
 }
 
 function moveLeft() {
   const tempBoard = [];
 
   board.forEach(item => {
-    const row = deleteZeros(item);
+    let row = deleteZeros(item);
 
     for (let i = 0; i < row.length; i++) {
       if (row[i] === row[i + 1]) {
@@ -218,6 +253,7 @@ function moveLeft() {
         row[i + 1] = 0;
       }
     }
+    row = deleteZeros(row);
 
     while (row.length < ROWS) {
       row.push(0);
@@ -226,13 +262,15 @@ function moveLeft() {
     tempBoard.push(row);
   });
 
-  board = tempBoard;
+  if (!sameBoards(board, tempBoard)) {
+    nextStep(tempBoard);
+  }
 }
 
 document.addEventListener('keydown', (e) => {
   e.preventDefault();
 
-  if (lose || won) {
+  if (!init || lose || won) {
     return;
   }
 
@@ -256,9 +294,6 @@ document.addEventListener('keydown', (e) => {
     default:
       return;
   };
-
-  setNewCell();
-  updateBoard();
 });
 
 START_BTN.addEventListener('click', () => {
