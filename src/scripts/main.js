@@ -26,6 +26,32 @@ let lose = false;
 let won = false;
 let init = false;
 
+function loseGame() {
+  for (let row = 0; row < ROWS; row++) {
+    for (let column = 0; column < COLUMNS; column++) {
+      if (board[row][column] === 0) {
+        return false;
+      }
+
+      if (board[row][column + 1] !== undefined
+        && board[row][column] === board[row][column + 1]) {
+        return false;
+      }
+    }
+  }
+
+  for (let column = 0; column < COLUMNS; column++) {
+    for (let row = 0; row < ROWS - 1; row++) {
+      if (board[row + 1][column] !== undefined
+        && board[row][column] === board[row + 1][column]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 function sameBoards(arr1, arr2) {
   if (arr1.length !== arr2.length) {
     return false;
@@ -67,12 +93,6 @@ function transposeMatrix(arr, columnCount, rowsCount) {
   return tempArr;
 }
 
-function loseGame() {
-  lose = true;
-  init = false;
-  LOSE_MESSAGE.classList.remove('hidden');
-}
-
 function wonGame() {
   won = true;
   init = false;
@@ -92,11 +112,15 @@ function setNewCell() {
       trigger = false;
     }
   }
+
+  if (loseGame()) {
+    lose = true;
+    init = false;
+    LOSE_MESSAGE.classList.remove('hidden');
+  }
 }
 
 function updateBoard() {
-  let countOfCells = 16;
-
   for (let i = 0; i < board.length; i++) {
     for (let j = 0; j < board[i].length; j++) {
       const cell = ROW[i].children[j];
@@ -110,18 +134,12 @@ function updateBoard() {
         if (cellValue === WIN_VALUE) {
           wonGame();
         }
-
-        countOfCells--;
       } else {
         cell.textContent = '';
         cell.className = 'field-cell';
       }
       SCORE.textContent = score;
     }
-  }
-
-  if (!countOfCells) {
-    loseGame();
   }
 }
 
