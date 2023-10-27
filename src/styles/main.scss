@@ -19,6 +19,15 @@ body {
   padding: 0;
 }
 
+@keyframes createCell {
+  from {
+    transform: scale(0.1);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 .cell {
   display: flex;
   justify-content: center;
@@ -29,6 +38,8 @@ body {
   color: #fff;
   user-select: none;
   background-color: rgb(226, 108, 108);
+
+  animation: createCell 0.2s forwards;
 
   @for $i from 2 through 12 {
     $base: 2;
