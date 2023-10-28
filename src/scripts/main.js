@@ -27,7 +27,7 @@ start.addEventListener('click', () => {
     document.addEventListener('keydown', startGame);
   };
 
-  startGame;
+  startGame();
   setNumbers();
   setNumbers();
   score = 0;
@@ -81,9 +81,9 @@ function addScore() {
 // пошук порожньоъ комірки в масиві board
 function findEmpty() {
   for (const line of board) {
-    const find = line.some((element) => element === 0);
+    const finds = line.some((element) => element === 0);
 
-    if (find) {
+    if (finds) {
       return true;
     }
   };
@@ -220,7 +220,7 @@ function sameCells(column, moveDerection) {
         if (num === arr[i + 1]) {
           arr[i + 1] = 0;
 
-          const res = num *= 2;
+          const res = num * 2;
 
           score += res;
 
@@ -238,7 +238,7 @@ function sameCells(column, moveDerection) {
         if (num === arr[i + 1]) {
           arr[i + 1] = 0;
 
-          const res = num *= 2;
+          const res = num * 2;
 
           score += res;
 
