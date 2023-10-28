@@ -1,5 +1,5 @@
 1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
+    - [DEMO LINK](https://TommasoGiacopini.github.io/js_2048_game/)
 2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
     - Run `npm run test` command to test your code;
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
@@ -8,13 +8,13 @@
 ### Task: 2048 game
 
 Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+If you are still here, let's do it. 
 
 In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
 Don't play for too long! We need you to write the code!
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
+Okay, what do we have? 
+1) HTML and CSS are already written. You can use it, or implement your own design if you want. 
 2) Reference.
 
 That's it!
