@@ -21,6 +21,9 @@ body {
   vertical-align: center;
   user-select: none;
 
+  animation: show 200ms;
+  transition: 100ms;
+
   &--2 {
     background: #eee4da;
   }
@@ -72,6 +75,13 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
   }
 }
 
@@ -138,6 +148,9 @@ h1 {
 }
 
 .start {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #1dae28;
   font-size: 20px;
 
