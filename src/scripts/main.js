@@ -2,8 +2,36 @@
 
 const allCells = [...document.querySelectorAll('.field-cell')];
 
-function createFieldCell(
-  cellWeight = Math.random() <= 0.2 ? 4 : 2
+allCells.toBoard = function() {
+  const boardSize = Math.sqrt(this.length);
+  const board = [];
+
+  for (let i = 0; i < boardSize; i++) {
+    const row = [];
+
+    const startFrom = i * boardSize;
+    const endOn = (i * boardSize) + boardSize;
+
+    for (let j = startFrom; j < endOn; j++) {
+      row.push(this[j]);
+    }
+
+    board.push(row);
+  }
+
+  return board;
+};
+
+allCells.getFreeCells = function() {
+  return this.filter(cell => !cell.hasChildNodes());
+};
+
+allCells.getFilledCells = function() {
+  return this.filter(cell => cell.hasChildNodes());
+};
+
+function createCard(
+  cellWeight = Math.random() <= 0.1 ? 4 : 2
 ) {
   const filledCell = document.createElement('div');
 
@@ -13,12 +41,8 @@ function createFieldCell(
   return filledCell;
 }
 
-function getAllFreeCells() {
-  return allCells.filter(cell => !cell.hasChildNodes());
-}
-
 function getFreeRandomCells(needFilledCells = 1) {
-  const freeCells = getAllFreeCells();
+  const freeCells = allCells.getFreeCells();
   const randomCells = [];
 
   for (let i = 0; i < needFilledCells; i++) {
@@ -38,7 +62,7 @@ function genFilledCells(needGenAmount = 1) {
   const freeRandomCells = getFreeRandomCells(needGenAmount);
 
   freeRandomCells.forEach(cell => {
-    const fieldCell = createFieldCell();
+    const fieldCell = createCard();
 
     cell.appendChild(fieldCell);
   });
@@ -79,6 +103,43 @@ startButton.addEventListener('click', () => {
   isStarted = !isStarted;
 });
 
+function isFreeCell(cell) {
+  return !cell.hasChildNodes();
+}
+
+function getFirstFreeCell(row) {
+  for (let i = 0; i < row.length; i++) {
+    if (isFreeCell(row[i])) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+function shiftLeft() {
+  const board = allCells.toBoard();
+  const boardSize = board.length;
+
+  for (let y = 0; y < boardSize; y++) {
+    const currentRow = board[y];
+
+    for (let x = 1; x < boardSize; x++) {
+      const currentCell = board[y][x];
+
+      if (!isFreeCell(currentCell)) {
+        const card = currentCell.firstChild;
+        const firstFreeCell = getFirstFreeCell(currentRow);
+
+        if (x > firstFreeCell) {
+          currentRow[x].replaceChildren();
+          currentRow[firstFreeCell].appendChild(card);
+        }
+      }
+    }
+  }
+}
+
 document.addEventListener('keydown', () => {
   if (isStarted) {
     switch (event.key) {
@@ -89,7 +150,8 @@ document.addEventListener('keydown', () => {
         genFilledCells();
         break;
       case 'ArrowLeft':
-        genFilledCells();
+        shiftLeft();
+        // genFilledCells();
         break;
       case 'ArrowRight':
         genFilledCells();

@@ -1,0 +1,38 @@
+.tile {
+  @include center;
+
+  height: var(--s-cell);
+  /* stylelint-disable-next-line */
+  aspect-ratio: 1;
+
+  color: $c-accent-text;
+  background: $c-base-tile;
+  border-radius: $s-border-radius;
+
+  &--info {
+    flex-direction: column;
+
+    font-size: 0.7rem;
+    color: $c-main-text;
+    background: $c-accent-text;
+  }
+
+  &--button {
+    font-weight: 700;
+    font-size: 0.85rem;
+    
+    &:hover {
+      transition: $a-transition-time ease filter;
+      filter: saturate(150%);
+    }
+
+    &--start {
+      background: $c-start-button;
+    }
+
+    &--restart {
+      background: $c-restart-button;
+      font-size: 0.75rem;
+    }
+  }
+}

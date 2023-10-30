@@ -1,63 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="page">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048</title>
     <link rel="stylesheet" href="./styles/main.scss">
+    <script type="module" src="scripts/main.js"></script>
   </head>
+
   <body>
-    <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score: <span class="game-score">0</span>
-          </p>
-          <button class="button start">Start</button>
-        </div>
-      </div>
-
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+    <div class="message-container">
+      <div class="message">
+        <p class="message-lose hidden">You lose! Restart the game?</p>
+        <p class="message-win hidden">Winner! Congrats! You did it!</p>
       </div>
     </div>
-    <script type="text/javascript" src="scripts/main.js"></script>
+
+    <main class="main">
+      <div class="main__content">
+        <div class="game-header">
+          <h1 class="tile">2048</h1>
+          <div class="game-header__right">
+            <p class="tile tile--info">
+              Score: <span class="game-score">0</span>
+            </p>
+            <button class="tile tile--button tile--button--restart">Restart</button>
+          </div>
+        </div>
+
+        <div class="board">
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+
+          <div class="card card--2048">2</div>
+        </div>
+
+        <div class="advertisement">
+          Your ad can be here
+        </div>
+      </div>
+    </main>
   </body>
 </html>

@@ -1,0 +1,13 @@
+.message {
+  height: 60vmin;
+  /* stylelint-disable-next-line */
+  aspect-ratio: 1;
+
+  font-size: 0.8rem;
+  text-align: center;
+  color: $c-main-text;
+
+  background: $c-accent-text;
+  padding: 10px;
+  border-radius: $s-border-radius;
+}

@@ -1,0 +1,36 @@
+// colors
+$c-bg: linear-gradient(#652a48, #431c52);
+$c-main-text: #776e65;
+$c-accent-text: #fff;
+$c-game-board: #a84535;
+$c-game-header: linear-gradient(
+  180deg,
+  rgba(64, 108, 68, 1) 0%, 
+  rgba(47, 75, 49, 1) 32%,
+  rgba(27, 38, 28, 1) 100%,
+);
+$c-cell: #c9532c;
+
+$c-start-card: #e6aa1d;
+$c-end-card: #2b0838;
+$c-base-tile: #4d3357;
+
+$c-start-button: #4a924f;
+$c-restart-button: #b57373;
+
+// z-indexes
+$z-standard: 1;
+$z-modal: 3;
+$z-card: 2;
+
+//sizes
+$s-tile-cell: clamp(54px, 15vmin, 88px);
+$s-border-radius: 5px;
+
+html {
+  --s-board-gap: 1.5vmin;
+  --s-cell: clamp(54px, 15vmin, 88px);
+}
+
+//animations
+$a-transition-time: 250ms;

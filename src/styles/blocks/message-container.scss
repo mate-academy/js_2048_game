@@ -1,0 +1,13 @@
+.message-container {
+  position: fixed;
+  inset: 0;
+
+  display: none;
+
+  background-color: #00000071;
+  z-index: $z-modal;
+
+  &:has(.message:target) {
+    @include center;
+  }
+}

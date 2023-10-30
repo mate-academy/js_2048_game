@@ -1,0 +1,9 @@
+.advertisement {
+  @include center;
+  
+  align-self: stretch;
+  height: 6vh;
+
+  background-color: $c-accent-text;
+  color: $c-main-text;
+}
