@@ -9,131 +9,52 @@ const messageWin = document.querySelector('.message-win');
 score.textContent = 0;
 
 const cells = {
-  1: '',
-  2: '',
-  3: '',
-  4: '',
-  5: '',
-  6: '',
-  7: '',
-  8: '',
-  9: '',
-  10: '',
-  11: '',
-  12: '',
-  13: '',
-  14: '',
-  15: '',
-  16: '',
+  1: null,
+  2: null,
+  3: null,
+  4: null,
+  5: null,
+  6: null,
+  7: null,
+  8: null,
+  9: null,
+  10: null,
+  11: null,
+  12: null,
+  13: null,
+  14: null,
+  15: null,
+  16: null,
 };
 
-const colorMods = [
-  'field-cell--2',
-  'field-cell--4',
-  'field-cell--8',
-  'field-cell--16',
-  'field-cell--32',
-  'field-cell--64',
-  'field-cell--128',
-  'field-cell--256',
-  'field-cell--512',
-  'field-cell--1024',
-  'field-cell--2048',
-];
+let changed = true;
 
 function getRandom(min, max) {
   return Math.round((min - 0.5) + Math.random() * (max - min + 1));
 }
 
-function removeColors() {
-  for (const key in cells) {
-    for (const mod of colorMods) {
-      if (document.querySelector(`.cell_${key}`).classList.contains(mod)) {
-        document.querySelector(`.cell_${key}`).classList.remove(mod);
-      }
-    }
-  }
-}
-
 function sync() {
   for (const key in cells) {
     document.querySelector(`.cell_${key}`).textContent = cells[key];
+    document.querySelector(`.cell_${key}`).classList = `field-cell cell_${key}`;
 
-    switch (cells[key]) {
-      case 2:
-        document.querySelector(`.cell_${key}`).classList.add('field-cell--2');
-        break;
-      case 4:
-        document.querySelector(`.cell_${key}`).classList.add('field-cell--4');
-        break;
-      case 8:
-        document.querySelector(`.cell_${key}`).classList.add('field-cell--8');
-        break;
-      case 16:
-        document.querySelector(`.cell_${key}`).classList.add('field-cell--16');
-        break;
-      case 32:
-        document.querySelector(`.cell_${key}`).classList.add('field-cell--32');
-        break;
-      case 64:
-        document.querySelector(`.cell_${key}`).classList.add('field-cell--64');
-        break;
-      case 128:
-        document.querySelector(`.cell_${key}`).classList.add('field-cell--128');
-        break;
-      case 256:
-        document.querySelector(`.cell_${key}`).classList.add('field-cell--256');
-        break;
-      case 512:
-        document.querySelector(`.cell_${key}`).classList.add('field-cell--512');
-        break;
-      case 1024:
-        document.querySelector(`.cell_${key}`)
-          .classList.add('field-cell--1024');
-        break;
-      case 2048:
-        document.querySelector(`.cell_${key}`)
-          .classList.add('field-cell--2048');
-        break;
+    if (cells[key]) {
+      document.querySelector(`.cell_${key}`)
+        .classList.add(`field-cell--${cells[key]}`);
     }
   }
-}
-
-function addNumbers() {
-  let cellNum1 = getRandom(1, 16);
-  let cellNum2 = getRandom(1, 16);
-
-  while (cells[cellNum1] !== '') {
-    cellNum1 = getRandom(1, 16);
-  }
-
-  while (cells[cellNum2] !== '' || cellNum1 === cellNum2) {
-    cellNum2 = getRandom(1, 16);
-  }
-
-  if (getRandom(1, 10) > 1) {
-    cells[cellNum1] = 2;
-  } else {
-    cells[cellNum1] = 4;
-  }
-
-  if (getRandom(1, 10) > 1) {
-    cells[cellNum2] = 2;
-  } else {
-    cells[cellNum2] = 4;
-  }
-
-  sync();
+  check();
 }
 
 function addNumber() {
-  if (Object.values(cells).every((cell) => cell !== '')) {
+  if (Object.values(cells).every((cell) => cell !== null)
+    || changed === false) {
     return;
   }
 
   let cellNum = getRandom(1, 16);
 
-  while (cells[cellNum] !== '') {
+  while (cells[cellNum] !== null) {
     cellNum = getRandom(1, 16);
   }
 
@@ -142,32 +63,45 @@ function addNumber() {
   } else {
     cells[cellNum] = 4;
   }
+
+  changed = false;
 }
 
 start.addEventListener('click', () => {
   if (start.textContent === 'Start') {
-    addNumbers();
+    addNumber();
+    changed = true;
+    addNumber();
+    sync();
 
+    changed = false;
     start.textContent = 'Restart';
     messageStart.classList.add('hidden');
   } else {
     for (const key in cells) {
-      cells[key] = '';
+      cells[key] = null;
+
+      document.querySelector(`.cell_${key}`).classList
+        = `field-cell cell_${key}`;
     }
-    removeColors();
-    addNumbers();
+    addNumber();
+    changed = true;
+    addNumber();
+    sync();
     score.textContent = 0;
     messageLose.classList.add('hidden');
+    changed = true;
   }
 });
 
 function moveLeft(a, b) {
   for (let i = a; i <= b; i++) {
-    if (cells[i] === '') {
+    if (cells[i] === null) {
       for (let j = i; j <= b; j++) {
-        if (cells[j] !== '') {
+        if (cells[j] !== null) {
           cells[i] = cells[j];
-          cells[j] = '';
+          cells[j] = null;
+          changed = true;
           break;
         }
       }
@@ -177,11 +111,12 @@ function moveLeft(a, b) {
 
 function moveRight(a, b) {
   for (let i = b; i >= a; i--) {
-    if (cells[i] === '') {
+    if (cells[i] === null) {
       for (let j = i; j >= a; j--) {
-        if (cells[j] !== '') {
+        if (cells[j] !== null) {
           cells[i] = cells[j];
-          cells[j] = '';
+          cells[j] = null;
+          changed = true;
           break;
         }
       }
@@ -191,9 +126,9 @@ function moveRight(a, b) {
 
 function sumLeft(a, b) {
   for (let i = a; i < b; i++) {
-    if (cells[i] === cells[i + 1]) {
+    if (cells[i] === cells[i + 1] && cells[i] !== null) {
       cells[i + 1] = cells[i] + cells[i + 1];
-      cells[i] = '';
+      cells[i] = null;
       score.textContent = Number(score.textContent) + cells[i + 1];
     }
   }
@@ -203,9 +138,9 @@ function sumLeft(a, b) {
 
 function sumRight(a, b) {
   for (let i = b; i > a; i--) {
-    if (cells[i] === cells[i - 1]) {
+    if (cells[i] === cells[i - 1] && cells[i] !== null) {
       cells[i - 1] = cells[i] + cells[i - 1];
-      cells[i] = '';
+      cells[i] = null;
       score.textContent = Number(score.textContent) + cells[i - 1];
     }
   }
@@ -230,11 +165,12 @@ const cellLines = [
 function moveUp() {
   for (let col = 0; col <= 3; col++) {
     for (let i = 0; i <= 3; i++) {
-      if (cells[cellRotated[col][i]] === '') {
+      if (cells[cellRotated[col][i]] === null) {
         for (let j = i; j <= 3; j++) {
-          if (cells[cellRotated[col][j]] !== '') {
+          if (cells[cellRotated[col][j]] !== null) {
             cells[cellRotated[col][i]] = cells[cellRotated[col][j]];
-            cells[cellRotated[col][j]] = '';
+            cells[cellRotated[col][j]] = null;
+            changed = true;
             break;
           }
         }
@@ -246,10 +182,11 @@ function moveUp() {
 function sumUp() {
   for (let col = 0; col <= 3; col++) {
     for (let i = 0; i <= 3; i++) {
-      if (cells[cellRotated[col][i]] === cells[cellRotated[col][i + 1]]) {
+      if (cells[cellRotated[col][i]] === cells[cellRotated[col][i + 1]]
+        && cells[cellRotated[col][i]]) {
         cells[cellRotated[col][i + 1]] = cells[cellRotated[col][i]]
           + cells[cellRotated[col][i + 1]];
-        cells[cellRotated[col][i]] = '';
+        cells[cellRotated[col][i]] = null;
 
         score.textContent = Number(score.textContent)
           + cells[cellRotated[col][i + 1]];
@@ -262,11 +199,12 @@ function sumUp() {
 function moveDown() {
   for (let col = 0; col <= 3; col++) {
     for (let i = 3; i >= 0; i--) {
-      if (cells[cellRotated[col][i]] === '') {
+      if (cells[cellRotated[col][i]] === null) {
         for (let j = i; j >= 0; j--) {
-          if (cells[cellRotated[col][j]] !== '') {
+          if (cells[cellRotated[col][j]] !== null) {
             cells[cellRotated[col][i]] = cells[cellRotated[col][j]];
-            cells[cellRotated[col][j]] = '';
+            cells[cellRotated[col][j]] = null;
+            changed = true;
             break;
           }
         }
@@ -278,10 +216,11 @@ function moveDown() {
 function sumDown() {
   for (let col = 0; col <= 3; col++) {
     for (let i = 3; i >= 0; i--) {
-      if (cells[cellRotated[col][i]] === cells[cellRotated[col][i - 1]]) {
+      if (cells[cellRotated[col][i]]
+        === cells[cellRotated[col][i - 1] && cells[cellRotated[col][i]]]) {
         cells[cellRotated[col][i - 1]] = cells[cellRotated[col][i]]
           + cells[cellRotated[col][i - 1]];
-        cells[cellRotated[col][i]] = '';
+        cells[cellRotated[col][i]] = null;
 
         score.textContent = Number(score.textContent)
           + cells[cellRotated[col][i - 1]];
@@ -318,7 +257,7 @@ function check() {
     messageWin.classList.remove('hidden');
   }
 
-  if (Object.values(cells).every((cell) => cell !== '')) {
+  if (Object.values(cells).every((cell) => cell !== null)) {
     for (let i = 0; i < cellLines.length; i++) {
       if (checkLines(cellLines[i][0], cellLines[i][1])) {
         return;
@@ -340,21 +279,16 @@ document.addEventListener('keydown', e => {
       moveUp();
       sumUp();
       addNumber();
-      removeColors();
       sync();
-      check();
       break;
     case 'ArrowDown':
       if (!messageStart.classList.contains('hidden')) {
         break;
       }
-
       moveDown();
       sumDown();
       addNumber();
-      removeColors();
       sync();
-      check();
       break;
     case 'ArrowLeft':
       if (!messageStart.classList.contains('hidden')) {
@@ -365,11 +299,8 @@ document.addEventListener('keydown', e => {
         moveLeft(cellLines[i][0], cellLines[i][1]);
         sumLeft(cellLines[i][0], cellLines[i][1]);
       }
-
       addNumber();
-      removeColors();
       sync();
-      check();
       break;
     case 'ArrowRight':
       if (!messageStart.classList.contains('hidden')) {
@@ -380,11 +311,8 @@ document.addEventListener('keydown', e => {
         moveRight(cellLines[i][0], cellLines[i][1]);
         sumRight(cellLines[i][0], cellLines[i][1]);
       }
-
       addNumber();
-      removeColors();
       sync();
-      check();
       break;
   }
 });
