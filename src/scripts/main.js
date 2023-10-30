@@ -84,6 +84,7 @@ start.addEventListener('click', () => {
       document.querySelector(`.cell_${key}`).classList
         = `field-cell cell_${key}`;
     }
+    changed = true;
     addNumber();
     changed = true;
     addNumber();
