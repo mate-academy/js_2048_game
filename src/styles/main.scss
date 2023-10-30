@@ -1,13 +1,14 @@
 body {
-  box-sizing: border-box;
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  font-family: sans-serif;
+  font-family: "Ubuntu", sans-serif;
   font-size: 24px;
   font-weight: 900;
+  background: url("../images/bg.jpg") top;
+  background-size: cover;
 }
 
 .field-cell {
@@ -17,8 +18,9 @@ body {
   border-radius: 5px;
   color: #d6cdc4;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   user-select: none;
 
   &--2 {
@@ -78,10 +80,10 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: #baa18a;
   border-spacing: 10px;
   border-radius: 5px;
-  border: 10px solid #bbada0;
+  border: 10px solid #baa18a;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,7 +91,6 @@ body {
   flex-wrap: wrap;
   width: 330px;
   height: 330px;
-  margin-top: 20px;
 }
 
 .game-header {
@@ -141,27 +142,37 @@ h1 {
   color: #f9f6f2;
   font-family: sans-serif;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
   width: 75px;
   height: 75px;
-
-  transition: 0.25s ease background;
+  outline: none;
+  transition: 0.25s ease all;
 }
 
 .start {
-  background: #1dae28;
+  font-family: inherit;
+  background: #1b9b22;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: #108216;
+  }
+
+  &:active {
+    transform: scale(0.9);
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  font-family: inherit;
+  background: rgb(236, 126, 126);
 
   &:hover {
-    background: #f87474;
+    background: #cb4646;
+  }
+
+  &:active {
+    transform: scale(0.9);
   }
 }
 

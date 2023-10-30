@@ -51,7 +51,7 @@ function generateNum() {
   const randomNumber = Math.floor(Math.random() * fieldCells.length);
 
   if (fieldCells[randomNumber].innerHTML === '0') {
-    fieldCells[randomNumber].innerHTML = '2';
+    fieldCells[randomNumber].innerHTML = Math.random() > 0.9 ? '4' : '2';
     applyColorStyles();
     checkForGameOver();
   } else {
