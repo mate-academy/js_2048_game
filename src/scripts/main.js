@@ -191,6 +191,18 @@ function checkWinCombination() {
 }
 
 function checkForGameOver() {
+  for (let i = 0; i < 15; i++) {
+    if (fieldCells[i].innerHTML === fieldCells[i + 1].innerHTML) {
+      return;
+    }
+  }
+
+  for (let i = 0; i < 12; i++) {
+    if (fieldCells[i].innerHTML === fieldCells[i + width].innerHTML) {
+      return;
+    }
+  }
+
   let zeroCells = 0;
 
   for (let i = 0; i < fieldCells.length; i++) {
