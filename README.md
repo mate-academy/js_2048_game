@@ -3,9 +3,9 @@
 ## Short description:
 Page is a 2048 game.
 Pressing on keys (ArrowUp, ArrowRight, ArrowDown, ArrowLeft) moves tiles.
-With each addition  score incresses by this amound and writed in the header.
+With each addition score increases by this amount and writed in the header.
 If you created a tile with the number 2048 - you will win.
-If you don't have free cells and ability to move - you will lose.
+If you don't have free cells and the ability to move - you will lose.
 
 All helper functions have been moved to the appropriate folder.
 
