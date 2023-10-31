@@ -139,6 +139,8 @@ function mergeCellsVertically() {
 }
 
 function assignByKeyCode({ keyCode }) {
+  const fieldCellsValues = fieldCells.map(item => item.innerHTML);
+
   switch (keyCode) {
     case 37: moveLeft();
       break;
@@ -150,35 +152,41 @@ function assignByKeyCode({ keyCode }) {
       break;
     default: throw new Error('Wrong keyCode');
   }
+
+  const isEqual = fieldCells.every((_, i) =>
+    fieldCells[i].innerHTML === fieldCellsValues[i]);
+
+  if (isEqual) {
+    return;
+  }
+
+  generateNum();
 }
+
 document.addEventListener('keydown', assignByKeyCode);
 
 function moveRight() {
   moveByHorizontalAxis('right');
   mergeCellsHorizontally();
   moveByHorizontalAxis('right');
-  generateNum();
 }
 
 function moveLeft() {
   moveByHorizontalAxis('left');
   mergeCellsHorizontally();
   moveByHorizontalAxis('left');
-  generateNum();
 }
 
 function moveUp() {
   moveByVerticalAxis('up');
   mergeCellsVertically();
   moveByVerticalAxis('up');
-  generateNum();
 }
 
 function moveDown() {
   moveByVerticalAxis('down');
   mergeCellsVertically();
   moveByVerticalAxis('down');
-  generateNum();
 }
 
 function checkWinCombination() {
