@@ -4,12 +4,69 @@ let score = 0;
 const boardRows = 4;
 const boardColumn = 4;
 const board = [];
-// let canMoveNumber = 0
 
-const rows = document.getElementsByTagName('tr'); // get rows in table (0-3)
+let touchStartX, touchStartY, touchEndX, touchEndY;
+let slideDirection = '';
+
+const rows = document.getElementsByTagName('tr');
 const start = document.querySelector('.start');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
+const messageStart = document.querySelector('.message-start');
 
 let keyInit = false;
+
+function startGame() {
+  const oldBoard = JSON.stringify(board);
+
+  switch (slideDirection) {
+    case 'up':
+      slide('up');
+
+      if (JSON.stringify(board) !== oldBoard) {
+        setNumbers();
+      }
+      break;
+
+    case 'down':
+      slide('down');
+
+      if (JSON.stringify(board) !== oldBoard) {
+        setNumbers();
+      }
+      break;
+
+    case 'left':
+      slide('left');
+
+      if (JSON.stringify(board) !== oldBoard) {
+        setNumbers();
+      }
+      break;
+
+    case 'right':
+      slide('right');
+
+      if (JSON.stringify(board) !== oldBoard) {
+        setNumbers();
+      }
+      break;
+  }
+
+  addScore();
+  keyInit = true;
+
+  if (win()) {
+    messageWin.classList.remove('hidden');
+  }
+
+  if (!canMove('up')
+    && !canMove('down')
+    && !canMove('right')
+    && !canMove('left')) {
+    messageLose.classList.remove('hidden');
+  }
+}
 
 start.addEventListener('click', () => {
   board.length = 0;
@@ -24,53 +81,67 @@ start.addEventListener('click', () => {
   };
 
   if (!keyInit) {
-    document.addEventListener('keydown', startGame);
-  };
+    document.addEventListener('keydown', (keyEvent) => {
+      slideDirection = getDirectionFromKey(keyEvent.key);
+      startGame();
+    });
+  }
 
-  startGame();
   setNumbers();
   setNumbers();
   score = 0;
 
   start.textContent = 'Restart';
+  start.classList.add('restart');
+  messageStart.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
 });
 
-const startGame = (action) => {
-  switch (action.key) {
-    case 'ArrowUp':
-      slide('up');
-      // if (!canMoveNumber) {
-      //   console.log(canMoveNumber);
-      //   break;
-      // }
-      // console.log(canMoveNumber);
-      setNumbers();
-      // setNumbers();
-      addScore();
-      // canMoveNumber = 0;
-      break;
-    case 'ArrowDown':
-      slide('down');
-      setNumbers();
-      // setNumbers();
-      addScore();
-      break;
-    case 'ArrowLeft':
-      slide('left');
-      setNumbers();
-      // setNumbers();
-      addScore();
-      break;
-    case 'ArrowRight':
-      slide('right');
-      setNumbers();
-      // setNumbers();
-      addScore();
-      break;
+document.addEventListener('touchstart', (startEvent) => {
+  touchStartX = startEvent.touches[0].clientX;
+  touchStartY = startEvent.touches[0].clientY;
+});
+
+document.addEventListener('touchend', (endEvent) => {
+  touchEndX = endEvent.changedTouches[0].clientX;
+  touchEndY = endEvent.changedTouches[0].clientY;
+
+  handleSwipe();
+});
+
+function getDirectionFromKey(key) {
+  if (key === 'ArrowUp') {
+    return 'up';
+  } else if (key === 'ArrowDown') {
+    return 'down';
+  } else if (key === 'ArrowLeft') {
+    return 'left';
+  } else if (key === 'ArrowRight') {
+    return 'right';
   }
 
-  keyInit = true;
-};
+  return '';
+}
+
+function handleSwipe() {
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+  const absDeltaX = Math.abs(deltaX);
+  const absDeltaY = Math.abs(deltaY);
+
+  if (Math.max(absDeltaX, absDeltaY) < 100) {
+    return;
+  }
+
+  if (absDeltaX > absDeltaY) {
+    slideDirection = deltaX > 0 ? 'right' : 'left';
+  } else {
+    slideDirection = deltaY > 0 ? 'down' : 'up';
+  }
+
+  startGame();
+}
 
 function addScore() {
   const scoreOnPage = document.querySelector('.game-score');
@@ -78,7 +149,6 @@ function addScore() {
   scoreOnPage.textContent = score;
 }
 
-// пошук порожньоъ комірки в масиві board
 function findEmpty() {
   for (const line of board) {
     const finds = line.some((element) => element === 0);
@@ -103,8 +173,6 @@ function getRandomNumber() {
 
 function setNumbers() {
   if (!findEmpty()) {
-    // const lose = dropdown.querySelector('.message-lose');
-    // lose.style.display = 'block'
     return;
   };
 
@@ -125,7 +193,7 @@ function setNumbers() {
 function cellsAndNumbers() {
   for (let r = 0; r < board.length; r++) {
     const row = rows[r];
-    const cells = row.getElementsByTagName('td'); // get cells in row[0-3]
+    const cells = row.getElementsByTagName('td');
 
     for (let c = 0; c < cells.length; c++) {
       const cell = cells[c];
@@ -136,7 +204,6 @@ function cellsAndNumbers() {
   };
 };
 
-// add numbers to cells from the array (board)
 function updateTyle(cell, number) {
   if (number) {
     cell.textContent = '';
@@ -153,7 +220,6 @@ function slide(moveDerection) {
   for (let r = 0; r < boardRows; r++) {
     const column = [];
 
-    // Перебір по колонках
     for (let c = 0; c < boardColumn; c++) {
       let number = 0;
 
@@ -165,12 +231,6 @@ function slide(moveDerection) {
       column.push(number);
     }
 
-    // canMove(column);
-    // if (!canMove(column)) {
-    //   return;
-    // }
-
-    // Змішщення комірок зі значеннями на початок і додавання нулів в кінець
     const result = sameCells(column, moveDerection);
 
     while (result.length < column.length) {
@@ -193,24 +253,6 @@ function slide(moveDerection) {
   cellsAndNumbers();
 };
 
-// function canMove(column) {
-//   return column.forEach((element, i, arr) => {
-//     if (element === 0 && i === 0) {
-//       canMoveNumber++;
-//       return true;
-//     }
-//     if (element === 0 && arr[i+1] !== 0) {
-//       canMoveNumber++;
-//       return true;
-//     } else if (element === arr[i+1] && element !== 0) {
-//       canMoveNumber++;
-//       return true;
-//     }
-//     return false;
-//   })
-// }
-
-// додаемо однакові значення сусідніх комірок
 function sameCells(column, moveDerection) {
   if (moveDerection === 'right' || moveDerection === 'down') {
     return column
@@ -250,3 +292,37 @@ function sameCells(column, moveDerection) {
       .filter(n => n > 0);
   }
 };
+
+function canMove(direction) {
+  for (let r = 0; r < boardRows; r++) {
+    for (let c = 0; c < boardColumn; c++) {
+      const currentCell = board[r][c];
+      let neighborCell;
+
+      if (direction === 'up') {
+        neighborCell = r > 0 ? board[r - 1][c] : undefined;
+      } else if (direction === 'right') {
+        neighborCell = c < boardColumn - 1 ? board[r][c + 1] : undefined;
+      } else if (direction === 'down') {
+        neighborCell = r < boardRows - 1 ? board[r + 1][c] : undefined;
+      } else if (direction === 'left') {
+        neighborCell = c > 0 ? board[r][c - 1] : undefined;
+      }
+
+      if (currentCell !== 0
+        && (neighborCell === 0 || currentCell === neighborCell)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function win() {
+  if (board.some(rov => rov.some(cell => cell === 2048))) {
+    return true;
+  }
+
+  return false;
+}
