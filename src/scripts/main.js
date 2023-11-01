@@ -66,6 +66,70 @@ function checkForEmpty() {
   return false;
 }
 
+function canMoveLeft() {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 1; j < columns; j++) {
+      if (board[i][j] === 0) {
+        return true;
+      }
+
+      if (board[i][j] === board[i][j - 1]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function canMoveRight() {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns - 1; j++) {
+      if (board[i][j] === 0) {
+        return true;
+      }
+
+      if (board[i][j] === board[i][j + 1]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function canMoveUp() {
+  for (let j = 0; j < columns; j++) {
+    for (let i = 1; i < rows; i++) {
+      if (board[i][j] === 0) {
+        return true;
+      }
+
+      if (board[i][j] === board[i - 1][j]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function canMoveDown() {
+  for (let j = 0; j < columns; j++) {
+    for (let i = 0; i < rows - 1; i++) {
+      if (board[i][j] === 0) {
+        return true;
+      }
+
+      if (board[i][j] === board[i + 1][j]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 function generateNewCell() {
   if (!checkForEmpty()) {
     return;
@@ -78,40 +142,56 @@ function generateNewCell() {
     const col = Math.floor(Math.random() * columns);
 
     if (board[row][col] === 0) {
-      board[row][col] = randomValue;
-      break;
+      if (canMoveLeft() || canMoveRight() || canMoveUp() || canMoveDown()) {
+        board[row][col] = randomValue;
+        break;
+      }
     }
-
-    updateGame();
   }
+
+  updateGame();
 }
 
-document.addEventListener('keyup', direction => {
+document.addEventListener('keyup', (direction) => {
   if (gameLost()) {
     showMessage('loser');
 
     return;
   }
 
+  let moved = false;
+
   switch (direction.code) {
     case 'ArrowLeft':
-      moveLeft();
+      if (canMoveLeft()) {
+        moveLeft();
+        moved = true;
+      }
       break;
 
     case 'ArrowRight':
-      moveRight();
+      if (canMoveRight()) {
+        moveRight();
+        moved = true;
+      }
       break;
 
     case 'ArrowUp':
-      moveUp();
+      if (canMoveUp()) {
+        moveUp();
+        moved = true;
+      }
       break;
 
     case 'ArrowDown':
-      moveDown();
+      if (canMoveDown()) {
+        moveDown();
+        moved = true;
+      }
       break;
   }
 
-  if (!gameLost()) {
+  if (moved) {
     generateNewCell();
   }
 });
