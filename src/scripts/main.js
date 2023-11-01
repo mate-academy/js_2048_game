@@ -87,30 +87,32 @@ function generateNewCell() {
 }
 
 document.addEventListener('keyup', direction => {
+  if (gameLost()) {
+    showMessage('loser');
+
+    return;
+  }
+
   switch (direction.code) {
     case 'ArrowLeft':
       moveLeft();
-      generateNewCell();
       break;
 
     case 'ArrowRight':
       moveRight();
-      generateNewCell();
       break;
 
     case 'ArrowUp':
       moveUp();
-      generateNewCell();
       break;
 
     case 'ArrowDown':
       moveDown();
-      generateNewCell();
       break;
   }
 
-  if (gameLost()) {
-    showMessage('loser');
+  if (!gameLost()) {
+    generateNewCell();
   }
 });
 
