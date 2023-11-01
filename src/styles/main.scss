@@ -4,6 +4,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  overflow: hidden;
   background: #fbf8ef;
   font-family: sans-serif;
   font-size: 24px;
@@ -20,6 +21,9 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+
+  animation: show 0.3s;
+  transition: all 0.3s;
 
   &--2 {
     background: #eee4da;
@@ -72,6 +76,13 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
   }
 }
 
@@ -138,6 +149,9 @@ h1 {
 }
 
 .start {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #1dae28;
   font-size: 20px;
 
@@ -177,8 +191,22 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
+  background: linear-gradient(45deg, #2eed47, #3eb307);
+  background-size: 300% 200%;
+  animation: gradient 3s linear infinite;
   color: #f9f6f2;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 0%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .message-container {
