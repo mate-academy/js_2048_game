@@ -42,6 +42,8 @@ function gameStart() {
 
 // Переміщення вгору
 function moveUp() {
+  let merged = false;
+
   for (let j = 0; j < columns; j++) {
     for (let i = 1; i < rows; i++) {
       if (board[i][j] !== 0) {
@@ -53,11 +55,13 @@ function moveUp() {
             board[currentRow - 1][j] = board[currentRow][j];
             board[currentRow][j] = 0;
             currentRow--;
+            merged = true;
           } else if (board[currentRow - 1][j] === board[currentRow][j]) {
             // Об'єднати два елементи з однаковими значеннями
             board[currentRow - 1][j] *= 2;
             score += board[currentRow - 1][j];
             board[currentRow][j] = 0;
+            merged = true;
             break;
           } else {
             break;
@@ -67,11 +71,17 @@ function moveUp() {
     }
   }
 
+  if (merged) {
+    addRandomNumber();
+  }
+
   renderHtml();
 }
 
 // Переміщення вниз
 function moveDown() {
+  let merged = false;
+
   for (let j = 0; j < columns; j++) {
     for (let i = rows - 2; i >= 0; i--) {
       if (board[i][j] !== 0) {
@@ -83,11 +93,13 @@ function moveDown() {
             board[currentRow + 1][j] = board[currentRow][j];
             board[currentRow][j] = 0;
             currentRow++;
+            merged = true;
           } else if (board[currentRow + 1][j] === board[currentRow][j]) {
             // Об'єднати два елементи з однаковими значеннями
             board[currentRow + 1][j] *= 2;
             score += board[currentRow + 1][j];
             board[currentRow][j] = 0;
+            merged = true;
             break;
           } else {
             break;
@@ -97,11 +109,17 @@ function moveDown() {
     }
   }
 
+  if (merged) {
+    addRandomNumber();
+  }
+
   renderHtml();
 }
 
 // Переміщення вліво
 function moveLeft() {
+  let merged = false;
+
   for (let i = 0; i < rows; i++) {
     for (let j = 1; j < columns; j++) {
       if (board[i][j] !== 0) {
@@ -113,11 +131,13 @@ function moveLeft() {
             board[i][currentCol - 1] = board[i][currentCol];
             board[i][currentCol] = 0;
             currentCol--;
+            merged = true;
           } else if (board[i][currentCol - 1] === board[i][currentCol]) {
             // Об'єднати два елементи з однаковими значеннями
             board[i][currentCol - 1] *= 2;
             score += board[i][currentCol - 1];
             board[i][currentCol] = 0;
+            merged = true;
             break;
           } else {
             break;
@@ -126,11 +146,18 @@ function moveLeft() {
       }
     }
   }
+
+  if (merged) {
+    addRandomNumber();
+  }
+
   renderHtml();
 }
 
 // Переміщення вправо
 function moveRight() {
+  let merged = false;
+
   for (let i = 0; i < rows; i++) {
     for (let j = columns - 2; j >= 0; j--) {
       if (board[i][j] !== 0) {
@@ -142,11 +169,13 @@ function moveRight() {
             board[i][currentCol + 1] = board[i][currentCol];
             board[i][currentCol] = 0;
             currentCol++;
+            merged = true;
           } else if (board[i][currentCol + 1] === board[i][currentCol]) {
             // Об'єднати два елементи з однаковими значеннями
             board[i][currentCol + 1] *= 2;
             score += board[i][currentCol + 1];
             board[i][currentCol] = 0;
+            merged = true;
             break;
           } else {
             break;
@@ -155,6 +184,11 @@ function moveRight() {
       }
     }
   }
+
+  if (merged) {
+    addRandomNumber();
+  }
+
   renderHtml();
 }
 
@@ -184,7 +218,6 @@ window.addEventListener('keydown', (e) => {
       break;
   }
 
-  addRandomNumber();
   renderHtml();
 });
 
