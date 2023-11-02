@@ -216,6 +216,8 @@ function renderHtml() {
 
   if (isGameOver()) {
     messageLose.classList.remove('hidden');
+  } else {
+    messageLose.classList.add('hidden');
   }
 }
 
