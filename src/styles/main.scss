@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all 320ms ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -134,7 +135,7 @@ h1 {
   width: 75px;
   height: 75px;
 
-  transition: 0.25s ease background;
+  transition: all 0.25s ease;
 }
 
 .start {
