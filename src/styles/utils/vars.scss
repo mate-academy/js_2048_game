@@ -11,8 +11,8 @@ $c-game-header: linear-gradient(
 );
 $c-cell: #c9532c;
 
-$c-start-card: #e6aa1d;
-$c-end-card: #2b0838;
+$c-start-card: #e0c071;
+$c-end-card: #300141;
 $c-base-tile: #4d3357;
 
 $c-start-button: #4a924f;
@@ -34,3 +34,4 @@ html {
 
 //animations
 $a-transition-time: 250ms;
+$a-transition-time-card: 150ms;
