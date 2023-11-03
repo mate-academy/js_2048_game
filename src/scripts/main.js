@@ -3,9 +3,11 @@
 document.addEventListener('keydown', param => func(param.key));
 
 const table = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-const ranvals = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
+const randomValues = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
 let score = 0;
-
+const cellValue2 = 2;
+const cellValue4 = 4;
+const winValue = 2048;
 const startButton = document.getElementById('buttonStart');
 const messageStart = document.getElementsByClassName('message-start');
 const messageWin = document.getElementsByClassName('message-win');
@@ -61,8 +63,8 @@ function restart() {
     messageWin[0].classList.add('hidden');
   }
 
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
+  for (let i = 0; i < cellValue4; i++) {
+    for (let j = 0; j < cellValue4; j++) {
       table[i][j] = 0;
 
       const identifier = i.toString() + j.toString();
@@ -74,10 +76,14 @@ function restart() {
 }
 
 function newCell() {
+  if (startButton.textContent === 'Start') {
+    return;
+  }
+
   const freeCells = [];
 
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
+  for (let i = 0; i < cellValue4; i++) {
+    for (let j = 0; j < cellValue4; j++) {
       if (table[i][j] === 0) {
         freeCells.push(i.toString() + j.toString());
       }
@@ -87,19 +93,19 @@ function newCell() {
   const randCellInd = Math.floor(Math.random() * freeCells.length);
   const identifier = freeCells[randCellInd];
   const ranInd = Math.floor(Math.random() * 10);
-  const ranVal = ranvals[ranInd];
+  const ranVal = randomValues[ranInd];
   const randomRow = Number(identifier[0]);
   const randomColumn = Number(identifier[1]);
 
-  if (ranVal === 2) {
+  if (ranVal === cellValue2) {
     const identifiedCell = document.getElementById(identifier);
 
-    table[randomRow][randomColumn] = 2;
+    table[randomRow][randomColumn] = cellValue2;
     identifiedCell.classList.add(`field-cell--2`);
   } else {
     const identifiedCell = document.getElementById(identifier);
 
-    table[randomRow][randomColumn] = 4;
+    table[randomRow][randomColumn] = cellValue4;
     identifiedCell.classList.add(`field-cell--4`);
   }
 
@@ -107,17 +113,20 @@ function newCell() {
 }
 
 function moveLeft() {
-  for (let i = 0; i < 4; i++) {
-    for (let j = 1; j < 4; j++) {
+  if (startButton.textContent === 'Start') {
+    return;
+  }
+
+  for (let i = 0; i < cellValue4; i++) {
+    for (let j = 1; j < cellValue4; j++) {
+      const identifier = i.toString() + j.toString();
+      const identifierPrev = i.toString() + (j - 1).toString();
+      const identifiedCell = document.getElementById(identifier);
+      const identifiedPrev = document.getElementById(identifierPrev);
+
       if (table[i][j] !== 0 && table[i][j - 1] === 0) {
         table[i][j - 1] = table[i][j];
         table[i][j] = 0;
-
-        const identifier = i.toString() + j.toString();
-        const identifierPrev = i.toString() + (j - 1).toString();
-        const identifiedCell = document.getElementById(identifier);
-        const identifiedPrev = document.getElementById(identifierPrev);
-
         identifiedCell.className = 'field-cell';
         identifiedPrev.className = 'field-cell';
         identifiedPrev.classList.add(`field-cell--${table[i][j - 1]}`);
@@ -129,17 +138,11 @@ function moveLeft() {
         const scoreText = score.toString();
 
         scoreElement.textContent = scoreText;
-
-        const identifier = i.toString() + j.toString();
-        const identifierPrev = i.toString() + (j - 1).toString();
-        const identifiedCell = document.getElementById(identifier);
-        const identifiedPrev = document.getElementById(identifierPrev);
-
         identifiedCell.className = 'field-cell';
         identifiedPrev.className = 'field-cell';
         identifiedPrev.classList.add(`field-cell--${table[i][j - 1]}`);
 
-        if (table[i][j - 1] === 2048) {
+        if (table[i][j - 1] === winValue) {
           messageWin[0].classList.remove('hidden');
         }
       }
@@ -149,16 +152,20 @@ function moveLeft() {
 }
 
 function moveRight() {
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 3; j++) {
+  if (startButton.textContent === 'Start') {
+    return;
+  }
+
+  for (let i = 0; i < cellValue4; i++) {
+    for (let j = 0; j < cellValue4 - 1; j++) {
+      const identifier = i.toString() + j.toString();
+      const identifierNext = i.toString() + (j + 1).toString();
+      const identifiedCell = document.getElementById(identifier);
+      const identifiedNext = document.getElementById(identifierNext);
+
       if (table[i][j] !== 0 && table[i][j + 1] === 0) {
         table[i][j + 1] = table[i][j];
         table[i][j] = 0;
-
-        const identifier = i.toString() + j.toString();
-        const identifierNext = i.toString() + (j + 1).toString();
-        const identifiedCell = document.getElementById(identifier);
-        const identifiedNext = document.getElementById(identifierNext);
 
         identifiedCell.className = 'field-cell';
         identifiedNext.className = 'field-cell';
@@ -172,16 +179,11 @@ function moveRight() {
 
         scoreElement.textContent = scoreText;
 
-        const identifier = i.toString() + j.toString();
-        const identifierNext = i.toString() + (j + 1).toString();
-        const identifiedCell = document.getElementById(identifier);
-        const identifiedNext = document.getElementById(identifierNext);
-
         identifiedCell.className = 'field-cell';
         identifiedNext.className = 'field-cell';
         identifiedNext.classList.add(`field-cell--${table[i][j + 1]}`);
 
-        if (table[i][j + 1] === 2048) {
+        if (table[i][j + 1] === winValue) {
           messageWin[0].classList.remove('hidden');
         }
       }
@@ -191,16 +193,20 @@ function moveRight() {
 }
 
 function moveUp() {
-  for (let i = 1; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
+  if (startButton.textContent === 'Start') {
+    return;
+  }
+
+  for (let i = 1; i < cellValue4; i++) {
+    for (let j = 0; j < cellValue4; j++) {
+      const identifier = i.toString() + j.toString();
+      const identifierNext = (i - 1).toString() + j.toString();
+      const identifiedCell = document.getElementById(identifier);
+      const identifiedNext = document.getElementById(identifierNext);
+
       if (table[i][j] !== 0 && table[i - 1][j] === 0) {
         table[i - 1][j] = table[i][j];
         table[i][j] = 0;
-
-        const identifier = i.toString() + j.toString();
-        const identifierNext = (i - 1).toString() + j.toString();
-        const identifiedCell = document.getElementById(identifier);
-        const identifiedNext = document.getElementById(identifierNext);
 
         identifiedCell.className = 'field-cell';
         identifiedNext.className = 'field-cell';
@@ -214,16 +220,11 @@ function moveUp() {
 
         scoreElement.textContent = scoreText;
 
-        const identifier = i.toString() + j.toString();
-        const identifierNext = (i - 1).toString() + j.toString();
-        const identifiedCell = document.getElementById(identifier);
-        const identifiedNext = document.getElementById(identifierNext);
-
         identifiedCell.className = 'field-cell';
         identifiedNext.className = 'field-cell';
         identifiedNext.classList.add(`field-cell--${table[i - 1][j]}`);
 
-        if (table[i - 1][j] === 2048) {
+        if (table[i - 1][j] === winValue) {
           messageWin[0].classList.remove('hidden');
         }
       }
@@ -233,16 +234,20 @@ function moveUp() {
 }
 
 function moveDown() {
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 4; j++) {
+  if (startButton.textContent === 'Start') {
+    return;
+  }
+
+  for (let i = 0; i < cellValue4 - 1; i++) {
+    for (let j = 0; j < cellValue4; j++) {
+      const identifier = i.toString() + j.toString();
+      const identifierNext = (i + 1).toString() + j.toString();
+      const identifiedCell = document.getElementById(identifier);
+      const identifiedNext = document.getElementById(identifierNext);
+
       if (table[i][j] !== 0 && table[i + 1][j] === 0) {
         table[i + 1][j] = table[i][j];
         table[i][j] = 0;
-
-        const identifier = i.toString() + j.toString();
-        const identifierNext = (i + 1).toString() + j.toString();
-        const identifiedCell = document.getElementById(identifier);
-        const identifiedNext = document.getElementById(identifierNext);
 
         identifiedCell.className = 'field-cell';
         identifiedNext.className = 'field-cell';
@@ -255,11 +260,6 @@ function moveDown() {
         const scoreText = score.toString();
 
         scoreElement.textContent = scoreText;
-
-        const identifier = i.toString() + j.toString();
-        const identifierNext = (i + 1).toString() + j.toString();
-        const identifiedCell = document.getElementById(identifier);
-        const identifiedNext = document.getElementById(identifierNext);
 
         identifiedCell.className = 'field-cell';
         identifiedNext.className = 'field-cell';
@@ -278,24 +278,24 @@ function check() {
   let counterFree = 16;
   let counterMoves = 0;
 
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
+  for (let i = 0; i < cellValue4; i++) {
+    for (let j = 0; j < cellValue4; j++) {
       if (table[i][j] !== 0) {
         counterFree--;
       }
     }
   }
 
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 3; j++) {
+  for (let i = 0; i < cellValue4; i++) {
+    for (let j = 0; j < cellValue4 - 1; j++) {
       if (table[i][j] === table[i][j + 1]) {
         counterMoves++;
       }
     }
   }
 
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 4; j++) {
+  for (let i = 0; i < cellValue4 - 1; i++) {
+    for (let j = 0; j < cellValue4; j++) {
       if (table[i][j] === table[i + 1][j]) {
         counterMoves++;
       }
