@@ -57,16 +57,12 @@ document.addEventListener('keyup', e => {
 
   if (e.code === 'ArrowLeft') {
     slideLeft();
-    setNum();
   } else if (e.code === 'ArrowRight') {
     slideRight();
-    setNum();
   } else if (e.code === 'ArrowUp') {
     slideUp();
-    setNum();
   } else if (e.code === 'ArrowDown') {
     slideDown();
-    setNum();
   }
 
   document.querySelector('.game-score').innerHTML = score;
@@ -102,22 +98,26 @@ document.addEventListener('touchend', e => {
 
   const deltaX = endX - startX;
   const deltaY = endY - startY;
+  const minSwipeDistance = 20;
 
   if (Math.abs(deltaX) > Math.abs(deltaY)) {
-    if (deltaX > 0) {
-      slideRight();
-    } else {
-      slideLeft();
+    if (Math.abs(deltaX) > minSwipeDistance) {
+      if (deltaX > 0) {
+        slideRight();
+      } else {
+        slideLeft();
+      }
     }
   } else {
-    if (deltaY > 0) {
-      slideDown();
-    } else {
-      slideUp();
+    if (Math.abs(deltaY) > minSwipeDistance) {
+      if (deltaY > 0) {
+        slideDown();
+      } else {
+        slideUp();
+      }
     }
   }
 
-  setNum();
   document.querySelector('.game-score').innerHTML = score;
 
   if (isGameOver()) {
@@ -195,11 +195,18 @@ function slide(row) {
 }
 
 function slideLeft() {
+  let moved = false;
+
   for (let r = 0; r < rows; r++) {
     let row = board[r];
+    const originalRow = [...row];
 
     row = slide(row);
     board[r] = row;
+
+    if (!arraysEqual(originalRow, row)) {
+      moved = true;
+    }
 
     for (let c = 0; c < columns; c++) {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
@@ -207,17 +214,28 @@ function slideLeft() {
 
       updateTile(tile, num);
     }
+  }
+
+  if (moved) {
+    setNum();
   }
 };
 
 function slideRight() {
+  let moved = false;
+
   for (let r = 0; r < rows; r++) {
     let row = board[r];
+    const originalRow = [...row];
 
     row.reverse();
     row = slide(row);
     row.reverse();
     board[r] = row;
+
+    if (!arraysEqual(originalRow, row)) {
+      moved = true;
+    }
 
     for (let c = 0; c < columns; c++) {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
@@ -226,13 +244,24 @@ function slideRight() {
       updateTile(tile, num);
     }
   }
+
+  if (moved) {
+    setNum();
+  }
 };
 
 function slideUp() {
+  let moved = false;
+
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+    const originalRow = [...row];
 
     row = slide(row);
+
+    if (!arraysEqual(originalRow, row)) {
+      moved = true;
+    }
 
     for (let r = 0; r < rows; r++) {
       board[r][c] = row[r];
@@ -243,15 +272,26 @@ function slideUp() {
       updateTile(tile, num);
     }
   }
+
+  if (moved) {
+    setNum();
+  }
 }
 
 function slideDown() {
+  let moved = false;
+
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+    const originalRow = [...row];
 
     row.reverse();
     row = slide(row);
     row.reverse();
+
+    if (!arraysEqual(originalRow, row)) {
+      moved = true;
+    }
 
     for (let r = 0; r < rows; r++) {
       board[r][c] = row[r];
@@ -261,6 +301,10 @@ function slideDown() {
 
       updateTile(tile, num);
     }
+  }
+
+  if (moved) {
+    setNum();
   }
 }
 
@@ -289,7 +333,7 @@ function setNum() {
 
     if (board[r][c] === 0) {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
-      const num = Math.random() < 0.75 ? 2 : 4;
+      const num = Math.random() < 0.9 ? 2 : 4;
 
       board[r][c] = num;
       tile.innerText = num;
@@ -330,4 +374,18 @@ function isWinner() {
   }
 
   return false;
+}
+
+function arraysEqual(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
