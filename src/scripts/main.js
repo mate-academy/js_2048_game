@@ -80,6 +80,55 @@ document.addEventListener('keyup', e => {
   }
 });
 
+// for mobile-devices
+let startX, startY, endX, endY;
+
+document.addEventListener('touchstart', e => {
+  if (!gameStarted) {
+    return;
+  }
+
+  startX = e.touches[0].pageX;
+  startY = e.touches[0].pageY;
+});
+
+document.addEventListener('touchend', e => {
+  if (!gameStarted) {
+    return;
+  }
+
+  endX = e.changedTouches[0].pageX;
+  endY = e.changedTouches[0].pageY;
+
+  const deltaX = endX - startX;
+  const deltaY = endY - startY;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > 0) {
+      slideRight();
+    } else {
+      slideLeft();
+    }
+  } else {
+    if (deltaY > 0) {
+      slideDown();
+    } else {
+      slideUp();
+    }
+  }
+
+  setNum();
+  document.querySelector('.game-score').innerHTML = score;
+
+  if (isGameOver()) {
+    loseMessage.classList.remove('hidden');
+  }
+
+  if (isWinner()) {
+    winMessage.classList.remove('hidden');
+  }
+});
+
 button.addEventListener('click', () => {
   if (gameStarted) {
     button.classList.remove('restart');
