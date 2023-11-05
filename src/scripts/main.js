@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     scoreElement.innerText = score;
     gameActive = false;
     messageStart.classList.remove('hidden');
+    messageLose.classList.add('hidden');
     renderGameBoard();
 
     if (isGameOver()) {
@@ -34,21 +35,16 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function startGame() {
-    if (gameActive) {
-      initializeGame();
-      startButton.textContent = 'Start';
-      startButton.classList.remove('restart');
-      messageStart.classList.remove('hidden');
-    } else {
-      initializeGame();
-      createRandomCell();
-      createRandomCell();
-      renderGameBoard();
-      gameActive = true;
-      startButton.textContent = 'Restart';
-      startButton.classList.add('restart');
-      messageStart.classList.add('hidden');
-    }
+    initializeGame();
+    createRandomCell();
+    createRandomCell();
+    renderGameBoard();
+    gameActive = true;
+    startButton.textContent = 'Restart';
+    startButton.classList.add('restart');
+    messageStart.classList.add('hidden');
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
   }
 
   function isGameOver() {
