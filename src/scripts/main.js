@@ -9,6 +9,10 @@ const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 const button = document.querySelector('.button');
 let gameStarted = false;
+const LEFT = 'ArrowLeft';
+const RIGHT = 'ArrowRight';
+const UP = 'ArrowUp';
+const DOWN = 'ArrowDown';
 
 window.onload = function() {
   setGame();
@@ -55,14 +59,22 @@ document.addEventListener('keyup', e => {
     return;
   }
 
-  if (e.code === 'ArrowLeft') {
-    slideLeft();
-  } else if (e.code === 'ArrowRight') {
-    slideRight();
-  } else if (e.code === 'ArrowUp') {
-    slideUp();
-  } else if (e.code === 'ArrowDown') {
-    slideDown();
+  switch (e.code) {
+    case LEFT:
+      slideLeft();
+      break;
+
+    case RIGHT:
+      slideRight();
+      break;
+
+    case UP:
+      slideUp();
+      break;
+
+    case DOWN:
+      slideDown();
+      break;
   }
 
   document.querySelector('.game-score').innerHTML = score;
