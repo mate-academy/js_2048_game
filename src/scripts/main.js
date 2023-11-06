@@ -61,7 +61,7 @@ class Game {
       const cellIndex = Math.floor(Math.random() * this.columns);
 
       if (this.board[rowIndex][cellIndex] === 0) {
-        this.board[rowIndex][cellIndex] = 2;
+        this.board[rowIndex][cellIndex] = Math.random() < 0.9 ? 2 : 4;
         this.drawCell();
 
         found = true;
@@ -73,8 +73,22 @@ class Game {
     return this.board.some(row => row.some(cell => cell === 0));
   }
 
+  hasCellsToMerge(board) {
+    return board.some(row => row
+      .some((cell, index) => cell === row[index + 1]));
+  }
+
   isWin() {
     return this.board.some(row => row.some(cell => cell === 2048));
+  }
+
+  isGameOver() {
+    if (this.hasEmptyCell()) {
+      return false;
+    }
+
+    return !this.hasCellsToMerge(this.board)
+      && !this.hasCellsToMerge(this.transformBoard(this.board));
   }
 
   drawCell() {
@@ -98,7 +112,7 @@ class Game {
       return;
     }
 
-    if (!this.hasEmptyCell()) {
+    if (this.isGameOver()) {
       this.messageLose.classList.remove('hidden');
 
       return;
@@ -155,9 +169,8 @@ class Game {
     return currentRow;
   }
 
-  transformBoard() {
-    this.board = this.board[0]
-      .map((_, index) => this.board.map(row => row[index]));
+  transformBoard(board = this.board) {
+    return board[0].map((_, index) => this.board.map(row => row[index]));
   };
 
   slideLeft() {
@@ -169,15 +182,15 @@ class Game {
   }
 
   slideUp() {
-    this.transformBoard();
+    this.board = this.transformBoard();
     this.slideLeft();
-    this.transformBoard();
+    this.board = this.transformBoard();
   };
 
   slideDown() {
-    this.transformBoard();
+    this.board = this.transformBoard();
     this.slideRight();
-    this.transformBoard();
+    this.board = this.transformBoard();
   };
 }
 
