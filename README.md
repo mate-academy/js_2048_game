@@ -1,1 +1,1 @@
-
+Dive into the world of numerical strategy and logic with our rendition of the immensely popular 2048 game, crafted entirely in native JavaScript. Get ready to challenge your mind and have hours of fun with this addictive puzzle game.
