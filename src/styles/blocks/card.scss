@@ -22,7 +22,6 @@
   color: $c-accent-text;
   user-select: none;
 
-  animation: createCard 0.2s forwards;
   transition: $a-transition-time-card;
 
   @for $i from 1 through 12 {
@@ -37,14 +36,4 @@
     }
   }
 
-}
-
-@keyframes createCard {
-  from {
-    transform: scale(0);
-  }
-
-  to {
-    transform: scale(1);
-  }
 }
