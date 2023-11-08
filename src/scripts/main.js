@@ -74,7 +74,7 @@ function setGame() {
   }
   setTwo();
   setTwo();
-  // created 2 to start the game
+  // created two 2 to start the game
 }
 
 function updateCell(cell, num) {
@@ -85,10 +85,12 @@ function updateCell(cell, num) {
   if (num > 0) {
     cell.innerText = num.toString();
 
-    if (num <= 4096) {
+    if (num <= 2048) {
       cell.classList.add('field-cell--' + num.toString());
-    } else {
-      cell.classList.add('field-cell--8192');
+
+      if (num === 2048) {
+        messageWin();
+      }
     }
   }
 }
