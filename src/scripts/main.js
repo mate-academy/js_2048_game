@@ -75,7 +75,6 @@ function setGame() {
   }
   setTwo();
   setTwo();
-  // created two 2 to start the game
 }
 
 function updateCell(cell, num) {
@@ -97,19 +96,21 @@ function updateCell(cell, num) {
 }
 
 document.addEventListener('keyup', (element) => {
-  if (element.code === 'ArrowLeft') {
-    moveLeft();
-    setTwo();
-  } else if (element.code === 'ArrowRight') {
-    moveRight();
-    setTwo();
-  } else if (element.code === 'ArrowUp') {
-    moveUp();
-    setTwo();
-  } else if (element.code === 'ArrowDown') {
-    moveDown();
-    setTwo();
+  switch (element.code) {
+    case 'ArrowLeft':
+      moveLeft();
+      break;
+    case 'ArrowRight':
+      moveRight();
+      break;
+    case 'ArrowUp':
+      moveUp();
+      break;
+    case 'ArrowDown':
+      moveDown();
+      break;
   }
+  setTwo();
 
   document.getElementById('score').innerText = score;
 });
@@ -118,8 +119,8 @@ function filterZero(row) {
   return row.filter(num => num !== 0);
 }
 
-function move(row) { // [0, 2, 2, 2]
-  let filteredRow = filterZero(row); // [2, 2, 2]
+function move(row) {
+  let filteredRow = filterZero(row);
 
   for (let ind = 0; ind < filteredRow.length - 1; ind++) {
     if (filteredRow[ind] === filteredRow[ind + 1]) {
@@ -127,13 +128,13 @@ function move(row) { // [0, 2, 2, 2]
       filteredRow[ind + 1] = 0;
       score += filteredRow[ind];
     }
-  } // [4, 0, 2]
+  }
 
-  filteredRow = filterZero(filteredRow); // [4, 2]
+  filteredRow = filterZero(filteredRow);
 
   while (filteredRow.length < columns) {
     filteredRow.push(0);
-  } // [4, 2, 0, 0]
+  }
 
   return filteredRow;
 }
@@ -156,11 +157,11 @@ function moveLeft() {
 
 function moveRight() {
   for (let r = 0; r < rows; r++) {
-    let row = field[r]; // [2, 2, 2, 0]
+    let row = field[r];
 
-    row.reverse(); // [0, 2, 2, 2]
-    row = move(row);// [4, 2, 0, 0]
-    field[r] = row.reverse(); // [0, 0, 2, 4]
+    row.reverse();
+    row = move(row);
+    field[r] = row.reverse();
 
     for (let c = 0; c < columns; c++) {
       const cell = document.getElementById(r.toString() + '-' + c.toString());
@@ -176,10 +177,6 @@ function moveUp() {
     let row = [field[0][c], field[1][c], field[2][c], field[3][c]];
 
     row = move(row);
-    // board[0][c] = row[0];
-    // board[1][c] = row[1];
-    // board[2][c] = row[2];
-    // board[3][c] = row[3];
 
     for (let r = 0; r < rows; r++) {
       field[r][c] = row[r];
@@ -196,9 +193,9 @@ function moveDown() {
   for (let c = 0; c < columns; c++) {
     let row = [field[0][c], field[1][c], field[2][c], field[3][c]];
 
-    row.reverse(); // [0, 2, 2, 2]
-    row = move(row);// [4, 2, 0, 0]
-    row.reverse(); // [0, 0, 2, 4]
+    row.reverse();
+    row = move(row);
+    row.reverse();
 
     for (let r = 0; r < rows; r++) {
       field[r][c] = row[r];
@@ -251,7 +248,7 @@ function setTwo() {
 function hasEmptyCell() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      if (field[r][c] === 0) { // at least one zero in the field
+      if (field[r][c] === 0) {
         return true;
       }
     }
