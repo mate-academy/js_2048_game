@@ -1,4 +1,4 @@
-$cell-size: 90px;
+$cell-size: 120px;
 
 $rows-count: 4;
 $col-count: 4;
@@ -33,9 +33,9 @@ body {
   box-sizing: border-box;
   font-size: 40px;
   font-weight: bold;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &--2 {
     background: #eee4da;
@@ -145,6 +145,7 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+  outline: 0;
 }
 
 .start {
@@ -192,7 +193,6 @@ h1 {
 }
 
 .message-container {
-
   width: 100%;
   height: 150px;
 }

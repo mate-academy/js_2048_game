@@ -6,23 +6,32 @@ let score = 0;
 let field;
 const page = document.querySelector('.container');
 const startButton = document.getElementById('start');
+let gameStarted = false;
 
-window.onload = function() {
-  startButton.addEventListener('click', function() {
-    if (page.classList.contains('start')) {
-      page.classList.remove('start');
-      page.classList.add('restart');
-      startButton.innerText = 'Restart';
-      setGame();
-    } else if (page.classList.contains('restart')) {
-      clearGame();
-      page.classList.remove('restart');
-      page.classList.add('start');
+startButton.addEventListener('click', function() {
+  if (startButton.classList.contains('start')) {
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+    startButton.innerText = 'Restart';
+
+    if (!gameStarted) {
+      const messageStart = page.querySelector('.message-start');
+
+      messageStart.classList.add('hidden');
+      gameStarted = true;
       setGame();
     }
-  });
-  setGame();
-};
+  } else if (startButton.classList.contains('restart')) {
+    clearGame();
+    startButton.innerText = 'Restart';
+
+    const messageLose = page.querySelector('.message-lose');
+
+    messageLose.classList.add('hidden');
+    gameStarted = true;
+    setGame();
+  }
+});
 
 function clearGame() {
   startButton.innerText = 'Start';
@@ -47,6 +56,10 @@ function setGame() {
     [0, 0, 0, 0],
   ];
 
+  const fieldContainer = document.getElementById('field');
+
+  fieldContainer.innerHTML = '';
+
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       const cell = document.createElement('div');
@@ -59,10 +72,9 @@ function setGame() {
       document.getElementById('field').append(cell);
     }
   }
-
+  setTwo();
+  setTwo();
   // created 2 to start the game
-  setTwo();
-  setTwo();
 }
 
 function updateCell(cell, num) {
@@ -196,24 +208,38 @@ function moveDown() {
   }
 }
 
+function messageGameOver() {
+  const messageLose = page.querySelector('.message-lose');
+
+  messageLose.classList.remove('hidden');
+}
+
+function messageWin() {
+  const winningMessage = page.querySelector('.message-win');
+
+  winningMessage.classList.remove('hidden');
+}
+
 function setTwo() {
   if (!hasEmptyCell()) {
-    return;
+    return messageGameOver();
   }
 
   let found = false;
+
+  const value = Math.random() < 0.9 ? 2 : 4;
 
   while (!found) {
     const r = Math.floor(Math.random() * rows);
     const c = Math.floor(Math.random() * columns);
 
     if (field[r][c] === 0) {
-      field[r][c] = 2;
+      field[r][c] = value;
 
       const cell = document.getElementById(r.toString() + '-' + c.toString());
 
-      cell.innerText = '2';
-      cell.classList.add('field-cell--2');
+      cell.innerText = value.toString();
+      cell.classList.add('field-cell--' + value);
       found = true;
     }
   }
