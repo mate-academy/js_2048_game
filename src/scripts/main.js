@@ -37,21 +37,22 @@ function func(param) {
 }
 
 function startFunction() {
-  if (startButton.textContent === 'Restart') {
-    restart();
-    messageStart[0].classList.remove('hidden');
-  } else {
+  if (startButton.classList.contains('start')) {
+    messageStart[0].classList.add('hidden');
+    startButton.classList.remove('start');
     startButton.classList.add('restart');
     startButton.textContent = 'Restart';
-    newCell();
-    newCell();
-    messageStart[0].classList.add('hidden');
   }
+
+  if (startButton.classList.contains('restart')) {
+    restart();
+  }
+
+  newCell();
+  newCell();
 }
 
 function restart() {
-  startButton.classList.remove('restart');
-  startButton.textContent = 'Start';
   scoreElement.textContent = '0';
   score = 0;
 
