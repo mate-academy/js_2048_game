@@ -36,6 +36,7 @@ startButton.addEventListener('click', function() {
 function clearGame() {
   startButton.innerText = 'Start';
   score = 0;
+  document.getElementById('score').innerText = score;
 
   field = new Array(rows).fill(0).map(() => new Array(columns).fill(0));
 
