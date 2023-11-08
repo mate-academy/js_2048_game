@@ -252,6 +252,7 @@ board.swipe = function(direction) {
 
     if (targetCell.canMergeWith(cell)) {
       targetCell.mergeWith(cell);
+      targetCell.wasMerged = true;
       continue;
     }
 
@@ -261,6 +262,10 @@ board.swipe = function(direction) {
     targetCell.linkCard = card;
     cell.resetLinkedCard();
   }
+
+  this.forEach(cell => {
+    cell.wasMerged = false;
+  });
 
   if (needSpawn) {
     this.spawnCard();
@@ -273,6 +278,7 @@ function createCell(cell, i) {
 
   cell.x = x;
   cell.y = y;
+  cell.wasMerged = false;
 
   cell.isEmpty = function() {
     return this.linkCard === null;
@@ -280,7 +286,7 @@ function createCell(cell, i) {
 
   cell.canMergeWith = function(cell2) {
     return !this.isEmpty() && !cell2.isEmpty()
-      && this.linkCard.weight === cell2.linkCard.weight;
+    && this.linkCard.weight === cell2.linkCard.weight;
   };
 
   cell.mergeWith = function(cell2) {
@@ -299,6 +305,8 @@ function createCell(cell, i) {
   cell.resetLinkedCard = function() {
     this.linkCard = null;
   };
+
+  cell.resetLinkedCard();
 
   return cell;
 }
