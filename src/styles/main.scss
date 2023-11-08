@@ -23,55 +23,88 @@ body {
 
   &--2 {
     background: #eee4da;
+    &::before {
+      content: "2";
+    }
   }
 
   &--4 {
     background: #ede0c8;
+    &::before {
+      content: "4";
+    }
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
+    &::before {
+      content: "8";
+    }
   }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+    &::before {
+      content: "16";
+    }
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+    &::before {
+      content: "32";
+    }
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+    &::before {
+      content: "64";
+    }
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    &::before {
+      content: "128";
+    }
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    &::before {
+      content: "256";
+    }
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    &::before {
+      content: "512";
+    }
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+    &::before {
+      content: "1024";
+    }
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    &::before {
+      content: "2048";
+    }
   }
 }
 
@@ -140,6 +173,7 @@ h1 {
 .start {
   background: #1dae28;
   font-size: 20px;
+  text-align: center;
 
   &:hover {
     background: #179921;
@@ -148,6 +182,8 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  text-align: center;
+  font-size: 18px;
 
   &:hover {
     background: #f87474;
