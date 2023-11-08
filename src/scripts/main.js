@@ -4,15 +4,18 @@ document.addEventListener('keydown', param => func(param.key));
 
 const table = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 const randomValues = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
-let score = 0;
 const cellValue2 = 2;
 const cellValue4 = 4;
+const tableSize = 4;
 const winValue = 2048;
 const startButton = document.getElementById('buttonStart');
 const messageStart = document.getElementsByClassName('message-start');
 const messageWin = document.getElementsByClassName('message-win');
 const messageLose = document.getElementsByClassName('message-lose');
 const scoreElement = document.getElementById('score');
+let score = 0;
+let moved = 0;
+let merged = 0;
 
 startButton.addEventListener('click', startFunction);
 
@@ -20,19 +23,15 @@ function func(param) {
   switch (param) {
     case 'ArrowLeft':
       moveLeft();
-      newCell();
       break;
     case 'ArrowRight':
       moveRight();
-      newCell();
       break;
     case 'ArrowUp':
       moveUp();
-      newCell();
       break;
     case 'ArrowDown':
       moveDown();
-      newCell();
       break;
   }
 }
@@ -44,6 +43,7 @@ function startFunction() {
   } else {
     startButton.classList.add('restart');
     startButton.textContent = 'Restart';
+    newCell();
     newCell();
     messageStart[0].classList.add('hidden');
   }
@@ -113,163 +113,97 @@ function newCell() {
 }
 
 function moveLeft() {
+  const a = 0;
+  const b = -1;
+
   if (startButton.textContent === 'Start') {
     return;
   }
 
-  for (let i = 0; i < cellValue4; i++) {
-    for (let j = 1; j < cellValue4; j++) {
-      const identifier = i.toString() + j.toString();
-      const identifierPrev = i.toString() + (j - 1).toString();
-      const identifiedCell = document.getElementById(identifier);
-      const identifiedPrev = document.getElementById(identifierPrev);
+  moved = 0;
+  merged = 0;
 
-      if (table[i][j] !== 0 && table[i][j - 1] === 0) {
-        table[i][j - 1] = table[i][j];
-        table[i][j] = 0;
-        identifiedCell.className = 'field-cell';
-        identifiedPrev.className = 'field-cell';
-        identifiedPrev.classList.add(`field-cell--${table[i][j - 1]}`);
-      } else if (table[i][j] === table[i][j - 1]) {
-        score += table[i][j] * 2;
-        table[i][j - 1] = table[i][j] * 2;
-        table[i][j] = 0;
-
-        const scoreText = score.toString();
-
-        scoreElement.textContent = scoreText;
-        identifiedCell.className = 'field-cell';
-        identifiedPrev.className = 'field-cell';
-        identifiedPrev.classList.add(`field-cell--${table[i][j - 1]}`);
-
-        if (table[i][j - 1] === winValue) {
-          messageWin[0].classList.remove('hidden');
-        }
-      }
+  for (let i = 0; i < tableSize; i++) {
+    for (let j = 1; j < tableSize; j++) {
+      merge(i, j, a, b);
+      move(i, j, a, b);
     }
+  }
+
+  if (moved === 1 || merged === 1) {
+    newCell();
   }
   check();
 }
 
 function moveRight() {
+  const a = 0;
+  const b = 1;
+
   if (startButton.textContent === 'Start') {
     return;
   }
 
-  for (let i = 0; i < cellValue4; i++) {
-    for (let j = 0; j < cellValue4 - 1; j++) {
-      const identifier = i.toString() + j.toString();
-      const identifierNext = i.toString() + (j + 1).toString();
-      const identifiedCell = document.getElementById(identifier);
-      const identifiedNext = document.getElementById(identifierNext);
+  moved = 0;
+  merged = 0;
 
-      if (table[i][j] !== 0 && table[i][j + 1] === 0) {
-        table[i][j + 1] = table[i][j];
-        table[i][j] = 0;
-
-        identifiedCell.className = 'field-cell';
-        identifiedNext.className = 'field-cell';
-        identifiedNext.classList.add(`field-cell--${table[i][j + 1]}`);
-      } else if (table[i][j] === table[i][j + 1]) {
-        score += table[i][j] * 2;
-        table[i][j + 1] = table[i][j] * 2;
-        table[i][j] = 0;
-
-        const scoreText = score.toString();
-
-        scoreElement.textContent = scoreText;
-
-        identifiedCell.className = 'field-cell';
-        identifiedNext.className = 'field-cell';
-        identifiedNext.classList.add(`field-cell--${table[i][j + 1]}`);
-
-        if (table[i][j + 1] === winValue) {
-          messageWin[0].classList.remove('hidden');
-        }
-      }
+  for (let i = 0; i < tableSize; i++) {
+    for (let j = tableSize - 1; j >= 0; j--) {
+      merge(i, j, a, b);
+      move(i, j, a, b);
     }
+  }
+
+  if (moved === 1 || merged === 1) {
+    newCell();
   }
   check();
 }
 
 function moveUp() {
+  const a = -1;
+  const b = 0;
+
   if (startButton.textContent === 'Start') {
     return;
   }
 
-  for (let i = 1; i < cellValue4; i++) {
-    for (let j = 0; j < cellValue4; j++) {
-      const identifier = i.toString() + j.toString();
-      const identifierNext = (i - 1).toString() + j.toString();
-      const identifiedCell = document.getElementById(identifier);
-      const identifiedNext = document.getElementById(identifierNext);
+  moved = 0;
+  merged = 0;
 
-      if (table[i][j] !== 0 && table[i - 1][j] === 0) {
-        table[i - 1][j] = table[i][j];
-        table[i][j] = 0;
-
-        identifiedCell.className = 'field-cell';
-        identifiedNext.className = 'field-cell';
-        identifiedNext.classList.add(`field-cell--${table[i - 1][j]}`);
-      } else if (table[i][j] === table[i - 1][j]) {
-        score += table[i][j] * 2;
-        table[i - 1][j] = table[i][j] * 2;
-        table[i][j] = 0;
-
-        const scoreText = score.toString();
-
-        scoreElement.textContent = scoreText;
-
-        identifiedCell.className = 'field-cell';
-        identifiedNext.className = 'field-cell';
-        identifiedNext.classList.add(`field-cell--${table[i - 1][j]}`);
-
-        if (table[i - 1][j] === winValue) {
-          messageWin[0].classList.remove('hidden');
-        }
-      }
+  for (let i = 1; i < tableSize; i++) {
+    for (let j = 0; j < tableSize; j++) {
+      merge(i, j, a, b);
+      move(i, j, a, b);
     }
+  }
+
+  if (moved === 1 || merged === 1) {
+    newCell();
   }
   check();
 }
 
 function moveDown() {
+  const a = 1;
+  const b = 0;
+
   if (startButton.textContent === 'Start') {
     return;
   }
 
-  for (let i = 0; i < cellValue4 - 1; i++) {
-    for (let j = 0; j < cellValue4; j++) {
-      const identifier = i.toString() + j.toString();
-      const identifierNext = (i + 1).toString() + j.toString();
-      const identifiedCell = document.getElementById(identifier);
-      const identifiedNext = document.getElementById(identifierNext);
+  moved = 0;
+  merged = 0;
 
-      if (table[i][j] !== 0 && table[i + 1][j] === 0) {
-        table[i + 1][j] = table[i][j];
-        table[i][j] = 0;
-
-        identifiedCell.className = 'field-cell';
-        identifiedNext.className = 'field-cell';
-        identifiedNext.classList.add(`field-cell--${table[i + 1][j]}`);
-      } else if (table[i][j] === table[i + 1][j]) {
-        score += table[i][j] * 2;
-        table[i + 1][j] = table[i][j] * 2;
-        table[i][j] = 0;
-
-        const scoreText = score.toString();
-
-        scoreElement.textContent = scoreText;
-
-        identifiedCell.className = 'field-cell';
-        identifiedNext.className = 'field-cell';
-        identifiedNext.classList.add(`field-cell--${table[i + 1][j]}`);
-
-        if (table[i + 1][j] === 2048) {
-          messageWin[0].classList.remove('hidden');
-        }
-      }
+  for (let i = tableSize - 2; i >= 0; i--) {
+    for (let j = 0; j < tableSize; j++) {
+      merge(i, j, a, b);
+      move(i, j, a, b);
     }
+  }
+
+  if (moved === 1 || merged === 1) {
+    newCell();
   }
   check();
 }
@@ -304,5 +238,73 @@ function check() {
 
   if (counterFree === 0 && counterMoves === 0) {
     messageLose[0].classList.remove('hidden');
+  }
+}
+
+function merge(i, j, a = 0, b = 0) {
+  if (table[i][j] === table[i + a][j + b] && table[i + a][j + b] !== 0) {
+    const identifier = i.toString() + j.toString();
+    const identifierPrev = (i + a).toString() + (j + b).toString();
+    const identifiedCell = document.getElementById(identifier);
+    const identifiedPrev = document.getElementById(identifierPrev);
+
+    score += table[i][j] * 2;
+    table[i + a][j + b] = table[i][j] * 2;
+    table[i][j] = 0;
+    merged++;
+
+    const scoreText = score.toString();
+
+    scoreElement.textContent = scoreText;
+    identifiedCell.className = 'field-cell';
+    identifiedPrev.className = 'field-cell';
+    identifiedPrev.classList.add(`field-cell--${table[i + a][j + b]}`);
+
+    if (table[i + a][j + b] === winValue) {
+      messageWin[0].classList.remove('hidden');
+    };
+    merged = 1;
+  }
+}
+
+function move(i, j, a, b) {
+  let l = i;
+  let k = j;
+
+  if (table[i][j] !== 0 && table[i + a][j + b] === 0) {
+    while (table[l + a][k + b] === 0 && table[l][k] !== 0) {
+      const identifier = l.toString() + k.toString();
+      const identifierPrev = (l + a).toString() + (k + b).toString();
+      const identifiedCell = document.getElementById(identifier);
+      const identifiedPrev = document.getElementById(identifierPrev);
+
+      table[l + a][k + b] = table[l][k];
+      table[l][k] = 0;
+      identifiedCell.className = 'field-cell';
+      identifiedPrev.className = 'field-cell';
+      identifiedPrev.classList.add(`field-cell--${table[l + a][k + b]}`);
+
+      if (b === -1) {
+        k--;
+      } else if (b === 1) {
+        k++;
+      } else if (a === -1) {
+        l--;
+      } else if (a === 1) {
+        l++;
+      }
+
+      if (a === -1 && l === 0) {
+        moved = 1;
+
+        return;
+      } else if (a === 1 && l === 3) {
+        moved = 1;
+
+        return;
+      }
+    };
+    moved = 1;
+    merge(l, k, a, b);
   }
 }
