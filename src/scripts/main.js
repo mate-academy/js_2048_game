@@ -327,6 +327,8 @@ function checkLose() {
     for (let j = 1; j < field[i].length - 1; j++) {
       if (field[i][j].value === field[i][j - 1].value
         || field[i][j].value === field[i][j + 1].value
+        || field[i][j - 1].value === 0
+        || field[i][j + 1].value === 0
         || field[i][j].value === 0) {
         check.push(true);
       }
@@ -337,6 +339,8 @@ function checkLose() {
     for (let j = 0; j < field[i].length; j++) {
       if (field[i][j].value === field[i - 1][j].value
         || field[i][j].value === field[i + 1][j].value
+        || field[i - 1][j].value === 0
+        || field[i + 1][j].value === 0
         || field[i][j].value === 0) {
         check.push(true);
       }
