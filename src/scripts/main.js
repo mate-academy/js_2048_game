@@ -12,6 +12,7 @@ const rows = tbody.children;
 const header = document.querySelector('.game-header');
 const button = header.querySelector('button');
 const scoreValue = document.querySelector('.game-score');
+const cells = document.querySelectorAll('.field-cell');
 
 button.addEventListener('click', start);
 
@@ -19,39 +20,23 @@ document.addEventListener('keydown', e => {
   switch (e.key) {
     case 'ArrowDown':
       down();
-      startToRestart('restart');
-
-      if (notMove) {
-        newCell();
-      }
       break;
 
     case 'ArrowUp':
       up();
-      startToRestart('restart');
-
-      if (notMove) {
-        newCell();
-      }
       break;
 
     case 'ArrowRight':
       right();
-      startToRestart('restart');
-
-      if (notMove) {
-        newCell();
-      }
       break;
 
     case 'ArrowLeft':
       left();
-      startToRestart('restart');
-
-      if (notMove) {
-        newCell();
-      }
       break;
+  }
+
+  if (notMove) {
+    newCell();
   }
 
   const freeCell = some(rows, '');
@@ -92,17 +77,14 @@ function clearCell(cell) {
 function start() {
   reset();
   startGame();
-  showMessage('not');
+  showMessage('nothing');
+  startToRestart();
 }
 
 function reset() {
-  [...rows]
-    .map(row => [...row.children]
-      .map(cell => {
-        cell.innerText = '';
-        cell.className = 'field-cell';
-      }));
-  scoreValue.innerText = 0;
+  [...cells].map(cell => {
+    clearCell(cell);
+  });
 }
 
 function startValue() {
@@ -112,6 +94,7 @@ function startValue() {
 function addCell(coordX, coordY, value = startValue()) {
   rows[coordY].children[coordX].innerText = value;
   rows[coordY].children[coordX].classList.add(`field-cell--${value}`);
+  rows[coordY].children[coordX].classList.remove(`field-cell--${value / 2}`);
 }
 
 function newCell() {
@@ -143,20 +126,10 @@ function randomCell(amount) {
   }
 }
 
-function startToRestart(selector) {
-  switch (selector) {
-    case 'restart':
-      button.classList.remove('start');
-      button.classList.add('restart');
-      button.innerText = 'Restart';
-      break;
-
-    case 'start':
-      button.classList.add('start');
-      button.classList.remove('restart');
-      button.innerText = 'Start';
-      break;
-  }
+function startToRestart() {
+  button.classList.remove('start');
+  button.classList.add('restart');
+  button.innerText = 'Restart';
 }
 
 function showMessage(typeMessage) {
@@ -177,7 +150,7 @@ function showMessage(typeMessage) {
       winMessage.classList.remove('hidden');
       break;
 
-    case 'not':
+    case 'nothing':
       loseMessage.classList.add('hidden');
       winMessage.classList.add('hidden');
       startMessage.classList.add('hidden');
@@ -196,7 +169,7 @@ function down() {
       const beforeCell = rows[j - 1].children[i];
 
       if (currentCell.innerText === '' || beforeCell.innerText === '') {
-        break;
+        continue;
       }
 
       if (currentCell.innerText === beforeCell.innerText) {
@@ -244,7 +217,7 @@ function up() {
       const nextCell = rows[j + 1].children[i];
 
       if (currentCell.innerText === '' || nextCell.innerText === '') {
-        break;
+        continue;
       }
 
       if (currentCell.innerText === nextCell.innerText) {
@@ -292,7 +265,7 @@ function right() {
       const beforeCell = rows[i].children[j - 1];
 
       if (currentCell.innerText === '' || beforeCell.innerText === '') {
-        break;
+        continue;
       }
 
       if (currentCell.innerText === beforeCell.innerText) {
@@ -340,7 +313,7 @@ function left() {
       const nextCell = rows[i].children[j + 1];
 
       if (currentCell.innerText === '' || nextCell.innerText === '') {
-        break;
+        continue;
       }
 
       if (currentCell.innerText === nextCell.innerText) {
