@@ -5,80 +5,104 @@ const AMOUNT_CELLS = FIELD_SIZE * FIELD_SIZE;
 let x = 0;
 let y = 0;
 let number = 0;
-let notDown;
+let notMove;
 
 const tbody = document.querySelector('tbody');
 const rows = tbody.children;
 const header = document.querySelector('.game-header');
 const button = header.querySelector('button');
+const scoreValue = document.querySelector('.game-score');
 
-startGame();
+button.addEventListener('click', start);
 
 document.addEventListener('keydown', e => {
-  // console.log(e.key);
-
   switch (e.key) {
     case 'ArrowDown':
       down();
+      startToRestart('restart');
+      showMessage('not');
 
-      if (notDown) {
+      if (notMove) {
         newCell();
       }
       break;
 
-    default:
+    case 'ArrowUp':
+      up();
+      startToRestart('restart');
+      showMessage('not');
+
+      if (notMove) {
+        newCell();
+      }
+      break;
+
+    case 'ArrowRight':
+      right();
+      startToRestart('restart');
+      showMessage('not');
+
+      if (notMove) {
+        newCell();
+      }
+      break;
+
+    case 'ArrowLeft':
+      left();
+      startToRestart('restart');
+      showMessage('not');
+
+      if (notMove) {
+        newCell();
+      }
       break;
   }
-});
 
-function down() {
-  notDown = false;
+  const freeCell = some(rows, '');
 
-  for (let i = 0; i < FIELD_SIZE; i++) {
+  if (!notMove && !freeCell) {
     let count = 0;
 
-    for (let j = FIELD_SIZE - 1; j >= 0; j--) {
-      let currentCell = rows[j].children[i];
-      // const beforeCell = rows[j - 1].children[i];
+    for (let i = 0; i < FIELD_SIZE - 1; i++) {
+      for (let j = 0; j < FIELD_SIZE - 1; j++) {
+        const currentCell = rows[i].children[j];
+        const downCell = rows[i + 1].children[j];
+        const nextCell = rows[i].children[j + 1];
 
-      if (currentCell.innerText === '') {
-        count++;
-        continue;
-      }
-
-      if (j !== FIELD_SIZE - 1 && count > 0) {
-        addCell(i, j + count, currentCell.innerText);
-        currentCell.innerText = '';
-        currentCell.className = 'field-cell';
-        count = 0;
-        j++;
-        notDown = true;
-      }
-
-      currentCell = rows[j].children[i];
-
-      if (j > 0 && currentCell.innerText) {
-        const beforeCell = rows[j - 1].children[i];
-
-        if (currentCell.innerText === beforeCell.innerText) {
-          const sum = +currentCell.innerText * 2;
-
-          addCell(i, j, sum);
-          beforeCell.innerText = '';
-          beforeCell.className = 'field-cell';
-          newCell();
+        if (currentCell.innerText === downCell.innerText
+          || currentCell.innerText === nextCell.innerText) {
+          count++;
         }
       }
     }
+
+    if (!count) {
+      showMessage('lose');
+    }
+  }
+
+  const win = some(rows, '2048');
+
+  if (win) {
+    showMessage('win');
+  }
+});
+
+function clearCell(cell) {
+  cell.innerText = '';
+  cell.className = 'field-cell';
+}
+
+function start(e) {
+  if (e.target.matches('.start')) {
+    reset();
+    startGame();
+  } else {
+    reset();
+    startToRestart('start');
+    showMessage('start');
   }
 }
-
-function start() {
-  reset();
-  startGame();
-}
-
-button.addEventListener('click', start);
 
 function reset() {
   [...rows]
@@ -87,6 +111,8 @@ function reset() {
         cell.innerText = '';
         cell.className = 'field-cell';
       }));
+  scoreValue.innerText = 0;
+  showMessage('start');
 }
 
 function startValue() {
@@ -125,4 +151,249 @@ function randomCell(amount) {
   } else {
     randomCell(amount);
   }
+}
+
+function startToRestart(selector) {
+  switch (selector) {
+    case 'restart':
+      button.classList.remove('start');
+      button.classList.add('restart');
+      button.innerText = 'Restart';
+      break;
+
+    case 'start':
+      button.classList.add('start');
+      button.classList.remove('restart');
+      button.innerText = 'Start';
+      break;
+  }
+}
+
+function showMessage(typeMessage) {
+  const loseMessage = document.querySelector('.message-lose');
+  const winMessage = document.querySelector('.message-win');
+  const startMessage = document.querySelector('.message-start');
+
+  switch (typeMessage) {
+    case 'lose':
+      winMessage.classList.add('hidden');
+      startMessage.classList.add('hidden');
+      loseMessage.classList.remove('hidden');
+      break;
+
+    case 'win':
+      loseMessage.classList.add('hidden');
+      startMessage.classList.add('hidden');
+      winMessage.classList.remove('hidden');
+      break;
+
+    case 'start':
+      loseMessage.classList.add('hidden');
+      startMessage.classList.remove('hidden');
+      winMessage.classList.add('hidden');
+      break;
+
+    case 'not':
+      loseMessage.classList.add('hidden');
+      winMessage.classList.add('hidden');
+      startMessage.classList.add('hidden');
+      break;
+  }
+}
+
+function down() {
+  notMove = false;
+
+  for (let i = 0; i < FIELD_SIZE; i++) {
+    moveDown(i);
+
+    for (let j = FIELD_SIZE - 1; j > 0; j--) {
+      const currentCell = rows[j].children[i];
+      const beforeCell = rows[j - 1].children[i];
+
+      if (currentCell.innerText === '' || beforeCell.innerText === '') {
+        break;
+      }
+
+      if (currentCell.innerText === beforeCell.innerText) {
+        const sum = +currentCell.innerText * 2;
+
+        addCell(i, j, sum);
+        scoreValue.innerText = +scoreValue.innerText + sum;
+        clearCell(beforeCell);
+        notMove = true;
+      }
+    }
+    moveDown(i);
+  }
+}
+
+function moveDown(index) {
+  let count = 0; // i - стовбець
+
+  for (let j = FIELD_SIZE - 1; j >= 0; j--) {
+    const currentCell = rows[j].children[index];
+
+    if (currentCell.innerText === '') {
+      count++;
+      continue;
+    }
+
+    if (j !== FIELD_SIZE - 1 && count > 0) {
+      addCell(index, j + count, currentCell.innerText);
+      clearCell(currentCell);
+      count--;
+      j++;
+      notMove = true;
+    }
+  }
+}
+
+function up() {
+  notMove = false;
+
+  for (let i = 0; i < FIELD_SIZE; i++) {
+    moveUp(i);
+
+    for (let j = 0; j < FIELD_SIZE - 1; j++) {
+      const currentCell = rows[j].children[i];
+      const nextCell = rows[j + 1].children[i];
+
+      if (currentCell.innerText === '' || nextCell.innerText === '') {
+        break;
+      }
+
+      if (currentCell.innerText === nextCell.innerText) {
+        const sum = +currentCell.innerText * 2;
+
+        addCell(i, j, sum);
+        scoreValue.innerText = +scoreValue.innerText + sum;
+        clearCell(nextCell);
+        notMove = true;
+      }
+    }
+    moveUp(i);
+  }
+}
+
+function moveUp(index) {
+  let count = 0;
+
+  for (let j = 0; j < FIELD_SIZE; j++) {
+    const currentCell = rows[j].children[index];
+
+    if (currentCell.innerText === '') {
+      count++;
+      continue;
+    }
+
+    if (j !== 0 && count > 0) {
+      addCell(index, j - count, currentCell.innerText);
+      clearCell(currentCell);
+      count--;
+      j--;
+      notMove = true;
+    }
+  }
+}
+
+function right() {
+  notMove = false;
+
+  for (let i = 0; i < FIELD_SIZE; i++) {
+    moveRight(i); // i - рядок
+
+    for (let j = FIELD_SIZE - 1; j > 0; j--) {
+      const currentCell = rows[i].children[j];
+      const beforeCell = rows[i].children[j - 1];
+
+      if (currentCell.innerText === '' || beforeCell.innerText === '') {
+        break;
+      }
+
+      if (currentCell.innerText === beforeCell.innerText) {
+        const sum = +currentCell.innerText * 2;
+
+        addCell(j, i, sum);
+        scoreValue.innerText = +scoreValue.innerText + sum;
+        clearCell(beforeCell);
+        notMove = true;
+      }
+    }
+    moveRight(i);
+  }
+}
+
+function moveRight(index) {
+  let count = 0; // i - рядок
+
+  for (let j = FIELD_SIZE - 1; j >= 0; j--) {
+    const currentCell = rows[index].children[j];
+
+    if (currentCell.innerText === '') {
+      count++;
+      continue;
+    }
+
+    if (j !== FIELD_SIZE - 1 && count > 0) {
+      addCell(j + count, index, currentCell.innerText);
+      clearCell(currentCell);
+      count--;
+      j++;
+      notMove = true;
+    }
+  }
+}
+
+function left() {
+  notMove = false;
+
+  for (let i = 0; i < FIELD_SIZE; i++) {
+    moveLeft(i); // i - рядок
+
+    for (let j = 0; j < FIELD_SIZE - 1; j++) {
+      const currentCell = rows[i].children[j];
+      const nextCell = rows[i].children[j + 1];
+
+      if (currentCell.innerText === '' || nextCell.innerText === '') {
+        break;
+      }
+
+      if (currentCell.innerText === nextCell.innerText) {
+        const sum = +currentCell.innerText * 2;
+
+        addCell(j, i, sum);
+        scoreValue.innerText = +scoreValue.innerText + sum;
+        clearCell(nextCell);
+        notMove = true;
+      }
+    }
+    moveLeft(i);
+  }
+}
+
+function moveLeft(index) {
+  let count = 0; // i - рядок
+
+  for (let j = 0; j < FIELD_SIZE; j++) {
+    const currentCell = rows[index].children[j];
+
+    if (currentCell.innerText === '') {
+      count++;
+      continue;
+    }
+
+    if (j !== 0 && count > 0) {
+      addCell(j - count, index, currentCell.innerText);
+      clearCell(currentCell);
+      count--;
+      j--;
+      notMove = true;
+    }
+  }
+}
+
+function some(collection, value) {
+  return [...collection].some(row => [...row.children]
+    .some(cell => cell.innerText === value));
 }
