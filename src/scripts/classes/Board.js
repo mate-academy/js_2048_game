@@ -4,10 +4,11 @@ import { createCard } from './Card';
 export const BOARD_SIZE = 4;
 
 export class Board extends Array {
-  constructor(boardElement) {
+  constructor(boardElement, scoreCounter) {
     super();
 
     this.boardElement = boardElement;
+    this.scoreCounter = scoreCounter;
   }
 
   fillBoard() {
@@ -242,6 +243,7 @@ export class Board extends Array {
       .getCellsInOrder(direction)
       .filter(cell => !cell.isEmpty());
     let needSpawn = false;
+    let scoresAmount = 0;
 
     for (const cell of cellsWithCard) {
       const targetCell = this.getTargetCell(cell, direction);
@@ -254,6 +256,9 @@ export class Board extends Array {
 
       if (targetCell.canMergeWith(cell)) {
         targetCell.mergeWith(cell);
+
+        scoresAmount += targetCell.linkCard.weight;
+
         targetCell.wasMerged = true;
         continue;
       }
@@ -268,6 +273,10 @@ export class Board extends Array {
     this.forEach(cell => {
       cell.wasMerged = false;
     });
+
+    if (scoresAmount > 0) {
+      this.scoreCounter.add(scoresAmount);
+    }
 
     if (needSpawn) {
       this.spawnCard();

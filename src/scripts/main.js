@@ -1,13 +1,18 @@
 
 import { Board } from './classes/Board.js';
 import { createStartButton } from './classes/StartButton.js';
+import { ScoreCounter } from './classes/ScoreCounter.js';
 
-const board = new Board(document.querySelector('.board'));
+const scoreCounterElement = document.querySelector('.game-score');
+const scoreCounter = new ScoreCounter(scoreCounterElement);
+
+const boardElement = document.querySelector('.board');
+const board = new Board(boardElement, scoreCounter);
+
+const startButtonElement = document.querySelector('.tile--button');
+const startButton = createStartButton(startButtonElement);
 
 board.fillBoard();
-
-const buttonElement = document.querySelector('.tile--button');
-const startButton = createStartButton(buttonElement);
 
 startButton.addEventListener('click', () => {
   if (startButton.isRestart) {
@@ -26,6 +31,7 @@ function startGame() {
 }
 
 function stopGame() {
+  scoreCounter.reset();
   startButton.toggle();
   board.clear();
   document.removeEventListener('keydown', handleKeyPress);

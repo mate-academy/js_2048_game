@@ -21,3 +21,19 @@
     transform: scale(1);
   }
 }
+
+@keyframes addScore {
+  0% {
+    opacity: 0;
+    transform: translateY(50%);
+  }
+
+  50% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-50%);
+  }
+}

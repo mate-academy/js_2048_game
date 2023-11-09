@@ -12,6 +12,8 @@
   &--info {
     flex-direction: column;
 
+    position: relative;
+
     font-size: 0.7rem;
     color: $c-main-text;
     background: $c-accent-text;
