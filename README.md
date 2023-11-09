@@ -1,7 +1,7 @@
 ## 2048 game
 2048 is a single-player sliding block puzzle game. The game’s objective is to slide numbered tiles on a grid to combine them to create a tile with the number 2048.
 
-**[DEMO](https://kseniia-chepur.github.io/js_2048_game/)**
+## [DEMO](https://kseniia-chepur.github.io/js_2048_game/)
 
 ### Technologies used:
 - HTML5
@@ -9,7 +9,7 @@
 - Sass (SCSS)
 - JavaScript
 
-### Game logic**
+### Game logic
 
 - The game field is 4 x 4 (16 cells), but it can be easily changed to any size in code
 - Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
@@ -38,4 +38,4 @@
 - npm v8.19.2 or higher
 
 
-**[Original game](https://play2048.co/)**
+### [Original game](https://play2048.co/)
