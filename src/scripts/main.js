@@ -99,18 +99,21 @@ document.addEventListener('keyup', (element) => {
   switch (element.code) {
     case 'ArrowLeft':
       moveLeft();
+      setTwo();
       break;
     case 'ArrowRight':
       moveRight();
+      setTwo();
       break;
     case 'ArrowUp':
       moveUp();
+      setTwo();
       break;
     case 'ArrowDown':
       moveDown();
+      setTwo();
       break;
   }
-  setTwo();
 
   document.getElementById('score').innerText = score;
 });
