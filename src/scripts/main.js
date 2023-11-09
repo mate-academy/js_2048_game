@@ -85,6 +85,7 @@ function reset() {
   [...cells].map(cell => {
     clearCell(cell);
   });
+  scoreValue.innerText = 0;
 }
 
 function startValue() {
