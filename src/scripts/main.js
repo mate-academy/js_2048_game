@@ -20,7 +20,6 @@ document.addEventListener('keydown', e => {
     case 'ArrowDown':
       down();
       startToRestart('restart');
-      showMessage('not');
 
       if (notMove) {
         newCell();
@@ -30,7 +29,6 @@ document.addEventListener('keydown', e => {
     case 'ArrowUp':
       up();
       startToRestart('restart');
-      showMessage('not');
 
       if (notMove) {
         newCell();
@@ -40,7 +38,6 @@ document.addEventListener('keydown', e => {
     case 'ArrowRight':
       right();
       startToRestart('restart');
-      showMessage('not');
 
       if (notMove) {
         newCell();
@@ -50,7 +47,6 @@ document.addEventListener('keydown', e => {
     case 'ArrowLeft':
       left();
       startToRestart('restart');
-      showMessage('not');
 
       if (notMove) {
         newCell();
@@ -93,15 +89,10 @@ function clearCell(cell) {
   cell.className = 'field-cell';
 }
 
-function start(e) {
-  if (e.target.matches('.start')) {
-    reset();
-    startGame();
-  } else {
-    reset();
-    startToRestart('start');
-    showMessage('start');
-  }
+function start() {
+  reset();
+  startGame();
+  showMessage('not');
 }
 
 function reset() {
@@ -112,7 +103,6 @@ function reset() {
         cell.className = 'field-cell';
       }));
   scoreValue.innerText = 0;
-  showMessage('start');
 }
 
 function startValue() {
@@ -187,12 +177,6 @@ function showMessage(typeMessage) {
       winMessage.classList.remove('hidden');
       break;
 
-    case 'start':
-      loseMessage.classList.add('hidden');
-      startMessage.classList.remove('hidden');
-      winMessage.classList.add('hidden');
-      break;
-
     case 'not':
       loseMessage.classList.add('hidden');
       winMessage.classList.add('hidden');
@@ -229,7 +213,7 @@ function down() {
 }
 
 function moveDown(index) {
-  let count = 0; // i - стовбець
+  let count = 0;
 
   for (let j = FIELD_SIZE - 1; j >= 0; j--) {
     const currentCell = rows[j].children[index];
@@ -301,7 +285,7 @@ function right() {
   notMove = false;
 
   for (let i = 0; i < FIELD_SIZE; i++) {
-    moveRight(i); // i - рядок
+    moveRight(i);
 
     for (let j = FIELD_SIZE - 1; j > 0; j--) {
       const currentCell = rows[i].children[j];
@@ -325,7 +309,7 @@ function right() {
 }
 
 function moveRight(index) {
-  let count = 0; // i - рядок
+  let count = 0;
 
   for (let j = FIELD_SIZE - 1; j >= 0; j--) {
     const currentCell = rows[index].children[j];
@@ -349,7 +333,7 @@ function left() {
   notMove = false;
 
   for (let i = 0; i < FIELD_SIZE; i++) {
-    moveLeft(i); // i - рядок
+    moveLeft(i);
 
     for (let j = 0; j < FIELD_SIZE - 1; j++) {
       const currentCell = rows[i].children[j];
@@ -373,7 +357,7 @@ function left() {
 }
 
 function moveLeft(index) {
-  let count = 0; // i - рядок
+  let count = 0;
 
   for (let j = 0; j < FIELD_SIZE; j++) {
     const currentCell = rows[index].children[j];
