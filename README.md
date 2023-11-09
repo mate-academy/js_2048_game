@@ -1,49 +1,41 @@
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+## 2048 game
+2048 is a single-player sliding block puzzle game. The game’s objective is to slide numbered tiles on a grid to combine them to create a tile with the number 2048.
 
-### Task: 2048 game
+## [DEMO](https://kseniia-chepur.github.io/js_2048_game/)
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+### Technologies used:
+- HTML5
+- CSS3
+- Sass (SCSS)
+- JavaScript
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+### Game logic
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Reference.
+- The game field is 4 x 4 (16 cells), but it can be easily changed to any size in code
+- Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
+- The game starts with 2 cells filled with 2 or 4
+- The game can be started by clicking the Start button
+- The player can move cells with keyboard arrows
+- All the numbers are moved in the selected direction until all empty cells are filled in
+2 equal cells are merged into a doubled number
+- The merged cell can’t be merged twice during one move
+- The move is possible if at least one cell is changed after the move
+- After move 2 or 4 appears in a random empty cell. 4 probability is 10%
+- When 2048 value is displayed in any cell, win message will be shown.
+- The game over message will be shown if there are no more available moves.
+- Score is increased by the sum of all merged cells.
+- The game can be restarted by clicking the Restart button.
 
-That's it!
+#### How to run the project locally
 
-Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) Increase score with each move. The score should be increased by the sum of all merged cells.
+- Fork and clone this repository
+- Run npm install in your terminal
+- Open http://localhost:8080/ in your browser
+- Run npm start to start the project locally
 
-Hints:
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
-- Use `keydown` event and `event.key` property to handle arrow buttons presses
-    ```js
-    document.addEventListener('keydown', event => console.log(event.key));
-    ```
+**Dependencies**
+- Node v14.17.1 or higher
+- npm v8.19.2 or higher
 
-You can change the HTM/CSS layout if you need it.
 
-![Preview](./src/images/reference.png)
+### [Original game](https://play2048.co/)
