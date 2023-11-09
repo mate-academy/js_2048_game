@@ -34,7 +34,7 @@ Okay, okay. Also, we have some rules:
 10) Change the `Start` button to `Restart` after the first move.
 11) Increase score with each move. The score should be increased by the sum of all merged cells.
 
-Hints:
+ Hints:
 - You have class `field-cell--%cell_value%`, for styling cell in the game.
 - Use `hidden` class for hiding elements on page.
 - Use `start`, `restart` classes for the main button for different styles.
