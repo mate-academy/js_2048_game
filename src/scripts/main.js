@@ -152,6 +152,8 @@ function generateNewCell() {
   updateGame();
 }
 
+let moved = false;
+
 document.addEventListener('keyup', (direction) => {
   if (gameLost()) {
     showMessage('loser');
@@ -159,7 +161,7 @@ document.addEventListener('keyup', (direction) => {
     return;
   }
 
-  let moved = false;
+  moved = false;
 
   switch (direction.code) {
     case 'ArrowLeft':
@@ -192,6 +194,7 @@ document.addEventListener('keyup', (direction) => {
   }
 
   if (moved) {
+    moved = false;
     generateNewCell();
   }
 });
