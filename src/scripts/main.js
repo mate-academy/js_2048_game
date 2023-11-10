@@ -213,6 +213,7 @@ button.addEventListener('click', () => {
     makeMatrix(matrix);
   } else {
     loseText.classList.add('hidden');
+    scorePlace.textContent = 0;
     clearMatrix();
     makeStartPairOfCell();
     makeMatrix(matrix);
