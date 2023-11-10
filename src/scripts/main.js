@@ -51,22 +51,22 @@ function clearMatrix() {
 }
 
 function makeOneRandomCell() {
-  const maxRowIndex = matrix.length;
-  const maxColumnIndex = matrix[0].length;
-  let numOfNewCell = 0;
+  const emptyCells = [];
 
-  while (numOfNewCell < 1) {
-    const randomRowCell = Math.floor(Math.random() * maxRowIndex);
-    const randomColumnCell = Math.floor(Math.random() * maxColumnIndex);
-    const numToInput = getRandomTwoOrFour();
-
-    if (matrix[randomRowCell][randomColumnCell] !== 0) {
-      continue;
-    } else {
-      matrix[randomRowCell][randomColumnCell] = numToInput;
-      numOfNewCell++;
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix[i].length; j++) {
+      if (matrix[i][j] === 0) {
+        emptyCells.push([i, j]);
+      }
     }
   }
+
+  const randomIndex = Math.floor(Math.random() * emptyCells.length);
+  const randomCell = emptyCells[randomIndex];
+
+  const numToInput = getRandomTwoOrFour();
+
+  matrix[randomCell[0]][randomCell[1]] = numToInput;
 }
 
 function makeStartPairOfCell() {
@@ -223,9 +223,15 @@ document.addEventListener('keydown', (press) => {
   press.preventDefault();
   // вгору
 
-  if (gameOver) {
-    loseText.classList.remove('hidden');
+  checkWin();
 
+  const indicator = ifCellsNotEmpty();
+
+  if (indicator === 16) {
+    gameOportunity();
+  }
+
+  if (gameOver) {
     return;
   }
 
@@ -233,17 +239,6 @@ document.addEventListener('keydown', (press) => {
     const turn = 'Up';
 
     moveCells(turn);
-
-    const indicator = ifCellsNotEmpty();
-
-    if (indicator === 16) {
-      gameOportunity();
-    }
-
-    checkWin();
-    scorePlace.textContent = `${score}`;
-    makeOneRandomCell();
-    makeMatrix();
   }
 
   // вниз
@@ -251,17 +246,6 @@ document.addEventListener('keydown', (press) => {
     const turn = 'Down';
 
     moveCells(turn);
-
-    const indicator = ifCellsNotEmpty();
-
-    if (indicator === 16) {
-      gameOportunity();
-    }
-
-    checkWin();
-    scorePlace.textContent = `${score}`;
-    makeOneRandomCell();
-    makeMatrix();
   }
 
   //  вправо
@@ -269,17 +253,6 @@ document.addEventListener('keydown', (press) => {
     const turn = 'Right';
 
     moveCells(turn);
-
-    const indicator = ifCellsNotEmpty();
-
-    if (indicator === 16) {
-      gameOportunity();
-    }
-
-    checkWin();
-    scorePlace.textContent = `${score}`;
-    makeOneRandomCell();
-    makeMatrix();
   }
 
   //  вліво
@@ -287,18 +260,11 @@ document.addEventListener('keydown', (press) => {
     const turn = 'Left';
 
     moveCells(turn);
-
-    const indicator = ifCellsNotEmpty();
-
-    if (indicator === 16) {
-      gameOportunity();
-    }
-
-    checkWin();
-    scorePlace.textContent = `${score}`;
-    makeOneRandomCell();
-    makeMatrix();
   }
+
+  scorePlace.textContent = `${score}`;
+  makeOneRandomCell();
+  makeMatrix();
 });
 
 function checkWin() {
@@ -314,37 +280,21 @@ function checkWin() {
 }
 
 function gameOportunity() {
-  for (let indexRow = 0; indexRow < matrix.length; indexRow++) {
-    for (let indexColumn = 0; indexColumn < matrix.length; indexColumn++) {
-      const currentCell = matrix[indexRow][indexColumn];
-      const lastRow = matrix.length - 1;
-      const lastColumn = matrix.length - 1;
-
-      if (indexRow === lastRow) {
-        if (currentCell === matrix[indexRow - 1][indexColumn]
-          || currentCell === matrix[indexRow][indexColumn - 1]) {
-          gameOver = false;
-        }
-      }
-
-      if (indexColumn === lastColumn) {
-        if (currentCell === matrix[indexRow][indexColumn - 1]
-          || currentCell === matrix[indexRow - 1][indexColumn]) {
-          gameOver = false;
-        }
-      }
-
-      if (currentCell === 0
-        || currentCell === matrix[indexRow][indexColumn + 1]
-        || currentCell === matrix[indexRow + 1][indexColumn]
+  for (let i = 0; i < matrix[0].length; i++) {
+    for (let j = 0; j < matrix.length; j++) {
+      if (
+        (i < 3 && matrix[i][j] === matrix[i + 1][j])
+        || (j < 3 && matrix[i][j] === matrix[i][j + 1])
       ) {
         gameOver = false;
-      } else {
-        gameOver = true;
-        break;
+
+        return;
       }
     }
   }
+
+  gameOver = true;
+  loseText.classList.remove('hidden');
 }
 
 function ifCellsNotEmpty() {
