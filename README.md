@@ -1,4 +1,4 @@
-#2048 game
+# 2048 game
 
 Simple 2048 game written on vanilla js
 
