@@ -9,10 +9,17 @@
   </head>
 
   <body>
-    <div class="message-container">
-      <div class="message">
-        <p class="message-lose hidden">You lose! Restart the game?</p>
-        <p class="message-win hidden">Winner! Congrats! You did it!</p>
+    <div class="message">
+      <div class="message__content">
+        <button class="message__close">✖</button>
+
+        <p class="message__text">You lose! Restart the game?</p>
+
+        <p class="message__record">Your record: <span class="message__record-val">2048</span></p>
+
+        <p class="message__score">Your score: <span class="message__score-val">1024</span></p>
+
+        <button class="message__try-again">Try again</button>
       </div>
     </div>
 
@@ -21,9 +28,8 @@
         <div class="game-header">
           <h1 class="tile">2048</h1>
           <div class="game-header__right">
-            <p class="tile tile--info">
-              Score: <span class="game-score">0</span>
-            </p>
+            <p class="tile tile--info">Record: <span class="record-score"></span></p>
+            <p class="tile tile--info">Score: <span class="game-score"></span></p>
             <button class="tile tile--button tile--button--start">Start</button>
           </div>
         </div>
@@ -47,9 +53,7 @@
           <div class="cell"></div>
         </div>
 
-        <div class="advertisement">
-          Your ad can be here
-        </div>
+        <div class="advertisement"></div>
       </div>
     </main>
   </body>

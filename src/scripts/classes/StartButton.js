@@ -1,21 +1,32 @@
-export function createStartButton(buttonElement) {
-  const startButton = buttonElement;
+export class StartButton {
+  constructor(buttonElement, stopGame, startGame) {
+    this.HTMLelement = buttonElement;
+    this.isRestart = false;
 
-  startButton.isRestart = false;
+    this.setupEventListener(stopGame, startGame);
+  }
 
-  startButton.toggle = function() {
+  setupEventListener(stopGame, startGame) {
+    this.HTMLelement.addEventListener('click', () => {
+      if (this.isRestart) {
+        stopGame();
+      } else {
+        startGame();
+      }
+    });
+  }
+
+  toggle() {
     if (this.isRestart) {
-      this.classList.remove('tile--button--restart');
-      this.classList.add('tile--button--start');
-      this.textContent = 'Start';
+      this.HTMLelement.classList.remove('tile--button--restart');
+      this.HTMLelement.classList.add('tile--button--start');
+      this.HTMLelement.textContent = 'Start';
     } else {
-      this.classList.remove('tile--button--start');
-      this.classList.add('tile--button--restart');
-      this.textContent = 'Restart';
+      this.HTMLelement.classList.remove('tile--button--start');
+      this.HTMLelement.classList.add('tile--button--restart');
+      this.HTMLelement.textContent = 'Restart';
     }
 
     this.isRestart = !this.isRestart;
   };
-
-  return startButton;
 }

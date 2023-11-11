@@ -3,12 +3,17 @@ import { createCard } from './Card';
 
 export const BOARD_SIZE = 4;
 
+const WEIGHT_TO_WIN_GAME = 2048;
+
 export class Board extends Array {
   constructor(boardElement, scoreCounter) {
     super();
 
     this.boardElement = boardElement;
     this.scoreCounter = scoreCounter;
+
+    this.fillBoardThis = this.fillBoard.bind(this);
+    document.addEventListener('DOMContentLoaded', this.fillBoardThis);
   }
 
   fillBoard() {
@@ -91,13 +96,11 @@ export class Board extends Array {
     );
   };
 
-  getCellForMerge(cellWithCard, direction) {
-    const thisGroup = this.getGroupForCell(cellWithCard, direction);
+  getCellForMerge(startCell, direction) {
+    const thisGroup = this.getGroupForCell(startCell, direction);
 
     const cellIndex = thisGroup
-      .findIndex(
-        cell => cell.y === cellWithCard.y && cell.x === cellWithCard.x
-      );
+      .findIndex(cell => cell.y === startCell.y && cell.x === startCell.x);
 
     switch (direction) {
       case 'Up':
@@ -108,13 +111,11 @@ export class Board extends Array {
             continue;
           }
 
-          if (cellWithCard.canMergeWith(cell)) {
+          if (startCell.canMergeWith(cell)) {
             return cell;
-          } else {
-            break;
           }
-        }
-        break;
+          break;
+        } break;
       case 'Down':
         for (let y = cellIndex + 1; y < thisGroup.length; y++) {
           const cell = thisGroup[y];
@@ -123,13 +124,11 @@ export class Board extends Array {
             continue;
           }
 
-          if (cellWithCard.canMergeWith(cell)) {
+          if (startCell.canMergeWith(cell)) {
             return cell;
-          } else {
-            break;
           }
-        }
-        break;
+          break;
+        } break;
       case 'Left':
         for (let x = cellIndex - 1; x >= 0; x--) {
           const cell = thisGroup[x];
@@ -138,13 +137,11 @@ export class Board extends Array {
             continue;
           }
 
-          if (cellWithCard.canMergeWith(cell)) {
+          if (startCell.canMergeWith(cell)) {
             return cell;
-          } else {
-            break;
           }
-        }
-        break;
+          break;
+        } break;
       case 'Right':
         for (let x = cellIndex + 1; x < thisGroup.length; x++) {
           const cell = thisGroup[x];
@@ -153,13 +150,11 @@ export class Board extends Array {
             continue;
           }
 
-          if (cellWithCard.canMergeWith(cell)) {
+          if (startCell.canMergeWith(cell)) {
             return cell;
-          } else {
-            break;
           }
-        }
-        break;
+          break;
+        } break;
       default:
         throw new Error('Error, in shift method you can use'
           + 'only this value: Up, Down, Right, Left'
@@ -256,10 +251,12 @@ export class Board extends Array {
 
       if (targetCell.canMergeWith(cell)) {
         targetCell.mergeWith(cell);
-
         scoresAmount += targetCell.linkCard.weight;
 
-        targetCell.wasMerged = true;
+        if (targetCell.linkCard.weight >= WEIGHT_TO_WIN_GAME) {
+          return 'Win';
+        }
+
         continue;
       }
 
@@ -281,5 +278,43 @@ export class Board extends Array {
     if (needSpawn) {
       this.spawnCard();
     }
+
+    return this.continueGame();
   };
+
+  haveTargetCell(cell) {
+    if (this.getTargetCell(cell, 'Up')) {
+      return true;
+    }
+
+    if (this.getTargetCell(cell, 'Down')) {
+      return true;
+    }
+
+    if (this.getTargetCell(cell, 'Right')) {
+      return true;
+    }
+
+    if (this.getTargetCell(cell, 'Left')) {
+      return true;
+    }
+
+    return false;
+  }
+
+  continueGame() {
+    const haveEmpty = this.getRandomEmptyCell() !== undefined;
+
+    if (haveEmpty) {
+      return 'continue';
+    }
+
+    for (const cell of this) {
+      if (this.haveTargetCell(cell)) {
+        return 'continue';
+      }
+    }
+
+    return 'Lose';
+  }
 }

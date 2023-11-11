@@ -1,3 +1,7 @@
 @import "utils";
 @import "normalize";
 @import "blocks";
+
+.show {
+  display: flex;
+}

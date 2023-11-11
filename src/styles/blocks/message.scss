@@ -1,13 +1,56 @@
 .message {
-  height: 60vmin;
-  /* stylelint-disable-next-line */
-  aspect-ratio: 1;
+  position: fixed;
+  inset: 0;
 
-  font-size: 0.8rem;
-  text-align: center;
-  color: $c-main-text;
+  @include center;
 
-  background: $c-accent-text;
-  padding: 10px;
-  border-radius: $s-border-radius;
+  display: none;
+  background-color: #00000071;
+  z-index: $z-modal;
+
+  animation: showMessage 1s forwards;
+
+  &__content {
+    position: relative;
+    height: 60vmin;
+    /* stylelint-disable-next-line */
+    aspect-ratio: 1;
+
+    @include column;
+    align-items: center;
+    gap: 20%;
+
+    font-size: 0.8rem;
+    text-align: center;
+    color: $c-main-text;
+
+    background: $c-accent-text;
+    padding: 10% 10px;
+    border-radius: $s-border-radius;
+
+    animation: showMessageContent 1s forwards;
+  }
+
+  &__try-again {
+    height: 50px;
+    width: 50%;
+
+    color: $c-accent-text;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.05rem;
+
+    background-color: $c-game-board;
+    border-radius: $s-border-radius;
+  }
+
+  &__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  
+    font-size: 1.5rem;
+    color: $c-main-text;
+    line-height: 85%;
+  }
 }

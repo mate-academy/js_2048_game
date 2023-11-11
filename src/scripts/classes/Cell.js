@@ -14,11 +14,15 @@ export function createCell(cell, i) {
 
   cell.canMergeWith = function(cell2) {
     return !this.isEmpty() && !cell2.isEmpty()
-    && this.linkCard.weight === cell2.linkCard.weight;
+      && this.linkCard.weight === cell2.linkCard.weight
+      && !cell2.wasMerged && !this.wasMerged;
   };
 
   cell.mergeWith = function(cell2) {
     const card = this.linkCard;
+
+    cell.wasMerged = true;
+    cell2.wasMerged = true;
 
     card.setWeight(card.weight * 2);
 

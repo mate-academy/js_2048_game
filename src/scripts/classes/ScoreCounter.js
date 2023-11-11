@@ -1,11 +1,17 @@
 export class ScoreCounter {
-  constructor(counterElement) {
+  constructor(counterElement, recordElement) {
     this.HTMLelement = counterElement;
+    this.recordElement = recordElement;
+
     this.counter = 0;
+    this.record = localStorage.getItem('scoreRecord') || 0;
+
+    this.updateHTML();
   }
 
   updateHTML() {
     this.HTMLelement.textContent = this.counter;
+    this.recordElement.textContent = this.record;
   }
 
   playAddScoreAnimation(amount) {
@@ -28,5 +34,10 @@ export class ScoreCounter {
   reset() {
     this.counter = 0;
     this.updateHTML();
+  }
+
+  updateRecord(value = this.counter) {
+    this.record = value;
+    localStorage.setItem('scoreRecord', value);
   }
 }

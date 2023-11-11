@@ -1,57 +1,48 @@
 
 import { Board } from './classes/Board.js';
-import { createStartButton } from './classes/StartButton.js';
+import { StartButton } from './classes/StartButton.js';
 import { ScoreCounter } from './classes/ScoreCounter.js';
+import { Advertisement } from './classes/Advertisement.js';
+import { Message } from './classes/Message.js';
+import { EventHandler } from './classes/EventHandler.js';
 
-const scoreCounterElement = document.querySelector('.game-score');
-const scoreCounter = new ScoreCounter(scoreCounterElement);
+const AD_NODE = document.querySelector('.advertisement');
+const SCORE_COUNT_NODE = document.querySelector('.game-score');
+const SCORE_RECORD_NODE = document.querySelector('.record-score');
+const MESSAGE_NODE = document.querySelector('.message');
+const START_BUTTON_NODE = document.querySelector('.tile--button');
+const BOARD_NODE = document.querySelector('.board');
 
-const boardElement = document.querySelector('.board');
-const board = new Board(boardElement, scoreCounter);
-
-const startButtonElement = document.querySelector('.tile--button');
-const startButton = createStartButton(startButtonElement);
-
-board.fillBoard();
-
-startButton.addEventListener('click', () => {
-  if (startButton.isRestart) {
-    stopGame();
-  } else {
-    startGame();
-  }
-});
+const startButton = new StartButton(START_BUTTON_NODE, stopGame, startGame);
+const scoreCounter = new ScoreCounter(SCORE_COUNT_NODE, SCORE_RECORD_NODE);
+const message = new Message(MESSAGE_NODE, scoreCounter, startGame, stopGame);
+const board = new Board(BOARD_NODE, scoreCounter);
+const eventHandler = new EventHandler(board, gameOver);
+const advertisement = new Advertisement(AD_NODE);
 
 function startGame() {
-  startButton.toggle();
+  advertisement.setAd();
   board.resetLinkedCards();
   board.firstSpawn(2);
+  startButton.toggle();
 
-  document.addEventListener('keydown', handleKeyPress);
+  eventHandler.start();
 }
 
 function stopGame() {
+  advertisement.setGameInfo();
   scoreCounter.reset();
-  startButton.toggle();
   board.clear();
-  document.removeEventListener('keydown', handleKeyPress);
+  startButton.toggle();
+
+  eventHandler.stop();
 }
 
-function handleKeyPress() {
-  switch (event.key) {
-    case 'ArrowUp':
-      board.swipe('Up');
-      break;
-    case 'ArrowDown':
-      board.swipe('Down');
-      break;
-    case 'ArrowLeft':
-      board.swipe('Left');
-      break;
-    case 'ArrowRight':
-      board.swipe('Right');
-      break;
-    default:
-      break;
+function gameOver(won) {
+  if (scoreCounter.counter > scoreCounter.record) {
+    scoreCounter.updateRecord();
   }
+
+  scoreCounter.updateHTML();
+  message.showMessage(won);
 }
