@@ -4,19 +4,27 @@ export class EventHandler {
     this.gameOver = gameOverCallback;
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchEnd = this.handleTouchEnd.bind(this);
+    this.handleTouchMove = this.handleTouchMove.bind(this);
     this.keyDownHandler = this.keyDownHandler.bind(this);
   }
 
   handleTouchStart() {
+    event.preventDefault();
     this.startX = event.changedTouches[0].screenX;
     this.startY = event.changedTouches[0].screenY;
   }
 
   handleTouchEnd() {
+    event.preventDefault();
+
     const endX = event.changedTouches[0].screenX;
     const endY = event.changedTouches[0].screenY;
 
     this.swipeHandler(endX - this.startX, endY - this.startY);
+  }
+
+  handleTouchMove() {
+    event.preventDefault();
   }
 
   keyDownHandler() {
@@ -60,6 +68,9 @@ export class EventHandler {
 
     this.board.boardElement
       .addEventListener('touchend', this.handleTouchEnd, false);
+
+    this.board.boardElement
+      .addEventListener('touchmove', this.handleTouchMove, false);
   }
 
   stop() {
@@ -70,5 +81,8 @@ export class EventHandler {
 
     this.board.boardElement
       .removeEventListener('touchend', this.handleTouchEnd);
+
+    this.board.boardElement
+      .removeEventListener('touchend', this.handleTouchMove);
   }
 }
