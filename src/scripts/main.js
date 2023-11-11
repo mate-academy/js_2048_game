@@ -136,24 +136,25 @@ function handleArrows(e) {
   switch (e.key) {
     case 'ArrowLeft':
       clickArrowLeft();
-      fillFieldCells();
       break;
 
     case 'ArrowRight':
       clickArrowRight();
-      fillFieldCells();
       break;
 
     case 'ArrowUp':
       clickArrowUp();
-      fillFieldCells();
       break;
 
     case 'ArrowDown':
       clickArrowDown();
-      fillFieldCells();
       break;
+
+    default:
+      return;
   }
+
+  fillFieldCells();
 }
 
 startButton.addEventListener('click', () => {
