@@ -1,0 +1,61 @@
+@keyframes cardCreation {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes cardMerge {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes addScore {
+  0% {
+    opacity: 0;
+    transform: translateY(50%);
+  }
+
+  50% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes showMessage {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes showMessageContent {
+  0% {
+    transform: scale(0.2);
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

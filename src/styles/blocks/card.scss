@@ -1,0 +1,39 @@
+.card {
+  --x: 0;
+  --y: 0;
+
+  position: absolute;
+  top: calc(
+    var(--s-board-gap) + var(--y) * (var(--s-cell) + var(--s-board-gap))
+  );
+  left: calc(
+    var(--s-board-gap) + var(--x) * (var(--s-cell) + var(--s-board-gap))
+  );
+  z-index: $z-card;
+
+  @include center;
+
+  width: var(--s-cell);
+  /* stylelint-disable-next-line */
+  aspect-ratio: 1;
+
+  border-radius: $s-border-radius;
+  font-size: 1.5rem;
+  color: $c-accent-text;
+  user-select: none;
+
+  transition: $a-transition-time-card;
+
+  @for $i from 1 through 12 {
+    $weight: power(2, $i);
+
+    &--#{$weight} {
+      --i: #{$i};
+      background-color: color-mix(in oklab,
+      $c-end-card calc(100% - (12 - var(--i)) * 9%),
+      $c-start-card calc((12 - var(--i)) * 9%),
+    );
+    }
+  }
+
+}

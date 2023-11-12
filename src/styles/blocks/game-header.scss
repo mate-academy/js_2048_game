@@ -1,0 +1,14 @@
+.game-header {
+  display: flex;
+  justify-content: space-between;
+
+  width: 100%;
+  padding: 10px;
+  background: $c-game-header;
+  border-radius: $s-border-radius;
+
+  &__right {
+    display: flex;
+    gap: var(--s-board-gap);
+  }
+}

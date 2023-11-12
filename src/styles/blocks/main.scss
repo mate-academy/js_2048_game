@@ -1,0 +1,17 @@
+.main {
+  @include center;
+  
+  width: 100vw;
+  height: 100vh;
+  
+  background: $c-bg;
+  
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+
+    width: min-content;
+  }
+}

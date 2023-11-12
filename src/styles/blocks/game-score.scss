@@ -1,0 +1,19 @@
+.game-score {
+  --amount: "+12";
+
+  &--before {
+    &::before {
+      content: var(--amount);
+      position: absolute;
+      top: 45%;
+      left: 15%;
+
+      color: #ce0000;
+      font-size: 25px;
+
+      animation: addScore 500ms forwards;
+      height: 50%;
+      width: 50%;
+    }
+  }
+}

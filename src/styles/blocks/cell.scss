@@ -1,0 +1,8 @@
+.cell {
+  width: var(--s-cell);
+  /* stylelint-disable-next-line */
+  aspect-ratio: 1;
+
+  border-radius: $s-border-radius;
+  background-color: $c-cell;
+}

@@ -1,0 +1,7 @@
+@function power($base, $exponent) {
+  $result: 1;
+  @for $i from 1 through $exponent {
+    $result: $result * $base;
+  }
+  @return $result;
+}
