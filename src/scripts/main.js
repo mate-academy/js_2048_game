@@ -272,8 +272,6 @@ function handleInput(moveMade) {
   }
 }
 
-// ESLint wouldn't let me push, so...
-// eslint-disable-next-line no-unused-vars
 function startGame() {
   reset();
 
