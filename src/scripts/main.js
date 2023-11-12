@@ -55,6 +55,7 @@ function reset() {
   document.querySelector('.message-start').classList.add('hidden');
   document.querySelector('.message-lose').classList.add('hidden');
   document.querySelector('.message-win').classList.add('hidden');
+  document.querySelector('.start').classList.remove('restart');
   document.querySelector('.game-score').innerHTML = 0;
   document.querySelector('.start').innerHTML = 'Start';
 
@@ -282,5 +283,6 @@ function startGame() {
 
 document.addEventListener('keydown', e => {
   document.querySelector('.start').innerHTML = 'Restart';
+  document.querySelector('.start').classList.add('restart');
   handleMoving(e.key.toString());
 });
