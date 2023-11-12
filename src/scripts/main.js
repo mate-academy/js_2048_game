@@ -99,27 +99,29 @@ function checkIfEmpty() {
   return false;
 }
 
-document.addEventListener('keyup', type => {
-  switch (startBtn.classList.contains('restart')) {
-    case type.code === 'ArrowLeft':
-      slideLeft();
-      setNewCell();
-      break;
+document.addEventListener('keyup', e => {
+  if (startBtn.classList.contains('restart')) {
+    switch (e.code) {
+      case 'ArrowLeft':
+        slideLeft();
+        setNewCell();
+        break;
 
-    case type.code === 'ArrowRight':
-      slideRight();
-      setNewCell();
-      break;
+      case 'ArrowRight':
+        slideRight();
+        setNewCell();
+        break;
 
-    case type.code === 'ArrowUp':
-      slideUp();
-      setNewCell();
-      break;
+      case 'ArrowUp':
+        slideUp();
+        setNewCell();
+        break;
 
-    case type.code === 'ArrowDown':
-      slideDown();
-      setNewCell();
-      break;
+      case 'ArrowDown':
+        slideDown();
+        setNewCell();
+        break;
+    }
   }
 
   if (!checkIfPossible()) {
