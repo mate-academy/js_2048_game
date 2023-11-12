@@ -111,7 +111,7 @@ export class Board extends Array {
             continue;
           }
 
-          if (startCell.canMergeWith(cell)) {
+          if (cell.canMergeWith(startCell)) {
             return cell;
           }
           break;
@@ -124,7 +124,7 @@ export class Board extends Array {
             continue;
           }
 
-          if (startCell.canMergeWith(cell)) {
+          if (cell.canMergeWith(startCell)) {
             return cell;
           }
           break;
@@ -137,7 +137,7 @@ export class Board extends Array {
             continue;
           }
 
-          if (startCell.canMergeWith(cell)) {
+          if (cell.canMergeWith(startCell)) {
             return cell;
           }
           break;
@@ -150,7 +150,7 @@ export class Board extends Array {
             continue;
           }
 
-          if (startCell.canMergeWith(cell)) {
+          if (cell.canMergeWith(startCell)) {
             return cell;
           }
           break;
