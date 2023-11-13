@@ -4,7 +4,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #333;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: background .2s;
 
   &--2 {
     background: #eee4da;
@@ -73,6 +74,20 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+}
+
+@keyframes new {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.new-cell {
+  animation: new .2s ease-in 2s 1 forwards;
 }
 
 .game-field {
