@@ -286,3 +286,7 @@ document.addEventListener('keydown', e => {
   document.querySelector('.start').classList.add('restart');
   handleMoving(e.key.toString());
 });
+
+document.querySelector('.start').addEventListener('click', function() {
+  startGame();
+});
