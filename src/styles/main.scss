@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: background ease-in 0.2s;
 
   &--2 {
     background: #eee4da;
@@ -109,6 +110,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
