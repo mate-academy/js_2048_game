@@ -8,8 +8,6 @@ const startButton = document.querySelector('.start');
 const score = document.querySelector('.game-score');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
-const fieldArrayLength = Array.from(field).filter(number =>
-  number.textContent).length;
 
 function numGenerator(max) {
   return Math.floor(Math.random() * max);
@@ -32,12 +30,15 @@ function success() {
 }
 
 function moveCheck() {
-  if (!YAxisAdd('up')
-  && !YAxisAdd('down')
-  && !XAxisAdd()
-  && !XAxisAdd('reverse')
-  && Array.from(field).filter(number =>
-    number.textContent).length === 16) {
+  const fieldArray = Array.from(field);
+
+  const checkY = fieldArray.some((item, index) =>
+    index < 12 && item.textContent === fieldArray[index + 4].textContent);
+  const checkX = fieldArray.some((item, index) =>
+    index % 4 !== 3 && item.textContent
+    === fieldArray[index + 1].textContent);
+
+  if (!checkY && !checkX) {
     messageLose.classList.remove('hidden');
   }
 }
@@ -51,8 +52,8 @@ function addNumber() {
     } else {
       addNumber();
     }
-  };
-}
+  }
+};
 
 startButton.addEventListener('click', (evt) => {
   document.addEventListener('keydown', gameMoves);
@@ -60,6 +61,10 @@ startButton.addEventListener('click', (evt) => {
   startButton.textContent = 'Restart';
   startButton.classList.add('restart');
   startButton.classList.remove('start');
+
+  if (startButton.textContent === 'Restart') {
+    messageLose.classList.add('hidden');
+  }
 
   field.forEach(clearSquare => {
     clearSquare.textContent = '';
@@ -120,27 +125,19 @@ function YAxisAdd(direction) {
   fieldToCheck.forEach((item, index) => {
     const inPutIndex = direction === 'up' ? reverseIndex[index] : index + 4;
 
-    const downCheck = direction === 'down'
-    && field[inPutIndex].textContent === field[index].textContent
-    && field[inPutIndex].textContent !== '';
-
-    const upCheck = direction === 'up'
-    && field[inPutIndex].textContent === field[inPutIndex + 4].textContent
-    && field[inPutIndex].textContent !== '';
-
-    if (downCheck) {
+    if (direction === 'down'
+      && field[inPutIndex].textContent === field[index].textContent
+      && field[inPutIndex].textContent !== '') {
       const newNum = Number(2 * field[index].textContent);
 
       score.textContent = Number(score.textContent) + newNum;
       field[inPutIndex].textContent = newNum + '\u00A0';
       field[index].textContent = '';
-
-      if (newNum === 2048) {
-        success();
-      }
     }
 
-    if (upCheck) {
+    if (direction === 'up'
+    && field[inPutIndex].textContent === field[inPutIndex + 4].textContent
+    && field[inPutIndex].textContent !== '') {
       const newNum = Number(2 * field[inPutIndex].textContent);
 
       score.textContent = Number(score.textContent) + newNum;
@@ -150,10 +147,6 @@ function YAxisAdd(direction) {
       if (newNum === 2048) {
         success();
       }
-    }
-
-    if (!upCheck && !downCheck && fieldArrayLength === 16) {
-      return false;
     }
   });
   clearNBSP();
@@ -195,11 +188,9 @@ function XAxisAdd(reverse) {
     };
 
     oddNums.forEach((square, index) => {
-      const sideCheck = index <= 2 && oddNums[index].textContent
-      === oddNums[index + 1].textContent
-      && oddNums[index].textContent !== '';
-
-      if (sideCheck) {
+      if (index <= 2 && oddNums[index].textContent
+        === oddNums[index + 1].textContent
+        && oddNums[index].textContent !== '') {
         const newNum = Number(2 * oddNums[index + 1].textContent);
 
         score.textContent = Number(score.textContent) + newNum;
@@ -209,10 +200,6 @@ function XAxisAdd(reverse) {
         if (newNum === 2048) {
           success();
         }
-      }
-
-      if (!sideCheck && fieldArrayLength === 16) {
-        return false;
       }
     });
   });
@@ -226,36 +213,58 @@ function assignColours() {
 }
 
 const gameMoves = (evt) => {
+  const previousArray = Array.from(field).map(item => {
+    return item.textContent ? item.textContent : '1';
+  });
+
+  function newGrid() {
+    const newArray = Array.from(field).map(item => {
+      return item.textContent ? item.textContent : '1';
+    });
+
+    return newArray;
+  }
+
+  function changeCheck(newtable) {
+    const matching = JSON.stringify(newtable) === JSON.stringify(previousArray);
+
+    if (!matching) {
+      addNumber();
+      assignColours();
+    } else {
+      moveCheck();
+    }
+  }
+
   if (evt.key === 'ArrowDown') {
     YAxisnCheck('down');
     YAxisAdd('up');
     YAxisnCheck('down');
-    moveCheck();
+    changeCheck(newGrid());
   }
 
   if (evt.key === 'ArrowUp') {
     YAxisnCheck('up');
     YAxisAdd('down');
     YAxisnCheck('up');
-    moveCheck();
+    changeCheck(newGrid());
   }
 
   if (evt.key === 'ArrowLeft') {
     leftRightMove('reverse');
     XAxisAdd();
     leftRightMove('reverse');
-    moveCheck();
+    changeCheck(newGrid());
   }
 
   if (evt.key === 'ArrowRight') {
     leftRightMove();
     XAxisAdd('reverse');
     leftRightMove();
-    moveCheck();
+    changeCheck(newGrid());
   };
 
   if (evt.key === ' ') {
     evt.preventDefault();
   }
-  assignColours();
 };
