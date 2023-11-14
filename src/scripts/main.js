@@ -46,9 +46,16 @@ function displayOnField() {
       const gameCell = cells[rowIndex * gridSize + cellIndex];
 
       if (gameCell.classList.length > 1) {
-        const cellClass = gameCell.classList.item(1);
+        if (gameCell.classList.contains('merged')) {
+          gameCell.classList.remove('merged');
+        }
 
-        gameCell.classList.remove(cellClass);
+        const cellClassToRemove = Array.from(gameCell.classList)
+          .find(currentClass => {
+            return currentClass.includes('field-cell--');
+          });
+
+        gameCell.classList.remove(cellClassToRemove);
         gameCell.textContent = '';
       }
 
@@ -145,13 +152,15 @@ function moveUp() {
         let rowOfAvailableCell = null;
 
         for (let i = rowIndex - 1; i >= 0; i--) {
-          if (
-            gameMatrix[i][cellIndex] === 0
-              || gameMatrix[i][cellIndex] === matrixCell
-          ) {
-            rowOfAvailableCell = i;
-          } else {
-            break;
+          if (!cells[i * gridSize + cellIndex].classList.contains('merged')) {
+            if (
+              gameMatrix[i][cellIndex] === 0
+                || gameMatrix[i][cellIndex] === matrixCell
+            ) {
+              rowOfAvailableCell = i;
+            } else {
+              break;
+            }
           }
         }
 
@@ -161,6 +170,9 @@ function moveUp() {
           );
 
           if (gameMatrix[rowOfAvailableCell][cellIndex] !== 0) {
+            cells[rowOfAvailableCell * gridSize + cellIndex]
+              .classList.add('merged');
+
             setScore(cellsSum);
           }
 
@@ -194,13 +206,15 @@ function moveDown() {
         let rowOfAvailableCell = null;
 
         for (let i = rowIndex + 1; i <= gameMatrix.length - 1; i++) {
-          if (
-            gameMatrix[i][cellIndex] === 0
-              || gameMatrix[i][cellIndex] === matrixCell
-          ) {
-            rowOfAvailableCell = i;
-          } else {
-            break;
+          if (!cells[i * gridSize + cellIndex].classList.contains('merged')) {
+            if (
+              gameMatrix[i][cellIndex] === 0
+                || gameMatrix[i][cellIndex] === matrixCell
+            ) {
+              rowOfAvailableCell = i;
+            } else {
+              break;
+            }
           }
         }
 
@@ -210,11 +224,13 @@ function moveDown() {
           );
 
           if (gameMatrix[rowOfAvailableCell][cellIndex] !== 0) {
+            cells[rowOfAvailableCell * gridSize + cellIndex]
+              .classList.add('merged');
+
             setScore(cellsSum);
           }
 
           gameMatrix[rowOfAvailableCell][cellIndex] = cellsSum;
-
           gameMatrix[rowIndex][cellIndex] = 0;
 
           congratTheWinner(cellsSum);
@@ -245,14 +261,16 @@ function moveRight() {
       if (matrixCell !== 0) {
         let indexOfAvailableCell = null;
 
-        for (let i = cellIndex + 1; i <= matrixRow.length; i++) {
-          if (
-            matrixRow[i] === 0
-              || matrixRow[i] === matrixCell
-          ) {
-            indexOfAvailableCell = i;
-          } else {
-            break;
+        for (let i = cellIndex + 1; i < matrixRow.length; i++) {
+          if (!cells[rowIndex * gridSize + i].classList.contains('merged')) {
+            if (
+              matrixRow[i] === 0
+                || matrixRow[i] === matrixCell
+            ) {
+              indexOfAvailableCell = i;
+            } else {
+              break;
+            }
           }
         }
 
@@ -263,11 +281,13 @@ function moveRight() {
           );
 
           if (gameMatrix[rowIndex][indexOfAvailableCell] !== 0) {
+            cells[rowIndex * gridSize + indexOfAvailableCell]
+              .classList.add('merged');
+
             setScore(cellsSum);
           }
 
-          gameMatrix[rowIndex][indexOfAvailableCell] = cellsSum;
-
+          matrixRow[indexOfAvailableCell] = cellsSum;
           matrixRow[cellIndex] = 0;
 
           congratTheWinner(cellsSum);
@@ -297,13 +317,15 @@ function moveLeft() {
         let indexOfAvailableCell = null;
 
         for (let i = cellIndex - 1; i >= 0; i--) {
-          if (
-            matrixRow[i] === 0
-              || matrixRow[i] === matrixCell
-          ) {
-            indexOfAvailableCell = i;
-          } else {
-            break;
+          if (!cells[rowIndex * gridSize + i].classList.contains('merged')) {
+            if (
+              matrixRow[i] === 0
+                || matrixRow[i] === matrixCell
+            ) {
+              indexOfAvailableCell = i;
+            } else {
+              break;
+            }
           }
         }
 
@@ -311,6 +333,9 @@ function moveLeft() {
           const cellsSum = matrixRow[indexOfAvailableCell] + matrixCell;
 
           if (matrixRow[indexOfAvailableCell] !== 0) {
+            cells[rowIndex * gridSize + indexOfAvailableCell]
+              .classList.add('merged');
+
             setScore(cellsSum);
           }
 
