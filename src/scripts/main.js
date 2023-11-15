@@ -9,10 +9,10 @@ const gameFieldCells = document.querySelectorAll('.field-cell');
 const score = document.querySelector('.game-score');
 
 const fieldArray = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
+  [8, 16, 64, 5],
+  [2, 4, 2, 8],
+  [4, 2, 16, 4],
+  [2, 4, 2, 2],
 ];
 
 start.addEventListener('click', () => {
@@ -79,8 +79,8 @@ function moveLeft(row) {
     if (cell === nextCell) {
       nonZeroCells[i] = cell * 2;
       scoreValue += nonZeroCells[i];
-      updateScore();
       nonZeroCells[i + 1] = 0;
+      updateScore();
     }
   }
 
@@ -102,6 +102,7 @@ function canMoveHorizontally(move, arr) {
       }
 
       if (!areArraysEqual(copyFieldArray, flatArray(arr))) {
+        checkIfLose(arr);
         addNewCell(arr);
         updateCells(gameFieldCells, arr);
       }
@@ -156,6 +157,8 @@ function addNewCell(arr) {
     const [rowIndex, colIndex] = randIndex;
 
     arr[rowIndex][colIndex] = Math.random() <= 0.9 ? 2 : 4;
+    checkIfLose(arr);
+    updateScore();
   }
 }
 
@@ -181,11 +184,9 @@ function updateScore() {
 }
 
 function checkIfLose(arr) {
-  if (!hasEmptyCell(arr)) {
-    if (!canMergeCell()) {
-      loseMessage.classList.remove('hidden');
-      gameOver = true;
-    }
+  if (!canMergeCell() && !hasEmptyCell(arr)) {
+    loseMessage.classList.remove('hidden');
+    gameOver = true;
   }
 }
 
@@ -200,21 +201,19 @@ function hasEmptyCell(arr) {
 }
 
 function canMergeCell() {
-  for (let i = 0; i < fieldArray.length - 1; i++) {
-    const cell = fieldArray[i];
-    const nextCell = fieldArray[i + 1];
+  for (let i = 0; i < fieldArray.length; i++) {
+    const row = fieldArray[i];
 
-    if (cell === nextCell) {
-      return true;
+    for (let j = 0; j < row.length - 1; j++) {
+      if (row[j] === row[j + 1]) {
+        return true;
+      }
     }
   }
 
-  for (let i = 0; i < fieldArray.length; i++) {
-    for (let j = 0; j < fieldArray[i].length - 1; j++) {
-      const cell = fieldArray[j][i];
-      const nextCell = fieldArray[j + 1][i];
-
-      if (cell === nextCell) {
+  for (let i = 0; i < fieldArray.length - 1; i++) {
+    for (let j = 0; j < fieldArray[i].length; j++) {
+      if (fieldArray[i][j] === fieldArray[i + 1][j]) {
         return true;
       }
     }
