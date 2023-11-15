@@ -139,7 +139,7 @@ h1 {
 
 .start {
   background: #1dae28;
-  font-size: 20px;
+  font-size: 18px;
 
   &:hover {
     background: #179921;
@@ -176,7 +176,17 @@ h1 {
   width: 350px;
 }
 
+.message-start {
+  background: #edc22e;
+  color: #f9f6f2;
+}
+
 .message-win {
+  background: #edc22e;
+  color: #f9f6f2;
+}
+
+.message-lose {
   background: #edc22e;
   color: #f9f6f2;
 }
