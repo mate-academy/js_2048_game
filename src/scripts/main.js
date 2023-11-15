@@ -1,18 +1,21 @@
 'use strict';
 
 const countOfNewCellsWhenStart = 2;
+
 const start = document.querySelector('.start');
+
 const startMessage = document.querySelector('.message-start');
 const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
+
 const gameFieldCells = document.querySelectorAll('.field-cell');
 const score = document.querySelector('.game-score');
 
 const fieldArray = [
-  [8, 16, 64, 5],
-  [2, 4, 2, 8],
-  [4, 2, 16, 4],
-  [2, 4, 2, 2],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
 ];
 
 start.addEventListener('click', () => {
@@ -20,7 +23,6 @@ start.addEventListener('click', () => {
     startGame();
   }
   restart();
-  updateCells(gameFieldCells, fieldArray);
 
   for (let i = 0; i < countOfNewCellsWhenStart; i++) {
     addNewCell(fieldArray);
@@ -57,7 +59,6 @@ document.addEventListener('keyup', (e) => {
 
     case 'ArrowUp':
       canMoveVertically(moveRight, fieldArray);
-
       updateScore();
       break;
 
