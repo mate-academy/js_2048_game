@@ -80,6 +80,10 @@ export class Game {
   }
 
   move(direction) {
+    if (this.play !== 'STARTED') {
+      return;
+    }
+
     const previousField = copyField(this.field);
 
     if (direction === 'ArrowUp') {
