@@ -8,6 +8,8 @@ import {
   getEmptyCellCount,
   isWin,
   isLose,
+  copyField,
+  isArraysDifferent,
 } from './game_logic';
 
 export class Game {
@@ -53,7 +55,7 @@ export class Game {
     this.render();
   }
 
-  nextStep() {
+  nextStep(previousField) {
     const win = isWin(this.field);
 
     if (win === true) {
@@ -66,7 +68,9 @@ export class Game {
       }
 
       if (getEmptyCellCount(this.field) > 0) {
-        setRandomValue(this.field);
+        if (isArraysDifferent(previousField, this.field)) {
+          setRandomValue(this.field);
+        }
 
         if (isLose(this.field)) {
           this.play = 'DEFEAT';
@@ -76,12 +80,14 @@ export class Game {
   }
 
   move(direction) {
+    const previousField = copyField(this.field);
+
     if (direction === 'ArrowUp') {
       const addedScore = moveAllToUpWithSumm(this.field);
 
       this.scoreCount += addedScore;
 
-      this.nextStep();
+      this.nextStep(previousField);
     }
 
     if (direction === 'ArrowDown') {
@@ -89,7 +95,7 @@ export class Game {
 
       this.scoreCount += addedScore;
 
-      this.nextStep();
+      this.nextStep(previousField);
     }
 
     if (direction === 'ArrowRight') {
@@ -97,7 +103,7 @@ export class Game {
 
       this.scoreCount += addedScore;
 
-      this.nextStep();
+      this.nextStep(previousField);
     }
 
     if (direction === 'ArrowLeft') {
@@ -105,7 +111,7 @@ export class Game {
 
       this.scoreCount += addedScore;
 
-      this.nextStep();
+      this.nextStep(previousField);
     }
 
     this.render();

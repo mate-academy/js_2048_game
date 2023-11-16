@@ -31,6 +31,21 @@ function sumInArray(arr) {
   return addedSum;
 }
 
+export function isArraysDifferent(arr1, arr2) {
+  for (let r = 0; r < arr1.length; r++) {
+    const row = arr1[r];
+    const row2 = arr2[r];
+
+    for (let c = 0; c < row.length; c++) {
+      if (row[c] !== row2[c]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 function moveRightWithSumm(arr) {
   moveRight(arr);
 
@@ -78,13 +93,7 @@ function getCoords(arr, n) {
 }
 
 function getRandomValue() {
-  const value = Math.ceil(Math.random() * 2);
-
-  if (value === 1) {
-    return 4;
-  } else {
-    return value;
-  }
+  return Math.random() > 0.9 ? 4 : 2;
 }
 
 export function setRandomValue(arr) {
@@ -159,7 +168,7 @@ export function isLose(arr) {
   return false;
 }
 
-function copyField(arr) {
+export function copyField(arr) {
   const res = [];
 
   for (let r = 0; r < arr.length; r++) {
