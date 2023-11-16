@@ -6,6 +6,7 @@ const gameScore = document.querySelector('.game-score');
 
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
+const messageStart = document.querySelector('.message-start');
 
 let board;
 const columns = 4;
@@ -167,6 +168,7 @@ startButton.addEventListener('click', () => {
 
   messageWin.classList.add('hidden');
   messageLose.classList.add('hidden');
+  messageStart.classList.add('hidden');
 
   board = Array.from({ length: columns }, () => Array(columns).fill(0));
 
