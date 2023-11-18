@@ -63,6 +63,37 @@ function handleSwipeGesture() {
   }
 }
 
+const emojiElement = document.getElementById('emoji');
+
+const wow1 = 'wow1.png';
+
+const emoji = () => {
+  emojiElement.innerHTML = `<img src="${wow1}" alt="WOW!">`;
+  emojiElement.style.display = 'block';
+  emojiElement.classList.add('zoom-in');
+
+  emojiElement.addEventListener('animationend', () => {
+    emojiElement.classList.remove('zoom-in');
+    emojiElement.classList.add('fade-out');
+  });
+
+  let isZoomAnimationEnded = false;
+
+  emojiElement.addEventListener('animationend', () => {
+    if (!isZoomAnimationEnded) {
+      isZoomAnimationEnded = true;
+
+      return;
+    }
+
+    if (emojiElement.classList.contains('fade-out')) {
+      emojiElement.style.display = 'none';
+      emojiElement.classList.remove('fade-out');
+      emojiElement.innerHTML = '';
+    }
+  });
+};
+
 function countScore(sum) {
   score += sum;
 
@@ -75,6 +106,8 @@ function countScore(sum) {
   });
 
   showScore.textContent = score;
+
+  emoji();
 }
 
 function gameOn() {

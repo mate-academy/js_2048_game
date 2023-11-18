@@ -75,6 +75,10 @@ body {
   }
 }
 
+.tile-moving {
+  transition: transform 200ms ease-in-out;
+}
+
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
@@ -88,9 +92,10 @@ body {
   margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
+  align-items: center;
 }
 
-h1 {
+.game-title {
   background: #edc22e;
   color: #f9f6f2;
   width: 75px;
@@ -102,6 +107,24 @@ h1 {
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  font-weight: 600;
+}
+
+.game-emoji {
+  border: 0px solid yellow;
+  font-size: 12px;
+  color: yellow;
+  animation: zoom 0.2s ease-in;
+  display: none;
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.fade-out {
+  animation: fadeOut 1s ease-in-out forwards;
 }
 
 .info {
