@@ -65,10 +65,8 @@ function handleSwipeGesture() {
 
 const emojiElement = document.getElementById('emoji');
 
-const wow1 = './wow1.png';
-
-const emoji = () => {
-  emojiElement.innerHTML = `<img src="${wow1}" alt="WOW!">`;
+const emoji = (showScore) => {
+  emojiElement.innerHTML = `+${showScore}`;
   emojiElement.style.display = 'block';
   emojiElement.classList.add('zoom-in');
 
@@ -107,7 +105,7 @@ function countScore(sum) {
 
   showScore.textContent = score;
 
-  emoji();
+  emoji(sum);
 }
 
 function gameOn() {
