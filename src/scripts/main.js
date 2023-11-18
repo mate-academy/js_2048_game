@@ -65,7 +65,7 @@ function handleSwipeGesture() {
 
 const emojiElement = document.getElementById('emoji');
 
-const wow1 = 'wow1.png';
+const wow1 = './wow1.png';
 
 const emoji = () => {
   emojiElement.innerHTML = `<img src="${wow1}" alt="WOW!">`;

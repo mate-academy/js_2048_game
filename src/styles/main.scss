@@ -111,7 +111,6 @@ body {
 }
 
 .game-emoji {
-  border: 0px solid yellow;
   font-size: 12px;
   color: yellow;
   animation: zoom 0.2s ease-in;
@@ -119,8 +118,12 @@ body {
 }
 
 @keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 .fade-out {
