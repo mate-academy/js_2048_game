@@ -1,49 +1,43 @@
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://spojrzenie.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+# 2048 Game Clone
 
-### Task: 2048 game
+Welcome to the addictive world of 2048! Test your skills and strategic thinking in this captivating 2048 game clone.
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+**Play the Game**: [DEMO LINK](https://spojrzenie.github.io/js_2048_game/)
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+![Game Preview](./src/images/reference.png)
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Reference.
+## About the Game
 
-That's it!
+2048 is a popular tile-matching puzzle game where your goal is to combine tiles to reach the coveted 2048 tile. It's a challenging and enjoyable game that will keep you engaged for hours.
 
-Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) Increase score with each move. The score should be increased by the sum of all merged cells.
+## Features
 
-Hints:
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
-- Use `keydown` event and `event.key` property to handle arrow buttons presses
-    ```js
-    document.addEventListener('keydown', event => console.log(event.key));
-    ```
+- **Random Tile Generation:** New tiles with values of 2 or 4 are generated at random positions on the board.
 
-You can change the HTM/CSS layout if you need it.
+- **Tile Movement:** Use arrow keys to slide tiles in different directions.
 
-![Preview](./src/images/reference.png)
+- **Tile Combining:** Combine tiles with the same value to create a tile with double the value.
+
+- **Game Objective:** Strategically combine tiles to reach the 2048 tile and achieve the highest score.
+
+## How to Play
+
+1. Clone this repository to your local environment.
+2. Open the `index.html` file in your web browser.
+3. Start playing and challenge yourself to reach the 2048 tile!
+
+## Technologies Used
+
+- **JavaScript:** The core game logic is implemented in JavaScript.
+- **HTML:** The game interface is built using HTML.
+- **CSS (SCSS):** Stylish and responsive design powered by SCSS.
+
+## Author
+
+**Krzysztof Janiewicz**
+
+## Inspiration
+
+This project is inspired by the original 2048 game created by Gabriele Cirulli. We would like to express our gratitude to Gabriele for his fantastic work and for making the game accessible to the world.
+
+*Original Game by Gabriele Cirulli*: [Play 2048](https://play2048.co/)
