@@ -6,51 +6,20 @@
     <title>2048</title>
     <link rel="stylesheet" href="./styles/main.scss">
   </head>
+
   <body>
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
         <div class="controls">
           <p class="info">
-            Score: <span class="game-score">0</span>
+              Score: <span class="game-score" id="score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button class="button start" id="start">Start</button>
         </div>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="game-field" id="field"></div>
 
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>

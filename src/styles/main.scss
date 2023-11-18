@@ -1,25 +1,67 @@
+$cell-size: 120px;
+
+$rows-count: 4;
+$col-count: 4;
+
+$h1-bg-color: #edc22e;
+$h1-color: #f9f6f2;
+
+$field-bg-color: #cdc1b5;
+$field-border-color: #bbada0;
+$body-bg-color: #fbf8ef;
+$cell-border-color: #bbada0;
+
+$button-color: #f9f6f2;
+$start-button-bg-color: #1dae28;
+$hover-start-but-bg-color: #179921;
+$restart-but-bg-color: #f1b2b2;
+$hover-restart-but-bg-color: #f87474;
+
+
+$info-bg-color: #d6cdc4;
+$info-color: #776e65;
+
+$message-bg-color: #d6cdc4;
+$message-color: #776e65;
+
+$message-win-bg-color: #edc22e;
+$message-win-color: #f9f6f2;
+
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: $body-bg-color;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
+.game-field {
+  width: $col-count * $cell-size;
+  height: $rows-count * $cell-size;
+
+  background-color: $field-bg-color;
+  border: 6px solid $field-border-color;
+  border-radius: 10px;
+
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  width: $cell-size;
+  height: $cell-size;
+  border: 5px solid #bbada0;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
+  font-size: 40px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &--2 {
     background: #eee4da;
@@ -75,24 +117,18 @@ body {
   }
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
-}
-
 .game-header {
   display: flex;
   width: 100%;
   justify-content: space-between;
   margin-bottom: 24px;
-  padding: 10px;
+  padding-block: 10px;
   box-sizing: border-box;
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: $h1-bg-color;
+  color: $h1-color;
   width: 75px;
   height: 75px;
   font-size: 24px;
@@ -109,11 +145,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: $info-bg-color;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: $info-color;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -127,7 +163,7 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: $button-color;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
@@ -135,30 +171,31 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+  outline: 0;
 }
 
 .start {
-  background: #1dae28;
+  background: $start-button-bg-color;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: $hover-start-but-bg-color;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: $restart-but-bg-color;
 
   &:hover {
-    background: #f87474;
+    background: $hover-restart-but-bg-color;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: $message-bg-color;
+  color: $message-color;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
@@ -173,12 +210,12 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
+  width: $col-count * $cell-size + 12px;
 }
 
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: $message-win-bg-color;
+  color: $message-win-color;
 }
 
 .message-container {
