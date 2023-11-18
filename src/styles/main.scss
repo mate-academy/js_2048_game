@@ -204,3 +204,14 @@ h1 {
     transform: scale(1);
   }
 }
+
+.changelog {
+  font-size: 12px;
+  font-weight: 400;
+  color: gray;
+  align-self: flex-start;
+
+  &--title {
+    font-weight: 800;
+  }
+}
