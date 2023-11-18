@@ -20,17 +20,21 @@ const touchEndPos = {
   x: 0, y: 0,
 };
 
-// eslint-disable-next-line no-shadow
-function handleTouchStart(event) {
-  touchStartPos.x = event.touches[0].clientX;
-  touchStartPos.y = event.touches[0].clientY;
+function handleTouchStart(e) {
+  touchStartPos.x = e.touches[0].clientX;
+  touchStartPos.y = e.touches[0].clientY;
+  e.preventDefault();
 }
 
-// eslint-disable-next-line no-shadow
-function handleTouchEnd(event) {
-  touchEndPos.x = event.changedTouches[0].clientX;
-  touchEndPos.y = event.changedTouches[0].clientY;
+function handleTouchEnd(e) {
+  touchEndPos.x = e.changedTouches[0].clientX;
+  touchEndPos.y = e.changedTouches[0].clientY;
   handleSwipeGesture();
+  e.preventDefault();
+}
+
+function handleTouchMove(e) {
+  e.preventDefault();
 }
 
 function handleSwipeGesture() {
@@ -466,6 +470,20 @@ document.addEventListener('keydown', keyEvent => {
 
 const gameContainer = document.querySelector('.game-field');
 
-gameContainer.addEventListener('touchstart', handleTouchStart, false);
+gameContainer.addEventListener(
+  'touchstart',
+  handleTouchStart,
+  { passive: false }
+);
 
-gameContainer.addEventListener('touchend', handleTouchEnd, false);
+gameContainer.addEventListener(
+  'touchmove',
+  handleTouchMove,
+  { passive: false }
+);
+
+gameContainer.addEventListener(
+  'touchend',
+  handleTouchEnd,
+  { passive: false }
+);
