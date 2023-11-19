@@ -5,15 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048</title>
     <link rel="stylesheet" href="./styles/main.scss">
+    <link
+      rel="shortcut icon"
+      href="./images/2048_logo.png"
+      type="image/x-icon"
+    >
+    <script
+      type="text/javascript"
+      src="scripts/main.js"
+      defer
+    >
+    </script>
   </head>
   <body>
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
         <div class="controls">
-          <p class="info">
-            Score: <span class="game-score">0</span>
-          </p>
+          <p class="info">Score: <span class="game-score">0</span></p>
           <button class="button start">Start</button>
         </div>
       </div>
@@ -21,33 +30,31 @@
       <table class="game-field">
         <tbody>
           <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+            <td class="field-cell" id="0_0"></td>
+            <td class="field-cell" id="0_1"></td>
+            <td class="field-cell" id="0_2"></td>
+            <td class="field-cell" id="0_3"></td>
           </tr>
 
           <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+            <td class="field-cell" id="1_0"></td>
+            <td class="field-cell" id="1_1"></td>
+            <td class="field-cell" id="1_2"></td>
+            <td class="field-cell" id="1_3"></td>
           </tr>
 
-
           <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+            <td class="field-cell" id="2_0"></td>
+            <td class="field-cell" id="2_1"></td>
+            <td class="field-cell" id="2_2"></td>
+            <td class="field-cell" id="2_3"></td>
           </tr>
 
-
           <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+            <td class="field-cell" id="3_0"></td>
+            <td class="field-cell" id="3_1"></td>
+            <td class="field-cell" id="3_2"></td>
+            <td class="field-cell" id="3_3"></td>
           </tr>
         </tbody>
       </table>
@@ -55,9 +62,11 @@
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
         <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+        <p class="message message-start ">
+          Press "Start" to begin game. Good luck!
+        </p>
       </div>
     </div>
-    <script type="text/javascript" src="scripts/main.js"></script>
+
   </body>
 </html>
