@@ -10,6 +10,14 @@ body {
   font-weight: 900;
 }
 
+.slide-left {
+  transform: translateX(-100%);
+}
+
+.slide-right {
+  transform: translateX(100%);
+}
+
 .field-cell {
   background: #fff6e9;
   width: 75px;
@@ -20,7 +28,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
-  transition: left 1s ease, top 1s ease;
+  transition: transform 1s ease-in-out;
 
   &--2 {
     background: #ffadad;

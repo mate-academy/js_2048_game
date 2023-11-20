@@ -67,6 +67,79 @@ function render() {
   gameScore.textContent = SCORE;
 }
 
+// mobile start region//
+const gameContainer = document.querySelector('.game-field');
+
+let touchStartX = null;
+let touchStartY = null;
+
+gameContainer.addEventListener('touchstart', handleTouchStartX);
+gameContainer.addEventListener('touchmove', handleTouchMoveX);
+gameContainer.addEventListener('touchend', handleTouchEndX);
+gameContainer.addEventListener('touchstart', handleTouchStartY);
+gameContainer.addEventListener('touchmove', handleTouchMoveY);
+gameContainer.addEventListener('touchend', handleTouchEndY);
+
+function handleTouchStartX(e) {
+  touchStartX = e.touches[0].clientX;
+  e.preventDefault();
+}
+
+function handleTouchMoveX(e) {
+  if (!touchStartX) {
+    return;
+  }
+
+  const touchCurrentX = e.touches[0].clientX;
+  const deltaX = touchCurrentX - touchStartX;
+
+  if (deltaX) {
+    moveRight();
+    touchStartX = touchCurrentX;
+    render();
+  } else if (deltaX < -10) {
+    moveLeft();
+    touchStartX = touchCurrentX;
+  }
+
+  e.preventDefault();
+}
+
+function handleTouchEndX() {
+  touchStartX = null;
+}
+
+function handleTouchStartY(e) {
+  touchStartX = e.touches[0].clientX;
+  e.preventDefault();
+}
+
+function handleTouchMoveY(e) {
+  if (!touchStartY) {
+    return;
+  }
+
+  const touchCurrentY = e.touches[0].clientY;
+  const deltaY = touchCurrentY - touchStartY;
+
+  if (deltaY) {
+    moveRight();
+    touchStartX = touchCurrentY;
+    render();
+  } else if (deltaY < -10) {
+    moveLeft();
+    touchStartY = touchCurrentY;
+  }
+
+  e.preventDefault();
+}
+
+function handleTouchEndY() {
+  touchStartX = null;
+}
+
+// mobile end region //
+
 function move(e) {
   newGame = gameBoard;
 
@@ -112,11 +185,11 @@ function reset() {
   gameBoard = gameBoard.map((y) => y.map(() => 0));
   SCORE = 0;
 
-  [winMessage, loseMessage].forEach(msg => msg.classList.add('hidden'));
+  [winMessage, loseMessage].forEach(message => message.classList.add('hidden'));
 }
 
-function reverseRows() {
-  newGame.forEach(y => y.reverse());
+function reverseLine() {
+  newGame.forEach(line => line.reverse());
 }
 
 function moveLeft() {
@@ -153,9 +226,9 @@ function moveRight() {
     return;
   }
 
-  reverseRows();
+  reverseLine();
   moveLeft();
-  reverseRows();
+  reverseLine();
 }
 
 function moveDown() {
@@ -171,14 +244,14 @@ function moveUp() {
 }
 
 function checkColumns() {
-  return newGame.some(y =>
-    y.some((cell, x) => cell === y[x + 1])
+  return newGame.some(columm =>
+    columm.some((cell, x) => cell === columm[x + 1]) || columm.includes(0)
   );
 }
 
 function checkRows() {
-  return newGame.some(y =>
-    y.some((cell, x) => cell === y[x + 1]) || y.includes(0)
+  return newGame.some(row =>
+    row.some((cell, x) => cell === row[x + 1]) || row.includes(0)
   );
 }
 
