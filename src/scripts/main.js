@@ -170,6 +170,13 @@ function moveUp() {
   movingField();
 }
 
+function movingField() {
+  newGame
+    = newGame[0].map((_, xIndex) =>
+      newGame.map(y => y[xIndex])
+    );
+}
+
 function checkColumns() {
   return newGame.some(columm =>
     columm.some((cell, x) => cell === columm[x + 1]) || columm.includes(0)
@@ -180,13 +187,6 @@ function checkRows() {
   return newGame.some(row =>
     row.some((cell, x) => cell === row[x + 1]) || row.includes(0)
   );
-}
-
-function movingField() {
-  newGame
-    = newGame[0].map((_, xIndex) =>
-      newGame.map(y => y[xIndex])
-    );
 }
 
 function checkMove() {
