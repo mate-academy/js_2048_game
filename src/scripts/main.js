@@ -33,6 +33,7 @@ button.addEventListener('click', e => {
   }
 
   addNumber();
+  addNumber();
   render();
 });
 
@@ -66,6 +67,79 @@ function render() {
 
   gameScore.textContent = SCORE;
 }
+
+// mobile start region//
+// const gameContainer = document.querySelector('.game-field');
+
+// let touchStartX = null;
+// let touchStartY = null;
+
+// gameContainer.addEventListener('touchstart', handleTouchStartX);
+// gameContainer.addEventListener('touchmove', handleTouchMoveX);
+// gameContainer.addEventListener('touchend', handleTouchEndX);
+// gameContainer.addEventListener('touchstart', handleTouchStartY);
+// gameContainer.addEventListener('touchmove', handleTouchMoveY);
+// gameContainer.addEventListener('touchend', handleTouchEndY);
+
+// function handleTouchStartX(e) {
+//   touchStartX = e.touches[0].clientX;
+//   e.preventDefault();
+// }
+
+// function handleTouchMoveX(e) {
+//   if (!touchStartX) {
+//     return;
+//   }
+
+//   const touchCurrentX = e.touches[0].clientX;
+//   const deltaX = touchCurrentX - touchStartX;
+
+//   if (deltaX) {
+//     moveRight();
+//     touchStartX = touchCurrentX;
+//     render();
+//   } else if (deltaX < -10) {
+//     moveLeft();
+//     touchStartX = touchCurrentX;
+//   }
+
+//   e.preventDefault();
+// }
+
+// function handleTouchEndX() {
+//   touchStartX = null;
+// }
+
+// function handleTouchStartY(e) {
+//   touchStartX = e.touches[0].clientX;
+//   e.preventDefault();
+// }
+
+// function handleTouchMoveY(e) {
+//   if (!touchStartY) {
+//     return;
+//   }
+
+//   const touchCurrentY = e.touches[0].clientY;
+//   const deltaY = touchCurrentY - touchStartY;
+
+//   if (deltaY) {
+//     moveRight();
+//     touchStartX = touchCurrentY;
+//     render();
+//   } else if (deltaY < -10) {
+//     moveLeft();
+//     touchStartY = touchCurrentY;
+//   }
+
+//   e.preventDefault();
+// }
+
+// function handleTouchEndY() {
+//   touchStartX = null;
+// }
+
+// mobile end region //
 
 function move(e) {
   newGame = gameBoard;
