@@ -48,4 +48,44 @@ describe('class Game logic', () => {
       expect(counter).toEqual(2);
     });
   });
+
+  describe('moving left', () => {
+    it('should place all tiles to left side', () => {
+      const game = new Game();
+
+      game.startingNewGame();
+      game.moveLeft();
+
+      game.field.forEach(row => {
+        const indexOfZero = row.findIndex(cell => cell === 0);
+
+        if (indexOfZero === -1) {
+          return;
+        }
+
+        for (let i = indexOfZero; i < row.length; i++) {
+          expect(row[i]).toEqual(0);
+        }
+      });
+    });
+
+    it('should collapse tiles if they are equal', () => {
+      const game = new Game();
+
+      game.field = [
+        [2, 2, 2, 2],
+        [0, 0, 0, 0],
+        [0, 0, 4, 4],
+        [2, 4, 8, 16],
+      ];
+      game.moveLeft();
+
+      expect(game.field).toEqual([
+        [4, 4, 0, 0],
+        [0, 0, 0, 0],
+        [8, 0, 0, 0],
+        [2, 4, 8, 16],
+      ]);
+    });
+  });
 });

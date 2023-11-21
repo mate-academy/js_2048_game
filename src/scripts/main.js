@@ -32,8 +32,80 @@ class Game {
 
   startingNewGame() {
     this.state = 'started';
-    this.field[0][0] = 2;
-    this.field[0][1] = 2;
+
+    const initialCellNumber = 2;
+
+    for (let i = 0; i < initialCellNumber; i++) {
+      const [row, col] = this.randomEmptyCell();
+
+      this.field[row][col] = 2;
+    }
+  }
+
+  randomEmptyCell() {
+    const emptyCells = [];
+
+    this.field.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
+      if (!cell) {
+        emptyCells.push([rowIndex, columnIndex]);
+      }
+    }));
+
+    if (!emptyCells.length) {
+      throw new Error('no empty cells');
+    }
+
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+
+    return emptyCells[randomIndex];
+  }
+
+  moveLeft() {
+    this.collapseCells('left');
+
+    this.field.forEach(row => {
+      let emptyCell = row.findIndex(el => el === 0);
+
+      if (emptyCell < 0) {
+        return;
+      }
+
+      for (let i = emptyCell + 1; i < row.length; i++) {
+        if (!row[i]) {
+          continue;
+        }
+
+        row[emptyCell] = row[i];
+        row[i] = 0;
+        emptyCell++;
+      }
+    });
+  }
+
+  collapseCells(direction) {
+    switch (direction) {
+      case 'left':
+        this.field.forEach(row => {
+          let index = row.findIndex(el => el !== 0);
+
+          if (index === -1) {
+            return;
+          }
+
+          for (let i = index + 1; i < this.field.length; i++) {
+            if (!row[i]) {
+              continue;
+            }
+
+            if (row[i] === row[index]) {
+              row[index] *= 2;
+              row[i] = 0;
+              index = row.findIndex((el, j) => el !== 0 && j > i);
+              i = index;
+            }
+          }
+        });
+    }
   }
 }
 
