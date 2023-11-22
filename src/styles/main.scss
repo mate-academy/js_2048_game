@@ -11,7 +11,7 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background-color: #d6cdc4;
   width: 75px;
   height: 75px;
   border-radius: 5px;
@@ -20,9 +20,10 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: background-color ease-in 0.5;
 
   &--2 {
-    background: #eee4da;
+    background-color: #eee4da;
   }
 
   &--4 {
@@ -134,6 +135,10 @@ h1 {
   width: 75px;
   height: 75px;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   transition: 0.25s ease background;
 }
 
@@ -178,6 +183,11 @@ h1 {
 
 .message-win {
   background: #edc22e;
+  color: #f9f6f2;
+}
+
+.message-lose {
+  background: #ed2e9d;
   color: #f9f6f2;
 }
 
