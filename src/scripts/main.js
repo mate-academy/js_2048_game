@@ -4,7 +4,6 @@ const startBtn = document.querySelector('.start');
 const messageStart = document.querySelector('.message-start');
 const messageLost = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
-// ++++++++++++++++++++++++
 
 class GameFild {
   constructor() {
@@ -43,6 +42,12 @@ class GameFild {
     }
 
     this.renderGameFild();
+
+    startBtn.textContent = 'Restart';
+    startBtn.classList.add('restart');
+    messageStart.classList.add('hidden');
+    messageLost.classList.add('hidden');
+    messageWin.classList.add('hidden');
   }
 
   canContinue() {
@@ -342,11 +347,6 @@ const game = new GameFild();
 
 startBtn.addEventListener('click', (e) => {
   game.init();
-  startBtn.textContent = 'Restart';
-  startBtn.classList.add('restart');
-  messageStart.classList.add('hidden');
-  messageLost.classList.add('hidden');
-  messageWin.classList.add('hidden');
 });
 
 document.addEventListener('keydown', (e) => {
