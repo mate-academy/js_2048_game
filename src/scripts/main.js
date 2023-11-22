@@ -1,310 +1,276 @@
 'use strict';
 
-const startButton = document.querySelector('.start');
-const tableRows = document.querySelector('tbody').rows;
-const totalScore = document.querySelector('.game-score');
+let board = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 
-let board;
 let score = 0;
 const rows = 4;
 const columns = 4;
 const goalNumber = 2048;
-const cellTwo = 2;
-const cellFour = 4;
+
+const startButton = document.querySelector('.start');
+const boardCells = document.querySelectorAll('.field-cell');
+const totalScore = document.querySelector('.game-score');
 
 startButton.addEventListener('click', () => {
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  if (startButton.classList.contains('start')) {
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+    startButton.innerHTML = 'Restart';
+    showMessage();
 
-  score = 0;
-  showMessage('start');
-  startButton.classList.add('restart');
-  startButton.innerText = 'Restart';
-  showMessage();
+    generateNewCell();
+    generateNewCell();
+    updateCell();
+  } else if (startButton.classList.contains('restart')) {
+    showMessage();
 
-  generateNewCell();
-  generateNewCell();
+    board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    score = 0;
+
+    generateNewCell();
+    generateNewCell();
+    updateCell();
+  }
 });
 
-function updateCell(cell, num) {
-  cell.innerText = '';
-  cell.classList.value = '';
-  cell.classList.add('field-cell');
-
-  if (num > 0) {
-    cell.innerText = num.toString();
-    cell.classList.add(`field-cell--${num.toString()}`);
-  }
-}
-
-function updateGame() {
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < columns; j++) {
-      const currentCell = tableRows[i].cells[j];
-      const num = board[i][j];
-
-      updateCell(currentCell, num);
-    }
-  }
-
-  totalScore.innerText = score.toString();
-}
-
-function checkForEmpty() {
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < columns; j++) {
-      if (board[i][j] === 0) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-function canMoveLeft() {
-  for (let i = 0; i < rows; i++) {
-    for (let j = 1; j < columns; j++) {
-      if (board[i][j] === 0) {
-        return true;
-      }
-
-      if (board[i][j] === board[i][j - 1]) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-function canMoveRight() {
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < columns - 1; j++) {
-      if (board[i][j] === 0) {
-        return true;
-      }
-
-      if (board[i][j] === board[i][j + 1]) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-function canMoveUp() {
-  for (let j = 0; j < columns; j++) {
-    for (let i = 1; i < rows; i++) {
-      if (board[i][j] === 0) {
-        return true;
-      }
-
-      if (board[i][j] === board[i - 1][j]) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-function canMoveDown() {
-  for (let j = 0; j < columns; j++) {
-    for (let i = 0; i < rows - 1; i++) {
-      if (board[i][j] === 0) {
-        return true;
-      }
-
-      if (board[i][j] === board[i + 1][j]) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
 function generateNewCell() {
-  if (!checkForEmpty()) {
-    return;
-  }
+  const emptyCells = [];
 
-  const randomValue = Math.random() > 0.5 ? cellTwo : cellFour;
-
-  while (true) {
-    const row = Math.floor(Math.random() * rows);
-    const col = Math.floor(Math.random() * columns);
-
-    if (board[row][col] === 0) {
-      if (canMoveLeft() || canMoveRight() || canMoveUp() || canMoveDown()) {
-        board[row][col] = randomValue;
-        break;
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < columns; col++) {
+      if (!board[row][col]) {
+        emptyCells.push({
+          row, col,
+        });
       }
     }
   }
 
-  updateGame();
+  if (emptyCells.length > 0) {
+    const { row, col }
+      = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+    board[row][col] = Math.random() < 0.9 ? 2 : 4;
+  }
 }
 
-let moved = false;
+function updateCell() {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < columns; col++) {
+      const cellValue = board[row][col];
+      const index = row * rows + col;
+      const cell = boardCells[index];
 
-document.addEventListener('keyup', (direction) => {
-  if (gameLost()) {
-    showMessage('loser');
+      cell.innerText = '';
+      cell.classList.value = '';
+      cell.classList.add('field-cell');
 
-    return;
+      if (cellValue > 0) {
+        cell.innerText = cellValue.toString();
+        cell.classList.add(`field-cell--${cellValue.toString()}`);
+      }
+    }
   }
 
-  moved = false;
+  totalScore.innerHTML = score;
+}
 
-  switch (direction.code) {
-    case 'ArrowLeft':
-      if (canMoveLeft()) {
-        moveLeft();
-        moved = true;
-      }
+document.addEventListener('keydown', (e) => {
+  let moved = false;
+
+  switch (e.key) {
+    case 'ArrowRight':
+      moved = moveRight();
       break;
 
-    case 'ArrowRight':
-      if (canMoveRight()) {
-        moveRight();
-        moved = true;
-      }
+    case 'ArrowLeft':
+      moved = moveLeft();
       break;
 
     case 'ArrowUp':
-      if (canMoveUp()) {
-        moveUp();
-        moved = true;
-      }
+      moved = moveUp();
       break;
 
     case 'ArrowDown':
-      if (canMoveDown()) {
-        moveDown();
-        moved = true;
-      }
+      moved = moveDown();
+      break;
+
+    default:
       break;
   }
 
   if (moved) {
-    moved = false;
     generateNewCell();
+    updateCell();
+
+    if (isGameOver()) {
+      showMessage('lose');
+      enableScroll();
+    }
   }
 });
 
-function gameLost() {
-  let check = false;
-
-  for (let i = 0; i < rows - 1; i++) {
-    for (let j = 0; j < columns - 1; j++) {
-      if (i < rows - 1) {
-        if (board[i][j] === board[i + 1][j]
-          || board[i][j] === board[i][j + 1]) {
-          check = true;
-        }
-      }
-    }
-  }
-
-  if (!check && !checkForEmpty()) {
-    return true;
-  }
-
-  return false;
-}
-
 function filterZero(row) {
-  return row.filter(el => el !== 0);
+  return row.filter((num) => num !== 0);
 }
 
 function move(row) {
-  let newRow = filterZero(row);
+  let newRow = row;
 
-  for (let i = 0; i < row.length - 1; i++) {
-    if (newRow[i] === newRow[i + 1] && isFinite(newRow[i])) {
+  newRow = filterZero(newRow);
+
+  for (let i = 0; i < newRow.length; i++) {
+    if (newRow[i] === newRow[i + 1]) {
       newRow[i] *= 2;
       newRow[i + 1] = 0;
       score += newRow[i];
+    }
 
-      if (newRow[i] === goalNumber) {
-        showMessage('winner');
-      }
+    if (newRow[i] === goalNumber) {
+      showMessage('win');
     }
   }
 
   newRow = filterZero(newRow);
 
-  while (newRow.length < columns) {
+  while (newRow.length < rows) {
     newRow.push(0);
   }
 
   return newRow;
 }
 
+function areArraysEqual(a, b) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
 function moveLeft() {
+  let moved = false;
+
   for (let r = 0; r < rows; r++) {
     let row = board[r];
+    const originalRow = [...row];
 
     row = move(row);
     board[r] = row;
+
+    if (!moved && !areArraysEqual(originalRow, row)) {
+      moved = true;
+    }
   }
 
-  updateGame();
+  return moved;
 }
 
 function moveRight() {
+  let moved = false;
+
   for (let r = 0; r < rows; r++) {
     let row = board[r];
 
-    row = move(row.reverse());
-    board[r] = row.reverse();
+    const originalRow = [...row];
+
+    row.reverse();
+    row = move(row);
+
+    row.reverse();
+
+    board[r] = row;
+
+    if (!moved && !areArraysEqual(originalRow, row)) {
+      moved = true;
+    }
   }
 
-  updateGame();
+  return moved;
 }
 
 function moveUp() {
-  for (let c = 0; c < columns; c++) {
-    let row = [];
+  let moved = false;
 
-    for (let r = 0; r < rows; r++) {
-      row.push(board[r][c]);
+  for (let col = 0; col < columns; col++) {
+    let column = [
+      board[0][col],
+      board[1][col],
+      board[2][col],
+      board[3][col],
+    ];
+
+    const originalColumn = [...column];
+
+    column = move(column);
+
+    for (let row = 0; row < rows; row++) {
+      board[row][col] = column[row];
     }
 
-    row = move(row);
-
-    for (let r = 0; r < rows; r++) {
-      board[r][c] = row[r];
+    if (!moved && !areArraysEqual(originalColumn, column)) {
+      moved = true;
     }
   }
 
-  updateGame();
+  return moved;
 }
 
 function moveDown() {
-  for (let c = 0; c < columns; c++) {
-    let row = [];
+  let moved = false;
 
-    for (let r = 0; r < rows; r++) {
-      row.push(board[r][c]);
+  for (let col = 0; col < columns; col++) {
+    let column = [
+      board[0][col],
+      board[1][col],
+      board[2][col],
+      board[3][col],
+    ];
+
+    const originalColumn = [...column];
+
+    column.reverse();
+    column = move(column);
+    column.reverse();
+
+    for (let row = 0; row < rows; row++) {
+      board[row][col] = column[row];
     }
 
-    row = move(row.reverse());
-    row.reverse();
-
-    for (let r = 0; r < rows; r++) {
-      board[r][c] = row[r];
+    if (!moved && !areArraysEqual(originalColumn, column)) {
+      moved = true;
     }
   }
 
-  updateGame();
+  return moved;
+}
+
+function isGameOver() {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < columns; col++) {
+      if (board[row][col] === 0) {
+        return false;
+      }
+
+      if (
+        (col < columns - 1 && board[row][col]
+          === board[row][col + 1])
+        || (row < rows - 1 && board[row][col]
+          === board[row + 1][col])
+      ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 function showMessage(type) {
@@ -320,4 +286,8 @@ function showMessage(type) {
 
   allMessage.forEach(el => el.classList.add('hidden'));
   message.classList.remove('hidden');
-};
+}
+
+function enableScroll() {
+  document.body.style.overflow = 'auto';
+}
