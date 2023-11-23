@@ -10,6 +10,7 @@ class GameFild {
     this.cells = document.querySelectorAll('.field-cell');
     this.scoreFild = document.querySelector('.game-score');
     this.gameFild = [];
+    this.previousGameFild = [];
     this.randomCell = 0;
     this.MAX = 15;
     this.MIN = 0;
@@ -40,6 +41,8 @@ class GameFild {
 
       this.gameFild[this.randomCell] = 2;
     }
+
+    this.previousGameFild = [...this.gameFild];
 
     this.renderGameFild();
 
@@ -96,6 +99,12 @@ class GameFild {
       return;
     }
 
+    if (
+      JSON.stringify(this.previousGameFild) === JSON.stringify(this.gameFild)
+    ) {
+      return;
+    }
+
     let newValue = 2;
     let counter = 5; // to change new cell value from 2 to 4
 
@@ -115,7 +124,10 @@ class GameFild {
 
       setTimeout(() => {
         this.renderGameFild();
-      }, 300);
+      }, 200);
+
+      // check if it can be moved in a given direction
+      this.previousGameFild = [...this.gameFild];
 
       return;
     }
