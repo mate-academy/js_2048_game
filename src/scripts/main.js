@@ -16,6 +16,7 @@ import {
 let cells = [];
 let cellsArr;
 let gameScore = 0;
+const notMove = false;
 
 const button = document.getElementById('start');
 const gameScoreHTML = document.getElementById('game-score');
@@ -42,36 +43,38 @@ document.onkeydown = function(e) {
 
   switch (e.key) {
     case 'ArrowLeft':
-      cellsArr = moveLeft(cells, gameScore);
+      cellsArr = moveLeft(cells, gameScore, notMove);
       cells = printArr(cellsArr[0], fieldCell);
       break;
     case 'ArrowRight':
-      cellsArr = moveRight(cells, gameScore);
+      cellsArr = moveRight(cells, gameScore, notMove);
       cells = printArr(cellsArr[0], fieldCell);
       break;
     case 'ArrowUp':
-      cellsArr = moveUp(cells, gameScore);
+      cellsArr = moveUp(cells, gameScore, notMove);
       cells = printArr(cellsArr[0], fieldCell);
       break;
     case 'ArrowDown':
-      cellsArr = moveDown(cells, gameScore);
+      cellsArr = moveDown(cells, gameScore, notMove);
       cells = printArr(cellsArr[0], fieldCell);
       break;
     default:
       break;
   }
 
-  const empty = getEmptyList(cells);
+  if (!cellsArr[2]) {
+    const empty = getEmptyList(cells);
 
-  empty.sort(makeRandomArr);
+    empty.sort(makeRandomArr);
 
-  const randomNum = empty.pop();
-  const coordinates = getIndexFromNumber(randomNum);
+    const randomNum = empty.pop();
+    const coordinates = getIndexFromNumber(randomNum);
 
-  cells = insertTwoOrFour(cells, coordinates[0], coordinates[1]);
-  cells = printArr(cells, fieldCell);
-  gameScore = cellsArr[1];
-  gameScoreHTML.innerHTML = `${gameScore}`;
+    cells = insertTwoOrFour(cells, coordinates[0], coordinates[1]);
+    cells = printArr(cells, fieldCell);
+    gameScore = cellsArr[1];
+    gameScoreHTML.innerHTML = `${gameScore}`;
+  }
 
   if (!cells.flat(Infinity).includes(0) && !checkProgress(cells)) {
     messageLose.classList.remove('hidden');

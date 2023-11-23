@@ -70,7 +70,9 @@ function makeRandomArr(a, b) {
   return Math.random() - 0.5;
 }
 
-function moveLeft(arr, gameScore) {
+function moveLeft(arr, gameScore, notMove) {
+  let dontMove = notMove;
+  const cloneArr = [...arr];
   let score = gameScore;
 
   for (let i = 0; i < arr.length; i++) {
@@ -91,10 +93,16 @@ function moveLeft(arr, gameScore) {
     }
   }
 
-  return [arr, score];
+  arr.flat(Infinity).join('') === cloneArr.flat(Infinity).join('')
+    ? dontMove = true
+    : dontMove = false;
+
+  return [arr, score, dontMove];
 }
 
-function moveRight(arr, gameScore) {
+function moveRight(arr, gameScore, notMove) {
+  let dontMove = notMove;
+  const cloneArr = [...arr];
   let score = gameScore;
 
   for (let i = 0; i < arr.length; i++) {
@@ -115,10 +123,16 @@ function moveRight(arr, gameScore) {
     }
   }
 
-  return [arr, score];
+  arr.flat(Infinity).join('') === cloneArr.flat(Infinity).join('')
+    ? dontMove = true
+    : dontMove = false;
+
+  return [arr, score, dontMove];
 }
 
-function moveUp(arr, gameScore) {
+function moveUp(arr, gameScore, notMove) {
+  let dontMove = notMove;
+  const cloneArr = JSON.parse(JSON.stringify(arr));
   let score = gameScore;
   let j = 0;
   let column = [];
@@ -148,10 +162,16 @@ function moveUp(arr, gameScore) {
     j++;
   }
 
-  return [arr, score];
+  arr.flat(Infinity).join('') === cloneArr.flat(Infinity).join('')
+    ? dontMove = true
+    : dontMove = false;
+
+  return [arr, score, dontMove];
 }
 
-function moveDown(arr, gameScore) {
+function moveDown(arr, gameScore, notMove) {
+  let dontMove = notMove;
+  const cloneArr = JSON.parse(JSON.stringify(arr));
   let score = gameScore;
   let j = 0;
   let column = [];
@@ -181,7 +201,11 @@ function moveDown(arr, gameScore) {
     j++;
   }
 
-  return [arr, score];
+  arr.flat(Infinity).join('') === cloneArr.flat(Infinity).join('')
+    ? dontMove = true
+    : dontMove = false;
+
+  return [arr, score, dontMove];
 }
 
 function checkProgress(arr) {
