@@ -142,6 +142,7 @@ class GameFild {
       }
 
       if (arr[i] === arr[i - 1]) {
+        this._score += arr[i];
         arr[i] *= 2;
         arr.splice(i - 1, 1);
         arr[method](null);
@@ -346,7 +347,6 @@ class GameFild {
   }
 
   setScore(score) {
-    this._score = score === 0 ? 0 : Math.max(...this.gameFild);
     this.scoreFild.textContent = this._score;
 
     if (this._score === 2048) {
