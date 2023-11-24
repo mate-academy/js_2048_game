@@ -1,6 +1,6 @@
 'use strict';
 
-const Game = require('./main');
+const Game = require('./game');
 
 function countEmptyCells(game) {
   return game.field.reduce((prev, curr) => prev + curr
@@ -188,7 +188,20 @@ describe('class Game logic', () => {
 
       expect(game.state).toEqual('lose');
     });
-  });
 
-  // TODO: dont add new cell when button press bakes no move on board
+    it('should keep state if there are still possible moves', () => {
+      const game = new Game();
+
+      game.field = [
+        [2, 8, 4, 2],
+        [2, 8, 4, 2],
+        [4, 32, 2, 16],
+        [2, 64, 4, 2],
+      ];
+
+      game.moveLeft();
+
+      expect(game.state).toEqual('started');
+    });
+  });
 });
