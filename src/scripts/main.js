@@ -1,10 +1,10 @@
 'use strict';
 
-const startButton = document.getElementsByClassName('start')[0];
-const startMessage = document.getElementsByClassName('message-start')[0];
-const restartButton = document.getElementsByClassName('restart')[0];
-const lostMessage = document.getElementsByClassName('message-lose')[0];
-const winMessage = document.getElementsByClassName('message-win')[0];
+const startButton = document.getElementsByClassName('button--start')[0];
+const startMessage = document.getElementsByClassName('message--start')[0];
+const restartButton = document.getElementsByClassName('button--restart')[0];
+const lostMessage = document.getElementsByClassName('message--lose')[0];
+const winMessage = document.getElementsByClassName('message--win')[0];
 const scoreBoard = document.getElementsByClassName('game-score')[0];
 const tiles = document.getElementsByClassName('tile');
 
@@ -38,9 +38,9 @@ function printBoard() {
 
 startButton.addEventListener('click', function startGame() {
   printBoard();
-  startButton.classList.add('hidden');
-  startMessage.classList.add('hidden');
-  restartButton.classList.remove('hidden');
+  startButton.classList.add('button--hidden');
+  startMessage.classList.add('message--hidden');
+  restartButton.classList.remove('button--hidden');
   addNum();
   addNum();
 });
@@ -62,8 +62,8 @@ restartButton.addEventListener('click', function restartGame() {
 
   score = 0;
   scoreBoard.innerText = score;
-  lostMessage.classList.add('hidden');
-  winMessage.classList.add('hidden');
+  lostMessage.classList.add('message--hidden');
+  winMessage.classList.add('message--hidden');
   gameOver = false;
   addNum();
   addNum();
@@ -71,7 +71,7 @@ restartButton.addEventListener('click', function restartGame() {
 
 function checkEndGame() {
   if (endGame()) {
-    lostMessage.classList.remove('hidden');
+    lostMessage.classList.remove('message--hidden');
   }
 }
 
@@ -162,8 +162,8 @@ function updateTile(tile, num) {
     if (num <= 2048) {
       tile.classList.add(`tile--${num}`);
 
-      if (num === 32) {
-        winMessage.classList.remove('hidden');
+      if (num === 2048) {
+        winMessage.classList.remove('message--hidden');
         gameOver = true;
       }
     }

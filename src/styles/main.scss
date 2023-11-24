@@ -150,22 +150,26 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
-}
 
-.start {
-  background: #1dae28;
-  font-size: 20px;
+  &--start {
+    background: #1dae28;
+    font-size: 20px;
 
-  &:hover {
-    background: #179921;
+    &:hover {
+      background: #179921;
+    }
   }
-}
 
-.restart {
-  background: #f1b2b2;
+  &--restart {
+    background: #f1b2b2;
 
-  &:hover {
-    background: #f87474;
+    &:hover {
+      background: #f87474;
+    }
+  }
+
+  &--hidden {
+    display: none;
   }
 }
 
@@ -178,10 +182,15 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
-}
 
-.hidden {
-  display: none;
+  &--win {
+    background: #edc22e;
+    color: #f9f6f2;
+  }
+
+  &--hidden {
+    display: none;
+  }
 }
 
 .container {
@@ -189,11 +198,6 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
-}
-
-.message-win {
-  background: #edc22e;
-  color: #f9f6f2;
 }
 
 .message-container {
@@ -215,4 +219,3 @@ h1 {
     opacity: 1;
   }
 }
-

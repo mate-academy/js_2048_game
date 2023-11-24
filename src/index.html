@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048</title>
     <link rel="stylesheet" href="./styles/main.scss">
+    <link
+      rel="shortcut icon"
+      href="images/favicon.ico"
+      type="image/x-icon"
+    >
   </head>
   <body>
     <div class="container">
@@ -14,18 +19,18 @@
           <p class="info">
             Score: <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
-          <button class="button restart hidden">Restart</button>
+
+          <button class="button button--start">Start</button>
+          <button class="button button--restart button--hidden">Restart</button>
         </div>
       </div>
 
-      <div id="board" class="game-field">
-      </div>
+      <div id="board" class="game-field"></div>
 
       <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+        <p class="message message--lose message--hidden">You lose! Restart the game?</p>
+        <p class="message message--win message--hidden">Winner! Congrats! You did it!</p>
+        <p class="message message--start">Press "Start" to begin game. Good luck!</p>
       </div>
     </div>
 
