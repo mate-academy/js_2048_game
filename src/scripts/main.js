@@ -3,7 +3,7 @@
 class Game {
   constructor() {
     this.score = 0;
-    this.state = 'start';
+    this.state = 'started';
 
     this.field = [
       [0, 0, 0, 0],
@@ -11,14 +11,6 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
-  }
-
-  cellsValues() {
-    return this.field.reduce((prev, curr) => prev.concat(curr), []);
-  }
-
-  startingNewGame() {
-    this.state = 'started';
 
     const initialCellNumber = 2;
 
@@ -27,6 +19,10 @@ class Game {
 
       this.field[row][col] = 2;
     }
+  }
+
+  cellsValues() {
+    return this.field.reduce((prev, curr) => prev.concat(curr), []);
   }
 
   randomEmptyCell() {
@@ -48,14 +44,16 @@ class Game {
   }
 
   moveLeft() {
-    this.collapseCells();
-    this.moveCells();
+    const isCollapsed = this.collapseCells();
+    const isMoved = this.moveCells();
 
-    const [ row, col ] = this.randomEmptyCell();
+    if (isCollapsed || isMoved) {
+      const [row, col] = this.randomEmptyCell();
 
-    this.field[row][col] = Math.random() >= 0.9 ? 4 : 2;
+      this.field[row][col] = Math.random() >= 0.9 ? 4 : 2;
 
-    this.havePossibleMove();
+      this.havePossibleMove();
+    }
   }
 
   moveRight() {
@@ -77,6 +75,8 @@ class Game {
   }
 
   moveCells() {
+    let isMoved = false;
+
     this.field.forEach(row => {
       let emptyCell = row.findIndex(el => el === 0);
 
@@ -89,14 +89,19 @@ class Game {
           continue;
         }
 
+        isMoved = true;
         row[emptyCell] = row[i];
         row[i] = 0;
         emptyCell++;
       }
     });
+
+    return isMoved;
   }
 
   collapseCells() {
+    let wasCollapsed = false;
+
     this.field.forEach(row => {
       let index = row.findIndex(el => el !== 0);
 
@@ -110,6 +115,7 @@ class Game {
         }
 
         if (row[i] === row[index]) {
+          wasCollapsed = true;
           row[index] *= 2;
           row[i] = 0;
 
@@ -130,6 +136,8 @@ class Game {
         index = i;
       }
     });
+
+    return wasCollapsed;
   }
 
   rotateField() {
@@ -162,19 +170,75 @@ class Game {
       }
     }
 
-    this.state = 'loss';
+    this.state = 'lose';
   }
 }
 
 module.exports = Game;
 
-// const start = document.querySelector('.button');
-// const cells = document.querySelectorAll('.field-cell');
-// const gameScore = document.querySelector('.game-score');
-// const messageStart = document.querySelector('.message-start');
+let game = new Game();
+const button = document.querySelector('.button');
+const cells = document.querySelectorAll('.field-cell');
+const message = document.querySelectorAll('.message');
+const messageWin = document.querySelector('.message-win');
+const messageLose = document.querySelector('.message-lose');
+const gameScore = document.querySelector('.game-score');
 
-// start.addEventListener('click', () => {
-//   const game = new Game();
+function drawField() {
+  const cellValues = game.cellsValues();
 
-//   game.startingNewGame();
-// });
+  cells.forEach((cell, index) => {
+    if (cell.classList.contains(`field-cell--${cell.textContent}`)) {
+      cell.classList.remove(`field-cell--${cell.textContent}`);
+    }
+
+    cell.textContent = cellValues[index] || '';
+
+    if (cell.textContent) {
+      cell.classList.add(`field-cell--${cell.textContent}`);
+    };
+  });
+
+  gameScore.textContent = game.score;
+
+  switch (game.state) {
+    case 'win':
+      messageWin.classList.remove('hidden');
+      break;
+    case 'lose':
+      messageLose.classList.remove('hidden');
+      break;
+  }
+}
+
+button.addEventListener('click', () => {
+  game = new Game();
+  button.classList.replace('start', 'restart');
+  button.textContent = 'Restart';
+  message.forEach(msg => msg.classList.add('hidden'));
+
+  drawField();
+});
+
+document.addEventListener('keyup', (ev) => {
+  if (game.state !== 'started') {
+    return;
+  }
+
+  switch (ev.key) {
+    case 'ArrowDown':
+      game.moveBottom();
+      break;
+    case 'ArrowUp':
+      game.moveTop();
+      break;
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+  }
+
+  drawField();
+});

@@ -8,34 +8,8 @@ function countEmptyCells(game) {
 }
 
 describe('class Game logic', () => {
-  describe('initial state', () => {
-    const game = new Game();
-
-    it('score should be set to 0', () => {
-      expect(game.score).toEqual(0);
-    });
-
-    it('game state should be START', () => {
-      expect(game.state).toEqual('start');
-    });
-
-    it('field content should be clear', () => {
-      expect(game.field.length).toEqual(4);
-
-      game.field.forEach(el => {
-        expect(el.length).toEqual(4);
-
-        el.forEach(cell => {
-          expect(cell).toEqual(0);
-        });
-      });
-    });
-  });
-
   describe('starting game', () => {
     const game = new Game();
-
-    game.startingNewGame();
 
     it('should change game state to STARTED', () => {
       expect(game.state).toEqual('started');
@@ -124,6 +98,24 @@ describe('class Game logic', () => {
 
       expect(game.cellsValues().filter(el => el === 0).length).toEqual(3);
     });
+
+    it('shoul not add new cells if there was no changes', () => {
+      game.field = [
+        [2, 0, 0, 0],
+        [2, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
+
+      game.moveLeft();
+
+      expect(game.field).toEqual([
+        [2, 0, 0, 0],
+        [2, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ]);
+    });
   });
 
   describe('rotating field', () => {
@@ -182,7 +174,7 @@ describe('class Game logic', () => {
       expect(game.state).toEqual('win');
     });
 
-    it('should set state to loss if there is no possible moves', () => {
+    it('should set state to lose if there is no possible moves', () => {
       const game = new Game();
 
       game.field = [
@@ -194,7 +186,9 @@ describe('class Game logic', () => {
 
       game.moveLeft();
 
-      expect(game.state).toEqual('loss');
+      expect(game.state).toEqual('lose');
     });
   });
+
+  // TODO: dont add new cell when button press bakes no move on board
 });
