@@ -71,6 +71,7 @@ restartButton.addEventListener('click', function restartGame() {
 
 function checkEndGame() {
   if (endGame()) {
+    gameOver = true;
     lostMessage.classList.remove('message--hidden');
   }
 }
