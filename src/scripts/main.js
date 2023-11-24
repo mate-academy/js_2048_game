@@ -2,9 +2,10 @@
 
 // Step1: Identify elements
 // ===================================
-const GAME_FIELD = document.querySelector('.game-field');
+// const GAME_FIELD = document.querySelector('.game-field');
 const FIELD_ROWS = document.querySelectorAll('.field-row');
-const FIELD_CELLS = Array.from(FIELD_ROWS).map(row => row.querySelectorAll('.field-cell'));
+const FIELD_CELLS = Array.from(FIELD_ROWS)
+  .map(row => row.querySelectorAll('.field-cell'));
 // const MESSAGES = document.querySelectorAll('.message');
 const MESSAGE_START = document.querySelector('.message-start');
 // const MESSAGE_LOSE = document.querySelector('.message-lose');
@@ -13,20 +14,19 @@ const START_BUTTON = document.querySelector('.button');
 const SCORE_NUMBER = document.querySelector('.game-score');
 let gameMatrix;
 
-// console.log(FIELD_CELLS);
-
 // Step2: Start game (on clicking the start button)
 START_BUTTON.addEventListener('click', startGame);
 document.addEventListener('keyup', makeMove);
 
 function startGame() {
   gameMatrix = [
-    [2, 2, 0, 0],
     [0, 0, 0, 0],
-    [0, 0, 4, 0],
-    [0, 64, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
   ];
 
+  updateField();
   SCORE_NUMBER.innerText = '0';
   START_BUTTON.classList.add('restart');
   START_BUTTON.innerText = 'Restart';
@@ -54,11 +54,24 @@ function updateField() {
 }
 
 function addNewNumber() {
-  // adds one tile to random place:
-  // create 2 or 4 el
-  // choose place for new el
-  // run through gameMatrix, put this el to found place
-  // renew classes/innerText according to the cell value
+  const newRandomNum = getRandomIncluding(1, 10) === 10 ? 4 : 2;
+  const emptyCells = [];
+
+  for (let r = 0; r < gameMatrix.length; r++) {
+    for (let c = 0; c < gameMatrix[r].length; c++) {
+      if (gameMatrix[r][c] === 0) {
+        emptyCells.push({
+          row: r,
+          col: c,
+        });
+      }
+    }
+  }
+
+  const randomEmptyCell
+  = emptyCells[getRandomIncluding(0, emptyCells.length - 1)];
+
+  gameMatrix[randomEmptyCell.row][randomEmptyCell.col] = newRandomNum;
 }
 
 // Step3: Movements (on keyup)
@@ -74,3 +87,8 @@ function makeMove() {
 //
 // Add animations to CSS
 //
+
+// additional functions
+function getRandomIncluding(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
