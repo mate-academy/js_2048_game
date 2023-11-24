@@ -2,13 +2,14 @@
 
 const Game = require('./game');
 
-let game = new Game();
+let game;
 const button = document.querySelector('.button');
 const cells = document.querySelectorAll('.field-cell');
 const message = document.querySelectorAll('.message');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const gameScore = document.querySelector('.game-score');
+const field = document.querySelector('.game-field');
 
 function drawField() {
   const cellValues = game.cellsValues();
@@ -47,7 +48,7 @@ button.addEventListener('click', () => {
 });
 
 document.addEventListener('keyup', (ev) => {
-  if (game.state !== 'started') {
+  if (!game || game.state !== 'started') {
     return;
   }
 
@@ -64,6 +65,49 @@ document.addEventListener('keyup', (ev) => {
     case 'ArrowRight':
       game.moveRight();
       break;
+  }
+
+  drawField();
+});
+
+let startX, startY, endX, endY;
+
+field.addEventListener('touchstart', (ev) => {
+  const touch = ev.touches[0];
+
+  startX = touch.clientX;
+  startY = touch.clientY;
+});
+
+field.addEventListener('touchmove', (ev) => {
+  ev.preventDefault();
+
+  const touch = ev.touches[0];
+
+  endX = touch.clientX;
+  endY = touch.clientY;
+});
+
+field.addEventListener('touchend', (ev) => {
+  if (!game || game.state !== 'started') {
+    return;
+  }
+
+  const diffX = startX - endX;
+  const diffY = startY - endY;
+
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (diffX > 0) {
+      game.moveLeft();
+    } else {
+      game.moveRight();
+    }
+  } else {
+    if (diffY > 0) {
+      game.moveTop();
+    } else {
+      game.moveBottom();
+    }
   }
 
   drawField();
