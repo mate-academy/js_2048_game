@@ -17,8 +17,8 @@ Okay, okay. Also, we have some rules:
 2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
 3) The player can move cells with keyboard arrows
 4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
+  - 2 equal cells should be merged into a doubled number
+  - The merged cell can’t be merged twice during one move
 5) The move is possible if at least one cell is changed after the move
 6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
 7) When 2048 value is displayed in any cell, win message should be shown.
@@ -44,9 +44,9 @@ You can change the HTM/CSS layout if you need it.
 ## Deploy and Pull Request
 
 1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
+  - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
 2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+  - Run `npm run test` command to test your code;
+  - Run `npm run test:only -- -n` to run fast test ignoring linter;
+  - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
 

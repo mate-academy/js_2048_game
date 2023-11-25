@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="2048 Debug" type="JavascriptDebugType" focusToolWindowBeforeRun="true" uri="http://localhost:8080">
+    <method v="2" />
+  </configuration>
+</component>
