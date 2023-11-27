@@ -2,21 +2,22 @@
 
 // Step1: Identify elements
 // ===================================
-// const GAME_FIELD = document.querySelector('.game-field');
 const FIELD_ROWS = document.querySelectorAll('.field-row');
 const FIELD_CELLS = Array.from(FIELD_ROWS)
   .map(row => row.querySelectorAll('.field-cell'));
-// const MESSAGES = document.querySelectorAll('.message');
+const MESSAGES = document.querySelectorAll('.message');
 const MESSAGE_START = document.querySelector('.message-start');
-// const MESSAGE_LOSE = document.querySelector('.message-lose');
-// const MESSAGE_WIN = document.querySelector('.message-win');
+const MESSAGE_LOSE = document.querySelector('.message-lose');
+const MESSAGE_WIN = document.querySelector('.message-win');
 const START_BUTTON = document.querySelector('.button');
 const SCORE_NUMBER = document.querySelector('.game-score');
 let gameMatrix;
+let isMovePossible;
+let isGameOn;
 
 // Step2: Start game (on clicking the start button)
 START_BUTTON.addEventListener('click', startGame);
-document.addEventListener('keyup', makeMove);
+document.addEventListener('keyup', (e) => makeMove(e));
 
 function startGame() {
   gameMatrix = [
@@ -26,6 +27,8 @@ function startGame() {
     [0, 0, 0, 0],
   ];
 
+  isGameOn = true;
+  isMovePossible = true;
   updateField();
   SCORE_NUMBER.innerText = '0';
   START_BUTTON.classList.add('restart');
@@ -68,6 +71,10 @@ function addNewNumber() {
     }
   }
 
+  if (!emptyCells.length) {
+    return;
+  }
+
   const randomEmptyCell
   = emptyCells[getRandomIncluding(0, emptyCells.length - 1)];
 
@@ -75,15 +82,31 @@ function addNewNumber() {
 }
 
 // Step3: Movements (on keyup)
-function makeMove() {
-  // run through matrix,
-  // change value accorging to the move direction
-  // refresh tile data (change classes, inner text);
+function makeMove(event) {
+  let currentMoveScore = 0;
+  // 1 run through matrix, & change value accorging to the move direction:
+  // - clear 0s
+  // - merge similar numbers => sum of merged + to currentMoveScore
+  // - clear 0s
+  // - add 0s
+
+  // 2 refresh tile data (change classes, inner text);
+  updateField();
+  // 3 check if further move is possible
+  // 4 if no - game over message
+  isMovePossible = checkGameEnd(gameMatrix);
+
+  if (!isMovePossible) {
+    MESSAGE_LOSE.classList.remove('hidden');
+  }
+  SCORE_NUMBER += currentMoveScore;
+
+  console.log(event.key);
 }
 
 // Step4: add messages to functions
 // ===================================
-
+// number = 2048 - winner message
 //
 // Add animations to CSS
 //
@@ -91,4 +114,15 @@ function makeMove() {
 // additional functions
 function getRandomIncluding(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function checkGameEnd(rowsOfCells) {
+  const hasEmptyCells = rowsOfCells.some(row => row.some(cell => cell === 0));
+
+  if (hasEmptyCells) {
+    return true;
+  }
+
+  // add checking possible moves
+  // rerurn true if possible
 }
