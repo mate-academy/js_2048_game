@@ -12,56 +12,68 @@ body {
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: 72px;
+  height: 72px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &--2 {
     background: #eee4da;
+    font-size: 40px;
   }
 
   &--4 {
     background: #ede0c8;
+    font-size: 40px;
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
+    font-size: 40px;
   }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+    font-size: 40px;
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+    font-size: 40px;
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+    font-size: 40px;
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    font-size: 30px;
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    font-size: 30px;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    font-size: 30px;
   }
 
   &--1024 {
@@ -76,9 +88,19 @@ body {
 }
 
 .game-field {
+  width: 350px;
+  height: 350px;
+  padding: 10px;
   background: #bbada0;
+  border: 5px solid #6d655d;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .game-header {
@@ -88,20 +110,20 @@ body {
   margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
-}
 
-h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  margin: 0;
+  &__logo {
+    background: #edc22e;
+    color: #f9f6f2;
+    width: 75px;
+    height: 75px;
+    font-size: 24px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin: 0;
+  }
 }
 
 .info {
@@ -135,22 +157,22 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
-}
 
-.start {
-  background: #1dae28;
-  font-size: 20px;
+  &--start {
+    background: #1dae28;
+    font-size: 20px;
 
-  &:hover {
-    background: #179921;
+    &:hover {
+      background: #179921;
+    }
   }
-}
 
-.restart {
-  background: #f1b2b2;
+  &--restart {
+    background: #f1b2b2;
 
-  &:hover {
-    background: #f87474;
+    &:hover {
+      background: #f87474;
+    }
   }
 }
 
@@ -163,10 +185,15 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
-}
 
-.hidden {
-  display: none;
+  &---win {
+    background: #edc22e;
+    color: #f9f6f2;
+  }
+
+  &--hidden {
+    display: none;
+  }
 }
 
 .container {
@@ -174,11 +201,6 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
-}
-
-.message-win {
-  background: #edc22e;
-  color: #f9f6f2;
 }
 
 .message-container {
