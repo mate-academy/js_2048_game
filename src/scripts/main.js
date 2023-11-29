@@ -3,7 +3,6 @@
 let score = 0;
 let size = 4;
 let field = new Array(size);
-let fontSize;
 let loss = false;
 
 function createCell() {
@@ -26,11 +25,9 @@ function createCell() {
 function startGame() {
   createField();
   drawField();
-  pastTime = Date.now();
 }
 
 function finishGame() {
-  canvas.style.opacity = '0.5';
   loss = true;
 }
 
@@ -58,20 +55,11 @@ function rotateField() {
   field = newField;
 }
 
-function startMove() {
-  // Implement the start of the move here
-}
-
-function finishMove(oldField) {
-  // Implement the finish of the move here
-}
-
 function moveLeft() {
   let oldField = field;
   for (let i = 0; i < size; i++) {
     field[i] = moveLine(field[i]);
   }
-  finishMove(oldField);
 }
 
 function moveLine(line) {
@@ -113,7 +101,6 @@ document.onkeydown = function(event) {
     } else if (event.keyCode === 37 || event.keyCode === 65) {
       moveLeft();
     }
-    scoreLabel.innerHTML = 'Score : ' + score;
   }
 }
 
