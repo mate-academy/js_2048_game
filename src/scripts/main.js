@@ -1,107 +1,61 @@
 'use strict';
 
+const gameField = Array(4).fill(null).map(() => Array(4).fill(""));
 let score = 0;
-let size = 4;
-let field = new Array(size);
-let loss = false;
 
-function createCell() {
-  let empty = [];
-  for (let i = 0; i < size; i++) {
-    for (let j = 0; j < size; j++) {
-      if (!field[i][j]) {
-        empty.push({x: i, y: j});
+function startGame() {
+  console.log("Game started");
+  draw();
+  addNumber();
+  addNumber();
+}
+
+function draw() {
+  let gameBoard = document.querySelector('.game-field');
+  gameBoard.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    let row = document.createElement('tr');
+    for (let j = 0; j < 4; j++) {
+      let cell = document.createElement('td');
+      cell.innerHTML = gameField[i][j];
+      cell.className = `field-cell field-cell--${gameField[i][j]}`;
+      row.appendChild(cell);
+    }
+    gameBoard.appendChild(row);
+  }
+}
+
+function addNumber() {
+  let emptyCells = [];
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (!gameField[i][j]) {
+        emptyCells.push({i: i, j: j});
       }
     }
   }
-  if (empty.length) {
-    let randPos = empty[Math.floor(Math.random() * empty.length)];
-    field[randPos.x][randPos.y] = Math.random() < 0.9 ? 2 : 4;
-    return true;
-  }
-  return false;
-}
-
-function startGame() {
-  createField();
-  drawField();
-}
-
-function finishGame() {
-  loss = true;
-}
-
-function drawField() {
-  // Implement the drawing of the field here
-}
-
-function createField() {
-  for (let i = 0; i < size; i++) {
-    field[i] = [];
-    for (let j = 0; j < size; j++) {
-      field[i][j] = 0;
-    }
+  if (emptyCells.length) {
+    let {i, j} = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    gameField[i][j] = Math.random() < 0.1 ? 4 : 2;
+    draw();
   }
 }
 
-function rotateField() {
-  let newField = [];
-  for (let i = 0; i < size; i++) {
-    newField[i] = [];
-    for (let j = 0; j < size; j++) {
-      newField[i][j] = field[j][i];
-    }
+document.addEventListener('keydown', function(event) {
+  switch (event.key) {
+    case 'ArrowUp':
+      // Move up
+      break;
+    case 'ArrowDown':
+      // Move down
+      break;
+    case 'ArrowLeft':
+      // Move left
+      break;
+    case 'ArrowRight':
+      // Move right
+      break;
   }
-  field = newField;
-}
+});
 
-function moveLeft() {
-  let oldField = field;
-  for (let i = 0; i < size; i++) {
-    field[i] = moveLine(field[i]);
-  }
-}
-
-function moveLine(line) {
-  // Implement the move of a line here
-}
-
-function moveUp() {
-  rotateField();
-  moveLeft();
-  rotateField();
-  rotateField();
-  rotateField();
-}
-
-function moveRight() {
-  rotateField();
-  rotateField();
-  moveLeft();
-  rotateField();
-  rotateField();
-}
-
-function moveDown() {
-  rotateField();
-  rotateField();
-  rotateField();
-  moveLeft();
-  rotateField();
-}
-
-document.onkeydown = function(event) {
-  if (!loss) {
-    if (event.keyCode === 38 || event.keyCode === 87) {
-      moveUp();
-    } else if (event.keyCode === 39 || event.keyCode === 68) {
-      moveRight();
-    } else if (event.keyCode === 40 || event.keyCode === 83) {
-      moveDown();
-    } else if (event.keyCode === 37 || event.keyCode === 65) {
-      moveLeft();
-    }
-  }
-}
-
-startGame();
+window.onload = startGame;
