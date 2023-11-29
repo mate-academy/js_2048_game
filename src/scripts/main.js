@@ -1,7 +1,7 @@
 'use strict';
 
-// Step1: Identify elements
-// ===================================
+/* #region Variables */
+
 const FIELD_ROWS = document.querySelectorAll('.field-row');
 const FIELD_CELLS = Array.from(FIELD_ROWS)
   .map(row => row.querySelectorAll('.field-cell'));
@@ -13,11 +13,32 @@ const START_BUTTON = document.querySelector('.button');
 const SCORE_NUMBER = document.querySelector('.game-score');
 let gameMatrix;
 let isMovePossible;
-let isGameOn;
+let score = 0;
 
-// Step2: Start game (on clicking the start button)
+/* #endregion */
+
+/* #region Events */
 START_BUTTON.addEventListener('click', startGame);
-document.addEventListener('keyup', (e) => makeMove(e));
+
+document.addEventListener('keyup', (e) => {
+  if (e.key === 'ArrowRight') {
+    makeMove(slideRight);
+  }
+
+  if (e.key === 'ArrowLeft') {
+    makeMove(slideLeft);
+  }
+
+  if (e.key === 'ArrowDown') {
+    makeMove(slideDown);
+  }
+
+  if (e.key === 'ArrowUp') {
+    makeMove(slideUp);
+  }
+});
+
+/* #endregion */
 
 function startGame() {
   gameMatrix = [
@@ -27,10 +48,9 @@ function startGame() {
     [0, 0, 0, 0],
   ];
 
-  isGameOn = true;
   isMovePossible = true;
   updateField();
-  SCORE_NUMBER.innerText = '0';
+  SCORE_NUMBER.innerText = `${score}`;
   START_BUTTON.classList.add('restart');
   START_BUTTON.innerText = 'Restart';
   MESSAGE_START.classList.add('hidden');
@@ -71,37 +91,24 @@ function addNewNumber() {
     }
   }
 
-  if (!emptyCells.length) {
-    return;
-  }
-
   const randomEmptyCell
   = emptyCells[getRandomIncluding(0, emptyCells.length - 1)];
 
   gameMatrix[randomEmptyCell.row][randomEmptyCell.col] = newRandomNum;
+
+  isGameOver(gameMatrix);
 }
 
-// Step3: Movements (on keyup)
-function makeMove(event) {
-  let currentMoveScore = 0;
-  // 1 run through matrix, & change value accorging to the move direction:
-  // - clear 0s
-  // - merge similar numbers => sum of merged + to currentMoveScore
-  // - clear 0s
-  // - add 0s
-
-  // 2 refresh tile data (change classes, inner text);
+function makeMove(directionFunction) {
+  // let currentMoveScore = 0;
+  directionFunction();
+  addNewNumber();
   updateField();
   // 3 check if further move is possible
   // 4 if no - game over message
-  isMovePossible = checkGameEnd(gameMatrix);
 
-  if (!isMovePossible) {
-    MESSAGE_LOSE.classList.remove('hidden');
-  }
-  SCORE_NUMBER += currentMoveScore;
-
-  console.log(event.key);
+  // score += currentMoveScore;
+  SCORE_NUMBER.innerText = `${score}`;
 }
 
 // Step4: add messages to functions
@@ -111,18 +118,68 @@ function makeMove(event) {
 // Add animations to CSS
 //
 
-// additional functions
+/* #region Additional Functions */
 function getRandomIncluding(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function checkGameEnd(rowsOfCells) {
-  const hasEmptyCells = rowsOfCells.some(row => row.some(cell => cell === 0));
+function isGameOver(rowsOfCells) {
+  const hasEmptyCells = rowsOfCells
+    .some(row => row
+      .some(cell => cell === 0));
 
   if (hasEmptyCells) {
-    return true;
+    return false;
   }
 
+  if (!isMovePossible) {
+    MESSAGE_LOSE.classList.remove('hidden');
+  }
   // add checking possible moves
   // rerurn true if possible
 }
+
+function removeZeroes(row) {
+  return row.filter(cell => cell !== 0);
+}
+
+function slideRight() {
+  for (let r = 0; r < gameMatrix.length; r++) {
+    const rowWithoutZero = removeZeroes(gameMatrix[r]);
+
+    if (rowWithoutZero.length > 1) {
+      for (let c = rowWithoutZero.length; c >= 0; c--) {
+        const currentElement = rowWithoutZero[c];
+        const nextElement = rowWithoutZero[c - 1];
+
+        if (currentElement === nextElement) {
+          rowWithoutZero[c] = currentElement + nextElement;
+          rowWithoutZero[c - 1] = 0;
+          // score += currentElement;
+        }
+      }
+
+      const rowWithoutZeroAfterMove = removeZeroes(rowWithoutZero);
+      const zeroesToAdd = gameMatrix[r].length
+      - rowWithoutZeroAfterMove.length;
+      const resultRow = Array(zeroesToAdd)
+        .fill(0)
+        .concat(rowWithoutZeroAfterMove);
+
+      gameMatrix[r] = resultRow;
+    }
+  }
+}
+
+function slideLeft() {
+  console.log('slideLeft');
+}
+
+function slideDown() {
+  console.log('slideDown');
+}
+
+function slideUp() {
+  console.log('slideUp');
+}
+/* #endregion */
