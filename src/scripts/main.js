@@ -1,10 +1,8 @@
 'use strict';
 
 const gameField = Array(4).fill(null).map(() => Array(4).fill(""));
-let score = 0;
 
 function startGame() {
-  console.log("Game started");
   draw();
   addNumber();
   addNumber();
@@ -41,8 +39,8 @@ function addNumber() {
   }
 }
 
-document.addEventListener('keydown', function(event) {
-  switch (event.key) {
+document.addEventListener('keydown', function(e) {
+  switch (e.key) {
     case 'ArrowUp':
       // Move up
       break;
