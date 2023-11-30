@@ -172,7 +172,30 @@ function slideRight() {
 }
 
 function slideLeft() {
-  console.log('slideLeft');
+  for (let r = 0; r < gameMatrix.length; r++) {
+    const rowWithoutZero = removeZeroes(gameMatrix[r]);
+
+    if (rowWithoutZero.length > 0) {
+      for (let c = 0; c < rowWithoutZero.length; c++) {
+        const currentElement = rowWithoutZero[c];
+        const nextElement = rowWithoutZero[c + 1];
+
+        if (currentElement === nextElement) {
+          rowWithoutZero[c] = currentElement + nextElement;
+          rowWithoutZero[c + 1] = 0;
+          score += currentElement;
+        }
+      }
+
+      const rowWithoutZeroAfterMove = removeZeroes(rowWithoutZero);
+      const zeroesToAdd = gameMatrix[r].length
+      - rowWithoutZeroAfterMove.length;
+      const resultRow = rowWithoutZeroAfterMove
+        .concat(Array(zeroesToAdd).fill(0));
+
+      gameMatrix[r] = resultRow;
+    }
+  }
 }
 
 function slideDown() {
