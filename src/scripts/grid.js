@@ -14,9 +14,14 @@ export class Grid {
     }
 
     this.cellsGroupedByColumn = this.groupCellsByColumn();
-    this.cellsGroupedByReservedColumn = this.cellsGroupedByColumn.map((column) => [...column].reverse());
+
+    this.cellsGroupedByReservedColumn = this.cellsGroupedByColumn
+      .map((column) => [...column].reverse());
+
     this.cellsGroupedByRow = this.groupCellsByRow();
-    this.cellsGroupedByReservedRow = this.cellsGroupedByRow.map((row) => [...row].reverse());
+
+    this.cellsGroupedByReservedRow = this.cellsGroupedByRow
+      .map((row) => [...row].reverse());
   }
 
   getRandomEmptyCell() {
@@ -30,6 +35,7 @@ export class Grid {
     return this.cells.reduce((groupedCells, cell) => {
       groupedCells[cell.x] = groupedCells[cell.x] || [];
       groupedCells[cell.x][cell.y] = cell;
+
       return groupedCells;
     }, []);
   }
@@ -38,6 +44,7 @@ export class Grid {
     return this.cells.reduce((groupedCells, cell) => {
       groupedCells[cell.y] = groupedCells[cell.y] || [];
       groupedCells[cell.y][cell.x] = cell;
+
       return groupedCells;
     }, []);
   }
