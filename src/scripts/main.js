@@ -147,7 +147,7 @@ function slideRight() {
   for (let r = 0; r < gameMatrix.length; r++) {
     const rowWithoutZero = removeZeroes(gameMatrix[r]);
 
-    if (rowWithoutZero.length > 1) {
+    if (rowWithoutZero.length > 0) {
       for (let c = rowWithoutZero.length; c >= 0; c--) {
         const currentElement = rowWithoutZero[c];
         const nextElement = rowWithoutZero[c - 1];
@@ -155,7 +155,7 @@ function slideRight() {
         if (currentElement === nextElement) {
           rowWithoutZero[c] = currentElement + nextElement;
           rowWithoutZero[c - 1] = 0;
-          // score += currentElement;
+          score += currentElement;
         }
       }
 
