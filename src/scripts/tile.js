@@ -15,10 +15,14 @@ export class Tile {
 
   setValue(value) {
     const bgLightness = 100 - Math.log2(value) * 9;
+
     this.value = value;
     this.tileElement.textContent = value;
     this.tileElement.style.setProperty('--bg-lightness', `${bgLightness}%`);
-    this.tileElement.style.setProperty('--text-lightness', `${bgLightness < 50 ? 90 : 10}%`);
+
+    this.tileElement.style.setProperty(
+      '--text-lightness', `${bgLightness < 50 ? 90 : 10}%`
+    );
   }
 
   removeFromDOM() {
@@ -27,13 +31,15 @@ export class Tile {
 
   waitForTransitionEnd() {
     return new Promise(resolve => {
-      this.tileElement.addEventListener('transitionend', resolve, { once: true });
+      this.tileElement
+        .addEventListener('transitionend', resolve, { once: true });
     });
   }
 
   waitForAnimationEnd() {
     return new Promise(resolve => {
-      this.tileElement.addEventListener('animationend', resolve, { once: true });
+      this.tileElement
+        .addEventListener('animationend', resolve, { once: true });
     });
   }
 }

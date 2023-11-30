@@ -8,7 +8,6 @@ const scoreElement = document.querySelector('.game_score');
 let restart = false;
 let gameScore = 0;
 
-
 startButton.addEventListener('click', () => {
   grid.getRandomEmptyCell().linkTile(new Tile(gameBoard));
   startButton.classList.remove('start');
@@ -29,22 +28,23 @@ startButton.addEventListener('click', () => {
 setupInputOnce();
 
 function setupInputOnce() {
-  window.addEventListener('keydown', handleInput, {once: true});
+  window.addEventListener('keydown', handleInput, { once: true });
 }
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', (keypress) => {
   const keysToCancel = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
-  if (keysToCancel.includes(event.key)) {
-    event.preventDefault();
+  if (keysToCancel.includes(keypress.key)) {
+    keypress.preventDefault();
   }
 });
 
-async function handleInput(event) {
-  switch(event.key) {
+async function handleInput(keypress) {
+  switch (keypress.key) {
     case 'ArrowUp':
       if (!canMoveUp()) {
         setupInputOnce();
+
         return;
       }
 
@@ -54,6 +54,7 @@ async function handleInput(event) {
     case 'ArrowDown':
       if (!canMoveDown()) {
         setupInputOnce();
+
         return;
       }
 
@@ -63,6 +64,7 @@ async function handleInput(event) {
     case 'ArrowLeft':
       if (!canMoveLeft()) {
         setupInputOnce();
+
         return;
       }
 
@@ -72,6 +74,7 @@ async function handleInput(event) {
     case 'ArrowRight':
       if (!canMoveRigth()) {
         setupInputOnce();
+
         return;
       }
 
@@ -80,20 +83,25 @@ async function handleInput(event) {
 
     default:
       setupInputOnce();
+
       return;
   }
 
   const newTile = new Tile(gameBoard);
+
   grid.getRandomEmptyCell().linkTile(newTile);
 
   if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRigth()) {
     await newTile.waitForAnimationEnd();
+
     const gameResultElement = document.querySelector('.message_lose');
+
     gameResultElement.classList.remove('hidden');
     gameResultElement.style.color = '#ff0000';
 
     startButton.addEventListener('click', () => {
-      window.location.reload()});
+      window.location.reload();
+    });
 
     return;
   }
@@ -114,7 +122,6 @@ async function moveLeft() {
 }
 
 async function moveRight() {
-
   await slideTiles(grid.cellsGroupedByReservedRow);
 }
 
@@ -140,7 +147,7 @@ function slideTilesInGroup(group, promises) {
     let targetCell;
     let j = i - 1;
 
-    while(j >= 0 && group[j].canAccept(cellWithTile.linkedTile)) {
+    while (j >= 0 && group[j].canAccept(cellWithTile.linkedTile)) {
       targetCell = group[j];
       j--;
     }
@@ -195,6 +202,7 @@ function canMoveInGroup(group) {
     }
 
     const targetCell = group[index - 1];
+
     return targetCell.canAccept(cell.linkedTile);
   });
 }
