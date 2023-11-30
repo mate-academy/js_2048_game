@@ -10,16 +10,20 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
+.tile {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: 90px;
+  height: 90px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.8px;
 
   &--2 {
     background: #eee4da;
@@ -76,9 +80,14 @@ body {
 }
 
 .game-field {
+  width: 375px;
+  height: 375px;
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  display: flex;
+  margin: 0 auto;
+  flex-wrap: wrap;
 }
 
 .game-header {
