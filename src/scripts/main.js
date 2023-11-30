@@ -1,3 +1,204 @@
-'use strict';
+import { Grid } from './grid.js';
+import { Tile } from './tile.js';
 
-// write your code here
+const gameBoard = document.querySelector('.board');
+const grid = new Grid(gameBoard);
+const startButton = document.querySelector('.start');
+const scoreElement = document.querySelector('.game_score');
+let restart = false;
+let gameScore = 0;
+
+
+startButton.addEventListener('click', () => {
+  grid.getRandomEmptyCell().linkTile(new Tile(gameBoard));
+  startButton.classList.remove('start');
+  startButton.classList.add('restart');
+  startButton.textContent = 'Restart';
+
+  const hiddenMessage = document.querySelector('.message_start');
+
+  hiddenMessage.classList.add('hidden');
+
+  if (restart) {
+    window.location.reload();
+  }
+
+  restart = true;
+});
+
+setupInputOnce();
+
+function setupInputOnce() {
+  window.addEventListener('keydown', handleInput, {once: true});
+}
+
+document.addEventListener('keydown', function(event) {
+  const keysToCancel = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+
+  if (keysToCancel.includes(event.key)) {
+    event.preventDefault();
+  }
+});
+
+async function handleInput(event) {
+  switch(event.key) {
+    case 'ArrowUp':
+      if (!canMoveUp()) {
+        setupInputOnce();
+        return;
+      }
+
+      await moveUp();
+      break;
+
+    case 'ArrowDown':
+      if (!canMoveDown()) {
+        setupInputOnce();
+        return;
+      }
+
+      await moveDown();
+      break;
+
+    case 'ArrowLeft':
+      if (!canMoveLeft()) {
+        setupInputOnce();
+        return;
+      }
+
+      await moveLeft();
+      break;
+
+    case 'ArrowRight':
+      if (!canMoveRigth()) {
+        setupInputOnce();
+        return;
+      }
+
+      await moveRight();
+      break;
+
+    default:
+      setupInputOnce();
+      return;
+  }
+
+  const newTile = new Tile(gameBoard);
+  grid.getRandomEmptyCell().linkTile(newTile);
+
+  if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRigth()) {
+    await newTile.waitForAnimationEnd();
+    const gameResultElement = document.querySelector('.message_lose');
+    gameResultElement.classList.remove('hidden');
+    gameResultElement.style.color = '#ff0000';
+
+    startButton.addEventListener('click', () => {
+      window.location.reload()});
+
+    return;
+  }
+
+  setupInputOnce();
+}
+
+async function moveUp() {
+  await slideTiles(grid.cellsGroupedByColumn);
+}
+
+async function moveDown() {
+  await slideTiles(grid.cellsGroupedByReservedColumn);
+}
+
+async function moveLeft() {
+  await slideTiles(grid.cellsGroupedByRow);
+}
+
+async function moveRight() {
+
+  await slideTiles(grid.cellsGroupedByReservedRow);
+}
+
+async function slideTiles(groupedCells) {
+  const promises = [];
+
+  groupedCells.forEach(group => slideTilesInGroup(group, promises));
+
+  await Promise.all(promises);
+
+  grid.cells.forEach(cell => {
+    cell.hasTileForMerge() && cell.mergeTiles();
+  });
+}
+
+function slideTilesInGroup(group, promises) {
+  for (let i = 1; i < group.length; i++) {
+    if (group[i].isEmpty()) {
+      continue;
+    }
+
+    const cellWithTile = group[i];
+    let targetCell;
+    let j = i - 1;
+
+    while(j >= 0 && group[j].canAccept(cellWithTile.linkedTile)) {
+      targetCell = group[j];
+      j--;
+    }
+
+    if (!targetCell) {
+      continue;
+    }
+
+    promises.push(cellWithTile.linkedTile.waitForTransitionEnd());
+
+    if (targetCell.isEmpty()) {
+      targetCell.linkTile(cellWithTile.linkedTile);
+    } else {
+      targetCell.linkTileForMerge(cellWithTile.linkedTile);
+
+      gameScore += cellWithTile.linkedTile.value;
+    }
+
+    cellWithTile.unlinkTile();
+    updateScore();
+  }
+}
+
+function canMoveUp() {
+  return canMove(grid.cellsGroupedByColumn);
+}
+
+function canMoveDown() {
+  return canMove(grid.cellsGroupedByReservedColumn);
+}
+
+function canMoveLeft() {
+  return canMove(grid.cellsGroupedByRow);
+}
+
+function canMoveRigth() {
+  return canMove(grid.cellsGroupedByReservedRow);
+}
+
+function canMove(groupedCells) {
+  return groupedCells.some(group => canMoveInGroup(group));
+}
+
+function canMoveInGroup(group) {
+  return group.some((cell, index) => {
+    if (index === 0) {
+      return false;
+    }
+
+    if (cell.isEmpty()) {
+      return false;
+    }
+
+    const targetCell = group[index - 1];
+    return targetCell.canAccept(cell.linkedTile);
+  });
+}
+
+function updateScore() {
+  scoreElement.textContent = `${gameScore}`;
+}
