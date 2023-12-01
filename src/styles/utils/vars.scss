@@ -1,0 +1,17 @@
+$counter: 1;
+
+$cells:
+  2,
+  4,
+  8,
+  16,
+  32,
+  64,
+  128,
+  256,
+  512,
+  1024,
+  2048;
+
+$field-cell-width: 75px;
+$field-cell-height: $field-cell-width;
