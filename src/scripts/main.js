@@ -61,7 +61,6 @@ Restarttbutton.addEventListener('click', function restartGame() {
   messegLose.classList.add('hidden');
   messegWin.classList.add('hidden');
   addNum();
-  addNum();
 });
 
 function endGame() {
@@ -84,7 +83,7 @@ function empty() {
 }
 
 function addNum() {
-  if (!empty) {
+  if (!empty()) {
     return true;
   }
 
@@ -95,7 +94,7 @@ function addNum() {
     const c = Math.floor(Math.random() * columns);
 
     if (board[r][c] === 0) {
-      const num = Math.random < 0.01 ? 4 : 2;
+      const num = Math.random() < 0.01 ? 4 : 2; // Fix the missing parentheses
 
       board[r][c] = num;
 
@@ -126,7 +125,7 @@ function upDateTile(tile, num) {
   }
 }
 
-document.addEventListener('keydown', even => {
+document.addEventListener('keyup', even => {
   if (stopGame) {
     return false;
   }
@@ -163,7 +162,7 @@ function filterZeros(row) {
 function slide(row) {
   let r = row;
 
-  r = filterZeros(row);
+  r = filterZeros(r);
 
   for (let i = 0; i < r.length; i++) {
     if (r[i] === r[i + 1]) {
@@ -173,7 +172,7 @@ function slide(row) {
     }
   }
 
-  r = filterZeros(row);
+  r = filterZeros(r);
 
   while (r.length < columns) {
     r.push(0);
