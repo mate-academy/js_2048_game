@@ -9,7 +9,7 @@ export class Grid {
 
     for (let i = 0; i < CELLS_COUNT; i++) {
       this.cells.push(
-        new Cell(gridElement, i % GRID_SIZE, Math.floor(i / GRID_SIZE))
+        new Cell(gridElement, i % GRID_SIZE, Math.floor(i / GRID_SIZE)),
       );
     }
 

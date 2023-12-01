@@ -31,8 +31,9 @@ body {
 .tile {
   --y: 1;
   --x: 2;
-  --bg-lightness: --bg-lightness;
-  --text-lightness: --text-lightness;
+  --bg-lightness: $bg-lightness;
+  --text-lightness: $text-lightness;
+
   position: absolute;
   top: calc(var(--y) * (var(--cell-size) + var(--cell-gap)));
   left: calc(var(--x) * (var(--cell-size) + var(--cell-gap)));
