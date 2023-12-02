@@ -30,6 +30,7 @@ page.addEventListener('click', (e) => {
     getStarted();
     addRandomToEmpty(true);
     addRandomToEmpty(true);
+    messageEndGame.classList.add('hidden');
   }
 });
 
@@ -55,6 +56,8 @@ document.addEventListener('keydown', (e) => {
       addRandomToEmpty(mooveDown());
       break;
   }
+
+  // isThereMoove();
 });
 
 function renameStartButton() {
@@ -72,8 +75,10 @@ function mooveLeft() {
     for (let i = 1; i < row.children.length; i++) {
       let condition = true;
       let cell = row.children[i];
+      let previousCell = cell.previousElementSibling;
 
       cell.classList.remove('animate');
+      previousCell.classList.remove('animate');
 
       if (cell.classList.length < 4) {
         continue;
@@ -81,27 +86,28 @@ function mooveLeft() {
 
       while (condition) {
         switch (true) {
-          case cell.previousElementSibling === null:
+          case previousCell === null:
             condition = false;
             break;
 
-          case cell.previousElementSibling.classList[3] === cell.classList[3]
-          && previousMerged !== cell.previousElementSibling:
-            cell.previousElementSibling.classList.add(getCurrentClass(cell));
-            cell.previousElementSibling.classList.remove(cell.classList[3]);
+          case previousCell.classList[3] === cell.classList[3]
+          && previousMerged !== previousCell:
+            previousCell.classList.add(getCurrentClass(cell));
+            previousCell.classList.remove(cell.classList[3]);
             cell.classList.remove(cell.classList[3]);
-            previousMerged = cell.previousElementSibling;
+            previousMerged = previousCell;
             wereMooved = true;
             break;
 
-          case cell.previousElementSibling.classList.length > 3:
+          case previousCell.classList.length > 3:
             condition = false;
             break;
 
           default:
-            cell.previousElementSibling.classList.add(cell.classList[3]);
+            previousCell.classList.add(cell.classList[3]);
             cell.classList.remove(cell.classList[3]);
-            cell = cell.previousElementSibling;
+            cell = previousCell;
+            previousCell = cell.previousElementSibling;
             wereMooved = true;
             break;
         }
@@ -121,8 +127,10 @@ function mooveRight() {
     for (let i = row.children.length - 2; i >= 0; i--) {
       let condition = true;
       let cell = row.children[i];
+      let nextCell = cell.nextElementSibling;
 
       cell.classList.remove('animate');
+      nextCell.classList.remove('animate');
 
       if (cell.classList.length < 4) {
         continue;
@@ -130,27 +138,28 @@ function mooveRight() {
 
       while (condition) {
         switch (true) {
-          case cell.nextElementSibling === null:
+          case nextCell === null:
             condition = false;
             break;
 
-          case cell.nextElementSibling.classList[3] === cell.classList[3]
-            && previousMerged !== cell.nextElementSibling:
-            cell.nextElementSibling.classList.add(getCurrentClass(cell));
-            cell.nextElementSibling.classList.remove(cell.classList[3]);
+          case nextCell.classList[3] === cell.classList[3]
+            && previousMerged !== nextCell:
+            nextCell.classList.add(getCurrentClass(cell));
+            nextCell.classList.remove(cell.classList[3]);
             cell.classList.remove(cell.classList[3]);
-            previousMerged = cell.nextElementSibling;
+            previousMerged = nextCell;
             wereMooved = true;
             break;
 
-          case cell.nextElementSibling.classList.length > 3:
+          case nextCell.classList.length > 3:
             condition = false;
             break;
 
           default:
-            cell.nextElementSibling.classList.add(cell.classList[3]);
+            nextCell.classList.add(cell.classList[3]);
             cell.classList.remove(cell.classList[3]);
-            cell = cell.nextElementSibling;
+            cell = nextCell;
+            nextCell = cell.nextElementSibling;
             wereMooved = true;
             break;
         }
@@ -172,6 +181,7 @@ function mooveUp() {
       const cell = column[i];
 
       cell.classList.remove('animate');
+      column[i - 1].classList.remove('animate');
 
       if (cell.classList.length < 4) {
         continue;
@@ -216,11 +226,12 @@ function mooveDown() {
   let previousMerged;
 
   for (const column of columns) {
-    for (let i = column.length - 1; i >= 0; i--) {
+    for (let i = column.length - 2; i >= 0; i--) {
       let condition = true;
       const cell = column[i];
 
       cell.classList.remove('animate');
+      column[i + 1].classList.remove('animate');
 
       if (cell.classList.length < 4) {
         continue;
@@ -300,15 +311,13 @@ function getCurrentClass(cell) {
 function addRandomToEmpty(wereMooved) {
   const emptyCell = [];
 
-  cells.forEach(cell => {
-    if (cell.classList.length < 4) {
-      emptyCell.push(cell);
+  for (let i = 0; i < cells.length; i++) {
+    if (cells[i].classList.length < 4) {
+      emptyCell.push(cells[i]);
     }
-  });
-
-  if (emptyCell.length === 0) {
-    messageEndGame.classList.remove('hidden');
   }
+
+  isThereMoove(emptyCell.length);
 
   if (!wereMooved) {
     return;
@@ -323,4 +332,31 @@ function addRandomToEmpty(wereMooved) {
 
   emptyCell[index].classList.add(twoOrfour);
   emptyCell[index].classList.add('animate');
+}
+
+function isThereMoove(isThereEmptyCells) {
+  let mooves = 0;
+  const lastCellInRowArray = [3, 7, 11];
+
+  for (let i = 0; i < cells.length; i++) {
+    const nextCell = cells[i + 1] ? cells[i + 1] : cells[cells.length - 2];
+
+    if (mooves === 0
+        & !lastCellInRowArray.includes(i)
+        & cells[i].classList[3] === nextCell.classList[3]) {
+      mooves++;
+      break;
+    }
+
+    if (mooves === 0
+        & i < 12
+        && cells[i].classList[3] === cells[i + 4].classList[3]) {
+      mooves++;
+      break;
+    }
+  }
+
+  if (!mooves & !isThereEmptyCells) {
+    messageEndGame.classList.remove('hidden');
+  }
 }
