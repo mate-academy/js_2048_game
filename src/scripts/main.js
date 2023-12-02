@@ -61,6 +61,7 @@ Restarttbutton.addEventListener('click', function restartGame() {
   messegLose.classList.add('hidden');
   messegWin.classList.add('hidden');
   addNum();
+  addNum();
 });
 
 function endGame() {
