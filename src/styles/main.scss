@@ -1,25 +1,56 @@
+$game-field-size: var(--game-field-size);
+$game-field-gap: var(--game-field-gap );
+$header-controls-size: 12vmin;
+
+:root {
+  --game-field-size: 15vmin;
+  --game-field-gap: 1vmin;
+}
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
+  background: #4d4b49;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: #747270;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+
+  &--tile {
+    position: absolute;
+    left: calc(var(--game-field-tile-x) *
+    (var(--game-field-size) +
+    var(--game-field-gap)));
+    top: calc(var(--game-field-tile-y) *
+    (var(--game-field-size) +
+    var(--game-field-gap)));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $game-field-size;
+    height: $game-field-size;
+    border-radius: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 6vmin;
+    font-weight: bold;
+    background-color: #fff;
+    color: #000;
+
+    transition: 200ms;
+    animation: show 150ms;
+  }
 
   &--2 {
     background: #eee4da;
@@ -76,26 +107,34 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
-  border-spacing: 10px;
+  background: #4d4b49;
+  // border-spacing: 10px;
+  // border-radius: 5px;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, $game-field-size);
+  grid-template-rows: repeat(4, $game-field-size);
+  gap: $game-field-gap;
   border-radius: 5px;
 }
 
 .game-header {
+  // box-sizing: border-box;
   display: flex;
-  width: 100%;
+  // width: 100%;
   justify-content: space-between;
   margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
+  gap: 10vmin;
 }
 
 h1 {
   background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
+  color: #fff;
+  width: $header-controls-size;
+  height: $header-controls-size;
+  font-size: 3vmin;
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -110,12 +149,12 @@ h1 {
   align-items: center;
   justify-content: center;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: $header-controls-size;
+  height: $header-controls-size;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  font-size: 16px;
+  font-size: 2vmin;
   margin: 0 8px 0 0;
 }
 
@@ -125,21 +164,21 @@ h1 {
 
 .button {
   border: none;
+  outline: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: #fff;
   font-family: sans-serif;
   font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
-
+  font-size: 23px;
+  width: $header-controls-size;
+  height: $header-controls-size;
   transition: 0.25s ease background;
 }
 
 .start {
   background: #1dae28;
-  font-size: 20px;
+  font-size: 3vmin;
 
   &:hover {
     background: #179921;
@@ -147,10 +186,10 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #f55;
 
   &:hover {
-    background: #f87474;
+    background: #ff2121;
   }
 }
 
@@ -184,4 +223,11 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
 }
