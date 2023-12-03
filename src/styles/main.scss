@@ -8,6 +8,7 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  overflow: hidden;
 }
 
 .field-cell {
@@ -19,6 +20,11 @@ body {
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 
   &--2 {
@@ -73,6 +79,16 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  &--4096 {
+    background: #fe3d3d;
+    color: #f9f6f2;
+  }
+
+  &--8192 {
+    background: #ff2020;
+    color: #f9f6f2;
+  }
 }
 
 .game-field {
@@ -124,7 +140,11 @@ h1 {
 }
 
 .button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
+  outline: none;
   border-radius: 5px;
   cursor: pointer;
   color: #f9f6f2;
