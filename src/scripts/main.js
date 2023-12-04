@@ -5,7 +5,6 @@ import 'regenerator-runtime/runtime.js';
 import { Grid } from './grid.js';
 import { Tile } from './tile.js';
 import { changeScoreForStart, messageWin } from './cell.js';
-// import { async } from 'regenerator-runtime';
 
 const gameField = document.getElementById('game-field');
 const buttonStart = document.getElementById('btnStart');

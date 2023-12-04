@@ -108,8 +108,6 @@ body {
 
 .game-field {
   background: #4d4b49;
-  // border-spacing: 10px;
-  // border-radius: 5px;
   position: relative;
   display: grid;
   grid-template-columns: repeat(4, $game-field-size);
@@ -119,9 +117,7 @@ body {
 }
 
 .game-header {
-  // box-sizing: border-box;
   display: flex;
-  // width: 100%;
   justify-content: space-between;
   margin-bottom: 24px;
   padding: 10px;
