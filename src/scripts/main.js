@@ -96,18 +96,22 @@ function addRandomCell() {
 
 function arrowTracking(arrow) {
   const key = arrow.code;
+  const arrowUp = 'ArrowUp';
+  const arrowRight = 'ArrowRight';
+  const arrowDown = 'ArrowDown';
+  const arrowLeft = 'ArrowLeft';
 
   switch (key) {
-    case 'ArrowUp':
+    case arrowUp:
       processElements('up');
       break;
-    case 'ArrowRight':
+    case arrowRight:
       processElements('right');
       break;
-    case 'ArrowDown':
+    case arrowDown:
       processElements('down');
       break;
-    case 'ArrowLeft':
+    case arrowLeft:
       processElements('left');
       break;
     default:
@@ -320,16 +324,15 @@ function hasAdjacentEqualValue() {
     const col = index % 4;
 
     const neighbors = [
-      { row: row, col: col - 1 }, // слева
-      { row: row, col: col + 1 }, // справа
-      { row: row - 1, col: col }, // сверху
-      { row: row + 1, col: col }, // снизу
+      { row: row, col: col - 1 },
+      { row: row, col: col + 1 },
+      { row: row - 1, col: col },
+      { row: row + 1, col: col },
     ];
 
     for (const neighbor of neighbors) {
       const neighborIndex = neighbor.row * 4 + neighbor.col;
 
-      // Проверяем, что сосед находится в той же строке или колонке
       if (
         neighbor.row >= 0
         && neighbor.row < 4
