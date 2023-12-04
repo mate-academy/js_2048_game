@@ -70,10 +70,8 @@ function moveLeft(gameGrid, testMode = false) {
             moved = true;
           } else if (gameGrid[prevIndex] === gameGrid[currentIndex]) {
             gameGrid[prevIndex] *= 2;
+            score += gameGrid[currentIndex] * 2;
             gameGrid[currentIndex] = 0;
-            if (gameGrid[currentIndex] === 0) {
-              score += gameGrid[prevIndex] * 2;
-            }
             moved = true;
             break;
           } else {
@@ -113,10 +111,8 @@ function moveRight(gameGrid, testMode = false) {
             moved = true;
           } else if (gameGrid[nextIndex] === gameGrid[currentIndex]) {
             gameGrid[nextIndex] *= 2;
+            score += gameGrid[currentIndex] * 2;
             gameGrid[currentIndex] = 0;
-            if (gameGrid[currentIndex] === 0) {
-              score += gameGrid[nextIndex] * 2;
-            }
             moved = true;
             break;
           } else {
@@ -154,10 +150,8 @@ function moveUp(gameGrid, testMode = false) {
             moved = true;
           } else if (gameGrid[upIndex] === gameGrid[currentIndex]) {
             gameGrid[upIndex] *= 2;
+            score += gameGrid[currentIndex] * 2;
             gameGrid[currentIndex] = 0;
-            if (gameGrid[currentIndex] === 0) {
-              score += gameGrid[upIndex] * 2;
-            }
             moved = true;
             break;
           } else {
@@ -194,10 +188,8 @@ function moveDown(gameGrid, testMode = false) {
             moved = true;
           } else if (gameGrid[downIndex] === gameGrid[currentIndex]) {
             gameGrid[downIndex] *= 2;
+            score += gameGrid[currentIndex] * 2;
             gameGrid[currentIndex] = 0;
-            if (gameGrid[currentIndex] === 0) {
-              score += gameGrid[downIndex] * 2;
-            }
             moved = true;
             break;
           } else {
