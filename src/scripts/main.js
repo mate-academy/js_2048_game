@@ -69,8 +69,8 @@ function moveLeft(gameGrid, testMode = false) {
             currentIndex = prevIndex;
             moved = true;
           } else if (gameGrid[prevIndex] === gameGrid[currentIndex]) {
+            score += gameGrid[prevIndex];
             gameGrid[prevIndex] *= 2;
-            score += gameGrid[currentIndex] * 2;
             gameGrid[currentIndex] = 0;
             moved = true;
             break;
@@ -100,7 +100,6 @@ function moveRight(gameGrid, testMode = false) {
   for (let i = 0; i < gridSize; i++) {
     for (let j = gridSize - 2; j >= 0; j--) {
       let currentIndex = i * gridSize + j;
-
       while ((currentIndex + 1) % gridSize !== 0) {
         let nextIndex = currentIndex + 1;
         if (gameGrid[currentIndex] !== 0) {
@@ -110,8 +109,10 @@ function moveRight(gameGrid, testMode = false) {
             currentIndex = nextIndex;
             moved = true;
           } else if (gameGrid[nextIndex] === gameGrid[currentIndex]) {
+            debugger;
+            score += gameGrid[nextIndex];
             gameGrid[nextIndex] *= 2;
-            score += gameGrid[currentIndex] * 2;
+
             gameGrid[currentIndex] = 0;
             moved = true;
             break;
@@ -149,8 +150,9 @@ function moveUp(gameGrid, testMode = false) {
             currentIndex = upIndex;
             moved = true;
           } else if (gameGrid[upIndex] === gameGrid[currentIndex]) {
+            score += gameGrid[upIndex];
             gameGrid[upIndex] *= 2;
-            score += gameGrid[currentIndex] * 2;
+
             gameGrid[currentIndex] = 0;
             moved = true;
             break;
@@ -187,8 +189,9 @@ function moveDown(gameGrid, testMode = false) {
             currentIndex = downIndex;
             moved = true;
           } else if (gameGrid[downIndex] === gameGrid[currentIndex]) {
+            score += gameGrid[downIndex];
             gameGrid[downIndex] *= 2;
-            score += gameGrid[currentIndex] * 2;
+
             gameGrid[currentIndex] = 0;
             moved = true;
             break;
