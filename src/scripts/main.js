@@ -66,7 +66,7 @@ Restarttbutton.addEventListener('click', function restartGame() {
 
 function endGame() {
   if (gameOver()) {
-    stopGame = true;
+    stopGame = false;
     messegLose.classList.remove('hidden');
   }
 }
@@ -126,7 +126,7 @@ function upDateTile(tile, num) {
   }
 }
 
-document.addEventListener('keyup', even => {
+document.addEventListener('keydown', even => {
   if (stopGame) {
     return false;
   }
@@ -272,7 +272,7 @@ function gameOver() {
         return false;
       }
 
-      if (r < rows - 1 && rc === board[r][c + 1]) {
+      if (r < rows - 1 && rc === board[r + 1][c]) {
         return false;
       }
     }
