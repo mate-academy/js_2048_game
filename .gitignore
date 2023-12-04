@@ -11,6 +11,7 @@ node_modules
 # Generated files
 dist
 .cache
+.parcel-cache
 raw_reports
 cypress/screenshots
 cypress/videos
