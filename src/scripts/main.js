@@ -26,6 +26,7 @@ restartButton.onclick = () => {
   score = 0;
   document.querySelector('.game-score').innerText = 0;
   document.querySelector('.hidden-lose').style.display = 'none';
+  document.querySelector('.hidden-start').style.display = 'none';
 
   document.querySelector('.game-field').remove();
 
