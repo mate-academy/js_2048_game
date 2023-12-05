@@ -5,6 +5,7 @@ const gameBoard = document.querySelector('.board');
 const grid = new Grid(gameBoard);
 const startButton = document.querySelector('.start');
 const scoreElement = document.querySelector('.game_score');
+const touchArea = document.querySelector('.board');
 let restart = false;
 let gameScore = 0;
 
@@ -209,4 +210,81 @@ function canMoveInGroup(group) {
 
 function updateScore() {
   scoreElement.textContent = `${gameScore}`;
+}
+
+let startX, startY;
+
+touchArea.addEventListener('touchstart', (movement) => {
+  startX = movement.touches[0].clientX;
+  startY = movement.touches[0].clientY;
+}, { passive: true });
+
+touchArea.addEventListener('touchmove', (movement) => {
+  const currentX = movement.touches[0].clientX;
+  const currentY = movement.touches[0].clientY;
+  const deltaX = currentX - startX;
+  const deltaY = currentY - startY;
+
+  swipe(deltaX, deltaY);
+}, { passive: true });
+
+async function swipe(deltaX, deltaY) {
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > 0) {
+      if (!canMoveRigth()) {
+        setupInputOnce();
+
+        return;
+      }
+
+      await moveRight();
+    } else {
+      if (!canMoveLeft()) {
+        setupInputOnce();
+
+        return;
+      }
+
+      await moveLeft();
+    }
+  } else {
+    if (deltaY > 0) {
+      if (!canMoveDown()) {
+        setupInputOnce();
+
+        return;
+      }
+
+      await moveDown();
+    } else {
+      if (!canMoveUp()) {
+        setupInputOnce();
+
+        return;
+      }
+
+      await moveUp();
+    }
+  }
+
+  const newTile = new Tile(gameBoard);
+
+  grid.getRandomEmptyCell().linkTile(newTile);
+
+  if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRigth()) {
+    await newTile.waitForAnimationEnd();
+
+    const gameResultElement = document.querySelector('.message_lose');
+
+    gameResultElement.classList.remove('hidden');
+    gameResultElement.style.color = '#ff0000';
+
+    startButton.addEventListener('click', () => {
+      window.location.reload();
+    });
+
+    return;
+  }
+
+  setupInputOnce();
 }

@@ -120,6 +120,7 @@ h1 {
   background: #444;
   font-size: 4vmin;
   border: 0.5vmin solid;
+  padding: 0;
 
   &:hover {
     background: #179c22;
@@ -130,6 +131,8 @@ h1 {
   background: #f1b2b2;
   color: rgb(255, 119, 0);
   font-size: 3vmin;
+  border: 0.5vmin solid;
+  padding: 0;
 
   &:hover {
     background: rgb(248, 114, 114, 80%);
