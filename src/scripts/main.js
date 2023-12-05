@@ -4,6 +4,7 @@ let board;
 let score = 0;
 const ROWS = 4;
 const COLUMNS = 4;
+let arraysUpdatedBoard = [];
 
 const gameFieldContainer = document.querySelector('.game-field-container');
 const startButton = document.querySelector('.start');
@@ -83,28 +84,44 @@ document.addEventListener('keyup', (e) => {
     case 'ArrowUp':
       if (!youWin()) {
         moveUp();
-        addTile();
+        doubleBoardsToSingleForComprassion();
+
+        if (!notAddTile()) {
+          addTile();
+        }
       }
       break;
 
     case 'ArrowRight':
       if (!youWin()) {
         moveRight();
-        addTile();
+        doubleBoardsToSingleForComprassion();
+
+        if (!notAddTile()) {
+          addTile();
+        }
       }
       break;
 
     case 'ArrowDown':
       if (!youWin()) {
         moveDown();
-        addTile();
+        doubleBoardsToSingleForComprassion();
+
+        if (!notAddTile()) {
+          addTile();
+        }
       }
       break;
 
     case 'ArrowLeft':
       if (!youWin()) {
         moveLeft();
-        addTile();
+        doubleBoardsToSingleForComprassion();
+
+        if (!notAddTile()) {
+          addTile();
+        }
       }
       break;
   }
@@ -227,7 +244,7 @@ function addTile() {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
 
       tile.innerText = randomDigit.toString();
-      tile.classList.add('field-cell--2');
+      tile.classList.add(`field-cell--${randomDigit}`);
       found = true;
     }
   }
@@ -238,6 +255,8 @@ function addTile() {
     }
   }
 
+  arraysUpdatedBoard = [...arraysUpdatedBoard, [...arrayBoard]];
+
   if (arrayBoard.some(arr => arr === 2048)) {
     document.querySelector('.hidden-win').style.display = 'block';
   }
@@ -245,6 +264,18 @@ function addTile() {
   if (youLose()) {
     document.querySelector('.hidden-lose').style.display = 'block';
   }
+}
+
+function notAddTile() {
+  const booleanArr = [];
+  const penultimateArr = arraysUpdatedBoard[arraysUpdatedBoard.length - 2];
+  const lastArr = arraysUpdatedBoard[arraysUpdatedBoard.length - 1];
+
+  for (let i = 0; i < penultimateArr.length; i++) {
+    booleanArr.push(penultimateArr[i] === lastArr[i]);
+  }
+
+  return booleanArr.every((arr) => arr);
 }
 
 function hasEmptyTile() {
@@ -302,4 +333,18 @@ function youLose() {
   );
 
   return newArr.every(ar => ar) && !hasEmptyTile();
+}
+
+function doubleBoardsToSingleForComprassion() {
+  const arrayBoard = [];
+
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLUMNS; c++) {
+      arrayBoard.push(board[r][c]);
+    }
+  }
+
+  arraysUpdatedBoard = arraysUpdatedBoard
+    .filter((arr, i, array) => arr !== array[0]);
+  arraysUpdatedBoard = [...arraysUpdatedBoard, [...arrayBoard]];
 }
