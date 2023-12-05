@@ -5,7 +5,7 @@ const gameBoard = document.querySelector('.board');
 const grid = new Grid(gameBoard);
 const startButton = document.querySelector('.start');
 const scoreElement = document.querySelector('.game_score');
-const touchArea = document.querySelector('.board');
+const touchArea = document.querySelector('.body2048');
 let restart = false;
 let gameScore = 0;
 
@@ -219,11 +219,12 @@ touchArea.addEventListener('touchstart', (movement) => {
   startY = movement.touches[0].clientY;
 }, { passive: true });
 
-touchArea.addEventListener('touchmove', (movement) => {
-  const currentX = movement.touches[0].clientX;
-  const currentY = movement.touches[0].clientY;
-  const deltaX = currentX - startX;
-  const deltaY = currentY - startY;
+touchArea.addEventListener('touchend', (movement) => {
+  const endX = movement.changedTouches[0].clientX;
+  const endY = movement.changedTouches[0].clientY;
+
+  const deltaX = endX - startX;
+  const deltaY = endY - startY;
 
   swipe(deltaX, deltaY);
 }, { passive: true });
