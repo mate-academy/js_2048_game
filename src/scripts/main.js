@@ -69,6 +69,7 @@ function moveLeft(gameGrid, testMode = false) {
             currentIndex = prevIndex;
             moved = true;
           } else if (gameGrid[prevIndex] === gameGrid[currentIndex]) {
+            debugger;
             score += gameGrid[prevIndex];
             gameGrid[prevIndex] *= 2;
             gameGrid[currentIndex] = 0;
@@ -150,9 +151,9 @@ function moveUp(gameGrid, testMode = false) {
             currentIndex = upIndex;
             moved = true;
           } else if (gameGrid[upIndex] === gameGrid[currentIndex]) {
+            debugger;
             score += gameGrid[upIndex];
             gameGrid[upIndex] *= 2;
-
             gameGrid[currentIndex] = 0;
             moved = true;
             break;
@@ -189,9 +190,9 @@ function moveDown(gameGrid, testMode = false) {
             currentIndex = downIndex;
             moved = true;
           } else if (gameGrid[downIndex] === gameGrid[currentIndex]) {
+            debugger;
             score += gameGrid[downIndex];
             gameGrid[downIndex] *= 2;
-
             gameGrid[currentIndex] = 0;
             moved = true;
             break;
