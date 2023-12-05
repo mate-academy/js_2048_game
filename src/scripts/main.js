@@ -213,17 +213,20 @@ function addTile() {
 
   const arrayBoard = [];
   let found = false;
+  const randomDigits = [2, 4];
+  const randomDigit
+    = randomDigits[Math.floor(Math.random() * randomDigits.length)];
 
   while (!found) {
     const r = Math.floor(Math.random() * ROWS);
     const c = Math.floor(Math.random() * COLUMNS);
 
     if (board[r][c] === 0) {
-      board[r][c] = 2;
+      board[r][c] = randomDigit;
 
       const tile = document.getElementById(r.toString() + '-' + c.toString());
 
-      tile.innerText = '2';
+      tile.innerText = randomDigit.toString();
       tile.classList.add('field-cell--2');
       found = true;
     }
