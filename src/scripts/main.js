@@ -14,6 +14,8 @@ const SCORE_NUMBER = document.querySelector('.game-score');
 let gameMatrix;
 let isMovePossible;
 let score = 0;
+const columnsInMatrix = 4;
+const rowsInMatrix = 4;
 
 /* #endregion */
 
@@ -54,6 +56,8 @@ function startGame() {
   START_BUTTON.classList.add('restart');
   START_BUTTON.innerText = 'Restart';
   MESSAGE_START.classList.add('hidden');
+
+  // TODO: hide all messages
   addNewNumber();
   addNewNumber();
   updateField();
@@ -101,7 +105,7 @@ function addNewNumber() {
 
 function makeMove(directionFunction) {
   // let currentMoveScore = 0;
-  directionFunction();
+  directionFunction(gameMatrix);
   addNewNumber();
   updateField();
   // 3 check if further move is possible
@@ -143,9 +147,9 @@ function removeZeroes(row) {
   return row.filter(cell => cell !== 0);
 }
 
-function slideRight() {
-  for (let r = 0; r < gameMatrix.length; r++) {
-    const rowWithoutZero = removeZeroes(gameMatrix[r]);
+function slideRight(matrix) {
+  for (let r = 0; r < matrix.length; r++) {
+    const rowWithoutZero = removeZeroes(matrix[r]);
 
     if (rowWithoutZero.length > 0) {
       for (let c = rowWithoutZero.length; c >= 0; c--) {
@@ -160,20 +164,22 @@ function slideRight() {
       }
 
       const rowWithoutZeroAfterMove = removeZeroes(rowWithoutZero);
-      const zeroesToAdd = gameMatrix[r].length
+      const zeroesToAdd = matrix[r].length
       - rowWithoutZeroAfterMove.length;
       const resultRow = Array(zeroesToAdd)
         .fill(0)
         .concat(rowWithoutZeroAfterMove);
 
-      gameMatrix[r] = resultRow;
+      matrix[r] = resultRow;
     }
   }
+
+  return matrix;
 }
 
-function slideLeft() {
-  for (let r = 0; r < gameMatrix.length; r++) {
-    const rowWithoutZero = removeZeroes(gameMatrix[r]);
+function slideLeft(matrix) {
+  for (let r = 0; r < matrix.length; r++) {
+    const rowWithoutZero = removeZeroes(matrix[r]);
 
     if (rowWithoutZero.length > 0) {
       for (let c = 0; c < rowWithoutZero.length; c++) {
@@ -188,21 +194,67 @@ function slideLeft() {
       }
 
       const rowWithoutZeroAfterMove = removeZeroes(rowWithoutZero);
-      const zeroesToAdd = gameMatrix[r].length
+      const zeroesToAdd = matrix[r].length
       - rowWithoutZeroAfterMove.length;
       const resultRow = rowWithoutZeroAfterMove
         .concat(Array(zeroesToAdd).fill(0));
 
-      gameMatrix[r] = resultRow;
+      matrix[r] = resultRow;
     }
   }
+
+  return matrix;
 }
 
-function slideDown() {
-  console.log('slideDown');
+function slideDown(matrix) {
+  const matrixRotated = rotateMatrix(matrix);
+  const matrixRotatedSlidedLeft = slideLeft(matrixRotated);
+  const matrixRotatedBack = rotateMatrixBack(matrixRotatedSlidedLeft);
+
+  gameMatrix = matrixRotatedBack;
+
+  return matrixRotatedBack;
 }
 
-function slideUp() {
-  console.log('slideUp');
+function slideUp(matrix) {
+  const matrixRotated = rotateMatrix(matrix);
+  const matrixRotatedSlidedRight = slideRight(matrixRotated);
+  const matrixRotatedBack = rotateMatrixBack(matrixRotatedSlidedRight);
+
+  gameMatrix = matrixRotatedBack;
+
+  return matrixRotatedBack;
 }
 /* #endregion */
+
+function rotateMatrix(matrix) {
+  const matrixRotated = createEmptyMatrix(rowsInMatrix, columnsInMatrix);
+
+  for (let row = 0; row < rowsInMatrix; row++) {
+    for (let cell = 0; cell < columnsInMatrix; cell++) {
+      const currentElement = matrix[row][cell];
+
+      matrixRotated[cell][rowsInMatrix - 1 - row] = currentElement;
+    }
+  }
+
+  return matrixRotated;
+}
+
+function rotateMatrixBack(matrix) {
+  const matrixRotated = createEmptyMatrix(rowsInMatrix, columnsInMatrix);
+
+  for (let row = 0; row < rowsInMatrix; row++) {
+    for (let cell = 0; cell < columnsInMatrix; cell++) {
+      const currentElement = matrix[row][cell];
+
+      matrixRotated[columnsInMatrix - 1 - cell][row] = currentElement;
+    }
+  }
+
+  return matrixRotated;
+}
+
+function createEmptyMatrix(rowLength, colLength) {
+  return [...Array(colLength)].map(() => Array(rowLength));
+}
