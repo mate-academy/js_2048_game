@@ -2,7 +2,7 @@
   "name": "gulp-boilerplate",
   "version": "1.0.0",
   "description": "Frontend boilerplate based on gulp",
-  "main": "index.js",
+  "default": "index.html",
   "scripts": {
     "init": "mate-scripts init",
     "start": "mate-scripts start",
@@ -45,5 +45,7 @@
   "mateAcademy": {
     "projectType": "layoutDOM"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@swc/helpers": "^0.5.3"
+  }
 }
