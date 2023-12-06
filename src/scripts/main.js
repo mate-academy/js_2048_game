@@ -1,5 +1,5 @@
-import { Grid } from './grid.js';
-import { Tile } from './tile.js';
+import { Grid } from './grid.mjs';
+import { Tile } from './tile.mjs';
 
 const gameBoard = document.querySelector('.board');
 const grid = new Grid(gameBoard);
