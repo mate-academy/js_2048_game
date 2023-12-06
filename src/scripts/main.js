@@ -26,6 +26,7 @@ function startGame() {
   click = true;
 
   if (click) {
+    score = 0;
     startMessage.classList.add('hidden');
   }
 }
@@ -51,17 +52,11 @@ function updateGrid() {
     cell.textContent = gameGrid[index] === 0 ? '' : gameGrid[index];
     cell.className = `field-cell field-cell--${gameGrid[index]}`;
   });
-<<<<<<< HEAD
 
   checkWin();
 }
 
 function moveLeft(gameGrid, testMode = false) {
-=======
-}
-
-function moveLeft(gameG, testMode = false) {
->>>>>>> 2d47d966f42488e7af2876c9e1cd7401e1a25b01
   let moved = false;
 
   for (let i = 0; i < gridSize; i++) {
@@ -104,11 +99,7 @@ function moveLeft(gameG, testMode = false) {
   return moved;
 }
 
-<<<<<<< HEAD
 function moveRight(gameGrid, testMode = false) {
-=======
-function moveRight(gameG, testMode = false) {
->>>>>>> 2d47d966f42488e7af2876c9e1cd7401e1a25b01
   let moved = false;
 
   for (let i = 0; i < gridSize; i++) {
@@ -152,11 +143,7 @@ function moveRight(gameG, testMode = false) {
   return moved;
 }
 
-<<<<<<< HEAD
 function moveUp(gameGrid, testMode = false) {
-=======
-function moveUp(gameG, testMode = false) {
->>>>>>> 2d47d966f42488e7af2876c9e1cd7401e1a25b01
   let moved = false;
 
   for (let i = 1; i < gridSize; i++) {
@@ -199,11 +186,7 @@ function moveUp(gameG, testMode = false) {
   return moved;
 }
 
-<<<<<<< HEAD
 function moveDown(gameGrid, testMode = false) {
-=======
-function moveDown(gameG, testMode = false) {
->>>>>>> 2d47d966f42488e7af2876c9e1cd7401e1a25b01
   let moved = false;
 
   for (let i = gridSize - 2; i >= 0; i--) {
@@ -248,26 +231,17 @@ function moveDown(gameG, testMode = false) {
 
 function restartGame() {
   click = false;
-<<<<<<< HEAD
+  gameScoreElement.textContent = 0;
 
   loserMessage.classList.add('hidden');
-=======
-  app.classList.remove('restart');
-  loserMessage.classList.add('hidden');
-  app.classList.add('start');
-  app.textContent = 'Start';
->>>>>>> 2d47d966f42488e7af2876c9e1cd7401e1a25b01
   startMessage.classList.remove('hidden');
 
   cells.forEach((cell, index) => {
     cell.className = 'field-cell';
     cell.textContent = '';
   });
-<<<<<<< HEAD
 
   startGame();
-=======
->>>>>>> 2d47d966f42488e7af2876c9e1cd7401e1a25b01
 }
 
 function checkAvailableMoves() {
@@ -277,7 +251,6 @@ function checkAvailableMoves() {
   }
 }
 
-<<<<<<< HEAD
 function checkWin() {
   for (let i = 0; i < gameGrid.length; i++) {
     if (gameGrid[i] === 2048) {
@@ -289,8 +262,6 @@ function checkWin() {
   }
 }
 
-=======
->>>>>>> 2d47d966f42488e7af2876c9e1cd7401e1a25b01
 app.addEventListener('click', e => {
   if (e.target.classList.contains('restart')) {
     restartGame();
