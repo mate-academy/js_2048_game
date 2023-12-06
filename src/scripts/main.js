@@ -2,6 +2,11 @@
 
 /* #region Variables */
 
+let gameMatrix;
+let isMovePossible;
+let score = 0;
+const MATRIX_COLUMNS = 4;
+const MATRIX_ROWS = 4;
 const FIELD_ROWS = document.querySelectorAll('.field-row');
 const FIELD_CELLS = Array.from(FIELD_ROWS)
   .map(row => row.querySelectorAll('.field-cell'));
@@ -11,12 +16,6 @@ const MESSAGE_LOSE = document.querySelector('.message-lose');
 const MESSAGE_WIN = document.querySelector('.message-win');
 const START_BUTTON = document.querySelector('.button');
 const SCORE_NUMBER = document.querySelector('.game-score');
-let gameMatrix;
-let isMovePossible;
-let score = 0;
-const columnsInMatrix = 4;
-const rowsInMatrix = 4;
-
 /* #endregion */
 
 /* #region Events */
@@ -42,6 +41,7 @@ document.addEventListener('keyup', (e) => {
 
 /* #endregion */
 
+/* #region Main functions */
 function startGame() {
   gameMatrix = [
     [0, 0, 0, 0],
@@ -52,7 +52,7 @@ function startGame() {
 
   isMovePossible = true;
   updateField();
-  SCORE_NUMBER.innerText = `${score}`;
+  SCORE_NUMBER.innerText = `0`;
   START_BUTTON.classList.add('restart');
   START_BUTTON.innerText = 'Restart';
   MESSAGE_START.classList.add('hidden');
@@ -104,49 +104,17 @@ function addNewNumber() {
 }
 
 function makeMove(directionFunction) {
-  // let currentMoveScore = 0;
   directionFunction(gameMatrix);
   addNewNumber();
   updateField();
   // 3 check if further move is possible
   // 4 if no - game over message
 
-  // score += currentMoveScore;
   SCORE_NUMBER.innerText = `${score}`;
 }
+/* #endregion */
 
-// Step4: add messages to functions
-// ===================================
-// number = 2048 - winner message
-//
-// Add animations to CSS
-//
-
-/* #region Additional Functions */
-function getRandomIncluding(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-function isGameOver(rowsOfCells) {
-  const hasEmptyCells = rowsOfCells
-    .some(row => row
-      .some(cell => cell === 0));
-
-  if (hasEmptyCells) {
-    return false;
-  }
-
-  if (!isMovePossible) {
-    MESSAGE_LOSE.classList.remove('hidden');
-  }
-  // add checking possible moves
-  // rerurn true if possible
-}
-
-function removeZeroes(row) {
-  return row.filter(cell => cell !== 0);
-}
-
+/* #region Move functions */
 function slideRight(matrix) {
   for (let r = 0; r < matrix.length; r++) {
     const rowWithoutZero = removeZeroes(matrix[r]);
@@ -227,14 +195,40 @@ function slideUp(matrix) {
 }
 /* #endregion */
 
-function rotateMatrix(matrix) {
-  const matrixRotated = createEmptyMatrix(rowsInMatrix, columnsInMatrix);
+/* #region Additional Functions */
+function getRandomIncluding(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
-  for (let row = 0; row < rowsInMatrix; row++) {
-    for (let cell = 0; cell < columnsInMatrix; cell++) {
+function isGameOver(rowsOfCells) {
+  const hasEmptyCells = rowsOfCells
+    .some(row => row
+      .some(cell => cell === 0));
+
+  if (hasEmptyCells) {
+    return false;
+  }
+
+  if (!isMovePossible) {
+    MESSAGE_LOSE.classList.remove('hidden');
+  }
+  // add checking possible moves
+  // rerurn true if possible
+}
+
+function removeZeroes(row) {
+  return row.filter(cell => cell !== 0);
+}
+
+function rotateMatrix(matrix) {
+  const matrixRotated = [...Array(MATRIX_COLUMNS)]
+    .map(() => Array(MATRIX_ROWS));
+
+  for (let row = 0; row < MATRIX_ROWS; row++) {
+    for (let cell = 0; cell < MATRIX_COLUMNS; cell++) {
       const currentElement = matrix[row][cell];
 
-      matrixRotated[cell][rowsInMatrix - 1 - row] = currentElement;
+      matrixRotated[cell][MATRIX_ROWS - 1 - row] = currentElement;
     }
   }
 
@@ -242,19 +236,24 @@ function rotateMatrix(matrix) {
 }
 
 function rotateMatrixBack(matrix) {
-  const matrixRotated = createEmptyMatrix(rowsInMatrix, columnsInMatrix);
+  const matrixRotated = [...Array(MATRIX_COLUMNS)]
+    .map(() => Array(MATRIX_ROWS));
 
-  for (let row = 0; row < rowsInMatrix; row++) {
-    for (let cell = 0; cell < columnsInMatrix; cell++) {
+  for (let row = 0; row < MATRIX_ROWS; row++) {
+    for (let cell = 0; cell < MATRIX_COLUMNS; cell++) {
       const currentElement = matrix[row][cell];
 
-      matrixRotated[columnsInMatrix - 1 - cell][row] = currentElement;
+      matrixRotated[MATRIX_COLUMNS - 1 - cell][row] = currentElement;
     }
   }
 
   return matrixRotated;
 }
+/* #endregion */
 
-function createEmptyMatrix(rowLength, colLength) {
-  return [...Array(colLength)].map(() => Array(rowLength));
-}
+// Step4: add messages to functions
+// ===================================
+// number = 2048 - winner message
+//
+// Add animations to CSS
+//
