@@ -7,41 +7,21 @@ let isMovePossible;
 let score = 0;
 const MATRIX_COLUMNS = 4;
 const MATRIX_ROWS = 4;
+const winNumber = 2048;
 const FIELD_ROWS = document.querySelectorAll('.field-row');
 const FIELD_CELLS = Array.from(FIELD_ROWS)
   .map(row => row.querySelectorAll('.field-cell'));
 const MESSAGES = document.querySelectorAll('.message');
-const MESSAGE_START = document.querySelector('.message-start');
+// const MESSAGE_START = document.querySelector('.message-start');
 const MESSAGE_LOSE = document.querySelector('.message-lose');
 const MESSAGE_WIN = document.querySelector('.message-win');
 const START_BUTTON = document.querySelector('.button');
 const SCORE_NUMBER = document.querySelector('.game-score');
 /* #endregion */
 
-/* #region Events */
+/* #region Main */
 START_BUTTON.addEventListener('click', startGame);
 
-document.addEventListener('keyup', (e) => {
-  if (e.key === 'ArrowRight') {
-    makeMove(slideRight);
-  }
-
-  if (e.key === 'ArrowLeft') {
-    makeMove(slideLeft);
-  }
-
-  if (e.key === 'ArrowDown') {
-    makeMove(slideDown);
-  }
-
-  if (e.key === 'ArrowUp') {
-    makeMove(slideUp);
-  }
-});
-
-/* #endregion */
-
-/* #region Main functions */
 function startGame() {
   gameMatrix = [
     [0, 0, 0, 0],
@@ -55,13 +35,44 @@ function startGame() {
   SCORE_NUMBER.innerText = `0`;
   START_BUTTON.classList.add('restart');
   START_BUTTON.innerText = 'Restart';
-  MESSAGE_START.classList.add('hidden');
+  // MESSAGE_START.classList.add('hidden');
+
+  MESSAGES.forEach(message => {
+    if (message.className !== 'hidden') {
+      message.classList.add('hidden');
+    }
+  })
 
   // TODO: hide all messages
   addNewNumber();
   addNewNumber();
   updateField();
 }
+
+document.addEventListener('keyup', (e) => {
+  if (e.key === 'ArrowRight') {
+    slideRight(gameMatrix);
+  }
+
+  if (e.key === 'ArrowLeft') {
+    slideLeft(gameMatrix);
+  }
+
+  if (e.key === 'ArrowDown') {
+    slideDown(gameMatrix);
+  }
+
+  if (e.key === 'ArrowUp') {
+    slideUp(gameMatrix);
+  }
+
+  addNewNumber();
+  updateField();
+  // 3 check if further move is possible
+  // 4 if no - game over message
+
+  SCORE_NUMBER.innerText = `${score}`;
+});
 
 function updateField() {
   for (let row = 0; row < gameMatrix.length; row++) {
@@ -102,19 +113,9 @@ function addNewNumber() {
 
   isGameOver(gameMatrix);
 }
-
-function makeMove(directionFunction) {
-  directionFunction(gameMatrix);
-  addNewNumber();
-  updateField();
-  // 3 check if further move is possible
-  // 4 if no - game over message
-
-  SCORE_NUMBER.innerText = `${score}`;
-}
 /* #endregion */
 
-/* #region Move functions */
+/* #region Slide functions */
 function slideRight(matrix) {
   for (let r = 0; r < matrix.length; r++) {
     const rowWithoutZero = removeZeroes(matrix[r]);
@@ -126,6 +127,7 @@ function slideRight(matrix) {
 
         if (currentElement === nextElement) {
           rowWithoutZero[c] = currentElement + nextElement;
+          checkWin(rowWithoutZero[c]);
           rowWithoutZero[c - 1] = 0;
           score += currentElement;
         }
@@ -156,6 +158,7 @@ function slideLeft(matrix) {
 
         if (currentElement === nextElement) {
           rowWithoutZero[c] = currentElement + nextElement;
+          checkWin(rowWithoutZero[c]);
           rowWithoutZero[c + 1] = 0;
           score += currentElement;
         }
@@ -218,6 +221,12 @@ function isGameOver(rowsOfCells) {
 
 function removeZeroes(row) {
   return row.filter(cell => cell !== 0);
+}
+
+function checkWin(num) {
+  if (num === winNumber) {
+    MESSAGE_WIN.classList.remove('hidden');
+  }
 }
 
 function rotateMatrix(matrix) {
