@@ -1,3 +1,12 @@
+1. Replace `<your_account>` with your Github username in the link
+    - [DEMO LINK](https://oksana-vas.github.io/js_2048_game/)
+2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
+    - Run `npm run test` command to test your code;
+    - Run `npm run test:only -- -n` to run fast test ignoring linter;
+    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+
+### Task: 2048 game
+=======
 # 2048 game
 
 Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
