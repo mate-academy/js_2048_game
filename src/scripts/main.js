@@ -68,10 +68,6 @@ document.addEventListener('keydown', (event) => {
   if (isWinner()) {
     messageWin.classList.remove('hidden');
   }
-
-  if (!hasEmptyCells() && !canBeMerged()) {
-    messageLose.classList.remove('hidden');
-  }
 });
 
 function startGame() {
@@ -80,11 +76,11 @@ function startGame() {
   startButton.textContent = 'Restart';
 }
 
-function hasEmptyCells() {
-  return board.some(cell => cell === 0);
-}
-
 function addRandomNumber() {
+  if (!hasEmptyCells()) {
+    return;
+  }
+
   const availableCells = [];
 
   for (let i = 0; i < BOARD_SIZE; i++) {
@@ -131,6 +127,12 @@ function isWinner() {
 }
 
 function slideHorizontal(direction) {
+  if (!hasEmptyCells() && !canBeMerged()) {
+    messageLose.classList.remove('hidden');
+
+    return;
+  }
+
   let hasRowChanged = false;
 
   for (let row = 0; row < BOARD_SIZE; row++) {
@@ -161,6 +163,12 @@ function slideHorizontal(direction) {
 }
 
 function slideVertical(direction) {
+  if (!hasEmptyCells() && !canBeMerged()) {
+    messageLose.classList.remove('hidden');
+
+    return;
+  }
+
   let hasColumnChanged = false;
 
   for (let col = 0; col < BOARD_SIZE; col++) {
@@ -241,4 +249,16 @@ function canBeMerged() {
   }
 
   return canMerge;
+}
+
+function hasEmptyCells() {
+  for (let row = 0; row < BOARD_SIZE; row++) {
+    for (let col = 0; col < BOARD_SIZE; col++) {
+      if (board[row][col] === 0) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
