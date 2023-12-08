@@ -14,6 +14,11 @@ let score = 0;
 const BOARD_SIZE = 4;
 const SCORE_TO_WIN = 2048;
 
+const ARROW_UP = 'ArrowUp';
+const ARROW_DOWN = 'ArrowDown';
+const ARROW_LEFT = 'ArrowLeft';
+const ARROW_RIGHT = 'ArrowRight';
+
 const board = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -26,7 +31,7 @@ startButton.addEventListener('click', () => {
     startGame();
   }
 
-  [...messages].map(message => message.classList.add('hidden'));
+  [...messages].forEach(message => message.classList.add('hidden'));
 
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
@@ -34,7 +39,7 @@ startButton.addEventListener('click', () => {
     }
   }
 
-  [...cells].map(cell => {
+  [...cells].forEach(cell => {
     cell.className = 'field-cell';
     cell.textContent = '';
   });
@@ -51,13 +56,13 @@ startButton.addEventListener('click', () => {
 // eslint-disable-next-line no-shadow
 document.addEventListener('keydown', (event) => {
   switch (event.key) {
-    case 'ArrowUp':
-    case 'ArrowDown':
+    case ARROW_UP:
+    case ARROW_DOWN:
       slideVertical(event.key);
       break;
 
-    case 'ArrowRight':
-    case 'ArrowLeft':
+    case ARROW_LEFT:
+    case ARROW_RIGHT:
       slideHorizontal(event.key);
       break;
 
@@ -139,13 +144,13 @@ function slideHorizontal(direction) {
     const rowCopy = [...board[row]];
     let currentRow = board[row];
 
-    if (direction === 'ArrowRight') {
+    if (direction === ARROW_RIGHT) {
       currentRow.reverse();
     }
 
     currentRow = slide(currentRow);
 
-    if (direction === 'ArrowRight') {
+    if (direction === ARROW_RIGHT) {
       currentRow.reverse();
     }
 
@@ -180,13 +185,13 @@ function slideVertical(direction) {
     ];
     const columnCopy = [...currentCol];
 
-    if (direction === 'ArrowDown') {
+    if (direction === ARROW_DOWN) {
       currentCol.reverse();
     }
 
     currentCol = slide(currentCol);
 
-    if (direction === 'ArrowDown') {
+    if (direction === ARROW_DOWN) {
       currentCol.reverse();
     }
 
