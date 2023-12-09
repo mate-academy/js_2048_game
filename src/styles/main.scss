@@ -27,7 +27,7 @@ body {
     scale: 0;
   }
   100% {
-    scale:  1;
+    scale: 1;
   }
 }
 
@@ -41,7 +41,7 @@ body {
   }
 
   100% {
-    scale:  1;
+    scale: 1;
   }
 }
 
@@ -63,7 +63,7 @@ body {
     justify-content: center;
     height: 100%;
     width: 100%;
-    transition: all .075s ease;
+    transition: all 0.07s ease;
     z-index: 1;
   }
 
@@ -136,7 +136,6 @@ body {
     justify-content: center;
     z-index: 3;
     transition: opacity 0.3s;
-
 
     &-over {
       display: none;
