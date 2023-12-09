@@ -1,7 +1,6 @@
 'use strict';
 
 /* #region Variables */
-
 let gameMatrix;
 let isMovePossible;
 let score;
@@ -12,6 +11,7 @@ const FIELD_ROWS = document.querySelectorAll('.field-row');
 const FIELD_CELLS = Array.from(FIELD_ROWS)
   .map(row => row.querySelectorAll('.field-cell'));
 const MESSAGES = document.querySelectorAll('.message');
+const MESSAGE_AFTER_START = document.querySelector('.message-afterstart');
 const MESSAGE_LOSE = document.querySelector('.message-lose');
 const MESSAGE_WIN = document.querySelector('.message-win');
 const START_BUTTON = document.querySelector('.button');
@@ -41,6 +41,7 @@ function startGame() {
       message.classList.add('hidden');
     }
   });
+  MESSAGE_AFTER_START.classList.remove('hidden');
 
   addNewNumberToMatrix();
   addNewNumberToMatrix();
@@ -48,6 +49,8 @@ function startGame() {
 }
 
 document.addEventListener('keyup', (e) => {
+  MESSAGE_AFTER_START.classList.add('hidden');
+
   switch (e.key) {
     case 'ArrowRight':
       slideRight(gameMatrix);
