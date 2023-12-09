@@ -4,15 +4,14 @@
 
 let gameMatrix;
 let isMovePossible;
-let score = 0;
+let score;
 const MATRIX_COLUMNS = 4;
 const MATRIX_ROWS = 4;
-const winNumber = 2048;
+const WINNING_NUMBER = 2048;
 const FIELD_ROWS = document.querySelectorAll('.field-row');
 const FIELD_CELLS = Array.from(FIELD_ROWS)
   .map(row => row.querySelectorAll('.field-cell'));
 const MESSAGES = document.querySelectorAll('.message');
-// const MESSAGE_START = document.querySelector('.message-start');
 const MESSAGE_LOSE = document.querySelector('.message-lose');
 const MESSAGE_WIN = document.querySelector('.message-win');
 const START_BUTTON = document.querySelector('.button');
@@ -30,59 +29,57 @@ function startGame() {
     [0, 0, 0, 0],
   ];
 
+  score = 0;
   isMovePossible = true;
-  updateField();
-  SCORE_NUMBER.innerText = `0`;
+  updateFieldAppearance();
+  SCORE_NUMBER.innerText = `${score}`;
   START_BUTTON.classList.add('restart');
   START_BUTTON.innerText = 'Restart';
-  // MESSAGE_START.classList.add('hidden');
 
   MESSAGES.forEach(message => {
     if (message.className !== 'hidden') {
       message.classList.add('hidden');
     }
-  })
+  });
 
-  // TODO: hide all messages
-  addNewNumber();
-  addNewNumber();
-  updateField();
+  addNewNumberToMatrix();
+  addNewNumberToMatrix();
+  updateFieldAppearance();
 }
 
 document.addEventListener('keyup', (e) => {
-  if (e.key === 'ArrowRight') {
-    slideRight(gameMatrix);
+  switch (e.key) {
+    case 'ArrowRight':
+      slideRight(gameMatrix);
+      break;
+    case 'ArrowLeft':
+      slideLeft(gameMatrix);
+      break;
+    case 'ArrowUp':
+      slideUp(gameMatrix);
+      break;
+    case 'ArrowDown':
+      slideDown(gameMatrix);
+      break;
+    default:
+      break;
   }
-
-  if (e.key === 'ArrowLeft') {
-    slideLeft(gameMatrix);
-  }
-
-  if (e.key === 'ArrowDown') {
-    slideDown(gameMatrix);
-  }
-
-  if (e.key === 'ArrowUp') {
-    slideUp(gameMatrix);
-  }
-
-  addNewNumber();
-  updateField();
-  // 3 check if further move is possible
-  // 4 if no - game over message
-
-  SCORE_NUMBER.innerText = `${score}`;
 });
 
-function updateField() {
+function runAfterMoveTasks() {
+  addNewNumberToMatrix();
+  // check game over
+  updateFieldAppearance();
+  SCORE_NUMBER.innerText = `${score}`;
+}
+
+function updateFieldAppearance() {
   for (let row = 0; row < gameMatrix.length; row++) {
     for (let col = 0; col < gameMatrix[row].length; col++) {
       const num = gameMatrix[row][col];
 
       FIELD_CELLS[row][col].innerText = num === 0 ? '' : `${num}`;
       FIELD_CELLS[row][col].className = 'field-cell';
-      // rewriting all classes each time
-      // ? refactor
 
       if (num !== 0) {
         FIELD_CELLS[row][col].classList.add(`field-cell--${num}`);
@@ -91,7 +88,7 @@ function updateField() {
   }
 }
 
-function addNewNumber() {
+function addNewNumberToMatrix() {
   const newRandomNum = getRandomIncluding(1, 10) === 10 ? 4 : 2;
   const emptyCells = [];
 
@@ -116,62 +113,65 @@ function addNewNumber() {
 /* #endregion */
 
 /* #region Slide functions */
-function slideRight(matrix) {
+function mergeRow(row) {
+  let mergedRow = row.filter((num) => num !== 0);
+
+  for (let cell = 0; cell < mergedRow.length; cell++) {
+    if (mergedRow[cell] === mergedRow[cell + 1]) {
+      mergedRow[cell] = mergedRow[cell] * 2;
+      mergedRow[cell + 1] = 0;
+      score += mergedRow[cell];
+      checkWin(mergedRow[cell]);
+    }
+  }
+  mergedRow = mergedRow.filter((num) => num !== 0);
+
+  return mergedRow;
+}
+
+function slideLeft(matrix, runTasks = true) {
+  const originalMatrix = matrix.map(row => [...row]);
+
   for (let r = 0; r < matrix.length; r++) {
-    const rowWithoutZero = removeZeroes(matrix[r]);
+    const currentRow = matrix[r];
 
-    if (rowWithoutZero.length > 0) {
-      for (let c = rowWithoutZero.length; c >= 0; c--) {
-        const currentElement = rowWithoutZero[c];
-        const nextElement = rowWithoutZero[c - 1];
-
-        if (currentElement === nextElement) {
-          rowWithoutZero[c] = currentElement + nextElement;
-          checkWin(rowWithoutZero[c]);
-          rowWithoutZero[c - 1] = 0;
-          score += currentElement;
-        }
-      }
-
-      const rowWithoutZeroAfterMove = removeZeroes(rowWithoutZero);
-      const zeroesToAdd = matrix[r].length
-      - rowWithoutZeroAfterMove.length;
-      const resultRow = Array(zeroesToAdd)
-        .fill(0)
-        .concat(rowWithoutZeroAfterMove);
+    if (currentRow.length > 0) {
+      const mergedRow = mergeRow(currentRow);
+      const zeroesToAdd = matrix[r].length - mergedRow.length;
+      const resultRow = mergedRow.concat(Array(zeroesToAdd).fill(0));
 
       matrix[r] = resultRow;
     }
   }
 
+  if (runTasks && !areMatricesEqual(originalMatrix, matrix)) {
+    runAfterMoveTasks();
+  }
+
   return matrix;
 }
 
-function slideLeft(matrix) {
+function slideRight(matrix, runTasks = true) {
+  const originalMatrix = matrix.map(row => [...row]);
+
   for (let r = 0; r < matrix.length; r++) {
-    const rowWithoutZero = removeZeroes(matrix[r]);
+    const currentRow = matrix[r];
 
-    if (rowWithoutZero.length > 0) {
-      for (let c = 0; c < rowWithoutZero.length; c++) {
-        const currentElement = rowWithoutZero[c];
-        const nextElement = rowWithoutZero[c + 1];
-
-        if (currentElement === nextElement) {
-          rowWithoutZero[c] = currentElement + nextElement;
-          checkWin(rowWithoutZero[c]);
-          rowWithoutZero[c + 1] = 0;
-          score += currentElement;
-        }
-      }
-
-      const rowWithoutZeroAfterMove = removeZeroes(rowWithoutZero);
-      const zeroesToAdd = matrix[r].length
-      - rowWithoutZeroAfterMove.length;
-      const resultRow = rowWithoutZeroAfterMove
-        .concat(Array(zeroesToAdd).fill(0));
+    if (currentRow.length > 0) {
+      const reversedRow = currentRow.reverse();
+      const mergedReversedRow = mergeRow(reversedRow);
+      const mergedRevercedBackRow = mergedReversedRow.reverse();
+      const zeroesToAdd = matrix[r].length - mergedRevercedBackRow.length;
+      const resultRow = Array(zeroesToAdd)
+        .fill(0)
+        .concat(mergedRevercedBackRow);
 
       matrix[r] = resultRow;
     }
+  }
+
+  if (runTasks && !areMatricesEqual(originalMatrix, matrix)) {
+    runAfterMoveTasks();
   }
 
   return matrix;
@@ -179,22 +179,26 @@ function slideLeft(matrix) {
 
 function slideDown(matrix) {
   const matrixRotated = rotateMatrix(matrix);
-  const matrixRotatedSlidedLeft = slideLeft(matrixRotated);
+  const matrixRotatedSlidedLeft = slideLeft(matrixRotated, false);
   const matrixRotatedBack = rotateMatrixBack(matrixRotatedSlidedLeft);
 
   gameMatrix = matrixRotatedBack;
 
-  return matrixRotatedBack;
+  if (!areMatricesEqual(matrix, gameMatrix)) {
+    runAfterMoveTasks();
+  }
 }
 
 function slideUp(matrix) {
   const matrixRotated = rotateMatrix(matrix);
-  const matrixRotatedSlidedRight = slideRight(matrixRotated);
+  const matrixRotatedSlidedRight = slideRight(matrixRotated, false);
   const matrixRotatedBack = rotateMatrixBack(matrixRotatedSlidedRight);
 
   gameMatrix = matrixRotatedBack;
 
-  return matrixRotatedBack;
+  if (!areMatricesEqual(matrix, gameMatrix)) {
+    runAfterMoveTasks();
+  }
 }
 /* #endregion */
 
@@ -219,12 +223,8 @@ function isGameOver(rowsOfCells) {
   // rerurn true if possible
 }
 
-function removeZeroes(row) {
-  return row.filter(cell => cell !== 0);
-}
-
 function checkWin(num) {
-  if (num === winNumber) {
+  if (num === WINNING_NUMBER) {
     MESSAGE_WIN.classList.remove('hidden');
   }
 }
@@ -258,11 +258,16 @@ function rotateMatrixBack(matrix) {
 
   return matrixRotated;
 }
-/* #endregion */
 
-// Step4: add messages to functions
-// ===================================
-// number = 2048 - winner message
-//
-// Add animations to CSS
-//
+function areMatricesEqual(oldMatrix, newMatrix) {
+  for (let r = 0; r < oldMatrix.length; r++) {
+    for (let c = 0; c < oldMatrix[r].length; c++) {
+      if (oldMatrix[r][c] !== newMatrix[r][c]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+/* #endregion */
