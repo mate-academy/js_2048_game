@@ -12,14 +12,14 @@
         <h1>2048</h1>
         <div class="controls">
           <p class="info">
-            Score: <span class="game-score">0</span>
+            Score: <span class="game-score" id="gameScore">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button class="button start" id="buttonStart">Start</button>
         </div>
       </div>
 
       <table class="game-field">
-        <tbody>
+        <tbody id="gameArea">
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
@@ -34,14 +34,12 @@
             <td class="field-cell"></td>
           </tr>
 
-
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
-
 
           <tr class="field-row">
             <td class="field-cell"></td>
@@ -53,11 +51,12 @@
       </table>
 
       <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+        <p class="message message-lose hidden" id="loseMessage">You lose! Restart the game?</p>
+        <p class="message message-win hidden" id="winMessage">Winner! Congrats! You did it!</p>
+        <p class="message message-start" id="startMessage">Press "Start" to begin game. Good luck!</p>
       </div>
     </div>
+    <span id="test"></span>
     <script type="text/javascript" src="scripts/main.js"></script>
   </body>
 </html>
