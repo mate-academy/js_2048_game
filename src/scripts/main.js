@@ -15,7 +15,7 @@ const moveLeft = 'ArrowLeft';
 const moveRight = 'ArrowRight';
 const moveUp = 'ArrowUp';
 const moveDown = 'ArrowDown';
-const winnerNumber = '2048';
+const winnerNumber = document.querySelector('h1').textContent;
 let movePossible = false;
 let adjacentCells = false;
 
@@ -32,7 +32,7 @@ function generateRandom() {
     ? numberFour : numberTwo;
 
   randomCell.textContent = randomNum;
-  randomCell.classList.add('field-cell--' + randomNum);
+  randomCell.classList.add(`field-cell--${randomNum}`);
 }
 
 startButton.addEventListener('click', () => {
@@ -173,29 +173,24 @@ function slideRight() {
 function slideUp() {
   movePossible = false;
 
-  for (
-    let columnIndex = 0;
-    columnIndex < gameRow[0].childElementCount;
-    columnIndex++
-  ) {
-    const columnCells = Array.from(gameRow).map(
-      row => row.children[columnIndex].textContent);
+  Array.from({ length: gameRow[0].childElementCount }).forEach(
+    (_, columnIndex) => {
+      const columnCells = Array.from(gameRow).map(
+        row => row.children[columnIndex].textContent);
 
-    const updatedArray = slide(columnCells);
+      const updatedArray = slide(columnCells);
 
-    for (let rowIndex = 0; rowIndex < gameRow.length; rowIndex++) {
-      const currentCellContent
-      = gameRow[rowIndex].children[columnIndex].textContent;
-      const updatedCellContent = updatedArray[rowIndex];
+      gameRow.forEach((row, rowIndex) => {
+        const currentCellContent = row.children[columnIndex].textContent;
+        const updatedCellContent = updatedArray[rowIndex];
 
-      if (currentCellContent !== updatedCellContent) {
-        movePossible = true;
-      }
+        if (currentCellContent !== updatedCellContent) {
+          movePossible = true;
+        }
 
-      gameRow[rowIndex].children[columnIndex].textContent
-        = updatedArray[rowIndex];
-    }
-  }
+        row.children[columnIndex].textContent = updatedCellContent;
+      });
+    });
 
   if (movePossible) {
     updateCells();
@@ -206,33 +201,28 @@ function slideUp() {
 function slideDown() {
   movePossible = false;
 
-  for (
-    let columnIndex = 0;
-    columnIndex < gameRow[0].childElementCount;
-    columnIndex++
-  ) {
-    const columnCells = Array.from(gameRow).map(
-      row => row.children[columnIndex].textContent);
+  Array.from({ length: gameRow[0].childElementCount }).forEach(
+    (_, columnIndex) => {
+      const columnCells = Array.from(gameRow).map(
+        row => row.children[columnIndex].textContent);
 
-    columnCells.reverse();
+      columnCells.reverse();
 
-    const updatedArray = slide(columnCells);
+      const updatedArray = slide(columnCells);
 
-    updatedArray.reverse();
+      updatedArray.reverse();
 
-    for (let rowIndex = 0; rowIndex < gameRow.length; rowIndex++) {
-      const currentCellContent
-        = gameRow[rowIndex].children[columnIndex].textContent;
-      const updatedCellContent = updatedArray[rowIndex];
+      gameRow.forEach((row, rowIndex) => {
+        const currentCellContent = row.children[columnIndex].textContent;
+        const updatedCellContent = updatedArray[rowIndex];
 
-      if (currentCellContent !== updatedCellContent) {
-        movePossible = true;
-      }
+        if (currentCellContent !== updatedCellContent) {
+          movePossible = true;
+        }
 
-      gameRow[rowIndex].children[columnIndex].textContent
-        = updatedArray[rowIndex];
-    }
-  }
+        row.children[columnIndex].textContent = updatedCellContent;
+      });
+    });
 
   if (movePossible) {
     updateCells();
