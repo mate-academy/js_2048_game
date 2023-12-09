@@ -401,12 +401,6 @@ export class Data {
       for (let row = 0; row < field.length; row++) {
         for (let column = 0; column < field[row].length; column++) {
           const HTML_EL = htmlField[row][column];
-          // eslint-disable-next-line no-shadow
-          let moveTo = moveCount[row][column];
-
-          if (direction === 'ArrowRight' || direction === 'ArrowUp') {
-            moveTo = -moveTo;
-          }
 
           while (HTML_EL.firstChild) {
             HTML_EL.removeChild(HTML_EL.lastChild);
@@ -426,21 +420,12 @@ export class Data {
             field-cell--inner-block
             field-cell--${field[row][column]}`;
             htmlField[row][column].appendChild(HTML_CELL);
-
-            //  merge animation
-
-            if (((direction === 'ArrowUp' || direction === 'ArrowDown')
-            && prevField[row + moveTo][column] * 2 === field[row][column])
-            || ((direction === 'ArrowLeft' || direction === 'ArrowRight')
-            && prevField[row][column + moveTo] * 2 === field[row][column])) {
-              HTML_CELL.classList.add('merged');
-            }
           }
           moveCount[row][column] = 0;
         }
       }
 
-      if (this.hasEmptySpace(field) && canMove) {
+      if (this.hasEmptySpace(field) && canMove && this.madeMove) {
         const HTML_CELL = document.createElement('div');
 
         setTimeout(() => {
