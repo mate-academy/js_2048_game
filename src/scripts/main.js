@@ -1,7 +1,5 @@
 'use strict';
 
-'use strict';
-
 const getGameField = document.querySelector('.game-field');
 const getButton = document.querySelector('.button');
 const getScore = document.querySelector('.game-score');
@@ -134,7 +132,7 @@ function moveUp() {
     }
 
     transposedField[index] = newRow.concat(
-      Array(GRID_SIZE - newRow.length).fill(0)
+      Array(GRID_SIZE - newRow.length).fill(0),
     );
   });
 
