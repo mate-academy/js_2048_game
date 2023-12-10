@@ -2,7 +2,6 @@
 
 /* #region Variables */
 let gameMatrix;
-let isMovePossible;
 let score;
 const MATRIX_COLUMNS = 4;
 const MATRIX_ROWS = 4;
@@ -30,7 +29,6 @@ function startGame() {
   ];
 
   score = 0;
-  isMovePossible = true;
   updateFieldAppearance();
   SCORE_NUMBER.innerText = `${score}`;
   START_BUTTON.classList.add('restart');
@@ -50,13 +48,18 @@ function startGame() {
 
 document.addEventListener('keyup', (e) => {
   MESSAGE_AFTER_START.classList.add('hidden');
+  makeMove(e.key);
+});
 
-  switch (e.key) {
-    case 'ArrowRight':
-      slideRight(gameMatrix);
-      break;
+function makeMove(direction) {
+  const originalMatrix = gameMatrix.map(row => [...row]);
+
+  switch (direction) {
     case 'ArrowLeft':
       slideLeft(gameMatrix);
+      break;
+    case 'ArrowRight':
+      slideRight(gameMatrix);
       break;
     case 'ArrowUp':
       slideUp(gameMatrix);
@@ -67,13 +70,17 @@ document.addEventListener('keyup', (e) => {
     default:
       break;
   }
-});
+
+  if (!areMatricesEqual(originalMatrix, gameMatrix)) {
+    runAfterMoveTasks();
+  }
+}
 
 function runAfterMoveTasks() {
   addNewNumberToMatrix();
-  // check game over
   updateFieldAppearance();
   SCORE_NUMBER.innerText = `${score}`;
+  isGameOver();
 }
 
 function updateFieldAppearance() {
@@ -111,7 +118,7 @@ function addNewNumberToMatrix() {
 
   gameMatrix[randomEmptyCell.row][randomEmptyCell.col] = newRandomNum;
 
-  isGameOver(gameMatrix);
+  // isGameOver(gameMatrix);
 }
 /* #endregion */
 
@@ -132,9 +139,7 @@ function mergeRow(row) {
   return mergedRow;
 }
 
-function slideLeft(matrix, runTasks = true) {
-  const originalMatrix = matrix.map(row => [...row]);
-
+function slideLeft(matrix) {
   for (let r = 0; r < matrix.length; r++) {
     const currentRow = matrix[r];
 
@@ -147,16 +152,10 @@ function slideLeft(matrix, runTasks = true) {
     }
   }
 
-  if (runTasks && !areMatricesEqual(originalMatrix, matrix)) {
-    runAfterMoveTasks();
-  }
-
   return matrix;
 }
 
-function slideRight(matrix, runTasks = true) {
-  const originalMatrix = matrix.map(row => [...row]);
-
+function slideRight(matrix) {
   for (let r = 0; r < matrix.length; r++) {
     const currentRow = matrix[r];
 
@@ -173,35 +172,23 @@ function slideRight(matrix, runTasks = true) {
     }
   }
 
-  if (runTasks && !areMatricesEqual(originalMatrix, matrix)) {
-    runAfterMoveTasks();
-  }
-
   return matrix;
 }
 
 function slideDown(matrix) {
   const matrixRotated = rotateMatrix(matrix);
-  const matrixRotatedSlidedLeft = slideLeft(matrixRotated, false);
+  const matrixRotatedSlidedLeft = slideLeft(matrixRotated);
   const matrixRotatedBack = rotateMatrixBack(matrixRotatedSlidedLeft);
 
   gameMatrix = matrixRotatedBack;
-
-  if (!areMatricesEqual(matrix, gameMatrix)) {
-    runAfterMoveTasks();
-  }
 }
 
 function slideUp(matrix) {
   const matrixRotated = rotateMatrix(matrix);
-  const matrixRotatedSlidedRight = slideRight(matrixRotated, false);
+  const matrixRotatedSlidedRight = slideRight(matrixRotated);
   const matrixRotatedBack = rotateMatrixBack(matrixRotatedSlidedRight);
 
   gameMatrix = matrixRotatedBack;
-
-  if (!areMatricesEqual(matrix, gameMatrix)) {
-    runAfterMoveTasks();
-  }
 }
 /* #endregion */
 
@@ -210,20 +197,38 @@ function getRandomIncluding(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function isGameOver(rowsOfCells) {
-  const hasEmptyCells = rowsOfCells
+function isGameOver() {
+  const hasEmptyCells = gameMatrix
     .some(row => row
       .some(cell => cell === 0));
 
-  if (hasEmptyCells) {
+  if (hasEmptyCells || isMovePossible()) {
     return false;
   }
 
-  if (!isMovePossible) {
-    MESSAGE_LOSE.classList.remove('hidden');
+  MESSAGE_LOSE.classList.remove('hidden');
+
+  return true;
+}
+
+function isMovePossible() {
+  for (let r = 0; r < gameMatrix.length; r++) {
+    for (let c = 0; c < gameMatrix[r].length - 1; c++) {
+      if (gameMatrix[r][c] === gameMatrix[r][c + 1]) {
+        return true;
+      }
+    }
   }
-  // add checking possible moves
-  // rerurn true if possible
+
+  for (let r = 0; r < gameMatrix.length - 1; r++) {
+    for (let c = 0; c < gameMatrix[r].length; c++) {
+      if (gameMatrix[r][c] === gameMatrix[r + 1][c]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 function checkWin(num) {
