@@ -242,8 +242,28 @@ function checkWinGame() {
   }
 }
 
+function checkAvailableMoves(boardForCheck) {
+  for (let row = 0; row < boardForCheck.length; row++) {
+    for (let col = 0; col < boardForCheck[row].length - 1; col++) {
+      if (boardForCheck[row][col] === boardForCheck[row][col + 1]) {
+        return true;
+      }
+    }
+  }
+
+  for (let col = 0; col < boardForCheck[0].length; col++) {
+    for (let row = 0; row < boardForCheck.length - 1; row++) {
+      if (boardForCheck[row][col] === boardForCheck[row + 1][col]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 function checkEndGame() {
-  if (!isEmptyField()) {
+  if (!isEmptyField() && !checkAvailableMoves(board)) {
     getMessageLose.classList.remove('hidden');
 
     return true;
