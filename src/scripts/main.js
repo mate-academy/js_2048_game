@@ -77,8 +77,10 @@ class Game {
             && (this.field[newRow - 1][col] === 0
               || this.field[newRow - 1][col] === this.field[newRow][col])) {
             if (this.field[newRow - 1][col] === this.field[newRow][col]) {
-              this.field[newRow - 1][col] *= 2;
-              this.field[newRow][col] = 0;
+              if (this.field[newRow - 1][col] !== 0) {
+                this.field[newRow - 1][col] *= 2;
+                this.field[newRow][col] = 0;
+              }
             } else if (this.field[newRow - 1][col] === 0) {
               this.field[newRow - 1][col] = this.field[newRow][col];
               this.field[newRow][col] = 0;
@@ -101,8 +103,10 @@ class Game {
             && (this.field[newRow + 1][col] === 0
               || this.field[newRow + 1][col] === this.field[newRow][col])) {
             if (this.field[newRow + 1][col] === this.field[newRow][col]) {
-              this.field[newRow + 1][col] *= 2;
-              this.field[newRow][col] = 0;
+              if (this.field[newRow + 1][col] !== 0) {
+                this.field[newRow + 1][col] *= 2;
+                this.field[newRow][col] = 0;
+              }
             } else if (this.field[newRow + 1][col] === 0) {
               this.field[newRow + 1][col] = this.field[newRow][col];
               this.field[newRow][col] = 0;
@@ -125,8 +129,10 @@ class Game {
             && (this.field[row][newCol - 1] === 0
               || this.field[row][newCol - 1] === this.field[row][newCol])) {
             if (this.field[row][newCol - 1] === this.field[row][newCol]) {
-              this.field[row][newCol - 1] *= 2;
-              this.field[row][newCol] = 0;
+              if (this.field[row][newCol - 1] !== 0) {
+                this.field[row][newCol - 1] *= 2;
+                this.field[row][newCol] = 0;
+              }
             } else if (this.field[row][newCol - 1] === 0) {
               this.field[row][newCol - 1] = this.field[row][newCol];
               this.field[row][newCol] = 0;
@@ -149,8 +155,10 @@ class Game {
             && (this.field[row][newCol + 1] === 0
               || this.field[row][newCol + 1] === this.field[row][newCol])) {
             if (this.field[row][newCol + 1] === this.field[row][newCol]) {
-              this.field[row][newCol + 1] *= 2;
-              this.field[row][newCol] = 0;
+              if (this.field[row][newCol + 1] !== 0) {
+                this.field[row][newCol + 1] *= 2;
+                this.field[row][newCol] = 0;
+              }
             } else if (this.field[row][newCol + 1] === 0) {
               this.field[row][newCol + 1] = this.field[row][newCol];
               this.field[row][newCol] = 0;
