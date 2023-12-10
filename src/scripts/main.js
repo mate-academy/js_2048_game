@@ -14,6 +14,23 @@ const WIN_NUM = 2048;
 let score = 0;
 let board = [];
 
+//Initialize Game
+function initializeGame() {
+  resetGameBoard();
+  setRandomCell();
+  setRandomCell();
+  updateScore();
+}
+
+function resetGameBoard() {
+  board = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0));
+  renderCell();
+}
+
+function updateScore() {
+  getScore.textContent = INITIAL_SCORE;
+}
+
 // Set random cells
 function isEmptyField() {
   return board.some((row) => row.some((cell) => cell === 0));
@@ -56,18 +73,12 @@ getButton.addEventListener('click', () => {
   getMessageLose.classList.add('hidden');
   getMessageStart.classList.add('hidden');
 
-  board = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0));
-
-  getScore.textContent = INITIAL_SCORE;
-
-  setRandomCell();
-  setRandomCell();
+  initializeGame();
 });
 
-window.addEventListener('keydown', moveNumbers);
+document.addEventListener('keydown', moveNumbers);
 
 // move numbers and score updating
-
 function moveNumbers(e) {
   if (checkEndGame()) {
     return;
@@ -132,7 +143,7 @@ function moveUp() {
     }
 
     transposedField[index] = newRow.concat(
-      Array(GRID_SIZE - newRow.length).fill(0),
+      Array(GRID_SIZE - newRow.length).fill(0)
     );
   });
 
