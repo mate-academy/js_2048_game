@@ -14,7 +14,7 @@ const WIN_NUM = 2048;
 let score = 0;
 let board = [];
 
-//Initialize Game
+// Initialize Game
 function initializeGame() {
   resetGameBoard();
   setRandomCell();
@@ -143,7 +143,7 @@ function moveUp() {
     }
 
     transposedField[index] = newRow.concat(
-      Array(GRID_SIZE - newRow.length).fill(0)
+      Array(GRID_SIZE - newRow.length).fill(0),
     );
   });
 
