@@ -6,19 +6,23 @@ let score;
 const MATRIX_COLUMNS = 4;
 const MATRIX_ROWS = 4;
 const WINNING_NUMBER = 2048;
-const FIELD_ROWS = document.querySelectorAll('.field-row');
-const FIELD_CELLS = Array.from(FIELD_ROWS)
+const fieldRows = document.querySelectorAll('.field-row');
+const fieldCells = Array.from(fieldRows)
   .map(row => row.querySelectorAll('.field-cell'));
-const MESSAGES = document.querySelectorAll('.message');
-const MESSAGE_AFTER_START = document.querySelector('.message-afterstart');
-const MESSAGE_LOSE = document.querySelector('.message-lose');
-const MESSAGE_WIN = document.querySelector('.message-win');
-const START_BUTTON = document.querySelector('.button');
-const SCORE_NUMBER = document.querySelector('.game-score');
+const messages = document.querySelectorAll('.message');
+const messageAfterStart = document.querySelector('.message-afterstart');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
+const startButton = document.querySelector('.button');
+const scoreNumberText = document.querySelector('.game-score');
+const directionLeft = 'ArrowLeft';
+const directionRight = 'ArrowRight';
+const directionDown = 'ArrowDown';
+const directionUp = 'ArrowUp';
 /* #endregion */
 
 /* #region Main */
-START_BUTTON.addEventListener('click', startGame);
+startButton.addEventListener('click', startGame);
 
 function startGame() {
   gameMatrix = [
@@ -30,16 +34,16 @@ function startGame() {
 
   score = 0;
   updateFieldAppearance();
-  SCORE_NUMBER.innerText = `${score}`;
-  START_BUTTON.classList.add('restart');
-  START_BUTTON.innerText = 'Restart';
+  scoreNumberText.innerText = `${score}`;
+  startButton.classList.add('restart');
+  startButton.innerText = 'Restart';
 
-  MESSAGES.forEach(message => {
+  messages.forEach(message => {
     if (message.className !== 'hidden') {
       message.classList.add('hidden');
     }
   });
-  MESSAGE_AFTER_START.classList.remove('hidden');
+  messageAfterStart.classList.remove('hidden');
 
   addNewNumberToMatrix();
   addNewNumberToMatrix();
@@ -47,7 +51,7 @@ function startGame() {
 }
 
 document.addEventListener('keyup', (e) => {
-  MESSAGE_AFTER_START.classList.add('hidden');
+  messageAfterStart.classList.add('hidden');
   makeMove(e.key);
 });
 
@@ -55,16 +59,16 @@ function makeMove(direction) {
   const originalMatrix = gameMatrix.map(row => [...row]);
 
   switch (direction) {
-    case 'ArrowLeft':
+    case directionLeft:
       slideLeft(gameMatrix);
       break;
-    case 'ArrowRight':
+    case directionRight:
       slideRight(gameMatrix);
       break;
-    case 'ArrowUp':
+    case directionUp:
       slideUp(gameMatrix);
       break;
-    case 'ArrowDown':
+    case directionDown:
       slideDown(gameMatrix);
       break;
     default:
@@ -79,7 +83,7 @@ function makeMove(direction) {
 function runAfterMoveTasks() {
   addNewNumberToMatrix();
   updateFieldAppearance();
-  SCORE_NUMBER.innerText = `${score}`;
+  scoreNumberText.innerText = `${score}`;
   isGameOver();
 }
 
@@ -88,11 +92,11 @@ function updateFieldAppearance() {
     for (let col = 0; col < gameMatrix[row].length; col++) {
       const num = gameMatrix[row][col];
 
-      FIELD_CELLS[row][col].innerText = num === 0 ? '' : `${num}`;
-      FIELD_CELLS[row][col].className = 'field-cell';
+      fieldCells[row][col].innerText = num === 0 ? '' : `${num}`;
+      fieldCells[row][col].className = 'field-cell';
 
       if (num !== 0) {
-        FIELD_CELLS[row][col].classList.add(`field-cell--${num}`);
+        fieldCells[row][col].classList.add(`field-cell--${num}`);
       }
     }
   }
@@ -143,7 +147,7 @@ function slideLeft(matrix) {
   for (let r = 0; r < matrix.length; r++) {
     const currentRow = matrix[r];
 
-    if (currentRow.length > 0) {
+    if (currentRow.length) {
       const mergedRow = mergeRow(currentRow);
       const zeroesToAdd = matrix[r].length - mergedRow.length;
       const resultRow = mergedRow.concat(Array(zeroesToAdd).fill(0));
@@ -159,7 +163,7 @@ function slideRight(matrix) {
   for (let r = 0; r < matrix.length; r++) {
     const currentRow = matrix[r];
 
-    if (currentRow.length > 0) {
+    if (currentRow.length) {
       const reversedRow = currentRow.reverse();
       const mergedReversedRow = mergeRow(reversedRow);
       const mergedRevercedBackRow = mergedReversedRow.reverse();
@@ -206,7 +210,7 @@ function isGameOver() {
     return false;
   }
 
-  MESSAGE_LOSE.classList.remove('hidden');
+  messageLose.classList.remove('hidden');
 
   return true;
 }
@@ -233,7 +237,7 @@ function isMovePossible() {
 
 function checkWin(num) {
   if (num === WINNING_NUMBER) {
-    MESSAGE_WIN.classList.remove('hidden');
+    messageWin.classList.remove('hidden');
   }
 }
 
