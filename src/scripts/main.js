@@ -143,7 +143,7 @@ function moveUp() {
     }
 
     transposedField[index] = newRow.concat(
-      Array(GRID_SIZE - newRow.length).fill(0),
+      Array(GRID_SIZE - newRow.length).fill(0)
     );
   });
 
