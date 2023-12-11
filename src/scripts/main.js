@@ -5,6 +5,7 @@ class Data {
     this.HTML_CELLS = DOM_CELLS;
     this.HTML_MATRIX = [];
     this.madeMove = false;
+    this.isGameStarted = false;
     this.winStatus = false;
     this.score = 0;
   }
@@ -505,9 +506,6 @@ Game.moveList = Game.makeMatrix();
 Game.HTML_MATRIX = Game.makeMatrix(HTML_CELLS);
 
 function eventListener(keyEvent) {
-  document.querySelector('.button').classList = 'button restart';
-  document.querySelector('.button').innerText = 'Restart';
-
   const PREV_FIELD = Game.FIELD.map(elem => [...elem]);
 
   Game.madeMove = true;
@@ -547,15 +545,39 @@ function eventListener(keyEvent) {
 document.body.querySelector('.button').addEventListener('click', () => {
   document.querySelector('.message-start').classList.add('hidden');
 
-  if (Game.madeMove) {
-    location.reload();
+  if (Game.isGameStarted) {
+    Game.FIELD.forEach((elem, row) => {
+      elem.forEach((secEl, column) => {
+        Game.FIELD[row][column] = 0;
+      });
+    });
+
+    HTML_CELLS.forEach(cell => {
+      cell.innerHTML = '';
+
+      while (cell.firstChild) {
+        cell.removeChild(cell.firstChild);
+      }
+    });
+
+    document.body.querySelector('button').classList = 'button start';
+    document.body.querySelector('button').innerHTML = 'Start';
+    document.body.querySelector('.game-score').innerHTML = '0';
+    Game.madeMove = false;
+    Game.score = 0;
   }
 
-  setTimeout(() => {
-    Game.randomCell(Game.FIELD);
-    Game.randomCell(Game.FIELD);
-    Game.visualize(Game.FIELD, Game.HTML_MATRIX, Game.moveList);
-  }, 50);
+  if (!Game.madeMove) {
+    setTimeout(() => {
+      Game.randomCell(Game.FIELD);
+      Game.randomCell(Game.FIELD);
+      Game.visualize(Game.FIELD, Game.HTML_MATRIX, Game.moveList);
+    }, 50);
+
+    document.querySelector('.button').classList = 'button restart';
+    document.querySelector('.button').innerText = 'Restart';
+    Game.isGameStarted = true;
+  }
 
   document.addEventListener('keydown', eventListener);
 });
