@@ -542,13 +542,6 @@ function eventListener(keyEvent) {
   }
 };
 
-Game.FIELD = [
-  [4, 16, 32, 64],
-  [16, 32, 64, 4],
-  [2, 4, 2, 0],
-  [4, 8, 64, 0],
-];
-
 document.body.querySelector('.button').addEventListener('click', () => {
   document.querySelector('.message-start').classList.add('hidden');
 
