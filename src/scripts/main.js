@@ -67,108 +67,62 @@ class Game {
     gameField.innerHTML = newFieldRows.join('');
   }
 
-  goUp() {
-    for (let col = 0; col < 4; col++) {
-      for (let row = 1; row < 4; row++) {
-        if (this.field[row][col] !== 0) {
-          let newRow = row;
+  move(direction) {
+    const isVertical = direction === 'up' || direction === 'down';
+    const step = direction === 'up' || direction === 'left' ? -1 : 1;
 
-          while (newRow > 0
-            && (this.field[newRow - 1][col] === 0
-              || this.field[newRow - 1][col] === this.field[newRow][col])) {
-            if (this.field[newRow - 1][col] === this.field[newRow][col]) {
-              if (this.field[newRow - 1][col] !== 0) {
-                this.field[newRow - 1][col] *= 2;
-                this.field[newRow][col] = 0;
+    for (let i = isVertical ? 1 : 0; isVertical
+      ? i < 4 : i < 3; isVertical ? i++ : i++) {
+      for (let j = isVertical ? 0 : 1; isVertical
+        ? j < 4 : j < 3; isVertical ? j++ : j++) {
+        const row = isVertical ? i : j;
+        const col = isVertical ? j : i;
+
+        if (this.field[row][col] !== 0) {
+          let newRowOrCol = isVertical ? row + step : row;
+          let newColOrRow = isVertical ? col : col + step;
+
+          while (
+            newRowOrCol >= 0
+            && newRowOrCol < 4
+            && newColOrRow >= 0
+            && newColOrRow < 4
+            && (this.field[newRowOrCol][newColOrRow] === 0
+              || this.field[newRowOrCol][newColOrRow] === this.field[row][col])
+          ) {
+            if (this.field[newRowOrCol][newColOrRow] === this.field[row][col]) {
+              if (this.field[newRowOrCol][newColOrRow] !== 0) {
+                this.field[newRowOrCol][newColOrRow] *= 2;
+                this.field[row][col] = 0;
               }
-            } else if (this.field[newRow - 1][col] === 0) {
-              this.field[newRow - 1][col] = this.field[newRow][col];
-              this.field[newRow][col] = 0;
+            } else if (this.field[newRowOrCol][newColOrRow] === 0) {
+              this.field[newRowOrCol][newColOrRow] = this.field[row][col];
+              this.field[row][col] = 0;
             }
-            newRow--;
+            newRowOrCol += isVertical ? step : 0;
+            newColOrRow += isVertical ? 0 : step;
           }
         }
       }
     }
+
     this.putRandomNumber();
+  }
+
+  goUp() {
+    this.move('up');
   }
 
   goDown() {
-    for (let col = 0; col < 4; col++) {
-      for (let row = 2; row >= 0; row--) {
-        if (this.field[row][col] !== 0) {
-          let newRow = row;
-
-          while (newRow < 3
-            && (this.field[newRow + 1][col] === 0
-              || this.field[newRow + 1][col] === this.field[newRow][col])) {
-            if (this.field[newRow + 1][col] === this.field[newRow][col]) {
-              if (this.field[newRow + 1][col] !== 0) {
-                this.field[newRow + 1][col] *= 2;
-                this.field[newRow][col] = 0;
-              }
-            } else if (this.field[newRow + 1][col] === 0) {
-              this.field[newRow + 1][col] = this.field[newRow][col];
-              this.field[newRow][col] = 0;
-            }
-            newRow++;
-          }
-        }
-      }
-    }
-    this.putRandomNumber();
+    this.move('down');
   }
 
   goLeft() {
-    for (let row = 0; row < 4; row++) {
-      for (let col = 1; col < 4; col++) {
-        if (this.field[row][col] !== 0) {
-          let newCol = col;
-
-          while (newCol > 0
-            && (this.field[row][newCol - 1] === 0
-              || this.field[row][newCol - 1] === this.field[row][newCol])) {
-            if (this.field[row][newCol - 1] === this.field[row][newCol]) {
-              if (this.field[row][newCol - 1] !== 0) {
-                this.field[row][newCol - 1] *= 2;
-                this.field[row][newCol] = 0;
-              }
-            } else if (this.field[row][newCol - 1] === 0) {
-              this.field[row][newCol - 1] = this.field[row][newCol];
-              this.field[row][newCol] = 0;
-            }
-            newCol--;
-          }
-        }
-      }
-    }
-    this.putRandomNumber();
+    this.move('left');
   }
 
   goRight() {
-    for (let row = 0; row < 4; row++) {
-      for (let col = 2; col >= 0; col--) {
-        if (this.field[row][col] !== 0) {
-          let newCol = col;
-
-          while (newCol < 3
-            && (this.field[row][newCol + 1] === 0
-              || this.field[row][newCol + 1] === this.field[row][newCol])) {
-            if (this.field[row][newCol + 1] === this.field[row][newCol]) {
-              if (this.field[row][newCol + 1] !== 0) {
-                this.field[row][newCol + 1] *= 2;
-                this.field[row][newCol] = 0;
-              }
-            } else if (this.field[row][newCol + 1] === 0) {
-              this.field[row][newCol + 1] = this.field[row][newCol];
-              this.field[row][newCol] = 0;
-            }
-            newCol++;
-          }
-        }
-      }
-    }
-    this.putRandomNumber();
+    this.move('right');
   }
 
   isGameOverMethod() {
