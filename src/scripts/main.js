@@ -542,6 +542,13 @@ function eventListener(keyEvent) {
   }
 };
 
+Game.FIELD = [
+  [4, 16, 32, 64],
+  [16, 32, 64, 4],
+  [2, 4, 2, 0],
+  [4, 8, 64, 0],
+]
+
 document.body.querySelector('.button').addEventListener('click', () => {
   document.querySelector('.message-start').classList.add('hidden');
 
@@ -563,6 +570,9 @@ document.body.querySelector('.button').addEventListener('click', () => {
     document.body.querySelector('button').classList = 'button start';
     document.body.querySelector('button').innerHTML = 'Start';
     document.body.querySelector('.game-score').innerHTML = '0';
+    document.body.querySelector('.game-field__game-over').style.display = 'none';
+    document.body.querySelector('.message-lose').classList.add('hidden');
+    document.body.querySelector('.message-start').classList.remove('hidden');
     Game.madeMove = false;
     Game.score = 0;
   }
