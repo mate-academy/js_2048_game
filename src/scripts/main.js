@@ -48,9 +48,28 @@ function buttonHandler() {
 }
 
 function addTile() {
-  const [y, x] = findEmptyCell();
+  newState = state.slice();
 
-  state[y][x] = randomNumber();
+  let changed = false;
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (state[i][j] !== newState[i][j]) {
+        changed = true;
+        break;
+      }
+    }
+
+    if (changed) {
+      break;
+    }
+  }
+
+  if (!changed) {
+    const [y, x] = findEmptyCell();
+
+    state[y][x] = randomNumber();
+  }
 }
 
 function findEmptyCell() {
