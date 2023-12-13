@@ -13,12 +13,13 @@
 const getX = id => id % 4;
 const getY = id => Math.floor(id / 4);
 
-let gameState = 'start';
+const score = document.querySelector('#game-score');
 const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
-const moveDone = false;
-const score = document.querySelector('#game-score');
+
+let moveDone = false;
+let gameState = 'start';
 
 const allTiles = [...(document.querySelectorAll('.field-cell'))]
   .map((cellNode, index) => {
@@ -38,8 +39,8 @@ function checkMoves() {
     return;
   }
 
-  let coodrTiles = allTiles.map((tile, ind) => {
-    let newObj = {
+  const coodrTiles = allTiles.map((tile, ind) => {
+    const newObj = {
       x: getX(tile.dataset.cellId),
       y: getY(tile.dataset.cellId),
       value: +tile.innerText,
@@ -50,7 +51,7 @@ function checkMoves() {
   });
 
   for (const cell of coodrTiles) {
-    let cellNeighbours = [
+    const cellNeighbours = [
       coodrTiles.find(sub => sub.x === (cell.x - 1)
         && (sub.y === cell.y)),
       coodrTiles.find(sub => sub.x === (cell.x + 1)
@@ -61,10 +62,12 @@ function checkMoves() {
         && (sub.x === cell.x)),
     ];
 
-    let cellNeighboursValues = cellNeighbours.filter(item => item !== undefined)
+    const cellNeighboursValues = cellNeighbours
+      .filter(item => item !== undefined)
       .map(tile => tile.value);
 
     if (cellNeighboursValues.includes(cell.value)) {
+      // neighbour cell has same value, move available
       return;
     }
   }
@@ -94,8 +97,8 @@ function Allign(chunk) {
   // [2.0.0.2] => [2.2] => [4] => [4.0.0.0]
   // [0.4.0.8] => [4.8] => [4.8.0.0]
   let values = chunk.map(cell => cell.innerText);
-  let initialValuesStr = values.join('+');
-  let nonZero = values.filter(val => val !== '');
+  const initialValuesStr = values.join('+');
+  const nonZero = values.filter(val => val !== '');
 
   if (nonZero.length !== 0) {
     values = values.filter(val => val !== '');
@@ -133,11 +136,11 @@ function Allign(chunk) {
 }
 
 function createNewTile() {
-  let EmptyTiles = allTiles.filter(cell => cell.innerText === '');
+  const EmptyTiles = allTiles.filter(cell => cell.innerText === '');
 
   if (EmptyTiles.length > 0) {
-    let randomIndex = Math.floor(EmptyTiles.length * Math.random());
-    let randomValue = Math.random() < 0.9 ? 2 : 4;
+    const randomIndex = Math.floor(EmptyTiles.length * Math.random());
+    const randomValue = Math.random() < 0.9 ? 2 : 4;
 
     EmptyTiles[randomIndex].innerText = randomValue;
     EmptyTiles[randomIndex].classList.add(`field-cell--${randomValue}`);
