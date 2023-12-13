@@ -1,5 +1,14 @@
 'use strict';
 
+const DIR = {
+  Left: 'ArrowLeft',
+  Right: 'ArrowRight',
+  Down: 'ArrowDown',
+  Up: 'ArrowUp',
+};
+
+const magicValue = 4;
+
 const button = document.querySelector('button');
 
 const messageStart = document.querySelector('.message-start');
@@ -52,8 +61,8 @@ function addTile() {
 
   let changed = false;
 
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
+  for (let i = 0; i < magicValue; i++) {
+    for (let j = 0; j < magicValue; j++) {
       if (state[i][j] !== newState[i][j]) {
         changed = true;
         break;
@@ -113,19 +122,19 @@ function move(e) {
   newState = state;
 
   switch (e.key) {
-    case 'ArrowLeft':
+    case DIR.Left:
       left();
       break;
 
-    case 'ArrowRight':
+    case DIR.Right:
       right();
       break;
 
-    case 'ArrowDown':
+    case DIR.Down:
       down();
       break;
 
-    case 'ArrowUp':
+    case DIR.Up:
       up();
       break;
 
@@ -133,8 +142,8 @@ function move(e) {
       return;
   }
 
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
+  for (let i = 0; i < magicValue; i++) {
+    for (let j = 0; j < magicValue; j++) {
       if (newState[i][j] !== state[i][j]) {
         state = newState;
         addTile();
@@ -222,7 +231,7 @@ function isPosibleToMove() {
 }
 
 function checkRows() {
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < magicValue; i++) {
     if (newState[i].some(cell => cell === 0)
       || newState[i].some((cell, j) => cell === newState[i][j + 1])) {
       return true;
@@ -233,7 +242,7 @@ function checkRows() {
 }
 
 function checkColumns() {
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < magicValue; i++) {
     if (newState[i].some((cell, j) => cell === newState[i][j + 1])) {
       return true;
     }
