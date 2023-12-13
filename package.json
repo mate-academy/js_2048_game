@@ -2,7 +2,6 @@
   "name": "gulp-boilerplate",
   "version": "1.0.0",
   "description": "Frontend boilerplate based on gulp",
-  "main": "index.js",
   "scripts": {
     "init": "mate-scripts init",
     "start": "mate-scripts start",
