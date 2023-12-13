@@ -4,14 +4,15 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: no-repeat center url("../images/background.jpg");
+  background-size: cover;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #d9e4e5;
   width: 75px;
   height: 75px;
   border-radius: 5px;
@@ -22,61 +23,73 @@ body {
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #c0cdcf;
+    color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #a4b1b3;
+    color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--8 {
-    background: #f2b179;
+    background: #8e9a9c;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--16 {
-    background: #f59563;
+    background: #b4ded3;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #96c9bb;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--64 {
-    background: #f65e3b;
+    background: #91b9b4;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--128 {
-    background: #edcf72;
+    background: #79a39d;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--256 {
-    background: #edcc61;
+    background: #609087;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--512 {
-    background: #edc850;
+    background: #4d6e6d;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #376159;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--2048 {
-    background: #edc22e;
+    background: #1f403b;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 }
 
 .game-field {
-  background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -91,7 +104,7 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background: #d79d5b;
   color: #f9f6f2;
   width: 75px;
   height: 75px;
@@ -102,6 +115,7 @@ h1 {
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  font-weight: bold;
 }
 
 .info {
@@ -138,31 +152,32 @@ h1 {
 }
 
 .start {
-  background: #1dae28;
+  background: #45b5b7;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: #257b7d;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #34606b;
 
   &:hover {
-    background: #f87474;
+    background: #2b464b;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #2c8a8b;
+  color: #f9f6f2;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+  font-weight: bold;
 }
 
 .hidden {
@@ -177,7 +192,7 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
+  background: #d79d5b;
   color: #f9f6f2;
 }
 
