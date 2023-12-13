@@ -1,20 +1,84 @@
 'use strict';
+// id to coords:
+// x = id % 4
+// y = Math.floor(id / 4)
+//
+// coords to id:
+// Y*4 + X = id
 
-// x = callId % 4
-// y = Math.floor(cellId / 4)
+/*
+  Missing movement animation
+*/
 
 const getX = id => id % 4;
 const getY = id => Math.floor(id / 4);
 
 let gameState = 'start';
-let startMessage = document.querySelector('.message-start');
+const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
+const moveDone = false;
+const score = document.querySelector('#game-score');
 
-let allTiles = [...(document.querySelectorAll('.field-cell'))]
+const allTiles = [...(document.querySelectorAll('.field-cell'))]
   .map((cellNode, index) => {
     cellNode.dataset.cellId = index;
 
     return cellNode;
   });
+
+function executeDefeat() {
+  // player lost the game
+  gameState = 'defeat';
+  loseMessage.classList.remove('hidden');
+}
+
+function checkMoves() {
+  if (allTiles.filter(cell => cell.innerText === '').length > 0) {
+    return;
+  }
+
+  let coodrTiles = allTiles.map((tile, ind) => {
+    let newObj = {
+      x: getX(tile.dataset.cellId),
+      y: getY(tile.dataset.cellId),
+      value: +tile.innerText,
+      index: ind,
+    };
+
+    return newObj;
+  });
+
+  for (const cell of coodrTiles) {
+    let cellNeighbours = [
+      coodrTiles.find(sub => sub.x === (cell.x - 1)
+        && (sub.y === cell.y)),
+      coodrTiles.find(sub => sub.x === (cell.x + 1)
+        && (sub.y === cell.y)),
+      coodrTiles.find(sub => sub.y === (cell.y - 1)
+        && (sub.x === cell.x)),
+      coodrTiles.find(sub => sub.y === (cell.y + 1)
+        && (sub.x === cell.x)),
+    ];
+
+    let cellNeighboursValues = cellNeighbours.filter(item => item !== undefined)
+      .map(tile => tile.value);
+
+    if (cellNeighboursValues.includes(cell.value)) {
+      return;
+    }
+  }
+
+  executeDefeat();
+}
+
+function checkFor2048() {
+  if (allTiles.map(cell => cell.innerText).some(value => value === '2048')) {
+    // player won the game
+    gameState = 'win';
+    winMessage.classList.remove('hidden');
+  }
+}
 
 function changeValue(tile, newValue) {
   tile.innerText = newValue;
@@ -30,8 +94,7 @@ function Allign(chunk) {
   // [2.0.0.2] => [2.2] => [4] => [4.0.0.0]
   // [0.4.0.8] => [4.8] => [4.8.0.0]
   let values = chunk.map(cell => cell.innerText);
-  console.log(values);
-
+  let initialValuesStr = values.join('+');
   let nonZero = values.filter(val => val !== '');
 
   if (nonZero.length !== 0) {
@@ -41,14 +104,18 @@ function Allign(chunk) {
       values = [nonZero[0], '', '', ''];
 
       for (let j = 0; j < 4; j++) {
-        // chunk[j].innerText = `${values[j]}`;
         changeValue(chunk[j], `${values[j]}`);
+      }
+
+      if (values.join('+') !== initialValuesStr) {
+        moveDone = true;
       }
     } else if (nonZero.length > 1) {
       for (let j = 1; j < nonZero.length; j++) {
         if (values[j - 1] === values[j]) {
           values[j - 1] *= 2;
           values[j] = '';
+          score.innerText = `${+score.innerText + (values[j - 1])}`;
         }
       }
 
@@ -56,6 +123,10 @@ function Allign(chunk) {
 
       for (let j = 0; j < 4; j++) {
         changeValue(chunk[j], `${values[j] || ''}`);
+      }
+
+      if (chunk.map(cell => cell.innerText).join('+') !== initialValuesStr) {
+        moveDone = true;
       }
     }
   }
@@ -142,7 +213,7 @@ window.addEventListener('click', (e) => {
       gameState = 'playing';
       e.target.innerText = 'Restart\n↺';
       startMessage.classList.add('hidden');
-    } else if (gameState === 'playing') {
+    } else {
       window.location.reload();
     }
   }
@@ -152,25 +223,27 @@ window.addEventListener('keydown', (e) => {
   if (gameState === 'playing') {
     switch (e.key) {
       case 'ArrowUp':
-        console.log('ArrowUp pressed');
         moveAll('Up');
         break;
       case 'ArrowDown':
-        console.log('ArrowDown pressed');
         moveAll('Down');
         break;
       case 'ArrowRight':
-        console.log('ArrowRight pressed');
         moveAll('Right');
         break;
       case 'ArrowLeft':
-        console.log('ArrowLeft pressed');
         moveAll('Left');
         break;
       default:
         break;
     }
 
-    createNewTile();
-  }
+    if (moveDone === true) {
+      createNewTile();
+      moveDone = false;
+    }
+  };
+
+  checkFor2048();
+  checkMoves();
 });
