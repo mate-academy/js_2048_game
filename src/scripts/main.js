@@ -214,11 +214,16 @@ window.addEventListener('click', (e) => {
       createNewTile();
       createNewTile();
       gameState = 'playing';
-      e.target.innerText = 'Restart\n↺';
+      e.target.innerText = 'Restart';
       e.target.classList.add('restart');
       startMessage.classList.add('hidden');
     } else {
-      window.location.reload();
+      score.innerText = '0';
+      allTiles.forEach(tile => changeValue(tile, ''));
+      moveDone = false;
+      gameState = 'playing';
+      createNewTile();
+      createNewTile();
     }
   }
 });
