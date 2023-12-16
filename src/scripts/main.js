@@ -1,292 +1,262 @@
 'use strict';
 
-const app = document.querySelector('.start');
-const cells = document.querySelectorAll('.field-cell');
+const start = document.querySelector('.start');
+const fieldHtml = document.querySelectorAll('.field-row');
+const gameScore = document.querySelector('.game-score');
 const startMessage = document.querySelector('.message-start');
-const loserMessage = document.querySelector('.message-lose');
-const gameScoreElement = document.querySelector('.game-score');
+const loseMessage = document.querySelector('.hidden');
+const winner = document.querySelector('.message-win');
 
-const gridSize = 4;
-let gameGrid = [];
+const size = 4;
 let score = 0;
 
-let click = false;
-
-function startGame() {
-  if (!click) {
-    gameGrid = Array.from({ length: gridSize * gridSize }, () => 0);
-    app.classList.remove('start');
-    app.classList.add('restart');
-    app.textContent = 'Restart';
-
-    addRandomNumber();
-    addRandomNumber();
-    updateGrid();
-  }
-  click = true;
-
-  if (click) {
-    score = 0;
-    startMessage.classList.add('hidden');
-  }
-}
+let gameField = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 
 function addRandomNumber() {
-  const availCell = gameGrid.reduce((acc, cell, index) => {
-    if (cell === 0) {
-      acc.push(index);
+  const row = Math.floor(Math.random() * size);
+  const cell = Math.floor(Math.random() * size);
+
+  (gameField[row][cell] === 0)
+    ? gameField[row][cell] = Math.random() < 0.1 ? 4 : 2
+    : addRandomNumber();
+}
+
+function addLayoutOnHtml() {
+  for (let row = 0; row < size; row++) {
+    for (let cell = 0; cell < size; cell++) {
+      if (gameField[row][cell] === 2048) {
+        winner.classList.remove('hidden');
+      }
+
+      const setFieldHtml = fieldHtml[row].children[cell];
+      const currentValue = setFieldHtml.textContent
+        = gameField[row][cell] || '';
+
+      setFieldHtml.className = currentValue
+        ? `field-cell field-cell--${currentValue}`
+        : 'field-cell';
+    }
+  }
+
+  gameScore.innerText = score;
+}
+
+function checkGameOver() {
+  let hasMoveRL = false;
+  let hasMoveUD = false;
+  let comeIn = false;
+
+  const result = gameField.every((row, index) =>
+    gameField.every((cell, ind) => row[ind] > 0));
+
+  if (result) {
+    comeIn = true;
+
+    for (let row = 0; row < 4; row++) {
+      const eachRow = gameField[row];
+
+      for (let cell = 0; cell < 4; cell++) {
+        if (eachRow[cell] === eachRow[cell + 1]) {
+          hasMoveRL = true;
+        }
+      }
     }
 
-    return acc;
-  }, []);
+    gameField = transpose(gameField);
 
-  if (availCell.length >= 1) {
-    const index = availCell[Math.floor(Math.random() * availCell.length)];
+    for (let row = 0; row < 4; row++) {
+      const eachRow = gameField[row];
 
-    gameGrid[index] = Math.random() < 0.9 ? 2 : 4;
-  }
-}
-
-function updateGrid() {
-  cells.forEach((cell, index) => {
-    cell.textContent = gameGrid[index] === 0 ? '' : gameGrid[index];
-    cell.className = `field-cell field-cell--${gameGrid[index]}`;
-  });
-
-  checkWin();
-}
-
-function moveLeft(gameGrid, testMode = false) {
-  let moved = false;
-
-  for (let i = 0; i < gridSize; i++) {
-    for (let j = 1; j < gridSize; j++) {
-      let currentIndex = i * gridSize + j;
-
-      while (currentIndex % gridSize !== 0) {
-        const prevIndex = currentIndex - 1;
-
-        if (gameGrid[currentIndex] !== 0) {
-          if (gameGrid[prevIndex] === 0) {
-            gameGrid[prevIndex] = gameGrid[currentIndex];
-            gameGrid[currentIndex] = 0;
-            currentIndex = prevIndex;
-            moved = true;
-          } else if (gameGrid[prevIndex] === gameGrid[currentIndex]) {
-            score += gameGrid[prevIndex];
-            gameGrid[prevIndex] *= 2;
-            gameGrid[currentIndex] = 0;
-            moved = true;
-            break;
-          } else {
-            break;
-          }
+      for (let cell = 0; cell < 4; cell++) {
+        if (eachRow[cell] === eachRow[cell + 1]) {
+          hasMoveUD = true;
         }
-        currentIndex = prevIndex;
       }
     }
   }
 
-  if (!testMode) {
-    if (moved) {
-      addRandomNumber();
-      updateGrid();
-      gameScoreElement.textContent = score;
-    }
-    checkAvailableMoves();
+  if (!hasMoveRL && !hasMoveUD && comeIn) {
+    loseMessage.classList.remove('hidden');
   }
-
-  return moved;
 }
 
-function moveRight(gameGrid, testMode = false) {
+function removeZeros(arr) {
+  return arr.filter(row => row !== 0);
+}
+
+function transpose(arr) {
+  return arr.map((_, index) => arr.map(row => row[index]));
+}
+
+function uniteCells(row) {
   let moved = false;
 
-  for (let i = 0; i < gridSize; i++) {
-    for (let j = gridSize - 2; j >= 0; j--) {
-      let currentIndex = i * gridSize + j;
-
-      while ((currentIndex + 1) % gridSize !== 0) {
-        const nextIndex = currentIndex + 1;
-
-        if (gameGrid[currentIndex] !== 0) {
-          if (gameGrid[nextIndex] === 0) {
-            gameGrid[nextIndex] = gameGrid[currentIndex];
-            gameGrid[currentIndex] = 0;
-            currentIndex = nextIndex;
-            moved = true;
-          } else if (gameGrid[nextIndex] === gameGrid[currentIndex]) {
-            score += gameGrid[nextIndex];
-            gameGrid[nextIndex] *= 2;
-
-            gameGrid[currentIndex] = 0;
-            moved = true;
-            break;
-          } else {
-            break;
-          }
-        }
-        currentIndex = nextIndex;
-      }
+  for (let i = 0; i < row.length - 1; i++) {
+    if (row[i] === row[i + 1]) {
+      row[i] *= 2;
+      row.splice(i + 1, 1);
+      score += row[i];
+      moved = true;
+    } else if (row[i] === 0 && row[i + 1] === 0) {
+      moved = false;
     }
   }
 
-  if (!testMode) {
-    if (moved) {
-      addRandomNumber();
-      updateGrid();
-      gameScoreElement.textContent = score;
-    }
-    checkAvailableMoves();
+  while (row.length < size) {
+    row.push(0);
   }
 
-  return moved;
+  return {
+    row,
+    moved,
+  };
 }
 
-function moveUp(gameGrid, testMode = false) {
-  let moved = false;
+function clickArrowLeft() {
+  let hasMoved = false;
 
-  for (let i = 1; i < gridSize; i++) {
-    for (let j = 0; j < gridSize; j++) {
-      let currentIndex = i * gridSize + j;
+  for (let row = 0; row < size; row++) {
+    const copyGameField = [...gameField[row]];
+    const removeZero = removeZeros(gameField[row]);
+    const move = uniteCells(removeZero);
 
-      while (currentIndex - gridSize >= 0) {
-        const upIndex = currentIndex - gridSize;
+    gameField[row] = removeZero;
 
-        if (gameGrid[currentIndex] !== 0) {
-          if (gameGrid[upIndex] === 0) {
-            gameGrid[upIndex] = gameGrid[currentIndex];
-            gameGrid[currentIndex] = 0;
-            currentIndex = upIndex;
-            moved = true;
-          } else if (gameGrid[upIndex] === gameGrid[currentIndex]) {
-            score += gameGrid[upIndex];
-            gameGrid[upIndex] *= 2;
-            gameGrid[currentIndex] = 0;
-            moved = true;
-            break;
-          } else {
-            break;
-          }
-        }
-        currentIndex = upIndex;
-      }
+    if (move.moved
+      || JSON.stringify(copyGameField) !== JSON.stringify(move.row)) {
+      hasMoved = true;
     }
   }
 
-  if (!testMode) {
-    if (moved) {
-      addRandomNumber();
-      updateGrid();
-      gameScoreElement.textContent = score;
-    }
-    checkAvailableMoves();
+  if (hasMoved) {
+    addRandomNumber();
+    checkGameOver();
   }
 
-  return moved;
+  addLayoutOnHtml();
 }
 
-function moveDown(gameGrid, testMode = false) {
-  let moved = false;
+function clickArrowRight() {
+  let hasMoved = false;
 
-  for (let i = gridSize - 2; i >= 0; i--) {
-    for (let j = 0; j < gridSize; j++) {
-      let currentIndex = i * gridSize + j;
+  for (let row = 0; row < size; row++) {
+    const copyOfGameField = [...gameField[row]];
+    const removeZero = removeZeros(gameField[row].reverse());
+    const newRow = uniteCells(removeZero);
 
-      while (currentIndex + gridSize <= gridSize * gridSize) {
-        const downIndex = currentIndex + gridSize;
+    gameField[row] = newRow.row.reverse();
 
-        if (gameGrid[currentIndex] !== 0) {
-          if (gameGrid[downIndex] === 0) {
-            gameGrid[downIndex] = gameGrid[currentIndex];
-            gameGrid[currentIndex] = 0;
-            currentIndex = downIndex;
-            moved = true;
-          } else if (gameGrid[downIndex] === gameGrid[currentIndex]) {
-            score += gameGrid[downIndex];
-            gameGrid[downIndex] *= 2;
-            gameGrid[currentIndex] = 0;
-            moved = true;
-            break;
-          } else {
-            break;
-          }
-        }
-        currentIndex = downIndex;
-      }
+    if (newRow.moved
+      || JSON.stringify(copyOfGameField) !== JSON.stringify(newRow.row)) {
+      hasMoved = true;
     }
   }
 
-  if (!testMode) {
-    if (moved) {
-      addRandomNumber();
-      updateGrid();
-      gameScoreElement.textContent = score;
+  if (hasMoved) {
+    addRandomNumber();
+    checkGameOver();
+  }
+  addLayoutOnHtml();
+}
+
+function clickArrowUp() {
+  let hasMoved = false;
+
+  gameField = transpose(gameField);
+
+  for (let row = 0; row < size; row++) {
+    const copyOfGameField = [...gameField[row]];
+
+    const removeZero = removeZeros(gameField[row]);
+    const newRow = uniteCells(removeZero);
+
+    gameField[row] = newRow.row;
+
+    if (newRow.moved
+      || JSON.stringify(copyOfGameField) !== JSON.stringify(newRow.row)) {
+      hasMoved = true;
     }
-    checkAvailableMoves();
   }
 
-  return moved;
-}
+  gameField = transpose(gameField);
 
-function restartGame() {
-  click = false;
-  gameScoreElement.textContent = 0;
-
-  loserMessage.classList.add('hidden');
-  startMessage.classList.remove('hidden');
-
-  cells.forEach((cell, index) => {
-    cell.className = 'field-cell';
-    cell.textContent = '';
-  });
-
-  startGame();
-}
-
-function checkAvailableMoves() {
-  if (!moveLeft([ ...gameGrid ], true) && !moveRight([ ...gameGrid ], true)
-    && !moveUp([ ...gameGrid ], true) && !moveDown([ ...gameGrid ], true)) {
-    loserMessage.classList.remove('hidden');
+  if (hasMoved) {
+    addRandomNumber();
+    checkGameOver();
   }
+
+  addLayoutOnHtml();
 }
 
-function checkWin() {
-  for (let i = 0; i < gameGrid.length; i++) {
-    if (gameGrid[i] === 2048) {
-      const winMessage = document.querySelector('.message-win');
+function clickArrowDown() {
+  let hasMoved = false;
 
-      winMessage.classList.remove('hidden');
+  gameField = transpose(gameField);
+
+  for (let row = 0; row < size; row++) {
+    const copyOfField = [...gameField[row]];
+    const removeZero = removeZeros(gameField[row].reverse());
+    const newRow = uniteCells(removeZero);
+
+    gameField[row] = newRow.row.reverse();
+
+    if (newRow.moved
+      || JSON.stringify(copyOfField) !== JSON.stringify(newRow.row)) {
+      hasMoved = true;
+    }
+  }
+
+  gameField = transpose(gameField);
+
+  if (hasMoved) {
+    addRandomNumber();
+    checkGameOver();
+  }
+  addLayoutOnHtml();
+}
+
+function handleArrows(e) {
+  switch (e.key) {
+    case 'ArrowLeft':
+      clickArrowLeft();
       break;
-    }
+    case 'ArrowRight':
+      clickArrowRight();
+      break;
+    case 'ArrowUp':
+      clickArrowUp();
+      break;
+    case 'ArrowDown':
+      clickArrowDown();
+      break;
+    default:
+      break;
   }
 }
 
-app.addEventListener('click', e => {
-  if (e.target.classList.contains('restart')) {
-    restartGame();
-  } else if (e.target.classList.contains('start')) {
-    startGame();
-  }
-});
+start.addEventListener('click', () => {
+  document.addEventListener('keydown', handleArrows);
+  startMessage.hidden = true;
 
-document.addEventListener('keydown', (e) => {
-  if (click) {
-    switch (e.key) {
-      case 'ArrowLeft':
-        moveLeft(gameGrid);
-        break;
-      case 'ArrowRight':
-        moveRight(gameGrid);
-        break;
-      case 'ArrowUp':
-        moveUp(gameGrid);
-        break;
-      case 'ArrowDown':
-        moveDown(gameGrid);
-        break;
-      default:
-        break;
-    }
+  if (start.innerText === 'Start') {
+    start.innerText = 'Restart';
+    start.classList.replace('start', 'restart');
+  } else {
+    loseMessage.classList.add('hidden');
+
+    gameField = gameField = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
   }
+  addRandomNumber();
+  addRandomNumber();
+  addLayoutOnHtml();
 });
