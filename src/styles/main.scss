@@ -18,7 +18,7 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
 
   &--2 {
@@ -73,6 +73,26 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.field-cell.active {
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.field-cell.move-up,
+.field-cell.move-down,
+.field-cell.move-left,
+.field-cell.move-right {
+  transition: transform 0.2s ease-in-out;
+}
+
+.field-cell.merge {
+  transition: transform 0.4s ease-in-out;
 }
 
 .game-field {
