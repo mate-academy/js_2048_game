@@ -135,6 +135,19 @@ h1 {
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  position: relative;
+
+  &:hover{
+    &::before{
+      content: 'to simulate the end of the game, press "e" - lose, "w"- win';
+      position: absolute;
+      inset: 0 -220px -50px 0;
+      font-size: 20px;
+      font-weight: normal;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+  }
 }
 
 .info {
