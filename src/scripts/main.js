@@ -1,4 +1,6 @@
-'use strict';
+import { Game2048 } from './Game2048.js';
+
+const game = new Game2048();
 
 const start = document.querySelector('.start');
 const fieldHtml = document.querySelectorAll('.field-row');
@@ -7,24 +9,10 @@ const startMessage = document.querySelector('.message-start');
 const loseMessage = document.querySelector('.hidden');
 const winner = document.querySelector('.message-win');
 
-const size = 4;
-let score = 0;
+const size = game.size;
+let score = game.score;
 
-let gameField = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
-
-function addRandomNumber() {
-  const row = Math.floor(Math.random() * size);
-  const cell = Math.floor(Math.random() * size);
-
-  (gameField[row][cell] === 0)
-    ? gameField[row][cell] = Math.random() < 0.1 ? 4 : 2
-    : addRandomNumber();
-}
+let gameField = game.gameField;
 
 function addLayoutOnHtml() {
   for (let row = 0; row < size; row++) {
@@ -44,6 +32,15 @@ function addLayoutOnHtml() {
   }
 
   gameScore.innerText = score;
+}
+
+function addRandomNumber() {
+  const row = Math.floor(Math.random() * size);
+  const cell = Math.floor(Math.random() * size);
+
+  (gameField[row][cell] === 0)
+    ? gameField[row][cell] = Math.random() < 0.1 ? 4 : 2
+    : addRandomNumber();
 }
 
 function checkGameOver() {
@@ -85,10 +82,6 @@ function checkGameOver() {
   }
 }
 
-function removeZeros(arr) {
-  return arr.filter(row => row !== 0);
-}
-
 function transpose(arr) {
   return arr.map((_, index) => arr.map(row => row[index]));
 }
@@ -122,7 +115,7 @@ function clickArrowLeft() {
 
   for (let row = 0; row < size; row++) {
     const copyGameField = [...gameField[row]];
-    const removeZero = removeZeros(gameField[row]);
+    const removeZero = game.removeZeros(gameField[row]);
     const move = uniteCells(removeZero);
 
     gameField[row] = removeZero;
@@ -146,7 +139,7 @@ function clickArrowRight() {
 
   for (let row = 0; row < size; row++) {
     const copyOfGameField = [...gameField[row]];
-    const removeZero = removeZeros(gameField[row].reverse());
+    const removeZero = game.removeZeros(gameField[row].reverse());
     const newRow = uniteCells(removeZero);
 
     gameField[row] = newRow.row.reverse();
@@ -172,7 +165,7 @@ function clickArrowUp() {
   for (let row = 0; row < size; row++) {
     const copyOfGameField = [...gameField[row]];
 
-    const removeZero = removeZeros(gameField[row]);
+    const removeZero = game.removeZeros(gameField[row]);
     const newRow = uniteCells(removeZero);
 
     gameField[row] = newRow.row;
@@ -200,7 +193,7 @@ function clickArrowDown() {
 
   for (let row = 0; row < size; row++) {
     const copyOfField = [...gameField[row]];
-    const removeZero = removeZeros(gameField[row].reverse());
+    const removeZero = game.removeZeros(gameField[row].reverse());
     const newRow = uniteCells(removeZero);
 
     gameField[row] = newRow.row.reverse();
