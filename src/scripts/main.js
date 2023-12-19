@@ -23,6 +23,11 @@ window.onload = function() {
   }
 
   function restartGame() {
+    const messageLose = document.querySelector('.message-lose');
+
+    if (messageLose.style.display === 'block') {
+      messageLose.style.display = 'none';
+    }
     setGame();
   }
 

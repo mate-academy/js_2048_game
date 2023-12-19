@@ -21,30 +21,31 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
   vertical-align: center;
   user-select: none;
   transition: transform 0.2s ease-in-out;
 
   &--2 {
-    background: #eee4da;
+    background-image: url(/images/image_1.jpg);
   }
 
   &--4 {
-    background: #ede0c8;
+    background-image: url(/images/image_2.jpg);
   }
 
   &--8 {
     background: #f2b179;
-    color: #f9f6f2;
+    background-image: url(/images/image_3.jpg);
   }
 
   &--16 {
-    background: #f59563;
+    background-image: url(/images/image_4.jpg);
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    background-image: url(/images/image_5.jpg);
     color: #f9f6f2;
   }
 
@@ -76,6 +77,11 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+  }
+
+  &--2, &--4, &--8, &--16, &--32 {
+    background-size: cover;
+    background-position: center;
   }
 }
 
@@ -150,6 +156,9 @@ h1 {
 .start {
   background: #1dae28;
   font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   -webkit-text-stroke: 0.2px black;
 
   &:hover {
