@@ -23,7 +23,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
-  transition: all 0.5s ease-in-out;
+  transition: transform 0.2s ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -78,6 +78,7 @@ body {
     color: #f9f6f2;
   }
 }
+
 
 .game-field {
   background: #bbada0;
