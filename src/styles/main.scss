@@ -27,25 +27,25 @@ body {
   transition: transform 0.2s ease-in-out;
 
   &--2 {
-    background-image: url(/images/image_1.jpg);
+    background: #eee4da;
   }
 
   &--4 {
-    background-image: url(/images/image_2.jpg);
+    background: #ede0c8;
   }
 
   &--8 {
     background: #f2b179;
-    background-image: url(/images/image_3.jpg);
+    color: #f9f6f2;
   }
 
   &--16 {
-    background-image: url(/images/image_4.jpg);
+    background: #f59563;
     color: #f9f6f2;
   }
 
   &--32 {
-    background-image: url(/images/image_5.jpg);
+    background: #f67c5f;
     color: #f9f6f2;
   }
 
@@ -156,10 +156,10 @@ h1 {
 .start {
   background: #1dae28;
   font-size: 20px;
+  -webkit-text-stroke: 0.2px black;
   display: flex;
   align-items: center;
   justify-content: center;
-  -webkit-text-stroke: 0.2px black;
 
   &:hover {
     background: #179921;

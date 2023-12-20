@@ -76,7 +76,7 @@ window.onload = function() {
       const c = Math.floor(Math.random() * columns);
 
       if (board[r][c] === 0) {
-        board[r][c] = 2;
+        board[r][c] = Math.random() < 0.5 ? 2 : 4;
         found = true;
       }
     }
