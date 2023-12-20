@@ -5,7 +5,7 @@ window.onload = function() {
   const rows = 4;
   const columns = 4;
   let board = [];
-  let gameStarted = false;
+  let isgameStarted = false;
 
   const gameField = document.querySelector('.game-field');
   const gameScore = document.querySelector('.game-score');
@@ -14,10 +14,10 @@ window.onload = function() {
   startButton.addEventListener('click', startGame);
 
   function startGame() {
-    if (gameStarted) {
+    if (isgameStarted) {
       restartGame();
     } else {
-      gameStarted = true;
+      isgameStarted = true;
       setGame();
     }
   }
@@ -37,7 +37,7 @@ window.onload = function() {
       () => Array.from({ length: columns }, () => 0),
     );
 
-    if (gameStarted) {
+    if (isgameStarted) {
       startButton.textContent = 'Restart';
     }
 
@@ -107,6 +107,7 @@ window.onload = function() {
           const messageWin = document.querySelector('.message-win');
 
           messageWin.style.display = 'block';
+          isgameStarted = false;
         }
 
         row.appendChild(cell);
