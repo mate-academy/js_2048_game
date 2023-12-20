@@ -1,8 +1,6 @@
 /* eslint-disable no-console */
 'use strict';
 
-'use strict';
-
 const board = [];
 const scoreTotal = document.querySelector('.game-score');
 const messWin = document.querySelector('.message-win');
@@ -151,22 +149,22 @@ function updateTile(tile, num) {
 }
 
 document.addEventListener('keydown', (e) => {
-  if (e.code === 'ArrowLeft') {
+  if (e.code === 'ArrowLeft' && hasEmptyTile()) {
     slideLeft();
     setRandomNum2or4();
   }
 
-  if (e.code === 'ArrowRight') {
+  if (e.code === 'ArrowRight' && hasEmptyTile()) {
     slideRight();
     setRandomNum2or4();
   }
 
-  if (e.code === 'ArrowUp') {
+  if (e.code === 'ArrowUp' && hasEmptyTile()) {
     slideUp();
     setRandomNum2or4();
   }
 
-  if (e.code === 'ArrowDown') {
+  if (e.code === 'ArrowDown' && hasEmptyTile()) {
     slideDown();
     setRandomNum2or4();
   }
