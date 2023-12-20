@@ -1,12 +1,18 @@
 /* eslint-disable no-console */
 'use strict';
 
+'use strict';
+
 const board = [];
 const scoreTotal = document.querySelector('.game-score');
+const messWin = document.querySelector('.message-win');
+const messLose = document.querySelector('.message-lose');
+const messStart = document.querySelector('.message-start');
+const btn = document.querySelector('.button');
+
 let score = 0;
 const rows = 4;
 const columns = 4;
-const btn = document.querySelector('.button');
 
 btn.addEventListener('click', () => {
   setBoard();
@@ -14,8 +20,6 @@ btn.addEventListener('click', () => {
   setGame();
   setTwo();
   setTwo();
-  btn.classList.add('restart');
-  btn.innerHTML = 'Restart';
 });
 
 function setGame() {
@@ -49,6 +53,27 @@ function clearAll() {
   }
   score = 0;
   scoreTotal.innerText = 0;
+  messWin.classList.add('hidden');
+  messLose.classList.add('hidden');
+  messStart.style.display = 'none';
+}
+
+function showMessageWin() {
+  setBoard();
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (Number(board[r][c].innerText) === 2048) {
+        messWin.classList.remove('hidden');
+      }
+    }
+  }
+}
+
+function showMessageGameOver() {
+  if (!hasEmptyTile()) {
+    messLose.classList.remove('hidden');
+  }
 }
 
 function hasEmptyTile() {
@@ -125,7 +150,7 @@ function updateTile(tile, num) {
   }
 }
 
-document.addEventListener('keyup', (e) => {
+document.addEventListener('keydown', (e) => {
   if (e.code === 'ArrowLeft') {
     slideLeft();
     setRandomNum2or4();
@@ -145,6 +170,15 @@ document.addEventListener('keyup', (e) => {
     slideDown();
     setRandomNum2or4();
   }
+
+  if (e.code === 'ArrowLeft' || e.code === 'ArrowRight'
+    || e.code === 'ArrowUp' || e.code === 'ArrowDown') {
+    btn.classList.add('restart');
+    btn.innerHTML = 'Restart';
+  }
+
+  showMessageWin();
+  showMessageGameOver();
 });
 
 function filterZero(row) {
