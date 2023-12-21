@@ -112,8 +112,7 @@ window.addEventListener('load', () => {
     }
 
     move({ moveDirectionCallback, xIsWithinBoard, yIsWithinBoard,
-      nextIndexY, columnStartIndex, nextIndexX,
-      rowStartIndex, currentX, currentY, mergedCells = [] }) {
+      nextIndexY, columnStartIndex, nextIndexX, rowStartIndex, currentX, currentY }) {
       if (xIsWithinBoard) {
         if (yIsWithinBoard) {
           const temp = this.board[currentY][currentX];
@@ -121,27 +120,18 @@ window.addEventListener('load', () => {
 
           if ((temp !== 0 && this.board[nextIndexY][nextIndexX] === 0)
             || isTheSameNumber) {
-            this.board[nextIndexY][nextIndexX] = temp;
+            this.board[nextIndexY][nextIndexX] = isTheSameNumber
+              ? temp * 2 : temp;
+            this.board[currentY][currentX] = 0;
 
-            if (mergedCells.some(({ x, y }) =>
-              x === currentX && y === nextIndexY)
-              || mergedCells.length === 0) {
-              this.board[nextIndexY][nextIndexX] = temp * 2;
-              this.board[currentY][currentX] = 0;
+            if (isTheSameNumber) {
               this.updateScore(temp * 2);
-
-              return moveDirectionCallback.call(
-                this, nextIndexX, nextIndexY, [...mergedCells, {
-                  x: nextIndexX, y: nextIndexY,
-                }]);
             }
           }
 
-          return moveDirectionCallback.call(
-            this, nextIndexX, nextIndexY, mergedCells);
+          return moveDirectionCallback.call(this, nextIndexX, nextIndexY);
         } else {
-          return moveDirectionCallback.call(
-            this, rowStartIndex, columnStartIndex, []);
+          return moveDirectionCallback.call(this, rowStartIndex, columnStartIndex);
         }
       }
 
@@ -150,18 +140,17 @@ window.addEventListener('load', () => {
       this.check2048();
     }
 
-    moveRight(x = 0, y = 0, mergedCells) {
+    moveRight(x = this.board.length - 1, y = 0) {
       this.move({
         moveDirectionCallback: this.moveRight,
         xIsWithinBoard: (y < this.board.length),
-        yIsWithinBoard: (x < this.board.length - 1),
+        yIsWithinBoard: (x >= 0),
         nextIndexY: y,
         columnStartIndex: y + 1,
         nextIndexX: x + 1,
         rowStartIndeX: 0,
         currentX: x,
         currentY: y,
-        mergedCells,
       });
     }
 
