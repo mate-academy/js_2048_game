@@ -48,45 +48,77 @@ document.addEventListener('DOMContentLoaded', () => {
     scoreDisplay.textContent = `Score: ${score}`;
   }
 
+  function move(direction) {
+    let moved = false;
 
-  function handleKeyPress(event) {
-    const direction = event.key.replace('Arrow', '').toLowerCase();
-    if (['up', 'down', 'left', 'right'].includes(direction)) {
-      const moved = move(direction);
-      if (moved) {
-        addRandomNumber();
-        updateBoard();
-        if (isGameWon()) {
-          winMessage.classList.remove('hidden');
-        }
-        if (isGameOver()) {
-          gameOverMessage.classList.remove('hidden');
+    function merge(rowOrCol) {
+      for (let i = 0; i < rowOrCol.length - 1; i++) {
+        if (rowOrCol[i] === rowOrCol[i + 1]) {
+          rowOrCol[i] *= 2;
+          rowOrCol[i + 1] = 0;
+          score += rowOrCol[i];
+          moved = true;
         }
       }
+      return rowOrCol.filter(cell => cell !== 0);
     }
+
+    function transpose(matrix) {
+      return matrix[0].map((col, i) => matrix.map(row => row[i]));
+    }
+
+    function reverseRows(matrix) {
+      return matrix.map(row => row.reverse());
+    }
+
+    function moveAndMerge(rowOrCol) {
+      const nonZeroCells = rowOrCol.filter(cell => cell !== 0);
+      const mergedCells = merge(nonZeroCells);
+      const zerosToAdd = Array(rowOrCol.length - mergedCells.length).fill(0);
+      return mergedCells.concat(zerosToAdd);
+    }
+
+    function updateBoardAfterMove() {
+      board = transpose(board);
+      board = board.map(moveAndMerge);
+      board = transpose(board);
+    }
+
+    switch (direction) {
+      case 'up':
+        updateBoardAfterMove();
+        break;
+      case 'down':
+        board = reverseRows(board);
+        updateBoardAfterMove();
+        board = reverseRows(board);
+        break;
+      case 'left':
+        board = board.map(moveAndMerge);
+        break;
+      case 'right':
+        board = reverseRows(board).map(moveAndMerge);
+        board = reverseRows(board);
+        break;
+      default:
+        break;
+    }
+
+    return moved;
   }
-  
-  function restartGame() {
-    startMessage.classList.add('hidden');
-    gameOverMessage.classList.add('hidden');
-    winMessage.classList.add('hidden');
-    score = 0;
-    initializeBoard();
-    updateBoard();
+
+  function isGameWon() {
+    return board.flat().some(cell => cell === 2048);
   }
+
   function isGameOver() {
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         if (board[row][col] === 0) {
           return false;
         }
-      }
-    }
 
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
         const cellValue = board[row][col];
-
         const directions = [
           { row: -1, col: 0 },
           { row: 1, col: 0 },
@@ -109,6 +141,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return true;
   }
+
+  function handleKeyPress(event) {
+    const direction = event.key.replace('Arrow', '').toLowerCase();
+    if (['up', 'down', 'left', 'right'].includes(direction)) {
+      const moved = move(direction);
+      if (moved) {
+        addRandomNumber();
+        updateBoard();
+        if (isGameWon()) {
+          winMessage.classList.remove('hidden');
+        }
+        if (isGameOver()) {
+          gameOverMessage.classList.remove('hidden');
+        }
+      }
+    }
+  }
+
+  function restartGame() {
+    startMessage.classList.add('hidden');
+    gameOverMessage.classList.add('hidden');
+    winMessage.classList.add('hidden');
+    score = 0;
+    initializeBoard();
+    updateBoard();
+  }
+
   document.addEventListener('keydown', handleKeyPress);
   restartButton.addEventListener('click', restartGame);
 
