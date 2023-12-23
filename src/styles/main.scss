@@ -31,7 +31,9 @@ button {
   margin-left: 10px;
   margin-top: 10px;
   cursor: pointer;
+}
 
+.restart {
   &::after {
     content: "New Game";
   }
