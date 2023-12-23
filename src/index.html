@@ -2,62 +2,48 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2048</title>
+    <title>2048 Game</title>
     <link rel="stylesheet" href="./styles/main.scss">
   </head>
+
   <body>
     <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score: <span class="game-score">0</span>
-          </p>
-          <button class="button start">Start</button>
-        </div>
+      <div id="alert" class="warning"></div>
+      <div class="board">
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
       </div>
-
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+      <div class="tileContainer"></div>
+    </div>
+    <div class="elementContainer">
+      <div class="title">
+        <h1>2048</h1>
+      </div>
+      <div class="scoreElementContainer">
+        <div id="score-label" class="counter">Score</div>
+        <div id="scoreElement">0</div>
+      </div>
+      <div>
+        <button class="newGame" onclick="startNewGame()">New Game</button>
       </div>
     </div>
-    <script type="text/javascript" src="scripts/main.js"></script>
+
+    <script type="module" src="./scripts/main.js"></script>
   </body>
 </html>
