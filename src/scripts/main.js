@@ -1,5 +1,9 @@
-/* eslint-disable no-unmodified-loop-condition */
 'use strict';
+
+const DIRECTION_UP = 'ArrowUp';
+const DIRECTION_DOWN = 'ArrowDown';
+const DIRECTION_LEFT = 'ArrowLeft';
+const DIRECTION_RIGHT = 'ArrowRight';
 
 let board = [];
 let score = 0;
@@ -8,6 +12,8 @@ let wonGame = false;
 const tileContainer = document.querySelector('.tileContainer');
 const scoreElement = document.getElementById('scoreElement');
 const alertElement = document.getElementById('alert');
+
+document.getElementById('newGame').addEventListener('click', startNewGame);
 
 createBoard();
 addRandomTile();
@@ -51,16 +57,19 @@ function onDirectionKeyPress(argument) {
   let movePossible;
 
   switch (argument.key) {
-    case 'ArrowUp':
+    case DIRECTION_UP:
       movePossible = moveTiles(1, 0);
       break;
-    case 'ArrowDown':
+
+    case DIRECTION_DOWN:
       movePossible = moveTiles(-1, 0);
       break;
-    case 'ArrowLeft':
+
+    case DIRECTION_LEFT:
       movePossible = moveTiles(0, -1);
       break;
-    case 'ArrowRight':
+
+    case DIRECTION_RIGHT:
       movePossible = moveTiles(0, 1);
       break;
   }
@@ -76,6 +85,10 @@ function onDirectionKeyPress(argument) {
   }
 }
 
+function isWithinBounds(index, step, limit) {
+  return (index <= limit && step === 1) || (index >= 0 && step === -1);
+}
+
 function moveTiles(directionY, directionX) {
   let movePossible = false;
   let mergedRecently = false;
@@ -87,7 +100,7 @@ function moveTiles(directionY, directionX) {
     for (let i = 0; i < 4; i++) {
       let j = startX;
 
-      while ((j <= 3 && stepX === 1) || (j >= 0 && stepX === -1)) {
+      while (isWithinBounds(j, stepX, 3)) {
         if (board[i][j] === 0) {
           j += stepX;
           continue;
@@ -130,7 +143,7 @@ function moveTiles(directionY, directionX) {
     for (let j = 0; j < 4; j++) {
       let i = startY;
 
-      while ((i <= 3 && stepY === 1) || (i >= 0 && stepY === -1)) {
+      while (isWithinBounds(i, stepY, 3)) {
         if (board[i][j] === 0) {
           i += stepY;
           continue;
@@ -171,16 +184,18 @@ function moveTiles(directionY, directionX) {
   return movePossible;
 }
 
+function shouldContinue(direction, current, limit, merge) {
+  return (direction === 1 && current < limit && !merge)
+    || (direction === -1 && current > 0 && !merge);
+}
+
 function getDestinationSquare(i, j, directionY, directionX) {
   let destinationY = i;
   let destinationX = j;
   let merge = false;
 
-  while ((destinationY < 3 && directionY === 1)
-    || (destinationY > 0 && directionY === -1)
-    || (destinationX < 3 && directionX === 1)
-    || (destinationX > 0 && directionX === -1)
-  ) {
+  while (shouldContinue(directionY, destinationY, 3, merge)
+  || shouldContinue(directionX, destinationX, 3, merge)) {
     const nextY = destinationY + directionY;
     const nextX = destinationX + directionX;
     const nextCell = board[nextY][nextX];
