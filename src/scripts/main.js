@@ -29,8 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (emptyCells.length > 0) {
-      const { row, col } = emptyCells[Math.floor(Math.random() *
-        emptyCells.length)];
+      const { row, col } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
       board[row][col] = Math.random() < 0.9 ? 2 : 4;
     }
   }
@@ -143,8 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   }
 
-  function handleKeyPress(keyEvent) {
-    const direction = keyEvent.key.replace('Arrow', '').toLowerCase();
+  function handleKeyPress(event) {
+    const direction = event.key.replace('Arrow', '').toLowerCase();
     if (['up', 'down', 'left', 'right'].includes(direction)) {
       const moved = move(direction);
       if (moved) {
