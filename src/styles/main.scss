@@ -79,11 +79,11 @@ h1 {
 }
 
 .result.win {
-  color: #28a745; /* Green color for winning message */
+  color: #28a745;
 }
 
 .result.lose {
-  color: #dc3545; /* Red color for losing message */
+  color: #dc3545;
 }
 
 .new-game{
@@ -105,4 +105,8 @@ h1 {
   display:flex;
   justify-content: center;
   align-items: center;
+}
+
+.grid div {
+  transition: all 0.2s ease-in-out;
 }
