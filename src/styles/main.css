@@ -1,7 +1,11 @@
 body {
   background-color: #faf8ef;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   font-family: "Clear Sans", "Helvetica Neue";
 }
 
@@ -18,14 +22,21 @@ h1 {
 }
 
 .info {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: space-between;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   margin-bottom: 20px;
 }
 
 .grid {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   width: 456px;
   height: 456px;
   background-color: #BBADA0;
@@ -86,27 +97,36 @@ h1 {
   color: #dc3545;
 }
 
-.new-game{
+.new-game {
   display: inline-block;
   margin-top: 16px;
-    background: #8f7a66;
-    border-radius: 3px;
-    padding: 0 20px;
-    text-decoration: none;
-    color: #f9f6f2;
-    height: 40px;
-    cursor: pointer;
-    display: block;
-    text-align: center;
-    flex-shrink: 0;
+  background: #8f7a66;
+  border-radius: 3px;
+  padding: 0 20px;
+  text-decoration: none;
+  color: #f9f6f2;
+  height: 40px;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
 }
 
-.container_new-game{
-  display:flex;
-  justify-content: center;
-  align-items: center;
+.container_new-game {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .grid div {
+  -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
+/*# sourceMappingURL=main.css.map */
