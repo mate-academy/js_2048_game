@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (emptyCells.length > 0) {
       const { row, col } = emptyCells[Math.floor(Math.random() 
-        * emptyCells.length)];
+      * emptyCells.length)];
       board[row][col] = Math.random() < 0.9 ? 2 : 4;
     }
   }
