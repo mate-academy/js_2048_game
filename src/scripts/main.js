@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function clearStyles() {
     for (let i = 0; i < squares.length; i++) {
-      squares[i].style.backgroundColor = '#afa192'; // Set to the default color
+      squares[i].style.backgroundColor = '#afa192';
     }
   }
 
@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultDisplay.innerHTML = 'You WIN';
         document.removeEventListener('keyup', control);
         setTimeout(() => clear(), 3000);
-        break; // Stop checking if any cell has a value greater than or equal to 2048
+        break;
       }
     }
   }
@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const value = squares[i].innerHTML;
 
       squares[i].style.backgroundColor = value === '0' ? getColor(value) : getColor(value);
-      squares[i].style.color = value === '0' ? 'transparent' : 'black'; // Set text color to black for non-zero values
+      squares[i].style.color = value === '0' ? 'transparent' : 'black';
     }
   }
 
@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         generate();
         addColours();
-      }, 200); // Adjust the delay as needed
+      }, 200);
     }
   }
 
@@ -363,6 +363,5 @@ document.addEventListener('DOMContentLoaded', () => {
     updateColors();
   });
 
-  // Add this line to initially update colors
   updateColors();
 });
