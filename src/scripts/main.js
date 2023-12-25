@@ -113,7 +113,7 @@ window.addEventListener('load', () => {
 
     move({ moveDirectionCallback, xIsWithinBoard, yIsWithinBoard,
       nextIndexY, columnStartIndex, nextIndexX,
-      rowStartIndex, currentX, currentY, mergedCells = [] }) {
+      rowStartIndex, currentX, currentY }) {
       if (xIsWithinBoard) {
         if (yIsWithinBoard) {
           const temp = this.board[currentY][currentX];
@@ -121,27 +121,19 @@ window.addEventListener('load', () => {
 
           if ((temp !== 0 && this.board[nextIndexY][nextIndexX] === 0)
             || isTheSameNumber) {
-            this.board[nextIndexY][nextIndexX] = temp;
+            this.board[nextIndexY][nextIndexX] = isTheSameNumber
+              ? temp * 2 : temp;
+            this.board[currentY][currentX] = 0;
 
-            if (mergedCells.some(({ x, y }) =>
-              x === currentX && y === nextIndexY)
-              || mergedCells.length === 0) {
-              this.board[nextIndexY][nextIndexX] = temp * 2;
-              this.board[currentY][currentX] = 0;
+            if (isTheSameNumber) {
               this.updateScore(temp * 2);
-
-              return moveDirectionCallback.call(
-                this, nextIndexX, nextIndexY, [...mergedCells, {
-                  x: nextIndexX, y: nextIndexY,
-                }]);
             }
           }
 
-          return moveDirectionCallback.call(
-            this, nextIndexX, nextIndexY, mergedCells);
+          return moveDirectionCallback.call(this, nextIndexX, nextIndexY);
         } else {
           return moveDirectionCallback.call(
-            this, rowStartIndex, columnStartIndex, []);
+            this, rowStartIndex, columnStartIndex);
         }
       }
 
@@ -150,7 +142,7 @@ window.addEventListener('load', () => {
       this.check2048();
     }
 
-    moveRight(x = 0, y = 0, mergedCells) {
+    moveRight(x = 0, y = 0) {
       this.move({
         moveDirectionCallback: this.moveRight,
         xIsWithinBoard: (y < this.board.length),
@@ -158,10 +150,9 @@ window.addEventListener('load', () => {
         nextIndexY: y,
         columnStartIndex: y + 1,
         nextIndexX: x + 1,
-        rowStartIndeX: 0,
+        rowStartIndex: 0,
         currentX: x,
         currentY: y,
-        mergedCells,
       });
     }
 
@@ -173,7 +164,7 @@ window.addEventListener('load', () => {
         nextIndexY: y,
         columnStartIndex: y + 1,
         nextIndexX: x - 1,
-        rowStartIndeX: (this.board.length - 1),
+        rowStartIndex: (this.board.length - 1),
         currentX: x,
         currentY: y,
       });
@@ -187,7 +178,7 @@ window.addEventListener('load', () => {
         nextIndexY: y - 1,
         columnStartIndex: (this.board.length - 1),
         nextIndexX: x,
-        rowStartIndeX: x + 1,
+        rowStartIndex: x + 1,
         currentX: x,
         currentY: y,
       });
@@ -201,7 +192,7 @@ window.addEventListener('load', () => {
         nextIndexY: y + 1,
         columnStartIndex: 0,
         nextIndexX: x,
-        rowStartIndeX: x + 1,
+        rowStartIndex: x + 1,
         currentX: x,
         currentY: y,
       });
