@@ -2,7 +2,7 @@ body {
   background-color: #faf8ef;
   display: flex;
   justify-content: center;
-  font-family: "Clear Sans", "Helvetica Neue";
+  font-family: "Clear Sans", "Helvetica Neue" , 'sans-serif';
 }
 
 h1 {
@@ -108,5 +108,9 @@ h1 {
 }
 
 .grid div {
-  transition: all 0.2s ease-in-out;
+  transition: background-color 0.1s ease-in-out
+}
+
+.grid div:empty {
+  display: none;
 }

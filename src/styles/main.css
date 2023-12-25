@@ -6,7 +6,7 @@ body {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  font-family: "Clear Sans", "Helvetica Neue";
+  font-family: "Clear Sans", "Helvetica Neue" , 'sans-serif';
 }
 
 h1 {
@@ -126,7 +126,14 @@ h1 {
 }
 
 .grid div {
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
+  -webkit-transition: background-color 1s ease-in-out;
+  transition: background-color 1s ease-in-out;
+  -webkit-transition-delay: -0.1s;
+          transition-delay: -0.1s;
+  /* Set a positive delay to make the transition instant at the beginning */
+}
+
+.grid div:empty {
+  display: none;
 }
 /*# sourceMappingURL=main.css.map */
