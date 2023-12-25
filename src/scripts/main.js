@@ -1,15 +1,19 @@
 'use strict';
 
-const startBtn = document.querySelectorAll('.button')[0];
-
+const startBtn = document.querySelector('.button');
+const msgStartContainer = document.querySelector('.message-start');
+const msgWinContainer = document.querySelector('.message-win');
+const msgLoseContainer = document.querySelector('.message-lose');
 let cellFreePlaces = [];
 
 startBtn.addEventListener('click', () => {
   if (startBtn.classList.value.includes('restart')) {
+    msgStartContainer.classList.remove('hidden');
     startBtn.classList.remove('restart');
     startBtn.textContent = 'Start';
     stopGame();
   } else {
+    msgStartContainer.classList.add('hidden');
     startBtn.classList.add('restart');
     startBtn.textContent = 'Restart';
     launchGame();
@@ -30,6 +34,47 @@ const launchGame = () => {
 
 const stopGame = () => {
   cellFreePlaces = [];
+
+  const cells = document.querySelectorAll('.field-cell');
+
+  for (let i = 0; i < 16; i++) {
+    cells[i].classList.remove(
+      'field-cell--2',
+      'field-cell--4',
+      'field-cell--8',
+      'field-cell--16',
+      'field-cell--32',
+      'field-cell--64',
+      'field-cell--128',
+      'field-cell--256',
+      'field-cell--512',
+      'field-cell--1024',
+      'field-cell--2048',
+    );
+    cells[i].textContent = '';
+    deleteScore();
+  }
+};
+
+const winGame = () => {
+  const cells = document.querySelectorAll('.field-cell');
+  let cells2048 = 0;
+
+  for (let i = 0; i < 16; i++) {
+    if (cells[i].classList.includes('field-cell--2048')) {
+      cells2048++;
+    }
+  }
+
+  if (cells2048 > 0) {
+    msgWinContainer.classList.remove('hidden');
+  }
+};
+
+const loseGame = () => {
+  if (cellFreePlaces.length === 0) {
+    msgLoseContainer.classList.remove('hidden');
+  }
 };
 
 const generateRandom = () => {
@@ -53,16 +98,27 @@ const updateScore = (addedValue) => {
   score.textContent = scoreValue + addedValue;
 };
 
+const deleteScore = () => {
+  const score = document.querySelector('.game-score');
+
+  score.textContent = 0;
+};
+
+const updateGame = () => {
+  winGame();
+  loseGame();
+};
+
 const move = () => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'w' || e.key === 'ArrowUp') {
-      // console.log('Up');
+      updateGame();
     } else if (e.key === 'a' || e.key === 'ArrowLeft') {
-      // console.log('Left');
+      updateGame();
     } else if (e.key === 's' || e.key === 'ArrowDown') {
-      // console.log('Down');
+      updateGame();
     } else if (e.key === 'd' || e.key === 'ArrowRight') {
-      // console.log('Right');
+      updateGame();
     }
   });
 };
