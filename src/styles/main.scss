@@ -1,4 +1,4 @@
-@mixin scaleAnimation {
+@mixin scale-animation {
   @keyframes scale {
     0% {
       transform: scale(1);
@@ -42,64 +42,76 @@ body {
 
 
   &--2 {
-    @include scaleAnimation();
+    @include scale-animation;
+
     background: #eee4da;
   }
 
   &--4 {
-    @include scaleAnimation();
+    @include scale-animation;
+
     background: #ede0c8;
   }
 
   &--8 {
-    @include scaleAnimation();
+    @include scale-animation;
+
     background: #f2b179;
     color: #f9f6f2;
   }
 
   &--16 {
-    @include scaleAnimation();
+    @include scale-animation;
+
     background: #f59563;
     color: #f9f6f2;
   }
 
   &--32 {
-    @include scaleAnimation();
+    @include scale-animation;
+
     background: #f67c5f;
     color: #f9f6f2;
   }
 
   &--64 {
-    @include scaleAnimation();
+    @include scale-animation;
+
     background: #f65e3b;
     color: #f9f6f2;
   }
 
   &--128 {
-    @include scaleAnimation();
+    @include scale-animation;
+
     background: #edcf72;
     color: #f9f6f2;
   }
 
   &--256 {
-    @include scaleAnimation();
+    @include scale-animation;
+
     background: #edcc61;
     color: #f9f6f2;
   }
 
   &--512 {
+    @include scale-animation;
+
     background: #edc850;
     color: #f9f6f2;
   }
 
   &--1024 {
-    @include scaleAnimation();
+    @include scale-animation;
+
     background: #edc53f;
     color: #f9f6f2;
   }
 
   &--2048 {
-    @include scaleAnimation();
+    @include scale-animation;
+
     background: #edc22e;
     color: #f9f6f2;
   }
