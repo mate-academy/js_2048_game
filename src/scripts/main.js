@@ -141,6 +141,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return true;
   }
+
+  function handleKeyPress(event) {
+    const direction = event.key.replace('Arrow', '').toLowerCase();
+    if (['up', 'down', 'left', 'right'].includes(direction)) {
+      const moved = move(direction);
+      if (moved) {
+        addRandomNumber();
+        updateBoard();
+        if (isGameWon()) {
+          winMessage.classList.remove('hidden');
+        }
+        if (isGameOver()) {
+          gameOverMessage.classList.remove('hidden');
+        }
+      }
+    }
+  }
   
   function restartGame() {
     startMessage.classList.add('hidden');
@@ -150,7 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeBoard();
     updateBoard();
   }
-
+  
+  document.addEventListener('keydown', handleKeyPress);
   restartButton.addEventListener('click', restartGame);
 
   initializeBoard();
