@@ -16,7 +16,6 @@ window.addEventListener('load', () => {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
       ];
-
       this.score = 0;
       this.start = false;
     }
