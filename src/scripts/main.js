@@ -183,14 +183,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function control(e) {
-    if (e.keyCode === 37) {
-      keyLeft();
-    } else if (e.keyCode === 38) {
-      keyUp();
-    } else if (e.keyCode === 39) {
-      keyRight();
-    } else if (e.keyCode === 40) {
-      keyDown();
+    switch (e.keyCode) {
+      case 37:
+        keyLeft();
+        break;
+      case 38:
+        keyUp();
+        break;
+      case 39:
+        keyRight();
+        break;
+      case 40:
+        keyDown();
+        break;
+
+      default:
+        break;
     }
   }
 
