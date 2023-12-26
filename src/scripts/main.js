@@ -5,7 +5,7 @@ const msgStartContainer = document.querySelector('.message-start');
 const msgWinContainer = document.querySelector('.message-win');
 const msgLoseContainer = document.querySelector('.message-lose');
 let cellFreePlaces = [];
-const cellNumbers = [];
+let cellNumbers = [];
 
 const launchGame = () => {
   for (let i = 0; i < 16; i++) {
@@ -21,6 +21,7 @@ const launchGame = () => {
 
 const stopGame = () => {
   cellFreePlaces = [];
+  cellNumbers = [];
 
   const cells = document.querySelectorAll('.field-cell');
 
@@ -101,19 +102,66 @@ const updateGame = () => {
 const move = () => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'w' || e.key === 'ArrowUp') {
+      for (let i = 0; i < 4; i++) {
+        let column = [
+          cellNumbers[i],
+          cellNumbers[4 + i],
+          cellNumbers[8 + i],
+          cellNumbers[12 + i],
+        ];
+
+        column = column.map((elem) => elem === undefined ? 0 : elem);
+        column.sort((a, b) => b - a);
+
+        for (let j = 0; j < 4; j++) {
+          const cells = document.querySelectorAll('.field-cell');
+
+          if (column[j] === column[j + 1]) {
+            const cellMerging = document.querySelectorAll('.field-cell')[i + j];
+            const nextScore = +cellMerging.textContent * 2;
+
+            cellMerging.textContent = nextScore;
+            cellMerging.classList.add(`field-cell--${nextScore}`);
+          }
+
+          cells[i + j].textContent = '';
+          cells[i + j].textContent = column[i];
+          cells[i + j].classList.add(`field-cell--${column[i]}`);
+        }
+      }
+
       updateGame();
-
-      const column1 = [
-        cellNumbers[0],
-        cellNumbers[4],
-        cellNumbers[8],
-        cellNumbers[12],
-      ];
-
-      column1.sort((a, b) => a - b);
     } else if (e.key === 'a' || e.key === 'ArrowLeft') {
       updateGame();
     } else if (e.key === 's' || e.key === 'ArrowDown') {
+      for (let i = 0; i < 4; i++) {
+        let column = [
+          cellNumbers[i],
+          cellNumbers[4 + i],
+          cellNumbers[8 + i],
+          cellNumbers[12 + i],
+        ];
+
+        column = column.map((elem) => (elem === undefined ? 0 : elem));
+        column.sort((a, b) => b - a);
+
+        for (let j = 0; j < 4; j++) {
+          const cells = document.querySelectorAll('.field-cell');
+
+          if (column[j] === column[j + 1]) {
+            const cellMerging = document.querySelectorAll('.field-cell')[i + j];
+            const nextScore = +cellMerging.textContent * 2;
+
+            cellMerging.textContent = nextScore;
+            cellMerging.classList.add(`field-cell--${nextScore}`);
+          }
+
+          cells[i + j].textContent = '';
+          cells[i + j].textContent = column[i];
+          cells[i + j].classList.add(`field-cell--${column[i]}`);
+        }
+      }
+
       updateGame();
     } else if (e.key === 'd' || e.key === 'ArrowRight') {
       updateGame();
