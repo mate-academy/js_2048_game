@@ -59,8 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const randomIndex = Math.floor(Math.random() * emptySquares.length);
+    const newValue = Math.random() < 0.9 ? '2' : '4'; // 90% chance for '2', 10% chance for '4'
 
-    emptySquares[randomIndex].innerHTML = '2';
+    emptySquares[randomIndex].innerHTML = newValue;
     checkForGameOver();
   }
 
