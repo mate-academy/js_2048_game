@@ -1,184 +1,264 @@
 'use strict';
 
-const startBtn = document.querySelector('.button');
-const msgStartContainer = document.querySelector('.message-start');
-const msgWinContainer = document.querySelector('.message-win');
-const msgLoseContainer = document.querySelector('.message-lose');
-let cellFreePlaces = [];
-let cellNumbers = [];
+const messages = document.querySelectorAll('.message');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
+const button = document.querySelector('.button');
+const cells = document.querySelectorAll('.field-cell');
+const table = document.querySelector('.game-field');
+const score = document.querySelector('.game-score');
 
-const launchGame = () => {
-  for (let i = 0; i < 16; i++) {
-    cellFreePlaces.push(i);
+const tableGame = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+
+button.addEventListener('click', () => {
+  if (!button.classList.contains('restart')) {
+    button.classList.remove('start');
+    button.classList.add('restart');
+    button.textContent = 'Restart';
   }
 
-  addCell(2);
-  addCell(2);
-
-  move();
-  updateScore(4);
-};
-
-const stopGame = () => {
-  cellFreePlaces = [];
-  cellNumbers = [];
-
-  const cells = document.querySelectorAll('.field-cell');
-
-  for (let i = 0; i < 16; i++) {
-    cells[i].classList.remove(
-      'field-cell--2',
-      'field-cell--4',
-      'field-cell--8',
-      'field-cell--16',
-      'field-cell--32',
-      'field-cell--64',
-      'field-cell--128',
-      'field-cell--256',
-      'field-cell--512',
-      'field-cell--1024',
-      'field-cell--2048',
-    );
-    cells[i].textContent = '';
-    deleteScore();
-  }
-};
-
-const winGame = () => {
-  const cells = document.querySelectorAll('.field-cell');
-  let cells2048 = 0;
-
-  for (let i = 0; i < 16; i++) {
-    if (cells[i].classList.contains('field-cell--2048')) {
-      cells2048++;
+  for (let i = 0; i < tableGame.length; i++) {
+    for (let j = 0; j < tableGame[i].length; j++) {
+      tableGame[i][j] = 0;
     }
   }
 
-  if (cells2048 > 0) {
-    msgWinContainer.classList.remove('hidden');
-  }
-};
-
-const loseGame = () => {
-  if (cellFreePlaces.length === 16) {
-    msgLoseContainer.classList.remove('hidden');
-  }
-};
-
-const generateRandom = () => {
-  cellFreePlaces.sort(() => Math.random() - 0.5);
-
-  return cellFreePlaces.pop();
-};
-
-const addCell = (cellNum) => {
-  const randomPos = generateRandom();
-  const cell = document.querySelectorAll('.field-cell')[randomPos];
-
-  cell.classList.add(`field-cell--${cellNum}`);
-  cell.textContent = `${cellNum}`;
-
-  cellNumbers[randomPos] = cellNum;
-};
-
-const updateScore = (addedValue) => {
-  const score = document.querySelector('.game-score');
-  const scoreValue = +document.querySelector('.game-score').textContent;
-
-  score.textContent = scoreValue + addedValue;
-};
-
-const deleteScore = () => {
-  const score = document.querySelector('.game-score');
-
+  [...messages].map(message => message.classList.add('hidden'));
   score.textContent = 0;
-};
 
-const updateGame = () => {
-  winGame();
-  loseGame();
-};
-
-const move = () => {
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'w' || e.key === 'ArrowUp') {
-      for (let i = 0; i < 4; i++) {
-        let column = [
-          cellNumbers[i],
-          cellNumbers[4 + i],
-          cellNumbers[8 + i],
-          cellNumbers[12 + i],
-        ];
-
-        column = column.map((elem) => elem === undefined ? 0 : elem);
-        column.sort((a, b) => b - a);
-
-        for (let j = 0; j < 4; j++) {
-          const cells = document.querySelectorAll('.field-cell');
-
-          if (column[j] === column[j + 1]) {
-            const cellMerging = document.querySelectorAll('.field-cell')[i + j];
-            const nextScore = +cellMerging.textContent * 2;
-
-            cellMerging.textContent = nextScore;
-            cellMerging.classList.add(`field-cell--${nextScore}`);
-          }
-
-          cells[i + j].textContent = '';
-          cells[i + j].textContent = column[i];
-          cells[i + j].classList.add(`field-cell--${column[i]}`);
-        }
-      }
-
-      updateGame();
-    } else if (e.key === 'a' || e.key === 'ArrowLeft') {
-      updateGame();
-    } else if (e.key === 's' || e.key === 'ArrowDown') {
-      for (let i = 0; i < 4; i++) {
-        let column = [
-          cellNumbers[i],
-          cellNumbers[4 + i],
-          cellNumbers[8 + i],
-          cellNumbers[12 + i],
-        ];
-
-        column = column.map((elem) => (elem === undefined ? 0 : elem));
-        column.sort((a, b) => b - a);
-
-        for (let j = 0; j < 4; j++) {
-          const cells = document.querySelectorAll('.field-cell');
-
-          if (column[j] === column[j + 1]) {
-            const cellMerging = document.querySelectorAll('.field-cell')[i + j];
-            const nextScore = +cellMerging.textContent * 2;
-
-            cellMerging.textContent = nextScore;
-            cellMerging.classList.add(`field-cell--${nextScore}`);
-          }
-
-          cells[i + j].textContent = '';
-          cells[i + j].textContent = column[i];
-          cells[i + j].classList.add(`field-cell--${column[i]}`);
-        }
-      }
-
-      updateGame();
-    } else if (e.key === 'd' || e.key === 'ArrowRight') {
-      updateGame();
-    }
+  [...cells].map(cell => {
+    cell.className = 'field-cell';
+    cell.textContent = '';
   });
+
+  addCell();
+  addCell();
+  render();
+  button.blur();
+});
+
+document.addEventListener('keydown', e => {
+  if (!button.classList.contains('restart')
+    || !messageLose.classList.contains('hidden')
+    || !messageWin.classList.contains('hidden')) {
+    return;
+  }
+
+  const copyTableGame = JSON.parse(JSON.stringify(tableGame));
+
+  switch (e.key) {
+    case 'w':
+    case 'ArrowUp':
+      moveUp();
+      break;
+
+    case 'a':
+    case 'ArrowLeft':
+      moveLeft();
+      break;
+
+    case 's':
+    case 'ArrowDown':
+      moveDown();
+      break;
+
+    case 'd':
+    case 'ArrowRight':
+      moveRight();
+      break;
+
+    default:
+      return;
+  }
+
+  if (JSON.stringify(copyTableGame) === JSON.stringify(tableGame)) {
+    return;
+  }
+
+  addCell();
+  render();
+
+  if ([...cells].some(cell => cell.classList.contains('field-cell--2048'))) {
+    messageWin.classList.remove('hidden');
+  }
+
+  let endH = true;
+  let endV = true;
+
+  for (let r = 0; r < tableGame.length; r++) {
+    for (let c = 0; c < tableGame.length - 1; c++) {
+      if (tableGame[r][c] === tableGame[r][c + 1]) {
+        endH = false;
+
+        return;
+      }
+    }
+  }
+
+  for (let r = 0; r < tableGame.length; r++) {
+    const row = [
+      tableGame[0][r], tableGame[1][r], tableGame[2][r], tableGame[3][r],
+    ];
+
+    for (let c = 0; c < row.length - 1; c++) {
+      if (row[c] === row[c + 1]) {
+        endV = false;
+
+        return;
+      }
+    }
+  }
+
+  if (
+    tableGame.every(row => row.every(cell => cell !== 0))
+    && endV === true
+    && endH === true
+  ) {
+    messageLose.classList.remove('hidden');
+  }
+});
+
+const randomNumber = () => {
+  let resultValue = 2;
+  const number = Math.floor(Math.random() * 10);
+
+  if (number === 0) {
+    resultValue = 4;
+  }
+
+  return resultValue;
 };
 
-startBtn.addEventListener('click', () => {
-  if (startBtn.classList.value.includes('restart')) {
-    msgStartContainer.classList.remove('hidden');
-    startBtn.classList.remove('restart');
-    startBtn.textContent = 'Start';
-    stopGame();
+const addCell = () => {
+  let randomRow = Math.floor(Math.random() * 4);
+  let randomCell = Math.floor(Math.random() * 4);
+
+  while (tableGame[randomRow][randomCell] !== 0) {
+    randomRow = Math.floor(Math.random() * 4);
+    randomCell = Math.floor(Math.random() * 4);
+  }
+
+  tableGame[randomRow][randomCell] = randomNumber();
+};
+
+const render = () => {
+  for (let i = 0; i < tableGame.length; i++) {
+    const row = table.rows[i];
+
+    for (let j = 0; j < tableGame[i].length; j++) {
+      const cell = row.cells[j];
+
+      cell.className = 'field-cell';
+      cell.textContent = '';
+
+      if (tableGame[i][j] !== 0) {
+        cell.classList.add(`field-cell--${tableGame[i][j]}`);
+        cell.textContent = tableGame[i][j];
+      }
+    }
+  }
+};
+
+const filterRow = (row) => {
+  return row.filter(cell => cell !== 0);
+};
+
+const move = (row) => {
+  let line = filterRow(row);
+
+  for (let j = 0; j < line.length - 1; j++) {
+    if (line[j] === line[j + 1]) {
+      line[j] *= 2;
+      line[j + 1] = 0;
+      score.textContent = +score.textContent + +line[j];
+    }
+  }
+
+  line = filterRow(line);
+
+  while (line.length < tableGame.length) {
+    line.push(0);
+  }
+
+  return line;
+};
+
+const moveHorizontal = (isReversed) => {
+  for (let i = 0; i < tableGame.length; i++) {
+    let row = tableGame[i];
+
+    isReversed && row.reverse();
+    row = move(row);
+    isReversed && row.reverse();
+    tableGame[i] = row;
+  }
+};
+
+const moveVertical = (isReversed) => {
+  for (let i = 0; i < tableGame.length; i++) {
+    let row = [
+      tableGame[0][i], tableGame[1][i], tableGame[2][i], tableGame[3][i],
+    ];
+
+    isReversed && row.reverse();
+    row = move(row);
+    isReversed && row.reverse();
+    tableGame[0][i] = row[0];
+    tableGame[1][i] = row[1];
+    tableGame[2][i] = row[2];
+    tableGame[3][i] = row[3];
+  }
+};
+
+const moveLeft = () => {
+  moveHorizontal();
+};
+
+const moveRight = () => {
+  moveHorizontal(true);
+};
+
+const moveUp = () => {
+  moveVertical();
+};
+
+const moveDown = () => {
+  moveVertical(true);
+};
+
+const swipe = (code) => {
+  document.dispatchEvent(new window.KeyboardEvent('keyup', { 'code': code }));
+};
+
+let startX, startY, endX, endY;
+
+document.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+});
+
+document.addEventListener('touchmove', e => {
+  endX = e.touches[0].clientX - startX;
+  endY = e.touches[0].clientY - startY;
+});
+
+document.addEventListener('touchend', e => {
+  if (Math.abs(endX) > Math.abs(endY)) {
+    if (endX < 0) {
+      swipe('ArrowLeft');
+    } else {
+      swipe('ArrowRight');
+    }
   } else {
-    msgStartContainer.classList.add('hidden');
-    startBtn.classList.add('restart');
-    startBtn.textContent = 'Restart';
-    launchGame();
+    if (endY < 0) {
+      swipe('ArrowUp');
+    } else {
+      swipe('ArrowDown');
+    }
   }
 });
