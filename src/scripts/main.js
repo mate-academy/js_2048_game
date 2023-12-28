@@ -34,7 +34,7 @@ function clearBoard() {
 function addRandomTile() {
   const emptyCells = Array.from(cells).filter(cell => cell.innerText === '');
 
-  if (emptyCells.length > 0 && canMove()) {
+  if (emptyCells.length > 0) {
     const randomCell
     = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     const rowIndex = randomCell.parentElement.rowIndex;
@@ -97,8 +97,11 @@ function checkWin() {
 
 function handleKeyPress(evt) {
   evt.preventDefault();
+  let moved = false;
 
   if (!gameOver) {
+    const originalBoard = JSON.parse(JSON.stringify(gameBoard));
+
     switch (evt.key) {
       case 'ArrowUp':
         moveTilesUp();
@@ -120,10 +123,16 @@ function handleKeyPress(evt) {
         break;
     }
 
-    updateBoard();
+    if (!hasBoardChanged(originalBoard, gameBoard)) {
+      moved = true;
+    }
 
-    checkWin();
-    checkLose();
+    if (moved) {
+      addRandomTile();
+      updateBoard();
+      checkWin();
+      checkLose();
+    }
   }
 }
 
@@ -141,8 +150,6 @@ function moveTilesUp() {
       gameBoard[rowIndex][colIndex] = column[rowIndex];
     }
   }
-
-  addRandomTile();
 }
 
 function moveTilesDown() {
@@ -159,8 +166,6 @@ function moveTilesDown() {
       gameBoard[rowIndex][colIndex] = column.shift();
     }
   }
-
-  addRandomTile();
 }
 
 function moveTilesLeft() {
@@ -169,8 +174,6 @@ function moveTilesLeft() {
 
     gameBoard[rowIndex] = slidRow;
   });
-
-  addRandomTile();
 }
 
 function moveTilesRight() {
@@ -180,8 +183,6 @@ function moveTilesRight() {
 
     gameBoard[rowIndex] = slidReversedRow.slice().reverse();
   });
-
-  addRandomTile();
 }
 
 function slideTiles(row) {
@@ -261,6 +262,20 @@ function canMergeInDirection(row, col, direction) {
     default:
       return false;
   }
+}
+
+function hasBoardChanged(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (!arr1[i].every((val, index) => val === arr2[i][index])) {
+      return false
+    }
+  }
+
+  return true;
 }
 
 startButton.addEventListener('click', startGame);
