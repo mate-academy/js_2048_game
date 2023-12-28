@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
     generateNumber();
     generateNumber();
     updateBoard();
+    startButton.textContent = 'Restart';
+    startButton.classList.add('restart');
   }
 
   function updateBoard() {
@@ -232,6 +234,4 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   startButton.addEventListener('click', startGame);
-
-  startGame();
 });
