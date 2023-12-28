@@ -230,35 +230,3 @@ const moveUp = () => {
 const moveDown = () => {
   moveVertical(true);
 };
-
-const swipe = (code) => {
-  document.dispatchEvent(new window.KeyboardEvent('keyup', { 'code': code }));
-};
-
-let startX, startY, endX, endY;
-
-document.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX;
-  startY = e.touches[0].clientY;
-});
-
-document.addEventListener('touchmove', e => {
-  endX = e.touches[0].clientX - startX;
-  endY = e.touches[0].clientY - startY;
-});
-
-document.addEventListener('touchend', e => {
-  if (Math.abs(endX) > Math.abs(endY)) {
-    if (endX < 0) {
-      swipe('ArrowLeft');
-    } else {
-      swipe('ArrowRight');
-    }
-  } else {
-    if (endY < 0) {
-      swipe('ArrowUp');
-    } else {
-      swipe('ArrowDown');
-    }
-  }
-});
