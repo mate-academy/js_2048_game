@@ -164,6 +164,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   }
 
+  function restartGame() {
+    startMessage.classList.add('hidden');
+    gameOverMessage.classList.add('hidden');
+    winMessage.classList.add('hidden');
+    score = 0;
+    initializeBoard();
+    updateBoard();
+  }
+
   function handleKeyPress(newEvent) {
     const direction = newEvent.key.replace('Arrow', '').toLowerCase();
 
@@ -183,15 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-  }
-
-  function restartGame() {
-    startMessage.classList.add('hidden');
-    gameOverMessage.classList.add('hidden');
-    winMessage.classList.add('hidden');
-    score = 0;
-    initializeBoard();
-    updateBoard();
   }
 
   document.addEventListener('keydown', handleKeyPress);
