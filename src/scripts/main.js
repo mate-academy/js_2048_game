@@ -195,8 +195,12 @@ function gameStatus() {
     gameOver();
   }
 
-  if (score >= 2048) {
-    winner();
+  for (let r = 0; r < gameField.length; r++) {
+    for (let c = 0; c < gameField[r].length; c++) {
+      if (gameField[r][c] === 2048) {
+        winner();
+      }
+    }
   }
 }
 
@@ -329,7 +333,7 @@ start.addEventListener('click', () => {
   document.querySelector('.message-start').classList.add('hidden');
   document.querySelector('.message-win').classList.add('hidden');
   document.querySelector('.message-lose').classList.add('hidden');
-
+  scoreHTML.innerHTML = '0';
   gameStart();
 });
 
