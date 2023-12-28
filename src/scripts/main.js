@@ -327,6 +327,7 @@ start.addEventListener('click', () => {
       gameField[r][c] = 0;
     }
   }
+
   start.classList.remove('start');
   start.classList.add('restart');
   start.innerHTML = 'Restart';
