@@ -24,9 +24,11 @@ function createRandomCell() {
   const row = Math.floor(Math.random() * size);
   const cell = Math.floor(Math.random() * size);
 
-  (field[row][cell] === 0)
-    ? field[row][cell] = Math.random() > 0.1 ? 2 : 4
-    : createRandomCell();
+  if (field[row][cell] === 0) {
+    field[row][cell] = Math.random() > 0.1 ? 2 : 4;
+  } else {
+    createRandomCell();
+  }
 }
 
 function changedGameField() {

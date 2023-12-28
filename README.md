@@ -17,7 +17,7 @@ Okay, okay. Also, we have some rules:
 2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
 3) The player can move cells with keyboard arrows
 4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
+   - 2 equal cells еshould be merged into a doubled number
    - The merged cell can’t be merged twice during one move
 5) The move is possible if at least one cell is changed after the move
 6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
