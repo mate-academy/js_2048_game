@@ -79,6 +79,7 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+
 }
 
 .game-header {
@@ -174,10 +175,16 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
+
 }
 
 .message-win {
   background: #edc22e;
+  color: #f9f6f2;
+}
+
+.message-lose {
+  background: red;
   color: #f9f6f2;
 }
 
