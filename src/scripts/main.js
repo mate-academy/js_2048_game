@@ -49,7 +49,7 @@ window.addEventListener('load', () => {
       }
 
       if (this.occupiedPlaces().length === 16 && !this.availableMoves()) {
-        messageLose.classList.toggle('hidden');
+        messageLose.classList.remove('hidden');
       }
     }
 
