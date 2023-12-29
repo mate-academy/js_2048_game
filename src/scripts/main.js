@@ -210,23 +210,24 @@ window.addEventListener('load', () => {
   document.addEventListener('keydown', ev => {
     switch (ev.key) {
       case arrowLeft:
-        htmlBoard.moveLeft();
+        setTimeout(() => htmlBoard.moveLeft(), 100);
         break;
       case arrowRight:
-        htmlBoard.moveRight();
+        setTimeout(() => htmlBoard.moveRight(), 100);
         break;
       case arrowUp:
         ev.preventDefault();
-        htmlBoard.moveUp();
+        setTimeout(() => htmlBoard.moveUp(), 100);
         break;
       case arrowDown:
         ev.preventDefault();
-        htmlBoard.moveDown();
+        setTimeout(() => htmlBoard.moveDown(), 100);
         break;
       default:
         throw new Error('wrong button');
     }
   });
+
   buttonStart.addEventListener('click', startToReset);
 
   function startToReset() {
