@@ -11,10 +11,10 @@ window.addEventListener('load', () => {
   class Board {
     constructor() {
       this.board = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
+        [2, 4, 8, 16],
+        [2, 4, 8, 16],
+        [0, 4, 8, 16],
+        [0, 4, 8, 16],
       ];
       this.score = 0;
       this.start = false;
@@ -25,26 +25,28 @@ window.addEventListener('load', () => {
         return;
       }
 
-      const ShouldAdd4 = Math.random() < 0.1;
-      let xRandomIndex
+      if (this.occupiedPlaces().length < 16) {
+        const ShouldAdd4 = Math.random() < 0.1;
+        let xRandomIndex
       = Math.floor(Math.random() * (this.board.length));
-      let yRandomIndex
+        let yRandomIndex
       = Math.floor(Math.random() * (this.board[0].length));
 
-      const occupiedPlaces = this.occupiedPlaces();
+        const occupiedPlaces = this.occupiedPlaces();
 
-      while (occupiedPlaces.some(
-        cell => cell.y === xRandomIndex && cell.x === yRandomIndex)) {
-        xRandomIndex
+        while (occupiedPlaces.some(
+          cell => cell.y === xRandomIndex && cell.x === yRandomIndex)) {
+          xRandomIndex
         = Math.floor(Math.random() * (this.board.length));
 
-        yRandomIndex
+          yRandomIndex
         = Math.floor(Math.random() * (this.board[0].length));
+        }
+
+        this.board[xRandomIndex][yRandomIndex] = ShouldAdd4 ? 4 : 2;
+
+        this.render();
       }
-
-      this.board[xRandomIndex][yRandomIndex] = ShouldAdd4 ? 4 : 2;
-
-      this.render();
 
       if (this.occupiedPlaces().length === 16 && !this.availableMoves()) {
         messageLose.classList.toggle('hidden');
