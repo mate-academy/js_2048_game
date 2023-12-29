@@ -204,17 +204,17 @@ window.addEventListener('load', () => {
 
   document.addEventListener('keydown', ev => {
     switch (ev.key) {
-      case ev.key === 'ArrowLeft':
+      case 'ArrowLeft':
         htmlBoard.moveLeft();
         break;
-      case ev.key === 'ArrowRight':
+      case 'ArrowRight':
         htmlBoard.moveRight();
         break;
-      case ev.key === 'ArrowUp':
+      case 'ArrowUp':
         ev.preventDefault();
         htmlBoard.moveUp();
         break;
-      case ev.key === 'ArrowDown':
+      case 'ArrowDown':
         ev.preventDefault();
         htmlBoard.moveDown();
         break;
