@@ -255,6 +255,6 @@ window.addEventListener('load', () => {
       scoreElem.textContent = '0';
     }
 
-    buttonStart.textContent = 'Restart';
+    buttonStart.textContent = restart;
   }
 });
