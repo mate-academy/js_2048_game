@@ -120,27 +120,28 @@ window.addEventListener('load', () => {
     move({ moveDirectionCallback, xIsWithinBoard, yIsWithinBoard,
       nextIndexY, columnStartIndex, nextIndexX,
       rowStartIndex, currentX, currentY }) {
-      if (xIsWithinBoard) {
-        if (yIsWithinBoard) {
-          const temp = this.board[currentY][currentX];
-          const isTheSameNumber = this.board[nextIndexY][nextIndexX] === temp;
+      if (xIsWithinBoard && yIsWithinBoard) {
+        const temp = this.board[currentY][currentX];
 
-          if ((temp !== 0 && this.board[nextIndexY][nextIndexX] === 0)
-            || isTheSameNumber) {
-            this.board[nextIndexY][nextIndexX] = isTheSameNumber
-              ? temp * 2 : temp;
+        if (temp !== 0) {
+          const nextCell = this.board[nextIndexY][nextIndexX];
+          const isTheSameNumber = nextCell === temp;
+
+          if (nextCell === 0 || isTheSameNumber) {
+            this.board[nextIndexY][nextIndexX]
+            = isTheSameNumber ? temp * 2 : temp;
             this.board[currentY][currentX] = 0;
 
             if (isTheSameNumber) {
               this.updateScore(temp * 2);
             }
-          }
 
-          return moveDirectionCallback.call(this, nextIndexX, nextIndexY);
-        } else {
-          return moveDirectionCallback.call(
-            this, rowStartIndex, columnStartIndex);
+            return moveDirectionCallback.call(this, nextIndexX, nextIndexY);
+          }
         }
+
+        return moveDirectionCallback.call(
+          this, rowStartIndex, columnStartIndex);
       }
 
       this.appendOneBox();
@@ -210,50 +211,23 @@ window.addEventListener('load', () => {
   document.addEventListener('keydown', ev => {
     switch (ev.key) {
       case arrowLeft:
-        queueMove(() => htmlBoard.moveLeft());
+        htmlBoard.moveLeft();
         break;
       case arrowRight:
-        queueMove(() => htmlBoard.moveRight());
+        htmlBoard.moveRight();
         break;
       case arrowUp:
         ev.preventDefault();
-        queueMove(() => htmlBoard.moveUp());
+        htmlBoard.moveUp();
         break;
       case arrowDown:
         ev.preventDefault();
-        queueMove(() => htmlBoard.moveDown());
+        htmlBoard.moveDown();
         break;
       default:
         throw new Error('wrong button');
     }
   });
-
-  const moveQueue = [];
-  let isMoveInProgress = false;
-
-  function queueMove(moveFunction) {
-    moveQueue.push(moveFunction);
-
-    if (!isMoveInProgress) {
-      executeNextMove();
-    }
-  }
-
-  function executeNextMove() {
-    if (moveQueue.length > 0) {
-      isMoveInProgress = true;
-
-      const nextMove = moveQueue.shift();
-
-      nextMove();
-
-      setTimeout(() => {
-        isMoveInProgress = false;
-        executeNextMove();
-      }, 100);
-    }
-  }
-
   buttonStart.addEventListener('click', startToReset);
 
   function startToReset() {
