@@ -34,12 +34,16 @@ function clearBoard() {
 function addRandomTile() {
   const emptyCells = Array.from(cells).filter(cell => cell.innerText === '');
 
-  if (emptyCells.length > 0) {
-    const randomCell
-    = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    const rowIndex = randomCell.parentElement.rowIndex;
-    const columnIndex = randomCell.cellIndex;
+  if (emptyCells.length === 0) {
+    return false;
+  }
 
+  const randomCell
+  = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  const rowIndex = randomCell.parentElement.rowIndex;
+  const columnIndex = randomCell.cellIndex;
+
+  if (gameBoard[rowIndex][columnIndex] === 0) {
     gameBoard[rowIndex][columnIndex] = Math.random() < 0.9 ? 2 : 4;
     randomCell.innerText = gameBoard[rowIndex][columnIndex].toString();
   }
@@ -97,10 +101,10 @@ function checkWin() {
 
 function handleKeyPress(evt) {
   evt.preventDefault();
-  let moved = false;
 
   if (!gameOver) {
     const originalBoard = JSON.parse(JSON.stringify(gameBoard));
+    let moved = false;
 
     switch (evt.key) {
       case 'ArrowUp':
@@ -130,9 +134,10 @@ function handleKeyPress(evt) {
     if (moved) {
       addRandomTile();
       updateBoard();
-      checkWin();
-      checkLose();
     }
+
+    checkWin();
+    checkLose();
   }
 }
 
@@ -210,15 +215,11 @@ function removeZeroes(row) {
 }
 
 function canMerged() {
-  let canMerge = false;
-
   for (let row = 0; row < BOARD_SIZE - 1; row++) {
     for (let col = 0; col < BOARD_SIZE - 1; col++) {
       if (gameBoard[row][col] === gameBoard[row + 1][col]
         || gameBoard[row][col] === gameBoard[row][col + 1]) {
-        canMerge = true;
-
-        return canMerge;
+        return true;
       }
 
       if (
@@ -232,7 +233,7 @@ function canMerged() {
     }
   }
 
-  return canMerge;
+  return false;
 }
 
 function canMove() {
@@ -266,12 +267,12 @@ function canMergeInDirection(row, col, direction) {
 
 function hasBoardChanged(arr1, arr2) {
   if (arr1.length !== arr2.length) {
-    return false
+    return false;
   }
 
   for (let i = 0; i < arr1.length; i++) {
     if (!arr1[i].every((val, index) => val === arr2[i][index])) {
-      return false
+      return false;
     }
   }
 
