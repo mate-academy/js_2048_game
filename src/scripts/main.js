@@ -7,6 +7,11 @@ window.addEventListener('load', () => {
   const messageStart = document.querySelector('.message-start');
   const messageWin = document.querySelector('.message-win');
   const messageLose = document.querySelector('.message-lose');
+  const arrowDown = 'ArrowDown';
+  const arrowLeft = 'ArrowLeft';
+  const arrowRight = 'ArrowRight';
+  const arrowUp = 'ArrowUp';
+  const restart = 'Restart';
 
   class Board {
     constructor() {
@@ -204,17 +209,17 @@ window.addEventListener('load', () => {
 
   document.addEventListener('keydown', ev => {
     switch (ev.key) {
-      case 'ArrowLeft':
+      case arrowLeft:
         htmlBoard.moveLeft();
         break;
-      case 'ArrowRight':
+      case arrowRight:
         htmlBoard.moveRight();
         break;
-      case 'ArrowUp':
+      case arrowUp:
         ev.preventDefault();
         htmlBoard.moveUp();
         break;
-      case 'ArrowDown':
+      case arrowDown:
         ev.preventDefault();
         htmlBoard.moveDown();
         break;
@@ -235,7 +240,7 @@ window.addEventListener('load', () => {
     buttonStart.classList.remove('start');
     messageStart.classList.add('hidden');
 
-    if (buttonStart.textContent === 'Restart') {
+    if (buttonStart.textContent === restart) {
       htmlBoard.board = [
         [0, 0, 0, 0],
         [0, 0, 0, 0],
