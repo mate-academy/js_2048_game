@@ -208,24 +208,51 @@ window.addEventListener('load', () => {
   const htmlBoard = new Board();
 
   document.addEventListener('keydown', ev => {
-    if (ev.key === 'ArrowLeft') {
-      htmlBoard.moveLeft();
-    }
-
-    if (ev.key === 'ArrowRight') {
-      htmlBoard.moveRight();
-    }
-
-    if (ev.key === 'ArrowUp') {
-      ev.preventDefault();
-      htmlBoard.moveUp();
-    }
-
-    if (ev.key === 'ArrowDown') {
-      ev.preventDefault();
-      htmlBoard.moveDown();
+    switch (ev.key) {
+      case arrowLeft:
+        queueMove(() => htmlBoard.moveLeft());
+        break;
+      case arrowRight:
+        queueMove(() => htmlBoard.moveRight());
+        break;
+      case arrowUp:
+        ev.preventDefault();
+        queueMove(() => htmlBoard.moveUp());
+        break;
+      case arrowDown:
+        ev.preventDefault();
+        queueMove(() => htmlBoard.moveDown());
+        break;
+      default:
+        throw new Error('wrong button');
     }
   });
+
+  const moveQueue = [];
+  let isMoveInProgress = false;
+
+  function queueMove(moveFunction) {
+    moveQueue.push(moveFunction);
+
+    if (!isMoveInProgress) {
+      executeNextMove();
+    }
+  }
+
+  function executeNextMove() {
+    if (moveQueue.length > 0) {
+      isMoveInProgress = true;
+
+      const nextMove = moveQueue.shift();
+
+      nextMove();
+
+      setTimeout(() => {
+        isMoveInProgress = false;
+        executeNextMove();
+      }, 100);
+    }
+  }
 
   buttonStart.addEventListener('click', startToReset);
 
