@@ -208,23 +208,22 @@ window.addEventListener('load', () => {
   const htmlBoard = new Board();
 
   document.addEventListener('keydown', ev => {
-    switch (ev.key) {
-      case arrowLeft:
-        setTimeout(() => htmlBoard.moveLeft(), 100);
-        break;
-      case arrowRight:
-        setTimeout(() => htmlBoard.moveRight(), 100);
-        break;
-      case arrowUp:
-        ev.preventDefault();
-        setTimeout(() => htmlBoard.moveUp(), 100);
-        break;
-      case arrowDown:
-        ev.preventDefault();
-        setTimeout(() => htmlBoard.moveDown(), 100);
-        break;
-      default:
-        throw new Error('wrong button');
+    if (ev.key === 'ArrowLeft') {
+      htmlBoard.moveLeft();
+    }
+
+    if (ev.key === 'ArrowRight') {
+      htmlBoard.moveRight();
+    }
+
+    if (ev.key === 'ArrowUp') {
+      ev.preventDefault();
+      htmlBoard.moveUp();
+    }
+
+    if (ev.key === 'ArrowDown') {
+      ev.preventDefault();
+      htmlBoard.moveDown();
     }
   });
 
