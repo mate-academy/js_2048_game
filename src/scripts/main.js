@@ -35,7 +35,7 @@ function addRandomTile() {
   const emptyCells = Array.from(cells).filter(cell => cell.innerText === '');
 
   if (emptyCells.length === 0) {
-    return false;
+    return;
   }
 
   const randomCell
@@ -46,6 +46,8 @@ function addRandomTile() {
   if (gameBoard[rowIndex][columnIndex] === 0) {
     gameBoard[rowIndex][columnIndex] = Math.random() < 0.9 ? 2 : 4;
     randomCell.innerText = gameBoard[rowIndex][columnIndex].toString();
+  } else if (gameBoard[rowIndex][columnIndex] !== 0) {
+    addRandomTile();
   }
 }
 
@@ -133,9 +135,9 @@ function handleKeyPress(evt) {
 
     if (moved) {
       addRandomTile();
-      updateBoard();
     }
-
+    
+    updateBoard();
     checkWin();
     checkLose();
   }
