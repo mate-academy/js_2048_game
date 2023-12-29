@@ -351,6 +351,7 @@ document.addEventListener('keydown', (e) => {
     }
 
     scoreHTML.innerHTML = score;
+
     generateCell();
     renderGameField();
     gameStatus();
