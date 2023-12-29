@@ -32,20 +32,19 @@ window.addEventListener('load', () => {
 
       if (this.occupiedPlaces().length < 16) {
         const ShouldAdd4 = Math.random() < 0.1;
-        let xRandomIndex
-      = Math.floor(Math.random() * (this.board.length));
-        let yRandomIndex
-      = Math.floor(Math.random() * (this.board[0].length));
+        let xRandomIndex = Math.floor(Math.random() * this.board.length);
+        let yRandomIndex = Math.floor(Math.random() * this.board[0].length);
 
         const occupiedPlaces = this.occupiedPlaces();
 
-        while (occupiedPlaces.some(
-          cell => cell.y === xRandomIndex && cell.x === yRandomIndex)) {
-          xRandomIndex
-        = Math.floor(Math.random() * (this.board.length));
+        while (
+          occupiedPlaces.some(
+            (cell) => cell.y === xRandomIndex && cell.x === yRandomIndex
+          )
+        ) {
+          xRandomIndex = Math.floor(Math.random() * this.board.length);
 
-          yRandomIndex
-        = Math.floor(Math.random() * (this.board[0].length));
+          yRandomIndex = Math.floor(Math.random() * this.board[0].length);
         }
 
         this.board[xRandomIndex][yRandomIndex] = ShouldAdd4 ? 4 : 2;
@@ -60,10 +59,12 @@ window.addEventListener('load', () => {
 
     availableMoves() {
       const move = this.occupiedPlaces().some(({ y, x }) => {
-        return this.getBoardField(y, x - 1) === this.getBoardField(y, x)
-        || this.getBoardField(y, x + 1) === this.getBoardField(y, x)
-        || this.getBoardField(y + 1, x) === this.getBoardField(y, x)
-        || this.getBoardField(y - 1, x) === this.getBoardField(y, x);
+        return (
+          this.getBoardField(y, x - 1) === this.getBoardField(y, x)
+          || this.getBoardField(y, x + 1) === this.getBoardField(y, x)
+          || this.getBoardField(y + 1, x) === this.getBoardField(y, x)
+          || this.getBoardField(y - 1, x) === this.getBoardField(y, x)
+        );
       });
 
       return move;
@@ -74,7 +75,7 @@ window.addEventListener('load', () => {
     }
 
     check2048() {
-      if (this.board.flat().some(elem => elem === 2048)) {
+      if (this.board.flat().some((elem) => elem === 2048)) {
         messageWin.classList.toggle('hidden');
       }
     }
@@ -91,8 +92,8 @@ window.addEventListener('load', () => {
         for (let x = 0; x < this.board[y].length; x++) {
           if (this.board[y][x] !== 0) {
             occupiedPlaces.push({
-              'y': y,
-              'x': x,
+              y: y,
+              x: x,
             });
           }
         }
@@ -117,29 +118,24 @@ window.addEventListener('load', () => {
       }
     }
 
-    move({ moveDirectionCallback, xIsWithinBoard, yIsWithinBoard,
-      nextIndexY, columnStartIndex, nextIndexX,
-      rowStartIndex, currentX, currentY }) {
-      if (xIsWithinBoard) {
-        if (yIsWithinBoard) {
-          const temp = this.board[currentY][currentX];
-          const isTheSameNumber = this.board[nextIndexY][nextIndexX] === temp;
+    moveRight(x = 0, y = 0) {
+      if (y < this.board.length) {
+        if (x < this.board.length - 1) {
+          const temp = this.board[y][x];
+          const isTheSameNumber = this.board[y][x + 1] === temp;
 
-          if ((temp !== 0 && this.board[nextIndexY][nextIndexX] === 0)
-            || isTheSameNumber) {
-            this.board[nextIndexY][nextIndexX] = isTheSameNumber
-              ? temp * 2 : temp;
-            this.board[currentY][currentX] = 0;
+          if ((temp !== 0 && this.board[y][x + 1] === 0) || isTheSameNumber) {
+            this.board[y][x + 1] = isTheSameNumber ? temp * 2 : temp;
+            this.board[y][x] = 0;
 
             if (isTheSameNumber) {
               this.updateScore(temp * 2);
             }
           }
 
-          return moveDirectionCallback.call(this, nextIndexX, nextIndexY);
+          return this.moveRight(x + 1, y);
         } else {
-          return moveDirectionCallback.call(
-            this, rowStartIndex, columnStartIndex);
+          return this.moveRight(0, y + 1);
         }
       }
 
@@ -148,66 +144,88 @@ window.addEventListener('load', () => {
       this.check2048();
     }
 
-    moveRight(x = 0, y = 0) {
-      this.move({
-        moveDirectionCallback: this.moveRight,
-        xIsWithinBoard: (y < this.board.length),
-        yIsWithinBoard: (x < this.board.length - 1),
-        nextIndexY: y,
-        columnStartIndex: y + 1,
-        nextIndexX: x + 1,
-        rowStartIndex: 0,
-        currentX: x,
-        currentY: y,
-      });
-    }
-
     moveLeft(x = this.board.length - 1, y = 0) {
-      this.move({
-        moveDirectionCallback: this.moveLeft,
-        xIsWithinBoard: (y < this.board.length),
-        yIsWithinBoard: (x > 0),
-        nextIndexY: y,
-        columnStartIndex: y + 1,
-        nextIndexX: x - 1,
-        rowStartIndex: (this.board.length - 1),
-        currentX: x,
-        currentY: y,
-      });
+      if (y < this.board.length) {
+        if (x > 0) {
+          const temp = this.board[y][x];
+          const isTheSameNumber = this.board[y][x - 1] === temp;
+
+          if ((temp !== 0 && this.board[y][x - 1] === 0) || isTheSameNumber) {
+            this.board[y][x - 1] = isTheSameNumber ? temp * 2 : temp;
+            this.board[y][x] = 0;
+
+            if (isTheSameNumber) {
+              this.updateScore(temp * 2);
+            }
+          }
+
+          return this.moveLeft(x - 1, y);
+        } else {
+          return this.moveLeft(this.board.length - 1, y + 1);
+        }
+      }
+
+      this.appendOneBox();
+      this.occupiedPlaces();
+      this.check2048();
     }
 
     moveUp(x = 0, y = this.board.length - 1) {
-      this.move({
-        moveDirectionCallback: this.moveUp,
-        xIsWithinBoard: (x < this.board.length),
-        yIsWithinBoard: (y > 0),
-        nextIndexY: y - 1,
-        columnStartIndex: (this.board.length - 1),
-        nextIndexX: x,
-        rowStartIndex: x + 1,
-        currentX: x,
-        currentY: y,
-      });
+      if (x < this.board.length) {
+        if (y > 0) {
+          const temp = this.board[y][x];
+          const isTheSameNumber = this.board[y - 1][x] === temp;
+
+          if ((temp !== 0 && this.board[y - 1][x] === 0) || isTheSameNumber) {
+            this.board[y - 1][x] = isTheSameNumber ? temp * 2 : temp;
+            this.board[y][x] = 0;
+
+            if (isTheSameNumber) {
+              this.updateScore(temp * 2);
+            }
+          }
+
+          return this.moveUp(x, y - 1);
+        } else {
+          return this.moveUp(x + 1, this.board.length - 1);
+        }
+      }
+
+      this.appendOneBox();
+      this.occupiedPlaces();
+      this.check2048();
     }
 
     moveDown(x = 0, y = 0) {
-      this.move({
-        moveDirectionCallback: this.moveDown,
-        xIsWithinBoard: (x < this.board.length),
-        yIsWithinBoard: (y < this.board.length - 1),
-        nextIndexY: y + 1,
-        columnStartIndex: 0,
-        nextIndexX: x,
-        rowStartIndex: x + 1,
-        currentX: x,
-        currentY: y,
-      });
+      if (x < this.board.length) {
+        if (y < this.board.length - 1) {
+          const temp = this.board[y][x];
+          const isTheSameNumber = this.board[y + 1][x] === temp;
+
+          if ((temp !== 0 && this.board[y + 1][x] === 0) || isTheSameNumber) {
+            this.board[y + 1][x] = isTheSameNumber ? temp * 2 : temp;
+            this.board[y][x] = 0;
+
+            if (isTheSameNumber) {
+              this.updateScore(temp * 2);
+            }
+          }
+
+          return this.moveDown(x, y + 1);
+        } else {
+          return this.moveDown(x + 1, 0);
+        }
+      }
+
+      this.appendOneBox();
+      this.occupiedPlaces();
+      this.check2048();
     }
   }
 
   const htmlBoard = new Board();
 
-  document.addEventListener('keydown', ev => {
+  document.addEventListener('keydown', (ev) => {
     switch (ev.key) {
       case arrowLeft:
         htmlBoard.moveLeft();
