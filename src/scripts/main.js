@@ -242,6 +242,7 @@ window.addEventListener('load', () => {
         [0, 0, 0, 0],
       ];
 
+      messageLose.classList.add('hidden');
       htmlBoard.appendOneBox();
       htmlBoard.appendOneBox();
       htmlBoard.score = 0;
