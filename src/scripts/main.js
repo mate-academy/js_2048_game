@@ -11,10 +11,10 @@ window.addEventListener('load', () => {
   class Board {
     constructor() {
       this.board = [
-        [2, 4, 8, 16],
-        [2, 4, 8, 16],
-        [0, 4, 8, 16],
-        [0, 4, 8, 16],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
       ];
       this.score = 0;
       this.start = false;
