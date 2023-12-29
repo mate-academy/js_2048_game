@@ -203,22 +203,23 @@ window.addEventListener('load', () => {
   const htmlBoard = new Board();
 
   document.addEventListener('keydown', ev => {
-    if (ev.key === 'ArrowLeft') {
-      htmlBoard.moveLeft();
-    }
-
-    if (ev.key === 'ArrowRight') {
-      htmlBoard.moveRight();
-    }
-
-    if (ev.key === 'ArrowUp') {
-      ev.preventDefault();
-      htmlBoard.moveUp();
-    }
-
-    if (ev.key === 'ArrowDown') {
-      ev.preventDefault();
-      htmlBoard.moveDown();
+    switch (ev.key) {
+      case ev.key === 'ArrowLeft':
+        htmlBoard.moveLeft();
+        break;
+      case ev.key === 'ArrowRight':
+        htmlBoard.moveRight();
+        break;
+      case ev.key === 'ArrowUp':
+        ev.preventDefault();
+        htmlBoard.moveUp();
+        break;
+      case ev.key === 'ArrowDown':
+        ev.preventDefault();
+        htmlBoard.moveDown();
+        break;
+      default:
+        throw new Error('wrong button');
     }
   });
   buttonStart.addEventListener('click', startToReset);
