@@ -120,28 +120,27 @@ window.addEventListener('load', () => {
     move({ moveDirectionCallback, xIsWithinBoard, yIsWithinBoard,
       nextIndexY, columnStartIndex, nextIndexX,
       rowStartIndex, currentX, currentY }) {
-      if (xIsWithinBoard && yIsWithinBoard) {
-        const temp = this.board[currentY][currentX];
+      if (xIsWithinBoard) {
+        if (yIsWithinBoard) {
+          const temp = this.board[currentY][currentX];
+          const isTheSameNumber = this.board[nextIndexY][nextIndexX] === temp;
 
-        if (temp !== 0) {
-          const nextCell = this.board[nextIndexY][nextIndexX];
-          const isTheSameNumber = nextCell === temp;
-
-          if (nextCell === 0 || isTheSameNumber) {
-            this.board[nextIndexY][nextIndexX]
-            = isTheSameNumber ? temp * 2 : temp;
+          if ((temp !== 0 && this.board[nextIndexY][nextIndexX] === 0)
+            || isTheSameNumber) {
+            this.board[nextIndexY][nextIndexX] = isTheSameNumber
+              ? temp * 2 : temp;
             this.board[currentY][currentX] = 0;
 
             if (isTheSameNumber) {
               this.updateScore(temp * 2);
             }
-
-            return moveDirectionCallback.call(this, nextIndexX, nextIndexY);
           }
-        }
 
-        return moveDirectionCallback.call(
-          this, rowStartIndex, columnStartIndex);
+          return moveDirectionCallback.call(this, nextIndexX, nextIndexY);
+        } else {
+          return moveDirectionCallback.call(
+            this, rowStartIndex, columnStartIndex);
+        }
       }
 
       this.appendOneBox();
