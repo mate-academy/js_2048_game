@@ -7,11 +7,6 @@ window.addEventListener('load', () => {
   const messageStart = document.querySelector('.message-start');
   const messageWin = document.querySelector('.message-win');
   const messageLose = document.querySelector('.message-lose');
-  const arrowDown = 'ArrowDown';
-  const arrowLeft = 'ArrowLeft';
-  const arrowRight = 'ArrowRight';
-  const arrowUp = 'ArrowUp';
-  const restart = 'Restart';
 
   class Board {
     constructor() {
@@ -30,41 +25,38 @@ window.addEventListener('load', () => {
         return;
       }
 
-      if (this.occupiedPlaces().length < 16) {
-        const ShouldAdd4 = Math.random() < 0.1;
-        let xRandomIndex = Math.floor(Math.random() * this.board.length);
-        let yRandomIndex = Math.floor(Math.random() * this.board[0].length);
+      const ShouldAdd4 = Math.random() < 0.1;
+      let xRandomIndex
+      = Math.floor(Math.random() * (this.board.length));
+      let yRandomIndex
+      = Math.floor(Math.random() * (this.board[0].length));
 
-        const occupiedPlaces = this.occupiedPlaces();
+      const occupiedPlaces = this.occupiedPlaces();
 
-        while (
-          occupiedPlaces.some(
-            (cell) => cell.y === xRandomIndex && cell.x === yRandomIndex
-          )
-        ) {
-          xRandomIndex = Math.floor(Math.random() * this.board.length);
+      while (occupiedPlaces.some(
+        cell => cell.y === xRandomIndex && cell.x === yRandomIndex)) {
+        xRandomIndex
+        = Math.floor(Math.random() * (this.board.length));
 
-          yRandomIndex = Math.floor(Math.random() * this.board[0].length);
-        }
-
-        this.board[xRandomIndex][yRandomIndex] = ShouldAdd4 ? 4 : 2;
-
-        this.render();
+        yRandomIndex
+        = Math.floor(Math.random() * (this.board[0].length));
       }
 
+      this.board[xRandomIndex][yRandomIndex] = ShouldAdd4 ? 4 : 2;
+
+      this.render();
+
       if (this.occupiedPlaces().length === 16 && !this.availableMoves()) {
-        messageLose.classList.remove('hidden');
+        messageLose.classList.toggle('hidden');
       }
     }
 
     availableMoves() {
       const move = this.occupiedPlaces().some(({ y, x }) => {
-        return (
-          this.getBoardField(y, x - 1) === this.getBoardField(y, x)
-          || this.getBoardField(y, x + 1) === this.getBoardField(y, x)
-          || this.getBoardField(y + 1, x) === this.getBoardField(y, x)
-          || this.getBoardField(y - 1, x) === this.getBoardField(y, x)
-        );
+        return this.getBoardField(y, x - 1) === this.getBoardField(y, x)
+        || this.getBoardField(y, x + 1) === this.getBoardField(y, x)
+        || this.getBoardField(y + 1, x) === this.getBoardField(y, x)
+        || this.getBoardField(y - 1, x) === this.getBoardField(y, x);
       });
 
       return move;
@@ -75,7 +67,7 @@ window.addEventListener('load', () => {
     }
 
     check2048() {
-      if (this.board.flat().some((elem) => elem === 2048)) {
+      if (this.board.flat().some(elem => elem === 2048)) {
         messageWin.classList.toggle('hidden');
       }
     }
@@ -92,8 +84,8 @@ window.addEventListener('load', () => {
         for (let x = 0; x < this.board[y].length; x++) {
           if (this.board[y][x] !== 0) {
             occupiedPlaces.push({
-              y: y,
-              x: x,
+              'y': y,
+              'x': x,
             });
           }
         }
@@ -118,24 +110,32 @@ window.addEventListener('load', () => {
       }
     }
 
-    moveRight(x = 0, y = 0) {
-      if (y < this.board.length) {
-        if (x < this.board.length - 1) {
-          const temp = this.board[y][x];
-          const isTheSameNumber = this.board[y][x + 1] === temp;
+    moveRight(col = this.board.length - 1, row = 0, hasMerged = false) {
+      let merged = hasMerged;
 
-          if ((temp !== 0 && this.board[y][x + 1] === 0) || isTheSameNumber) {
-            this.board[y][x + 1] = isTheSameNumber ? temp * 2 : temp;
-            this.board[y][x] = 0;
+      if (row < this.board.length) {
+        if (col > 0) {
+          const temp = this.board[row][col];
+          const nextValue = this.board[row][col - 1];
+          const isTheSameNumber = nextValue === temp && !merged;
+
+          if (nextValue !== 0 && (temp === 0 || isTheSameNumber)) {
+            this.board[row][col] = isTheSameNumber ? nextValue * 2 : nextValue;
+            this.board[row][col - 1] = 0;
 
             if (isTheSameNumber) {
-              this.updateScore(temp * 2);
+              this.updateScore(nextValue * 2);
+              merged = true;
+            }
+
+            if (col < this.board.length - 1) {
+              return this.moveRight(col + 1, row, merged);
             }
           }
 
-          return this.moveRight(x + 1, y);
+          return this.moveRight(col - 1, row);
         } else {
-          return this.moveRight(0, y + 1);
+          return this.moveRight(this.board.length - 1, row + 1);
         }
       }
 
@@ -144,24 +144,32 @@ window.addEventListener('load', () => {
       this.check2048();
     }
 
-    moveLeft(x = this.board.length - 1, y = 0) {
-      if (y < this.board.length) {
-        if (x > 0) {
-          const temp = this.board[y][x];
-          const isTheSameNumber = this.board[y][x - 1] === temp;
+    moveLeft(col = 0, row = 0, hasMerged = false) {
+      let merged = hasMerged;
 
-          if ((temp !== 0 && this.board[y][x - 1] === 0) || isTheSameNumber) {
-            this.board[y][x - 1] = isTheSameNumber ? temp * 2 : temp;
-            this.board[y][x] = 0;
+      if (row < this.board.length) {
+        if (col < this.board.length - 1) {
+          const temp = this.board[row][col];
+          const nextValue = this.board[row][col + 1];
+          const isTheSameNumber = nextValue === temp && !merged;
+
+          if (nextValue !== 0 && (temp === 0 || isTheSameNumber)) {
+            this.board[row][col] = isTheSameNumber ? nextValue * 2 : nextValue;
+            this.board[row][col + 1] = 0;
 
             if (isTheSameNumber) {
-              this.updateScore(temp * 2);
+              this.updateScore(nextValue * 2);
+              merged = true;
+            }
+
+            if (col > 0) {
+              return this.moveLeft(col - 1, row, merged);
             }
           }
 
-          return this.moveLeft(x - 1, y);
+          return this.moveLeft(col + 1, row);
         } else {
-          return this.moveLeft(this.board.length - 1, y + 1);
+          return this.moveLeft(0, row + 1);
         }
       }
 
@@ -170,24 +178,32 @@ window.addEventListener('load', () => {
       this.check2048();
     }
 
-    moveUp(x = 0, y = this.board.length - 1) {
-      if (x < this.board.length) {
-        if (y > 0) {
-          const temp = this.board[y][x];
-          const isTheSameNumber = this.board[y - 1][x] === temp;
+    moveUp(col = 0, row = 0, hasMerged = false) {
+      let merged = hasMerged;
 
-          if ((temp !== 0 && this.board[y - 1][x] === 0) || isTheSameNumber) {
-            this.board[y - 1][x] = isTheSameNumber ? temp * 2 : temp;
-            this.board[y][x] = 0;
+      if (col < this.board.length) {
+        if (row < this.board.length - 1) {
+          const temp = this.board[row][col];
+          const nextValue = this.board[row + 1][col];
+          const isTheSameNumber = nextValue === temp && !merged;
+
+          if (nextValue !== 0 && (temp === 0 || isTheSameNumber)) {
+            this.board[row][col] = isTheSameNumber ? nextValue * 2 : nextValue;
+            this.board[row + 1][col] = 0;
 
             if (isTheSameNumber) {
-              this.updateScore(temp * 2);
+              this.updateScore(nextValue * 2);
+              merged = true;
+            }
+
+            if (row > 0) {
+              return this.moveUp(col, row - 1, merged);
             }
           }
 
-          return this.moveUp(x, y - 1);
+          return this.moveUp(col, row + 1);
         } else {
-          return this.moveUp(x + 1, this.board.length - 1);
+          return this.moveUp(col + 1, 0);
         }
       }
 
@@ -196,24 +212,32 @@ window.addEventListener('load', () => {
       this.check2048();
     }
 
-    moveDown(x = 0, y = 0) {
-      if (x < this.board.length) {
-        if (y < this.board.length - 1) {
-          const temp = this.board[y][x];
-          const isTheSameNumber = this.board[y + 1][x] === temp;
+    moveDown(col = 0, row = this.board.length - 1, hasMerged = false) {
+      let merged = hasMerged;
 
-          if ((temp !== 0 && this.board[y + 1][x] === 0) || isTheSameNumber) {
-            this.board[y + 1][x] = isTheSameNumber ? temp * 2 : temp;
-            this.board[y][x] = 0;
+      if (col < this.board.length) {
+        if (row > 0) {
+          const temp = this.board[row][col];
+          const nextValue = this.board[row - 1][col];
+          const isTheSameNumber = nextValue === temp && !merged;
+
+          if (nextValue !== 0 && (temp === 0 || isTheSameNumber)) {
+            this.board[row][col] = isTheSameNumber ? nextValue * 2 : nextValue;
+            this.board[row - 1][col] = 0;
 
             if (isTheSameNumber) {
-              this.updateScore(temp * 2);
+              this.updateScore(nextValue * 2);
+              merged = true;
+            }
+
+            if (row < this.board.length - 1) {
+              return this.moveDown(col, row + 1, merged);
             }
           }
 
-          return this.moveDown(x, y + 1);
+          return this.moveDown(col, row - 1);
         } else {
-          return this.moveDown(x + 1, 0);
+          return this.moveDown(col + 1, this.board.length - 1);
         }
       }
 
@@ -225,24 +249,23 @@ window.addEventListener('load', () => {
 
   const htmlBoard = new Board();
 
-  document.addEventListener('keydown', (ev) => {
-    switch (ev.key) {
-      case arrowLeft:
-        htmlBoard.moveLeft();
-        break;
-      case arrowRight:
-        htmlBoard.moveRight();
-        break;
-      case arrowUp:
-        ev.preventDefault();
-        htmlBoard.moveUp();
-        break;
-      case arrowDown:
-        ev.preventDefault();
-        htmlBoard.moveDown();
-        break;
-      default:
-        throw new Error('wrong button');
+  document.addEventListener('keydown', ev => {
+    if (ev.key === 'ArrowLeft') {
+      htmlBoard.moveLeft();
+    }
+
+    if (ev.key === 'ArrowRight') {
+      htmlBoard.moveRight();
+    }
+
+    if (ev.key === 'ArrowUp') {
+      ev.preventDefault();
+      htmlBoard.moveUp();
+    }
+
+    if (ev.key === 'ArrowDown') {
+      ev.preventDefault();
+      htmlBoard.moveDown();
     }
   });
   buttonStart.addEventListener('click', startToReset);
@@ -258,7 +281,7 @@ window.addEventListener('load', () => {
     buttonStart.classList.remove('start');
     messageStart.classList.add('hidden');
 
-    if (buttonStart.textContent === restart) {
+    if (buttonStart.textContent === 'Restart') {
       htmlBoard.board = [
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -266,13 +289,12 @@ window.addEventListener('load', () => {
         [0, 0, 0, 0],
       ];
 
-      messageLose.classList.add('hidden');
       htmlBoard.appendOneBox();
       htmlBoard.appendOneBox();
       htmlBoard.score = 0;
       scoreElem.textContent = '0';
     }
 
-    buttonStart.textContent = restart;
+    buttonStart.textContent = 'Restart';
   }
 });
