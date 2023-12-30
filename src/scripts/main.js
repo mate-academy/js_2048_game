@@ -2,6 +2,8 @@
 'use strict';
 
 const board = [];
+let rowNum = [];
+let colNum = [];
 const scoreTotal = document.querySelector('.game-score');
 const messWin = document.querySelector('.message-win');
 const messLose = document.querySelector('.message-lose');
@@ -54,6 +56,47 @@ function clearAll() {
   messWin.classList.add('hidden');
   messLose.classList.add('hidden');
   messStart.style.display = 'none';
+  rowNum = [];
+  colNum = [];
+}
+
+function showGameOver() {
+  let isMoveInRowAv = false;
+  let isMoveInColAv = false;
+
+  for (let r = 0; r < rows; r++) {
+    rowNum = [Number(board[r][0].innerText),
+      Number(board[r][1].innerText),
+      Number(board[r][2].innerText),
+      Number(board[r][3].innerText),
+    ];
+
+    for (let i = 0; i < rowNum.length; i++) {
+      if (rowNum[i] === rowNum[i + 1]) {
+        isMoveInRowAv = true;
+      }
+    }
+  }
+
+  for (let c = 0; c < columns; c++) {
+    colNum = [Number(board[0][c].innerText),
+      Number(board[1][c].innerText),
+      Number(board[2][c].innerText),
+      Number(board[3][c].innerText),
+    ];
+
+    for (let i = 0; i < colNum.length; i++) {
+      if (colNum[i] === colNum[i + 1]) {
+        isMoveInColAv = true;
+      }
+    }
+  }
+
+  if (!isMoveInRowAv && !isMoveInColAv && !hasEmptyTile()) {
+    const loseMess = document.querySelector('.message-lose');
+
+    loseMess.classList.remove('hidden');
+  }
 }
 
 function showMessageWin() {
@@ -65,12 +108,6 @@ function showMessageWin() {
         messWin.classList.remove('hidden');
       }
     }
-  }
-}
-
-function showMessageGameOver() {
-  if (!hasEmptyTile()) {
-    messLose.classList.remove('hidden');
   }
 }
 
@@ -111,10 +148,6 @@ function setRandomNum2or4() {
 }
 
 function setTwo() {
-  if (!hasEmptyTile()) {
-    return;
-  }
-
   let found = false;
 
   while (!found) {
@@ -149,22 +182,22 @@ function updateTile(tile, num) {
 }
 
 document.addEventListener('keydown', (e) => {
-  if (e.code === 'ArrowLeft' && hasEmptyTile()) {
+  if (e.code === 'ArrowLeft') {
     slideLeft();
     setRandomNum2or4();
   }
 
-  if (e.code === 'ArrowRight' && hasEmptyTile()) {
+  if (e.code === 'ArrowRight') {
     slideRight();
     setRandomNum2or4();
   }
 
-  if (e.code === 'ArrowUp' && hasEmptyTile()) {
+  if (e.code === 'ArrowUp') {
     slideUp();
     setRandomNum2or4();
   }
 
-  if (e.code === 'ArrowDown' && hasEmptyTile()) {
+  if (e.code === 'ArrowDown') {
     slideDown();
     setRandomNum2or4();
   }
@@ -176,7 +209,10 @@ document.addEventListener('keydown', (e) => {
   }
 
   showMessageWin();
-  showMessageGameOver();
+});
+
+document.addEventListener('keyup', () => {
+  showGameOver();
 });
 
 function filterZero(row) {
