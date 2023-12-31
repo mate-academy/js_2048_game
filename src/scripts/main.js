@@ -12,8 +12,8 @@ window.addEventListener('load', () => {
   class Board {
     constructor() {
       this.board = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
+        [1024, 0, 0, 0],
+        [1024, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
       ];
@@ -297,6 +297,7 @@ window.addEventListener('load', () => {
         [0, 0, 0, 0],
       ];
 
+      messageWin.classList.add('hidden');
       messageLose.classList.add('hidden');
       htmlBoard.appendOneBox();
       htmlBoard.appendOneBox();
