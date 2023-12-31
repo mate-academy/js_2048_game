@@ -50,7 +50,7 @@ window.addEventListener('load', () => {
       }
 
       if (this.occupiedPlaces().length === 16 && !this.availableMoves()) {
-        messageLose.classList.toggle('hidden');
+        messageLose.classList.remove('hidden');
       }
     }
 
@@ -297,6 +297,7 @@ window.addEventListener('load', () => {
         [0, 0, 0, 0],
       ];
 
+      messageLose.classList.add('hidden');
       htmlBoard.appendOneBox();
       htmlBoard.appendOneBox();
       htmlBoard.score = 0;
