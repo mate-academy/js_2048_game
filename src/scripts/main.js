@@ -7,6 +7,7 @@ window.addEventListener('load', () => {
   const messageStart = document.querySelector('.message-start');
   const messageWin = document.querySelector('.message-win');
   const messageLose = document.querySelector('.message-lose');
+  const boardSize = 4;
 
   class Board {
     constructor() {
@@ -25,26 +26,28 @@ window.addEventListener('load', () => {
         return;
       }
 
-      const ShouldAdd4 = Math.random() < 0.1;
-      let xRandomIndex
-      = Math.floor(Math.random() * (this.board.length));
-      let yRandomIndex
-      = Math.floor(Math.random() * (this.board[0].length));
-
-      const occupiedPlaces = this.occupiedPlaces();
-
-      while (occupiedPlaces.some(
-        cell => cell.y === xRandomIndex && cell.x === yRandomIndex)) {
-        xRandomIndex
+      if (this.occupiedPlaces().length < 16) {
+        const ShouldAdd4 = Math.random() < 0.1;
+        let xRandomIndex
         = Math.floor(Math.random() * (this.board.length));
-
-        yRandomIndex
+        let yRandomIndex
         = Math.floor(Math.random() * (this.board[0].length));
+
+        const occupiedPlaces = this.occupiedPlaces();
+
+        while (occupiedPlaces.some(
+          cell => cell.y === xRandomIndex && cell.x === yRandomIndex)) {
+          xRandomIndex
+          = Math.floor(Math.random() * (boardSize));
+
+          yRandomIndex
+          = Math.floor(Math.random() * (boardSize));
+        }
+
+        this.board[xRandomIndex][yRandomIndex] = ShouldAdd4 ? 4 : 2;
+
+        this.render();
       }
-
-      this.board[xRandomIndex][yRandomIndex] = ShouldAdd4 ? 4 : 2;
-
-      this.render();
 
       if (this.occupiedPlaces().length === 16 && !this.availableMoves()) {
         messageLose.classList.toggle('hidden');
@@ -80,7 +83,7 @@ window.addEventListener('load', () => {
     occupiedPlaces() {
       const occupiedPlaces = [];
 
-      for (let y = 0; y < this.board.length; y++) {
+      for (let y = 0; y < boardSize; y++) {
         for (let x = 0; x < this.board[y].length; x++) {
           if (this.board[y][x] !== 0) {
             occupiedPlaces.push({
@@ -95,7 +98,7 @@ window.addEventListener('load', () => {
     }
 
     render() {
-      for (let y = 0; y < this.board.length; y++) {
+      for (let y = 0; y < boardSize; y++) {
         for (let x = 0; x < this.board[y].length; x++) {
           const cell = this.board[y][x];
 
@@ -110,10 +113,10 @@ window.addEventListener('load', () => {
       }
     }
 
-    moveRight(col = this.board.length - 1, row = 0, hasMerged = false) {
+    moveRight(col = boardSize - 1, row = 0, hasMerged = false) {
       let merged = hasMerged;
 
-      if (row < this.board.length) {
+      if (row < boardSize) {
         if (col > 0) {
           const temp = this.board[row][col];
           const nextValue = this.board[row][col - 1];
@@ -128,14 +131,14 @@ window.addEventListener('load', () => {
               merged = true;
             }
 
-            if (col < this.board.length - 1) {
+            if (col < boardSize - 1) {
               return this.moveRight(col + 1, row, merged);
             }
           }
 
           return this.moveRight(col - 1, row);
         } else {
-          return this.moveRight(this.board.length - 1, row + 1);
+          return this.moveRight(boardSize - 1, row + 1);
         }
       }
 
@@ -147,8 +150,8 @@ window.addEventListener('load', () => {
     moveLeft(col = 0, row = 0, hasMerged = false) {
       let merged = hasMerged;
 
-      if (row < this.board.length) {
-        if (col < this.board.length - 1) {
+      if (row < boardSize) {
+        if (col < boardSize - 1) {
           const temp = this.board[row][col];
           const nextValue = this.board[row][col + 1];
           const isTheSameNumber = nextValue === temp && !merged;
@@ -181,8 +184,8 @@ window.addEventListener('load', () => {
     moveUp(col = 0, row = 0, hasMerged = false) {
       let merged = hasMerged;
 
-      if (col < this.board.length) {
-        if (row < this.board.length - 1) {
+      if (col < boardSize) {
+        if (row < boardSize - 1) {
           const temp = this.board[row][col];
           const nextValue = this.board[row + 1][col];
           const isTheSameNumber = nextValue === temp && !merged;
@@ -212,10 +215,10 @@ window.addEventListener('load', () => {
       this.check2048();
     }
 
-    moveDown(col = 0, row = this.board.length - 1, hasMerged = false) {
+    moveDown(col = 0, row = boardSize - 1, hasMerged = false) {
       let merged = hasMerged;
 
-      if (col < this.board.length) {
+      if (col < boardSize) {
         if (row > 0) {
           const temp = this.board[row][col];
           const nextValue = this.board[row - 1][col];
@@ -230,14 +233,14 @@ window.addEventListener('load', () => {
               merged = true;
             }
 
-            if (row < this.board.length - 1) {
+            if (row < boardSize - 1) {
               return this.moveDown(col, row + 1, merged);
             }
           }
 
           return this.moveDown(col, row - 1);
         } else {
-          return this.moveDown(col + 1, this.board.length - 1);
+          return this.moveDown(col + 1, boardSize - 1);
         }
       }
 
@@ -248,24 +251,29 @@ window.addEventListener('load', () => {
   }
 
   const htmlBoard = new Board();
+  const arrowLeft = 'ArrowLeft';
+  const arrowRight = 'ArrowRight';
+  const arrowUp = 'ArrowUp';
+  const arrowDown = 'ArrowDown';
 
   document.addEventListener('keydown', ev => {
-    if (ev.key === 'ArrowLeft') {
-      htmlBoard.moveLeft();
-    }
-
-    if (ev.key === 'ArrowRight') {
-      htmlBoard.moveRight();
-    }
-
-    if (ev.key === 'ArrowUp') {
-      ev.preventDefault();
-      htmlBoard.moveUp();
-    }
-
-    if (ev.key === 'ArrowDown') {
-      ev.preventDefault();
-      htmlBoard.moveDown();
+    switch (ev.key) {
+      case arrowLeft:
+        htmlBoard.moveLeft();
+        break;
+      case arrowRight:
+        htmlBoard.moveRight();
+        break;
+      case arrowUp:
+        ev.preventDefault();
+        htmlBoard.moveUp();
+        break;
+      case arrowDown:
+        ev.preventDefault();
+        htmlBoard.moveDown();
+        break;
+      default:
+        throw new Error('wrong button');
     }
   });
   buttonStart.addEventListener('click', startToReset);
