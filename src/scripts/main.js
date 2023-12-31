@@ -12,8 +12,8 @@ window.addEventListener('load', () => {
   class Board {
     constructor() {
       this.board = [
-        [1024, 0, 0, 0],
-        [1024, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
       ];
