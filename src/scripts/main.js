@@ -134,6 +134,8 @@ function fillFieldCells() {
 }
 
 function handleArrows(e) {
+  const originalField = JSON.stringify(field);
+
   switch (e.key) {
     case 'ArrowLeft':
       clickArrowLeft();
@@ -155,7 +157,9 @@ function handleArrows(e) {
       return;
   }
 
-  fillFieldCells();
+  if (JSON.stringify(field) !== originalField) {
+    fillFieldCells();
+  }
 }
 
 startButton.addEventListener('click', () => {
