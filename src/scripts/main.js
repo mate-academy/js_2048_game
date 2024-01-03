@@ -146,7 +146,7 @@ function createCellElements(gridElement) {
 }
 
 class Tile {
-  constructor(tileContainer, value = Math.random() > 0.5 ? 2 : 4) {
+  constructor(tileContainer, value = Math.random() > 0.1 ? 2 : 4) {
     this._tileElement = document.createElement('div');
     this._tileElement.classList.add('tile');
     tileContainer.append(this._tileElement);
