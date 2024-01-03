@@ -263,6 +263,8 @@ button.addEventListener('click', () => {
     [0, 0, 0, 0],
   ];
 
+  score = 0;
+
   button.classList.add('restart');
   button.textContent = 'Restart';
   generateRandomNumber();
