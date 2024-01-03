@@ -128,7 +128,7 @@ const checkColumns = () => {
 };
 
 const rowReverse = () => {
-  copyBoard.forEach(row => row.reverse());
+  copyBoard.map(row => row.reverse());
 };
 
 const movingBoard = () => {
@@ -196,6 +196,7 @@ const moveRight = () => {
     return;
   }
 
+  moveLeft();
   rowReverse();
   moveLeft();
   rowReverse();
