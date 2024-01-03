@@ -2,30 +2,23 @@
 
 const rows = 4;
 const columns = 4;
-let score = '';
-
-const scoreShow = document.querySelector('.game-score');
-
-let board = [
+const defaultBoard = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
-
+const scoreShow = document.querySelector('.game-score');
 const startButton = document.querySelector('.start');
+let board = defaultBoard;
 let finish = '';
+let score = '';
 
 startButton.addEventListener('click', () => {
   startButton.classList.add('restart');
   startButton.innerHTML = 'restart';
 
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  board = defaultBoard;
   winLose(finish, 'add');
   randomNumber();
   randomNumber();
@@ -122,25 +115,15 @@ document.addEventListener('keydown', (element) => {
 });
 
 function slideLeft() {
-  for (let i = 0; i < rows; i++) {
-    let row = board[i];
-
-    row = slide(row);
-    board[i] = row;
-  }
+  board.forEach((row, i) => {
+    board[i] = slide(row);
+  });
 }
 
 function slideRight() {
-  for (let i = 0; i < rows; i++) {
-    let row = board[i];
-
-    row.reverse();
-
-    row = slide(row);
-
-    row.reverse();
-    board[i] = row;
-  }
+  board.forEach((row, i) => {
+    board[i] = slide(row.reverse()).reverse();
+  });
 }
 
 function slideUp() {
@@ -187,7 +170,7 @@ function slide(array) {
     }
   }
 
-  if (isGameOver() === true) {
+  if (isGameOver()) {
     winLose('lose', 'remove');
   }
 
@@ -251,7 +234,7 @@ function win() {
 }
 
 function winLose(result, action) {
-  if (result === '') {
+  if (!result) {
     return;
   }
 
