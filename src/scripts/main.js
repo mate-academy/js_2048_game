@@ -190,7 +190,8 @@ class Tile {
       this._tileElement
         .addEventListener(
           animation ? 'animationend' : 'transitionend',
-          resolve, { once: true });
+          resolve, { once: true },
+        );
     });
   }
 };
@@ -314,7 +315,8 @@ function slideTiles(cells) {
       }
 
       return promises;
-    }));
+    }),
+  );
 }
 
 function canMoveUp() {
@@ -375,13 +377,13 @@ function clearBoard() {
 function startGame() {
   resetGame();
 
-  startButton.classList.remove('start');
-  startButton.classList.add('restart');
+  startButton.classList.remove('button--start');
+  startButton.classList.add('button--restart');
   startButton.textContent = '↻';
 
-  loseMessage.classList.add('hidden');
-  startMessage.classList.add('hidden');
-  winMessage.classList.add('hidden');
+  loseMessage.classList.add('message--hidden');
+  startMessage.classList.add('message--hidden');
+  winMessage.classList.add('message--hidden');
 
   clearBoard();
 
@@ -392,21 +394,18 @@ function startGame() {
 }
 
 function winGame() {
-  startButton.addEventListener('click', startGame);
-  winMessage.classList.remove('hidden');
+  winMessage.classList.remove('message--hidden');
 
-  startButton.classList.remove('restart');
+  startButton.classList.remove('button--restart');
   startButton.textContent = 'Start';
 
-  startButton.classList.add('start');
+  startButton.classList.add('button--start');
 
   window.removeEventListener('keydown', handleInput);
   gameWon = true;
 }
 
 function loseGame() {
-  loseMessage.classList.remove('hidden');
+  loseMessage.classList.remove('message--hidden');
   startButton.textContent = 'Restart';
-
-  startButton.addEventListener('click', startGame);
 }
