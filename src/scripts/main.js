@@ -25,7 +25,6 @@ let score = gameFields.reduce((acc, row) => {
   return acc + row.reduce((rowSum, cell) => rowSum + cell, 0);
 }, 0);
 
-
 let isStart = false;
 
 let isWin = false;
