@@ -1,6 +1,7 @@
-/* eslint-disable no-console */
+
 'use strict';
 
+let randomNumLog = [];
 const board = [];
 let rowNum = [];
 let colNum = [];
@@ -53,6 +54,7 @@ function clearAll() {
   }
   score = 0;
   scoreTotal.innerText = 0;
+  randomNumLog = [];
   messWin.classList.add('hidden');
   messLose.classList.add('hidden');
   messStart.style.display = 'none';
@@ -125,6 +127,15 @@ function hasEmptyTile() {
   return false;
 }
 
+function whichNum(arr) {
+  const quantity = arr.length;
+  const quantityOfFour = arr.filter(item => item === 4).length;
+  const percentOfTwo = Math.ceil((quantityOfFour / quantity) * 100);
+  const twoOrFourNum = percentOfTwo >= 10 ? 2 : 4;
+
+  return twoOrFourNum;
+}
+
 function setRandomNum2or4() {
   if (!hasEmptyTile()) {
     return;
@@ -138,8 +149,9 @@ function setRandomNum2or4() {
 
     if (Number(board[r][c].innerText) === 0) {
       const tile = document.getElementById(`${r}-${c}`);
-      const num = Math.random() * 1000 <= 900 ? 2 : 4;
+      const num = whichNum(randomNumLog);
 
+      randomNumLog.push(num);
       tile.innerText = num;
       tile.classList.add('field-cell--' + num.toString());
       stopWhile = true;
@@ -158,6 +170,7 @@ function setTwo() {
       const tile = document.getElementById(`${r}-${c}`);
       const num = 2;
 
+      randomNumLog.push(num);
       tile.innerText = num;
       tile.classList.add('field-cell--' + num.toString());
       found = true;
@@ -184,22 +197,18 @@ function updateTile(tile, num) {
 document.addEventListener('keydown', (e) => {
   if (e.code === 'ArrowLeft') {
     slideLeft();
-    setRandomNum2or4();
   }
 
   if (e.code === 'ArrowRight') {
     slideRight();
-    setRandomNum2or4();
   }
 
   if (e.code === 'ArrowUp') {
     slideUp();
-    setRandomNum2or4();
   }
 
   if (e.code === 'ArrowDown') {
     slideDown();
-    setRandomNum2or4();
   }
 
   if (e.code === 'ArrowLeft' || e.code === 'ArrowRight'
@@ -242,7 +251,23 @@ function slide(row) {
   return modNewRow;
 }
 
+function isMovement(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 function slideLeft() {
+  let isAction = false;
+
   for (let r = 0; r < rows; r++) {
     const rowLeftRight = [Number(board[r][0].innerText),
       Number(board[r][1].innerText),
@@ -251,6 +276,10 @@ function slideLeft() {
     let row = rowLeftRight;
 
     row = slide(row);
+
+    if (!isMovement(rowLeftRight, row)) {
+      isAction = true;
+    }
     board[r] = row;
 
     for (let c = 0; c < columns; c++) {
@@ -259,10 +288,16 @@ function slideLeft() {
 
       updateTile(tile, num);
     }
+  }
+
+  if (isAction) {
+    setRandomNum2or4();
   }
 }
 
 function slideRight() {
+  let isAction = false;
+
   for (let r = 0; r < rows; r++) {
     const rowLeftRight = [Number(board[r][0].innerText),
       Number(board[r][1].innerText),
@@ -272,7 +307,13 @@ function slideRight() {
 
     row.reverse();
     row = slide(row);
+
+    if (!isMovement(rowLeftRight, row)) {
+      isAction = true;
+    }
+
     row.reverse();
+
     board[r] = row;
 
     for (let c = 0; c < columns; c++) {
@@ -282,9 +323,15 @@ function slideRight() {
       updateTile(tile, num);
     }
   }
+
+  if (isAction) {
+    setRandomNum2or4();
+  }
 }
 
 function slideUp() {
+  let isAction = false;
+
   for (let c = 0; c < columns; c++) {
     const rowUpDown = [Number(board[0][c].innerText),
       Number(board[1][c].innerText),
@@ -293,6 +340,11 @@ function slideUp() {
     let row = rowUpDown;
 
     row = slide(row);
+
+    if (!isMovement(rowUpDown, row)) {
+      isAction = true;
+    }
+
     board[0][c] = row[0];
     board[1][c] = row[1];
     board[2][c] = row[2];
@@ -305,9 +357,15 @@ function slideUp() {
       updateTile(tile, num);
     }
   }
+
+  if (isAction) {
+    setRandomNum2or4();
+  }
 }
 
 function slideDown() {
+  let isAction = false;
+
   for (let c = 0; c < columns; c++) {
     const rowUpDown = [Number(board[0][c].innerText),
       Number(board[1][c].innerText),
@@ -317,6 +375,11 @@ function slideDown() {
 
     row.reverse();
     row = slide(row);
+
+    if (!isMovement(rowUpDown, row)) {
+      isAction = true;
+    }
+
     row.reverse();
     board[0][c] = row[0];
     board[1][c] = row[1];
@@ -329,5 +392,9 @@ function slideDown() {
 
       updateTile(tile, num);
     }
+  }
+
+  if (isAction) {
+    setRandomNum2or4();
   }
 }
