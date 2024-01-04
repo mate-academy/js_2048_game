@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="./styles/main.scss">
   </head>
   <body>
+    <div class="planets">
+      <div class="planet">
+      </div>
+
+      <div class="planet planet--2">
+      </div>
+    </div>
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
@@ -14,43 +21,17 @@
           <p class="info">
             Score: <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button
+            type="button"
+            tabindex="-1"
+            class="button start"
+          >
+            Start &#128640;
+          </button>
         </div>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="game-field"></div>
 
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
@@ -58,6 +39,6 @@
         <p class="message message-start">Press "Start" to begin game. Good luck!</p>
       </div>
     </div>
-    <script type="text/javascript" src="scripts/main.js"></script>
+    <script type="module" src="scripts/main.js"></script>
   </body>
 </html>

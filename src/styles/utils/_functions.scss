@@ -1,0 +1,3 @@
+@function getShift($shift) {
+  @return calc(#{$shift} * (#{$cell-size} + #{$cell-gap}) + #{$cell-gap});
+}
