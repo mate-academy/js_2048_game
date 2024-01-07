@@ -1,3 +1,21 @@
+@mixin scale-animation {
+  @keyframes scale {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.15);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  animation: scale 0.5s ease-in-out;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -20,56 +38,80 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all ease 1s;
+
 
   &--2 {
+    @include scale-animation;
+
     background: #eee4da;
   }
 
   &--4 {
+    @include scale-animation;
+
     background: #ede0c8;
   }
 
   &--8 {
+    @include scale-animation;
+
     background: #f2b179;
     color: #f9f6f2;
   }
 
   &--16 {
+    @include scale-animation;
+
     background: #f59563;
     color: #f9f6f2;
   }
 
   &--32 {
+    @include scale-animation;
+
     background: #f67c5f;
     color: #f9f6f2;
   }
 
   &--64 {
+    @include scale-animation;
+
     background: #f65e3b;
     color: #f9f6f2;
   }
 
   &--128 {
+    @include scale-animation;
+
     background: #edcf72;
     color: #f9f6f2;
   }
 
   &--256 {
+    @include scale-animation;
+
     background: #edcc61;
     color: #f9f6f2;
   }
 
   &--512 {
+    @include scale-animation;
+
     background: #edc850;
     color: #f9f6f2;
   }
 
   &--1024 {
+    @include scale-animation;
+
     background: #edc53f;
     color: #f9f6f2;
   }
 
   &--2048 {
+    @include scale-animation;
+
     background: #edc22e;
     color: #f9f6f2;
   }
