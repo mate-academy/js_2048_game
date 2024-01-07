@@ -2,10 +2,12 @@
 
 // write your code here
 const FOUR_CHANCE = 0.1;
-// const table = document.querySelector('table');
-// const tBody = table.tBodies[0];
+const table = document.querySelector('table');
+const tBody = table.tBodies[0];
 const button = document.querySelector('.button');
 const allCells = document.querySelectorAll('td');
+const startMessage = document.querySelector('.message-start');
+let gameStarted = false;
 
 button.addEventListener('click', () => {
   for (const element of allCells) {
@@ -19,6 +21,7 @@ button.addEventListener('click', () => {
 
   createRandomElement();
   createRandomElement();
+  gameStarted = true;
 });
 
 document.addEventListener('keydown', e => {
@@ -26,25 +29,53 @@ document.addEventListener('keydown', e => {
     case 'ArrowDown':
       e.preventDefault();
 
-      handleArrowDown();
+      if (gameStarted) {
+        if (startMessage.classList.length < 3) {
+          startMessage.classList.add('hidden');
+        }
+
+        handleArrowDown();
+        createRandomElement();
+      }
       break;
 
     case 'ArrowUp':
       e.preventDefault();
 
-      handleArrowUp();
+      if (gameStarted) {
+        if (startMessage.classList.length < 3) {
+          startMessage.classList.add('hidden');
+        }
+
+        handleArrowUp();
+        createRandomElement();
+      }
       break;
 
     case 'ArrowLeft':
       e.preventDefault();
 
-      handleArrowLeft();
+      if (gameStarted) {
+        if (startMessage.classList.length < 3) {
+          startMessage.classList.add('hidden');
+        }
+
+        handleArrowLeft();
+        createRandomElement();
+      }
       break;
 
     case 'ArrowRight':
       e.preventDefault();
 
-      handleArrowRight();
+      if (gameStarted) {
+        if (startMessage.classList.length < 3) {
+          startMessage.classList.add('hidden');
+        }
+
+        handleArrowRight();
+        createRandomElement();
+      }
       break;
 
     default:
@@ -54,13 +85,7 @@ document.addEventListener('keydown', e => {
 
 function createRandomElement() {
   const chance = Math.random();
-  const listOfFreeSpots = [];
-
-  for (const element of allCells) {
-    if (element.classList.length < 2) {
-      listOfFreeSpots.push(element);
-    }
-  }
+  const listOfFreeSpots = freeSpots();
 
   if (chance <= FOUR_CHANCE) {
     const element = getRandomSpot(listOfFreeSpots);
@@ -79,12 +104,125 @@ function getRandomSpot(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
+function freeSpots() {
+  const listOfFreeSpots = [];
+
+  for (const element of allCells) {
+    if (element.classList.length < 2) {
+      listOfFreeSpots.push(element);
+    }
+  }
+
+  return listOfFreeSpots;
+}
+
+function activeSpots() {
+  const listOfActiveSpots = [];
+
+  for (const element of allCells) {
+    if (element.classList.length > 1) {
+      listOfActiveSpots.push(element);
+    }
+  }
+
+  return listOfActiveSpots;
+}
+
+function elementMove(elem, nextElem) {
+  const classValue = elem.classList[1];
+  const value = elem.textContent;
+
+  elem.className = 'field-cell';
+  elem.textContent = '';
+
+  nextElem.classList.add(classValue);
+  nextElem.textContent = value;
+}
+
+function elementsMerge(elem, nextElem) {
+  let number = nextElem.classList[1].replace(/[^0-9]/g, '');
+
+  number *= 2;
+
+  elem.className = 'field-cell';
+  elem.textContent = '';
+
+  nextElem.className = 'field-cell';
+  nextElem.textContent = number;
+  nextElem.classList.add(`field-cell--${number}`);
+  nextElem.id = 'merged';
+}
+
 function handleArrowDown() {
-  // console.log('arrowDown');
+  const listOfActiveSpots = activeSpots();
+
+  for (let i = listOfActiveSpots.length - 1; i >= 0; i--) {
+    const col = listOfActiveSpots[i].cellIndex;
+    const row = +listOfActiveSpots[i].parentElement.id;
+    const listOfColumnElements = [];
+
+    if (row === 3) {
+      continue;
+    }
+
+    for (let j = row; j < tBody.rows.length; j++) {
+      listOfColumnElements.push(tBody.rows[j].cells[col]);
+    }
+
+    for (let j = 1; j < listOfColumnElements.length; j++) {
+      const elem = listOfColumnElements[j - 1];
+      const nextElem = listOfColumnElements[j];
+      const mergeCondition = (
+        elem.textContent === nextElem.textContent
+        && !elem.id
+        && !nextElem.id
+      );
+
+      if (nextElem.classList.length < 2) {
+        elementMove(elem, nextElem);
+      } else if (mergeCondition) {
+        elementsMerge(elem, nextElem);
+      }
+    }
+  }
+
+  listOfActiveSpots.forEach(elem => elem.removeAttribute('id'));
 }
 
 function handleArrowUp() {
-  // console.log('arrowUp');
+  const listOfActiveSpots = activeSpots();
+
+  for (let i = 0; i < listOfActiveSpots.length; i++) {
+    const col = listOfActiveSpots[i].cellIndex;
+    const row = +listOfActiveSpots[i].parentElement.id;
+    const listOfColumnElements = [];
+
+    if (row === 0) {
+      continue;
+    }
+
+    for (let j = row; j >= 0; j--) {
+      listOfColumnElements.push(tBody.rows[j].cells[col]);
+    }
+
+    for (let j = 0; j < listOfColumnElements.length - 1; j++) {
+      const elem = listOfColumnElements[j];
+      const nextElem = listOfColumnElements[j + 1];
+      const mergeCondition = (
+        elem.textContent === nextElem.textContent
+        && !elem.id
+        && !nextElem.id
+      );
+
+      if (nextElem.classList.length < 2) {
+        elementMove(elem, nextElem);
+      } else if (mergeCondition) {
+        elementsMerge(elem, nextElem);
+      }
+    }
+  }
+
+  listOfActiveSpots.forEach(elem => elem.removeAttribute('id'));
 }
 
 function handleArrowLeft() {
