@@ -2,14 +2,32 @@
 
 // write your code here
 const FOUR_CHANCE = 0.1;
+const ROWS = 4;
+const COLS = 4;
+
 const table = document.querySelector('table');
 const tBody = table.tBodies[0];
 const button = document.querySelector('.button');
 const allCells = document.querySelectorAll('td');
 const startMessage = document.querySelector('.message-start');
+const loseMessage = document.querySelector('.message-lose');
+const winMessage = document.querySelector('.message-win');
+const gameScore = document.querySelector('.game-score');
+
 let gameStarted = false;
+let score = 0;
 
 button.addEventListener('click', () => {
+  startMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
+
+  button.classList.replace('start', 'restart');
+  button.textContent = 'Restart';
+
+  score = 0;
+  gameScore.textContent = 0;
+
   for (const element of allCells) {
     if (element.classList.length < 2) {
       continue;
@@ -30,12 +48,7 @@ document.addEventListener('keydown', e => {
       e.preventDefault();
 
       if (gameStarted) {
-        if (startMessage.classList.length < 3) {
-          startMessage.classList.add('hidden');
-        }
-
         handleArrowDown();
-        createRandomElement();
       }
       break;
 
@@ -43,12 +56,7 @@ document.addEventListener('keydown', e => {
       e.preventDefault();
 
       if (gameStarted) {
-        if (startMessage.classList.length < 3) {
-          startMessage.classList.add('hidden');
-        }
-
         handleArrowUp();
-        createRandomElement();
       }
       break;
 
@@ -56,12 +64,7 @@ document.addEventListener('keydown', e => {
       e.preventDefault();
 
       if (gameStarted) {
-        if (startMessage.classList.length < 3) {
-          startMessage.classList.add('hidden');
-        }
-
         handleArrowLeft();
-        createRandomElement();
       }
       break;
 
@@ -69,17 +72,16 @@ document.addEventListener('keydown', e => {
       e.preventDefault();
 
       if (gameStarted) {
-        if (startMessage.classList.length < 3) {
-          startMessage.classList.add('hidden');
-        }
-
         handleArrowRight();
-        createRandomElement();
       }
       break;
 
     default:
       break;
+  }
+
+  if (isLost()) {
+    loseMessage.classList.remove('hidden');
   }
 });
 
@@ -140,9 +142,12 @@ function elementMove(elem, nextElem) {
 }
 
 function elementsMerge(elem, nextElem) {
-  let number = nextElem.classList[1].replace(/[^0-9]/g, '');
+  let number = +nextElem.textContent;
 
   number *= 2;
+
+  score += number;
+  gameScore.textContent = score;
 
   elem.className = 'field-cell';
   elem.textContent = '';
@@ -151,10 +156,19 @@ function elementsMerge(elem, nextElem) {
   nextElem.textContent = number;
   nextElem.classList.add(`field-cell--${number}`);
   nextElem.id = 'merged';
+
+  if (number === 2048) {
+    winMessage.classList.remove('hidden');
+  }
 }
 
 function handleArrowDown() {
+  if (isLost()) {
+    return;
+  }
+
   const listOfActiveSpots = activeSpots();
+  let actionsCounter = 0;
 
   for (let i = listOfActiveSpots.length - 1; i >= 0; i--) {
     const col = listOfActiveSpots[i].cellIndex;
@@ -180,17 +194,28 @@ function handleArrowDown() {
 
       if (nextElem.classList.length < 2) {
         elementMove(elem, nextElem);
+        actionsCounter++;
       } else if (mergeCondition) {
         elementsMerge(elem, nextElem);
+        actionsCounter++;
       }
     }
   }
 
   listOfActiveSpots.forEach(elem => elem.removeAttribute('id'));
+
+  if (actionsCounter > 0) {
+    createRandomElement();
+  }
 }
 
 function handleArrowUp() {
+  if (isLost()) {
+    return;
+  }
+
   const listOfActiveSpots = activeSpots();
+  let actionsCounter = 0;
 
   for (let i = 0; i < listOfActiveSpots.length; i++) {
     const col = listOfActiveSpots[i].cellIndex;
@@ -216,19 +241,137 @@ function handleArrowUp() {
 
       if (nextElem.classList.length < 2) {
         elementMove(elem, nextElem);
+        actionsCounter++;
       } else if (mergeCondition) {
         elementsMerge(elem, nextElem);
+        actionsCounter++;
       }
     }
   }
 
   listOfActiveSpots.forEach(elem => elem.removeAttribute('id'));
+
+  if (actionsCounter > 0) {
+    createRandomElement();
+  }
 }
 
 function handleArrowLeft() {
-  // console.log('arrowLeft');
+  if (isLost()) {
+    return;
+  }
+
+  const listOfActiveSpots = activeSpots();
+  let actionsCounter = 0;
+
+  for (let i = 0; i < listOfActiveSpots.length; i++) {
+    const col = listOfActiveSpots[i].cellIndex;
+    const row = +listOfActiveSpots[i].parentElement.id;
+    const listOfRowElements = [];
+
+    if (col === 0) {
+      continue;
+    }
+
+    for (let j = col; j >= 0; j--) {
+      listOfRowElements.push(tBody.rows[row].cells[j]);
+    }
+
+    for (let j = 0; j < listOfRowElements.length - 1; j++) {
+      const elem = listOfRowElements[j];
+      const nextElem = listOfRowElements[j + 1];
+      const mergeCondition = (
+        elem.textContent === nextElem.textContent
+        && !elem.id
+        && !nextElem.id
+      );
+
+      if (nextElem.classList.length < 2) {
+        elementMove(elem, nextElem);
+        actionsCounter++;
+      } else if (mergeCondition) {
+        elementsMerge(elem, nextElem);
+        actionsCounter++;
+      }
+    }
+  }
+
+  listOfActiveSpots.forEach(elem => elem.removeAttribute('id'));
+
+  if (actionsCounter > 0) {
+    createRandomElement();
+  }
 }
 
 function handleArrowRight() {
-  // console.log('arrowRight');
+  if (isLost()) {
+    return;
+  }
+
+  const listOfActiveSpots = activeSpots();
+  let actionsCounter = 0;
+
+  for (let i = listOfActiveSpots.length - 1; i >= 0; i--) {
+    const col = listOfActiveSpots[i].cellIndex;
+    const row = +listOfActiveSpots[i].parentElement.id;
+    const listOfRowElements = [];
+
+    if (col === 3) {
+      continue;
+    }
+
+    for (let j = col; j < tBody.rows.length; j++) {
+      listOfRowElements.push(tBody.rows[row].cells[j]);
+    }
+
+    for (let j = 1; j < listOfRowElements.length; j++) {
+      const elem = listOfRowElements[j - 1];
+      const nextElem = listOfRowElements[j];
+      const mergeCondition = (
+        elem.textContent === nextElem.textContent
+        && !elem.id
+        && !nextElem.id
+      );
+
+      if (nextElem.classList.length < 2) {
+        elementMove(elem, nextElem);
+        actionsCounter++;
+      } else if (mergeCondition) {
+        elementsMerge(elem, nextElem);
+        actionsCounter++;
+      }
+    }
+  }
+
+  listOfActiveSpots.forEach(elem => elem.removeAttribute('id'));
+
+  if (actionsCounter > 0) {
+    createRandomElement();
+  }
+}
+
+function isLost() {
+  if (freeSpots().length > 0) {
+    return false;
+  }
+
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS - 1; c++) {
+      if (tBody.rows[r].cells[c].textContent
+        === tBody.rows[r].cells[c + 1].textContent) {
+        return false;
+      }
+    }
+  }
+
+  for (let r = 0; r < ROWS - 1; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (tBody.rows[r].cells[c].textContent
+        === tBody.rows[r + 1].cells[c].textContent) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
