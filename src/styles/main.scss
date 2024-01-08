@@ -23,55 +23,66 @@ body {
 
   &--2 {
     background: #eee4da;
+    animation: 0.3s ease alternate appear;
   }
 
   &--4 {
     background: #ede0c8;
+    animation: 0.3s ease alternate appear;
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    animation: 0.3s ease alternate appear;
   }
 }
 
@@ -184,4 +195,13 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes appear {
+  from {
+    transform: scale(0.2);
+  }
+  to {
+    transform: scale(1);
+  }
 }
