@@ -22,7 +22,6 @@ function createRandomNumb() {
   for (let row = 0; row < size; row++) {
     for (let cell = 0; cell < size; cell++) {
       if (field[row][cell] === 0) {
-        // console.log(row, cell);
         emptyCells.push({
           row, cell,
         });
@@ -44,13 +43,14 @@ function changedGameField() {
   field.forEach((row, rowIndex) => {
     row.forEach((currentCell, cellIndex) => {
       const renderCell = fieldRows[rowIndex].children[cellIndex];
-      // console.log(renderCell);
 
       renderCell.innerText = currentCell || '';
 
       renderCell.className = `field-cell${currentCell
         ? ` field-cell--${currentCell}`
         : ''}`;
+
+      checkWin(currentCell);
     });
   });
 
@@ -69,9 +69,9 @@ function gameOver() {
 
 function mergeCells() {
   for (let row = 0; row < size; row++) {
-    for (let cell = 0; cell < size; cell++) {
+    for (let cell = 0; cell < size - 1; cell++) {
       if (field[row][cell] === field[row][cell + 1]
-        || field[row][cell] === field[cell + 1][row]) {
+        || field[cell][row] === field[cell + 1][row]) {
         return true;
       }
     }
@@ -159,6 +159,13 @@ function pushedArrows(element) {
 
   if (JSON.stringify(field) !== originalField) {
     fillAllCels();
+  }
+}
+
+function checkWin(parm) {
+  if (parm === 2048) {
+    winnerMessage.classList.remove('hidden');
+    document.removeEventListener('keydown', pushedArrows);
   }
 }
 
