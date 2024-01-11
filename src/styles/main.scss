@@ -1,5 +1,9 @@
+$cell-size: 75px;
+$container-width: $cell-size * 4;
+
+
 body {
-  margin: 0;
+ margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,14 +16,21 @@ body {
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  // width: 75px;
+  // height: 75px;
+
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+
+  transition: all 0.5s;
 
   &--2 {
     background: #eee4da;
@@ -76,8 +87,12 @@ body {
 }
 
 .game-field {
+  border: 10px solid #bbada0;
   background: #bbada0;
-  border-spacing: 10px;
+  display: grid;
+  grid-template-rows: repeat(4, $cell-size);
+  grid-template-columns: repeat(4, $cell-size);
+  gap: 10px;
   border-radius: 5px;
 }
 
