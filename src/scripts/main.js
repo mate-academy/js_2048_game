@@ -37,6 +37,8 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
+  const prevData = JSON.parse(JSON.stringify(data));
+
   let moveExecuted = false;
 
   switch (e.key) {
@@ -45,7 +47,6 @@ document.addEventListener('keydown', (e) => {
         mergeTiles('right');
         tileMovement('right');
         isWin();
-        randomizer(1);
         moveExecuted = true;
       }
       break;
@@ -55,7 +56,6 @@ document.addEventListener('keydown', (e) => {
         mergeTiles('left');
         tileMovement('left');
         isWin();
-        randomizer(1);
         moveExecuted = true;
       }
       break;
@@ -65,7 +65,6 @@ document.addEventListener('keydown', (e) => {
         mergeTiles('down');
         tileMovement('down');
         isWin();
-        randomizer(1);
         moveExecuted = true;
       }
       break;
@@ -75,12 +74,14 @@ document.addEventListener('keydown', (e) => {
         mergeTiles('up');
         tileMovement('up');
         isWin();
-        randomizer(1);
         moveExecuted = true;
       }
+      break;
   }
 
-  if (moveExecuted) {
+  if (moveExecuted && !isEqual(prevData, data)) {
+    randomizer(1);
+
     if (isGameOver()) {
       inProgress = false;
       messageLose.classList.remove('hidden');
@@ -90,6 +91,10 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+function isEqual(arr1, arr2) {
+  return JSON.stringify(arr1) === JSON.stringify(arr2);
+}
 
 function tileMovement(direction) {
   for (let i = 0; i < data.length; i++) {
@@ -172,17 +177,24 @@ function mergeTiles(direction) {
 
 function randomizer(count) {
   for (let i = 0; i < count; i++) {
-    let isTilePlaced = false;
+    const emptyPositions = [];
 
-    while (!isTilePlaced) {
-      const randomRow = Math.floor(Math.random() * 4);
-      const randomTile = Math.floor(Math.random() * 4);
+    for (let row = 0; row < data.length; row++) {
+      for (let tile = 0; tile < data[row].length; tile++) {
+        if (data[row][tile] === 0) {
+          emptyPositions.push({
+            row, tile,
+          });
+        }
+      }
+    }
+
+    if (emptyPositions.length > 0) {
+      const randomIndex = Math.floor(Math.random() * emptyPositions.length);
+      const { row, tile } = emptyPositions[randomIndex];
       const randomNumber = Math.random() * 2 > 1.9 ? 4 : 2;
 
-      if (data[randomRow][randomTile] === 0) {
-        data[randomRow][randomTile] = randomNumber;
-        isTilePlaced = true;
-      }
+      data[row][tile] = randomNumber;
     }
   }
 }
