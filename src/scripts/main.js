@@ -36,28 +36,52 @@ const clickHandler = (e) => {
   setTwoOrFour(state);
   setTwoOrFour(state);
 };
+
 const keyUpHandler = (e) => {
   switch (e.key) {
     case 'ArrowLeft':
       arrowLeft(state);
+
+      if (isWin(state)) {
+        return;
+      };
+      setTwoOrFour(state);
+      isLose(state);
       break;
+
     case 'ArrowRight':
       arrowRight(state);
+
+      if (isWin(state)) {
+        return;
+      };
+      setTwoOrFour(state);
+      isLose(state);
       break;
+
     case 'ArrowDown':
       arrowDown(state);
+
+      if (isWin(state)) {
+        return;
+      };
+      setTwoOrFour(state);
+      isLose(state);
       break;
+
     case 'ArrowUp':
       arrowUp(state);
-      break;
-    default:
-  }
 
-  if (isWin(state)) {
-    return;
-  };
-  setTwoOrFour(state);
-  isLose(state);
+      if (isWin(state)) {
+        return;
+      };
+      setTwoOrFour(state);
+      isLose(state);
+      break;
+
+    default:
+      break;
+  }
 };
 
 button.addEventListener('click', clickHandler);
@@ -132,9 +156,11 @@ function arrowLeft(stateBoard) {
       newCells
         .map((item, index) => (
           updateState(stateBoard,
-            { x: index,
+            {
+              x: index,
               y: row,
-              value: item })));
+              value: item,
+            })));
 
     let newRow = makeRow(stateBoard);
 
@@ -171,9 +197,11 @@ function arrowRight(stateBoard) {
       newCells
         .map((item, index) => (
           updateState(stateBoard,
-            { x: index,
+            {
+              x: index,
               y: row,
-              value: item })));
+              value: item,
+            })));
 
     let newRow = makeRow(stateBoard);
 
@@ -210,9 +238,11 @@ function arrowDown(stateBoard) {
       newCells
         .map((item, index) => (
           updateState(stateBoard,
-            { x: col,
+            {
+              x: col,
               y: index,
-              value: item })));
+              value: item,
+            })));
 
     let newRow = makeRow(stateBoard);
 
@@ -249,9 +279,11 @@ function arrowUp(stateBoard) {
       newCells
         .map((item, index) => (
           updateState(stateBoard,
-            { x: col,
+            {
+              x: col,
               y: index,
-              value: item })));
+              value: item,
+            })));
 
     let newRow = makeRow(stateBoard);
 
