@@ -74,6 +74,11 @@ const game2048 = (action) => {
 mainButton.addEventListener('click', () => {
   document.removeEventListener('keydown', game2048);
 
+  mainButton.classList.replace('restart', 'start');
+  mainButton.textContent = 'Start';
+
+  isFirstMove = true;
+
   gameScore.textContent = '0';
 
   fieldCells.forEach((fieldCell) => {
