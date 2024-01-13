@@ -1,34 +1,47 @@
-/* eslint-disable */
 let initialField = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-let upDatefield = initialField;
+let upDatefield = replaceRandomZero(initialField);
 let scoreNumber = 0;
 const cells = document.getElementsByClassName('field-cell');
 const scoreText = document.getElementsByClassName('game-score');
 const buttonStart = document.querySelector('button');
-
-
+const startText = document.getElementsByClassName('message-start');
 
 buttonStart.addEventListener('click', () => {
-  initialField = replaceRandomZero(initialField);
-  upDatefield = initialField;
-  initial(initialField)
   scoreNumber = 0;
+  upDatefield = initialField;
+  upDatefield = replaceRandomZero(upDatefield);
+  initial(upDatefield);
+  startText[0].style.display = 'none';
+  buttonStart.innerHTML = 'restart';
+  buttonStart.style.backgroundColor = 'pink';
   document.addEventListener('keydown', function(event) {
     switch (event.key) {
       case 'ArrowLeft':
-        keyLeft(upDatefield);
+        upDatefield = keyLeft(upDatefield);
+        upDatefield = replaceRandomZero(upDatefield);
+        initial(upDatefield);
+        checker();
         break;
 
       case 'ArrowRight':
-        keyRight(upDatefield);
+        upDatefield = keyRight(upDatefield);
+        upDatefield = replaceRandomZero(upDatefield)
+        initial(upDatefield)
+        checker();
         break;
 
       case 'ArrowUp':
-        keyUp(upDatefield);
+        upDatefield = keyUp(upDatefield);
+        upDatefield = replaceRandomZero(upDatefield)
+        initial(upDatefield)
+        checker();
         break;
 
       case 'ArrowDown':
-        keyDown(upDatefield);
+        upDatefield = keyDown(upDatefield);
+        upDatefield = replaceRandomZero(upDatefield)
+        initial(upDatefield)
+        checker();
         break;
 
       default:
@@ -80,10 +93,9 @@ function keyLeft(field) {
     return upDatefield;
   }
 
-  upDatefield = replaceRandomZero(field);
-  initial(upDatefield)
+  upDatefield = field;
   scoreText[0].innerHTML = scoreNumber;
-  finishChecker();
+  // checker();
 
   return upDatefield;
 }
@@ -129,12 +141,11 @@ function keyRight(field) {
     return upDatefield;
   }
 
-  upDatefield = replaceRandomZero(field);
+  upDatefield = field;
   scoreText[0].innerHTML = scoreNumber;
-  initial(upDatefield);
-  finishChecker();
+  // checker();
 
-  return field;
+  return upDatefield;
 }
 
 // PRESS UP
@@ -142,7 +153,6 @@ function keyUp(arr) {
   let columns = Array.from({ length: 4 }, (_, colIndex) =>
     arr.filter((_, rowIndex) => rowIndex % 4 === colIndex)
   );
-
   columns = [].concat(...columns);
   columns = keyLeft(columns);
   const numCols = columns.length / 4;
@@ -156,9 +166,8 @@ function keyUp(arr) {
 
   upDatefield = transposedArray;
   scoreText[0].innerHTML = scoreNumber;
-  initial(upDatefield);
-
-  return transposedArray;
+  // checker();
+  return upDatefield;
 }
 
 //press down
@@ -181,8 +190,6 @@ function keyDown(arr) {
   }
 
   upDatefield = transposedArray;
-  initial(upDatefield);
-
   return transposedArray;
 }
 
@@ -196,7 +203,6 @@ function fillArrayWithZero(arr) {
 
   res.length = 4;
   res = Array.from(res, (item) => (item ? item : 0));
-
   return res;
 }
 
@@ -217,5 +223,28 @@ function replaceRandomZero(array) {
   const replacementValue = Math.random() < 0.9 ? 2 : 4;
 
   return array.map((value, index) => (index === randomIndex ? replacementValue : value));
+  // return array;
 }
 
+function checker() {
+  let origin = upDatefield;
+  let left = keyLeft(origin);
+  let right = keyRight(origin);
+  let down = keyDown(origin);
+  let up = keyUp(origin);
+
+  if (upDatefield.includes(2048)) {
+    let win =  document.getElementsByClassName('message-win')[0];
+    win.style.display = 'block';
+  } else if (JSON.stringify(origin) === JSON.stringify(left)
+    && JSON.stringify(origin) === JSON.stringify(right)
+    && JSON.stringify(origin) === JSON.stringify(down)
+    && JSON.stringify(origin) === JSON.stringify(up)) {
+      let lose =  document.getElementsByClassName('message-lose')[0];
+      upDatefield = origin;
+      lose.style.display = 'block';
+      return true;
+  }
+  upDatefield = origin;
+  return false;
+}
