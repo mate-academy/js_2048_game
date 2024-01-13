@@ -2,81 +2,28 @@
 
 const isTurnPossible = (field) => {
   for (let row = 0; row < field.length; row++) {
-    for (let col = 0; col < field[row].length; col++) {
+    for (let col = 0; col < field.length; col++) {
       const currentCell = field[row][col];
 
-      for (let i = row + 1; i < field.length; i++) {
-        const comparedCell = field[i][col];
-
-        if (comparedCell.textContent) {
-          if (!currentCell.textContent) {
-            return true;
-          } else if (currentCell.textContent === comparedCell.textContent) {
-            return true;
-          } else {
-            break;
-          }
-        }
+      if (currentCell.textContent === '') {
+        return true;
       }
     }
   }
 
-  for (let row = field.length - 1; row >= 0; row--) {
-    for (let col = 0; col < field[row].length; col++) {
-      const currentCell = field[row][col];
+  for (let row = 0; row < field.length; row++) {
+    for (let col = 0; col < field.length; col++) {
+      const currentCellValue = field[row][col].textContent;
+      const comparedCell1Value = field[row + 1]
+        ? field[row + 1][col].textContent
+        : null;
+      const comparedCell2Value = field[row][col + 1]
+        ? field[row][col + 1].textContent
+        : null;
 
-      for (let i = row - 1; i >= 0; i--) {
-        const comparedCell = field[i][col];
-
-        if (comparedCell.textContent) {
-          if (!currentCell.textContent) {
-            return true;
-          } else if (currentCell.textContent === comparedCell.textContent) {
-            return true;
-          } else {
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  for (let col = 0; col < field.length; col++) {
-    for (let row = 0; row < field.length; row++) {
-      const currentCell = field[row][col];
-
-      for (let i = col + 1; i < field.length; i++) {
-        const comparedCell = field[row][i];
-
-        if (comparedCell.textContent) {
-          if (!currentCell.textContent) {
-            return true;
-          } else if (currentCell.textContent === comparedCell.textContent) {
-            return true;
-          } else {
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  for (let col = field.length - 1; col >= 0; col--) {
-    for (let row = 0; row < field.length; row++) {
-      const currentCell = field[row][col];
-
-      for (let i = col - 1; i >= 0; i--) {
-        const comparedCell = field[row][i];
-
-        if (comparedCell.textContent) {
-          if (!currentCell.textContent) {
-            return true;
-          } else if (currentCell.textContent === comparedCell.textContent) {
-            return true;
-          } else {
-            break;
-          }
-        }
+      if (currentCellValue === comparedCell1Value
+      || currentCellValue === comparedCell2Value) {
+        return true;
       }
     }
   }

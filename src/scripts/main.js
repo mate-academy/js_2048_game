@@ -32,6 +32,8 @@ const messages = {
   lose: document.querySelector('.message-lose'),
 };
 
+let isFirstMove = true;
+
 const game2048 = (action) => {
   if (CONTROLS.includes(action.key)) {
     const previousTurn = cells.map(cell => cell.textContent);
@@ -48,6 +50,13 @@ const game2048 = (action) => {
 
     if (isFieldChanged) {
       addNewNumber(cells);
+
+      if (isFirstMove) {
+        mainButton.classList.replace('start', 'restart');
+        mainButton.textContent = 'Restart';
+
+        isFirstMove = false;
+      }
     }
 
     if (currentTurn.some(cellValue => cellValue === '2048')) {
@@ -64,8 +73,6 @@ const game2048 = (action) => {
 
 mainButton.addEventListener('click', () => {
   document.removeEventListener('keydown', game2048);
-  mainButton.classList.replace('start', 'restart');
-  mainButton.textContent = 'Restart';
 
   gameScore.textContent = '0';
 
