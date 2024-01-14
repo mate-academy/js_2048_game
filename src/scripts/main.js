@@ -13,9 +13,11 @@ buttonStart.addEventListener('click', () => {
   upDatefield = initialField;
   upDatefield = replaceRandomZero(upDatefield);
   initial(upDatefield);
+  styleCells();
+
   startText[0].style.display = 'none';
   buttonStart.innerHTML = 'restart';
-  buttonStart.style.backgroundColor = 'pink';
+  buttonStart.style.backgroundColor = 'rgba(254,105,110,255)';
 
   document.addEventListener('keydown', function() {
     switch (event.key) {
@@ -23,6 +25,7 @@ buttonStart.addEventListener('click', () => {
         upDatefield = keyLeft(upDatefield);
         upDatefield = replaceRandomZero(upDatefield);
         initial(upDatefield);
+        styleCells();
         checker();
         break;
 
@@ -30,6 +33,7 @@ buttonStart.addEventListener('click', () => {
         upDatefield = keyRight(upDatefield);
         upDatefield = replaceRandomZero(upDatefield);
         initial(upDatefield);
+        styleCells();
         checker();
         break;
 
@@ -37,6 +41,7 @@ buttonStart.addEventListener('click', () => {
         upDatefield = keyUp(upDatefield);
         upDatefield = replaceRandomZero(upDatefield);
         initial(upDatefield);
+        styleCells();
         checker();
         break;
 
@@ -44,6 +49,7 @@ buttonStart.addEventListener('click', () => {
         upDatefield = keyDown(upDatefield);
         upDatefield = replaceRandomZero(upDatefield);
         initial(upDatefield);
+        styleCells();
         checker();
         break;
 
@@ -269,4 +275,44 @@ function checker() {
   upDatefield = original;
 
   return false;
+}
+
+function styleCells() {
+  for (let i = 0; i < cells.length; i++) {
+    if (cells[i].innerHTML === '0') {
+      cells[i].innerHTML = '';
+      cells[i].style.backgroundColor = 'rgba(217,204,195,255)';
+    } else if (cells[i].innerHTML === '2') {
+      cells[i].style.backgroundColor = 'rgba(240,229,216,255)';
+    } else if (cells[i].innerHTML === '4') {
+      cells[i].style.backgroundColor = 'rgba(240,223,197,255)';
+    } else if (cells[i].innerHTML === '8') {
+      cells[i].style.color = 'white';
+      cells[i].style.backgroundColor = 'rgba(255,174,110,255)';
+    } else if (cells[i].innerHTML === '16') {
+      cells[i].style.color = 'white';
+      cells[i].style.backgroundColor = 'rgba(254,142,87,255)';
+    } else if (cells[i].innerHTML === '32') {
+      cells[i].style.color = 'white';
+      cells[i].style.backgroundColor = 'rgba(255,114,84,255)';
+    } else if (cells[i].innerHTML === '64') {
+      cells[i].style.color = 'white';
+      cells[i].style.backgroundColor = 'rgba(255,78,41,255)';
+    } else if (cells[i].innerHTML === '128') {
+      cells[i].style.color = 'white';
+      cells[i].style.backgroundColor = 'rgba(242,206,96,255)';
+    } else if (cells[i].innerHTML === '256') {
+      cells[i].style.color = 'white';
+      cells[i].style.backgroundColor = 'rgba(244,203,72,255)';
+    } else if (cells[i].innerHTML === '512') {
+      cells[i].style.color = 'white';
+      cells[i].style.backgroundColor = 'rgba(245,199,45,255)';
+    } else if (cells[i].innerHTML === '1024') {
+      cells[i].style.color = 'white';
+      cells[i].style.backgroundColor = 'rgba(244,195,1,255)';
+    } else if (cells[i].innerHTML === '2048') {
+      cells[i].style.color = 'white';
+      cells[i].style.backgroundColor = 'rgba(245,192,0,255)';
+    }
+  }
 }
