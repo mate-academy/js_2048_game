@@ -283,8 +283,10 @@ function styleCells() {
       cells[i].innerHTML = '';
       cells[i].style.backgroundColor = 'rgba(217,204,195,255)';
     } else if (cells[i].innerHTML === '2') {
+      cells[i].style.color = 'rgba(120,111,100,255)';
       cells[i].style.backgroundColor = 'rgba(240,229,216,255)';
     } else if (cells[i].innerHTML === '4') {
+      cells[i].style.color = 'rgba(120,111,100,255)';
       cells[i].style.backgroundColor = 'rgba(240,223,197,255)';
     } else if (cells[i].innerHTML === '8') {
       cells[i].style.color = 'white';
