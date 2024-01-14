@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: background 0.3s, transform 0.3s;
 
   &--2 {
     background: #eee4da;
@@ -104,7 +105,8 @@ h1 {
   margin: 0;
 }
 
-.info {
+.info,
+.max-score {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -117,6 +119,10 @@ h1 {
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+}
+
+.max-score {
+  background-color: antiquewhite;
 }
 
 .controls {
@@ -133,8 +139,7 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-
-  transition: 0.25s ease background;
+  transition: 0.25s ease background, 0.25s ease transform;
 }
 
 .start {
@@ -143,6 +148,7 @@ h1 {
 
   &:hover {
     background: #179921;
+    transform: scale(1.05);
   }
 }
 
@@ -151,6 +157,7 @@ h1 {
 
   &:hover {
     background: #f87474;
+    transform: scale(1.05);
   }
 }
 
@@ -163,10 +170,12 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+  transition: opacity 0.5s;
 }
 
 .hidden {
   display: none;
+  opacity: 0;
 }
 
 .container {
