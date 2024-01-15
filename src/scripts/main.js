@@ -318,8 +318,13 @@ function updateBoardView() {
       const cell = cells[row * 4 + col];
       const value = gameBoard[row][col];
 
-      cell.textContent = value;
-      cell.className = `field-cell value-${value}`;
+      if (value !== 0) {
+        cell.textContent = value;
+        cell.className = `field-cell value-${value}`;
+      } else {
+        cell.textContent = '';
+        cell.className = 'field-cell';
+      }
     }
   }
 
@@ -339,6 +344,7 @@ function startGame() {
   if (isFirstClick) {
     document.getElementById('startButton').textContent
     = 'Restart';
+    startButton.classList.add('restart');
     isFirstClick = false;
   }
   initializeGame();
