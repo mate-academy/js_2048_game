@@ -94,7 +94,7 @@ function checkGameOver() {
     }
   }
 
-  if (!movesAvailable && !hasChanged) {
+  if (!movesAvailable) {
     showMessage('message-lose');
   }
 
