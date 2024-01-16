@@ -38,6 +38,12 @@ function animateMergedCells(mergedCells) {
 }
 
 function addRandomTile() {
+  const movesAvailable = false;
+
+  if (!isGameOver && movesAvailable) {
+    return;
+  }
+
   const emptyCells = [];
 
   for (let row = 0; row < 4; row++) {
@@ -64,6 +70,7 @@ function addRandomTile() {
 
 function checkGameOver() {
   let movesAvailable = false;
+  const hasChanged = false;
 
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
@@ -87,7 +94,7 @@ function checkGameOver() {
     }
   }
 
-  if (!movesAvailable) {
+  if (!movesAvailable && !hasChanged) {
     showMessage('message-lose');
   }
 
@@ -114,11 +121,10 @@ function checkWin() {
 
 function moveLeft() {
   let hasChanged = false;
+
   const mergedCells = [];
 
   for (let row = 0; row < 4; row++) {
-    let mergeAllowed = true;
-
     for (let col = 1; col < 4; col++) {
       if (gameBoard[row][col] !== 0) {
         let newCol = col;
@@ -128,10 +134,9 @@ function moveLeft() {
         }
 
         if (newCol > 0 && gameBoard[row][newCol - 1]
-           === gameBoard[row][col] && mergeAllowed) {
+           === gameBoard[row][col]) {
           gameBoard[row][newCol - 1] *= 2;
           gameBoard[row][col] = 0;
-          mergeAllowed = false;
           score += gameBoard[row][newCol - 1];
           hasChanged = true;
 
@@ -146,7 +151,6 @@ function moveLeft() {
     }
   }
   animateMergedCells(mergedCells);
-  addRandomTile();
   mergedCells.length = 0;
 
   return hasChanged;
@@ -154,11 +158,10 @@ function moveLeft() {
 
 function moveRight() {
   let hasChanged = false;
+
   const mergedCells = [];
 
   for (let row = 0; row < 4; row++) {
-    let mergeAllowed = true;
-
     for (let col = 2; col >= 0; col--) {
       if (gameBoard[row][col] !== 0) {
         let newCol = col;
@@ -168,10 +171,9 @@ function moveRight() {
         }
 
         if (newCol < 3 && gameBoard[row][newCol + 1]
-           === gameBoard[row][col] && mergeAllowed) {
+           === gameBoard[row][col]) {
           gameBoard[row][newCol + 1] *= 2;
           gameBoard[row][col] = 0;
-          mergeAllowed = false;
           score += gameBoard[row][newCol + 1];
           hasChanged = true;
 
@@ -186,7 +188,6 @@ function moveRight() {
     }
   }
   animateMergedCells(mergedCells);
-  addRandomTile();
   mergedCells.length = 0;
 
   return hasChanged;
@@ -194,11 +195,10 @@ function moveRight() {
 
 function moveUp() {
   let hasChanged = false;
+
   const mergedCells = [];
 
   for (let col = 0; col < 4; col++) {
-    let mergeAllowed = true;
-
     for (let row = 1; row < 4; row++) {
       if (gameBoard[row][col] !== 0) {
         let newRow = row;
@@ -208,10 +208,9 @@ function moveUp() {
         }
 
         if (newRow > 0 && gameBoard[newRow - 1][col]
-           === gameBoard[row][col] && mergeAllowed) {
+           === gameBoard[row][col]) {
           gameBoard[newRow - 1][col] *= 2;
           gameBoard[row][col] = 0;
-          mergeAllowed = false;
           score += gameBoard[newRow - 1][col];
           hasChanged = true;
 
@@ -226,7 +225,6 @@ function moveUp() {
     }
   }
   animateMergedCells(mergedCells);
-  addRandomTile();
   mergedCells.length = 0;
 
   return hasChanged;
@@ -234,11 +232,10 @@ function moveUp() {
 
 function moveDown() {
   let hasChanged = false;
+
   const mergedCells = [];
 
   for (let col = 0; col < 4; col++) {
-    let mergeAllowed = true;
-
     for (let row = 2; row >= 0; row--) {
       if (gameBoard[row][col] !== 0) {
         let newRow = row;
@@ -248,10 +245,9 @@ function moveDown() {
         }
 
         if (newRow < 3 && gameBoard[newRow + 1][col]
-           === gameBoard[row][col] && mergeAllowed) {
+           === gameBoard[row][col]) {
           gameBoard[newRow + 1][col] *= 2;
           gameBoard[row][col] = 0;
-          mergeAllowed = false;
           score += gameBoard[newRow + 1][col];
           hasChanged = true;
 
@@ -266,17 +262,12 @@ function moveDown() {
     }
   }
   animateMergedCells(mergedCells);
-  addRandomTile();
   mergedCells.length = 0;
 
   return hasChanged;
 }
 
 function handleKeyDown(keyEvent) {
-  if (isGameOver) {
-    return;
-  }
-
   let hasChanged = false;
 
   switch (keyEvent.key) {
@@ -328,7 +319,7 @@ function updateBoardView() {
     }
   }
 
-  if (hasChanged) {
+  if (!hasChanged && !isGameOver) {
     addRandomTile();
   }
 
@@ -357,15 +348,3 @@ function startGame() {
 }
 
 startButton.addEventListener('click', startGame);
-
-document.addEventListener('keydown', function(keyEvent) {
-  if (keyEvent === 'ArrowLeft') {
-    moveLeft();
-  } else if (keyEvent === 'ArrowRight') {
-    moveRight();
-  } else if (keyEvent === 'ArrowUp') {
-    moveUp();
-  } else if (keyEvent === 'ArrowDown') {
-    moveDown();
-  }
-});
