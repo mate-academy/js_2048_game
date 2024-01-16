@@ -23,10 +23,12 @@ body {
 
   &--2 {
     background: #eee4da;
+    animation: pop-in 200ms;
   }
 
   &--4 {
     background: #ede0c8;
+    animation: pop-in 200ms;
   }
 
   &--8 {
@@ -124,6 +126,9 @@ h1 {
 }
 
 .button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -184,4 +189,9 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.1); }
+  100% { opacity: 1; transform: scale(1); }
 }
