@@ -70,7 +70,6 @@ function addRandomTile() {
 
 function checkGameOver() {
   let movesAvailable = false;
-  const hasChanged = false;
 
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
@@ -335,7 +334,6 @@ function startGame() {
   if (isFirstClick) {
     document.getElementById('startButton').textContent
     = 'Restart';
-    startButton.classList.add('restart');
     isFirstClick = false;
   }
   initializeGame();
@@ -348,3 +346,15 @@ function startGame() {
 }
 
 startButton.addEventListener('click', startGame);
+
+document.addEventListener('keydown', function(keyEvent) {
+  if (keyEvent === 'ArrowLeft') {
+    moveLeft();
+  } else if (keyEvent === 'ArrowRight') {
+    moveRight();
+  } else if (keyEvent === 'ArrowUp') {
+    moveUp();
+  } else if (keyEvent === 'ArrowDown') {
+    moveDown();
+  }
+});
