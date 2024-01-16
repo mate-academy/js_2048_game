@@ -318,4 +318,3 @@ function styleCells() {
     }
   }
 }
-
