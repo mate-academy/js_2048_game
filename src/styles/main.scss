@@ -11,6 +11,7 @@ body {
 }
 
 .field-cell {
+  position: relative;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
@@ -21,55 +22,56 @@ body {
   vertical-align: center;
   user-select: none;
 
-  &--2 {
-    background: #eee4da;
+
+  &.value-2 {
+    background: #eab989;
   }
 
-  &--4 {
-    background: #ede0c8;
+  &.value-4 {
+    background: #ddad55;
   }
 
-  &--8 {
-    background: #f2b179;
+  &.value-8 {
+    background: #a5662e;
     color: #f9f6f2;
   }
 
-  &--16 {
+  &.value-16 {
     background: #f59563;
     color: #f9f6f2;
   }
 
-  &--32 {
+  &.value-32 {
     background: #f67c5f;
     color: #f9f6f2;
   }
 
-  &--64 {
+  &.value-64 {
     background: #f65e3b;
     color: #f9f6f2;
   }
 
-  &--128 {
+  &.value-128 {
     background: #edcf72;
     color: #f9f6f2;
   }
 
-  &--256 {
+  &.value-256 {
     background: #edcc61;
     color: #f9f6f2;
   }
 
-  &--512 {
+  &.value-512 {
     background: #edc850;
     color: #f9f6f2;
   }
 
-  &--1024 {
+  &.value-1024 {
     background: #edc53f;
     color: #f9f6f2;
   }
 
-  &--2048 {
+  &.value-2048 {
     background: #edc22e;
     color: #f9f6f2;
   }
@@ -124,6 +126,10 @@ h1 {
 }
 
 .button {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -134,12 +140,14 @@ h1 {
   width: 75px;
   height: 75px;
 
-  transition: 0.25s ease background;
+  transition: 0.25s ease;
 }
 
 .start {
+  position: relative;
   background: #1dae28;
   font-size: 20px;
+
 
   &:hover {
     background: #179921;
@@ -147,7 +155,7 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #b83232;
 
   &:hover {
     background: #f87474;
