@@ -11,15 +11,13 @@ const messageStart = document.querySelector('.message-start');
 const rows = 4;
 const columns = 4;
 let score = 0;
-
+let gameStarted = false;
 let gameField = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
-
-let gameStarted = false;
 
 startBtn.addEventListener('click', () => {
   if (gameStarted) {
@@ -40,14 +38,13 @@ startBtn.addEventListener('click', () => {
 
   messageStart.classList.add('hidden');
   setGame();
-  addTile();
-  addTile();
   gameStarted = true;
 
   startBtn.classList.remove('start');
   startBtn.classList.add('restart');
   startBtn.textContent = 'Restart';
   score = 0;
+  gameScore.innerText = score;
 });
 
 const setGame = () => {
@@ -63,24 +60,15 @@ const setGame = () => {
       gameFieldElement.append(cell);
     }
   }
+
+  addTile();
+  addTile();
 };
 
 function hasEmptyTile() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       if (gameField[r][c] === 0) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-function isWon() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      if (gameField[r][c] === 2048) {
         return true;
       }
     }
@@ -113,15 +101,40 @@ function addTile() {
   }
 }
 
-function updateCell(cell, num) {
-  cell.innerText = '';
-  cell.classList.value = '';
-  cell.classList.add('field-cell');
-
-  if (num > 0) {
-    cell.innerText = num;
-    cell.classList.add(`field-cell--${num}`);
+function isWon() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (gameField[r][c] === 2048) {
+        return true;
+      }
+    }
   }
+
+  return false;
+}
+
+function isLost() {
+  if (hasEmptyTile()) {
+    return false;
+  }
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns - 1; c++) {
+      if (gameField[r][c] === gameField[r][c + 1]) {
+        return false;
+      }
+    }
+  }
+
+  for (let r = 0; r < rows - 1; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (gameField[r][c] === gameField[r + 1][c]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 document.addEventListener('keyup', (e) => {
@@ -150,28 +163,13 @@ document.addEventListener('keyup', (e) => {
   }
 });
 
-function isLost() {
-  if (hasEmptyTile()) {
-    return false;
-  }
+function updateHandler(copyField) {
+  if (copyField.toString() !== gameField.toString()) {
+    gameField = JSON.parse(JSON.stringify(copyField));
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns - 1; c++) {
-      if (gameField[r][c] === gameField[r][c + 1]) {
-        return false;
-      }
-    }
+    updateGameField();
+    addTile();
   }
-
-  for (let r = 0; r < rows - 1; r++) {
-    for (let c = 0; c < columns; c++) {
-      if (gameField[r][c] === gameField[r + 1][c]) {
-        return false;
-      }
-    }
-  }
-
-  return true;
 }
 
 function updateGameField() {
@@ -182,6 +180,17 @@ function updateGameField() {
 
       updateCell(cell, num);
     }
+  }
+}
+
+function updateCell(cell, num) {
+  cell.innerText = '';
+  cell.classList.value = '';
+  cell.classList.add('field-cell');
+
+  if (num > 0) {
+    cell.innerText = num;
+    cell.classList.add(`field-cell--${num}`);
   }
 }
 
@@ -206,10 +215,7 @@ function slide(row) {
 }
 
 function slideLeft() {
-  const fieldCopy = [...gameField];
-
-  console.log(gameField);
-  console.log(fieldCopy);
+  const fieldCopy = JSON.parse(JSON.stringify(gameField));
 
   for (let r = 0; r < rows; r++) {
     let row = fieldCopy[r];
@@ -218,20 +224,11 @@ function slideLeft() {
     fieldCopy[r] = row;
   };
 
-  if (fieldCopy.toString() !== gameField.toString()) {
-    gameField = fieldCopy;
-
-    updateGameField();
-    addTile();
-  }
-
-  if (!hasEmptyTile) {
-    messageLose.classList.remove('hidden');
-  }
+  updateHandler(fieldCopy);
 };
 
 function slideRight() {
-  const fieldCopy = [...gameField];
+  const fieldCopy = JSON.parse(JSON.stringify(gameField));
 
   for (let r = 0; r < rows; r++) {
     let row = fieldCopy[r];
@@ -244,27 +241,11 @@ function slideRight() {
     fieldCopy[r] = newRow;
   };
 
-  const reversedField = [];
-
-  for (const row of gameField) {
-    const newRow = row.reverse();
-
-    reversedField.push(newRow);
-  }
-
-  if (fieldCopy.toString() !== reversedField.toString()) {
-    gameField = fieldCopy;
-
-    updateGameField();
-    addTile();
-  }
+  updateHandler(fieldCopy);
 };
 
 function slideUp() {
-  const fieldCopy = [...gameField];
-
-  console.log(gameField);
-  console.log(fieldCopy);
+  const fieldCopy = JSON.parse(JSON.stringify(gameField));
 
   for (let c = 0; c < rows; c++) {
     let row = [
@@ -281,30 +262,27 @@ function slideUp() {
     }
   };
 
-  if (fieldCopy.toString() !== gameField.toString()) {
-    gameField = fieldCopy;
-
-    updateGameField();
-    addTile();
-  }
+  updateHandler(fieldCopy);
 };
 
 function slideDown() {
+  const fieldCopy = JSON.parse(JSON.stringify(gameField));
+
   for (let c = 0; c < rows; c++) {
     let row = [
-      gameField[0][c],
-      gameField[1][c],
-      gameField[2][c],
-      gameField[3][c],
+      fieldCopy[0][c],
+      fieldCopy[1][c],
+      fieldCopy[2][c],
+      fieldCopy[3][c],
     ];
 
     row = slide(row.reverse());
     row = row.reverse();
 
     for (let index = 0; index < rows; index++) {
-      gameField[index][c] = row[index];
+      fieldCopy[index][c] = row[index];
     }
   };
 
-  updateGameField();
+  updateHandler(fieldCopy);
 };
