@@ -266,16 +266,23 @@ function moveDown() {
 function handleKeyDown(keyEvent) {
   hasChanged = false;
 
-  switch (keyEvent.key) {
+  const {
+    key,
+  } = keyEvent;
+
+  switch (key) {
     case 'ArrowLeft':
       hasChanged = moveLeft();
       break;
+
     case 'ArrowRight':
       hasChanged = moveRight();
       break;
+
     case 'ArrowUp':
       hasChanged = moveUp();
       break;
+
     case 'ArrowDown':
       hasChanged = moveDown();
       break;
