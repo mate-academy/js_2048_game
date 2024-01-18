@@ -56,17 +56,17 @@ function isLose() {
     return false;
   }
 
-  for (let r = 0; r < size - 1; r++) {
-    for (let c = 0; c < size; c++) {
-      if (board[r][c] === board[r + 1][c]) {
+  for (let r = 0; r < size; r++) {
+    for (let c = 0; c < size - 1; c++) {
+      if (board[r][c] === board[r][c + 1]) {
         return false;
       }
     }
   }
 
-  for (let r = 0; r < size; r++) {
-    for (let c = 0; c < size - 1; c++) {
-      if (board[r][c] === board[r][c + 1]) {
+  for (let c = 0; c < size; c++) {
+    for (let r = 0; r < size - 1; r++) {
+      if (board[r][c] === board[r + 1][c]) {
         return false;
       }
     }
@@ -118,12 +118,6 @@ function slide(array) {
     }
   }
 
-  isWin();
-
-  if (isLose()) {
-    lose();
-  }
-
   const filteredArray = newArray.filter((element) => {
     return element !== 0;
   });
@@ -158,49 +152,80 @@ function hasChanged(cur, prev) {
   return false;
 }
 
+function slideUp() {
+  for (let c = 0; c < size; c++) {
+    const column = [board[0][c], board[1][c], board[2][c], board[3][c]];
+    const newColumn = slide(column);
+
+    updateColumn(c, newColumn);
+  }
+}
+
+function slideDown() {
+  for (let c = 0; c < size; c++) {
+    const column = [board[3][c], board[2][c], board[1][c], board[0][c]];
+    const newColumn = slide(column).reverse();
+
+    updateColumn(c, newColumn);
+  }
+}
+
+function slideLeft() {
+  for (let r = 0; r < size; r++) {
+    const row = board[r];
+    const newRow = slide(row);
+
+    board[r] = newRow;
+  }
+}
+
+function slideRight() {
+  for (let r = 0; r < size; r++) {
+    const row = board[r];
+
+    if (slide(row) === row.reverse()) {
+      return;
+    }
+
+    const newRow = slide(row).reverse();
+
+    board[r] = newRow;
+  }
+}
+
+function updateColumn(cell, newCell) {
+  for (let row = 0; row < size; row++) {
+    board[row][cell] = newCell[row];
+  }
+}
+
 document.addEventListener('keydown', (e) => {
   const copyBoard = board.map((arr) => [...arr]);
 
-  if (e.code === 'KeyW') {
-    for (let i = 0; i < size; i++) {
-      const column = [board[0][i], board[1][i], board[2][i], board[3][i]];
-      const newColumn = slide(column);
+  e.preventDefault();
 
-      board[0][i] = newColumn[0];
-      board[1][i] = newColumn[1];
-      board[2][i] = newColumn[2];
-      board[3][i] = newColumn[3];
-    }
+  switch (e.code) {
+    case 'KeyW':
+      slideUp();
+      break;
+
+    case 'KeyS':
+      slideDown();
+      break;
+
+    case 'KeyA':
+      slideLeft();
+      break;
+
+    case 'KeyD':
+      slideRight();
+      break;
   }
 
-  if (e.code === 'KeyS') {
-    for (let i = 0; i < size; i++) {
-      const column = [board[3][i], board[2][i], board[1][i], board[0][i]];
-      const newColumn = slide(column).reverse();
+  isWin();
 
-      board[0][i] = newColumn[0];
-      board[1][i] = newColumn[1];
-      board[2][i] = newColumn[2];
-      board[3][i] = newColumn[3];
-    }
-  }
-
-  if (e.code === 'KeyA') {
-    for (let i = 0; i < size; i++) {
-      const row = board[i];
-      const newRow = slide(row);
-
-      board[i] = newRow;
-    }
-  }
-
-  if (e.code === 'KeyD') {
-    for (let i = 0; i < size; i++) {
-      const row = board[i];
-      const newRow = slide(row).reverse();
-
-      board[i] = newRow;
-    }
+  if (isLose()) {
+    lose();
   }
 
   if (hasChanged(board, copyBoard)) {
