@@ -1,60 +1,84 @@
 'use strict';
 
 const SIZE_BOARD = 4;
-
-const board = [...Array(4)].map(() => Array(4).fill(0));
-// const board = [
-//   [0, 0, 0, 2],
-//   [0, 0, 0, 2],
-//   [0, 0, 0, 2],
-//   [0, 0, 0, 2]
-// ]
+let board = [...Array(SIZE_BOARD)].map(() => Array(SIZE_BOARD).fill(0));
 let score = 0;
+let isclickedStart = false;
+let stopGameWin = true;
+// let isMoved = false;
 const cells = document.querySelectorAll('.field-cell');
+const allowedKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
 
 const message = {
-  start: document.getElementById('message-start'),
-  lose: document.getElementById('message-lose'),
+  messageStart: document.getElementById('message-start'),
+  messageLose: document.getElementById('message-lose'),
   messageWin: document.getElementById('message-win'),
 };
 
-const gameBoard = document.getElementById('game-field');
 const button = document.getElementById('start-button');
 
 button.addEventListener('click', setGame);
 
+function resetGame() {
+  score = 0;
+  document.querySelector('.game-score').innerText = score;
+  board = [...Array(SIZE_BOARD)].map(() => Array(SIZE_BOARD).fill(0));
+}
+
 function setGame() {
+  isclickedStart = true;
+  resetGame();
   changeButton();
   addRandomField(board);
   addRandomField(board);
   drawTile(board, cells);
-  // console.log(board)
 }
 
 document.addEventListener('keyup', (e) => {
-  switch (e.code) {
+  if (!allowedKeys.includes(e.key)) {
+    return;
+  }
+
+  if (!stopGameWin) {
+    return;
+  }
+
+  switch (e.key) {
     case 'ArrowLeft':
       slideLeft();
+      loseGameMessage();
+      winGameMessage();
+
       break;
 
     case 'ArrowRight':
       slideRight();
+      loseGameMessage();
+      winGameMessage();
       break;
 
     case 'ArrowUp':
       slideUp();
+      loseGameMessage();
+      winGameMessage();
       break;
 
     case 'ArrowDown':
-      // slideDown();
+      slideDown();
+      loseGameMessage();
+      winGameMessage();
       break;
 
     default:
       break;
   }
 
-  // addRandomField(board);
-  // drawTile(board, cells);
+  document.querySelector('.game-score').innerText = score;
+
+  if (isclickedStart) {
+    addRandomField(board);
+    drawTile(board, cells);
+  }
 });
 
 function deleteZero(row) {
@@ -62,9 +86,7 @@ function deleteZero(row) {
 }
 
 function slide(row) {
-  // console.log('row', row)
   const rowClear = deleteZero(row);
-  // console.log('rowClear', rowClear)
 
   let newRow = rowClear;
 
@@ -86,60 +108,78 @@ function slide(row) {
 }
 
 function slideLeft() {
-  for (let i = 0; i < board.length; i++) {
+  for (let i = 0; i < SIZE_BOARD; i++) {
     board[i] = slide(board[i]);
   }
 }
 
 function slideRight() {
-  for (let i = 0; i < board.length; i++) {
+  for (let i = 0; i < SIZE_BOARD; i++) {
     board[i].reverse();
     board[i] = slide(board[i]);
     board[i].reverse();
   }
 }
 
-function getItemsColumsBoard() {
+function getItemsColumsBoard(matrix) {
   const columsItems = [];
 
-  for (let r = 0; r < board.length; r++) {
-    for (let c = 0; c < board.length; c++) {
-      columsItems.push(board[c][r]);
+  for (let r = 0; r < matrix.length; r++) {
+    for (let c = 0; c < matrix.length; c++) {
+      columsItems.push(matrix[c][r]);
     }
   }
-  console.log(columsItems);
+
   return columsItems;
 }
 
 function getColumsBoard(arr, siceCut) {
   const columsArr = [];
-  console.log('columsArr before', columsArr);
 
   for (let i = 0; i < arr.length; i += siceCut) {
     const subarray = arr.slice(i, i + siceCut);
 
     columsArr.push(subarray);
   }
-  console.log('columsArr after', columsArr);
+
   return columsArr;
 }
 
 function slideUp() {
-  const colums = getColumsBoard(getItemsColumsBoard(), SIZE_BOARD);
-  console.log('coluns before', colums);
+  const colums = getColumsBoard(getItemsColumsBoard(board), SIZE_BOARD);
 
-  for (let r = 0; r < board.length; r++) {
+  for (let r = 0; r < SIZE_BOARD; r++) {
     colums[r] = slide(colums[r]);
-    board[r] = colums[r];
   }
-  // console.log('coluns after', colums);
+
+  const rows = getColumsBoard(getItemsColumsBoard(colums), SIZE_BOARD);
+
+  for (let r = 0; r < SIZE_BOARD; r++) {
+    board[r] = rows[r];
+  }
+}
+
+function slideDown() {
+  const colums = getColumsBoard(getItemsColumsBoard(board), SIZE_BOARD);
+
+  for (let r = 0; r < SIZE_BOARD; r++) {
+    colums[r].reverse();
+    colums[r] = slide(colums[r]);
+    colums[r].reverse();
+  }
+
+  const rows = getColumsBoard(getItemsColumsBoard(colums), SIZE_BOARD);
+
+  for (let r = 0; r < SIZE_BOARD; r++) {
+    board[r] = rows[r];
+  }
 }
 
 function changeButton() {
   button.classList += ' restart';
   button.innerText = 'Restart';
-  button.style = 'border: 2px solid red; color: #776e65;';
-  message['start'].classList.add('hidden');
+  button.style = 'border: 2px solid red; color: #776e65; outline: none;';
+  message['messageStart'].classList.add('hidden');
 }
 
 function addRandomField(matrix) {
@@ -162,17 +202,15 @@ function addRandomField(matrix) {
     const randomCell = emptyCells[randomIndex];
 
     matrix[randomCell.rowIndex][randomCell.colIndex]
-      = Math.random() < 0.5 ? 2 : 4;
-    // Удаляем использованную ячейку из списка пустых ячеек
-    emptyCells.splice(randomIndex, 1);
+      = Math.random() < 0.9 ? 2 : 4;
   }
 }
 
-function drawTile(tiles, cells) {
+function drawTile(tiles, element) {
   tiles.forEach((row, rowInd) => {
     row.forEach((value, colInd) => {
       const cellIndex = rowInd * tiles.length + colInd;
-      const cell = cells[cellIndex];
+      const cell = element[cellIndex];
 
       if (value > 0) {
         cell.textContent = value;
@@ -185,3 +223,43 @@ function drawTile(tiles, cells) {
   });
 }
 
+function winGameMessage() {
+  board.forEach(row => {
+    row.forEach(tile => {
+      if (tile >= 64) {
+        stopGameWin = false;
+        message.messageWin.classList.remove('hidden');
+      }
+    });
+  });
+}
+
+function loseGameMessage() {
+  if (isBoardFull() && !canMakeMove()) {
+    message.messageLose.classList.remove('hidden');
+  }
+}
+
+function isBoardFull() {
+  return board.every(row => row.every(tile => tile !== 0));
+}
+
+function canMakeMove() {
+  for (let r = 0; r < SIZE_BOARD; r++) {
+    for (let c = 0; c < SIZE_BOARD; c++) {
+      const value = board[r][c];
+
+      if (value !== 0) {
+        if (r < 3 && value === board[r + 1][c]) {
+          return true;
+        };
+
+        if (c < 3 && value === board[r][c + 1]) {
+          return true;
+        };
+      }
+    }
+  }
+
+  return false;
+}
