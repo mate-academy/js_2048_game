@@ -10,6 +10,76 @@ body {
   font-weight: 900;
 }
 
+.animationAppear {
+  animation: appear 0.15s ease;
+}
+
+@keyframes appear {
+  0% {
+    transform: scale(0.2);
+  }
+
+  100% {
+    transform:  scale(1);
+  }
+}
+
+.animationMerge {
+  animation: merge 0.15s ease;
+}
+
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animationSlideUp {
+  animation: slide-up 0.3s ease;
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(0%);
+  }
+
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+.animationScore {
+  animation: score-move 0.5s ease, score-opacity 1s ease;
+}
+
+@keyframes score-opacity {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes score-move {
+  0% {
+    transform: translateY(0%);
+  }
+
+  100% {
+    transform: translateY(-200%);
+  }
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -20,6 +90,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all 0.1s ease;
 
   &--2 {
     background: #eee4da;
@@ -125,6 +196,7 @@ h1 {
 
 .button {
   border: none;
+  outline: none;
   border-radius: 5px;
   cursor: pointer;
   color: #f9f6f2;
@@ -184,4 +256,9 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.add-points {
+  position: absolute;
+  transform: translateY(50%);
 }
