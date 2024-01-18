@@ -3,9 +3,7 @@
 const SIZE_BOARD = 4;
 let board = [...Array(SIZE_BOARD)].map(() => Array(SIZE_BOARD).fill(0));
 let score = 0;
-let isclickedStart = false;
-let stopGameWin = true;
-// let isMoved = false;
+let isWin = false;
 const cells = document.querySelectorAll('.field-cell');
 const allowedKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
 
@@ -26,7 +24,6 @@ function resetGame() {
 }
 
 function setGame() {
-  isclickedStart = true;
   resetGame();
   changeButton();
   addRandomField(board);
@@ -35,20 +32,17 @@ function setGame() {
 }
 
 document.addEventListener('keyup', (e) => {
-  if (!allowedKeys.includes(e.key)) {
+  if (!allowedKeys.includes(e.key) || isWin) {
     return;
   }
 
-  if (!stopGameWin) {
-    return;
-  }
+  const prevBoard = JSON.parse(JSON.stringify(board));
 
   switch (e.key) {
     case 'ArrowLeft':
       slideLeft();
       loseGameMessage();
       winGameMessage();
-
       break;
 
     case 'ArrowRight':
@@ -75,11 +69,25 @@ document.addEventListener('keyup', (e) => {
 
   document.querySelector('.game-score').innerText = score;
 
-  if (isclickedStart) {
+  const isSameBoard = isMoved(prevBoard);
+
+  if (isSameBoard) {
     addRandomField(board);
     drawTile(board, cells);
   }
 });
+
+const isMoved = (prevBoard) => {
+  for (let r = 0; r < SIZE_BOARD; r++) {
+    for (let c = 0; c < SIZE_BOARD; c++) {
+      if (prevBoard[r][c] !== board[r][c]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
 
 function deleteZero(row) {
   return row.filter(item => item !== 0);
@@ -226,8 +234,8 @@ function drawTile(tiles, element) {
 function winGameMessage() {
   board.forEach(row => {
     row.forEach(tile => {
-      if (tile >= 64) {
-        stopGameWin = false;
+      if (tile >= 2048) {
+        isWin = true;
         message.messageWin.classList.remove('hidden');
       }
     });
