@@ -21,6 +21,15 @@ function resetGame() {
   score = 0;
   document.querySelector('.game-score').innerText = score;
   board = [...Array(SIZE_BOARD)].map(() => Array(SIZE_BOARD).fill(0));
+
+  for (let r = 0; r < SIZE_BOARD; r++) {
+    for (let c = 0; c < SIZE_BOARD; c++) {
+      if (board[r][c] === 0) {
+        message.messageLose.classList.add('hidden');
+        message.messageWin.classList.add('hidden');
+      }
+    }
+  }
 }
 
 function setGame() {
