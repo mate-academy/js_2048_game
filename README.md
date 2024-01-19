@@ -1,54 +1,38 @@
 # 2048 game
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+1. Short Project Description:
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+Embark on a captivating journey with the 2048 game - a classic rendition where strategy meets fun. Your goal is to skillfully merge numbered tiles and ascend to the illustrious 2048 tile. Immerse yourself in the challenge, sharpen your wits, and achieve the coveted 2048 tile!
 
-Okay, what do we have?
+2. Technologies Used:
 
-1. HTML and CSS are already written. You can use it, or implement your own design if you want.
-2. Reference.
+Dive into the world of modern web development with our project, powered by the dynamic duo of JavaScript for seamless functionality and SCSS for sleek styling. Engage with the game, experience smooth interactions, and enjoy a visually appealing interface crafted using cutting-edge technologies.
 
-That's it!
+3. Project Links:
 
-Okay, okay. Also, we have some rules:
+- [DEMO LINK](https://baraban2003.github.io/js_2048_game/)
 
-1. The game field is 4 x 4
-2. Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3. The player can move cells with keyboard arrows
-4. All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5. The move is possible if at least one cell is changed after the move
-6. After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7. When 2048 value is displayed in any cell, win message should be shown.
-8. The `game over` message should be shown if there are no more available moves.
-9. Hide start message when game starts.
-10. Change the `Start` button to `Restart` after the first move.
-11. Increase score with each move. The score should be increased by the sum of all merged cells.
+4. Main requirements:
 
-Hints:
+- The game field is 4 x 4
+- Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
+- The player can move cells with keyboard arrows
+- All the numbers should be moved in the selected direction until all empty cells are filled in
+  - 2 equal cells should be merged into a doubled number
+  - The merged cell can’t be merged twice during one move
+- The move is possible if at least one cell is changed after the move
+- After move 2 or 4 appears in a random empty cell. 4 probability is 10%
+- When 2048 value is displayed in any cell, win message should be shown.
+- The `game over` message should be shown if there are no more available moves.
+- Hide start message when game starts.
+- Change the `Start` button to `Restart` after the first move.
+- Increase score with each move. The score should be increased by the sum of all merged cells.
 
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
-- Use `keydown` event and `event.key` property to handle arrow buttons presses
-  ```js
-  document.addEventListener('keydown', (event) => console.log(event.key));
-  ```
+5. Manual for Starting the Project (Using Parcel).
 
-You can change the HTM/CSS layout if you need it.
+To start the project locally, follow these steps:
 
-![Preview](./src/images/reference.png)
+Clone the Repository: bash Copy code git clone cd Install Dependencies: bash Copy code npm install Start the Development Server: bash Copy code npm start This will launch the project on a local development server. You can view it in your browser at http://localhost:8080.
 
-## Deploy and Pull Request
-
-1. Replace `<your_account>` with your Github username in the link
-   - [DEMO LINK](https://baraban2003.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-   - Run `npm run test` command to test your code;
-   - Run `npm run test:only -- -n` to run fast test ignoring linter;
-   - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+Building for Production: To build the project for production:
+bash Copy code npm run build This command generates a production-ready version of the project in the dist or build folder.
