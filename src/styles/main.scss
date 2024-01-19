@@ -57,7 +57,7 @@ body {
 }
 
 .animationScore {
-  animation: score-move 0.5s ease, score-opacity 1s ease;
+  animation: score-move 0.5s ease, score-opacity 0.5s ease;
 }
 
 @keyframes score-opacity {
@@ -66,7 +66,7 @@ body {
   }
 
   100% {
-    opacity: 0;
+    opacity: 0.5;
   }
 }
 

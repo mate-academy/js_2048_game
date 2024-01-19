@@ -123,6 +123,22 @@ document.addEventListener('keydown', action => {
   let notEmpty;
   let flyPoints = '0';
 
+  const floatingScore = () => {
+    if (addScore.classList.contains('animationScore')) {
+      addScore.classList.remove('animationScore');
+    }
+
+    void addScore.offsetWidth;
+
+    addScore.classList.remove('hidden');
+    addScore.textContent = `+${flyPoints}`;
+    addScore.classList.add('animationScore');
+
+    addScore.addEventListener('animationend', () => {
+      addScore.classList.add('hidden');
+    });
+  };
+
   for (const cell of cells) {
     if (cell.textContent !== '') {
       notEmpty = true;
@@ -170,15 +186,7 @@ document.addEventListener('keydown', action => {
 
           score.textContent
           = `${+(cells[target - 4].textContent) + +(score.textContent)}`;
-
-          addScore.classList.remove('hidden');
-
-          addScore.textContent = `+${flyPoints}`;
-          addScore.classList.add('animationScore');
-
-          addScore.addEventListener('animationend', () => {
-            addScore.classList.add('hidden');
-          });
+          floatingScore();
         }
       };
 
@@ -195,6 +203,7 @@ document.addEventListener('keydown', action => {
         cells[constRandomNewCell].classList.remove('animationAppear');
       });
     }
+
     cellStyle();
   }
 
@@ -238,14 +247,7 @@ document.addEventListener('keydown', action => {
 
           score.textContent
             = `${+(cells[target + 4].textContent) + +(score.textContent)}`;
-
-          addScore.classList.remove('hidden');
-          addScore.textContent = `+${flyPoints}`;
-          addScore.classList.add('animationScore');
-
-          addScore.addEventListener('animationend', () => {
-            addScore.classList.add('hidden');
-          });
+          floatingScore();
         }
       };
 
@@ -306,14 +308,7 @@ document.addEventListener('keydown', action => {
 
           score.textContent
             = `${+(cells[target - 1].textContent) + +(score.textContent)}`;
-
-          addScore.classList.remove('hidden');
-          addScore.textContent = `+${flyPoints}`;
-          addScore.classList.add('animationScore');
-
-          addScore.addEventListener('animationend', () => {
-            addScore.classList.add('hidden');
-          });
+          floatingScore();
         }
       };
 
@@ -374,14 +369,7 @@ document.addEventListener('keydown', action => {
 
           score.textContent
             = `${+(cells[target + 1].textContent) + +(score.textContent)}`;
-
-          addScore.classList.remove('hidden');
-          addScore.textContent = `+${flyPoints}`;
-          addScore.classList.add('animationScore');
-
-          addScore.addEventListener('animationend', () => {
-            addScore.classList.add('hidden');
-          });
+          floatingScore();
         }
       };
 
@@ -403,29 +391,45 @@ document.addEventListener('keydown', action => {
   }
 
   const countCells = () => {
-    let counter = 0;
+    let isSixteen = true;
 
     for (const cell of cells) {
-      if (cell.textContent !== '') {
-        counter++;
+      if (cell.textContent === '') {
+        isSixteen = false;
       }
     }
 
-    return counter;
+    return isSixteen;
   };
 
   const isFiled = countCells();
 
-  for (const cell of cells) {
-    if (
-      isFiled === 16
-      && cell.textContent !== cell.textContent - 4
-      && cell.textContent !== cell.textContent + 4
-      && cell.textContent !== cell.textContent - 1
-      && cell.textContent !== cell.textContent + 1
-    ) {
-      messageLose.classList.remove('hidden');
+  let isOriginal = true;
+
+  for (let cell = 4; cell < cells.length - 4; cell++) {
+    if (cells[cell].textContent === cells[cell - 4].textContent
+    || cells[cell].textContent === cells[cell + 4].textContent) {
+      isOriginal = false;
     }
+  }
+
+  for (let cell = 0; cell < cells.length; cell++) {
+    if (cell % 4 !== 0) {
+      if (cells[cell].textContent === cells[cell - 1].textContent) {
+        isOriginal = false;
+      }
+    } else if ((cell - 3) % 4 !== 0) {
+      if (cells[cell].textContent === cells[cell + 1].textContent) {
+        isOriginal = false;
+      }
+    }
+  }
+
+  if (
+    isFiled === true
+    && isOriginal === true
+  ) {
+    messageLose.classList.remove('hidden');
   }
 
   for (const cell of cells) {
