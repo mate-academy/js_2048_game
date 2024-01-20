@@ -4,18 +4,18 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #f2f3f4;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #cacfd2;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #797d7f;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
@@ -76,9 +76,10 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: #909497;
   border-spacing: 10px;
   border-radius: 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0 50px 100px -20px, rgba(0, 0, 0, 0.3) 0 30px 60px -30px, rgba(10, 37, 64, 0.35) 0 -2px 6px 0 inset;
 }
 
 .game-header {
@@ -91,17 +92,16 @@ body {
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
+  color: white;
+  width: 50%;
+  font-size: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  text-shadow: 2px 2px 8px #797d7f;
+
 }
 
 .info {
@@ -109,11 +109,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #cacfd2;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #797d7f;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -138,30 +138,28 @@ h1 {
 }
 
 .start {
-  background: #1dae28;
+  background: #229954;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: #1e8449 ;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #E6B0AA;
 
   &:hover {
-    background: #f87474;
+    background: #D98880;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  color: #797d7f;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
   font-size: 20px;
 }
 
