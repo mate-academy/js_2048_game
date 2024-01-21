@@ -22,10 +22,13 @@ buttonStart.addEventListener('click', () => {
   styleCells();
   startText[0].style.display = 'none';
   buttonStart.classList.add('restart');
+  buttonStart.innerHTML = 'restart';
 });
 
 document.addEventListener('keydown', function() {
   if (gameStarted) {
+    const originalUpDatefield = [...upDatefield];
+
     switch (event.key) {
       case 'ArrowLeft':
         upDatefield = slide(upDatefield, 'left');
@@ -47,9 +50,12 @@ document.addEventListener('keydown', function() {
 
       default:
     }
-    upDatefield = replaceRandomZero(upDatefield);
-    initial(upDatefield);
-    styleCells();
+
+    if (JSON.stringify(upDatefield) !== JSON.stringify(originalUpDatefield)) {
+      upDatefield = replaceRandomZero(upDatefield);
+      initial(upDatefield);
+      styleCells();
+    }
     checker();
   }
 });
@@ -92,12 +98,10 @@ function slide(field, direction) {
 function horizontal(row, direction) {
   let tempRow = removeZero(row);
 
-  // Move & sum adjacent cells
   for (let i = 0; i < tempRow.length - 1; i++) {
     if (tempRow[i + 1] === tempRow[i]) {
-      console.log(tempRow[i], tempRow[i+1])
-      scoreNumber += tempRow[i] * 2;
       [tempRow[i], tempRow[i + 1]] = [tempRow[i] * 2, 0];
+      scoreNumber += tempRow[i];
     }
   }
 
@@ -186,10 +190,12 @@ function checker() {
     const win = document.getElementsByClassName('message-win')[0];
 
     win.style.display = 'block';
-  } else if (JSON.stringify(original) === JSON.stringify(left)
+  } else if (
+    JSON.stringify(original) === JSON.stringify(left)
     && JSON.stringify(original) === JSON.stringify(right)
     && JSON.stringify(original) === JSON.stringify(down)
-    && JSON.stringify(original) === JSON.stringify(up)) {
+    && JSON.stringify(original) === JSON.stringify(up)
+  ) {
     upDatefield = original;
     lose.style.display = 'block';
 
