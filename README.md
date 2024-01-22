@@ -25,7 +25,8 @@ Okay, okay. Also, we have some rules:
 8) The `game over` message should be shown if there are no more available moves.
 9) Hide start message when game starts.
 10) Change the `Start` button to `Restart` after the first move.
-11) Increase score with each move. The score should be increased by the sum of all merged cells.
+11) `Restart` button should reset the game to the initial state.
+12) Increase score with each move. The score should be increased by the sum of all merged cells.
 
 Hints:
 - You have class `field-cell--%cell_value%`, for styling cell in the game.
