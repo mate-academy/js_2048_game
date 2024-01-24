@@ -14,7 +14,6 @@ const winValue = 2048;
 
 let score = 0;
 let field = Array.from({ length: fieldSize }, () => Array(fieldSize).fill(0));
-// field[ [], ... , []] - створено масив масивів, в залежності від fieldSize
 
 function initializeGame() {
   score = 0;
@@ -55,7 +54,7 @@ function generateCell() {
         availableCells.push({
           row: rowIndex,
           col: colIndex,
-        }); // формує масив availableCells з об'єктів-клітинок { row, col }
+        });
       }
     });
   });
@@ -63,9 +62,8 @@ function generateCell() {
   if (availableCells.length > 0) {
     const { row, col }
       = availableCells[Math.floor(Math.random() * availableCells.length)];
-    // генерує випадкову клітинку для запису випадкового числа
 
-    field[row][col] = Math.random() < 0.9 ? 2 : 4; // генерує випадкове число
+    field[row][col] = Math.random() < 0.9 ? 2 : 4;
     updateField();
   }
 }
@@ -76,9 +74,7 @@ function updateField() {
       const cell = cells[rowIndex * fieldSize + colIndex];
 
       cell.textContent = value > 0 ? value : '';
-      // записує в клітинку або число(value) або ''
       cell.className = `field-cell field-cell--${value}`;
-      // клітинка в залежності від числа(value) має різний фон
     });
   });
 }
@@ -86,7 +82,7 @@ function updateField() {
 function moveCells(direction) {
   let moved = false;
 
-  function rotateField() { // обертання матриці
+  function rotateField() {
     field = field[0]
       .map((col, i) => field.map(row => row[i]))
       .reverse();
@@ -94,7 +90,6 @@ function moveCells(direction) {
 
   function moveRowOrColumn(arr) {
     const nonZero = arr.filter((value) => value !== 0);
-    // nonZero - масив без клітинок зі значенням 0
     const result = [];
 
     for (let i = 0; i < nonZero.length; i++) {
@@ -103,7 +98,6 @@ function moveCells(direction) {
 
         result.push(newValue);
         score += newValue;
-        // два однакових значення клітинки об'єднуємо, наприклад: 4*2 = 8
         i++;
       } else {
         result.push(nonZero[i]);
@@ -179,47 +173,43 @@ function moveCells(direction) {
   }
 
   if (moved) {
-    updateField(); // записує в клітинку або число або ''
-    gameScore.textContent = score; // лічильник балів
-    generateCell(); // генерує додаткове число на табло
+    updateField();
+    gameScore.textContent = score;
+    generateCell();
 
     if (!canMove()) {
       gameMessageLose.classList.remove('hidden');
-      // з'являється напис: You lose! Restart the game?
-      // програш
+      // You lose! Restart the game?
     }
 
     if (field.flat().includes(winValue)) {
-      // в масиві field є клітинка з виграшем (значення winValue)
       gameMessageWin.classList.remove('hidden');
-      // з'являється напис: Winner! Congrats! You did it!
-      // виграш
+      // Winner! Congrats! You did it!
     }
   }
 }
 
 function canMove() {
-  // перевірка чи можна грати далі, чи вже ні
   for (let i = 0; i < fieldSize; i++) {
     for (let j = 0; j < fieldSize; j++) {
       if (field[i][j] === 0) {
-        return true; // можна грати
+        return true;
       }
 
       if (i < fieldSize - 1 && field[i][j] === field[i + 1][j]) {
-        return true; // можна грати
+        return true;
       }
 
       if (j < fieldSize - 1 && field[i][j] === field[i][j + 1]) {
-        return true; // можна грати
+        return true;
       }
     }
   }
 
-  return false; // не можна грати, гра закінчена, програш
+  return false;
 }
 
-function arraysEqual(arr1, arr2) { // перевірка двох масивів на ідентичність
+function arraysEqual(arr1, arr2) {
   if (arr1.length !== arr2.length) {
     return false;
   }
@@ -230,7 +220,7 @@ function arraysEqual(arr1, arr2) { // перевірка двох масивів
     }
   }
 
-  return true; // два масиви ідентичні - true
+  return true;
 }
 
 document.addEventListener('keydown', eventButton => {
@@ -255,17 +245,17 @@ document.addEventListener('keydown', eventButton => {
 });
 
 button.addEventListener('click', function() {
-  initializeGame(); // параметри ініціалізації, score = 0, пусті клітинки
+  initializeGame();
 
   button.classList.remove('start');
   button.classList.add('restart');
   button.textContent = 'Restart';
 
   gameMessageStart.classList.add('hidden');
-  // з'являється напис: Press "Start" to begin game. Good luck!
+  // Press "Start" to begin game. Good luck!
 
-  generateCell(); // генерує 1-ше початкове випадкове число на табло
-  generateCell(); // генерує 2-ше початкове випадкове число на табло
+  generateCell();
+  generateCell();
 });
 
-initializeGame(); // параметри ініціалізації, score = 0, пусті клітинки
+initializeGame();
