@@ -3,9 +3,9 @@
 module.exports = {
   testMatch: ['<rootDir>/tests/**/*.test.js'],
   reporters: [
-    'default',
-    ['./jest-mochawesome.js', {
+    ['@mate-academy/jest-mochawesome-reporter', {
       outputDir: './raw_reports',
+      createDirIfMissing: true,
     }],
   ],
 };

@@ -2,107 +2,70 @@
 
 /**
  * This class represents the game.
+ * Now it has a basic structure, that is needed for testing.
+ * Feel free to extend it as you wish.
  */
 class Game {
   /**
    * Creates a new game instance.
-   * @param {Array<Array<number>>} initialState The initial state of the board.
-   * @param {number} initialScore The initial score.
+   * @param {Array<Array<number>>} initialState
+   * The initial state of the board.
+   * @default
+   * [[0, 0, 0, 0],
+   *  [0, 0, 0, 0],
+   *  [0, 0, 0, 0],
+   *  [0, 0, 0, 0]]
+   *
+   * @param {number} initialScore
+   * The initial score.
+   * @default 0
+   *
+   * @param {string} initialStatus
+   * The initial status: 'idle', 'playing', 'win', 'lose'
+   * @default 'idle'
    *
    * If provided, the board will be initialized with the provided
    * initial values.
    */
   constructor(
-    initialState = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ],
-    initialScore = 0,
-  ) {
-    this._state = initialState;
-    this._score = initialScore;
-    this._status = 'idle'; // Possible values: idle, playing, win, lose
-  }
+    initialState,
+    initialScore,
+    initialStatus,
+  ) {}
 
   /**
-   * Moves all non-empty cells to the left.
-   *
-   * @returns {string} The current game status: idle, playing, win, lose
+   * Movement methods
    */
   moveLeft() {}
-
-  /**
-   * Moves all non-empty cells to the right.
-   *
-   * @returns {string} The current game status: idle, playing, win, lose
-   */
   moveRight() {}
-
-  /**
-   * Moves all non-empty cells up.
-   *
-   * @returns {string} The current game status: idle, playing, win, lose
-   */
   moveUp() {}
-
-  /**
-   * Moves all non-empty cells down.
-   *
-   * @returns {string} The current game status: idle, playing, win, lose
-   */
   moveDown() {}
-
-  /**
-   * Updates the game score.
-   * @param {number} value The value to replace the current score with.
-   */
-  set score(value) {}
 
   /**
    * Returns the current game score.
    * @returns {number} The current game score.
    */
-  get score() {}
-
-  /**
-   * Updates the game state.
-   * @param {Array<Array<number>>} value The value to replace
-   * the current state with.
-   */
-  set state(value) {}
+  getScore() {}
 
   /**
    * Returns the current game state.
    * @returns {Array<Array<number>>} The current game state.
    */
-  get state() {}
-
-  /**
-   * Updates the game status.
-   * @param {string} value The value to replace the current status with.
-   * Possible values: idle, playing, win, lose
-   */
-  set status(value) {}
+  getState() {}
 
   /**
    * Returns the current game status.
-   *
-   * @returns {string} The current game status: idle, playing, win, lose
+   * @returns {string} The current game status: 'idle', 'playing', 'win', 'lose'
    */
-  get status() {}
+  getStatus() {}
 
   /**
    * Starts the game.
-   * Sets the status to 'playing'.
-   * Generates two random cells on the board.
    */
   start() {}
 
   /**
-   * Resets the score and the status.
-   * Sets the board to the empty state.
+   * Resets the game.
    */
   restart() {}
 
