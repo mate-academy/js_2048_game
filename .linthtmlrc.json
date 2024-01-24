@@ -42,7 +42,7 @@
   "tag-close": true,
   "text-ignore-regex": "&",
   "title-no-dup": true,
-  "line-end-style": "lf",
+  "line-end-style": "crlf",
   "attr-new-line": 2,
   "attr-name-style": "dash",
   "attr-no-unsafe-char": true
