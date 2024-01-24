@@ -60,4 +60,3 @@ describe('2048 game', () => {
       .should('be.visible');
   });
 });
-
