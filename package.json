@@ -17,7 +17,6 @@
   "author": "Mate Academy",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@jest/reporters": "^29.7.0",
     "@linthtml/linthtml": "^0.9.5",
     "@mate-academy/bemlint": "^0.1.1",
     "@mate-academy/eslint-config": "*",
@@ -36,8 +35,7 @@
     "mochawesome-merge": "^4.2.0",
     "mochawesome-report-generator": "^6.2.0",
     "parcel": "2.10.2",
-    "stylelint": "^15.11.0",
-    "uuid": "^9.0.1"
+    "stylelint": "^15.11.0"
   },
   "browserslist": [
     "last 2 versions"
