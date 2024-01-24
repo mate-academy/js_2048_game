@@ -76,7 +76,7 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: #909497;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -97,11 +97,13 @@ h1 {
   height: 75px;
   font-size: 24px;
   border-radius: 5px;
+
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  text-shadow: 2px 2px 8px #797d7f;
 }
 
 .info {
