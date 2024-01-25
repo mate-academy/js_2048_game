@@ -8,7 +8,18 @@ Don't play for too long! We need you to write the code!
 
 Okay, what do we have?
 1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Base `Game` class structure is already written too. Extend it with your own methods.
+2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
+  - constructor with `initialState` parameter (value is optional, defaults to the empty board)
+  - `getState()`
+  - `getScore()`
+  - `getStatus()`
+  - `moveLeft()`
+  - `moveRight()`
+  - `moveUp()`
+  - `moveDown()`
+  - `start()`
+  - `restart()`
+
 3) Reference.
 
 That's it!

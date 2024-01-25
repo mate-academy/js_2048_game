@@ -8,6 +8,7 @@
 class Game {
   /**
    * Creates a new game instance.
+   *
    * @param {Array<Array<number>>} initialState
    * The initial state of the board.
    * @default
@@ -16,21 +17,11 @@ class Game {
    *  [0, 0, 0, 0],
    *  [0, 0, 0, 0]]
    *
-   * @param {number} initialScore
-   * The initial score.
-   * @default 0
-   *
-   * @param {string} initialStatus
-   * The initial status: 'idle', 'playing', 'win', 'lose'
-   * @default 'idle'
-   *
-   * If provided, the board will be initialized with the provided
-   * initial values.
+   * If passed, the board will be initialized with the provided
+   * initial state.
    */
   constructor(
     initialState,
-    initialScore,
-    initialStatus,
   ) {}
 
   /**
@@ -43,19 +34,27 @@ class Game {
 
   /**
    * Returns the current game score.
-   * @returns {number} The current game score.
+   *
+   * @returns {number}
    */
   getScore() {}
 
   /**
    * Returns the current game state.
-   * @returns {Array<Array<number>>} The current game state.
+   *
+   * @returns {Array<Array<number>>}
    */
   getState() {}
 
   /**
    * Returns the current game status.
-   * @returns {string} The current game status: 'idle', 'playing', 'win', 'lose'
+   *
+   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
+   *
+   * `idle` - the game has not started yet (the initial state);
+   * `playing` - the game is in progress;
+   * `win` - the game is won;
+   * `lose` - the game is lost
    */
   getStatus() {}
 
