@@ -283,7 +283,7 @@ const setGame = () => {
       messageLose.classList.remove('hidden');
     }
 
-    if (hasWinCell) {
+    if (hasWinCell()) {
       messageWin.classList.remove('hidden');
     }
   });
