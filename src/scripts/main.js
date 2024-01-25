@@ -102,7 +102,7 @@ const filterZero = (row) => {
 
 const updateGameScore = (newScore) => {
   gameScore.innerText = newScore;
-  gameScore.value = newScore ? `${newScore}` : '';
+  gameScore.value = newScore !== 0 ? `${newScore}` : '';
 };
 
 const slide = (row) => {
