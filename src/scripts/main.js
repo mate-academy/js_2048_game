@@ -102,7 +102,7 @@ const filterZero = (row) => {
 
 const updateGameScore = (newScore) => {
   gameScore.innerText = newScore;
-  gameScore.value = newScore;
+  gameScore.value = newScore ? `${newScore}` : '';
 };
 
 const slide = (row) => {
@@ -205,7 +205,7 @@ const resetGame = () => {
 
   setNumberToRundomCell();
 
-  score = '';
+  score = 0;
 
   updateGameScore(score);
 
