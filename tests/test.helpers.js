@@ -1,52 +1,45 @@
 'use strict';
 
-const checkIsCorrectlyAligned = (cellsArray, alignment, cursor = null) => {
+const checkIsCorrectlyAlignedToStart = (cellsArray, cursor = null) => {
   if (cellsArray.length !== 4) {
     throw new Error('Array must have exactly 4 elements');
   }
 
-  switch (alignment) {
-    case 'start': {
-      let isZeroFoundStart = false;
+  let isZeroFoundStart = false;
 
-      for (const cell of cellsArray) {
-        if (cell === 0) {
-          isZeroFoundStart = true;
-        } else if (isZeroFoundStart) {
-          return false;
-        }
-
-        if (cursor !== null && cell === cursor) {
-          break;
-        }
-      }
-
-      return !isZeroFoundStart || cursor !== null;
+  for (const cell of cellsArray) {
+    if (cell === 0) {
+      isZeroFoundStart = true;
+    } else if (isZeroFoundStart) {
+      return false;
     }
 
-    case 'end': {
-      let isZeroFoundEnd = false;
-
-      for (let i = cellsArray.length - 1; i >= 0; i--) {
-        const cell = cellsArray[i];
-
-        if (cell === 0) {
-          isZeroFoundEnd = true;
-        } else if (isZeroFoundEnd) {
-          return false;
-        }
-
-        if (cursor !== null && cell === cursor) {
-          break;
-        }
-      }
-
-      return !isZeroFoundEnd || cursor !== null;
+    if (cursor !== null && cell === cursor) {
+      break;
     }
-
-    default:
-      throw new Error('Unknown alignment');
   }
+
+  return !isZeroFoundStart || cursor !== null;
+};
+
+const checkIsCorrectlyAlignedToEnd = (cellsArray, cursor = null) => {
+  let isZeroFoundEnd = false;
+
+  for (let i = cellsArray.length - 1; i >= 0; i--) {
+    const cell = cellsArray[i];
+
+    if (cell === 0) {
+      isZeroFoundEnd = true;
+    } else if (isZeroFoundEnd) {
+      return false;
+    }
+
+    if (cursor !== null && cell === cursor) {
+      break;
+    }
+  }
+
+  return !isZeroFoundEnd || cursor !== null;
 };
 
 const getCellFromState = (game) => (rowIndex, colIndex) => {
@@ -68,19 +61,9 @@ const transposeState = (state) => {
   return result;
 };
 
-const cloneState = (state) => {
-  const clone = [];
-
-  for (const row of state) {
-    clone.push([...row]);
-  }
-
-  return clone;
-};
-
 module.exports = {
-  checkIsCorrectlyAligned,
+  checkIsCorrectlyAlignedToStart,
+  checkIsCorrectlyAlignedToEnd,
   getCellFromState,
   transposeState,
-  cloneState,
 };

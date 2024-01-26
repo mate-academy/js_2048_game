@@ -3,10 +3,10 @@
 
 const Game = require('../src/modules/Game.class');
 const {
-  checkIsCorrectlyAligned,
+  checkIsCorrectlyAlignedToStart,
+  checkIsCorrectlyAlignedToEnd,
   getCellFromState,
   transposeState,
-  cloneState,
 } = require('./test.helpers');
 
 describe('Game class', () => {
@@ -75,7 +75,7 @@ describe('Game class', () => {
         [0, 0, 0, 16],
       ];
 
-      const game2048 = new Game(cloneState(initialState));
+      const game2048 = new Game(initialState.map((row) => [...row]));
       const state = game2048.getState();
 
       expect(state).toEqual(initialState);
@@ -115,13 +115,13 @@ describe('Game class', () => {
     });
 
     it('should generate the board with 4s less often than with 2s', () => {
-      const game2048 = new Game();
-
       let statesCombined = [];
       let twos = 0;
       let fours = 0;
 
       for (let i = 0; i < 100; i++) {
+        const game2048 = new Game();
+
         game2048.start();
 
         const flatState = game2048.getState().flat();
@@ -144,32 +144,27 @@ describe('Game class', () => {
     });
 
     it('should generate the board with cells in random positions', () => {
-      const game2048 = new Game();
-
       const cellPositions = new Map();
 
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 1000; i++) {
+        const game2048 = new Game();
+
         game2048.start();
 
-        const state = game2048.getState();
+        const flatState = game2048.getState().flat();
 
-        state.forEach((row, rowIndex) => {
-          row.forEach((cell, cellIndex) => {
-            if (cell !== 0) {
-              const key = `${rowIndex}${cellIndex}`;
-
-              if (cellPositions.has(key)) {
-                cellPositions.set(key, cellPositions.get(key) + 1);
-              } else {
-                cellPositions.set(key, 1);
-              }
+        flatState.forEach((cell, index) => {
+          if (cell !== 0) {
+            if (cellPositions.has(index)) {
+              cellPositions.set(index, cellPositions.get(index) + 1);
+            } else {
+              cellPositions.set(index, 1);
             }
-          });
+          }
         });
       }
 
-      expect(cellPositions.size >= 8).toBe(true);
-      expect(cellPositions.size <= 16).toBe(true);
+      expect(cellPositions.size >= 12).toBe(true);
     });
   });
 
@@ -203,7 +198,7 @@ describe('Game class', () => {
           [0, 0, 0, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveLeft();
@@ -213,7 +208,7 @@ describe('Game class', () => {
         state.forEach((row, rowIndex) => {
           const cursor = initialState[rowIndex].find((cell) => cell !== 0);
 
-          expect(checkIsCorrectlyAligned(row, 'start', cursor)).toBe(true);
+          expect(checkIsCorrectlyAlignedToStart(row, cursor)).toBe(true);
         });
       });
 
@@ -225,7 +220,7 @@ describe('Game class', () => {
           [0, 16, 0, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
 
@@ -263,7 +258,7 @@ describe('Game class', () => {
           [32, 0, 8, 0],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveLeft();
@@ -275,7 +270,7 @@ describe('Game class', () => {
           const nonEmptyCells = initialRow.filter((cell) => cell !== 0);
           const cursor = nonEmptyCells.slice(-1)[0];
 
-          expect(checkIsCorrectlyAligned(row, 'start', cursor)).toBe(true);
+          expect(checkIsCorrectlyAlignedToStart(row, cursor)).toBe(true);
 
           nonEmptyCells.forEach((cell) => {
             expect(row.includes(cell)).toBe(true);
@@ -291,7 +286,7 @@ describe('Game class', () => {
           [8, 0, 0, 16],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveLeft();
@@ -308,10 +303,10 @@ describe('Game class', () => {
           [8, 8, 16, 16],
           [16, 16, 8, 8],
           [32, 32, 8, 8],
-          [16, 16, 16, 16],
+          [16, 16, 64, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveLeft();
@@ -325,7 +320,34 @@ describe('Game class', () => {
         expect(getCell(2, 0)).toBe(64);
         expect(getCell(2, 1)).toBe(16);
         expect(getCell(3, 0)).toBe(32);
-        expect(getCell(3, 1)).toBe(32);
+        expect(getCell(3, 1)).toBe(128);
+      });
+
+      it('should not merge multiple cells with the same value to the left multiple times during the move', () => {
+        const initialState = [
+          [8, 8, 8, 8],
+          [16, 16, 16, 16],
+          [32, 32, 64, 128],
+          [2, 2, 4, 8],
+        ];
+
+        const game2048 = new Game(initialState.map((row) => [...row]));
+
+        game2048.start();
+        game2048.moveLeft();
+
+        const getCell = getCellFromState(game2048);
+
+        expect(getCell(0, 0)).toBe(16);
+        expect(getCell(0, 1)).toBe(16);
+        expect(getCell(1, 0)).toBe(32);
+        expect(getCell(1, 1)).toBe(32);
+        expect(getCell(2, 0)).toBe(64);
+        expect(getCell(2, 1)).toBe(64);
+        expect(getCell(2, 2)).toBe(128);
+        expect(getCell(3, 0)).toBe(4);
+        expect(getCell(3, 1)).toBe(4);
+        expect(getCell(3, 2)).toBe(8);
       });
     });
 
@@ -358,7 +380,7 @@ describe('Game class', () => {
           [0, 0, 0, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveRight();
@@ -368,7 +390,7 @@ describe('Game class', () => {
         state.forEach((row, rowIndex) => {
           const cursor = initialState[rowIndex].find((cell) => cell !== 0);
 
-          expect(checkIsCorrectlyAligned(row, 'end', cursor)).toBe(true);
+          expect(checkIsCorrectlyAlignedToEnd(row, cursor)).toBe(true);
         });
       });
 
@@ -380,7 +402,7 @@ describe('Game class', () => {
           [0, 16, 0, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
 
@@ -417,7 +439,7 @@ describe('Game class', () => {
           [32, 0, 8, 0],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveRight();
@@ -429,7 +451,7 @@ describe('Game class', () => {
           const nonEmptyCells = initialRow.filter((cell) => cell !== 0);
           const cursor = nonEmptyCells[0];
 
-          expect(checkIsCorrectlyAligned(row, 'end', cursor)).toBe(true);
+          expect(checkIsCorrectlyAlignedToEnd(row, cursor)).toBe(true);
 
           nonEmptyCells.forEach((cell) => {
             expect(row.includes(cell)).toBe(true);
@@ -445,7 +467,7 @@ describe('Game class', () => {
           [8, 0, 0, 16],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveRight();
@@ -462,10 +484,10 @@ describe('Game class', () => {
           [8, 8, 16, 16],
           [16, 16, 8, 8],
           [32, 32, 8, 8],
-          [16, 16, 16, 16],
+          [16, 16, 64, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveRight();
@@ -479,7 +501,34 @@ describe('Game class', () => {
         expect(getCell(2, 2)).toBe(64);
         expect(getCell(2, 3)).toBe(16);
         expect(getCell(3, 2)).toBe(32);
-        expect(getCell(3, 3)).toBe(32);
+        expect(getCell(3, 3)).toBe(128);
+      });
+
+      it('should not merge multiple cells with the same value to the right multiple times during the move', () => {
+        const initialState = [
+          [8, 8, 8, 8],
+          [16, 16, 16, 16],
+          [32, 32, 64, 128],
+          [2, 2, 4, 8],
+        ];
+
+        const game2048 = new Game(initialState.map((row) => [...row]));
+
+        game2048.start();
+        game2048.moveRight();
+
+        const getCell = getCellFromState(game2048);
+
+        expect(getCell(0, 2)).toBe(16);
+        expect(getCell(0, 3)).toBe(16);
+        expect(getCell(1, 2)).toBe(32);
+        expect(getCell(1, 3)).toBe(32);
+        expect(getCell(2, 1)).toBe(64);
+        expect(getCell(2, 2)).toBe(64);
+        expect(getCell(2, 3)).toBe(128);
+        expect(getCell(3, 1)).toBe(4);
+        expect(getCell(3, 2)).toBe(4);
+        expect(getCell(3, 3)).toBe(8);
       });
     });
 
@@ -512,7 +561,7 @@ describe('Game class', () => {
           [0, 0, 0, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveUp();
@@ -524,7 +573,7 @@ describe('Game class', () => {
         stateTransposed.forEach((column, colIndex) => {
           const cursor = initialStateTransposed[colIndex].find((cell) => cell !== 0);
 
-          expect(checkIsCorrectlyAligned(column, 'start', cursor)).toBe(true);
+          expect(checkIsCorrectlyAlignedToStart(column, cursor)).toBe(true);
         });
       });
 
@@ -536,7 +585,7 @@ describe('Game class', () => {
           [0, 32, 0, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
 
@@ -573,7 +622,7 @@ describe('Game class', () => {
           [32, 0, 8, 0],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveUp();
@@ -587,7 +636,7 @@ describe('Game class', () => {
           const nonEmptyCells = initialColumn.filter((cell) => cell !== 0);
           const cursor = nonEmptyCells.slice(-1)[0];
 
-          expect(checkIsCorrectlyAligned(column, 'start', cursor)).toBe(true);
+          expect(checkIsCorrectlyAlignedToStart(column, cursor)).toBe(true);
 
           nonEmptyCells.forEach((cell) => {
             expect(column.includes(cell)).toBe(true);
@@ -603,7 +652,7 @@ describe('Game class', () => {
           [8, 8, 0, 16],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveUp();
@@ -620,11 +669,11 @@ describe('Game class', () => {
         const initialState = [
           [8, 16, 32, 16],
           [8, 16, 32, 16],
-          [16, 8, 8, 16],
-          [16, 8, 8, 16],
+          [16, 8, 8, 64],
+          [16, 8, 8, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveUp();
@@ -638,7 +687,34 @@ describe('Game class', () => {
         expect(getCell(1, 0)).toBe(32);
         expect(getCell(1, 1)).toBe(16);
         expect(getCell(1, 2)).toBe(16);
-        expect(getCell(1, 3)).toBe(32);
+        expect(getCell(1, 3)).toBe(128);
+      });
+
+      it('should not merge multiple cells with the same value up multiple times during the move', () => {
+        const initialState = [
+          [8, 16, 32, 2],
+          [8, 16, 32, 2],
+          [8, 16, 64, 4],
+          [8, 16, 128, 8],
+        ];
+
+        const game2048 = new Game(initialState.map((row) => [...row]));
+
+        game2048.start();
+        game2048.moveUp();
+
+        const getCell = getCellFromState(game2048);
+
+        expect(getCell(0, 0)).toBe(16);
+        expect(getCell(0, 1)).toBe(32);
+        expect(getCell(0, 2)).toBe(64);
+        expect(getCell(0, 3)).toBe(4);
+        expect(getCell(1, 0)).toBe(16);
+        expect(getCell(1, 1)).toBe(32);
+        expect(getCell(1, 2)).toBe(64);
+        expect(getCell(1, 3)).toBe(4);
+        expect(getCell(2, 2)).toBe(128);
+        expect(getCell(2, 3)).toBe(8);
       });
     });
 
@@ -671,7 +747,7 @@ describe('Game class', () => {
           [0, 0, 0, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveDown();
@@ -683,7 +759,7 @@ describe('Game class', () => {
         stateTransposed.forEach((column, colIndex) => {
           const cursor = initialStateTransposed[colIndex].find((cell) => cell !== 0);
 
-          expect(checkIsCorrectlyAligned(column, 'end', cursor)).toBe(true);
+          expect(checkIsCorrectlyAlignedToEnd(column, cursor)).toBe(true);
         });
       });
 
@@ -695,7 +771,7 @@ describe('Game class', () => {
           [0, 32, 0, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
 
@@ -732,7 +808,7 @@ describe('Game class', () => {
           [32, 0, 8, 0],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveDown();
@@ -746,7 +822,7 @@ describe('Game class', () => {
           const nonEmptyCells = initialColumn.filter((cell) => cell !== 0);
           const cursor = nonEmptyCells[0];
 
-          expect(checkIsCorrectlyAligned(column, 'end', cursor)).toBe(true);
+          expect(checkIsCorrectlyAlignedToEnd(column, cursor)).toBe(true);
 
           nonEmptyCells.forEach((cell) => {
             expect(column.includes(cell)).toBe(true);
@@ -762,7 +838,7 @@ describe('Game class', () => {
           [8, 8, 0, 16],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveDown();
@@ -779,11 +855,11 @@ describe('Game class', () => {
         const initialState = [
           [8, 16, 32, 16],
           [8, 16, 32, 16],
-          [16, 8, 8, 16],
-          [16, 8, 8, 16],
+          [16, 8, 8, 64],
+          [16, 8, 8, 64],
         ];
 
-        const game2048 = new Game(cloneState(initialState));
+        const game2048 = new Game(initialState.map((row) => [...row]));
 
         game2048.start();
         game2048.moveDown();
@@ -797,7 +873,34 @@ describe('Game class', () => {
         expect(getCell(3, 0)).toBe(32);
         expect(getCell(3, 1)).toBe(16);
         expect(getCell(3, 2)).toBe(16);
-        expect(getCell(3, 3)).toBe(32);
+        expect(getCell(3, 3)).toBe(128);
+      });
+
+      it('should not merge multiple cells with the same value down multiple times during the move', () => {
+        const initialState = [
+          [8, 16, 32, 2],
+          [8, 16, 32, 2],
+          [8, 16, 64, 4],
+          [8, 16, 128, 8],
+        ];
+
+        const game2048 = new Game(initialState.map((row) => [...row]));
+
+        game2048.start();
+        game2048.moveDown();
+
+        const getCell = getCellFromState(game2048);
+
+        expect(getCell(1, 2)).toBe(64);
+        expect(getCell(1, 3)).toBe(4);
+        expect(getCell(2, 0)).toBe(16);
+        expect(getCell(2, 1)).toBe(32);
+        expect(getCell(2, 2)).toBe(64);
+        expect(getCell(2, 3)).toBe(4);
+        expect(getCell(3, 0)).toBe(16);
+        expect(getCell(3, 1)).toBe(32);
+        expect(getCell(3, 2)).toBe(128);
+        expect(getCell(3, 3)).toBe(8);
       });
     });
   });
@@ -855,8 +958,14 @@ describe('Game class', () => {
       ]);
 
       game2048.start();
+
+      const scoreAfterStart = game2048.getScore();
+
       game2048.moveLeft();
 
+      const scoreAfterMove = game2048.getScore();
+
+      expect(scoreAfterMove > scoreAfterStart).toBe(true);
       expect(game2048.getScore()).toBe(48);
     });
 
@@ -869,8 +978,14 @@ describe('Game class', () => {
       ]);
 
       game2048.start();
+
+      const scoreAfterStart = game2048.getScore();
+
       game2048.moveUp();
 
+      const scoreAfterMove = game2048.getScore();
+
+      expect(scoreAfterMove > scoreAfterStart).toBe(true);
       expect(game2048.getScore()).toBe(32);
     });
 
@@ -883,14 +998,20 @@ describe('Game class', () => {
       ]);
 
       game2048.start();
+
+      const scoreAfterStart = game2048.getScore();
+
       game2048.moveRight();
 
+      const scoreAfterMove = game2048.getScore();
+
+      expect(scoreAfterMove > scoreAfterStart).toBe(true);
       expect(game2048.getScore()).toBe(192);
     });
   });
 
   describe('game reset', () => {
-    it('should reset the game score, status and set the board to the empty state after restart', () => {
+    it('should reset the game score, status and set the board to the empty state', () => {
       const game2048 = new Game();
 
       game2048.start();
@@ -911,6 +1032,28 @@ describe('Game class', () => {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
       ]);
+    });
+
+    it('should reset the game to the initial state if it was provided', () => {
+      const initialState = [
+        [2, 0, 0, 0],
+        [0, 4, 0, 0],
+        [0, 0, 8, 0],
+        [0, 0, 0, 16],
+      ];
+
+      const game2048 = new Game(initialState);
+
+      game2048.start();
+
+      game2048.moveUp();
+      game2048.moveRight();
+      game2048.moveDown();
+      game2048.moveLeft();
+
+      game2048.restart();
+
+      expect(game2048.getState()).toEqual(initialState);
     });
   });
 });
