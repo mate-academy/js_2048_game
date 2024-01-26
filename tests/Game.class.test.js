@@ -349,6 +349,27 @@ describe('Game class', () => {
         expect(getCell(3, 1)).toBe(4);
         expect(getCell(3, 2)).toBe(8);
       });
+
+      it('should not move cells to the left if the move does not change the board', () => {
+        const initialState = [
+          [64, 32, 16, 0],
+          [128, 64, 32, 0],
+          [256, 128, 64, 0],
+          [512, 256, 128, 0],
+        ];
+
+        const game2048 = new Game(initialState.map((row) => [...row]));
+
+        game2048.start();
+
+        const stateAfterStart = [...game2048.getState()];
+
+        game2048.moveLeft();
+
+        const stateAfterMove = game2048.getState();
+
+        expect(stateAfterMove).toEqual(stateAfterStart);
+      });
     });
 
     describe('moveRight', () => {
@@ -529,6 +550,27 @@ describe('Game class', () => {
         expect(getCell(3, 1)).toBe(4);
         expect(getCell(3, 2)).toBe(4);
         expect(getCell(3, 3)).toBe(8);
+      });
+
+      it('should not move cells to the right if the move does not change the board', () => {
+        const initialState = [
+          [0, 16, 32, 64],
+          [0, 32, 64, 128],
+          [0, 64, 128, 256],
+          [0, 128, 256, 512],
+        ];
+
+        const game2048 = new Game(initialState.map((row) => [...row]));
+
+        game2048.start();
+
+        const stateAfterStart = [...game2048.getState()];
+
+        game2048.moveRight();
+
+        const stateAfterMove = game2048.getState();
+
+        expect(stateAfterMove).toEqual(stateAfterStart);
       });
     });
 
@@ -716,6 +758,27 @@ describe('Game class', () => {
         expect(getCell(2, 2)).toBe(128);
         expect(getCell(2, 3)).toBe(8);
       });
+
+      it('should not move cells up if the move does not change the board', () => {
+        const initialState = [
+          [512, 256, 128, 64],
+          [256, 128, 64, 32],
+          [128, 64, 32, 16],
+          [0, 0, 0, 0],
+        ];
+
+        const game2048 = new Game(initialState.map((row) => [...row]));
+
+        game2048.start();
+
+        const stateAfterStart = [...game2048.getState()];
+
+        game2048.moveUp();
+
+        const stateAfterMove = game2048.getState();
+
+        expect(stateAfterMove).toEqual(stateAfterStart);
+      });
     });
 
     describe('moveDown', () => {
@@ -901,6 +964,27 @@ describe('Game class', () => {
         expect(getCell(3, 1)).toBe(32);
         expect(getCell(3, 2)).toBe(128);
         expect(getCell(3, 3)).toBe(8);
+      });
+
+      it('should not move cells down if the move does not change the board', () => {
+        const initialState = [
+          [0, 0, 0, 0],
+          [128, 64, 32, 16],
+          [256, 128, 64, 32],
+          [512, 256, 128, 64],
+        ];
+
+        const game2048 = new Game(initialState.map((row) => [...row]));
+
+        game2048.start();
+
+        const stateAfterStart = [...game2048.getState()];
+
+        game2048.moveDown();
+
+        const stateAfterMove = game2048.getState();
+
+        expect(stateAfterMove).toEqual(stateAfterStart);
       });
     });
   });
