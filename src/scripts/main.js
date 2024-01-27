@@ -6,15 +6,16 @@ const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 
 let board = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
+  [2, 4, 8, 16],
+  [2, 4, 8, 16].reverse(),
+  [2, 4, 8, 16],
+  [2, 4, 8, 16].reverse(),
 ];
 
 const rows = 4;
 const cols = 4;
 let score = 0;
+let hasAvailableMerge = true;
 
 const updateTile = (tile, num) => {
   tile.innerText = '';
@@ -55,7 +56,7 @@ const renderBoard = () => {
   }
 };
 
-const setNumberToRundomCell = () => {
+const setNumberToRandomCell = () => {
   const emptyCells = [];
 
   for (let r = 0; r < rows; r++) {
@@ -69,7 +70,7 @@ const setNumberToRundomCell = () => {
     }
   }
 
-  if (emptyCells.length > 0) {
+  if (emptyCells.length && hasAvailableMerge) {
     const randomNumber = Math.random();
 
     if (emptyCells.length === rows * cols) {
@@ -113,6 +114,7 @@ const slide = (row) => {
       newRow[i] *= 2;
       newRow[i + 1] = 0;
       score += newRow[i];
+      hasAvailableMerge = true;
     }
   }
 
@@ -120,29 +122,39 @@ const slide = (row) => {
 
   newRow = filterZero(newRow);
 
-  while (newRow.length < rows) {
+  while (newRow.length < cols) {
     newRow.push(0);
+  }
+
+  const stringifiedNewRow = JSON.stringify(newRow);
+  const stringifiedRow = JSON.stringify(row);
+
+  const isEqual = stringifiedNewRow !== stringifiedRow;
+
+  if (isEqual) {
+    hasAvailableMerge = true;
   }
 
   return newRow;
 };
 
 const slideLeft = () => {
-  for (let r = 0; r < rows; r++) {
-    let row = board[r];
+  hasAvailableMerge = false;
 
-    row = slide(row);
-    board[r] = row;
+  for (let r = 0; r < rows; r++) {
+    board[r] = slide(board[r]);
 
     for (let c = 0; c < cols; c++) {
-      const ceil = document.getElementById(`${r}-${c}`);
+      const cell = document.getElementById(`${r}-${c}`);
 
-      updateTile(ceil, board[r][c]);
+      updateTile(cell, board[r][c]);
     }
   }
 };
 
-const slideRigth = () => {
+const slideRight = () => {
+  hasAvailableMerge = false;
+
   for (let r = 0; r < rows; r++) {
     let row = board[r].reverse();
 
@@ -158,6 +170,8 @@ const slideRigth = () => {
 };
 
 const slideUp = () => {
+  hasAvailableMerge = false;
+
   for (let c = 0; c < cols; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
 
@@ -177,6 +191,8 @@ const slideUp = () => {
 };
 
 const slideDown = () => {
+  hasAvailableMerge = false;
+
   for (let c = 0; c < cols; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]].reverse();
 
@@ -195,24 +211,6 @@ const slideDown = () => {
   }
 };
 
-const resetGame = () => {
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
-
-  setNumberToRundomCell();
-
-  score = 0;
-
-  updateGameScore(score);
-
-  messageLose.classList.add('hidden');
-  messageWin.classList.add('hidden');
-};
-
 const hasAvailableMoves = () => {
   let isAvailable = false;
 
@@ -227,9 +225,7 @@ const hasAvailableMoves = () => {
   }
 
   for (let c = 0; c < cols; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
-
-    row = slide(row);
+    const row = [board[0][c], board[1][c], board[2][c], board[3][c]];
 
     for (let r = 0; r < rows; r++) {
       if (row[r] === row[r + 1] || row[r] === 0) {
@@ -253,31 +249,67 @@ const hasWinCell = () => {
   return isWin;
 };
 
+const resetGame = () => {
+  hasAvailableMerge = true;
+
+  board = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
+  setNumberToRandomCell();
+
+  score = 0;
+
+  updateGameScore(score);
+
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
+};
+
 const setGame = () => {
-  setNumberToRundomCell();
+  setNumberToRandomCell();
 
   messageStart.classList.add('hidden');
 
+  const moves = {
+    'ArrowLeft': {
+      'slide': () => {
+        slideLeft();
+        setNumberToRandomCell();
+      },
+    },
+
+    'ArrowRight': {
+      'slide': () => {
+        slideRight();
+        setNumberToRandomCell();
+      },
+    },
+
+    'ArrowUp': {
+      'slide': () => {
+        slideUp();
+        setNumberToRandomCell();
+      },
+    },
+
+    'ArrowDown': {
+      'slide': () => {
+        slideDown();
+        setNumberToRandomCell();
+      },
+    },
+  };
+
   document.addEventListener('keydown', ({ key }) => {
-    if (key === 'ArrowLeft') {
-      slideLeft();
-      setNumberToRundomCell();
-    }
+    if (!moves.hasOwnProperty(key)) {
+      return;
+    };
 
-    if (key === 'ArrowRight') {
-      slideRigth();
-      setNumberToRundomCell();
-    }
-
-    if (key === 'ArrowUp') {
-      slideUp();
-      setNumberToRundomCell();
-    }
-
-    if (key === 'ArrowDown') {
-      slideDown();
-      setNumberToRundomCell();
-    }
+    moves[key].slide();
 
     if (!hasAvailableMoves()) {
       messageLose.classList.remove('hidden');
