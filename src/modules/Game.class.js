@@ -3,13 +3,13 @@
 /**
  * This class represents the game.
  * Now it has a basic structure, that is needed for testing.
- * Feel free to extend it as you wish.
+ * Feel free to add more props and methods if needed.
  */
 class Game {
   /**
    * Creates a new game instance.
    *
-   * @param {Array<Array<number>>} initialState
+   * @param {number[][]} initialState
    * The initial state of the board.
    * @default
    * [[0, 0, 0, 0],
@@ -20,29 +20,23 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(
-    initialState,
-  ) {}
+  constructor(initialState) {
+    // eslint-disable-next-line no-console
+    console.log(initialState);
+  }
 
-  /**
-   * Movement methods
-   */
   moveLeft() {}
   moveRight() {}
   moveUp() {}
   moveDown() {}
 
   /**
-   * Returns the current game score.
-   *
    * @returns {number}
    */
   getScore() {}
 
   /**
-   * Returns the current game state.
-   *
-   * @returns {Array<Array<number>>}
+   * @returns {number[][]}
    */
   getState() {}
 
