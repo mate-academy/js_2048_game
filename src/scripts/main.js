@@ -6,10 +6,10 @@ const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 
 let board = [
-  [2, 4, 8, 16],
-  [2, 4, 8, 16].reverse(),
-  [2, 4, 8, 16],
-  [2, 4, 8, 16].reverse(),
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
 ];
 
 const rows = 4;
