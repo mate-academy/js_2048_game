@@ -1,6 +1,5 @@
 'use strict';
 
-
 const button = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
@@ -241,10 +240,5 @@ document.addEventListener('keyup', function(eventKey) {
     messageStart.classList.add('hidden');
   }
 });
-=======
-// Uncomment the next lines to use your game instance in the browser
-const Game = require('../modules/Game.class');
-const game = new Game();
 
-// Write your code here
 
