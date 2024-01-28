@@ -6,9 +6,26 @@ const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const fieldCell = Array.from(document.querySelectorAll('.field-cell'));
-const field = Array.from({ length: 4 }, () => Array(4).fill(0));
+
+const rows = 4;
+const columns = 4;
+let score = 0;
+let field = Array.from({ length: columns }, () => Array(rows).fill(0));
+
+updateInterface();
+field[0][0] = 2;
+field[0][1] = 2;
+field[1][0] = 4;
+field[1][3] = 4;
+field[2][2] = 16;
+field[2][3] = 16;
+field[3][0] = 2;
+field[3][3] = 16;
+updateInterface();
 
 button.addEventListener('click', () => {
+  field = Array.from({ length: columns }, () => Array(rows).fill(0));
+
   button.classList.remove('start');
   button.classList.add('restart');
   button.textContent = 'Restart';
@@ -16,19 +33,10 @@ button.addEventListener('click', () => {
   messageWin.classList.add('hidden');
   messageLose.classList.add('hidden');
 
-  for (let i = 0; i < fieldCell.length; i++) {
-    removeClassesExceptOne(fieldCell[i]);
-    fieldCell[i].classList.add('field-cell--0');
-    fieldCell[i].textContent = '';
-  }
-
+  updateInterface();
   makeItem(2);
   updateInterface();
 });
-
-function getRandom(countVars) {
-  return Math.round(Math.random() * (countVars - 1));
-}
 
 function removeClassesExceptOne(element, classToKeep = ('field-cell')) {
   const classes = element.classList;
@@ -41,21 +49,29 @@ function removeClassesExceptOne(element, classToKeep = ('field-cell')) {
   });
 }
 
+function getRandom(countVars) {
+  return Math.round(Math.random() * (countVars - 1));
+}
+
 function makeItem(countOfItems = 1) {
-  let randomIndex = getRandom(fieldCell.length);
+  updateInterface();
+
+  let randomRow = getRandom(rows);
+  let randomCol = getRandom(columns);
 
   if (messageWin.classList.contains('hidden')) {
     if (messageStart.classList.length === 3) {
-      if (fieldCell.some(x => x.classList.length === 2)) {
+      if (field.some(x => x.some(y => y === 0))) {
         for (let i = 0; i < countOfItems; i++) {
-          while (fieldCell[randomIndex].classList.length !== 2) {
-            randomIndex = getRandom(fieldCell.length);
+          while (field[randomRow][randomCol] !== 0) {
+            randomRow = getRandom(rows);
+            randomCol = getRandom(columns);
           }
 
           const value = getRandom(100) < 10 ? 4 : 2;
 
-          fieldCell[randomIndex].textContent = '' + value;
-          fieldCell[randomIndex].classList.add(`field-cell--${value}`);
+          field[randomRow][randomCol] = value;
+          updateInterface();
         }
       } else {
         messageLose.classList.remove('hidden');
@@ -69,68 +85,121 @@ function updateInterface() {
     row.forEach((value, colIndex) => {
       const cell = fieldCell[rowIndex * 4 + colIndex];
 
-      if (value !== 0) {
-        cell.textContent = value > 0 ? value : '';
-        cell.className = `field-cell field-cell--${value}`;
-      }
+      cell.textContent = '';
+      removeClassesExceptOne(cell);
+      cell.classList.add('field-cell--0');
+      cell.classList.add(`field-cell--${value}`);
+
+      cell.textContent = value === 0 ? '' : value;
     });
   });
 }
 
-function moveLeft() {
-  for (let row = 0; row < field.length; row++) {
-    for (let col = 1; col < field[row].length; col++) {
-
+function isMoved(notMoved, moved) {
+  for (let i = 0; i < notMoved.length; i++) {
+    for (let j = 0; j < notMoved[0].length; j++) {
+      if (notMoved[i][j] !== moved[i][j]) {
+        return true;
+      }
     }
   }
 
-  makeItem();
+  return false;
+}
+
+function slide() {
+  const newMatrix = [];
+
+  for (let i = 0; i < field.length; i++) {
+    newMatrix[i] = field[i].slice();
+  }
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      let i = c;
+
+      while (field[r][i] === 0 && i <= 3) {
+        i++;
+        console.log(`i ${i}`);
+        console.log(`r ${r}`);
+
+        if (i <= 3) {
+          if (field[r][i] !== 0) {
+            field[r][c] = field[r][i];
+            field[r][i] = 0;
+
+            i = 0;
+          }
+        }
+      }
+    }
+
+    updateInterface();
+  }
+
+  if (isMoved(newMatrix, field)) {
+    makeItem();
+  }
+}
+
+function rotateField(countOfRotates = 1) {
+  for (let k = 0; k < countOfRotates; k++) {
+    for (let i = 0; i < fieldCell.length; i++) {
+      removeClassesExceptOne(fieldCell[i]);
+      fieldCell[i].textContent = '';
+      updateInterface();
+    }
+
+    field = rotateMatrixClockwise(field);
+  }
+
   updateInterface();
 }
 
-function moveRight() {
-  for (let row = 0; row < field.length; row++) {
-    for (let col = field[row].length - 2; col >= 0; col--) {
+function rotateMatrixClockwise(matrix) {
+  const result = Array.from({ length: columns }, () => Array(rows).fill(0));
 
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      result[j][rows - 1 - i] = matrix[i][j];
     }
   }
-  updateInterface();
-  makeItem();
+
+  return result;
 }
 
-function moveUp() {
-  makeItem();
-}
+document.addEventListener('keyup', function(eventKey) {
+  console.log(eventKey.code);
 
-function moveDown() {
-  makeItem();
-}
-
-document.addEventListener('keydown', function(eventKey) {
   switch (eventKey.code) {
     case 'ArrowLeft':
-      // console.log('left');
+      rotateField(4);
 
-      moveLeft();
+      slide();
+      updateInterface();
+
       break;
 
     case 'ArrowRight':
-      // console.log('right');
-
-      moveRight();
+      rotateField(2);
+      slide();
+      rotateField(2);
       break;
 
     case 'ArrowUp':
-      // console.log('up');
-
-      moveUp();
+      rotateField(3);
+      slide();
+      rotateField();
       break;
 
     case 'ArrowDown':
-      // console.log('down');
-
-      moveDown();
+      rotateField();
+      slide();
+      rotateField(3);
       break;
+
+    default:
+      return;
   }
 
   if (fieldCell.some(x => x.classList.contains('field-cell--2048'))) {
