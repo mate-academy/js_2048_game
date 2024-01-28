@@ -1,11 +1,11 @@
 'use strict';
 
-// const page = document.documentElement;
 const button = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const fieldCell = Array.from(document.querySelectorAll('.field-cell'));
+const gameScore = document.querySelector('.game-score');
 
 const rows = 4;
 const columns = 4;
@@ -13,18 +13,12 @@ let score = 0;
 let field = Array.from({ length: columns }, () => Array(rows).fill(0));
 
 updateInterface();
-field[0][0] = 2;
-field[0][1] = 2;
-field[1][0] = 4;
-field[1][3] = 4;
-field[2][2] = 16;
-field[2][3] = 16;
-field[3][0] = 2;
-field[3][3] = 16;
-updateInterface();
 
 button.addEventListener('click', () => {
   field = Array.from({ length: columns }, () => Array(rows).fill(0));
+
+  score = 0;
+  gameScore.textContent = score;
 
   button.classList.remove('start');
   button.classList.add('restart');
@@ -107,28 +101,20 @@ function isMoved(notMoved, moved) {
   return false;
 }
 
-function slide() {
-  const newMatrix = [];
-
-  for (let i = 0; i < field.length; i++) {
-    newMatrix[i] = field[i].slice();
-  }
-
+function slideRow() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       let i = c;
 
       while (field[r][i] === 0 && i <= 3) {
         i++;
-        console.log(`i ${i}`);
-        console.log(`r ${r}`);
 
         if (i <= 3) {
           if (field[r][i] !== 0) {
             field[r][c] = field[r][i];
             field[r][i] = 0;
-
             i = 0;
+            updateInterface();
           }
         }
       }
@@ -136,6 +122,49 @@ function slide() {
 
     updateInterface();
   }
+}
+
+function canMove() {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      if (field[i][j] === 0) {
+        return true;
+      }
+
+      if (j < rows - 1 && field[i][j] === field[i][j + 1]) {
+        return true;
+      }
+
+      if (i < columns - 1 && field[i][j] === field[i + 1][j]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function slide() {
+  const newMatrix = [];
+
+  for (let i = 0; i < field.length; i++) {
+    newMatrix[i] = field[i].slice();
+  }
+
+  slideRow();
+
+  for (let row = 0; row < rows; row++) {
+    for (let column = 0; column < columns; column++) {
+      if (field[row][column] === field[row][column + 1]) {
+        field[row][column] *= 2;
+        field[row][column + 1] = 0;
+        score += field[row][column];
+        updateInterface();
+      }
+    }
+  }
+
+  slideRow();
 
   if (isMoved(newMatrix, field)) {
     makeItem();
@@ -169,8 +198,6 @@ function rotateMatrixClockwise(matrix) {
 }
 
 document.addEventListener('keyup', function(eventKey) {
-  console.log(eventKey.code);
-
   switch (eventKey.code) {
     case 'ArrowLeft':
       rotateField(4);
@@ -201,6 +228,12 @@ document.addEventListener('keyup', function(eventKey) {
     default:
       return;
   }
+
+  if (!canMove()) {
+    messageLose.classList.remove('hidden');
+  }
+
+  gameScore.textContent = score;
 
   if (fieldCell.some(x => x.classList.contains('field-cell--2048'))) {
     messageWin.classList.remove('hidden');
