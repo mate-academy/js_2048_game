@@ -1,0 +1,219 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 7,
+    "passes": 0,
+    "pending": 7,
+    "failures": 0,
+    "testsRegistered": 7,
+    "passPercent": 0,
+    "pendingPercent": 100,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false,
+    "start": "2024-01-28T14:42:57.556Z",
+    "end": "2024-01-28T14:42:57.745Z",
+    "duration": 189
+  },
+  "results": [
+    {
+      "uuid": "1797ad95-d639-4d63-93ee-80859d7be63b",
+      "title": "",
+      "fullFile": "cypress/integration/js2048Game.spec.js",
+      "file": "cypress/integration/js2048Game.spec.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "4043d557-153b-4b80-9f5c-3c539bda63c9",
+          "title": "2048 game UI",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should show the initial score",
+              "fullTitle": "2048 game UI should show the initial score",
+              "timedOut": null,
+              "duration": 0,
+              "state": "pending",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": true,
+              "context": null,
+              "code": "",
+              "err": {},
+              "uuid": "6b27899c-30f9-4074-bd61-32449b1a99b8",
+              "parentUUID": "4043d557-153b-4b80-9f5c-3c539bda63c9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the left and up only",
+              "fullTitle": "2048 game UI should show the score shuffling to the left and up only",
+              "timedOut": null,
+              "duration": 0,
+              "state": "pending",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": true,
+              "context": null,
+              "code": "",
+              "err": {},
+              "uuid": "944165a2-0fa5-42a4-ac4e-7ae537e3a6c0",
+              "parentUUID": "4043d557-153b-4b80-9f5c-3c539bda63c9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the right and up only",
+              "fullTitle": "2048 game UI should show the score shuffling to the right and up only",
+              "timedOut": null,
+              "duration": 0,
+              "state": "pending",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": true,
+              "context": null,
+              "code": "",
+              "err": {},
+              "uuid": "6e320929-25a1-4be6-8e65-78a6f82b7283",
+              "parentUUID": "4043d557-153b-4b80-9f5c-3c539bda63c9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the right and down only",
+              "fullTitle": "2048 game UI should show the score shuffling to the right and down only",
+              "timedOut": null,
+              "duration": 0,
+              "state": "pending",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": true,
+              "context": null,
+              "code": "",
+              "err": {},
+              "uuid": "6c19e622-6659-40c1-9af1-7221a0a01c77",
+              "parentUUID": "4043d557-153b-4b80-9f5c-3c539bda63c9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the left and down only",
+              "fullTitle": "2048 game UI should show the score shuffling to the left and down only",
+              "timedOut": null,
+              "duration": 0,
+              "state": "pending",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": true,
+              "context": null,
+              "code": "",
+              "err": {},
+              "uuid": "47bd7b67-e33a-4ccc-9e33-c1d803982d87",
+              "parentUUID": "4043d557-153b-4b80-9f5c-3c539bda63c9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should reset the score",
+              "fullTitle": "2048 game UI should reset the score",
+              "timedOut": null,
+              "duration": 0,
+              "state": "pending",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": true,
+              "context": null,
+              "code": "",
+              "err": {},
+              "uuid": "a6052064-6632-4391-b7a9-3ba11cec17d4",
+              "parentUUID": "4043d557-153b-4b80-9f5c-3c539bda63c9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show message in case of the loss",
+              "fullTitle": "2048 game UI should show message in case of the loss",
+              "timedOut": null,
+              "duration": 0,
+              "state": "pending",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": true,
+              "context": null,
+              "code": "",
+              "err": {},
+              "uuid": "42608024-6972-4b20-8372-c46bb38160e9",
+              "parentUUID": "4043d557-153b-4b80-9f5c-3c539bda63c9",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [],
+          "pending": [
+            "6b27899c-30f9-4074-bd61-32449b1a99b8",
+            "944165a2-0fa5-42a4-ac4e-7ae537e3a6c0",
+            "6e320929-25a1-4be6-8e65-78a6f82b7283",
+            "6c19e622-6659-40c1-9af1-7221a0a01c77",
+            "47bd7b67-e33a-4ccc-9e33-c1d803982d87",
+            "a6052064-6632-4391-b7a9-3ba11cec17d4",
+            "42608024-6972-4b20-8372-c46bb38160e9"
+          ],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "raw_reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}
