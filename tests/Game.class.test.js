@@ -215,15 +215,17 @@ describe('Game', () => {
 
       game2048.start();
 
-      const nonEmptyCellsBeforeMove = game2048.getState().map(row => row.filter(x => x));
+      const rowsBefore = game2048.getState();
 
       game2048.moveLeft();
 
-      const state = game2048.getState();
+      const rows = game2048.getState();
 
       for (let i = 0; i < 4; i++) {
-        expect(state[i].slice(0, nonEmptyCellsBeforeMove[i].length))
-          .toEqual(nonEmptyCellsBeforeMove[i]);
+        const nonEmptyCells = rowsBefore[i].filter(Boolean);
+
+        expect(rows[i].slice(0, nonEmptyCells.length))
+          .toEqual(nonEmptyCells);
       }
     });
 
@@ -373,15 +375,17 @@ describe('Game', () => {
 
       game2048.start();
 
-      const nonEmptyCellsBeforeMove = game2048.getState().map(row => row.filter(x => x));
+      const rowsBefore = game2048.getState();
 
       game2048.moveRight();
 
-      const state = game2048.getState();
+      const rows = game2048.getState();
 
       for (let i = 0; i < 4; i++) {
-        expect(state[i].slice(4 - nonEmptyCellsBeforeMove[i].length))
-          .toEqual(nonEmptyCellsBeforeMove[i]);
+        const nonEmptyCells = rowsBefore[i].filter(Boolean);
+
+        expect(rows[i].slice(4 - nonEmptyCells.length))
+          .toEqual(nonEmptyCells);
       }
     });
 
@@ -531,15 +535,17 @@ describe('Game', () => {
 
       game2048.start();
 
-      const nonEmptyColumns = transposeState(game2048.getState()).map(col => col.filter(x => x));
+      const colsBefore = transposeState(game2048.getState());
 
       game2048.moveUp();
 
-      const columns = transposeState(game2048.getState());
+      const cols = transposeState(game2048.getState());
 
       for (let i = 0; i < 4; i++) {
-        expect(columns[i].slice(0, nonEmptyColumns[i].length))
-          .toEqual(nonEmptyColumns[i]);
+        const nonEmptyCells = colsBefore[i].filter(Boolean);
+
+        expect(cols[i].slice(0, nonEmptyCells.length))
+          .toEqual(nonEmptyCells);
       }
     });
 
@@ -689,15 +695,17 @@ describe('Game', () => {
 
       game2048.start();
 
-      const nonEmptyColumns = transposeState(game2048.getState()).map(col => col.filter(x => x));
+      const colsBefore = transposeState(game2048.getState());
 
       game2048.moveDown();
 
-      const columns = transposeState(game2048.getState());
+      const cols = transposeState(game2048.getState());
 
       for (let i = 0; i < 4; i++) {
-        expect(columns[i].slice(4 - nonEmptyColumns[i].length))
-          .toEqual(nonEmptyColumns[i]);
+        const nonEmptyCells = colsBefore[i].filter(Boolean);
+
+        expect(cols[i].slice(4 - nonEmptyCells.length))
+          .toEqual(nonEmptyCells);
       }
     });
 
