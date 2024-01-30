@@ -8,4 +8,5 @@ module.exports = {
       createDirIfMissing: true,
     }],
   ],
+  testEnvironment: 'jsdom',
 };

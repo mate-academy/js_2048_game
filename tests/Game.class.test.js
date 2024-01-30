@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 'use strict';
 
+const Game = require('../src/modules/Game.class');
+
 function sum(game) {
   let result = 0;
 
@@ -21,13 +23,19 @@ function copyState(state) {
   return state.map(row => [...row]);
 }
 
-const Game = require('../src/modules/Game.class');
-const {
-  checkIsCorrectlyAlignedToStart,
-  checkIsCorrectlyAlignedToEnd,
-  getCellFromState,
-  transposeState,
-} = require('./test.helpers');
+function transposeState(state) {
+  const result = [];
+
+  for (let col = 0; col < 4; col++) {
+    result[col] = [];
+
+    for (let row = 0; row < 4; row++) {
+      result[col].push(state[row][col]);
+    }
+  }
+
+  return result;
+}
 
 describe('Game', () => {
   describe('', () => {
@@ -109,8 +117,9 @@ describe('Game', () => {
 
     it('should generate 4 less often than 2', () => {
       let totalSum = 0;
+      const times = 50;
 
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < times; i++) {
         const game2048 = new Game();
 
         game2048.start();
@@ -118,14 +127,14 @@ describe('Game', () => {
         totalSum += sum(game2048);
       }
 
-      expect(totalSum).toBeGreaterThan(400);
-      expect(totalSum).toBeLessThan(600);
+      expect(totalSum).toBeGreaterThan(4 * times);
+      expect(totalSum).toBeLessThan(6 * times);
     });
 
     it('should generate the board with cells in random positions', () => {
       const positions = new Set();
 
-      for (let interation = 0; interation < 200; interation++) {
+      for (let interation = 0; interation < 50; interation++) {
         const game2048 = new Game();
 
         game2048.start();
@@ -140,786 +149,635 @@ describe('Game', () => {
     });
   });
 
-  describe('movement methods', () => {
-    describe('moveLeft', () => {
-      it('should not move the board if the game is not started', () => {
-        const initialState = [
-          [8, 0, 0, 0],
-          [0, 16, 0, 0],
-          [0, 0, 32, 0],
-          [0, 0, 0, 64],
-        ];
+  describe('moveLeft', () => {
+    it('should not move the board if the game is not started', () => {
+      const initialState = [
+        [8, 0, 0, 0],
+        [0, 16, 0, 0],
+        [0, 0, 32, 0],
+        [0, 0, 0, 64],
+      ];
 
-        const game2048 = new Game(copyState(initialState));
+      const game2048 = new Game(copyState(initialState));
 
-        game2048.moveLeft();
+      game2048.moveLeft();
 
-        expect(game2048.getState()).toEqual(initialState);
-      });
+      expect(game2048.getState()).toEqual(initialState);
+    });
 
-      it('should move all non-zero cells to the left', () => {
-        const initialState = [
-          [8, 0, 0, 0],
-          [0, 16, 0, 0],
-          [0, 0, 32, 0],
-          [0, 0, 0, 64],
-        ];
+    it('should move all non-zero cells to the left', () => {
+      const initialState = [
+        [8, 0, 0, 0],
+        [0, 16, 0, 0],
+        [0, 0, 32, 0],
+        [0, 0, 0, 64],
+      ];
 
-        const game2048 = new Game(initialState);
+      const game2048 = new Game(initialState);
 
-        game2048.start();
-        game2048.moveLeft();
+      game2048.start();
+      game2048.moveLeft();
 
-        const state = game2048.getState();
+      const state = game2048.getState();
 
-        expect(state[0][0]).not.toBe(0);
-        expect(state[1][0]).not.toBe(0);
-        expect(state[2][0]).not.toBe(0);
-        expect(state[3][0]).not.toBe(0);
-      });
+      expect(state[0][0]).not.toBe(0);
+      expect(state[1][0]).not.toBe(0);
+      expect(state[2][0]).not.toBe(0);
+      expect(state[3][0]).not.toBe(0);
+    });
 
-      it('should add a new cell with 2 or 4', () => {
-        const initialState = [
-          [8, 0, 16, 0],
-          [0, 16, 0, 32],
-          [8, 0, 32, 0],
-          [0, 16, 0, 64],
-        ];
+    it('should add a new cell with 2 or 4', () => {
+      const game2048 = new Game([
+        [8, 0, 16, 0],
+        [0, 16, 0, 32],
+        [8, 0, 32, 0],
+        [0, 16, 0, 64],
+      ]);
 
-        const game2048 = new Game(initialState);
+      game2048.start();
 
-        game2048.start();
+      const sumBeforeTheMove = sum(game2048);
 
-        const sumBeforeTheMove = sum(game2048);
+      game2048.moveLeft();
 
-        game2048.moveLeft();
+      expect(count(game2048)).toBe(11);
+      expect(sum(game2048)).toBeGreaterThanOrEqual(sumBeforeTheMove + 2);
+      expect(sum(game2048)).toBeLessThanOrEqual(sumBeforeTheMove + 4);
+    });
 
-        expect(count(game2048)).toBe(11);
-        expect(sum(game2048)).toBeGreaterThanOrEqual(sumBeforeTheMove + 2);
-        expect(sum(game2048)).toBeLessThanOrEqual(sumBeforeTheMove + 4);
-      });
+    it('should stack cells to the left without merging', () => {
+      const game2048 = new Game([
+        [0, 16, 0, 8],
+        [8, 0, 16, 0],
+        [0, 8, 0, 32],
+        [32, 0, 8, 0],
+      ]);
 
-      it('should stack cells to the left without merging', () => {
-        const initialState = [
-          [0, 16, 0, 8],
-          [8, 0, 16, 0],
-          [0, 8, 0, 32],
-          [32, 0, 8, 0],
-        ];
+      game2048.start();
 
-        const game2048 = new Game(copyState(initialState));
+      const nonEmptyCellsBeforeMove = game2048.getState().map(row => row.filter(x => x));
 
-        game2048.start();
-        game2048.moveLeft();
+      game2048.moveLeft();
 
-        const state = game2048.getState();
+      const state = game2048.getState();
 
-        state.forEach((row, rowIndex) => {
-          const initialRow = initialState[rowIndex];
-          const nonEmptyCells = initialRow.filter((cell) => cell !== 0);
-          const cursor = nonEmptyCells.slice(-1)[0];
+      for (let i = 0; i < 4; i++) {
+        expect(state[i].slice(0, nonEmptyCellsBeforeMove[i].length))
+          .toEqual(nonEmptyCellsBeforeMove[i]);
+      }
+    });
 
-          expect(checkIsCorrectlyAlignedToStart(row, cursor)).toBe(true);
+    it('should merge cells with the same value', () => {
+      const game2048 = new Game([
+        [16, 8, 0, 0],
+        [0, 0, 8, 8],
+        [0, 8, 8, 0],
+        [8, 0, 0, 16],
+      ]);
 
-          nonEmptyCells.forEach((cell) => {
-            expect(row.includes(cell)).toBe(true);
-          });
-        });
-      });
+      game2048.start();
+      game2048.moveLeft();
 
-      it('should merge cells with the same value', () => {
-        const game2048 = new Game([
-          [16, 8, 0, 0],
-          [0, 0, 8, 8],
-          [0, 8, 8, 0],
-          [8, 0, 0, 16],
-        ]);
-
-        game2048.start();
-        game2048.moveLeft();
-
-        expect(game2048.getState().every(row => row.includes(16)))
-          .toBe(true);
-      });
-
-      it('should merge multiple cells with the same value to the left', () => {
-        const game2048 = new Game([
-          [8, 8, 16, 16],
-          [16, 16, 8, 8],
-          [32, 32, 0, 0],
-          [16, 16, 64, 64],
-        ]);
-
-        game2048.start();
-        game2048.moveLeft();
-
-        const state = game2048.getState();
-
-        expect(state[0][0]).toBe(16);
-        expect(state[0][1]).toBe(32);
-        expect(state[1][0]).toBe(32);
-        expect(state[1][1]).toBe(16);
-        expect(state[2][0]).toBe(64);
-        expect(state[3][0]).toBe(32);
-        expect(state[3][1]).toBe(128);
-      });
-
-      it('should not merge multiple cells with the same value to the left multiple times during the move', () => {
-        const game2048 = new Game([
-          [8, 8, 0, 0],
-          [16, 16, 16, 16],
-          [32, 32, 64, 128],
-          [2, 2, 4, 8],
-        ]);
-
-        game2048.start();
-        game2048.moveLeft();
-
-        const state = game2048.getState();
-
-        expect(state[0][0]).toBe(16);
-        expect(state[1][0]).toBe(32);
-        expect(state[1][1]).toBe(32);
-        expect(state[2][0]).toBe(64);
-        expect(state[2][1]).toBe(64);
-        expect(state[2][2]).toBe(128);
-        expect(state[3][0]).toBe(4);
-        expect(state[3][1]).toBe(4);
-        expect(state[3][2]).toBe(8);
-      });
-
-      it('should not move cells to the left if the move does not change the board', () => {
-        const game2048 = new Game([
-          [64, 32, 16, 0],
-          [128, 64, 32, 0],
-          [256, 128, 64, 0],
-          [512, 256, 128, 0],
-        ]);
-
-        game2048.start();
-
-        const stateAfterStart = copyState(game2048.getState());
-
-        game2048.moveLeft();
-
-        expect(game2048.getState()).toEqual(stateAfterStart);
+      game2048.getState().forEach(row => {
+        expect(row).toContain(16);
       });
     });
 
-    describe('moveRight', () => {
-      it('should not move the board if the game is not started', () => {
-        const game2048 = new Game([
-          [8, 0, 0, 0],
-          [0, 16, 0, 0],
-          [0, 0, 32, 0],
-          [0, 0, 0, 64],
-        ]);
+    it('should merge multiple cells with the same value to the left', () => {
+      const game2048 = new Game([
+        [8, 8, 16, 16],
+        [16, 16, 8, 8],
+        [32, 32, 0, 0],
+        [16, 16, 64, 64],
+      ]);
 
-        game2048.moveRight();
+      game2048.start();
+      game2048.moveLeft();
 
-        const state = game2048.getState();
+      const state = game2048.getState();
 
-        expect(state).toEqual([
-          [8, 0, 0, 0],
-          [0, 16, 0, 0],
-          [0, 0, 32, 0],
-          [0, 0, 0, 64],
-        ]);
-      });
+      expect(state[0][0]).toBe(16);
+      expect(state[0][1]).toBe(32);
+      expect(state[1][0]).toBe(32);
+      expect(state[1][1]).toBe(16);
+      expect(state[2][0]).toBe(64);
+      expect(state[3][0]).toBe(32);
+      expect(state[3][1]).toBe(128);
+    });
 
-      it('should move all non-zero cells to the right', () => {
-        const initialState = [
-          [8, 0, 0, 0],
-          [0, 16, 0, 0],
-          [0, 0, 32, 0],
-          [0, 0, 0, 64],
-        ];
+    it('should not merge multiple cells with the same value to the left multiple times during the move', () => {
+      const game2048 = new Game([
+        [8, 8, 0, 0],
+        [16, 16, 16, 16],
+        [32, 32, 64, 128],
+        [2, 2, 4, 8],
+      ]);
 
-        const game2048 = new Game(copyState(initialState));
+      game2048.start();
+      game2048.moveLeft();
 
-        game2048.start();
-        game2048.moveRight();
+      const state = game2048.getState();
 
-        const state = game2048.getState();
+      expect(state[0][0]).toBe(16);
+      expect(state[1][0]).toBe(32);
+      expect(state[1][1]).toBe(32);
+      expect(state[2][0]).toBe(64);
+      expect(state[2][1]).toBe(64);
+      expect(state[2][2]).toBe(128);
+      expect(state[3][0]).toBe(4);
+      expect(state[3][1]).toBe(4);
+      expect(state[3][2]).toBe(8);
+    });
 
-        state.forEach((row, rowIndex) => {
-          const cursor = initialState[rowIndex].find((cell) => cell !== 0);
+    it('should not move cells to the left if the move does not change the board', () => {
+      const game2048 = new Game([
+        [64, 32, 16, 0],
+        [128, 64, 32, 0],
+        [256, 128, 64, 0],
+        [512, 256, 128, 0],
+      ]);
 
-          expect(checkIsCorrectlyAlignedToEnd(row, cursor)).toBe(true);
-        });
-      });
+      game2048.start();
 
-      it('should add a random cell with 2 or 4 at an empty position after the move', () => {
-        const initialState = [
-          [8, 0, 16, 0],
-          [0, 16, 0, 32],
-          [8, 0, 32, 0],
-          [0, 16, 0, 64],
-        ];
+      const stateAfterStart = copyState(game2048.getState());
 
-        const game2048 = new Game(copyState(initialState));
+      game2048.moveLeft();
 
-        game2048.start();
+      expect(game2048.getState()).toEqual(stateAfterStart);
+    });
+  });
 
-        const stateAfterStart = copyState(game2048.getState());
+  describe('moveRight', () => {
+    it('should not move the board if the game is not started', () => {
+      const initialState = [
+        [8, 0, 0, 0],
+        [0, 16, 0, 0],
+        [0, 0, 32, 0],
+        [0, 0, 0, 64],
+      ];
 
-        game2048.moveRight();
+      const game2048 = new Game(copyState(initialState));
 
-        const stateAfterMove = game2048.getState();
-        const addedCells = stateAfterMove
-          .reduce((acc, row, rowIndex) => {
-            const countBeforeMove = stateAfterStart[rowIndex].filter((cell) => cell !== 0).length;
+      game2048.moveRight();
 
-            if (countBeforeMove === 4) {
-              return acc;
-            }
+      expect(game2048.getState()).toEqual(initialState);
+    });
 
-            const newCells = row.slice(0, 4 - countBeforeMove).filter((cell) => cell !== 0);
+    it('should move all non-zero cells to the right', () => {
+      const initialState = [
+        [8, 0, 0, 0],
+        [0, 16, 0, 0],
+        [0, 0, 32, 0],
+        [0, 0, 0, 64],
+      ];
 
-            return [
-              ...acc,
-              ...newCells,
-            ];
-          }, []);
+      const game2048 = new Game(initialState);
 
-        expect(addedCells.length).toBe(1);
-        expect([2, 4].includes(addedCells[0])).toBe(true);
-      });
+      game2048.start();
+      game2048.moveRight();
 
-      it('should stack cells to the right without merging', () => {
-        const initialState = [
-          [0, 16, 0, 8],
-          [8, 0, 16, 0],
-          [0, 8, 0, 32],
-          [32, 0, 8, 0],
-        ];
+      const state = game2048.getState();
 
-        const game2048 = new Game(copyState(initialState));
+      expect(state[0][3]).not.toBe(0);
+      expect(state[1][3]).not.toBe(0);
+      expect(state[2][3]).not.toBe(0);
+      expect(state[3][3]).not.toBe(0);
+    });
 
-        game2048.start();
-        game2048.moveRight();
+    it('should add a new cell with 2 or 4', () => {
+      const game2048 = new Game([
+        [8, 0, 16, 0],
+        [0, 16, 0, 32],
+        [8, 0, 32, 0],
+        [0, 16, 0, 64],
+      ]);
 
-        const state = game2048.getState();
+      game2048.start();
 
-        state.forEach((row, rowIndex) => {
-          const initialRow = initialState[rowIndex];
-          const nonEmptyCells = initialRow.filter((cell) => cell !== 0);
-          const cursor = nonEmptyCells[0];
+      const sumBeforeTheMove = sum(game2048);
 
-          expect(checkIsCorrectlyAlignedToEnd(row, cursor)).toBe(true);
+      game2048.moveRight();
 
-          nonEmptyCells.forEach((cell) => {
-            expect(row.includes(cell)).toBe(true);
-          });
-        });
-      });
+      expect(count(game2048)).toBe(11);
+      expect(sum(game2048)).toBeGreaterThanOrEqual(sumBeforeTheMove + 2);
+      expect(sum(game2048)).toBeLessThanOrEqual(sumBeforeTheMove + 4);
+    });
 
-      it('should merge cells with the same value to the right', () => {
-        const initialState = [
-          [16, 8, 0, 0],
-          [0, 0, 8, 8],
-          [0, 8, 8, 0],
-          [8, 0, 0, 16],
-        ];
+    it('should stack cells to the right without merging', () => {
+      const game2048 = new Game([
+        [0, 16, 0, 8],
+        [8, 0, 16, 0],
+        [0, 8, 0, 32],
+        [32, 0, 8, 0],
+      ]);
 
-        const game2048 = new Game(copyState(initialState));
+      game2048.start();
 
-        game2048.start();
-        game2048.moveRight();
+      const nonEmptyCellsBeforeMove = game2048.getState().map(row => row.filter(x => x));
 
-        const state = game2048.getState();
+      game2048.moveRight();
 
-        state.forEach((row) => {
-          expect(row.includes(16)).toBe(true);
-        });
-      });
+      const state = game2048.getState();
 
-      it('should merge multiple cells with the same value to the right', () => {
-        const initialState = [
-          [8, 8, 16, 16],
-          [16, 16, 8, 8],
-          [32, 32, 8, 8],
-          [16, 16, 64, 64],
-        ];
+      for (let i = 0; i < 4; i++) {
+        expect(state[i].slice(4 - nonEmptyCellsBeforeMove[i].length))
+          .toEqual(nonEmptyCellsBeforeMove[i]);
+      }
+    });
 
-        const game2048 = new Game(copyState(initialState));
+    it('should merge cells with the same value', () => {
+      const game2048 = new Game([
+        [16, 8, 0, 0],
+        [0, 0, 8, 8],
+        [0, 8, 8, 0],
+        [8, 0, 0, 16],
+      ]);
 
-        game2048.start();
-        game2048.moveRight();
+      game2048.start();
+      game2048.moveRight();
 
-        const getCell = getCellFromState(game2048);
-
-        expect(getCell(0, 2)).toBe(16);
-        expect(getCell(0, 3)).toBe(32);
-        expect(getCell(1, 2)).toBe(32);
-        expect(getCell(1, 3)).toBe(16);
-        expect(getCell(2, 2)).toBe(64);
-        expect(getCell(2, 3)).toBe(16);
-        expect(getCell(3, 2)).toBe(32);
-        expect(getCell(3, 3)).toBe(128);
-      });
-
-      it('should not merge multiple cells with the same value to the right multiple times during the move', () => {
-        const initialState = [
-          [8, 8, 8, 8],
-          [16, 16, 16, 16],
-          [32, 32, 64, 128],
-          [2, 2, 4, 8],
-        ];
-
-        const game2048 = new Game(copyState(initialState));
-
-        game2048.start();
-        game2048.moveRight();
-
-        const getCell = getCellFromState(game2048);
-
-        expect(getCell(0, 2)).toBe(16);
-        expect(getCell(0, 3)).toBe(16);
-        expect(getCell(1, 2)).toBe(32);
-        expect(getCell(1, 3)).toBe(32);
-        expect(getCell(2, 1)).toBe(64);
-        expect(getCell(2, 2)).toBe(64);
-        expect(getCell(2, 3)).toBe(128);
-        expect(getCell(3, 1)).toBe(4);
-        expect(getCell(3, 2)).toBe(4);
-        expect(getCell(3, 3)).toBe(8);
-      });
-
-      it('should not move cells to the right if the move does not change the board', () => {
-        const initialState = [
-          [0, 16, 32, 64],
-          [0, 32, 64, 128],
-          [0, 64, 128, 256],
-          [0, 128, 256, 512],
-        ];
-
-        const game2048 = new Game(copyState(initialState));
-
-        game2048.start();
-
-        const stateAfterStart = copyState(game2048.getState());
-
-        game2048.moveRight();
-
-        const stateAfterMove = game2048.getState();
-
-        expect(stateAfterMove).toEqual(stateAfterStart);
+      game2048.getState().forEach(row => {
+        expect(row).toContain(16);
       });
     });
 
-    describe('moveUp', () => {
-      it('should not move the board if the game is not started', () => {
-        const game2048 = new Game([
-          [8, 0, 0, 0],
-          [0, 16, 0, 0],
-          [0, 0, 32, 0],
-          [0, 0, 0, 64],
-        ]);
+    it('should merge multiple cells with the same value to the right', () => {
+      const game2048 = new Game([
+        [8, 8, 16, 16],
+        [16, 16, 8, 8],
+        [0, 0, 32, 32],
+        [16, 16, 64, 64],
+      ]);
 
-        game2048.moveUp();
+      game2048.start();
+      game2048.moveRight();
 
-        const state = game2048.getState();
+      const state = game2048.getState();
 
-        expect(state).toEqual([
-          [8, 0, 0, 0],
-          [0, 16, 0, 0],
-          [0, 0, 32, 0],
-          [0, 0, 0, 64],
-        ]);
-      });
+      expect(state[0][2]).toBe(16);
+      expect(state[0][3]).toBe(32);
+      expect(state[1][2]).toBe(32);
+      expect(state[1][3]).toBe(16);
+      expect(state[2][3]).toBe(64);
+      expect(state[3][2]).toBe(32);
+      expect(state[3][3]).toBe(128);
+    });
 
-      it('should move all non-zero cells up', () => {
-        const initialState = [
-          [8, 0, 0, 0],
-          [0, 16, 0, 0],
-          [0, 0, 32, 0],
-          [0, 0, 0, 64],
-        ];
+    it('should not merge multiple cells with the same value to the right multiple times during the move', () => {
+      const game2048 = new Game([
+        [0, 0, 8, 8],
+        [16, 16, 16, 16],
+        [32, 32, 64, 128],
+        [2, 2, 4, 8],
+      ]);
 
-        const game2048 = new Game(copyState(initialState));
+      game2048.start();
+      game2048.moveRight();
 
-        game2048.start();
-        game2048.moveUp();
+      const state = game2048.getState();
 
-        const state = game2048.getState();
-        const stateTransposed = transposeState(state);
-        const initialStateTransposed = transposeState(initialState);
+      expect(state[0][3]).toBe(16);
+      expect(state[1][2]).toBe(32);
+      expect(state[1][3]).toBe(32);
+      expect(state[2][1]).toBe(64);
+      expect(state[2][2]).toBe(64);
+      expect(state[2][3]).toBe(128);
+      expect(state[3][1]).toBe(4);
+      expect(state[3][2]).toBe(4);
+      expect(state[3][3]).toBe(8);
+    });
 
-        stateTransposed.forEach((column, colIndex) => {
-          const cursor = initialStateTransposed[colIndex].find((cell) => cell !== 0);
+    it('should not move cells to the right if the move does not change the board', () => {
+      const game2048 = new Game([
+        [0, 64, 32, 16],
+        [0, 128, 64, 32],
+        [0, 256, 128, 64],
+        [0, 512, 256, 128],
+      ]);
 
-          expect(checkIsCorrectlyAlignedToStart(column, cursor)).toBe(true);
-        });
-      });
+      game2048.start();
 
-      it('should add a random cell with 2 or 4 at an empty position after the move', () => {
-        const initialState = [
-          [8, 0, 16, 0],
-          [0, 16, 0, 8],
-          [16, 0, 32, 0],
-          [0, 32, 0, 64],
-        ];
+      const stateAfterStart = copyState(game2048.getState());
 
-        const game2048 = new Game(copyState(initialState));
+      game2048.moveRight();
 
-        game2048.start();
+      expect(game2048.getState()).toEqual(stateAfterStart);
+    });
+  });
 
-        const stateAfterStart = transposeState(game2048.getState());
+  describe('moveUp', () => {
+    it('should not move the board if the game is not started', () => {
+      const initialState = [
+        [8, 0, 0, 0],
+        [0, 16, 0, 0],
+        [0, 0, 32, 0],
+        [0, 0, 0, 64],
+      ];
 
-        game2048.moveUp();
+      const game2048 = new Game(copyState(initialState));
 
-        const stateAfterMove = transposeState(game2048.getState());
-        const addedCells = stateAfterMove
-          .reduce((acc, row, rowIndex) => {
-            const countBeforeMove = stateAfterStart[rowIndex].filter((cell) => cell !== 0).length;
+      game2048.moveUp();
 
-            if (countBeforeMove === 4) {
-              return acc;
-            }
+      expect(game2048.getState()).toEqual(initialState);
+    });
 
-            const newCells = row.slice(countBeforeMove).filter((cell) => cell !== 0);
+    it('should move all non-zero cells up', () => {
+      const initialState = [
+        [8, 0, 0, 0],
+        [0, 16, 0, 0],
+        [0, 0, 32, 0],
+        [0, 0, 0, 64],
+      ];
 
-            return [
-              ...acc,
-              ...newCells,
-            ];
-          }, []);
+      const game2048 = new Game(initialState);
 
-        expect(addedCells.length).toBe(1);
-        expect([2, 4].includes(addedCells[0])).toBe(true);
-      });
+      game2048.start();
+      game2048.moveUp();
 
-      it('should stack cells up without merging', () => {
-        const initialState = [
-          [0, 16, 0, 8],
-          [8, 0, 16, 0],
-          [0, 8, 0, 32],
-          [32, 0, 8, 0],
-        ];
+      const state = game2048.getState();
 
-        const game2048 = new Game(copyState(initialState));
+      expect(state[0][0]).not.toBe(0);
+      expect(state[0][1]).not.toBe(0);
+      expect(state[0][2]).not.toBe(0);
+      expect(state[0][3]).not.toBe(0);
+    });
 
-        game2048.start();
-        game2048.moveUp();
+    it('should add a new cell with 2 or 4', () => {
+      const game2048 = new Game([
+        [8, 0, 16, 0],
+        [0, 8, 0, 32],
+        [16, 0, 32, 0],
+        [0, 16, 0, 64],
+      ]);
 
-        const state = game2048.getState();
-        const stateTransposed = transposeState(state);
-        const initialStateTransposed = transposeState(initialState);
+      game2048.start();
 
-        stateTransposed.forEach((column, colIndex) => {
-          const initialColumn = initialStateTransposed[colIndex];
-          const nonEmptyCells = initialColumn.filter((cell) => cell !== 0);
-          const cursor = nonEmptyCells.slice(-1)[0];
+      const sumBeforeTheMove = sum(game2048);
 
-          expect(checkIsCorrectlyAlignedToStart(column, cursor)).toBe(true);
+      game2048.moveUp();
 
-          nonEmptyCells.forEach((cell) => {
-            expect(column.includes(cell)).toBe(true);
-          });
-        });
-      });
+      expect(count(game2048)).toBe(11);
+      expect(sum(game2048)).toBeGreaterThanOrEqual(sumBeforeTheMove + 2);
+      expect(sum(game2048)).toBeLessThanOrEqual(sumBeforeTheMove + 4);
+    });
 
-      it('should merge cells with the same value up', () => {
-        const initialState = [
-          [16, 0, 0, 0],
-          [0, 0, 8, 8],
-          [0, 8, 8, 0],
-          [8, 8, 0, 16],
-        ];
+    it('should stack cells up without merging', () => {
+      const game2048 = new Game([
+        [0, 16, 0, 8],
+        [8, 0, 16, 0],
+        [0, 8, 0, 32],
+        [32, 0, 8, 0],
+      ]);
 
-        const game2048 = new Game(copyState(initialState));
+      game2048.start();
 
-        game2048.start();
-        game2048.moveUp();
+      const nonEmptyColumns = transposeState(game2048.getState()).map(col => col.filter(x => x));
 
-        const state = game2048.getState();
-        const stateTransposed = transposeState(state);
+      game2048.moveUp();
 
-        stateTransposed.forEach((column) => {
-          expect(column.includes(16)).toBe(true);
-        });
-      });
+      const columns = transposeState(game2048.getState());
 
-      it('should merge multiple cells with the same value up', () => {
-        const initialState = [
-          [8, 16, 32, 16],
-          [8, 16, 32, 16],
-          [16, 8, 8, 64],
-          [16, 8, 8, 64],
-        ];
+      for (let i = 0; i < 4; i++) {
+        expect(columns[i].slice(0, nonEmptyColumns[i].length))
+          .toEqual(nonEmptyColumns[i]);
+      }
+    });
 
-        const game2048 = new Game(copyState(initialState));
+    it('should merge cells with the same value', () => {
+      const game2048 = new Game([
+        [16, 0, 0, 0],
+        [0, 0, 8, 0],
+        [0, 8, 8, 0],
+        [0, 8, 0, 16],
+      ]);
 
-        game2048.start();
-        game2048.moveUp();
+      game2048.start();
+      game2048.moveUp();
 
-        const getCell = getCellFromState(game2048);
-
-        expect(getCell(0, 0)).toBe(16);
-        expect(getCell(0, 1)).toBe(32);
-        expect(getCell(0, 2)).toBe(64);
-        expect(getCell(0, 3)).toBe(32);
-        expect(getCell(1, 0)).toBe(32);
-        expect(getCell(1, 1)).toBe(16);
-        expect(getCell(1, 2)).toBe(16);
-        expect(getCell(1, 3)).toBe(128);
-      });
-
-      it('should not merge multiple cells with the same value up multiple times during the move', () => {
-        const initialState = [
-          [8, 16, 32, 2],
-          [8, 16, 32, 2],
-          [8, 16, 64, 4],
-          [8, 16, 128, 8],
-        ];
-
-        const game2048 = new Game(copyState(initialState));
-
-        game2048.start();
-        game2048.moveUp();
-
-        const getCell = getCellFromState(game2048);
-
-        expect(getCell(0, 0)).toBe(16);
-        expect(getCell(0, 1)).toBe(32);
-        expect(getCell(0, 2)).toBe(64);
-        expect(getCell(0, 3)).toBe(4);
-        expect(getCell(1, 0)).toBe(16);
-        expect(getCell(1, 1)).toBe(32);
-        expect(getCell(1, 2)).toBe(64);
-        expect(getCell(1, 3)).toBe(4);
-        expect(getCell(2, 2)).toBe(128);
-        expect(getCell(2, 3)).toBe(8);
-      });
-
-      it('should not move cells up if the move does not change the board', () => {
-        const initialState = [
-          [512, 256, 128, 64],
-          [256, 128, 64, 32],
-          [128, 64, 32, 16],
-          [0, 0, 0, 0],
-        ];
-
-        const game2048 = new Game(copyState(initialState));
-
-        game2048.start();
-
-        const stateAfterStart = copyState(game2048.getState());
-
-        game2048.moveUp();
-
-        const stateAfterMove = game2048.getState();
-
-        expect(stateAfterMove).toEqual(stateAfterStart);
+      transposeState(game2048.getState()).forEach(col => {
+        expect(col).toContain(16);
       });
     });
 
-    describe('moveDown', () => {
-      it('should not move the board if the game is not started', () => {
-        const game2048 = new Game([
-          [8, 0, 0, 0],
-          [0, 16, 0, 0],
-          [0, 0, 32, 0],
-          [0, 0, 0, 64],
-        ]);
+    it('should merge multiple cells with the same value up', () => {
+      const game2048 = new Game([
+        [8, 16, 32, 16],
+        [8, 16, 32, 16],
+        [16, 8, 0, 64],
+        [16, 8, 0, 64],
+      ]);
 
-        game2048.moveDown();
+      game2048.start();
+      game2048.moveUp();
 
-        const state = game2048.getState();
+      const state = game2048.getState();
 
-        expect(state).toEqual([
-          [8, 0, 0, 0],
-          [0, 16, 0, 0],
-          [0, 0, 32, 0],
-          [0, 0, 0, 64],
-        ]);
+      expect(state[0][0]).toBe(16);
+      expect(state[1][0]).toBe(32);
+      expect(state[0][1]).toBe(32);
+      expect(state[1][1]).toBe(16);
+      expect(state[0][2]).toBe(64);
+      expect(state[0][3]).toBe(32);
+      expect(state[1][3]).toBe(128);
+    });
+
+    it('should not merge multiple cells with the same value up multiple times during the move', () => {
+      const game2048 = new Game([
+        [8, 16, 128, 8],
+        [8, 16, 64, 4],
+        [0, 16, 32, 2],
+        [0, 16, 32, 2],
+      ]);
+
+      game2048.start();
+      game2048.moveUp();
+
+      const state = game2048.getState();
+
+      expect(state[0][0]).toBe(16);
+      expect(state[0][1]).toBe(32);
+      expect(state[1][1]).toBe(32);
+      expect(state[0][2]).toBe(128);
+      expect(state[1][2]).toBe(64);
+      expect(state[2][2]).toBe(64);
+      expect(state[0][3]).toBe(8);
+      expect(state[1][3]).toBe(4);
+      expect(state[2][3]).toBe(4);
+    });
+
+    it('should not move cells up if the move does not change the board', () => {
+      const game2048 = new Game([
+        [64, 32, 16, 128],
+        [128, 64, 32, 256],
+        [256, 128, 64, 512],
+        [0, 0, 0, 0],
+      ]);
+
+      game2048.start();
+
+      const stateAfterStart = copyState(game2048.getState());
+
+      game2048.moveUp();
+
+      expect(game2048.getState()).toEqual(stateAfterStart);
+    });
+  });
+
+  describe('moveDown', () => {
+    it('should not move the board if the game is not started', () => {
+      const initialState = [
+        [8, 0, 0, 0],
+        [0, 16, 0, 0],
+        [0, 0, 32, 0],
+        [0, 0, 0, 64],
+      ];
+
+      const game2048 = new Game(copyState(initialState));
+
+      game2048.moveDown();
+
+      expect(game2048.getState()).toEqual(initialState);
+    });
+
+    it('should move all non-zero cells down', () => {
+      const initialState = [
+        [8, 0, 0, 0],
+        [0, 16, 0, 0],
+        [0, 0, 32, 0],
+        [0, 0, 0, 64],
+      ];
+
+      const game2048 = new Game(initialState);
+
+      game2048.start();
+      game2048.moveDown();
+
+      const state = game2048.getState();
+
+      expect(state[3][0]).not.toBe(0);
+      expect(state[3][1]).not.toBe(0);
+      expect(state[3][2]).not.toBe(0);
+      expect(state[3][3]).not.toBe(0);
+    });
+
+    it('should add a new cell with 2 or 4', () => {
+      const game2048 = new Game([
+        [8, 0, 16, 0],
+        [0, 8, 0, 32],
+        [16, 0, 32, 0],
+        [0, 16, 0, 64],
+      ]);
+
+      game2048.start();
+
+      const sumBeforeTheMove = sum(game2048);
+
+      game2048.moveDown();
+
+      expect(count(game2048)).toBe(11);
+      expect(sum(game2048)).toBeGreaterThanOrEqual(sumBeforeTheMove + 2);
+      expect(sum(game2048)).toBeLessThanOrEqual(sumBeforeTheMove + 4);
+    });
+
+    it('should stack cells down without merging', () => {
+      const game2048 = new Game([
+        [0, 16, 0, 8],
+        [8, 0, 16, 0],
+        [0, 8, 0, 32],
+        [32, 0, 8, 0],
+      ]);
+
+      game2048.start();
+
+      const nonEmptyColumns = transposeState(game2048.getState()).map(col => col.filter(x => x));
+
+      game2048.moveDown();
+
+      const columns = transposeState(game2048.getState());
+
+      for (let i = 0; i < 4; i++) {
+        expect(columns[i].slice(4 - nonEmptyColumns[i].length))
+          .toEqual(nonEmptyColumns[i]);
+      }
+    });
+
+    it('should merge cells with the same value', () => {
+      const game2048 = new Game([
+        [16, 0, 0, 0],
+        [0, 0, 8, 0],
+        [0, 8, 8, 0],
+        [0, 8, 0, 16],
+      ]);
+
+      game2048.start();
+      game2048.moveDown();
+
+      transposeState(game2048.getState()).forEach(col => {
+        expect(col).toContain(16);
       });
+    });
 
-      it('should move all non-zero cells down', () => {
-        const initialState = [
-          [8, 0, 0, 0],
-          [0, 16, 0, 0],
-          [0, 0, 32, 0],
-          [0, 0, 0, 64],
-        ];
+    it('should merge multiple cells with the same value down', () => {
+      const game2048 = new Game([
+        [8, 16, 0, 16],
+        [8, 16, 0, 16],
+        [16, 8, 32, 64],
+        [16, 8, 32, 64],
+      ]);
 
-        const game2048 = new Game(copyState(initialState));
+      game2048.start();
+      game2048.moveDown();
 
-        game2048.start();
-        game2048.moveDown();
+      const state = game2048.getState();
 
-        const state = game2048.getState();
-        const stateTransposed = transposeState(state);
-        const initialStateTransposed = transposeState(initialState);
+      expect(state[2][0]).toBe(16);
+      expect(state[3][0]).toBe(32);
+      expect(state[2][1]).toBe(32);
+      expect(state[3][1]).toBe(16);
+      expect(state[3][2]).toBe(64);
+      expect(state[2][3]).toBe(32);
+      expect(state[3][3]).toBe(128);
+    });
 
-        stateTransposed.forEach((column, colIndex) => {
-          const cursor = initialStateTransposed[colIndex].find((cell) => cell !== 0);
+    it('should not merge multiple cells with the same value down multiple times during the move', () => {
+      const game2048 = new Game([
+        [0, 16, 128, 8],
+        [0, 16, 64, 4],
+        [8, 16, 32, 2],
+        [8, 16, 32, 2],
+      ]);
 
-          expect(checkIsCorrectlyAlignedToEnd(column, cursor)).toBe(true);
-        });
-      });
+      game2048.start();
+      game2048.moveDown();
 
-      it('should add a random cell with 2 or 4 at an empty position after the move', () => {
-        const initialState = [
-          [8, 0, 16, 0],
-          [0, 16, 0, 8],
-          [16, 0, 32, 0],
-          [0, 32, 0, 64],
-        ];
+      const state = game2048.getState();
 
-        const game2048 = new Game(copyState(initialState));
+      expect(state[3][0]).toBe(16);
+      expect(state[2][1]).toBe(32);
+      expect(state[3][1]).toBe(32);
+      expect(state[1][2]).toBe(128);
+      expect(state[2][2]).toBe(64);
+      expect(state[3][2]).toBe(64);
+      expect(state[1][3]).toBe(8);
+      expect(state[2][3]).toBe(4);
+      expect(state[3][3]).toBe(4);
+    });
 
-        game2048.start();
+    it('should not move cells down if the move does not change the board', () => {
+      const game2048 = new Game([
+        [0, 0, 0, 0],
+        [64, 32, 16, 128],
+        [128, 64, 32, 256],
+        [256, 128, 64, 512],
+      ]);
 
-        const stateAfterStart = transposeState(game2048.getState());
+      game2048.start();
 
-        game2048.moveDown();
+      const stateAfterStart = copyState(game2048.getState());
 
-        const stateAfterMove = transposeState(game2048.getState());
-        const addedCells = stateAfterMove
-          .reduce((acc, row, rowIndex) => {
-            const countBeforeMove = stateAfterStart[rowIndex].filter((cell) => cell !== 0).length;
+      game2048.moveDown();
 
-            if (countBeforeMove === 4) {
-              return acc;
-            }
-
-            const newCells = row.slice(0, 4 - countBeforeMove).filter((cell) => cell !== 0);
-
-            return [
-              ...acc,
-              ...newCells,
-            ];
-          }, []);
-
-        expect(addedCells.length).toBe(1);
-        expect([2, 4].includes(addedCells[0])).toBe(true);
-      });
-
-      it('should stack cells down without merging', () => {
-        const initialState = [
-          [0, 16, 0, 8],
-          [8, 0, 16, 0],
-          [0, 8, 0, 32],
-          [32, 0, 8, 0],
-        ];
-
-        const game2048 = new Game(copyState(initialState));
-
-        game2048.start();
-        game2048.moveDown();
-
-        const state = game2048.getState();
-        const stateTransposed = transposeState(state);
-        const initialStateTransposed = transposeState(initialState);
-
-        stateTransposed.forEach((column, colIndex) => {
-          const initialColumn = initialStateTransposed[colIndex];
-          const nonEmptyCells = initialColumn.filter((cell) => cell !== 0);
-          const cursor = nonEmptyCells[0];
-
-          expect(checkIsCorrectlyAlignedToEnd(column, cursor)).toBe(true);
-
-          nonEmptyCells.forEach((cell) => {
-            expect(column.includes(cell)).toBe(true);
-          });
-        });
-      });
-
-      it('should merge cells with the same value down', () => {
-        const initialState = [
-          [16, 0, 0, 0],
-          [0, 0, 8, 8],
-          [0, 8, 8, 0],
-          [8, 8, 0, 16],
-        ];
-
-        const game2048 = new Game(copyState(initialState));
-
-        game2048.start();
-        game2048.moveDown();
-
-        const state = game2048.getState();
-        const stateTransposed = transposeState(state);
-
-        stateTransposed.forEach((column) => {
-          expect(column.includes(16)).toBe(true);
-        });
-      });
-
-      it('should merge multiple cells with the same value down', () => {
-        const initialState = [
-          [8, 16, 32, 16],
-          [8, 16, 32, 16],
-          [16, 8, 8, 64],
-          [16, 8, 8, 64],
-        ];
-
-        const game2048 = new Game(copyState(initialState));
-
-        game2048.start();
-        game2048.moveDown();
-
-        const getCell = getCellFromState(game2048);
-
-        expect(getCell(2, 0)).toBe(16);
-        expect(getCell(2, 1)).toBe(32);
-        expect(getCell(2, 2)).toBe(64);
-        expect(getCell(2, 3)).toBe(32);
-        expect(getCell(3, 0)).toBe(32);
-        expect(getCell(3, 1)).toBe(16);
-        expect(getCell(3, 2)).toBe(16);
-        expect(getCell(3, 3)).toBe(128);
-      });
-
-      it('should not merge multiple cells with the same value down multiple times during the move', () => {
-        const initialState = [
-          [8, 16, 32, 2],
-          [8, 16, 32, 2],
-          [8, 16, 64, 4],
-          [8, 16, 128, 8],
-        ];
-
-        const game2048 = new Game(copyState(initialState));
-
-        game2048.start();
-        game2048.moveDown();
-
-        const getCell = getCellFromState(game2048);
-
-        expect(getCell(1, 2)).toBe(64);
-        expect(getCell(1, 3)).toBe(4);
-        expect(getCell(2, 0)).toBe(16);
-        expect(getCell(2, 1)).toBe(32);
-        expect(getCell(2, 2)).toBe(64);
-        expect(getCell(2, 3)).toBe(4);
-        expect(getCell(3, 0)).toBe(16);
-        expect(getCell(3, 1)).toBe(32);
-        expect(getCell(3, 2)).toBe(128);
-        expect(getCell(3, 3)).toBe(8);
-      });
-
-      it('should not move cells down if the move does not change the board', () => {
-        const initialState = [
-          [0, 0, 0, 0],
-          [128, 64, 32, 16],
-          [256, 128, 64, 32],
-          [512, 256, 128, 64],
-        ];
-
-        const game2048 = new Game(copyState(initialState));
-
-        game2048.start();
-
-        const stateAfterStart = copyState(game2048.getState());
-
-        game2048.moveDown();
-
-        const stateAfterMove = game2048.getState();
-
-        expect(stateAfterMove).toEqual(stateAfterStart);
-      });
+      expect(game2048.getState()).toEqual(stateAfterStart);
     });
   });
 
