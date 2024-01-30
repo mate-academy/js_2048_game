@@ -127,8 +127,8 @@ describe('Game', () => {
         totalSum += sum(game2048);
       }
 
-      expect(totalSum).toBeGreaterThan(2 * times);
-      expect(totalSum).toBeLessThan(3 * times);
+      expect(totalSum).toBeGreaterThan(4 * times);
+      expect(totalSum).toBeLessThan(6 * times);
     });
 
     it('should generate the board with cells in random positions', () => {
