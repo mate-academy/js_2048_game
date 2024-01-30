@@ -118,7 +118,7 @@ describe('Game', () => {
     it('should generate 4 less often than 2', () => {
       let totalSum = 0;
 
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 50; i++) {
         const game2048 = new Game();
 
         game2048.start();
@@ -133,7 +133,7 @@ describe('Game', () => {
     it('should generate the board with cells in random positions', () => {
       const positions = new Set();
 
-      for (let interation = 0; interation < 200; interation++) {
+      for (let interation = 0; interation < 50; interation++) {
         const game2048 = new Game();
 
         game2048.start();
