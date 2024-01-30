@@ -92,25 +92,32 @@ function updateTile(tile, num) {
 }
 
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft') {
-    slideLeft();
-    setNew();
-  } else if (e.code === 'ArrowRight') {
-    slideRight();
-    setNew();
-  } else if (e.code === 'ArrowUp') {
-    slideUp();
-    setNew();
-  } else if (e.code === 'ArrowDown') {
-    slideDown();
-    setNew();
-  }
-  scoreItem.innerText = score;
+  let boardChanged = false;
 
-  if (score > bestScore) {
-    bestScore = score;
-    bestScoreElem.textContent = bestScore;
-    localStorage.setItem('2048-bestScore', bestScore);
+  switch (e.code) {
+    case 'ArrowLeft':
+      boardChanged = slideLeft();
+      break;
+    case 'ArrowRight':
+      boardChanged = slideRight();
+      break;
+    case 'ArrowUp':
+      boardChanged = slideUp();
+      break;
+    case 'ArrowDown':
+      boardChanged = slideDown();
+      break;
+  }
+
+  if (boardChanged) {
+    setNew();
+    scoreItem.innerText = score;
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestScoreElem.textContent = bestScore;
+      localStorage.setItem('2048-bestScore', bestScore);
+    }
   }
 });
 
@@ -141,11 +148,19 @@ function slide(originalRow) {
 }
 
 function slideLeft() {
+  let boardChanged = false;
+
   for (let r = 0; r < rows; r++) {
     let row = board[r];
+    const originalRow = [...row];
 
     row = slide(row);
     board[r] = row;
+
+    if (!boardChanged
+      && !originalRow.every((val, index) => val === row[index])) {
+      boardChanged = true;
+    }
 
     for (let c = 0; c < columns; c++) {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
@@ -154,16 +169,28 @@ function slideLeft() {
       updateTile(tile, num);
     }
   }
+
+  return boardChanged;
 }
 
 function slideRight() {
+  let boardChanged = false;
+
   for (let r = 0; r < rows; r++) {
     let row = board[r];
+    const originalRow = [...row];
 
     row.reverse();
     row = slide(row);
     board[r] = row.reverse();
 
+    if (
+      !boardChanged
+      && !originalRow.every((val, index) => val === row[index])
+    ) {
+      boardChanged = true;
+    }
+
     for (let c = 0; c < columns; c++) {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
       const num = board[r][c];
@@ -171,11 +198,16 @@ function slideRight() {
       updateTile(tile, num);
     }
   }
+
+  return boardChanged;
 }
 
 function slideUp() {
+  let boardChanged = false;
+
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+    const originalRow = [...row];
 
     row = slide(row);
 
@@ -187,12 +219,22 @@ function slideUp() {
 
       updateTile(tile, num);
     }
+
+    if (!boardChanged
+      && !originalRow.every((val, index) => val === row[index])) {
+      boardChanged = true;
+    }
   }
+
+  return boardChanged;
 }
 
 function slideDown() {
+  let boardChanged = false;
+
   for (let c = 0; c < columns; c++) {
     let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+    const originalRow = [...row];
 
     row.reverse();
     row = slide(row);
@@ -206,7 +248,14 @@ function slideDown() {
 
       updateTile(tile, num);
     }
+
+    if (!boardChanged
+      && !originalRow.every((val, index) => val === row[index])) {
+      boardChanged = true;
+    }
   }
+
+  return boardChanged;
 }
 
 function setNew() {
