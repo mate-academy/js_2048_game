@@ -117,8 +117,9 @@ describe('Game', () => {
 
     it('should generate 4 less often than 2', () => {
       let totalSum = 0;
+      const times = 50;
 
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < times; i++) {
         const game2048 = new Game();
 
         game2048.start();
@@ -126,8 +127,8 @@ describe('Game', () => {
         totalSum += sum(game2048);
       }
 
-      expect(totalSum).toBeGreaterThan(400);
-      expect(totalSum).toBeLessThan(600);
+      expect(totalSum).toBeGreaterThan(2 * times);
+      expect(totalSum).toBeLessThan(3 * times);
     });
 
     it('should generate the board with cells in random positions', () => {
