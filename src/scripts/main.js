@@ -2,17 +2,39 @@
 
 const refs = {
   tiles: document.querySelectorAll('.field-cell'),
-  startBtn: document.querySelector('start'),
+  startBtn: document.querySelector('.start'),
   gameScore: document.querySelector('.game-score'),
+  gameStartMsg: document.querySelector('.message-start'),
+  gameOverMsg: document.querySelector('.message-lose'),
+  gameWonMsg: document.querySelector('.message-win'),
 };
 
 const NUMBER_OF_ROWS = 4;
 const NUMBER_OF_CELLS = 4;
+const WIN_VALUE = 2048;
+
+refs.startBtn.addEventListener('click', startGame);
+
+function startGame() {
+  window.removeEventListener('keyup', moveTiles);
+  clearGameField();
+
+  refs.gameStartMsg.classList.add('hidden');
+  refs.gameOverMsg.classList.add('hidden');
+  refs.gameWonMsg.classList.add('hidden');
+  refs.startBtn.classList.remove('start');
+  refs.startBtn.classList.add('restart');
+  refs.startBtn.textContent = 'Restart';
+  refs.gameScore.textContent = 0;
+
+  window.addEventListener('keyup', moveTiles);
+
+  generateRandomTile();
+  generateRandomTile();
+}
 
 function generateRandomTile() {
-  const hasEmptyTiles = checkEmptyTiles();
-
-  if (!hasEmptyTiles) {
+  if (!hasEmptyTiles()) {
     return;
   }
 
@@ -30,6 +52,34 @@ function generateRandomTile() {
       generated = true;
     }
   }
+}
+
+function hasMoves(array) {
+  for (let r = 0; r < NUMBER_OF_ROWS - 1; r++) {
+    for (let c = 0; c < NUMBER_OF_CELLS - 1; c++) {
+      if (array[r][c] === array[r][c + 1]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function canMove(array) {
+  // can I slide horizontally?
+  if (!hasMoves(array)) {
+    return false;
+  }
+
+  // can I slide vertically?
+  const rotatedArray = rotateArray(array);
+
+  if (!hasMoves(rotatedArray)) {
+    return false;
+  }
+
+  return true;
 }
 
 function getFieldValues() {
@@ -55,53 +105,77 @@ function updateTile(tile, number) {
   tile.className = `field-cell field-cell--${number}`;
 }
 
-generateRandomTile();
-generateRandomTile();
-getFieldValues();
+function moveTiles(e) {
+  if (
+    e.key !== 'ArrowLeft'
+    && e.key !== 'ArrowRight'
+    && e.key !== 'ArrowUp'
+    && e.key !== 'ArrowDown'
+  ) {
+    return;
+  }
 
-window.addEventListener('keyup', (e) => {
   const boardValues = getFieldValues();
+  let slideResult;
+  let moved = false;
 
-  if (e.key === 'ArrowLeft') {
-    const updatedValues = slideLeft(boardValues);
+  switch (e.key) {
+    case 'ArrowLeft':
+      slideResult = slideLeft(boardValues);
+      break;
 
-    updateTiles(updatedValues);
-    generateRandomTile();
+    case 'ArrowRight':
+      slideResult = slideRight(boardValues);
+
+      break;
+
+    case 'ArrowUp':
+      slideResult = rotateArray(slideLeft(rotateArray(boardValues)));
+
+      break;
+
+    case 'ArrowDown':
+      slideResult = rotateArray(slideRight(rotateArray(boardValues)));
+      break;
+  }
+
+  if (!checkIfEqual(boardValues, slideResult)) {
+    moved = true;
+    updateTiles(slideResult);
+  }
+
+  if (!moved && !hasEmptyTiles() && !canMove(slideResult)) {
+    refs.gameOverMsg.classList.remove('hidden');
+    window.removeEventListener('keyup', moveTiles);
 
     return;
   }
 
-  if (e.key === 'ArrowRight') {
-    const updatedValues = slideRight(boardValues);
-
-    updateTiles(updatedValues);
-    generateRandomTile();
+  if (moved && isGameWon()) {
+    refs.gameWonMsg.classList.remove('hidden');
+    window.removeEventListener('keyup', moveTiles);
 
     return;
   }
 
-  if (e.key === 'ArrowUp') {
-    let rotatedArray = rotateArray(boardValues);
+  generateRandomTile();
+}
 
-    const transformedValues = slideLeft(rotatedArray);
-
-    rotatedArray = rotateArray(transformedValues);
-    updateTiles(rotatedArray);
-    generateRandomTile();
-
-    return;
+function checkIfEqual(original, updated) {
+  if (original.length !== updated.length) {
+    return false;
   }
 
-  if (e.key === 'ArrowDown') {
-    let rotatedArray = rotateArray(boardValues);
-
-    const transformedValues = slideRight(rotatedArray);
-
-    rotatedArray = rotateArray(transformedValues);
-    updateTiles(rotatedArray);
-    generateRandomTile();
+  for (let r = 0; r < NUMBER_OF_ROWS; r++) {
+    for (let c = 0; c < NUMBER_OF_CELLS; c++) {
+      if (original[r][c] !== updated[r][c]) {
+        return false;
+      }
+    }
   }
-});
+
+  return true;
+}
 
 function slideLeft(array) {
   const transformedValues = [];
@@ -178,7 +252,7 @@ function addZeroes(row) {
   return row;
 }
 
-function checkEmptyTiles() {
+function hasEmptyTiles() {
   return [...refs.tiles].some((tile) => tile.textContent === '');
 }
 
@@ -191,4 +265,15 @@ function updateTiles(array) {
       currentTile++;
     }
   }
+}
+
+function clearGameField() {
+  [...refs.tiles].forEach((tile) => {
+    tile.textContent = '';
+    tile.className = 'field-cell';
+  });
+}
+
+function isGameWon() {
+  return [...refs.tiles].some((tile) => +tile.textContent === WIN_VALUE);
 }
