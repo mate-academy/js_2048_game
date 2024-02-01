@@ -12,6 +12,7 @@ const refs = {
 const NUMBER_OF_ROWS = 4;
 const NUMBER_OF_CELLS = 4;
 const WIN_VALUE = 2048;
+let boardValues = getFieldValues();
 
 refs.startBtn.addEventListener('click', startGame);
 
@@ -29,7 +30,7 @@ function startGame() {
 
   window.addEventListener('keyup', moveTiles);
 
-  generateRandomTiles(16);
+  generateRandomTiles(2);
 }
 
 function generateRandomTiles(numberOfTiles) {
@@ -104,7 +105,8 @@ function moveTiles(e) {
     return;
   }
 
-  let boardValues = getFieldValues();
+  boardValues = getFieldValues();
+
   let slideResult;
   let moved = false;
   let hasMoreMoves = true;
@@ -134,17 +136,6 @@ function moveTiles(e) {
     moved = true;
   }
 
-  boardValues = getFieldValues();
-
-  hasMoreMoves = hasEmptyTiles(boardValues) || canMove(boardValues);
-
-  if (!hasMoreMoves) {
-    refs.gameOverMsg.classList.remove('hidden');
-    window.removeEventListener('keyup', moveTiles);
-
-    return;
-  }
-
   if (moved && isGameWon()) {
     refs.gameWonMsg.classList.remove('hidden');
     window.removeEventListener('keyup', moveTiles);
@@ -154,6 +145,15 @@ function moveTiles(e) {
 
   if (moved) {
     generateRandomTiles(1);
+  }
+
+  boardValues = getFieldValues();
+
+  hasMoreMoves = hasEmptyTiles(boardValues) || canMove(boardValues);
+
+  if (!hasMoreMoves) {
+    refs.gameOverMsg.classList.remove('hidden');
+    window.removeEventListener('keyup', moveTiles);
   }
 }
 
