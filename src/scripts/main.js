@@ -29,18 +29,13 @@ function startGame() {
 
   window.addEventListener('keyup', moveTiles);
 
-  generateRandomTile();
-  generateRandomTile();
+  generateRandomTiles(16);
 }
 
-function generateRandomTile() {
-  if (!hasEmptyTiles()) {
-    return;
-  }
+function generateRandomTiles(numberOfTiles) {
+  let generated = 0;
 
-  let generated = false;
-
-  while (!generated) {
+  while (generated < numberOfTiles) {
     const randomTileIndex = Math.floor(Math.random() * refs.tiles.length);
 
     const tile = refs.tiles[randomTileIndex];
@@ -49,13 +44,13 @@ function generateRandomTile() {
       const number = Math.random() >= 0.9 ? 4 : 2;
 
       updateTile(tile, number);
-      generated = true;
+      generated++;
     }
   }
 }
 
 function hasMoves(array) {
-  for (let r = 0; r < NUMBER_OF_ROWS - 1; r++) {
+  for (let r = 0; r < NUMBER_OF_ROWS; r++) {
     for (let c = 0; c < NUMBER_OF_CELLS - 1; c++) {
       if (array[r][c] === array[r][c + 1]) {
         return true;
@@ -67,19 +62,13 @@ function hasMoves(array) {
 }
 
 function canMove(array) {
-  // can I slide horizontally?
-  if (!hasMoves(array)) {
-    return false;
-  }
-
-  // can I slide vertically?
   const rotatedArray = rotateArray(array);
+  const emptyCells = hasEmptyTiles(array);
 
-  if (!hasMoves(rotatedArray)) {
-    return false;
-  }
+  const canMoveHorizontally = hasMoves(array);
+  const canMoveVertically = hasMoves(rotatedArray);
 
-  return true;
+  return emptyCells || canMoveHorizontally || canMoveVertically;
 }
 
 function getFieldValues() {
@@ -115,9 +104,10 @@ function moveTiles(e) {
     return;
   }
 
-  const boardValues = getFieldValues();
+  let boardValues = getFieldValues();
   let slideResult;
   let moved = false;
+  let hasMoreMoves = true;
 
   switch (e.key) {
     case 'ArrowLeft':
@@ -140,11 +130,15 @@ function moveTiles(e) {
   }
 
   if (!checkIfEqual(boardValues, slideResult)) {
-    moved = true;
     updateTiles(slideResult);
+    moved = true;
   }
 
-  if (!moved && !hasEmptyTiles() && !canMove(slideResult)) {
+  boardValues = getFieldValues();
+
+  hasMoreMoves = hasEmptyTiles(boardValues) || canMove(boardValues);
+
+  if (!hasMoreMoves) {
     refs.gameOverMsg.classList.remove('hidden');
     window.removeEventListener('keyup', moveTiles);
 
@@ -158,7 +152,9 @@ function moveTiles(e) {
     return;
   }
 
-  generateRandomTile();
+  if (moved) {
+    generateRandomTiles(1);
+  }
 }
 
 function checkIfEqual(original, updated) {
@@ -252,8 +248,8 @@ function addZeroes(row) {
   return row;
 }
 
-function hasEmptyTiles() {
-  return [...refs.tiles].some((tile) => tile.textContent === '');
+function hasEmptyTiles(array) {
+  return array.flatMap((el) => el).filter((tile) => tile === 0).length > 0;
 }
 
 function updateTiles(array) {
