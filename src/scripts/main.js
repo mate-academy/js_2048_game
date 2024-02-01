@@ -15,20 +15,27 @@ buttonStart.addEventListener('click', () => {
     buttonStart.textContent = 'Restart';
     game.start();
     document.querySelector('.message-start').classList.add('hidden');
+  } else if (game.getStatus() === 'lose') {
+    document.querySelector('.message-lose').classList.add('hidden');
+    game.restart();
+  } else if (game.getStatus() === 'win') {
+    document.querySelector('.message-win').classList.add('hidden');
+    game.restart();
   } else {
     game.restart();
   }
+
   synchronization();
 });
 
-page.addEventListener('keydown', event => {
+page.addEventListener('keydown', eventListener => {
   if (game.getStatus() !== 'playing') {
     return;
   }
 
   const currentState = JSON.stringify(game.getState());
 
-  switch (event.keyCode) {
+  switch (eventListener.keyCode) {
     case 37:
       game.moveLeft();
       break;
@@ -49,6 +56,10 @@ page.addEventListener('keydown', event => {
 
   game.spawnCell();
 
+  game.checkWin();
+
+  game.checkLose();
+
   synchronization();
 
   if (game.getStatus() === 'win') {
@@ -58,7 +69,7 @@ page.addEventListener('keydown', event => {
   }
 });
 
-function synchronization(gameCells = getGameArray(fieldRows)) {
+function synchronization(gameCells = getGameArray()) {
   const gameState = game.getState();
 
   for (let i = 0; i < gameState.length; i++) {
@@ -79,7 +90,7 @@ function synchronization(gameCells = getGameArray(fieldRows)) {
   score.textContent = '' + game.getScore();
 }
 
-function getGameArray(fieldRows) {
+function getGameArray() {
   const gameCellsArray = [];
 
   for (let i = 0; i < fieldRows.length; i++) {

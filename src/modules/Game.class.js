@@ -30,9 +30,9 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
+    this.getInitialTable = () => JSON.parse(JSON.stringify(initialState));
     // eslint-disable-next-line no-console
-    this.state = initialState;
-    this.initialState = this.copyState(initialState);
+    this.state = this.getInitialTable();
     this.status = 'idle';
     this.score = 0;
   }
@@ -40,49 +40,52 @@ class Game {
   calculateRow(arr) {
     let filteredArr = arr.filter(item => item !== 0);
 
-    for (let j = 0; j < filteredArr.length - 1; j++) {
-      if (filteredArr[j] === filteredArr[j + 1]) {
-        filteredArr[j] *= 2;
-        this.score += filteredArr[j];
-        filteredArr[j + 1] = 0;
+    for (let i = 0; i < filteredArr.length - 1; i++) {
+      if (filteredArr[i] === filteredArr[i + 1]) {
+        filteredArr[i] *= 2;
+        this.score += filteredArr[i];
+        filteredArr[i + 1] = 0;
       }
     }
 
     filteredArr = filteredArr.filter(el => el);
 
     filteredArr.push(...(new Array(4 - filteredArr.length).fill(0)));
-    console.log(12312312, this.state[0].length);
 
     return filteredArr;
   }
 
   moveLeft() {
-    for (let j = 0; j < this.state.length; j++) {
-      this.state[j] = this.calculateRow(this.state[j]);
+    for (let i = 0; i < this.state.length; i++) {
+      this.state[i] = this.calculateRow(this.state[i]);
     }
   }
 
   moveRight() {
-    for (let j = 0; j < this.state.length; j++) {
-      this.state[j] = this.calculateRow(this.state[j].reverse()).reverse();
+    for (let i = 0; i < this.state.length; i++) {
+      this.state[i] = this.calculateRow(this.state[i].reverse()).reverse();
     }
   }
 
   moveUp() {
-    for (let indexRow = 0; indexRow < this.state.length; ++indexRow) {
+    for (let indexRow = 0; indexRow < this.state.length; indexRow++) {
       const column = this.state.map(row => row[indexRow]);
       const newColumn = this.calculateRow(column);
 
-      newColumn.forEach((value, indexColumn) => this.state[indexColumn][indexRow] = value);
+      newColumn.forEach((value, indexColumn) => {
+        this.state[indexColumn][indexRow] = value;
+      });
     }
   }
 
   moveDown() {
-    for (let indexRow = 0; indexRow < this.state.length; ++indexRow) {
+    for (let indexRow = 0; indexRow < this.state.length; indexRow++) {
       const column = this.state.map(row => row[indexRow]).reverse();
       const newColumn = this.calculateRow(column).reverse();
 
-      newColumn.forEach((value, indexColumn) => this.state[indexColumn][indexRow] = value);
+      newColumn.forEach((value, indexColumn) => {
+        this.state[indexColumn][indexRow] = value;
+      });
     }
   }
 
@@ -90,7 +93,6 @@ class Game {
    * @returns {number}
    */
   getScore() {
-    // return this.state.reduce((result, array) => result + array.reduce((acc, num) => acc + num, 0), 0);
     return this.score;
   }
 
@@ -119,8 +121,8 @@ class Game {
    * Starts the game.
    */
   start() {
-    this.spawnCell();
-    this.spawnCell();
+    this.spawnCell(0);
+    this.spawnCell(0);
     this.status = 'playing';
   }
 
@@ -128,9 +130,9 @@ class Game {
    * Resets the game.
    */
   restart() {
+    this.state = this.getInitialTable();
     this.score = 0;
-    this.status = 'idle';
-    this.state = this.initialState;
+    this.start();
   }
 
   // Add your own methods here
@@ -141,7 +143,8 @@ class Game {
       return;
     }
 
-    const randomIndex = arrOfVoidIndexes[Math.floor(Math.random() * arrOfVoidIndexes.length)];
+    const randomIndex
+      = arrOfVoidIndexes[Math.floor(Math.random() * arrOfVoidIndexes.length)];
 
     if (Math.random() < percentForFour) {
       this.state[randomIndex[0]][randomIndex[1]] = 4;
@@ -166,18 +169,26 @@ class Game {
 
   checkWin() {
     for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (this.state[i][j] === 2048) {
-          this.status = 'win';
-
-          return;
-        }
+      if (this.state[i].indexOf(2048) !== -1) {
+        this.status = 'win';
       }
     }
   }
 
-  copyState(state) {
-    return state.map(row => [...row]);
+  checkLose() {
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state[i].length - 1; j++) {
+        const isRightEqual = this.state[j + 1][i] === this.state[j][i];
+        const isLeftEqual = this.state[i][j + 1] === this.state[i][j];
+
+        if (this.state[i][j] === 0 || this.state[i][j + 1] === 0) {
+          return;
+        } else if (isLeftEqual || isRightEqual) {
+          return;
+        }
+      }
+    }
+    this.status = 'lose';
   }
 }
 
