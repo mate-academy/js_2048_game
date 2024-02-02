@@ -282,3 +282,4 @@ function toggleRule() {
 
   rule.classList.toggle('rule-visible');
 }
+
