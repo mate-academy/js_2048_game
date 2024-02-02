@@ -1,0 +1,244 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 7,
+    "passes": 1,
+    "pending": 0,
+    "failures": 6,
+    "start": "2024-02-02T10:28:40.410Z",
+    "end": "2024-02-02T10:29:35.680Z",
+    "duration": 55122,
+    "testsRegistered": 7,
+    "passPercent": 14.285714285714286,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "18964c61-5f95-45e8-8e9c-c1e1f7388e10",
+      "title": "",
+      "fullFile": "cypress/integration/js2048Game.spec.js",
+      "file": "cypress/integration/js2048Game.spec.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "ef3bc686-1861-4c2a-8e04-f1636f64e33b",
+          "title": "2048 game",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should show the initial score",
+              "fullTitle": "2048 game should show the initial score",
+              "timedOut": null,
+              "duration": 4435,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('.button.start').click();\ncy.get('.game-score').should('have.value', '');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.\n    at Context.eval (http://localhost:3001/__cypress/tests?p=cypress\\integration\\js2048Game.spec.js:113:27)",
+                "diff": null
+              },
+              "uuid": "09c2627c-8838-4850-9a00-7f2f2d954e2f",
+              "parentUUID": "ef3bc686-1861-4c2a-8e04-f1636f64e33b",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the left and up only",
+              "fullTitle": "2048 game should show the score shuffling to the left and up only",
+              "timedOut": null,
+              "duration": 4779,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.shuffleBoxes('{leftArrow}', '{upArrow}', 3);\ncy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.\n    at Context.eval (http://localhost:3001/__cypress/tests?p=cypress\\integration\\js2048Game.spec.js:117:8)",
+                "diff": null
+              },
+              "uuid": "8e398a75-4d00-4f5d-bdd9-cc56382b6a00",
+              "parentUUID": "ef3bc686-1861-4c2a-8e04-f1636f64e33b",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the right and up only",
+              "fullTitle": "2048 game should show the score shuffling to the right and up only",
+              "timedOut": null,
+              "duration": 4777,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.shuffleBoxes('{rightArrow}', '{upArrow}', 3);\ncy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.\n    at Context.eval (http://localhost:3001/__cypress/tests?p=cypress\\integration\\js2048Game.spec.js:121:8)",
+                "diff": null
+              },
+              "uuid": "b544a865-e006-45a9-931a-c6499cd8c503",
+              "parentUUID": "ef3bc686-1861-4c2a-8e04-f1636f64e33b",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the right and down only",
+              "fullTitle": "2048 game should show the score shuffling to the right and down only",
+              "timedOut": null,
+              "duration": 4788,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.shuffleBoxes('{rightArrow}', '{downArrow}', 3);\ncy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.\n    at Context.eval (http://localhost:3001/__cypress/tests?p=cypress\\integration\\js2048Game.spec.js:125:8)",
+                "diff": null
+              },
+              "uuid": "a42e225a-f5f4-4c5f-9194-9ec62186dda0",
+              "parentUUID": "ef3bc686-1861-4c2a-8e04-f1636f64e33b",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the left and down only",
+              "fullTitle": "2048 game should show the score shuffling to the left and down only",
+              "timedOut": null,
+              "duration": 4806,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.shuffleBoxes('{leftArrow}', '{downArrow}', 3);\ncy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.\n    at Context.eval (http://localhost:3001/__cypress/tests?p=cypress\\integration\\js2048Game.spec.js:129:8)",
+                "diff": null
+              },
+              "uuid": "a3994ebd-0c81-4e9a-8833-2bef55068681",
+              "parentUUID": "ef3bc686-1861-4c2a-8e04-f1636f64e33b",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should reset the score",
+              "fullTitle": "2048 game should reset the score",
+              "timedOut": null,
+              "duration": 4801,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.shuffleBoxes('{leftArrow}', '{downArrow}', 3);\ncy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);\ncy.get('.button.restart').click();\ncy.get('.game-score').should('have.value', '');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.game-score`, but never found it.\n    at Context.eval (http://localhost:3001/__cypress/tests?p=cypress\\integration\\js2048Game.spec.js:133:8)",
+                "diff": null
+              },
+              "uuid": "a634dca1-1e47-42fa-8015-7274a62a6193",
+              "parentUUID": "ef3bc686-1861-4c2a-8e04-f1636f64e33b",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show message in case of the loss",
+              "fullTitle": "2048 game should show message in case of the loss",
+              "timedOut": null,
+              "duration": 26736,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('.button.start').click();\nfor (let n = 0; n < 100; n++) {\n  cy.get('body').type('{rightArrow}');\n  cy.get('body').type('{downArrow}');\n  cy.get('body').type('{leftArrow}');\n  cy.get('body').type('{upArrow}');\n}\ncy.contains('You lose! Restart the game?').should('be.visible');",
+              "err": {},
+              "uuid": "965f32fd-34f9-4503-af14-d73ba5a8538e",
+              "parentUUID": "ef3bc686-1861-4c2a-8e04-f1636f64e33b",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "965f32fd-34f9-4503-af14-d73ba5a8538e"
+          ],
+          "failures": [
+            "09c2627c-8838-4850-9a00-7f2f2d954e2f",
+            "8e398a75-4d00-4f5d-bdd9-cc56382b6a00",
+            "b544a865-e006-45a9-931a-c6499cd8c503",
+            "a42e225a-f5f4-4c5f-9194-9ec62186dda0",
+            "a3994ebd-0c81-4e9a-8833-2bef55068681",
+            "a634dca1-1e47-42fa-8015-7274a62a6193"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 55122,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "raw_reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}
