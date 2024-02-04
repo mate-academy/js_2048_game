@@ -1,5 +1,22 @@
 'use strict';
+
 const ceils = document.querySelectorAll('.field-cell');
+const score = document.querySelector('.game-score');
+const start = document.querySelector('#startButton');
+
+const startText = document.querySelector('.message-start');
+const loseText = document.querySelector('.message-lose');
+const winText = document.querySelector('.message-win');
+
+function messageText() {
+  if (+score.textContent >= 2048) {
+    winText.classList.remove('hidden');
+  }
+
+  if (checkStep() === false) {
+    loseText.classList.remove('hidden');
+  }
+}
 
 function startGame() {
   const randomIndex1 = Math.floor(Math.random() * ceils.length);
@@ -10,27 +27,54 @@ function startGame() {
 
   ceils[randomIndex2].classList.add('field-cell--2');
   ceils[randomIndex2].textContent = '2';
+
+  start.classList = 'button restart';
+  start.textContent = 'Restart';
+
+  startText.classList.add('hidden');
+}
+
+function restartGame() {
+  ceils.forEach(cell => {
+    cell.textContent = '';
+    cell.classList = 'field-cell';
+  });
+
+  start.classList = 'button start';
+  start.textContent = 'Start';
+
+  startText.classList.remove('hidden');
+}
+
+function handleButtonClick() {
+  if (start.textContent === 'Start') {
+    startGame();
+  } else {
+    restartGame();
+  }
 }
 
 function generateNewCeil() {
-  let a;
-  let randomCeil;
+  const emptyIndices = [];
 
-  do {
-    a = true;
-
-    const randomNumber = Math.random();
-    const probability = (randomNumber < 0.3) ? 0.4 : 0.6;
-
-    randomCeil = Math.floor(Math.random() * ceils.length);
-
-    if (ceils[randomCeil].textContent === '') {
-      const newValue = (probability < 0.5) ? '4' : '2';
-      ceils[randomCeil].textContent = newValue;
-      ceils[randomCeil].classList.add(`field-cell--${newValue}`);
-      a = false;
+  ceils.forEach((cell, index) => {
+    if (cell.textContent === '') {
+      emptyIndices.push(index);
     }
-  } while (!a);
+  });
+
+  if (emptyIndices.length === 0) {
+    return;
+  }
+
+  const randomNumb = Math.floor(Math.random() * emptyIndices.length);
+  const randomIndex = emptyIndices[randomNumb];
+
+  const probability = Math.random() < 0.1;
+  const newValue = probability ? '4' : '2';
+
+  ceils[randomIndex].textContent = newValue;
+  ceils[randomIndex].classList.add(`field-cell--${newValue}`);
 }
 
 function move(items, itemsFrom) {
@@ -43,13 +87,17 @@ function move(items, itemsFrom) {
           if (items[k - 1].textContent === '') {
             items[k - 1].textContent = items[k].textContent;
             items[k - 1].classList.add(`field-cell--${value}`);
+
             items[k].textContent = '';
             items[k].classList = 'field-cell';
           } else if (items[k - 1].textContent === items[k].textContent) {
             items[k - 1].textContent = value * 2;
             items[k - 1].classList.add(`field-cell--${value * 2}`);
+
             items[k].textContent = '';
             items[k].classList = 'field-cell';
+
+            score.textContent = +score.textContent + value * 2;
             break;
           }
         }
@@ -67,12 +115,13 @@ function move(items, itemsFrom) {
             items[k].textContent = '';
             items[k].classList = 'field-cell';
           } else if (items[k + 1].textContent === items[k].textContent) {
-            const value = +items[k + 1].textContent * 2;
-
             items[k + 1].textContent = value * 2;
             items[k + 1].classList.add(`field-cell--${value * 2}`);
+
             items[k].textContent = '';
             items[k].classList = 'field-cell';
+
+            score.textContent = +score.textContent + value * 2;
             break;
           }
         }
@@ -86,10 +135,11 @@ function moveLeft() {
     const row = document.querySelectorAll('.field-row')[i];
     const cells = row.querySelectorAll('.field-cell');
 
-    move(cells, 0)
+    move(cells, 0);
   }
 
   generateNewCeil();
+  messageText();
 }
 
 function moveRight() {
@@ -97,52 +147,89 @@ function moveRight() {
     const row = document.querySelectorAll('.field-row')[i];
     const cells = row.querySelectorAll('.field-cell');
 
-    move(cells, 1)
+    move(cells, 1);
   }
 
   generateNewCeil();
+  messageText();
 }
 
 function moveUp() {
   for (let i = 0; i < 4; i++) {
-    const column = document.querySelectorAll(`.field-row .field-cell:nth-child(${i + 1})`);
+    const column = document
+      .querySelectorAll(`.field-row .field-cell:nth-child(${i + 1})`);
 
-    move(column, 0)
+    move(column, 0);
   }
 
   generateNewCeil();
+  messageText();
 }
 
 function moveDown() {
   for (let i = 0; i < 4; i++) {
-    const column = document.querySelectorAll(`.field-row .field-cell:nth-child(${i + 1})`);
+    const column = document
+      .querySelectorAll(`.field-row .field-cell:nth-child(${i + 1})`);
 
-    move(column, 1)
+    move(column, 1);
   }
 
   generateNewCeil();
+  messageText();
 }
 
+function checkStep() {
+  for (let i = 0; i < 4; i++) {
+    const row = document.querySelectorAll('.field-row')[i];
+    const cells = row.querySelectorAll('.field-cell');
 
-document.addEventListener('keydown', event => {
+    for (let j = 0; j < 3; j++) {
+      if (cells[j].textContent === cells[j + 1].textContent
+        || cells[j].textContent === '') {
+        return true;
+      }
+    }
+  }
+
+  for (let i = 0; i < 4; i++) {
+    const column = document
+      .querySelectorAll(`.field-row .field-cell:nth-child(${i + 1})`);
+
+    for (let j = 0; j < 3; j++) {
+      if (column[j].textContent === column[j + 1].textContent
+        || column[j].textContent === '') {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+document.addEventListener('keydown', () => {
+  if (event.repeat) {
+    return;
+  }
 
   switch (event.key) {
     case 'ArrowLeft':
-      moveLeft()
+      moveLeft();
       break;
     case 'ArrowRight':
-      moveRight()
+      moveRight();
 
       break;
     case 'ArrowUp':
-      moveUp()
+      moveUp();
       break;
     case 'ArrowDown':
-      moveDown()
+      moveDown();
       break;
     default:
       break;
   }
 });
 
-document.getElementById('startButton').addEventListener('click', startGame);
+document
+  .getElementById('startButton')
+  .addEventListener('click', handleButtonClick);
