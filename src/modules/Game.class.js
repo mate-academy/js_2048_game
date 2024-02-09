@@ -3,7 +3,6 @@
 class Game {
   /**
    * Creates a new game instance.
-   *
    * @param {number[][]} initialState
    * The initial state of the board.
    * @default
