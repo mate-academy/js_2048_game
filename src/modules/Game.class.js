@@ -31,6 +31,8 @@ class Game {
   }
 
   moveLeft() {
+    const oldScore = this.score;
+
     for (let y = 0; y < this.initialState.length; y++) {
       for (let x = 1; x < this.initialState.length; x++) {
         if (this.initialState[y][x] !== 0) {
@@ -60,9 +62,15 @@ class Game {
         }
       }
     }
+
+    if (this.score > oldScore && this.hasValue(0)) {
+      this.generateTwoOrFour();
+    }
   }
 
   moveRight() {
+    const oldScore = this.score;
+
     for (let y = 0; y < this.initialState.length; y++) {
       for (let x = this.initialState.length - 2; x >= 0; x--) {
         if (this.initialState[y][x] !== 0) {
@@ -92,9 +100,15 @@ class Game {
         }
       }
     }
+
+    if (this.score > oldScore && this.hasValue(0)) {
+      this.generateTwoOrFour();
+    }
   }
 
   moveUp() {
+    const oldScore = this.score;
+
     for (let x = 0; x < this.initialState.length; x++) {
       for (let y = 1; y < this.initialState.length; y++) {
         if (this.initialState[y][x] !== 0) {
@@ -124,9 +138,15 @@ class Game {
         }
       }
     }
+
+    if (this.score > oldScore && this.hasValue(0)) {
+      this.generateTwoOrFour();
+    }
   }
 
   moveDown() {
+    const oldScore = this.score;
+
     for (let x = 0; x < this.initialState.length; x++) {
       for (let y = this.initialState.length - 2; y >= 0; y--) {
         if (this.initialState[y][x] !== 0) {
@@ -155,6 +175,10 @@ class Game {
           }
         }
       }
+    }
+
+    if (this.score > oldScore && this.hasValue(0)) {
+      this.generateTwoOrFour();
     }
   }
 

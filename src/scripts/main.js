@@ -63,10 +63,6 @@ page.addEventListener('keydown', (event) => {
 
       game.colorCells(board);
 
-      if (game.hasValue(0)) {
-        game.generateTwoOrFour();
-        game.colorCells(board);
-      }
       score.textContent = game.getScore();
 
       if (game.getStatus() === 'win') {
