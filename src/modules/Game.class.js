@@ -25,7 +25,7 @@ class Game {
   }
 
   moveLeft() {
-    const oldState = this.initialState;
+    const oldState = JSON.parse(JSON.stringify(this.initialState));
 
     for (let y = 0; y < this.initialState.length; y++) {
       for (let x = 1; x < this.initialState.length; x++) {
@@ -64,7 +64,7 @@ class Game {
   }
 
   moveRight() {
-    const oldState = this.initialState;
+    const oldState = JSON.parse(JSON.stringify(this.initialState));
 
     for (let y = 0; y < this.initialState.length; y++) {
       for (let x = this.initialState.length - 2; x >= 0; x--) {
@@ -103,7 +103,7 @@ class Game {
   }
 
   moveUp() {
-    const oldState = this.initialState;
+    const oldState = JSON.parse(JSON.stringify(this.initialState));
 
     for (let x = 0; x < this.initialState.length; x++) {
       for (let y = 1; y < this.initialState.length; y++) {
@@ -142,7 +142,7 @@ class Game {
   }
 
   moveDown() {
-    const oldState = this.initialState;
+    const oldState = JSON.parse(JSON.stringify(this.initialState));
 
     for (let x = 0; x < this.initialState.length; x++) {
       for (let y = this.initialState.length - 2; y >= 0; y--) {
