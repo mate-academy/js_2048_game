@@ -227,9 +227,12 @@ class Game {
   start() {
     this.status = 'playing';
 
-    for (let i = 0; i <= 1; i++) {
-      if (this.initialState.flat().includes(0)) {
-        this.generateTwoOrFour();
+    if (this.initialState.every(row =>
+      row.every(item => item === 0))) {
+      for (let i = 0; i <= 1; i++) {
+        if (this.hasValue(0)) {
+          this.generateTwoOrFour();
+        }
       }
     }
   }
@@ -238,7 +241,8 @@ class Game {
    * Resets the game.
    */
   restart() {
-    // this.status = 'idle';
+    this.status = 'idle';
+
     this.initialState = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -246,12 +250,6 @@ class Game {
       [0, 0, 0, 0],
     ];
     this.score = 0;
-
-    for (let i = 0; i <= 1; i++) {
-      if (this.hasValue(0)) {
-        this.generateTwoOrFour();
-      }
-    }
   }
 
   generateTwoOrFour() {

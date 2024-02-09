@@ -32,6 +32,11 @@ button.addEventListener('click', (event) => {
       messageLose.classList.add('hidden');
     }
 
+    button.textContent = 'Start';
+    button.classList.remove('restart');
+    button.classList.add('start');
+    messageStart.classList.remove('hidden');
+
     game.restart();
     game.colorCells(board);
     score.textContent = game.getScore();
