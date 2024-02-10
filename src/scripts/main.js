@@ -17,21 +17,38 @@ const score = document.querySelector('.game-score');
 document.addEventListener('keydown', KeyPress);
 
 startButton.addEventListener('click', function() {
-  startButton.innerText = 'Restart';
-  startButton.className = 'button restart';
+  if (gameStart) {
+    resetGame();
+  } else {
+    startButton.innerText = 'Restart';
+    startButton.className = 'button restart';
 
-  gameStart = true;
+    gameStart = true;
 
+    SpawNumbers();
+    SpawNumbers();
+    updateGameField();
+    hideResultMessage();
+  }
+});
+
+function resetGame() {
+  hideResultMessage();
+  gameEnd = false;
+  gameState.forEach(row => row.fill(0));
   SpawNumbers();
   SpawNumbers();
   updateGameField();
-  hideStartMessage();
-});
+}
 
-function hideStartMessage() {
-  const element = document.getElementById('startMessage');
+function hideResultMessage() {
+  const loseMessage = document.querySelector('.message-lose');
+  const winMessage = document.querySelector('.message-win');
+  const startMessage = document.querySelector('.message-start');
 
-  element.classList.add('hidden');
+  loseMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  startMessage.classList.add('hidden');
 }
 
 function SpawNumbers() {
@@ -92,7 +109,7 @@ function KeyPress(event) {
       break;
   }
 
-  if (!isFull()) {
+  if (!isFull() && !checkGameOver()) {
     SpawNumbers();
   }
 
@@ -207,12 +224,14 @@ function updateGameField() {
       cell.textContent = value;
       cell.className = 'field-cell';
 
+      if (value === 2048) {
+        gameEnd = true;
+        WinGame();
+      }
+
       if (value !== 0) {
         cell.classList.add('field-cell--' + value);
         cell.textContent = value;
-      } else if (value === 2048) {
-        gameEnd = checkGameOver();
-        GameOver();
       } else {
         cell.textContent = '';
       }
@@ -251,5 +270,13 @@ function isFull() {
 }
 
 function GameOver() {
-  alert('Game Over! No more available moves.');
+  const element = document.querySelector('.message-lose');
+
+  element.classList.remove('hidden');
+}
+
+function WinGame() {
+  const element = document.querySelector('.message-win');
+
+  element.classList.remove('hidden');
 }
