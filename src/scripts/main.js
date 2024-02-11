@@ -9,9 +9,11 @@ const loseText = document.querySelector('.message-lose');
 const winText = document.querySelector('.message-win');
 
 function messageText() {
-  if (+score.textContent >= 2048) {
-    winText.classList.remove('hidden');
-  }
+  ceils.forEach((cell) => {
+    if (cell.textContent === '2048') {
+      winText.classList.remove('hidden');
+    }
+  });
 
   if (checkStep() === false) {
     loseText.classList.remove('hidden');
@@ -40,9 +42,11 @@ function restartGame() {
     cell.classList = 'field-cell';
   });
 
+  score.textContent = '0';
   start.classList = 'button start';
   start.textContent = 'Start';
 
+  loseText.classList.add('hidden');
   startText.classList.remove('hidden');
 }
 
