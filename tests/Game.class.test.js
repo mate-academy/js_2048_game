@@ -959,7 +959,7 @@ describe('Game', () => {
       game2048.restart();
       game2048.start();
 
-      expect(game2048.getStatus()).toBe('playing');
+     expect(game2048.getStatus()).toBe('playing');
     });
   });
 });

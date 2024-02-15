@@ -10,6 +10,24 @@ body {
   font-weight: 900;
 }
 
+@keyframes pop-in {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.game-field--lose {
+  opacity: 0.5;
+}
+
+.new-cell {
+  animation: pop-in 0.4s;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
