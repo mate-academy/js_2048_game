@@ -1,307 +1,193 @@
 'use strict';
 
-const controlButton = document.querySelector('.button');
-const gameStartMessage = document.querySelector('.message-start');
-const gameWinMessage = document.querySelector('.message-win');
-const gameLoseMessage = document.querySelector('.message-lose');
-const gameField = document.querySelector('.game-field');
-const gameScore = document.querySelector('.game-score');
-const gameFieldArray = Array.from(gameField.querySelectorAll('.field-row'))
-  .map((row) => Array.from(row.querySelectorAll('.field-cell')));
-const fieldSize = gameFieldArray.length;
+const cell = document.querySelectorAll('td');
+const startButton = document.querySelector('.start');
+const score = document.querySelector('.game-score');
+const message = document.querySelector('.message-container');
 
-let score = 0;
-let isWinner = false;
+let scoreCount = 0;
+let check = 0;
+let up;
+let down;
+let left;
+let right;
 
-function updateScore() {
-  gameScore.textContent = score;
-}
+let gameField = [
+  ['', '', '', ''],
+  ['', '', '', ''],
+  ['', '', '', ''],
+  ['', '', '', ''],
+];
 
-controlButton.addEventListener('click', () => {
-  if (controlButton.classList.contains('restart')) {
-    const answer = confirm(
-      `Are you sure you want to restart the game?`
-      + `Your score will be lost!`,
-    );
+let restIndices = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
-    if (answer) {
-      restartGame();
+const fillingField = () => {
+  let i = 0;
+
+  restIndices = [];
+
+  for (const row of gameField) {
+    for (const cellField of row) {
+      if (cellField !== '') {
+        cell[i].textContent = cellField;
+        cell[i].classList.add(`field-cell--${cellField}`);
+      } else {
+        restIndices.push(i);
+      }
+      i++;
     }
-  } else {
-    startGame();
   }
+};
+
+const clearHTML = () => {
+  const elements = [...cell].filter(item => item.classList[1] !== undefined);
+
+  elements.map(item => {
+    item.classList.remove(item.classList[1]);
+    item.textContent = '';
+  });
+  fillingField();
+};
+
+const randomIndex = (max) => Math.floor(Math.random() * max);
+
+const createNewCell = () => {
+  const index = restIndices[randomIndex(restIndices.length)];
+  const column = index % 4;
+  const row = (index - column) / 4;
+  const newNumbers = [4, 2, 2, 2, 2, 2, 2, 2, 2, 2];
+
+  gameField[row][column] = newNumbers[randomIndex(newNumbers.length)];
+  fillingField();
+};
+
+startButton.addEventListener('click', () => {
+  gameField = [
+    ['', '', '', ''],
+    ['', '', '', ''],
+    ['', '', '', ''],
+    ['', '', '', ''],
+  ];
+  message.children[2].classList.add('hidden');
+  clearHTML();
+  startButton.textContent = 'Reset';
+  startButton.className = 'button restart';
+  createNewCell();
+  createNewCell();
+  fillingField();
+  scoreCount = 0;
+  score.textContent = `${scoreCount}`;
 });
 
-const buttonChangeTo = (btnText) => {
-  switch (btnText) {
-    case 'Start':
-      controlButton.classList.value = 'button start';
-      controlButton.textContent = 'Start';
-      break;
-    case 'Restart':
-      controlButton.classList.value = 'button restart';
-      controlButton.textContent = 'Restart';
-      break;
-    default:
-      break;
-  }
-};
+const move = (reverse, horizontal) => {
+  check = 0;
 
-const getRandomEmptyCell = () => {
-  const emptyCells = [];
+  for (let y = 0; y <= 3; y++) {
+    let range = [];
+    const copyRange = [];
 
-  for (let i = 0; i < fieldSize; i++) {
-    for (let j = 0; j < fieldSize; j++) {
-      if (gameFieldArray[i][j].textContent === '') {
-        emptyCells.push({
-          row: i,
-          col: j,
-        });
+    for (let x = 0; x <= 3; x++) {
+      (horizontal)
+        ? range.push(gameField[y][x])
+          && copyRange.push(gameField[y][x])
+        : range.push(gameField[x][y])
+          && copyRange.push(gameField[x][y]);
+    };
+
+    range = range.filter(element => element !== '');
+
+    if (reverse) {
+      range = range.reverse();
+    };
+
+    range.forEach((element, index, array) => {
+      if (element === array[index + 1] && element !== '') {
+        array[index] = array[index + 1] * 2;
+        array[index + 1] = '';
+        scoreCount += array[index];
       }
+    });
+
+    range = (reverse)
+      ? range.reverse().filter(elemetn => elemetn !== '')
+      : range.filter(elemetn => elemetn !== '');
+
+    for (let i = range.length; i < 4; i++) {
+      (reverse)
+        ? range.unshift('')
+        : range.push('');
     }
-  }
 
-  return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    range.forEach((element, i) => {
+      if (horizontal) {
+        gameField[y][i] = element;
+      } else {
+        gameField[i][y] = element;
+      };
+    });
+
+    range.forEach((element, index) => {
+      if (element !== copyRange[index]) {
+        check++;
+      }
+    });
+  };
 };
 
-const generateNewNumber = () => {
-  const newValue = Math.random() < 0.9 ? 2 : 4;
-  const emptyCell = getRandomEmptyCell();
-
-  if (emptyCell) {
-    const { row, col } = emptyCell;
-
-    gameFieldArray[row][col].textContent = newValue;
-    gameFieldArray[row][col].classList.add(`field-cell--${newValue}`);
-
-    gameFieldArray[row][col].classList.add(`new-cell`);
-  }
-};
-
-const hideStartMessage = () => {
-  gameStartMessage.classList.add('hidden');
-};
-
-const startGame = () => {
-  initalizeGame();
-  buttonChangeTo('Restart');
-  hideStartMessage();
-  document.addEventListener('keydown', handleMove);
-};
-
-const restartGame = () => {
-  initalizeGame();
-
-  if (!gameWinMessage.classList.contains('hidden')) {
-    gameWinMessage.classList.add('hidden');
+const notification = (lose) => {
+  if (lose) {
+    message.children[0].classList.remove('hidden');
   }
 
-  if (!gameLoseMessage.classList.contains('hidden')) {
-    gameLoseMessage.classList.add('hidden');
-  }
-};
-
-const initalizeGame = () => {
-  if (gameField.classList.contains('game-field--lose')) {
-    gameField.classList.remove('game-field--lose');
-  }
-
-  gameFieldArray.forEach((row) => {
-    row.forEach((cell) => {
-      cell.textContent = '';
-      cell.classList.value = 'field-cell';
+  gameField.forEach(elements => {
+    elements.forEach(element => {
+      if (element === 2048) {
+        message.children[1].classList.remove('hidden');
+      };
     });
   });
-
-  isWinner = false;
-  score = 0;
-  gameScore.textContent = 0;
-
-  generateNewNumber();
-  generateNewNumber();
 };
 
-function moveAndMergeCells(cells, direction) {
-  const size = cells.length;
-  let moved = false;
-
-  const mergeAndMove = (line) => {
-    let filtered = line.filter(val => val !== 0);
-    const oldLine = [...line];
-
-    for (let i = 0; i < filtered.length - 1; i++) {
-      if (filtered[i] === filtered[i + 1]) {
-        filtered[i] *= 2;
-        filtered[i + 1] = 0;
-        score += filtered[i];
-      }
-    }
-    filtered = filtered.filter(val => val !== 0);
-
-    while (filtered.length < size) {
-      filtered.push(0);
+document.addEventListener('keyup', (e) => {
+  switch (e.key) {
+    case 'ArrowUp': {
+      move(false, false);
+      up = (!check) ? 1 : 0;
+      break;
     }
 
-    if (JSON.stringify(oldLine) !== JSON.stringify(filtered)) {
-      moved = true;
+    case 'ArrowDown': {
+      move(true, false);
+      down = (!check) ? 1 : 0;
+      break;
     }
 
-    return filtered;
+    case 'ArrowLeft': {
+      move(false, true);
+      left = (!check) ? 1 : 0;
+      break;
+    }
+
+    case 'ArrowRight': {
+      move(true, true);
+      right = (!check) ? 1 : 0;
+      break;
+    }
+
+    default: {
+      return;
+    }
+  }
+
+  clearHTML();
+
+  if (check) {
+    createNewCell();
   };
+  notification();
 
-  if (direction === 'right' || direction === 'left') {
-    for (let i = 0; i < size; i++) {
-      let row = cells[i];
-
-      if (direction === 'right') {
-        row = row.reverse();
-      }
-      row = mergeAndMove(row);
-
-      if (direction === 'right') {
-        row = row.reverse();
-      }
-      cells[i] = row;
-    }
-  } else {
-    for (let i = 0; i < size; i++) {
-      let column = cells.map(row => row[i]);
-
-      if (direction === 'down') {
-        column = column.reverse();
-      }
-      column = mergeAndMove(column);
-
-      if (direction === 'down') {
-        column = column.reverse();
-      }
-
-      for (let j = 0; j < size; j++) {
-        cells[j][i] = column[j];
-      }
-    }
+  if (up && down && left && right) {
+    notification(true);
   }
-
-  return {
-    cells,
-    moved,
-  };
-}
-
-function handleMove(eventr) {
-  let direction;
-
-  switch (eventr.key) {
-    case 'ArrowUp': direction = 'up'; break;
-    case 'ArrowDown': direction = 'down'; break;
-    case 'ArrowLeft': direction = 'left'; break;
-    case 'ArrowRight': direction = 'right'; break;
-    default: return;
-  }
-
-  const cells = gameFieldArray.map(
-    row => row.map(cell => Number(cell.textContent) || 0),
-  );
-
-  const result = moveAndMergeCells(cells, direction);
-
-  if (result) {
-    gameFieldArray.forEach((row, i) => {
-      row.forEach((cell, j) => {
-        const value = result.cells[i][j];
-
-        cell.textContent = value || '';
-        cell.classList.value = 'field-cell';
-
-        if (value) {
-          cell.classList.add(`field-cell--${value}`);
-        }
-      });
-    });
-
-    if (result.moved) {
-      generateNewNumber();
-    }
-    updateScore();
-
-    if (isGameOver(result.cells)) {
-      gameLoseMessage.classList.remove('hidden');
-      gameField.classList.add('game-field--lose');
-
-      //* comment this for pass the tests//
-      // setTimeout(() => {
-      //   promptTheNewGame('lose');
-      // }, 1000);
-    }
-
-    if (isGameWon(result.cells)) {
-      gameWinMessage.classList.remove('hidden');
-
-      if (!isWinner) {
-        setTimeout(() => {
-          isWinner = true;
-          promptTheNewGame('win');
-        }, 1000);
-      }
-    }
-  }
-}
-
-function promptTheNewGame(result) {
-  let message;
-
-  if (result === 'win') {
-    message = `Congratulations! You won! Your score is ${score}.`;
-  } else {
-    message = `Game over! Your score is ${score}.`;
-  }
-
-  const newGame = confirm(`${message} Do you want to start a new game?`);
-
-  if (newGame) {
-    restartGame();
-  } else if (result === 'win' && !newGame) {
-    return false;
-  } else {
-    buttonChangeTo('Start');
-    document.removeEventListener('keydown', handleMove);
-  }
-}
-
-function isGameOver(cells) {
-  const size = cells.length;
-
-  for (const row of cells) {
-    for (const cell of row) {
-      if (cell === 0) {
-        return false;
-      }
-    }
-  }
-
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
-      if (x < size - 1 && cells[y][x] === cells[y][x + 1]) {
-        return false;
-      }
-
-      if (y < size - 1 && cells[y][x] === cells[y + 1][x]) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
-function isGameWon(cells) {
-  for (const row of cells) {
-    for (const cell of row) {
-      if (cell === 2048) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
+  score.textContent = `${scoreCount}`;
+});
