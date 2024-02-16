@@ -54,7 +54,7 @@ function generateCell() {
 
   if (availableCells.length > 0) {
     const { row, col }
-        = availableCells[Math.floor(Math.random() * availableCells.length)];
+      = availableCells[Math.floor(Math.random() * availableCells.length)];
 
     field[row][col] = Math.random() < 0.9 ? 2 : 4;
     updateField();
@@ -112,7 +112,6 @@ function moveCells(direction) {
         if (!moved && !arraysEqual(newRow, field[i])) {
           moved = true;
         }
-
         field[i] = newRow;
       }
       rotateField();
@@ -131,7 +130,6 @@ function moveCells(direction) {
         if (!moved && !arraysEqual(newRow, field[i])) {
           moved = true;
         }
-
         field[i] = newRow;
       }
       rotateField();
@@ -144,7 +142,6 @@ function moveCells(direction) {
         if (!moved && !arraysEqual(newRow, field[i])) {
           moved = true;
         }
-
         field[i] = newRow;
       }
       break;
@@ -159,7 +156,6 @@ function moveCells(direction) {
         if (!moved && !arraysEqual(newRow, field[i])) {
           moved = true;
         }
-
         field[i] = newRow;
       }
       rotateField();
@@ -193,7 +189,7 @@ function canMove() {
         return true;
       }
 
-      if (j < fieldSize - 1 && field[i][j] === field[i + 1][j]) {
+      if (i < fieldSize - 1 && field[i][j] === field[i + 1][j]) {
         return true;
       }
     }
