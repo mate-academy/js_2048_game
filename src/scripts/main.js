@@ -104,6 +104,7 @@ const updateData = () => {
 function arrowDown() {
   let currentCell;
   const wasAdded = [];
+  let wasMoved = false;
 
   for (let i = rows.length - 1; i >= 0; i--) {
     for (let c = 3; c >= 0; c--) {
@@ -123,6 +124,7 @@ function arrowDown() {
 
             rows[m - 1].children[c].textContent = '';
             rows[m - 1].children[c].className = 'field-cell';
+            wasMoved = true;
           } else if (rows[m].children[c].textContent === rows[m - 1].children[c].textContent) {
             const newNumber = +currentCell.textContent * 2;
 
@@ -135,6 +137,7 @@ function arrowDown() {
             rows[m].children[c].textContent = newNumber.toString();
             rows[m].children[c].className = `field-cell field-cell--${newNumber}`;
             wasAdded.push(rows[m].children[c]);
+            wasMoved = true;
 
             currentCell = rows[m].children[c];
 
@@ -147,12 +150,15 @@ function arrowDown() {
     }
   }
 
-  updateData();
+  if (wasMoved) {
+    updateData();
+  }
 }
 
 function arrowUp() {
   let currentCell;
   const wasAdded = [];
+  let wasMoved = false;
 
   for (let i = 0; i < rows.length; i++) {
     for (let c = 0; c < 4; c++) {
@@ -172,6 +178,8 @@ function arrowUp() {
 
             rows[m + 1].children[c].textContent = '';
             rows[m + 1].children[c].className = 'field-cell';
+
+            wasMoved = true;
           } else if (rows[m].children[c].textContent === rows[m + 1].children[c].textContent) {
             const newNumber = +currentCell.textContent * 2;
 
@@ -185,6 +193,7 @@ function arrowUp() {
             rows[m].children[c].className = `field-cell field-cell--${newNumber}`;
 
             wasAdded.push(rows[m].children[c]);
+            wasMoved = true;
 
             currentCell = rows[m].children[c];
 
@@ -197,12 +206,15 @@ function arrowUp() {
     }
   }
 
-  updateData();
+  if (wasMoved) {
+    updateData();
+  }
 }
 
 function arrowLeft() {
   let currentCell;
   const wasAdded = [];
+  let wasMoved = false;
 
   for (let c = 0; c < 4; c++) {
     for (let i = 0; i < rows.length; i++) {
@@ -222,6 +234,7 @@ function arrowLeft() {
 
             rows[i].children[m + 1].textContent = '';
             rows[i].children[m + 1].className = 'field-cell';
+            wasMoved = true;
           } else if (rows[i].children[m].textContent === rows[i].children[m + 1].textContent) {
             const newNumber = +currentCell.textContent * 2;
 
@@ -235,6 +248,7 @@ function arrowLeft() {
             rows[i].children[m].className = `field-cell field-cell--${newNumber}`;
 
             wasAdded.push(rows[i].children[m]);
+            wasMoved = true;
 
             currentCell = rows[i].children[m];
 
@@ -247,12 +261,15 @@ function arrowLeft() {
     }
   }
 
-  updateData();
+  if (wasMoved) {
+    updateData();
+  }
 }
 
 function arrowRight() {
   let currentCell;
   const wasAdded = [];
+  let wasMoved = false;
 
   for (let c = 3; c >= 0; c--) {
     for (let i = 0; i < rows.length; i++) {
@@ -272,6 +289,7 @@ function arrowRight() {
 
             rows[i].children[m - 1].textContent = '';
             rows[i].children[m - 1].className = 'field-cell';
+            wasMoved = true;
           } else if (rows[i].children[m].textContent === rows[i].children[m - 1].textContent) {
             const newNumber = +currentCell.textContent * 2;
 
@@ -285,6 +303,7 @@ function arrowRight() {
             rows[i].children[m].className = `field-cell field-cell--${newNumber}`;
 
             wasAdded.push(rows[i].children[m]);
+            wasMoved = true;
 
             currentCell = rows[i].children[m];
 
@@ -297,7 +316,9 @@ function arrowRight() {
     }
   }
 
-  updateData();
+  if (wasMoved) {
+    updateData();
+  }
 }
 
 document.addEventListener('click', (e) => {
