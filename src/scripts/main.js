@@ -38,10 +38,6 @@ const setRandomNumber = () => {
 };
 
 const canMove = () => {
-  if (getRandomCell()) {
-    return true;
-  }
-
   for (let i = rows.length - 1; i >= 0; i--) {
     for (let c = 3; c >= 0; c--) {
       if (rows[i].children[c].textContent === rows[i + 1].children[c].textContent) {
@@ -52,6 +48,10 @@ const canMove = () => {
         return true;
       }
     }
+  }
+
+  if (getRandomCell()) {
+    return true;
   }
 
   return false;
