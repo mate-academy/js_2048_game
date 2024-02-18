@@ -66,8 +66,6 @@ const updateData = () => {
 
   if (!canMove()) {
     loseMessage.classList.remove('hidden');
-
-    return;
   }
 
   setRandomNumber();
