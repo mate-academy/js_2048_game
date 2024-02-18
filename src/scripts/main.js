@@ -1,5 +1,6 @@
 'use strict';
 
+
 const button = document.querySelector('button');
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
