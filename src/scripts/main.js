@@ -116,16 +116,9 @@ function gameLose() {
   }
 
   for (let row = 0; row < rows; row++) {
-    for (let column = 0; column < columns - 1; column++) {
-      if (field[row][column] === field[row][column + 1]) {
-        return false;
-      }
-    }
-  }
-
-  for (let column = 0; column < columns; column++) {
-    for (let row = 0; row < rows - 1; row++) {
-      if (field[row][column] === field[row + 1][column]) {
+    for (let cell = 0; cell < columns - 1; cell++) {
+      if (field[row][cell] === field[row][cell + 1]
+        || field[cell][row] === field[cell + 1][row]) {
         return false;
       }
     }
