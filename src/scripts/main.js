@@ -34,23 +34,49 @@ const setRandomNumber = () => {
   const cell = getRandomCell();
 
   cell.classList.add(`field-cell--${number}`);
-  cell.textContent = number;
+  cell.textContent = number.toString();
+};
+
+const checkRows = (i, c) => {
+  if (rows[i].children[c].textContent === rows[i + 1].children[c].textContent) {
+    return true;
+  }
+};
+
+const checkColomns = (i, c) => {
+  if (rows[i].children[c].textContent === rows[i].children[c + 1].textContent) {
+    return true;
+  }
 };
 
 const canMove = () => {
-  for (let i = rows.length - 1; i >= 0; i--) {
-    for (let c = 3; c >= 0; c--) {
-      if (rows[i].children[c].textContent === rows[i + 1].children[c].textContent) {
-        return true;
-      }
+  for (let i = 0; i < rows.length; i++) {
+    for (let c = 0; c < 4; c++) {
+      if (i === 3) {
+        if (c === 3) {
+          break;
+        }
 
-      if (rows[i].children[c].textContent === rows[i].children[c + 1].textContent) {
-        return true;
+        if (checkColomns(i, c)) {
+          return true;
+        }
+      } else {
+        if (checkRows(i, c)) {
+          return true;
+        }
+
+        if (c === 3) {
+          break;
+        }
+
+        if (checkColomns(i, c)) {
+          return true;
+        }
       }
     }
   }
 
-  if (getRandomCell()) {
+  if (cells.find(cell => !cell.textContent)) {
     return true;
   }
 
@@ -60,12 +86,16 @@ const canMove = () => {
 const updateData = () => {
   scoreElement.textContent = score;
 
+  const canBeMoved = canMove();
+
   if (cells.find(cell => cell.textContent === '2048')) {
     winMessage.classList.remove('hidden');
   }
 
-  if (!canMove()) {
+  if (!canBeMoved) {
     loseMessage.classList.remove('hidden');
+
+    return;
   }
 
   setRandomNumber();
