@@ -29,89 +29,58 @@ class Game {
     this.status = 'idle';
     this.score = 0;
     this.isWin = false;
-
-    // eslint-disable-next-line no-console
-    console.log(this.state[0], this.state[1], this.state[2], this.state[3]);
   }
 
   moveLeft() {
-    const gameStatus = this.getStatus();
+    const move = () => {
+      for (let i = 0; i < BOARD_SIZE; i++) {
+        const col = this.state[i];
+        const movedCol = this.moveLine(col);
 
-    if (gameStatus === 'idle' || gameStatus === 'lose') {
-      return;
-    }
+        this.state[i] = movedCol;
+      }
+    };
 
-    this.setPrevState();
-
-    for (let i = 0; i < BOARD_SIZE; i++) {
-      const col = this.state[i];
-      const movedCol = this.moveLine(col);
-
-      this.state[i] = movedCol;
-    }
-
-    this.addCellIfMoved();
-    this.updateStatus();
+    this.makeMove(move);
   }
 
   moveRight() {
-    const gameStatus = this.getStatus();
+    const move = () => {
+      for (let i = 0; i < BOARD_SIZE; i++) {
+        const col = this.state[i].reverse();
+        const movedCol = this.moveLine(col);
 
-    if (gameStatus === 'idle' || gameStatus === 'lose') {
-      return;
-    }
+        this.state[i] = movedCol.reverse();
+      }
+    };
 
-    this.setPrevState();
-
-    for (let i = 0; i < BOARD_SIZE; i++) {
-      const col = this.state[i].reverse();
-      const movedCol = this.moveLine(col);
-
-      this.state[i] = movedCol.reverse();
-    }
-
-    this.addCellIfMoved();
-    this.updateStatus();
+    this.makeMove(move);
   }
 
   moveUp() {
-    const gameStatus = this.getStatus();
+    const move = () => {
+      for (let rowIndex = 0; rowIndex < BOARD_SIZE; rowIndex++) {
+        const row = this.getRow(rowIndex);
+        const movedRow = this.moveLine(row);
 
-    if (gameStatus === 'idle' || gameStatus === 'lose') {
-      return;
-    }
+        this.changeRow(movedRow, rowIndex);
+      }
+    };
 
-    this.setPrevState();
-
-    for (let rowIndex = 0; rowIndex < BOARD_SIZE; rowIndex++) {
-      const row = this.getRow(rowIndex);
-      const movedRow = this.moveLine(row);
-
-      this.changeRow(movedRow, rowIndex);
-    }
-
-    this.addCellIfMoved();
-    this.updateStatus();
+    this.makeMove(move);
   }
 
   moveDown() {
-    const gameStatus = this.getStatus();
+    const move = () => {
+      for (let rowIndex = 0; rowIndex < BOARD_SIZE; rowIndex++) {
+        const row = this.getRow(rowIndex);
+        const movedRow = this.moveLine(row.reverse());
 
-    if (gameStatus === 'idle' || gameStatus === 'lose') {
-      return;
-    }
+        this.changeRow(movedRow.reverse(), rowIndex);
+      }
+    };
 
-    this.setPrevState();
-
-    for (let rowIndex = 0; rowIndex < BOARD_SIZE; rowIndex++) {
-      const row = this.getRow(rowIndex);
-      const movedRow = this.moveLine(row.reverse());
-
-      this.changeRow(movedRow.reverse(), rowIndex);
-    }
-
-    this.addCellIfMoved();
-    this.updateStatus();
+    this.makeMove(move);
   }
 
   /**
@@ -168,6 +137,16 @@ class Game {
     this.status = newStatus;
   }
 
+  updateStatus() {
+    if (this.isLose()) {
+      this.setStatus('lose');
+    }
+
+    if (this.isWin) {
+      this.setStatus('win');
+    }
+  }
+
   /**
    * Starts the game.
    */
@@ -190,40 +169,22 @@ class Game {
     return [...Array(BOARD_SIZE)].map(() => Array(BOARD_SIZE).fill(0));
   }
 
-  addRandomCell() {
-    const emptyCells = this.getEmptyCells();
+  makeMove(move) {
+    const gameStatus = this.getStatus();
 
-    if (emptyCells.length !== 0) {
-      const anyIndex = Math.floor(Math.random() * emptyCells.length);
-      const anyPosition = emptyCells[anyIndex];
-      const randomValue = Math.random() < 0.9 ? 2 : 4;
-
-      this.state[anyPosition.rowIndex][anyPosition.colIndex] = randomValue;
-    }
-  }
-
-  getEmptyCells() {
-    const emptyCells = [];
-
-    for (let rowIndex = 0; rowIndex < BOARD_SIZE; rowIndex++) {
-      for (let colIndex = 0; colIndex < BOARD_SIZE; colIndex++) {
-        const cell = this.state[rowIndex][colIndex];
-
-        if (cell === 0) {
-          emptyCells.push({
-            rowIndex, colIndex,
-          });
-        }
-      }
+    if (gameStatus === 'idle' || gameStatus === 'lose') {
+      return;
     }
 
-    return emptyCells;
-  }
+    this.setPrevState();
 
-  addCellIfMoved() {
+    move();
+
     if (this.isMoved(this.getPrevState())) {
       this.addRandomCell();
     }
+
+    this.updateStatus();
   }
 
   moveLine(lineArr) {
@@ -254,6 +215,18 @@ class Game {
     return newLine;
   }
 
+  addRandomCell() {
+    const emptyCells = this.getEmptyCells();
+
+    if (emptyCells.length !== 0) {
+      const anyIndex = Math.floor(Math.random() * emptyCells.length);
+      const anyPosition = emptyCells[anyIndex];
+      const randomValue = Math.random() < 0.9 ? 2 : 4;
+
+      this.state[anyPosition.rowIndex][anyPosition.colIndex] = randomValue;
+    }
+  }
+
   getRow(rowIndex) {
     const row = [];
 
@@ -271,6 +244,24 @@ class Game {
     for (let colIndex = 0; colIndex < BOARD_SIZE; colIndex++) {
       this.state[colIndex][rowIndex] = rowToPlace[colIndex];
     }
+  }
+
+  getEmptyCells() {
+    const emptyCells = [];
+
+    for (let rowIndex = 0; rowIndex < BOARD_SIZE; rowIndex++) {
+      for (let colIndex = 0; colIndex < BOARD_SIZE; colIndex++) {
+        const cell = this.state[rowIndex][colIndex];
+
+        if (cell === 0) {
+          emptyCells.push({
+            rowIndex, colIndex,
+          });
+        }
+      }
+    }
+
+    return emptyCells;
   }
 
   isMoved(prevState) {
@@ -305,16 +296,6 @@ class Game {
     }
 
     return true;
-  }
-
-  updateStatus() {
-    if (this.isLose()) {
-      this.setStatus('lose');
-    }
-
-    if (this.isWin) {
-      this.setStatus('win');
-    }
   }
 
   drawBoard(cells) {
