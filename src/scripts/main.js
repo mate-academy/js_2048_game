@@ -86,16 +86,8 @@ const canMove = () => {
 const updateData = () => {
   scoreElement.textContent = score;
 
-  const canBeMoved = canMove();
-
   if (cells.find(cell => cell.textContent === '2048')) {
     winMessage.classList.remove('hidden');
-  }
-
-  if (!canBeMoved) {
-    loseMessage.classList.remove('hidden');
-
-    return;
   }
 
   setRandomNumber();
@@ -373,4 +365,8 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') {
     arrowRight();
   };
+
+  if (!canMove()) {
+    loseMessage.classList.remove('hidden');
+  }
 });
