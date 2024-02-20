@@ -20,56 +20,101 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  padding: 0;
 
   &--2 {
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #eee4da;
   }
 
   &--4 {
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #ede0c8;
   }
 
   &--8 {
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #f2b179;
     color: #f9f6f2;
   }
 
   &--16 {
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #f59563;
     color: #f9f6f2;
   }
 
   &--32 {
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #f67c5f;
     color: #f9f6f2;
   }
 
   &--64 {
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #f65e3b;
     color: #f9f6f2;
   }
 
   &--128 {
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #edcf72;
     color: #f9f6f2;
   }
 
   &--256 {
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #edcc61;
     color: #f9f6f2;
   }
 
   &--512 {
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #edc850;
     color: #f9f6f2;
   }
 
   &--1024 {
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #edc53f;
     color: #f9f6f2;
   }
 
   &--2048 {
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #edc22e;
     color: #f9f6f2;
   }
@@ -147,6 +192,7 @@ h1 {
 }
 
 .restart {
+  display: none;
   background: #f1b2b2;
 
   &:hover {
@@ -165,9 +211,7 @@ h1 {
   font-size: 20px;
 }
 
-.hidden {
-  display: none;
-}
+
 
 .container {
   display: flex;
@@ -177,11 +221,20 @@ h1 {
 }
 
 .message-win {
+  display: none;
   background: #edc22e;
   color: #f9f6f2;
+}
+
+.message-lose {
+  display: none;
 }
 
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.message-start {
+  display: block;
 }
