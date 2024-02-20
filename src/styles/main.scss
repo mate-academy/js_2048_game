@@ -4,79 +4,123 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #451F55;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: #22162B;
+  width: 105px;
+  height: 105px;
   border-radius: 5px;
-  color: #776e65;
+  color: #E54F6D;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  padding: 0;
 
   &--2 {
+    height: 100%;
+    padding-top: 35px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #eee4da;
   }
 
   &--4 {
+    height: 100%;
+    padding-top: 35px;
+    box-sizing: border-box;
+    border-radius: 5px;
     background: #ede0c8;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    height: 100%;
+    padding-top: 35px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background: #BFDBF7;
   }
 
   &--16 {
-    background: #f59563;
+    height: 100%;
+    padding-top: 35px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background: #1F7A8C;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    height: 100%;
+    padding-top: 35px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background: #053C5E;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
+    height: 100%;
+    padding-top: 35px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background: #06293f;
     color: #f9f6f2;
   }
 
   &--128 {
-    background: #edcf72;
+    height: 100%;
+    padding-top: 35px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background: #DB222A;
     color: #f9f6f2;
   }
 
   &--256 {
-    background: #edcc61;
+    height: 100%;
+    padding-top: 35px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background: #aa040c;
     color: #f9f6f2;
   }
 
   &--512 {
-    background: #edc850;
+    height: 100%;
+    padding-top: 35px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background: #5D2E8C;
     color: #f9f6f2;
   }
 
   &--1024 {
-    background: #edc53f;
+    height: 100%;
+    padding-top: 35px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background: #29335C;
     color: #f9f6f2;
   }
 
   &--2048 {
-    background: #edc22e;
+    height: 100%;
+    padding-top: 35px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background: #f8c630;
     color: #f9f6f2;
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: #747578;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -91,10 +135,10 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background: #f8c630;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
+  width: 105px;
+  height: 105px;
   font-size: 24px;
   border-radius: 5px;
   display: flex;
@@ -109,13 +153,13 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: #22162B;
+  width: 105px;
+  height: 105px;
   border-radius: 5px;
-  color: #776e65;
+  color: #E54F6D;
   box-sizing: border-box;
-  font-size: 16px;
+  font-size: 24px;
   margin: 0 8px 0 0;
 }
 
@@ -130,9 +174,9 @@ h1 {
   color: #f9f6f2;
   font-family: sans-serif;
   font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
+  font-size: 24px;
+  width: 105px;
+  height: 105px;
 
   transition: 0.25s ease background;
 }
@@ -147,41 +191,48 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  display: none;
+  background: #862222;
 
   &:hover {
-    background: #f87474;
+    background: #580b0b;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #22162B;
+  color: #E54F6D;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
 }
 
-.hidden {
-  display: none;
-}
+
 
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
 }
 
 .message-win {
+  display: none;
   background: #edc22e;
   color: #f9f6f2;
+}
+
+.message-lose {
+  display: none;
 }
 
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.message-start {
+  display: block;
 }
