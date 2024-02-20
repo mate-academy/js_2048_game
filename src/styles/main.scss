@@ -4,18 +4,18 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #451F55;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
+  background: #22162B;
+  width: 105px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #E54F6D;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
@@ -43,8 +43,7 @@ body {
     padding-top: 20px;
     box-sizing: border-box;
     border-radius: 5px;
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #BFDBF7;
   }
 
   &--16 {
@@ -52,7 +51,7 @@ body {
     padding-top: 20px;
     box-sizing: border-box;
     border-radius: 5px;
-    background: #f59563;
+    background: #1F7A8C;
     color: #f9f6f2;
   }
 
@@ -61,7 +60,7 @@ body {
     padding-top: 20px;
     box-sizing: border-box;
     border-radius: 5px;
-    background: #f67c5f;
+    background: #053C5E;
     color: #f9f6f2;
   }
 
@@ -70,7 +69,7 @@ body {
     padding-top: 20px;
     box-sizing: border-box;
     border-radius: 5px;
-    background: #f65e3b;
+    background: #06293f;
     color: #f9f6f2;
   }
 
@@ -79,7 +78,7 @@ body {
     padding-top: 20px;
     box-sizing: border-box;
     border-radius: 5px;
-    background: #edcf72;
+    background: #DB222A;
     color: #f9f6f2;
   }
 
@@ -88,7 +87,7 @@ body {
     padding-top: 20px;
     box-sizing: border-box;
     border-radius: 5px;
-    background: #edcc61;
+    background: #aa040c;
     color: #f9f6f2;
   }
 
@@ -97,7 +96,7 @@ body {
     padding-top: 20px;
     box-sizing: border-box;
     border-radius: 5px;
-    background: #edc850;
+    background: #5D2E8C;
     color: #f9f6f2;
   }
 
@@ -106,7 +105,7 @@ body {
     padding-top: 20px;
     box-sizing: border-box;
     border-radius: 5px;
-    background: #edc53f;
+    background: #29335C;
     color: #f9f6f2;
   }
 
@@ -115,13 +114,13 @@ body {
     padding-top: 20px;
     box-sizing: border-box;
     border-radius: 5px;
-    background: #edc22e;
+    background: #f8c630;
     color: #f9f6f2;
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: #747578;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -131,12 +130,12 @@ body {
   width: 100%;
   justify-content: space-between;
   margin-bottom: 24px;
-  padding: 10px;
+  padding: 10px 40px;
   box-sizing: border-box;
 }
 
 h1 {
-  background: #edc22e;
+  background: #f8c630;
   color: #f9f6f2;
   width: 75px;
   height: 75px;
@@ -154,11 +153,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #22162B;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #E54F6D;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -193,18 +192,18 @@ h1 {
 
 .restart {
   display: none;
-  background: #f1b2b2;
+  background: #862222;
 
   &:hover {
-    background: #f87474;
+    background: #580b0b;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #22162B;
+  color: #E54F6D;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
@@ -217,7 +216,6 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
 }
 
 .message-win {
