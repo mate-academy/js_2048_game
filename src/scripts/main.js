@@ -21,9 +21,7 @@ START_BUTTON.addEventListener('click', () => {
 
 RESTART_BUTTON.addEventListener('click', () => {
   game.restart();
-  START_BUTTON.style.display = 'block';
-  RESTART_BUTTON.style.display = 'none';
-  START_MESSAGE.style.display = 'block';
+  game.start();
   LOSE_MESSAGE.style.display = 'none';
   WIN_MESSAGE.style.display = 'none';
   game.visualiseScore(SCORE);
