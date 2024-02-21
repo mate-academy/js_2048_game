@@ -34,43 +34,47 @@ const updateGameScore = (newScore) => {
   gameScore.value = newScore;
 };
 
+document.addEventListener('keydown', ({ key }) => {
+  if (game.getStatus() === 'idle') {
+    return;
+  }
+
+  if (game.getStatus() === 'lose') {
+    messageLose.classList.remove('hidden');
+  }
+
+  if (game.getStatus() === 'win') {
+    messageWin.classList.remove('hidden');
+  }
+
+  if (game.getStatus() === 'playing') {
+    if (key === 'ArrowLeft') {
+      game.moveLeft();
+    }
+
+    if (key === 'ArrowRight') {
+      game.moveRight();
+    }
+
+    if (key === 'ArrowUp') {
+      game.moveUp();
+    }
+
+    if (key === 'ArrowDown') {
+      game.moveDown();
+    }
+
+    renderCurrentState();
+  }
+
+  updateGameScore(game.getScore());
+});
+
 const setGame = () => {
   game.start();
   renderCurrentState();
 
   messageStart.classList.add('hidden');
-
-  document.addEventListener('keydown', ({ key }) => {
-    if (game.getStatus() === 'playing') {
-      if (key === 'ArrowLeft') {
-        game.moveLeft();
-      }
-
-      if (key === 'ArrowRight') {
-        game.moveRight();
-      }
-
-      if (key === 'ArrowUp') {
-        game.moveUp();
-      }
-
-      if (key === 'ArrowDown') {
-        game.moveDown();
-      }
-
-      renderCurrentState();
-    }
-
-    if (game.getStatus() === 'lose') {
-      messageLose.classList.remove('hidden');
-    }
-
-    if (game.getStatus() === 'win') {
-      messageWin.classList.remove('hidden');
-    }
-
-    updateGameScore(game.getScore());
-  });
 };
 
 const resetGame = () => {
