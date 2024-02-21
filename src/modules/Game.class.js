@@ -1,5 +1,9 @@
 'use strict';
 
+function copyState(state) {
+  return state.map(row => [...row]);
+}
+
 class Game {
   /**
    * Creates a new game instance.
@@ -21,8 +25,8 @@ class Game {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ]) {
-    this.state = initialState;
-    this.initialState = initialState.map(row => [...row]);
+    this.state = copyState(initialState);
+    this.initialState = copyState(initialState);
     this.score = 0;
     this.status = 'idle';
   }
@@ -179,7 +183,7 @@ class Game {
       return 'win';
     }
 
-    const copy = new Game(this.state.map(row => row.map(cell => cell)));
+    const copy = new Game(copyState(this.state));
 
     copy.status = 'playing';
     copy.moveDown();
@@ -187,7 +191,8 @@ class Game {
     copy.moveRight();
     copy.moveUp();
 
-    if (copy.getScore() === 0) {
+    if (copy.getScore() === 0
+      && this.state.flat().findIndex(el => el === 0) === -1) {
       return 'lose';
     }
 
@@ -208,12 +213,9 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.state = this.initialState;
-
+    this.state = copyState(this.initialState);
     this.score = 0;
-
     this.status = 'idle';
-    // this.start();
   }
 }
 

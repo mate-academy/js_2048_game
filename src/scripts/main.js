@@ -83,23 +83,11 @@ const resetGame = () => {
 };
 
 button.addEventListener('click', ({ target }) => {
-  const start = target.classList.contains('start');
-  const restart = target.classList.contains('restart');
+  resetGame();
+  setGame();
 
-  if (start) {
-    setGame();
-
-    target.classList.remove('start');
-    target.classList.add('restart');
-    target.innerText = 'Restart';
-    target.style.fontSize = '17px';
-  }
-
-  if (restart) {
-    resetGame();
-
-    target.classList.remove('restart');
-    target.classList.add('start');
-    target.innerText = 'Start';
-  }
+  target.classList.remove('start');
+  target.classList.add('restart');
+  target.innerText = 'Restart';
+  target.style.fontSize = '17px';
 });
