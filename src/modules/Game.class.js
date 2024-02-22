@@ -1,35 +1,17 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
     this.initialBoard = initialState;
 
-    this.board = initialState || [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.board = JSON.parse(JSON.stringify(initialState));
 
     this.boardScore = 0;
 
@@ -62,30 +44,14 @@ class Game {
     }
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
     return this.boardScore;
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.board;
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     switch (true) {
       case this.isGameWon:
@@ -105,47 +71,16 @@ class Game {
     return this.currentStatus;
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
-//================================================================================
-    /*this.board = this.initialBoard || [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];*/
+    this.board = JSON.parse(JSON.stringify(this.initialBoard));
 
-    /*
-
-      Не працюэ тест, коли ставлю this.initialBoard,
-      але без нього тест пройти не можу
-
-      it('should allow to start a new game', () => {
-        game2048.restart();
-        game2048.start();
-
-        expect(game2048.getStatus()).toBe('playing');
-      });
-
-    */
-//================================================================================
     this.isGameActive = true;
     this.placeNewCell();
     this.placeNewCell();
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
-    this.board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.board = JSON.parse(JSON.stringify(this.initialBoard));
     this.boardScore = 0;
 
     this.currentStatus = 'idle';
@@ -311,7 +246,6 @@ class Game {
         break;
     }
   }
-  // Add your own methods here
 }
 
 module.exports = Game;
