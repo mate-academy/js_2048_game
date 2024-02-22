@@ -22,7 +22,7 @@
     "@mate-academy/eslint-config": "*",
     "@mate-academy/jest-mochawesome-reporter": "^1.0.0",
     "@mate-academy/linthtml-config": "*",
-    "@mate-academy/scripts": "^1.3.2",
+    "@mate-academy/scripts": "^1.7.0",
     "@mate-academy/stylelint-config": "0.0.11",
     "@parcel/transformer-sass": "2.10.2",
     "cypress": "^9.5.3",
