@@ -1,376 +1,319 @@
 'use strict';
 
-// write your code here
-const FOUR_CHANCE = 0.1;
-const ROWS = 4;
-const COLS = 4;
+const controls = document.querySelector('.controls');
+const scoreInfo = document.querySelector('.game-score');
 
-const table = document.querySelector('table');
-const tBody = table.tBodies[0];
-const button = document.querySelector('.button');
-const allCells = document.querySelectorAll('td');
-const startMessage = document.querySelector('.message-start');
-const loseMessage = document.querySelector('.message-lose');
-const winMessage = document.querySelector('.message-win');
-const gameScore = document.querySelector('.game-score');
+const rows = document.querySelectorAll('.field-row');
 
-let gameStarted = false;
-let score = 0;
+const msgStart = document.querySelector('.message-start');
+const msgWin = document.querySelector('.message-win');
+const msgLose = document.querySelector('.message-lose');
 
-button.addEventListener('click', () => {
-  startMessage.classList.add('hidden');
-  winMessage.classList.add('hidden');
-  loseMessage.classList.add('hidden');
+controls.insertAdjacentHTML('beforeend', `
+  <button
+    class="button restart hidden"
+    >Restart
+  </button>
+`);
 
-  button.classList.replace('start', 'restart');
-  button.textContent = 'Restart';
+const startBtn = document.querySelector('.start');
+const restartBtn = document.querySelector('.restart');
 
-  score = 0;
-  gameScore.textContent = 0;
+const game = {
+  isRunning: false,
+  isWon: false,
+  isLost: false,
+  score: 0,
+  rowsQty: rows.length,
+  colsQty: rows[0].children.length,
+  matrix: [],
+};
 
-  for (const element of allCells) {
-    if (element.classList.length < 2) {
-      continue;
-    }
+const moves = {
+  moveRight(matrix) {
+    matrix.forEach(row => {
+      row.forEach((num, index) => {
+        if (num === 0) {
+          row.splice(index, 1);
+          row.unshift(0);
+        }
+      });
 
-    element.className = 'field-cell';
-    element.textContent = '';
-  }
+      for (let i = row.length - 1; i >= 0; i--) {
+        if (row[i] > 0 && row[i] === row[i - 1]) {
+          const sum = row[i] * 2;
 
-  createRandomElement();
-  createRandomElement();
-  gameStarted = true;
-});
-
-document.addEventListener('keydown', (e) => {
-  switch (e.key) {
-    case 'ArrowDown':
-      e.preventDefault();
-
-      if (gameStarted) {
-        handleArrowDown();
+          row.splice(i - 1, 2, sum);
+          row.unshift(0);
+          game.score += sum;
+        }
       }
-      break;
+    });
+  },
 
-    case 'ArrowUp':
-      e.preventDefault();
-
-      if (gameStarted) {
-        handleArrowUp();
+  moveLeft(matrix) {
+    matrix.forEach(row => {
+      for (let i = row.length - 1; i >= 0; i--) {
+        if (row[i] === 0) {
+          row.splice(i, 1);
+          row.push(0);
+        }
       }
-      break;
 
-    case 'ArrowLeft':
-      e.preventDefault();
+      for (let i = 0; i < row.length; i++) {
+        if (row[i] > 0 && row[i] === row[i + 1]) {
+          const sum = row[i] * 2;
 
-      if (gameStarted) {
-        handleArrowLeft();
+          row.splice(i, 2, sum);
+          row.push(0);
+          game.score += sum;
+        }
       }
-      break;
+    });
+  },
 
-    case 'ArrowRight':
-      e.preventDefault();
+  moveUp(matrix) {
+    const reflectedMatrix = reflectMatrix(matrix);
 
-      if (gameStarted) {
-        handleArrowRight();
-      }
-      break;
+    this.moveLeft(reflectedMatrix);
 
-    default:
-      break;
-  }
+    const shiftedUpMatrix = reflectMatrix(reflectedMatrix);
 
-  if (isLost()) {
-    loseMessage.classList.remove('hidden');
-  }
-});
+    game.matrix = shiftedUpMatrix;
+  },
 
-function createRandomElement() {
-  const chance = Math.random();
-  const listOfFreeSpots = freeSpots();
+  moveDown(matrix) {
+    const reflectedMatrix = reflectMatrix(matrix);
 
-  if (chance <= FOUR_CHANCE) {
-    const element = getRandomSpot(listOfFreeSpots);
+    this.moveRight(reflectedMatrix);
 
-    element.textContent = '4';
-    element.classList.add('field-cell--4');
-  } else {
-    const element = getRandomSpot(listOfFreeSpots);
+    const shiftedDownMatrix = reflectMatrix(reflectedMatrix);
 
-    element.textContent = '2';
-    element.classList.add('field-cell--2');
-  }
-}
+    game.matrix = shiftedDownMatrix;
+  },
+};
 
-function getRandomSpot(list) {
-  return list[Math.floor(Math.random() * list.length)];
-}
+const checkDirections = {
+  moveLeft(matrix) {
+    for (let i = 0; i < matrix.length; i++) {
+      const nums = matrix[i];
 
-function freeSpots() {
-  const listOfFreeSpots = [];
+      for (let n = 0; n < nums.length; n++) {
+        if (nums[n] !== 0 && nums[n] === nums[n + 1]) {
+          return true;
+        }
 
-  for (const element of allCells) {
-    if (element.classList.length < 2) {
-      listOfFreeSpots.push(element);
-    }
-  }
+        let restHasNums = false;
 
-  return listOfFreeSpots;
-}
+        if (nums[n] === 0) {
+          const rest = nums.slice(n);
 
-function activeSpots() {
-  const listOfActiveSpots = [];
+          restHasNums = rest.some(num => num > 0);
+        }
 
-  for (const element of allCells) {
-    if (element.classList.length > 1) {
-      listOfActiveSpots.push(element);
-    }
-  }
-
-  return listOfActiveSpots;
-}
-
-function elementMove(elem, nextElem) {
-  const classValue = elem.classList[1];
-  const value = elem.textContent;
-
-  elem.className = 'field-cell';
-  elem.textContent = '';
-
-  nextElem.classList.add(classValue);
-  nextElem.textContent = value;
-}
-
-function elementsMerge(elem, nextElem) {
-  let number = +nextElem.textContent;
-
-  number *= 2;
-
-  score += number;
-  gameScore.textContent = score;
-
-  elem.className = 'field-cell';
-  elem.textContent = '';
-
-  nextElem.className = 'field-cell';
-  nextElem.textContent = number;
-  nextElem.classList.add(`field-cell--${number}`);
-  nextElem.id = 'merged';
-
-  if (number === 2048) {
-    winMessage.classList.remove('hidden');
-  }
-}
-
-function handleArrowDown() {
-  if (isLost()) {
-    return;
-  }
-
-  const listOfActiveSpots = activeSpots();
-  let actionCounter = 0;
-
-  for (let i = listOfActiveSpots.length - 1; i >= 0; i--) {
-    const col = listOfActiveSpots[i].cellIndex;
-    const row = +listOfActiveSpots[i].parentElement.id;
-    const listOfColumnElements = [];
-
-    if (row === 3) {
-      continue;
-    }
-
-    for (let j = row; j < tBody.rows.length; j++) {
-      listOfColumnElements.push(tBody.rows[j].cells[col]);
-    }
-
-    for (let j = 1; j < listOfColumnElements.length; j++) {
-      const elem = listOfColumnElements[j - 1];
-      const nextElem = listOfColumnElements[j];
-      const mergeCondition = elem.textContent
-      === nextElem.textContent
-        && !elem.id
-        && !nextElem.id;
-
-      if (nextElem.classList.length < 2) {
-        elementMove(elem, nextElem);
-        actionCounter++;
-      } else if (mergeCondition) {
-        elementsMerge(elem, nextElem);
-        actionCounter++;
+        if (restHasNums) {
+          return true;
+        }
       }
     }
-  }
 
-  listOfActiveSpots.forEach((elem) => elem.removeAttribute('id'));
-
-  if (actionCounter > 0) {
-    createRandomElement();
-  }
-}
-
-function handleArrowUp() {
-  if (isLost()) {
-    return;
-  }
-
-  const listOfActiveSpots = activeSpots();
-  let actionCounter = 0;
-
-  for (let i = 0; i < listOfActiveSpots.length; i++) {
-    const col = listOfActiveSpots[i].cellIndex;
-    const row = +listOfActiveSpots[i].parentElement.id;
-    const listOfColumnElements = [];
-
-    if (row === 0) {
-      continue;
-    }
-
-    for (let j = row; j >= 0; j--) {
-      listOfColumnElements.push(tBody.rows[j].cells[col]);
-    }
-
-    for (let j = 0; j < listOfColumnElements.length - 1; j++) {
-      const elem = listOfColumnElements[j];
-      const nextElem = listOfColumnElements[j + 1];
-      const mergeCondition = elem.textContent === nextElem.textContent
-        && !elem.id
-        && !nextElem.id;
-
-      if (nextElem.classList.length < 2) {
-        elementMove(elem, nextElem);
-        actionCounter++;
-      } else if (mergeCondition) {
-        elementsMerge(elem, nextElem);
-        actionCounter++;
-      }
-    }
-  }
-
-  listOfActiveSpots.forEach((elem) => elem.removeAttribute('id'));
-
-  if (actionCounter > 0) {
-    createRandomElement();
-  }
-}
-
-function handleArrowLeft() {
-  if (isLost()) {
-    return;
-  }
-
-  const listOfActiveSpots = activeSpots();
-  let actionCounter = 0;
-
-  for (let i = 0; i < listOfActiveSpots.length; i++) {
-    const col = listOfActiveSpots[i].cellIndex;
-    const row = +listOfActiveSpots[i].parentElement.id;
-    const listOfRowElements = [];
-
-    if (col === 0) {
-      continue;
-    }
-
-    for (let j = col; j >= 0; j--) {
-      listOfRowElements.push(tBody.rows[row].cells[j]);
-    }
-
-    for (let j = 0; j < listOfRowElements.length - 1; j++) {
-      const elem = listOfRowElements[j];
-      const nextElem = listOfRowElements[j + 1];
-      const mergeCondition = (elem.textContent === nextElem.textContent
-        && !elem.id
-        && !nextElem.id);
-
-      if (nextElem.classList.length < 2) {
-        elementMove(elem, nextElem);
-        actionCounter++;
-      } else if (mergeCondition) {
-        elementsMerge(elem, nextElem);
-        actionCounter++;
-      }
-    }
-  }
-
-  listOfActiveSpots.forEach((elem) => elem.removeAttribute('id'));
-
-  if (actionCounter > 0) {
-    createRandomElement();
-  }
-}
-
-function handleArrowRight() {
-  if (isLost()) {
-    return;
-  }
-
-  const listOfActiveSpots = activeSpots();
-  let actionCounter = 0;
-
-  for (let i = listOfActiveSpots.length - 1; i >= 0; i--) {
-    const col = listOfActiveSpots[i].cellIndex;
-    const row = +listOfActiveSpots[i].parentElement.id;
-    const listOfRowElements = [];
-
-    if (col === 3) {
-      continue;
-    }
-
-    for (let j = col; j < tBody.rows.length; j++) {
-      listOfRowElements.push(tBody.rows[row].cells[j]);
-    }
-
-    for (let j = 1; j < listOfRowElements.length; j++) {
-      const elem = listOfRowElements[j - 1];
-      const nextElem = listOfRowElements[j];
-      const mergeCondition = (
-        elem.textContent === nextElem.textContent
-        && !elem.id
-        && !nextElem.id
-      );
-
-      if (nextElem.classList.length < 2) {
-        elementMove(elem, nextElem);
-        actionCounter++;
-      } else if (mergeCondition) {
-        elementsMerge(elem, nextElem);
-        actionCounter++;
-      }
-    }
-  }
-
-  listOfActiveSpots.forEach((elem) => elem.removeAttribute('id'));
-
-  if (actionCounter > 0) {
-    createRandomElement();
-  }
-}
-
-function isLost() {
-  if (freeSpots().length > 0) {
     return false;
+  },
+
+  moveRight(matrix) {
+    for (let i = 0; i < matrix.length; i++) {
+      const nums = matrix[i];
+
+      for (let n = nums.length; n >= 0; n--) {
+        if (nums[n] !== 0 && nums[n] === nums[n - 1]) {
+          return true;
+        }
+
+        let restHasNums = false;
+
+        if (nums[n] === 0) {
+          const rest = nums.slice(0, n);
+
+          restHasNums = rest.some(num => num > 0);
+        }
+
+        if (restHasNums) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  },
+
+  moveUp(matrix) {
+    const reflectedMatrix = reflectMatrix(matrix);
+
+    return this.moveLeft(reflectedMatrix);
+  },
+
+  moveDown(matrix) {
+    const reflectedMatrix = reflectMatrix(matrix);
+
+    return this.moveRight(reflectedMatrix);
+  },
+};
+
+startBtn.addEventListener('click', () => {
+  game.isRunning = true;
+  game.isWon = false;
+  game.score = 0;
+  toggleHidden(startBtn, game.isRunning);
+  toggleHidden(restartBtn, !game.isRunning);
+  toggleHidden(msgStart, game.isRunning);
+  toggleHidden(msgWin, game.isRunning);
+  createMatrix();
+  addNum();
+  addNum();
+  renderNums();
+});
+
+restartBtn.addEventListener('click', () => {
+  game.isRunning = true;
+  game.isLost = false;
+  game.score = 0;
+  toggleHidden(msgLose, !game.isLost);
+  createMatrix();
+  addNum();
+  addNum();
+  renderNums();
+});
+
+document.addEventListener('keydown', e => {
+  const key = e.key;
+
+  if (!key.startsWith('Arrow') || !game.isRunning) {
+    return;
+  }
+  event.preventDefault();
+
+  const moveDirection = key.replace('Arrow', 'move');
+  const moveIsPossible = checkDirections[moveDirection](game.matrix);
+
+  if (!moveIsPossible) {
+    return;
   }
 
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS - 1; c++) {
-      if (
-        tBody.rows[r].cells[c].textContent
-        === tBody.rows[r].cells[c + 1].textContent
-      ) {
-        return false;
-      }
+  moves[moveDirection](game.matrix);
+
+  addNum();
+  renderNums();
+
+  if (checkVictory(game.matrix)) {
+    processVictory();
+  }
+
+  if (checkLose(game.matrix)) {
+    processLose();
+  }
+});
+
+function createMatrix() {
+  const matrix = [];
+
+  for (let i = 0; i < game.rowsQty; i++) {
+    matrix.push([]);
+
+    for (let n = 0; n < game.colsQty; n++) {
+      matrix[i][n] = 0;
     }
   }
 
-  for (let r = 0; r < ROWS - 1; r++) {
-    for (let c = 0; c < COLS; c++) {
-      if (
-        tBody.rows[r].cells[c].textContent
-        === tBody.rows[r + 1].cells[c].textContent
-      ) {
-        return false;
+  game.matrix = matrix;
+}
+
+function renderNums() {
+  for (let rowIndex = 0; rowIndex < game.matrix.length; rowIndex++) {
+    const row = game.matrix[rowIndex];
+
+    row.forEach((cellValue, cellIndex) => {
+      const renderedCell = rows[rowIndex].children[cellIndex];
+
+      renderedCell.className = 'field-cell';
+      renderedCell.textContent = '';
+
+      if (cellValue !== 0) {
+        renderedCell.classList.add('field-cell--' + cellValue);
+        renderedCell.textContent = cellValue;
       }
+    });
+  }
+
+  scoreInfo.textContent = game.score;
+}
+
+function addNum() {
+  const num = Math.random() > 0.1 ? 2 : 4;
+
+  for (;;) {
+    const row = Math.floor(Math.random() * 4);
+    const col = Math.floor(Math.random() * 4);
+
+    if (game.matrix[row][col] === 0) {
+      game.matrix[row][col] = num;
+      break;
+    }
+  }
+}
+
+function toggleHidden(block, dependence) {
+  block.classList.toggle('hidden', dependence);
+}
+
+function reflectMatrix(matrix) {
+  const columns = [];
+
+  for (let i = 0; i < matrix.length; i++) {
+    columns.push([]);
+
+    for (let n = 0; n < matrix[i].length; n++) {
+      columns[i].push(matrix[n][i]);
     }
   }
 
-  return true;
+  return columns;
+}
+
+function checkVictory(matrix) {
+  for (const row of matrix) {
+    const has2048 = row.some(num => num === 2048);
+
+    if (has2048) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function processVictory() {
+  game.isWon = true;
+  game.isRunning = false;
+  toggleHidden(msgWin, !game.isWon);
+  toggleHidden(restartBtn, !game.isRunning);
+  toggleHidden(startBtn, game.isRunning);
+}
+
+function checkLose(matrix) {
+  const moveVariants = [
+    checkDirections.moveLeft(matrix),
+    checkDirections.moveRight(matrix),
+    checkDirections.moveUp(matrix),
+    checkDirections.moveDown(matrix),
+  ];
+
+  const checkResult = moveVariants.some(variant => variant === true);
+
+  return !checkResult;
+}
+
+function processLose() {
+  game.isRunning = false;
+  game.isLost = true;
+  toggleHidden(msgLose, !game.isLost);
 }
