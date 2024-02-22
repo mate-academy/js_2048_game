@@ -312,6 +312,8 @@ startButton.addEventListener('click', () => {
   clearField();
   hideMessage(messageWin);
   hideMessage(messageLose);
+  hideMessage(messageStart);
+
   score = 0;
 
   updateScore();
