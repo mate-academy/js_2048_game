@@ -468,41 +468,45 @@ class Game {
   spawnItem() {
     this.tiles = [...document.getElementsByClassName('tile-cell')];
 
-    const container = document.getElementById('tile-container');
+    if (this.tiles
+      .filter(t => !t.classList
+        .contains('tile-cell--hide'))
+      .length < 16) {
+      const container = document.getElementById('tile-container');
+      const newItem = document.createElement('div');
 
-    const newItem = document.createElement('div');
+      const side = Math.round(Math.random() * 10) < 2 ? 4 : 2;
 
-    const side = Math.round(Math.random() * 10) < 2 ? 4 : 2;
+      let tempX = Math.floor(Math.random() * 4);
+      let tempY = Math.floor(Math.random() * 4);
 
-    let tempX = Math.floor(Math.random() * 4);
-    let tempY = Math.floor(Math.random() * 4);
+      while (this.tiles
+        .filter(t => t.classList
+          .contains(`tile-cell--${tempY}--${tempX}`)).length > 0) {
+        tempX = Math.floor(Math.random() * 4);
+        tempY = Math.floor(Math.random() * 4);
+      }
 
-    while (this.tiles
-      .filter(t => t.classList
-        .contains(`tile-cell--${tempY}--${tempX}`)).length > 0) {
-      tempX = Math.floor(Math.random() * 4);
-      tempY = Math.floor(Math.random() * 4);
+      newItem.classList.add('tile-cell');
+      newItem.classList.add(`tile-cell--${side}`);
+      newItem.classList.add(`tile-cell--${tempY}--${tempX}`);
+      newItem.classList.add('tile-cell--hide');
+
+      const pItem = document.createElement('p');
+
+      pItem.classList.add('tile-content');
+      pItem.textContent = side;
+
+      newItem.appendChild(pItem);
+      container.append(newItem);
+      this.tiles.push(newItem);
+
+      this.sleep().then(() => {
+        newItem.classList.remove('tile-cell--hide');
+
+        this.setScoreHTML();
+      });
     }
-
-    newItem.classList.add('tile-cell');
-    newItem.classList.add(`tile-cell--${side}`);
-    newItem.classList.add(`tile-cell--${tempY}--${tempX}`);
-    newItem.classList.add('tile-cell--hide');
-
-    const pItem = document.createElement('p');
-
-    pItem.classList.add('tile-content');
-    pItem.textContent = side;
-
-    newItem.appendChild(pItem);
-    container.append(newItem);
-    this.tiles.push(newItem);
-
-    this.sleep().then(() => {
-      newItem.classList.remove('tile-cell--hide');
-
-      this.setScoreHTML();
-    });
   }
 
   sleep(ms = 200) {
