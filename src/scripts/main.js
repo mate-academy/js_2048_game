@@ -17,12 +17,10 @@ button.addEventListener('click', () => {
     button.classList.remove('start');
     button.classList.add('restart');
     button.innerHTML = 'Restart';
-    game.start();
   };
 
   if (button.textContent === 'Restart') {
     game.restart();
-    game.start();
   }
 });
 

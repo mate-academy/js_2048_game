@@ -30,6 +30,7 @@ class Game {
     this.loseM = document.querySelector('.message-lose');
     this.startM = document.querySelector('.message-start');
     this.winM = document.querySelector('.message-win');
+    this.sum = 0;
   }
 
   numToAdd() {
@@ -78,6 +79,7 @@ class Game {
   start() {
     this.addNum();
     this.addNum();
+    this.startM.classList.add('hidden');
   }
 
   setNums() {
@@ -112,6 +114,11 @@ class Game {
   }
 
   moveLeft() {
+    const arr = [[...this.initialState[0]],
+      [...this.initialState[1]],
+      [...this.initialState[2]],
+      [...this.initialState[3]]];
+
     for (let j = 0; j < 4; j++) {
       const currentArray = this.initialState[j];
 
@@ -130,16 +137,30 @@ class Game {
       for (let i = 0; i < 4; i++) {
         if (currentArray[i] === currentArray[i + 1]) {
           currentArray[i] *= 2;
+          this.sum += currentArray[i];
           currentArray.splice(i + 1, 1);
           currentArray.push(0);
         }
       }
     }
 
-    this.addNum();
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (arr[i][j] !== this.initialState[i][j]) {
+          this.addNum();
+
+          return;
+        }
+      }
+    }
   }
 
   moveRight() {
+    const arr = [[...this.initialState[0]],
+      [...this.initialState[1]],
+      [...this.initialState[2]],
+      [...this.initialState[3]]];
+
     for (let j = 0; j < 4; j++) {
       const currentArray = this.initialState[j];
 
@@ -158,16 +179,30 @@ class Game {
       for (let i = 3; i >= 0; i--) {
         if (currentArray[i] === currentArray[i - 1]) {
           currentArray[i] *= 2;
+          this.sum += currentArray[i];
           currentArray.splice(i - 1, 1);
           currentArray.unshift(0);
         }
       }
     }
 
-    this.addNum();
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (arr[i][j] !== this.initialState[i][j]) {
+          this.addNum();
+
+          return;
+        }
+      }
+    }
   }
 
   moveUp() {
+    const arr = [[...this.initialState[0]],
+      [...this.initialState[1]],
+      [...this.initialState[2]],
+      [...this.initialState[3]]];
+
     for (let j = 0; j < 4; j++) {
       const subArr = [];
 
@@ -184,6 +219,7 @@ class Game {
       for (let i = 0; i < 4; i++) {
         if (filtred[i] === filtred[i + 1]) {
           filtred[i] *= 2;
+          this.sum += filtred[i];
           filtred.splice(i + 1, 1);
           filtred.push(0);
         }
@@ -194,10 +230,23 @@ class Game {
       }
     }
 
-    this.addNum();
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (arr[i][j] !== this.initialState[i][j]) {
+          this.addNum();
+
+          return;
+        }
+      }
+    }
   }
 
   moveDown() {
+    const arr = [[...this.initialState[0]],
+      [...this.initialState[1]],
+      [...this.initialState[2]],
+      [...this.initialState[3]]];
+
     for (let j = 0; j < 4; j++) {
       const subArr = [];
 
@@ -214,6 +263,7 @@ class Game {
       for (let i = 3; i >= 0; i--) {
         if (filtred[i] === filtred[i - 1]) {
           filtred[i] *= 2;
+          this.sum += filtred[i];
           filtred.splice(i - 1, 1);
           filtred.unshift(0);
         }
@@ -224,22 +274,22 @@ class Game {
       }
     }
 
-    this.addNum();
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (arr[i][j] !== this.initialState[i][j]) {
+          this.addNum();
+
+          return;
+        }
+      }
+    }
   }
 
   /**
    * @returns {number}
    */
   getScore() {
-    let sum = 0;
-
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 4; j++) {
-        sum += this.initialState[i][j];
-      }
-    }
-
-    this.score.textContent = sum;
+    this.score.textContent = this.sum;
   }
 
   /**
@@ -297,6 +347,8 @@ class Game {
       this.winM.classList.add('hidden');
       this.startM.classList.remove('hidden');
     }
+
+    this.start();
   }
 
   // Add your own methods here
