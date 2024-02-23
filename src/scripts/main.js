@@ -41,8 +41,8 @@ for (let r = 0; r < rows; r++) {
   }
 }
 
-setNumber();
-setNumber();
+// setNumber();
+// setNumber();
 
 function updateTile(tile, numer) {
   cell = tile;
@@ -62,20 +62,20 @@ function updateTile(tile, numer) {
   }
 }
 
-document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft') {
-    slideLeft();
-  } else if (e.code === 'ArrowRight') {
-    slideRight();
-  } else if (e.code === 'ArrowUp') {
-    slideUp();
-  } else if (e.code === 'ArrowDown') {
-    slideDown();
-  }
+// document.addEventListener('keyup', (e) => {
+//   if (e.code === 'ArrowLeft') {
+//     slideLeft();
+//   } else if (e.code === 'ArrowRight') {
+//     slideRight();
+//   } else if (e.code === 'ArrowUp') {
+//     slideUp();
+//   } else if (e.code === 'ArrowDown') {
+//     slideDown();
+//   }
 
-  setNumber();
-  document.querySelector('.game-score').innerText = score;
-});
+//   setNumber();
+//   document.querySelector('.game-score').innerText = score;
+// });
 
 function filterZero(arrRow) {
   return arrRow.filter(number => number !== 0);
@@ -102,18 +102,14 @@ function slide(arrRow) {
 }
 
 function slideLeft() {
-  let moved = false;
+  let originalRow;
 
   for (let r = 0; r < rows; r++) {
     row = field[r];
 
-    const originalRow = row.slice();
+    originalRow = row.slice();
 
     field[r] = slide(row);
-
-    if (!arraysEqual(originalRow, field[r])) {
-      moved = true;
-    }
 
     for (let c = 0; c < columns; c++) {
       cell = document.getElementById(r.toString() + '-' + c.toString());
@@ -127,25 +123,21 @@ function slideLeft() {
     hideMessage(messageStart);
   }
 
-  if (!hasEmptyTile() && !moved) {
+  if (!hasEmptyTile() && !arraysEqual(originalRow, row)) {
     showMessage(messageLose);
     hideMessage(messageStart);
   }
 }
 
 function slideRight() {
-  let moved = false;
+  let originalRow;
 
   for (let r = 0; r < rows; r++) {
     row = field[r].reverse();
 
-    const originalRow = row.slice();
+    originalRow = row.slice();
 
     field[r] = slide(row).reverse();
-
-    if (!arraysEqual(originalRow, field[r])) {
-      moved = true;
-    }
 
     for (let c = 0; c < columns; c++) {
       cell = document.getElementById(r.toString() + '-' + c.toString());
@@ -159,25 +151,21 @@ function slideRight() {
     showMessage(messageWin);
   }
 
-  if (!hasEmptyTile() && !moved) {
-    hideMessage(messageStart);
+  if (!hasEmptyTile() && !arraysEqual(originalRow, row)) {
     showMessage(messageLose);
+    hideMessage(messageStart);
   }
 }
 
 function slideUp() {
-  let moved = false;
+  let originalRow;
 
   for (let c = 0; c < columns; c++) {
     row = [field[0][c], field[1][c], field[2][c], field[3][c]];
 
-    const originalRow = row.slice();
+    originalRow = row.slice();
 
     row = slide(row);
-
-    if (!arraysEqual(originalRow, row)) {
-      moved = true;
-    }
 
     for (let r = 0; r < rows; r++) {
       field[r][c] = row[r];
@@ -192,25 +180,21 @@ function slideUp() {
     hideMessage(messageStart);
   }
 
-  if (!hasEmptyTile() && !moved) {
+  if (!hasEmptyTile() && !arraysEqual(originalRow, row)) {
     showMessage(messageLose);
     hideMessage(messageStart);
   }
 }
 
 function slideDown() {
-  let moved = false;
+  let originalRow;
 
   for (let c = 0; c < columns; c++) {
+    originalRow = row.slice();
+
     row = [field[0][c], field[1][c], field[2][c], field[3][c]].reverse();
 
-    const originalRow = row.slice();
-
     row = slide(row).reverse();
-
-    if (!arraysEqual(originalRow, row)) {
-      moved = true;
-    }
 
     for (let r = 0; r < rows; r++) {
       field[r][c] = row[r];
@@ -225,7 +209,7 @@ function slideDown() {
     hideMessage(messageStart);
   }
 
-  if (!hasEmptyTile() && !moved) {
+  if (!hasEmptyTile() && !arraysEqual(originalRow, row)) {
     showMessage(messageLose);
     hideMessage(messageStart);
   }
@@ -309,12 +293,38 @@ function arraysEqual(arr1, arr2) {
 const startButton = document.querySelector('.button.start');
 
 startButton.addEventListener('click', () => {
+  document.addEventListener('keyup', (e) => {
+    if (e.code === 'ArrowLeft') {
+      slideLeft();
+    } else if (e.code === 'ArrowRight') {
+      slideRight();
+    } else if (e.code === 'ArrowUp') {
+      slideUp();
+    } else if (e.code === 'ArrowDown') {
+      slideDown();
+    }
+
+    setNumber();
+    document.querySelector('.game-score').innerText = score;
+  });
+
   clearField();
   hideMessage(messageWin);
   hideMessage(messageLose);
   hideMessage(messageStart);
 
+  startButton.classList.value = '';
+  startButton.classList.add('button', 'restart');
+  startButton.innerText = 'Restart';
+
   score = 0;
+
+  field = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
 
   updateScore();
   setNumber();
