@@ -354,7 +354,7 @@ class Game {
     btn.addEventListener('click', this.connectStart.bind(this));
     document.addEventListener('keydown', this.press.bind(this));
 
-    const visible = document.getElementsByClassName('message')
+    const visible = [...document.getElementsByClassName('message')]
       .filter(x => !x.classList.contains('hidden'))[0];
 
     if (visible) {
