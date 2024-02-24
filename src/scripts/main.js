@@ -41,9 +41,6 @@ for (let r = 0; r < rows; r++) {
   }
 }
 
-// setNumber();
-// setNumber();
-
 function updateTile(tile, numer) {
   cell = tile;
   num = numer;
@@ -61,21 +58,6 @@ function updateTile(tile, numer) {
     }
   }
 }
-
-// document.addEventListener('keyup', (e) => {
-//   if (e.code === 'ArrowLeft') {
-//     slideLeft();
-//   } else if (e.code === 'ArrowRight') {
-//     slideRight();
-//   } else if (e.code === 'ArrowUp') {
-//     slideUp();
-//   } else if (e.code === 'ArrowDown') {
-//     slideDown();
-//   }
-
-//   setNumber();
-//   document.querySelector('.game-score').innerText = score;
-// });
 
 function filterZero(arrRow) {
   return arrRow.filter(number => number !== 0);
@@ -216,7 +198,7 @@ function slideDown() {
 }
 
 function setNumber() {
-  if (!hasEmptyTile()) {
+  if (!hasValue(0)) {
     return;
   }
 
@@ -253,15 +235,13 @@ function hasEmptyTile() {
     for (let c = 0; c < columns; c++) {
       if (c < columns - 1 && field[r][c] === field[r][c + 1]) {
         return true;
-      }
-
-      if (r < rows - 1 && field[r][c] === field[r + 1][c]) {
+      } else if (r < rows - 1 && field[r][c] === field[r + 1][c]) {
         return true;
+      } else {
+        return false;
       }
     }
   }
-
-  return false;
 }
 
 function hasValue(value) {
@@ -281,11 +261,13 @@ function arraysEqual(arr1, arr2) {
     return false;
   };
 
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr1[i] !== arr2[i]) {
-      return false;
-    };
-  };
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (arr1[r][c] !== arr2[r][c]) {
+        return false;
+      }
+    }
+  }
 
   return true;
 }
@@ -294,6 +276,8 @@ const startButton = document.querySelector('.button.start');
 
 startButton.addEventListener('click', () => {
   document.addEventListener('keyup', (e) => {
+    const prevField = JSON.parse(JSON.stringify(field));
+
     if (e.code === 'ArrowLeft') {
       slideLeft();
     } else if (e.code === 'ArrowRight') {
@@ -304,8 +288,13 @@ startButton.addEventListener('click', () => {
       slideDown();
     }
 
-    setNumber();
     document.querySelector('.game-score').innerText = score;
+
+    const fieldChanged = !arraysEqual(prevField, field);
+
+    if (fieldChanged) {
+      setNumber();
+    }
   });
 
   clearField();
