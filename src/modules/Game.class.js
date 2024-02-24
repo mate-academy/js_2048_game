@@ -25,6 +25,7 @@ class Game {
     this.tempTiles = [];
     this.removedItems = [];
     this.changed = 0;
+    this.container = document.getElementById('tile-container');
 
     if (initialState) {
       this.convertToTiles(initialState);
@@ -66,27 +67,29 @@ class Game {
           .filter(item => item.classList
             .contains(`tile-cell--${coords.y}--${prevTempCord}`))[0];
 
-        const prevContent = previousItem.querySelector('.tile-content');
-        const currContent = tile.querySelector('.tile-content');
+        if (previousItem) {
+          const prevContent = previousItem.querySelector('.tile-content');
+          const currContent = tile.querySelector('.tile-content');
 
-        if (prevContent.textContent === currContent.textContent
-          && !this.tempTiles.includes(previousItem)) {
-          tile.classList.remove(`tile-cell--${coords.y}--${tempX}`);
-          tile.classList.add(`tile-cell--${coords.y}--${prevTempCord}`);
-          tile.classList.add('tile-cell--hide');
+          if (prevContent.textContent === currContent.textContent
+            && !this.tempTiles.includes(previousItem)) {
+            tile.classList.remove(`tile-cell--${coords.y}--${tempX}`);
+            tile.classList.add(`tile-cell--${coords.y}--${prevTempCord}`);
+            tile.classList.add('tile-cell--hide');
 
-          previousItem.classList
-            .remove(`tile-cell--${prevContent.textContent}`);
+            previousItem.classList
+              .remove(`tile-cell--${prevContent.textContent}`);
 
-          previousItem.classList
-            .add(`tile-cell--${parseInt(prevContent.textContent) * 2}`);
+            previousItem.classList
+              .add(`tile-cell--${parseInt(prevContent.textContent) * 2}`);
 
-          prevContent.textContent = parseInt(prevContent.textContent) * 2;
+            prevContent.textContent = parseInt(prevContent.textContent) * 2;
 
-          this.tempTiles.push(previousItem);
-          this.removedItems.push(tile);
+            this.tempTiles.push(previousItem);
+            this.removedItems.push(tile);
 
-          this.changed++;
+            this.changed++;
+          }
         }
       }
     }
@@ -127,27 +130,29 @@ class Game {
           .filter(item => item.classList
             .contains(`tile-cell--${coords.y}--${prevTempCord}`))[0];
 
-        const prevContent = previousItem.querySelector('.tile-content');
-        const currContent = tile.querySelector('.tile-content');
+        if (previousItem) {
+          const prevContent = previousItem.querySelector('.tile-content');
+          const currContent = tile.querySelector('.tile-content');
 
-        if (prevContent.textContent === currContent.textContent
-          && !this.tempTiles.includes(previousItem)) {
-          tile.classList.remove(`tile-cell--${coords.y}--${tempX}`);
-          tile.classList.add(`tile-cell--${coords.y}--${prevTempCord}`);
-          tile.classList.add('tile-cell--hide');
+          if (prevContent.textContent === currContent.textContent
+            && !this.tempTiles.includes(previousItem)) {
+            tile.classList.remove(`tile-cell--${coords.y}--${tempX}`);
+            tile.classList.add(`tile-cell--${coords.y}--${prevTempCord}`);
+            tile.classList.add('tile-cell--hide');
 
-          previousItem.classList
-            .remove(`tile-cell--${prevContent.textContent}`);
+            previousItem.classList
+              .remove(`tile-cell--${prevContent.textContent}`);
 
-          previousItem.classList
-            .add(`tile-cell--${parseInt(prevContent.textContent) * 2}`);
+            previousItem.classList
+              .add(`tile-cell--${parseInt(prevContent.textContent) * 2}`);
 
-          prevContent.textContent = parseInt(prevContent.textContent) * 2;
+            prevContent.textContent = parseInt(prevContent.textContent) * 2;
 
-          this.tempTiles.push(previousItem);
-          this.removedItems.push(tile);
+            this.tempTiles.push(previousItem);
+            this.removedItems.push(tile);
 
-          this.changed++;
+            this.changed++;
+          }
         }
       }
     }
@@ -188,27 +193,29 @@ class Game {
           .filter(item => item.classList
             .contains(`tile-cell--${prevTempCord}--${coords.x}`))[0];
 
-        const prevContent = previousItem.querySelector('.tile-content');
-        const currContent = tile.querySelector('.tile-content');
+        if (previousItem) {
+          const prevContent = previousItem.querySelector('.tile-content');
+          const currContent = tile.querySelector('.tile-content');
 
-        if (prevContent.textContent === currContent.textContent
-          && !this.tempTiles.includes(previousItem)) {
-          tile.classList.remove(`tile-cell--${tempY}--${coords.x}`);
-          tile.classList.add(`tile-cell--${prevTempCord}--${coords.x}`);
-          tile.classList.add('tile-cell--hide');
+          if (prevContent.textContent === currContent.textContent
+            && !this.tempTiles.includes(previousItem)) {
+            tile.classList.remove(`tile-cell--${tempY}--${coords.x}`);
+            tile.classList.add(`tile-cell--${prevTempCord}--${coords.x}`);
+            tile.classList.add('tile-cell--hide');
 
-          previousItem.classList
-            .remove(`tile-cell--${prevContent.textContent}`);
+            previousItem.classList
+              .remove(`tile-cell--${prevContent.textContent}`);
 
-          previousItem.classList
-            .add(`tile-cell--${parseInt(prevContent.textContent) * 2}`);
+            previousItem.classList
+              .add(`tile-cell--${parseInt(prevContent.textContent) * 2}`);
 
-          prevContent.textContent = parseInt(prevContent.textContent) * 2;
+            prevContent.textContent = parseInt(prevContent.textContent) * 2;
 
-          this.tempTiles.push(previousItem);
-          this.removedItems.push(tile);
+            this.tempTiles.push(previousItem);
+            this.removedItems.push(tile);
 
-          this.changed++;
+            this.changed++;
+          }
         }
       }
     }
@@ -249,27 +256,29 @@ class Game {
           .filter(item => item.classList
             .contains(`tile-cell--${prevTempCord}--${coords.x}`))[0];
 
-        const prevContent = previousItem.querySelector('.tile-content');
-        const currContent = tile.querySelector('.tile-content');
+        if (previousItem) {
+          const prevContent = previousItem.querySelector('.tile-content');
+          const currContent = tile.querySelector('.tile-content');
 
-        if (prevContent.textContent === currContent.textContent
-          && !this.tempTiles.includes(previousItem)) {
-          tile.classList.remove(`tile-cell--${tempY}--${coords.x}`);
-          tile.classList.add(`tile-cell--${prevTempCord}--${coords.x}`);
-          tile.classList.add('tile-cell--hide');
+          if (prevContent.textContent === currContent.textContent
+            && !this.tempTiles.includes(previousItem)) {
+            tile.classList.remove(`tile-cell--${tempY}--${coords.x}`);
+            tile.classList.add(`tile-cell--${prevTempCord}--${coords.x}`);
+            tile.classList.add('tile-cell--hide');
 
-          previousItem.classList
-            .remove(`tile-cell--${prevContent.textContent}`);
+            previousItem.classList
+              .remove(`tile-cell--${prevContent.textContent}`);
 
-          previousItem.classList
-            .add(`tile-cell--${parseInt(prevContent.textContent) * 2}`);
+            previousItem.classList
+              .add(`tile-cell--${parseInt(prevContent.textContent) * 2}`);
 
-          prevContent.textContent = parseInt(prevContent.textContent) * 2;
+            prevContent.textContent = parseInt(prevContent.textContent) * 2;
 
-          this.tempTiles.push(previousItem);
-          this.removedItems.push(tile);
+            this.tempTiles.push(previousItem);
+            this.removedItems.push(tile);
 
-          this.changed++;
+            this.changed++;
+          }
         }
       }
     }
@@ -351,19 +360,10 @@ class Game {
   start() {
     const btn = document.getElementsByClassName('button')[0];
 
+    this.tiles = [];
+
     btn.addEventListener('click', this.connectStart.bind(this));
     document.addEventListener('keydown', this.press.bind(this));
-
-    const visible = [...document.getElementsByClassName('message')]
-      .filter(x => !x.classList.contains('hidden'))[0];
-
-    if (visible) {
-      visible.classList.add('hidden');
-    }
-
-    document
-      .getElementsByClassName('message-start')[0]
-      .classList.remove('hidden');
   }
 
   /**
@@ -380,6 +380,7 @@ class Game {
 
     const btn = e.target;
 
+    this.tiles = [];
     document.getElementById('tile-container').innerHTML = '';
 
     if (btn.classList.contains('start')) {
@@ -387,17 +388,26 @@ class Game {
       btn.classList.add('restart');
 
       btn.textContent = 'Restart';
-
-      this.spawnItem();
-    } else {
-      this.spawnItem();
     }
+
+    this.spawnItem();
+    this.spawnItem();
+
+    const visible = [...document.getElementsByClassName('message')]
+      .filter(x => !x.classList.contains('hidden'))[0];
+
+    if (visible) {
+      visible.classList.add('hidden');
+    }
+
+    document
+      .getElementsByClassName('message-start')[0]
+      .classList.remove('hidden');
   }
 
   press(e) {
     const key = e.key;
 
-    this.tiles = [...document.getElementsByClassName('tile-cell')];
     this.tempTiles = [];
     this.removedItems = [];
     this.changed = 0;
@@ -432,17 +442,15 @@ class Game {
       }
     }
 
-    this.sleep(20).then(() => {
+    this.sleep().then(() => {
       for (let i = 0; i < this.removedItems.length; i++) {
         this.removedItems[i].remove();
       }
-    });
 
-    if (this.changed > 0) {
-      this.spawnItem();
-    }
+      if (this.changed > 0) {
+        this.spawnItem();
+      }
 
-    this.sleep().then(() => {
       if (!this.checkPosibilityToContinue()) {
         document.addEventListener('keydown', () => {});
 
@@ -466,13 +474,10 @@ class Game {
   }
 
   spawnItem() {
-    this.tiles = [...document.getElementsByClassName('tile-cell')];
-
     if (this.tiles
       .filter(t => !t.classList
         .contains('tile-cell--hide'))
       .length < 16) {
-      const container = document.getElementById('tile-container');
       const newItem = document.createElement('div');
 
       const side = Math.round(Math.random() * 10) < 2 ? 4 : 2;
@@ -498,14 +503,12 @@ class Game {
       pItem.textContent = side;
 
       newItem.appendChild(pItem);
-      container.append(newItem);
+      this.container.append(newItem);
       this.tiles.push(newItem);
 
-      this.sleep().then(() => {
-        newItem.classList.remove('tile-cell--hide');
+      newItem.classList.remove('tile-cell--hide');
 
-        this.setScoreHTML();
-      });
+      this.setScoreHTML();
     }
   }
 
@@ -541,7 +544,7 @@ class Game {
   }
 
   checkPosibilityToContinue() {
-    this.tiles = [...document.getElementsByClassName('tile-cell')]
+    this.tiles = this.tiles
       .filter(cell => !cell.classList.contains('tile-cell--hide'));
 
     if (this.tiles.length >= 16) {
@@ -550,44 +553,44 @@ class Game {
         const cCoords = this.getCoords(this.tiles[i]);
 
         if (cCoords.x > 0) {
-          const prevLeft = document
-            .getElementsByClassName(
-              `tile-cell--${cCoords.y}--${cCoords.x - 1}`);
+          const prevLeft = this.tiles
+            .filter(cell => cell.classList
+              .contains(`tile-cell--${cCoords.y}--${cCoords.x - 1}`))[0];
 
-          if (prevLeft[0] && current.textContent === prevLeft[0]
+          if (prevLeft && current.textContent === prevLeft
             .querySelector('.tile-content').textContent) {
             return true;
           }
         }
 
         if (cCoords.y > 0) {
-          const prevTop = document
-            .getElementsByClassName(
-              `tile-cell--${cCoords.y - 1}--${cCoords.x}`);
+          const prevTop = this.tiles
+            .filter(cell => cell.classList
+              .contains(`tile-cell--${cCoords.y - 1}--${cCoords.x}`))[0];
 
-          if (prevTop[0] && current.textContent === prevTop[0]
+          if (prevTop && current.textContent === prevTop
             .querySelector('.tile-content').textContent) {
             return true;
           }
         }
 
         if (cCoords.y < 3) {
-          const prevBottom = document
-            .getElementsByClassName(
-              `tile-cell--${cCoords.y + 1}--${cCoords.x}`);
+          const prevBottom = this.tiles
+            .filter(cell => cell.classList
+              .contains(`tile-cell--${cCoords.y + 1}--${cCoords.x}`))[0];
 
-          if (prevBottom[0] && current.textContent === prevBottom[0]
+          if (prevBottom && current.textContent === prevBottom
             .querySelector('.tile-content').textContent) {
             return true;
           }
         }
 
         if (cCoords.x < 3) {
-          const prevRight = document
-            .getElementsByClassName(
-              `tile-cell--${cCoords.y}--${cCoords.x + 1}`);
+          const prevRight = this.tiles
+            .filter(cell => cell.classList
+              .contains(`tile-cell--${cCoords.y}--${cCoords.x + 1}`))[0];
 
-          if (prevRight[0] && current.textContent === prevRight[0]
+          if (prevRight && current.textContent === prevRight
             .querySelector('.tile-content').textContent) {
             return true;
           }
