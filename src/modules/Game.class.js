@@ -70,10 +70,6 @@ class Game {
         }
       }
     }
-
-    if (zeros === 0) {
-      this.getStatus();
-    }
   }
 
   start() {
@@ -309,6 +305,10 @@ class Game {
    */
   getStatus() {
     for (let i = 0; i < 4; i++) {
+      if (this.initialState[i].includes(0)) {
+        return;
+      }
+
       for (let j = 0; j < 3; j++) {
         if (this.initialState[i][j] === this.initialState[i][j + 1]) {
           return;
@@ -323,7 +323,6 @@ class Game {
         }
       }
     }
-
     this.loseM.classList.remove('hidden');
     this.startM.classList.add('hidden');
   }
@@ -348,6 +347,7 @@ class Game {
       this.startM.classList.remove('hidden');
     }
 
+    this.sum = 0;
     this.start();
   }
 

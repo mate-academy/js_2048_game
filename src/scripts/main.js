@@ -27,21 +27,23 @@ button.addEventListener('click', () => {
 document.addEventListener('keydown', () => {
   const key = event.key;
 
-  if (button.textContent === 'Restart') {
-    if (key === 'ArrowUp') {
-      game.moveUp();
-    }
+  if (key === 'ArrowUp') {
+    game.moveUp();
+    game.getStatus();
+  }
 
-    if (key === 'ArrowDown') {
-      game.moveDown();
-    }
+  if (key === 'ArrowDown') {
+    game.moveDown();
+    game.getStatus();
+  }
 
-    if (key === 'ArrowRight') {
-      game.moveRight();
-    }
+  if (key === 'ArrowRight') {
+    game.moveRight();
+    game.getStatus();
+  }
 
-    if (key === 'ArrowLeft') {
-      game.moveLeft();
-    }
+  if (key === 'ArrowLeft') {
+    game.moveLeft();
+    game.getStatus();
   }
 });
