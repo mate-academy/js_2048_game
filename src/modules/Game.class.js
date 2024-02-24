@@ -48,26 +48,18 @@ class Game {
 
   moveLeft() {
     this.move('ArrowLeft');
-    this.checkIfGameStarted();
-    this.checkIfTheGameOver();
   }
 
   moveRight() {
     this.move('ArrowRight');
-    this.checkIfGameStarted();
-    this.checkIfTheGameOver();
   }
 
   moveUp() {
     this.move('ArrowUp');
-    this.checkIfGameStarted();
-    this.checkIfTheGameOver();
   }
 
   moveDown() {
     this.move('ArrowDown');
-    this.checkIfGameStarted();
-    this.checkIfTheGameOver();
   }
 
   /**
@@ -99,6 +91,9 @@ class Game {
   }
 
   start() {
+    this.fillRandomEmptyCell();
+    this.fillRandomEmptyCell();
+
     const startBtn = document.querySelector('.start');
 
     this.startBtn = startBtn;
@@ -122,11 +117,8 @@ class Game {
 
     startBtn.addEventListener('click', () => {
       if (startBtn.classList.contains('start')) {
-        this.fillRandomEmptyCell();
-        this.fillRandomEmptyCell();
-        this.startMessage.classList.add('hidden');
         this.gameStatus = 'playing';
-        startBtn.style.pointerEvents = 'none';
+        this.menageStates();
       } else {
         this.restart();
       }
@@ -137,8 +129,8 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.board.map((column, i) => {
-      column.map((el, j) => {
+    this.board.forEach((column, i) => {
+      column.forEach((el, j) => {
         this.board[i][j] = 0;
       });
     });
@@ -146,20 +138,47 @@ class Game {
     this.updateField();
 
     this.gameStatus = 'idle';
+    this.fillRandomEmptyCell();
+    this.fillRandomEmptyCell();
+    this.menageStates();
+  }
 
-    this.currentScore = 0;
-    this.currentScoreElement.innerHTML = this.currentScore;
-
-    this.startBtn.className = 'button start';
-    this.startBtn.innerHTML = 'Start';
-
-    this.loseMessage.classList.add('hidden');
-    this.winMessage.classList.add('hidden');
-    this.startMessage.classList.remove('hidden');
+  menageStates() {
+    switch (this.gameStatus) {
+      case 'idle':
+        this.currentScore = 0;
+        this.currentScoreElement.innerHTML = this.currentScore;
+        this.startBtn.className = 'button start';
+        this.startBtn.innerHTML = 'Start';
+        this.loseMessage.classList.add('hidden');
+        this.winMessage.classList.add('hidden');
+        this.startMessage.classList.remove('hidden');
+        break;
+      case 'playing':
+        this.startBtn.style.pointerEvents = 'none';
+        this.startMessage.classList.add('hidden');
+        break;
+      case 'win':
+        this.winMessage.classList.remove('hidden');
+        break;
+      case 'lose':
+        this.loseMessage.classList.remove('hidden');
+        break;
+      default:
+        throw new Error('Something went wrong');
+    }
   }
 
   move(direction) {
     let hasChanged = false;
+
+    this.gameStatus = 'playing';
+
+    this.menageStates();
+    this.startBtn.className = 'button restart';
+    this.startBtn.innerHTML = 'Restart';
+    this.startBtn.style.pointerEvents = 'initial';
+    this.checkIfTheGameOver();
 
     if (direction === 'ArrowUp' || direction === 'ArrowDown') {
       for (let j = 0; j < this.size; j++) {
@@ -190,14 +209,6 @@ class Game {
     }
   }
 
-  checkIfGameStarted() {
-    if (this.startBtn.classList.contains('start')) {
-      this.startBtn.className = 'button restart';
-      this.startBtn.innerHTML = 'Restart';
-      this.startBtn.style.pointerEvents = 'initial';
-    }
-  }
-
   checkIfTheGameOver() {
     for (let i = 0; i < this.size; i++) {
       for (let j = 0; j < this.size; j++) {
@@ -215,8 +226,8 @@ class Game {
       }
     }
 
-    this.loseMessage.classList.remove('hidden');
     this.gameStatus = 'lose';
+    this.menageStates();
   }
 
   transformField(line, moveToStart) {
@@ -246,7 +257,7 @@ class Game {
   }
 
   updateField() {
-    this.fieldsRows.map((column, i) => {
+    this.fieldsRows.forEach((column, i) => {
       column.forEach((cell, j) => {
         cell.innerHTML = this.board[i][j] === 0 ? '' : this.board[i][j];
         cell.className = `field-cell field-cell--${this.board[i][j]}`;
@@ -273,8 +284,8 @@ class Game {
     const winValue = 2048;
 
     if (value === winValue) {
-      this.winMessage.classList.remove('hidden');
       this.gameStatus = 'win';
+      this.menageStates();
     }
 
     this.currentScore += value;
@@ -296,8 +307,8 @@ class Game {
     }
 
     if (emptyFields.length > 0) {
-      const randomCell =
-        emptyFields[Math.floor(Math.random() * emptyFields.length)];
+      const randomCell
+        = emptyFields[Math.floor(Math.random() * emptyFields.length)];
 
       this.board[randomCell.x][randomCell.y] = Math.random() < 0.9 ? 2 : 4;
       this.updateField();

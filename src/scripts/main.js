@@ -5,5 +5,4 @@ const Game = require('../modules/Game.class');
 const game = new Game();
 
 game.start();
-game.updateField();
 // Write your code here
