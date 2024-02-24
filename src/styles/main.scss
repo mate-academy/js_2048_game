@@ -1,10 +1,14 @@
+$cell-size: 75px;
+$cell-gap: 5px;
+$cell-radius: 5px;
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #777;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
@@ -12,14 +16,43 @@ body {
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
+  width: $cell-size;
+  height: $cell-size;
+  border-radius: $cell-radius;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+}
+
+.tile {
+  --x: 0;
+  --y: 0;
+
+  position: absolute;
+  top: calc(var(--y) * ($cell-size + $cell-gap));
+  left: calc(var(--x) * ($cell-size + $cell-gap));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: $cell-size;
+  height: $cell-size;
+  border-radius: $cell-radius;
+  font-size: 24px;
+  font-weight: 700;
+  background-color: #fff;
+  color: #777;
+
+  transition-duration: 0.2s;
+  animation: show 0.1s;
+
+  @keyframes show {
+    0% {
+      opacity: 0.5;
+      transform: scale(0);
+    }
+  }
 
   &--2 {
     background: #eee4da;
@@ -75,9 +108,18 @@ body {
   }
 }
 
+.game-container {
+  position: relative;
+}
+
 .game-field {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, $cell-size);
+  grid-template-rows: repeat(4, $cell-size);
+  gap: 5px;
   background: #bbada0;
-  border-spacing: 10px;
+  border: 10px solid #bbada0;
   border-radius: 5px;
 }
 
@@ -93,10 +135,10 @@ body {
 h1 {
   background: #edc22e;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
+  width: $cell-size;
+  height: $cell-size;
   font-size: 24px;
-  border-radius: 5px;
+  border-radius: $cell-radius;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,9 +152,9 @@ h1 {
   align-items: center;
   justify-content: center;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
+  width: $cell-size;
+  height: $cell-size;
+  border-radius: $cell-radius;
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
@@ -125,14 +167,14 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: $cell-radius;
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
+  width: $cell-size;
+  height: $cell-size;
 
   transition: 0.25s ease background;
 }
@@ -147,7 +189,7 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #9e2222;
 
   &:hover {
     background: #f87474;
@@ -161,12 +203,8 @@ h1 {
   color: #776e65;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: $cell-radius;
   font-size: 20px;
-}
-
-.hidden {
-  display: none;
 }
 
 .container {
@@ -182,6 +220,54 @@ h1 {
 }
 
 .message-container {
-  width: 100%;
+  width: 335px;
   height: 150px;
+}
+
+.gameOver {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  opacity: 0.85;
+  height: calc(($cell-size * 4) + ($cell-gap * 3));;
+  width: calc(($cell-size * 4) + ($cell-gap * 3));
+  background-color: #8d5454;
+  border-radius: $cell-radius;
+  z-index: 1;
+}
+
+h2 {
+  font-size: 30px;
+  color: #0e0c0c;
+  margin: 0;
+  padding-bottom: 10px;
+}
+
+.tryAgain {
+  display: flex;
+  color: #312e2e;
+  width: 75px;
+  height: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: $cell-radius;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  justify-content: center;
+  align-items: center;
+
+  transition-duration: 0.3s;
+
+  &:hover {
+    background-color: #1dae34;
+    color: #f9f6f2;
+  }
+}
+
+.hidden {
+  display: none;
 }
