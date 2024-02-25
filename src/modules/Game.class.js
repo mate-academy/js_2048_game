@@ -48,6 +48,10 @@ class Game {
           .contains(`tile-cell--${coords.y}--${tempX}`))
         .length > 0) {
         tempX++;
+
+        if (tempX > 3) {
+          break;
+        }
       }
 
       if (tempX > 3) {
@@ -111,6 +115,10 @@ class Game {
           .contains(`tile-cell--${coords.y}--${tempX}`))
         .length > 0) {
         tempX--;
+
+        if (tempX < 0) {
+          break;
+        }
       }
 
       if (tempX < 0) {
@@ -174,6 +182,10 @@ class Game {
           .contains(`tile-cell--${tempY}--${coords.x}`))
         .length > 0) {
         tempY++;
+
+        if (tempY > 3) {
+          break;
+        }
       }
 
       if (tempY > 3) {
@@ -237,6 +249,10 @@ class Game {
           .contains(`tile-cell--${tempY}--${coords.x}`))
         .length > 0) {
         tempY--;
+
+        if (tempY < 0) {
+          break;
+        }
       }
 
       if (tempY < 0) {
@@ -474,9 +490,10 @@ class Game {
   }
 
   spawnItem() {
-    if (this.tiles
-      .filter(t => !t.classList
-        .contains('tile-cell--hide'))
+    const activeTiles = this.tiles
+      .filter(t => !t.classList.contains('tile-cell--hide'));
+
+    if (activeTiles
       .length < 16) {
       const newItem = document.createElement('div');
 
@@ -485,7 +502,7 @@ class Game {
       let tempX = Math.floor(Math.random() * 4);
       let tempY = Math.floor(Math.random() * 4);
 
-      while (this.tiles
+      while (activeTiles
         .filter(t => t.classList
           .contains(`tile-cell--${tempY}--${tempX}`)).length > 0) {
         tempX = Math.floor(Math.random() * 4);
