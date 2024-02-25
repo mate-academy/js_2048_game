@@ -6,56 +6,29 @@
     <title>2048</title>
     <link rel="stylesheet" href="./styles/main.scss">
   </head>
+
   <body>
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
+
         <div class="controls">
-          <p class="info">
+          <p class="info" id="game-score">
             Score: <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button class="button start" id="new-game">Start</button>
+          <button class="button restart hidden" id="restart">Restart</button>
         </div>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="game-container" id="game-container">
+        <div class="grid-container" id="grid-container"></div>
+      </div>
 
       <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+        <p  id="game-over" class="message message-lose hidden">You lose! Restart the game?</p>
+        <p id="win" class="message message-win hidden">Winner! Congrats! You did it!</p>
+        <p id="start" class="message message-start">Press "Start" to begin game. Good luck!</p>
       </div>
     </div>
     <script type="text/javascript" src="scripts/main.js"></script>
