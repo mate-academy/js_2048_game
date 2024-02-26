@@ -1,6 +1,5 @@
 'use strict';
 
-let isFirstMove = true;
 let score = 0;
 const GRID_SIZE = 4;
 const CELLS_COUNT = GRID_SIZE * GRID_SIZE;
@@ -167,11 +166,6 @@ const messageStart = document.querySelector('.message-start');
 
 const grid = new Grid(gameField);
 
-grid.getRandomEmptyCell().linkTile(new Tile(gameField));
-grid.getRandomEmptyCell().linkTile(new Tile(gameField));
-
-setupInputOnce();
-
 function updateScore() {
   const gameScore = document.querySelector('.game-score');
 
@@ -186,7 +180,15 @@ function setupInputOnce() {
 
 startButton.addEventListener('click', () => {
   if (startButton.classList.contains('start')) {
-    restart();
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+    startButton.textContent = 'Restart';
+    messageStart.classList.add('hidden');
+
+    grid.getRandomEmptyCell().linkTile(new Tile(gameField));
+    grid.getRandomEmptyCell().linkTile(new Tile(gameField));
+
+    setupInputOnce();
   } else if (startButton.classList.contains('restart')) {
     const restsatGame = confirm(
       'Are you sure you want to start a new game? All progress will be lost.',
@@ -206,14 +208,6 @@ tryAgain.addEventListener('click', () => {
 });
 
 async function hendleInput(e) {
-  if (isFirstMove) {
-    isFirstMove = false;
-    startButton.classList.remove('start');
-    startButton.classList.add('restart');
-    startButton.textContent = 'Restart';
-    messageStart.classList.add('hidden');
-  }
-
   if (hasReached2048()) {
     gameOver.classList.remove('hidden');
     messageWin.classList.remove('hidden');
