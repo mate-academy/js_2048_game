@@ -220,7 +220,9 @@ function updateUI() {
   // Оновлення стану дошки
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
-      const cell = document.querySelector(`.field-row:nth-child(${i + 1}) .field-cell:nth-child(${j + 1})`);
+      const cell = document.querySelector(`.field-row:nth-child(${i + 1})
+      .field-cell:nth-child(${j + 1})`);
+
       cell.textContent = board[i][j] === 0 ? '' : board[i][j];
       cell.className = 'field-cell';
 
@@ -234,12 +236,12 @@ function updateUI() {
   // Оновлення рахунку
   document.querySelector('.game-score').textContent = game.getScore();
 
-  const status = game.getStatus();
+  const stat = game.getStatus();
 
   // Показ або приховування повідомлень
-  if (status === 'win') {
+  if (stat === 'win') {
     document.querySelector('.message-win').classList.remove('hidden');
-  } else if (status === 'lose') {
+  } else if (stat === 'lose') {
     document.querySelector('.message-lose').classList.remove('hidden');
   } else {
     document.querySelector('.message-container').classList.add('hidden');
@@ -248,13 +250,12 @@ function updateUI() {
   const startButton = document.querySelector('.start');
 
   // Зміна тексту кнопки під час гри
-  if (status === 'playing' && startButton) {
+  if (stat === 'playing' && startButton) {
     startButton.textContent = 'Restart';
     startButton.classList.remove('start');
     startButton.classList.add('restart');
   }
 }
-
 
 // Initialize game
 const game = new Game();
