@@ -11,121 +11,88 @@ class Game {
     this.status = 'idle';
   }
 
+  // move function
+  move(direction) {
+    let moved = false;
+    let start, end, step;
+
+    if (direction === 'left' || direction === 'up') {
+      start = 1;
+      end = 4;
+      step = 1;
+    } else {
+      start = 2;
+      end = -1;
+      step = -1;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = start; j !== end; j += step) {
+        const cellValue = (direction === 'left' || direction === 'right')
+          ? this.board[i][j]
+          : this.board[j][i];
+        let k = j;
+
+        if (cellValue !== 0) {
+          let condition;
+
+          if (direction === 'left' || direction === 'up') {
+            condition = k > 0;
+          } else {
+            condition = k < 3;
+          }
+
+          while (condition && (direction === 'left' || direction === 'right')
+            ? this.board[i][k - step] === 0
+            : this.board[k - step][i] === 0) {
+            if (direction === 'left' || direction === 'right') {
+              this.board[i][k - step] = this.board[i][k];
+              this.board[i][k] = 0;
+            } else {
+              this.board[k - step][i] = this.board[k][i];
+              this.board[k][i] = 0;
+            }
+            k -= step;
+            moved = true;
+          }
+
+          if (condition && (direction === 'left' || direction === 'right')
+            ? this.board[i][k - step] === this.board[i][k]
+            : this.board[k - step][i] === this.board[k][i]) {
+            if (direction === 'left' || direction === 'right') {
+              this.board[i][k - step] *= 2;
+              this.score += this.board[i][k - step];
+              this.board[i][k] = 0;
+            } else {
+              this.board[k - step][i] *= 2;
+              this.score += this.board[k - step][i];
+              this.board[k][i] = 0;
+            }
+            moved = true;
+          }
+        }
+      }
+    }
+
+    if (moved) {
+      this.generateNewNumber();
+    }
+  }
+
   moveLeft() {
-    let moved = false;
-
-    for (let i = 0; i < 4; i++) {
-      for (let j = 1; j < 4; j++) {
-        if (this.board[i][j] !== 0) {
-          let k = j;
-
-          while (k > 0 && this.board[i][k - 1] === 0) {
-            this.board[i][k - 1] = this.board[i][k];
-            this.board[i][k] = 0;
-            k--;
-            moved = true;
-          }
-
-          if (k > 0 && this.board[i][k - 1] === this.board[i][k]) {
-            this.board[i][k - 1] *= 2;
-            this.score += this.board[i][k - 1];
-            this.board[i][k] = 0;
-            moved = true;
-          }
-        }
-      }
-    }
-
-    if (moved) {
-      this.generateNewNumber();
-    }
+    this.move('left');
   }
+
   moveRight() {
-    let moved = false;
-
-    for (let i = 0; i < 4; i++) {
-      for (let j = 2; j >= 0; j--) {
-        if (this.board[i][j] !== 0) {
-          let k = j;
-
-          while (k < 3 && this.board[i][k + 1] === 0) {
-            this.board[i][k + 1] = this.board[i][k];
-            this.board[i][k] = 0;
-            k++;
-            moved = true;
-          }
-
-          if (k < 3 && this.board[i][k + 1] === this.board[i][k]) {
-            this.board[i][k + 1] *= 2;
-            this.score += this.board[i][k + 1];
-            this.board[i][k] = 0;
-            moved = true;
-          }
-        }
-      }
-    }
-
-    if (moved) {
-      this.generateNewNumber();
-    }
+    this.move('right');
   }
+
   moveUp() {
-    let moved = false;
-
-    for (let j = 0; j < 4; j++) {
-      for (let i = 1; i < 4; i++) {
-        if (this.board[i][j] !== 0) {
-          let k = i;
-
-          while (k > 0 && this.board[k - 1][j] === 0) {
-            this.board[k - 1][j] = this.board[k][j];
-            this.board[k][j] = 0;
-            k--;
-            moved = true;
-          }
-
-          if (k > 0 && this.board[k - 1][j] === this.board[k][j]) {
-            this.board[k - 1][j] *= 2;
-            this.score += this.board[k - 1][j];
-            this.board[k][j] = 0;
-            moved = true;
-          }
-        }
-      }
-    }
-
-    if (moved) {
-      this.generateNewNumber();
-    }
+    this.move('up');
   }
+
   moveDown() {
-    let moved = false;
-
-    for (let j = 0; j < 4; j++) {
-      for (let i = 2; i >= 0; i--) {
-        if (this.board[i][j] !== 0) {
-          let k = i;
-
-          while (k < 3 && this.board[k + 1][j] === 0) {
-            this.board[k + 1][j] = this.board[k][j];
-            this.board[k][j] = 0;
-            k++;
-            moved = true;
-          }
-
-          if (k < 3 && this.board[k + 1][j] === this.board[k][j]) {
-            this.board[k + 1][j] *= 2;
-            this.score += this.board[k + 1][j];
-            this.board[k][j] = 0;
-            moved = true;
-          }
-        }
-      }
-    }
-
-    if (moved) {
-      this.generateNewNumber();
-    }
+    this.move('down');
   }
 
   getScore() {
@@ -143,7 +110,7 @@ class Game {
   }
 
   start() {
-    this.status = 'playing';
+    this.status = 'idle';
     this.generateNewNumber();
     this.generateNewNumber();
     document.querySelector('.message-start').classList.add('hidden');
