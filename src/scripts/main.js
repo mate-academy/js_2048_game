@@ -110,7 +110,7 @@ class Game {
   }
 
   start() {
-    this.status = 'idle';
+    this.status = 'playing';
     this.generateNewNumber();
     this.generateNewNumber();
     document.querySelector('.message-start').classList.add('hidden');
@@ -208,10 +208,14 @@ function updateUI() {
   // Показ або приховування повідомлень
   if (stat === 'win') {
     document.querySelector('.message-win').classList.remove('hidden');
-  } else if (stat === 'lose') {
+  } else {
+    document.querySelector('.message-win').classList.add('hidden');
+  }
+
+  if (stat === 'lose') {
     document.querySelector('.message-lose').classList.remove('hidden');
   } else {
-    document.querySelector('.message-container').classList.add('hidden');
+    document.querySelector('.message-lose').classList.add('hidden');
   }
 
   const startButton = document.querySelector('.start');
@@ -231,8 +235,7 @@ updateUI();
 
 // Add event listener to the start/restart button
 document.querySelector('.container').addEventListener('click', evt => {
-  if (evt.target.classList.contains('start')
-  || evt.target.classList.contains('restart')) {
+  if (evt.target.classList.contains('start') || evt.target.classList.contains('restart')) {
     game.restart();
     updateUI();
   }
