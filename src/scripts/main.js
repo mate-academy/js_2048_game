@@ -110,14 +110,10 @@ class Game {
           if (this.board[i][j] === 0) {
             return 'playing';
           }
-        }
-      }
-      for (let i = 0; i < 4; i++) {
-        for (let j = 0; j < 4; j++) {
-          if (i < 3 && this.board[i][j] === this.board[i + 1][j]) {
-            return 'playing';
-          }
-          if (j < 3 && this.board[i][j] === this.board[i][j + 1]) {
+          if (
+            (i < 3 && this.board[i][j] === this.board[i + 1][j]) ||
+            (j < 3 && this.board[i][j] === this.board[i][j + 1])
+          ) {
             return 'playing';
           }
         }
