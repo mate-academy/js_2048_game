@@ -104,9 +104,28 @@ class Game {
   }
 
   getStatus() {
-    return ['idle', 'playing', 'win', 'lose'].includes(this.status)
-      ? this.status
-      : 'idle';
+    if (this.status === 'playing') {
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          if (this.board[i][j] === 0) {
+            return 'playing';
+          }
+        }
+      }
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          if (i < 3 && this.board[i][j] === this.board[i + 1][j]) {
+            return 'playing';
+          }
+          if (j < 3 && this.board[i][j] === this.board[i][j + 1]) {
+            return 'playing';
+          }
+        }
+      }
+      return 'lose';
+    } else {
+      return this.status;
+    }
   }
 
   start() {
@@ -235,7 +254,8 @@ updateUI();
 
 // Add event listener to the start/restart button
 document.querySelector('.container').addEventListener('click', evt => {
-  if (evt.target.classList.contains('start') || evt.target.classList.contains('restart')) {
+  if (evt.target.classList.contains('start')
+  || evt.target.classList.contains('restart')) {
     game.restart();
     updateUI();
   }
