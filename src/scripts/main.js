@@ -2,7 +2,7 @@
 'use strict';
 
 const SIZE_BOARD = 4;
-let board = [...Array(SIZE_BOARD)].map(() => Array(SIZE_BOARD).fill(0));
+let board = [];
 let score = 0;
 let isWin = false;
 const cells = document.querySelectorAll('.field-cell');
