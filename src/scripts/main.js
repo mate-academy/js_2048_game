@@ -97,17 +97,21 @@ const updateCell = (cellElement, num) => {
 
 document.addEventListener('keyup', (e) => {
   if (e.code === 'ArrowLeft') {
-    slideLeft();
-    setTwoOrFour();
+    if (slideLeft()) {
+      setTwoOrFour();
+    }
   } else if (e.code === 'ArrowRight') {
-    slideRigth();
-    setTwoOrFour();
+    if (slideRigth()) {
+      setTwoOrFour();
+    }
   } else if (e.code === 'ArrowUp') {
-    slideUp();
-    setTwoOrFour();
+    if (slideUp()) {
+      setTwoOrFour();
+    }
   } else if (e.code === 'ArrowDown') {
-    slideDown();
-    setTwoOrFour();
+    if (slideDown()) {
+      setTwoOrFour();
+    }
   }
 });
 
@@ -137,11 +141,17 @@ const slide = (rowArr) => {
 };
 
 const slideLeft = () => {
-  for (let r = 0; r < rows; r++) {
-    let row = board[r];
+  let isChange = false;
 
-    row = slide(row);
-    board[r] = row;
+  for (let r = 0; r < rows; r++) {
+    const row = board[r];
+
+    const newRow = slide(row);
+
+    if (!isArrayEqual(row, newRow)) {
+      isChange = true;
+    }
+    board[r] = newRow;
 
     for (let c = 0; c < columns; c++) {
       const num = board[r][c];
@@ -151,16 +161,26 @@ const slideLeft = () => {
       updateCell(cellElement, num);
     }
   }
+
+  return isChange;
 };
 
 const slideRigth = () => {
-  for (let r = 0; r < rows; r++) {
-    let row = board[r];
+  let isChange = false;
 
-    row.reverse();
-    row = slide(row);
-    row.reverse();
-    board[r] = row;
+  for (let r = 0; r < rows; r++) {
+    const row = board[r];
+    const originalArr = [...row];
+
+    const rowReverse = row.reverse();
+    const newRow = slide(rowReverse);
+    const newRowReverse = newRow.slice().reverse();
+
+    if (!isArrayEqual(originalArr, newRowReverse)) {
+      isChange = true;
+    }
+
+    board[r] = newRowReverse;
 
     for (let c = 0; c < columns; c++) {
       const num = board[r][c];
@@ -170,16 +190,24 @@ const slideRigth = () => {
       updateCell(cellElement, num);
     }
   }
+
+  return isChange;
 };
 
 const slideUp = () => {
-  for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+  let isChange = false;
 
-    row = slide(row);
+  for (let c = 0; c < columns; c++) {
+    const row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+
+    const newRow = slide(row);
+
+    if (!isArrayEqual(row, newRow)) {
+      isChange = true;
+    }
 
     for (let r = 0; r < rows; r++) {
-      board[r][c] = row[r];
+      board[r][c] = newRow[r];
 
       const num = board[r][c];
       const cellIndex = r * columns + c;
@@ -188,18 +216,27 @@ const slideUp = () => {
       updateCell(cellElement, num);
     }
   }
+
+  return isChange;
 };
 
 const slideDown = () => {
-  for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+  let isChange = false;
 
-    row.reverse();
-    row = slide(row);
-    row.reverse();
+  for (let c = 0; c < columns; c++) {
+    const row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+    const originalRow = [...row];
+
+    const rowReverse = row.reverse();
+    const newRow = slide(rowReverse);
+    const newRowReverse = newRow.slice().reverse();
+
+    if (!isArrayEqual(originalRow, newRowReverse)) {
+      isChange = true;
+    }
 
     for (let r = 0; r < rows; r++) {
-      board[r][c] = row[r];
+      board[r][c] = newRowReverse[r];
 
       const num = board[r][c];
       const cellIndex = r * columns + c;
@@ -208,6 +245,22 @@ const slideDown = () => {
       updateCell(cellElement, num);
     }
   }
+
+  return isChange;
+};
+
+const isArrayEqual = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 const randomTile = () => Math.random() > 0.9 ? 4 : 2;
