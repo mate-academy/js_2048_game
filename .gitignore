@@ -15,3 +15,4 @@ dist
 raw_reports
 cypress/screenshots
 cypress/videos
+reports
