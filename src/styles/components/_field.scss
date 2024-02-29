@@ -1,0 +1,77 @@
+.field {
+  &__cell {
+    background: $field-background-color;
+    width: 63px;
+    height: 63px;
+    border-radius: 5px;
+    color: $field-text-color;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
+    font-size: 21px;
+    font-weight: $bold-font-weight;
+    transition-property: background;
+
+    @include add-transition;
+
+    @include on-tablet {
+      width: 120px;
+      height: 120px;
+      font-size: 45px;
+    }
+
+    &--2 {
+      background: $ceil-2-background-color;
+    }
+
+    &--4 {
+      background: $ceil-4-background-color;
+    }
+
+    &--8 {
+      background: $ceil-8-background-color;
+      color: $secondary-field-text-color;
+    }
+
+    &--16 {
+      background: $ceil-16-background-color;
+      color: $secondary-field-text-color;
+    }
+
+    &--32 {
+      background: $ceil-32-background-color;
+      color: $secondary-field-text-color;
+    }
+
+    &--64 {
+      background: $ceil-64-background-color;
+      color: $secondary-field-text-color;
+    }
+
+    &--128 {
+      background: $ceil-128-background-color;
+      color: $secondary-field-text-color;
+    }
+
+    &--256 {
+      background: $ceil-256-background-color;
+      color: $secondary-field-text-color;
+    }
+
+    &--512 {
+      background: $ceil-512-background-color;
+      color: $secondary-field-text-color;
+    }
+
+    &--1024 {
+      background: $ceil-1024-background-color;
+      color: $secondary-field-text-color;
+    }
+
+    &--2048 {
+      background: $ceil-2048-background-color;
+      color: $secondary-field-text-color;
+    }
+  }
+}

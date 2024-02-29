@@ -1,0 +1,33 @@
+.button {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: $secondary-text-color;
+  font-family: $font-family;
+  font-weight: $bold-font-weight;
+  font-size: 12px;
+  min-width: 55px;
+  height: 55px;
+  outline: none;
+
+  @include on-tablet {
+    min-width: 75px;
+    height: 75px;
+    font-size: 16px;
+  }
+
+  transition-property: background;
+
+  @include add-transition;
+
+  &--start {
+    background: $button-background;
+    font-size: 14px;
+
+    @include on-tablet {
+      font-size: 20px;
+    }
+
+    @include hover(background, $button-background-hover);
+  }
+}

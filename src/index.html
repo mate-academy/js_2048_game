@@ -5,57 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048</title>
     <link rel="stylesheet" href="./styles/main.scss">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin="attr-req-value"
+    >
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans+Caption:wght@400;700&display=swap" rel="stylesheet">
   </head>
-  <body>
-    <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score: <span class="game-score">0</span>
-          </p>
-          <button class="button start">Start</button>
+  <body class="page">
+    <div class="page__container game">
+      <div class="game__header" id="home">
+        <div class="game__header-top">
+          <h1 class="game__title">2048</h1>
+          <div class="game__controls">
+            <p class="game__info">Score<span class="game__score" data-score="score">0</span></p>
+            <p class="game__info">Best<span class="game__score" data-best="best">0</span></p>
+          </div>
+        </div>
+        <div class="game__header-bottom">
+          <div>
+            <p class="game__description">Join the tiles, get to <span class="strong">2048!</span></p>
+            <a href="#how-play" class="game__link">How to play →</a>
+          </div>
+          <button class="button button--start">Start</button>
         </div>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">Press "Start" to begin game. Good luck!</p>
+      <div class="game__container">
+        <div class="game__content">
+          <table class="game__field">
+            <tbody class="field">
+              <tr class="field__row" id="0">
+                <td class="field__cell" id="0-0"></td>
+                <td class="field__cell" id="0-1"></td>
+                <td class="field__cell" id="0-2"></td>
+                <td class="field__cell" id="0-3"></td>
+              </tr>
+              <tr class="field__row" id="1">
+                <td class="field__cell" id="1-0"></td>
+                <td class="field__cell" id="1-1"></td>
+                <td class="field__cell" id="1-2"></td>
+                <td class="field__cell" id="1-3"></td>
+              </tr>
+              <tr class="field__row" id="2">
+                <td class="field__cell" id="2-0"></td>
+                <td class="field__cell" id="2-1"></td>
+                <td class="field__cell" id="2-2"></td>
+                <td class="field__cell" id="2-3"></td>
+              </tr>
+              <tr class="field__row" id="3">
+                <td class="field__cell" id="3-0"></td>
+                <td class="field__cell" id="3-1"></td>
+                <td class="field__cell" id="3-2"></td>
+                <td class="field__cell" id="3-3"></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="message">
+            <p class="message__content message__content--lose hidden">You lose! Restart the game?</p>
+            <p class="message__content message__content--win hidden">
+              Winner! Congrats! You did it!
+            </p>
+            <p class="message__content message__content--start">
+              Press "Start" to begin game. Good luck!
+            </p>
+          </div>
+        </div>
+        <div class="game__how-play" id="how-play">
+          <p class="game__description">
+            <span class="strong">HOW TO PLAY:</span> Use your <span class="strong">arrow keys</span> to move the tiles. Tiles with the same number <span class="strong">merge into one</span> when they touch. Add them
+          up to reach <span class="strong">2048!</span>
+          </p>
+          <a href="#home" class="game__link">Start playing →</a>
+        </div>
       </div>
     </div>
     <script type="module" src="scripts/main.js"></script>

@@ -1,0 +1,55 @@
+.message {
+  width: 100%;
+
+  &__content {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+
+    color: $main-text-color;
+    background: $message-background-color;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 24px;
+    margin: 0;
+    opacity: 1;
+
+    @include on-tablet {
+      font-size: 40px;
+    }
+
+    transition-property: transform, opacity;
+    transform: scale(1);
+
+    @include add-transition;
+
+    &--win {
+      background: $message-background-color-win;
+      color: $secondary-text-color;
+      z-index: 1;
+    }
+
+    &--lose {
+      z-index: 1;
+    }
+
+    &--start {
+      z-index: 1;
+    }
+
+    &.hidden {
+      opacity: 0;
+      transform: scale(0);
+      z-index: -1;
+    }
+  }
+}
