@@ -6,7 +6,7 @@ const gameRefs = {
   score: document.querySelector('[data-score="score"]'),
   best: document.querySelector('[data-best="best"]'),
   rows: document.querySelectorAll('.field__cell'),
-  start: document.querySelector('.button--start'),
+  start: document.querySelector('.button'),
   field: document.querySelector('.game__field'),
   messageWin: document.querySelector('.message__content--win'),
   messageLose: document.querySelector('.message__content--lose'),
@@ -57,6 +57,8 @@ gameRefs.start.addEventListener('click', () => {
     }
     game.restart();
     gameRefs.start.innerText = 'Start';
+    gameRefs.start.classList.add('start');
+    gameRefs.start.classList.remove('restart');
     countKeyPress = 0;
     updateElement();
     game.updateScore(gameRefs.score);
@@ -71,40 +73,47 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener('keyup', (e) => {
-  if (game.getStatus() === 'playing') {
-    if (e.code === 'ArrowLeft') {
-      game.moveLeft();
+  switch (game.getStatus()) {
+    case 'playing':
+      switch (e.code) {
+        case 'ArrowLeft':
+          game.moveLeft();
+          break;
+        case 'ArrowRight':
+          game.moveRight();
+          break;
+        case 'ArrowUp':
+          game.moveUp();
+          break;
+        case 'ArrowDown':
+          game.moveDown();
+          break;
+        default:
+          break;
+      }
+
       updateElement();
       countKeyPress++;
-    } else if (e.code === 'ArrowRight') {
-      game.moveRight();
-      updateElement();
-      countKeyPress++;
-    } else if (e.code === 'ArrowUp') {
-      game.moveUp();
-      updateElement();
-      countKeyPress++;
-    } else if (e.code === 'ArrowDown') {
-      game.moveDown();
-      updateElement();
-      countKeyPress++;
-    }
+      break;
+    case 'win':
+      gameRefs.messageWin.classList.remove('hidden');
+      break;
+    case 'lose':
+      gameRefs.messageLose.classList.remove('hidden');
+      break;
+    default:
+      break;
   }
+
   game.updateScore(gameRefs.score);
 
   const user = window.localStorage.getItem('user');
 
   game.setBestScore(game.getScore(), user);
 
-  if (game.getStatus() === 'win') {
-    gameRefs.messageWin.classList.remove('hidden');
-  }
-
-  if (game.getStatus() === 'lose') {
-    gameRefs.messageLose.classList.remove('hidden');
-  }
-
   if (countKeyPress >= 1) {
     gameRefs.start.innerText = 'Restart';
+    gameRefs.start.classList.remove('start');
+    gameRefs.start.classList.add('restart');
   }
 });
