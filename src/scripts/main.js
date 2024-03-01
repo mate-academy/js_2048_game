@@ -6,10 +6,10 @@
 // Importowanie klasy Game z odpowiedniego katalogu lub pliku, jeśli nie jest dostępna globalnie
 const Game = require('../modules/Game.class');
 const game = new Game([
-  [8, 8, 16, 16],
-  [16, 16, 8, 8],
-  [32, 32, 0, 0],
-  [16, 16, 64, 64],
+  [8, 8, 0, 0],
+  [16, 16, 16, 16],
+  [32, 32, 64, 128],
+  [2, 2, 4, 8],
 ]);
 
 function initializeGame()

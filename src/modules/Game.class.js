@@ -43,7 +43,9 @@ class Game
     ];
     this.score = 0;
     this.status = 'idle';
-    this.tilesMerged = [];
+    this.tilesMerged = new Array(this.state.length).fill().map(() => new Array(this.state[0].length).fill(false));
+
+    // console.log(this.tilesMerged);
   }
 
   moveLeft()
@@ -71,12 +73,14 @@ class Game
               this.state[i][k] = 0;
               k--;
               moved = true;
-            } else if (this.state[i][k - 1] === this.state[i][k])
+            } else if (this.state[i][k - 1] === this.state[i][k]
+              && !this.tilesMerged[i][k - 1])
             {
               this.state[i][k - 1] *= 2;
               this.score += this.state[i][k - 1];
               this.state[i][k] = 0;
               moved = true;
+              this.tilesMerged[i][k - 1] = true;
               break;
             }
           }
@@ -87,6 +91,7 @@ class Game
     if (moved)
     {
       this.generateNewTile();
+      this.tilesMerged.forEach(row => row.fill(false));
     }
   }
 
