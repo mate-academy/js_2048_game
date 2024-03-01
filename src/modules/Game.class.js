@@ -258,10 +258,6 @@ class Game {
   }
 
   afterAction() {
-    if (this.getStatus === statuses.lose) {
-      console.log('you have lost');
-    }
-
     const state = this.getState();
 
     if (this.isWin(state)) {
@@ -269,10 +265,6 @@ class Game {
 
       return;
     }
-
-    // if (!this.validateState(state, true)) {
-    //   this.status = statuses.lose;
-    // }
 
     this.createTile();
     this.createTile();
