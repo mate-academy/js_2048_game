@@ -1,5 +1,12 @@
 'use strict';
 
+const statuses = {
+  idle: 'idle',
+  playing: 'playing',
+  win: 'win',
+  lose: 'lose',
+};
+
 /**
  * This class represents the game.
  * Now it has a basic structure, that is needed for testing.
@@ -20,25 +27,114 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.initialState = initialState;
+    this.state = [...initialState.map((row) => [...row])];
+    this.score = 0;
+    this.status = statuses.idle;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    const localState = [...this.state];
+
+    if (!this.validateState(localState)) {
+      return;
+    }
+
+    const newState = localState.map((row) => this.move(row));
+
+    this.updateState(newState);
+    this.afterAction();
+  }
+
+  moveRight() {
+    const localState = [...this.state.map((row) => [...row].reverse())];
+
+    if (!this.validateState(localState)) {
+      return;
+    }
+
+    const newState = localState.map((row) => this.move(row).reverse());
+
+    this.updateState(newState);
+    this.afterAction();
+  }
+
+  moveUp() {
+    const reversed = this.rotateClockwise(this.state);
+
+    if (!this.validateState(reversed)) {
+      return;
+    }
+
+    const newState = [...reversed.map((row) => this.move([...row]))];
+    const reversedBack = this.rotateCounterClockwise(newState);
+
+    this.updateState(reversedBack);
+    this.afterAction();
+  }
+
+  moveDown() {
+    const reversed = this.rotateClockwise(this.state);
+    const reversedLocalState = [...reversed.map((row) => [...row].reverse())];
+
+    if (!this.validateState(reversedLocalState)) {
+      return;
+    }
+
+    const newState = reversedLocalState.map((row) =>
+      this.move([...row]).reverse(),
+    );
+    const reversedBack = this.rotateCounterClockwise(newState);
+
+    this.updateState(reversedBack);
+    this.afterAction();
+  }
+
+  move(vector) {
+    const cells = [...vector].filter((c) => c !== 0);
+    const newRow = [];
+
+    let i = 0;
+
+    while (i <= cells.length) {
+      const current = cells[i];
+      const next = cells[i + 1];
+      const isPair = current !== undefined && current === next;
+
+      if (isPair) {
+        newRow.push(current * 2);
+        this.score += current * 2;
+        i += 2;
+      } else {
+        newRow.push(current);
+        i += 1;
+      }
+    }
+
+    return vector.map((_item, index) => newRow[index] || 0);
+  }
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.state;
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +146,175 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = statuses.playing;
+    this.afterAction();
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.resetState();
+    this.status = statuses.idle;
+    this.score = 0;
+  }
+
+  resetState() {
+    this.state = [...this.initialState.map((row) => [...row])];
+  }
+
+  updateState(state) {
+    this.state = state;
+  }
 
   // Add your own methods here
+  createTile() {
+    // const empty = this.getEmptyTilesIndexes();
+    // const y = Math.round(Math.random() * empty.length);
+    // const x = Math.round(Math.random() * empty[y].length);
+    // const value = Math.random() > 0.9 ? 4 : 2;
+
+    // console.log(empty, x, y, value);
+
+    // this.state[y][empty[y][x]] = value;
+
+    const emptyCells = this.getEmpty();
+
+    if (emptyCells.length === 0) {
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+
+    const [row, col] = emptyCells[randomIndex];
+
+    const value = Math.random() > 0.9 ? 4 : 2;
+
+    this.state[row][col] = value;
+  }
+
+  getEmpty() {
+    // return this.getState().map((row) =>
+    //   row
+    //     .map((cell, index) => (cell === 0 ? index : null))
+    //     .filter((cell) => cell !== null),
+    // );
+    const matrix = this.getState();
+    const emptyCells = [];
+
+    for (let row = 0; row < matrix.length; row++) {
+      for (let col = 0; col < matrix[row].length; col++) {
+        if (matrix[row][col] === 0) {
+          emptyCells.push([row, col]);
+        }
+      }
+    }
+
+    return emptyCells;
+  }
+
+  rotateClockwise(matrix) {
+    const rows = matrix.length;
+    const cols = matrix[0].length;
+    const resultMatrix = [];
+
+    for (let col = 0; col < cols; col++) {
+      resultMatrix.push(new Array(rows).fill(''));
+    }
+
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        resultMatrix[cols - 1 - col][row] = matrix[row][col];
+      }
+    }
+
+    return resultMatrix;
+  }
+
+  rotateCounterClockwise(transformedMatrix) {
+    const rows = transformedMatrix.length;
+    const cols = transformedMatrix[0].length;
+    const originalMatrix = [];
+
+    for (let col = 0; col < cols; col++) {
+      originalMatrix.push(new Array(rows).fill(''));
+    }
+
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        originalMatrix[row][cols - 1 - col] = transformedMatrix[col][row];
+      }
+    }
+
+    return originalMatrix;
+  }
+
+  afterAction() {
+    if (this.getStatus === statuses.lose) {
+      console.log('you have lost');
+    }
+
+    const state = this.getState();
+
+    if (this.isWin(state)) {
+      this.status = statuses.win;
+
+      return;
+    }
+
+    // if (!this.validateState(state, true)) {
+    //   this.status = statuses.lose;
+    // }
+
+    this.createTile();
+    this.createTile();
+  }
+
+  validateState(localState, validateAll = false) {
+    const validationMethod = validateAll ? [].every : [].some;
+
+    const canMerge = validationMethod.call(localState, (row) => {
+      const filtered = row.filter((cell) => cell);
+      const mapper = filtered.map((cell, index) => {
+        const current = cell;
+        const next = row[index + 1];
+
+        return current === next;
+      });
+
+      return mapper.includes(true);
+    });
+    // const canMerge = localState.some();
+
+    const hasEmptyTiles = validationMethod.call(localState, (row) => {
+      const firstEmpty = row.findIndex((cell) => cell === 0);
+      const arr = row.slice(firstEmpty);
+      const isEmpty = arr.findIndex((cell) => cell !== 0) > 0;
+
+      return isEmpty;
+    });
+    // const hasEmptyTiles = localState.some((row) => {
+    //   const firstEmpty = row.findIndex((cell) => cell === 0);
+    //   const arr = row.slice(firstEmpty);
+    //   const isEmpty = arr.findIndex((cell) => cell !== 0) > 0;
+
+    //   return isEmpty;
+    // });
+
+    return canMerge || hasEmptyTiles;
+  }
+
+  isWin(state) {
+    return state.map((row) => row.flat()).includes(2048);
+  }
 }
 
 module.exports = Game;
