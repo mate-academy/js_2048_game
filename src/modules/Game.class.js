@@ -98,6 +98,9 @@ class Game {
     this.afterAction();
   }
 
+  /**
+   * Make a move.
+   */
   move(vector) {
     const cells = [...vector].filter((c) => c !== 0);
     const newRow = [];
@@ -175,17 +178,7 @@ class Game {
     this.state = state;
   }
 
-  // Add your own methods here
   createTile() {
-    // const empty = this.getEmptyTilesIndexes();
-    // const y = Math.round(Math.random() * empty.length);
-    // const x = Math.round(Math.random() * empty[y].length);
-    // const value = Math.random() > 0.9 ? 4 : 2;
-
-    // console.log(empty, x, y, value);
-
-    // this.state[y][empty[y][x]] = value;
-
     const emptyCells = this.getEmpty();
 
     if (emptyCells.length === 0) {
@@ -201,12 +194,10 @@ class Game {
     this.state[row][col] = value;
   }
 
+  /**
+   * Find empty cells.
+   */
   getEmpty() {
-    // return this.getState().map((row) =>
-    //   row
-    //     .map((cell, index) => (cell === 0 ? index : null))
-    //     .filter((cell) => cell !== null),
-    // );
     const matrix = this.getState();
     const emptyCells = [];
 
@@ -221,6 +212,9 @@ class Game {
     return emptyCells;
   }
 
+  /**
+   * Rotate the fame field.
+   */
   rotateClockwise(matrix) {
     const rows = matrix.length;
     const cols = matrix[0].length;
@@ -239,6 +233,9 @@ class Game {
     return resultMatrix;
   }
 
+  /**
+   * Rotate the fame field back to the original state.
+   */
   rotateCounterClockwise(transformedMatrix) {
     const rows = transformedMatrix.length;
     const cols = transformedMatrix[0].length;
@@ -310,8 +307,10 @@ class Game {
 
   isLose(state) {
     const rotated90 = this.rotateClockwise(state);
+    const rotated180 = [...this.state.map((row) => [...row].reverse())];
+    const rotated270 = [...rotated90.map((row) => [...row].reverse())];
 
-    return [state, rotated90].every(
+    return [state, rotated90, rotated180, rotated270].every(
       (localState) => this.validateState(localState) === false,
     );
   }
