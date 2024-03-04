@@ -6,6 +6,7 @@ const game = new Game();
 const container = document.querySelector('.container');
 const button = container.querySelector('.button');
 const messageStart = container.querySelector('.message-start');
+const messageRestart = container.querySelector('.message-restart');
 const messageLose = container.querySelector('.message-lose');
 const messageWin = container.querySelector('.message-win');
 const scoreInfo = container.querySelector('.game-score');
@@ -34,6 +35,31 @@ function renderScore(score, element) {
   element.innerHTML = score;
 }
 
+function renderMessage() {
+  const gameStatus = game.getStatus();
+
+  switch (gameStatus) {
+    case 'playing':
+      messageStart.classList.add('hidden');
+      messageRestart.classList.remove('hidden');
+      break;
+    case 'win':
+      messageRestart.classList.add('hidden');
+      messageWin.classList.remove('hidden');
+      break;
+    case 'lose':
+      messageStart.classList.add('hidden');
+      messageRestart.classList.add('hidden');
+      messageLose.classList.remove('hidden');
+      break;
+    default:
+      messageStart.classList.remove('hidden');
+      messageRestart.classList.add('hidden');
+      messageWin.classList.add('hidden');
+      messageLose.classList.add('hidden');
+  }
+}
+
 button.addEventListener('click', () => {
   if (button.textContent === 'Start') {
     game.start();
@@ -59,9 +85,7 @@ button.addEventListener('click', () => {
     button.classList.remove('restart');
   }
 
-  messageStart.classList.add('hidden');
-  messageLose.classList.add('hidden');
-  messageWin.classList.add('hidden');
+  renderMessage();
 });
 
 document.addEventListener('keydown', (keyboard) => {
@@ -95,4 +119,5 @@ document.addEventListener('keydown', (keyboard) => {
 
   renderGameField(state, fieldCells, score);
   renderScore(score, scoreInfo);
+  renderMessage();
 });

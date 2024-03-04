@@ -68,33 +68,33 @@ class Game {
   }
 
   moveUp() {
-    const reversed = this.rotateClockwise(this.state);
+    const rotated90 = this.rotateClockwise(this.state);
 
-    if (!this.validateState(reversed)) {
+    if (!this.validateState(rotated90)) {
       return;
     }
 
-    const newState = [...reversed.map((row) => this.move([...row]))];
-    const reversedBack = this.rotateCounterClockwise(newState);
+    const newState = [...rotated90.map((row) => this.move([...row]))];
+    const rotatedBack = this.rotateCounterClockwise(newState);
 
-    this.updateState(reversedBack);
+    this.updateState(rotatedBack);
     this.afterAction();
   }
 
   moveDown() {
-    const reversed = this.rotateClockwise(this.state);
-    const reversedLocalState = [...reversed.map((row) => [...row].reverse())];
+    const rotated90 = this.rotateClockwise(this.state);
+    const rotatedLocalState = [...rotated90.map((row) => [...row].reverse())];
 
-    if (!this.validateState(reversedLocalState)) {
+    if (!this.validateState(rotatedLocalState)) {
       return;
     }
 
-    const newState = reversedLocalState.map((row) =>
+    const newState = rotatedLocalState.map((row) =>
       this.move([...row]).reverse(),
     );
-    const reversedBack = this.rotateCounterClockwise(newState);
+    const rotatedBack = this.rotateCounterClockwise(newState);
 
-    this.updateState(reversedBack);
+    this.updateState(rotatedBack);
     this.afterAction();
   }
 
@@ -155,7 +155,7 @@ class Game {
    */
   start() {
     this.status = statuses.playing;
-    this.afterAction();
+    this.afterAction(2);
   }
 
   /**
@@ -257,8 +257,12 @@ class Game {
     return originalMatrix;
   }
 
-  afterAction() {
+  afterAction(newCellsCount = 1) {
     const state = this.getState();
+
+    for (let i = 0; i < newCellsCount; i++) {
+      this.createTile();
+    }
 
     if (this.isWin(state)) {
       this.status = statuses.win;
@@ -266,46 +270,50 @@ class Game {
       return;
     }
 
-    this.createTile();
-    this.createTile();
+    if (this.isLose(state)) {
+      this.status = statuses.lose;
+    }
   }
 
-  validateState(localState, validateAll = false) {
-    const validationMethod = validateAll ? [].every : [].some;
+  validateState(localState) {
+    if (this.status !== statuses.playing) {
+      return;
+    }
 
-    const canMerge = validationMethod.call(localState, (row) => {
-      const filtered = row.filter((cell) => cell);
-      const mapper = filtered.map((cell, index) => {
+    const canMerge = localState.some((row) => {
+      const withoutEmpty = row.filter((cell) => cell);
+
+      const hasMergeableCells = withoutEmpty.map((cell, index) => {
         const current = cell;
         const next = row[index + 1];
 
         return current === next;
       });
 
-      return mapper.includes(true);
+      return hasMergeableCells.includes(true);
     });
-    // const canMerge = localState.some();
 
-    const hasEmptyTiles = validationMethod.call(localState, (row) => {
+    const hasEmptyTiles = localState.some((row) => {
       const firstEmpty = row.findIndex((cell) => cell === 0);
-      const arr = row.slice(firstEmpty);
-      const isEmpty = arr.findIndex((cell) => cell !== 0) > 0;
+      const rest = row.slice(firstEmpty);
+      const hasEmpty = rest.findIndex((cell) => cell !== 0) > 0;
 
-      return isEmpty;
+      return hasEmpty;
     });
-    // const hasEmptyTiles = localState.some((row) => {
-    //   const firstEmpty = row.findIndex((cell) => cell === 0);
-    //   const arr = row.slice(firstEmpty);
-    //   const isEmpty = arr.findIndex((cell) => cell !== 0) > 0;
-
-    //   return isEmpty;
-    // });
 
     return canMerge || hasEmptyTiles;
   }
 
   isWin(state) {
-    return state.map((row) => row.flat()).includes(2048);
+    return state.flat().includes(2048);
+  }
+
+  isLose(state) {
+    const rotated90 = this.rotateClockwise(state);
+
+    return [state, rotated90].every(
+      (localState) => this.validateState(localState) === false,
+    );
   }
 }
 
