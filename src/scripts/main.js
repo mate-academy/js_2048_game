@@ -21,7 +21,7 @@ const renderUIFields = () => {
 };
 
 const renderGameDesc = () => {
-  game.initialState.map((row, i) => {
+  game.copyState.map((row, i) => {
     row.map((coll, j) => {
       gameUIFields[i][j].textContent = '';
 
@@ -44,6 +44,10 @@ startGameButton.addEventListener('click', el => {
 });
 
 document.addEventListener('keydown', ev => {
+  if (game.gameStatus === 'idle') {
+    return;
+  }
+
   switch (ev.key) {
     case 'ArrowLeft':
       game.moveLeft();

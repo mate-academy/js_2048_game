@@ -26,16 +26,39 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]]) {
+      [0, 0, 0, 0],
+    ],
+    gameStatus = 'idle',
+    gameScore = 0) {
     this.initialState = initialState;
-    this.resultOfMowes = [];
-
-    // console.log(initialState);
+    this.gameStatus = gameStatus;
+    this.gameScore = gameScore;
+    this.copyState = [...initialState];
   }
 
-  moveLeft() {
-    for (let i = 0; i < this.initialState.length; i++) {
-      const row = this.initialState[i];
+  toComapare(comparingArr, toCompare) {
+    if (comparingArr.length !== toCompare.length) {
+      return false;
+    }
+
+    return comparingArr.every((val, index) => {
+      if (Array.isArray(val) && Array.isArray(toCompare[index])) {
+        if (!this.toComapare(val, toCompare[index])) {
+          return false;
+        };
+      } else if (val !== toCompare[index]) {
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  horizontalMoves(direction) {
+    const toCompare = [...this.copyState];
+
+    for (let i = 0; i < this.copyState.length; i++) {
+      const row = this.copyState[i];
       const newRow = [];
 
       for (let j = 0; j < row.length - 1; j++) {
@@ -48,9 +71,8 @@ class Game {
 
           if (nextIndex < row.length && row[nextIndex] === row[j]) {
             row[j] += row[nextIndex];
+            this.gameScore += row[j];
             row[nextIndex] = 0;
-          } else if (row[nextIndex] !== row[j] && row[j] !== 0) {
-            console.log('error');
           }
         }
       }
@@ -62,128 +84,86 @@ class Game {
       }
 
       while (newRow.length < row.length) {
-        newRow.push(0);
+        direction === 'left' ? newRow.push(0) : newRow.unshift(0);
       }
-      this.initialState[i] = newRow;
+      this.copyState[i] = newRow;
     }
-    this.addNumberAfterStep();
+
+    if (!this.toComapare(toCompare, this.copyState)) {
+      this.addNumberAfterStep();
+    }
+
+    return this.copyState;
+  }
+
+  verticalMoves(direction) {
+    const toCompare = [...this.copyState];
+
+    this.copyState.map((_, i) => {
+      const col = this.copyState.map(c => c[i]);
+
+      for (let j = 0; j < col.length - 1; j++) {
+        if (col[j] !== 0) {
+          let nextIndex = j + 1;
+
+          while (nextIndex < col.length && col[nextIndex] === 0) {
+            nextIndex++;
+          }
+
+          if (nextIndex < col.length && col[nextIndex] === col[j]) {
+            col[j] += col[nextIndex];
+            this.gameScore += col[j];
+            col[nextIndex] = 0;
+          }
+        }
+      }
+
+      const newColumn = [];
+
+      for (let j = 0; j < col.length; j++) {
+        if (col[j] !== 0) {
+          newColumn.push(col[j]);
+        }
+      }
+
+      while (newColumn.length < col.length) {
+        direction === 'up' ? newColumn.push(0) : newColumn.unshift(0);
+      }
+
+      for (let j = 0; j < this.copyState.length; j++) {
+        this.copyState[j][i] = newColumn[j];
+      }
+    });
+
+    if (!this.toComapare(toCompare, this.copyState)) {
+      this.addNumberAfterStep();
+    }
+
+    return this.copyState;
+  }
+
+  moveLeft() {
+    this.horizontalMoves('left');
   }
 
   moveRight() {
-    for (let i = 0; i < this.initialState.length; i++) {
-      const row = this.initialState[i];
-
-      for (let j = 0; j < row.length - 1; j++) {
-        if (row[j] !== 0) {
-          let nextIndex = j + 1;
-
-          while (nextIndex < row.length && row[nextIndex] === 0) {
-            nextIndex++;
-          }
-
-          if (nextIndex < row.length && row[nextIndex] === row[j]) {
-            row[j] += row[nextIndex];
-            row[nextIndex] = 0;
-          }
-        }
-      }
-
-      const newRow = [];
-
-      for (let j = 0; j < row.length; j++) {
-        if (row[j] !== 0) {
-          newRow.push(row[j]);
-        }
-      }
-
-      while (newRow.length < row.length) {
-        newRow.unshift(0);
-      }
-      this.initialState[i] = newRow;
-    }
-    this.addNumberAfterStep();
+    this.horizontalMoves('right');
   }
 
   moveUp() {
-    this.initialState.map((_, i) => {
-      const col = this.initialState.map(c => c[i]);
-
-      for (let j = 0; j < col.length - 1; j++) {
-        if (col[j] !== 0) {
-          let nextIndex = j + 1;
-
-          while (nextIndex < col.length && col[nextIndex] === 0) {
-            nextIndex++;
-          }
-
-          if (nextIndex < col.length && col[nextIndex] === col[j]) {
-            col[j] += col[nextIndex];
-            col[nextIndex] = 0;
-          }
-        }
-      }
-
-      const newColumn = [];
-
-      for (let j = 0; j < col.length; j++) {
-        if (col[j] !== 0) {
-          newColumn.push(col[j]);
-        }
-      }
-
-      while (newColumn.length < col.length) {
-        newColumn.push(0);
-      }
-
-      for (let j = 0; j < this.initialState.length; j++) {
-        this.initialState[j][i] = newColumn[j];
-      }
-    });
-    this.addNumberAfterStep();
+    this.verticalMoves('up');
   }
 
   moveDown() {
-    this.initialState.map((_, i) => {
-      const col = this.initialState.map(c => c[i]);
-
-      for (let j = 0; j < col.length - 1; j++) {
-        if (col[j] !== 0) {
-          let nextIndex = j + 1;
-
-          while (nextIndex < col.length && col[nextIndex] === 0) {
-            nextIndex++;
-          }
-
-          if (nextIndex < col.length && col[nextIndex] === col[j]) {
-            col[j] += col[nextIndex];
-            col[nextIndex] = 0;
-          }
-        }
-      }
-
-      const newColumn = [];
-
-      for (let j = 0; j < col.length; j++) {
-        if (col[j] !== 0) {
-          newColumn.push(col[j]);
-        }
-      }
-
-      while (newColumn.length < col.length) {
-        newColumn.unshift(0);
-      }
-
-      for (let j = 0; j < this.initialState.length; j++) {
-        this.initialState[j][i] = newColumn[j];
-      }
-    });
-    this.addNumberAfterStep();
+    this.verticalMoves('down');
   }
 
   /**
    * @returns {number}
    */
-  getScore() { }
+  getScore() {
+    return this.gameScore;
+  }
 
   /**
    * @returns {number[][]}
@@ -191,7 +171,7 @@ class Game {
   getIndexes() {
     const emptyFields = [];
 
-    this.initialState.map((row, i) => {
+    this.copyState.map((row, i) => {
       row.map((col, j) => {
         if (col === 0) {
           emptyFields.push([i, j]);
@@ -211,10 +191,14 @@ class Game {
   renderFields(maxNumbers) {
     const indexes = [];
 
+    if (!this.getIndexes()) {
+      return;
+    }
+
     while (indexes.length < maxNumbers) {
       const index = [this.getIndexes()[0], this.getIndexes()[1]];
 
-      if (this.initialState[index[0]][index[1]] !== 0) {
+      if (this.copyState[index[0]][index[1]] !== 0) {
         break;
       }
 
@@ -222,17 +206,16 @@ class Game {
     }
 
     for (const [row, col] of indexes) {
-      this.initialState[row][col] = this.getNumber();
+      this.copyState[row][col] = this.getNumber();
     }
   }
 
   getState() {
-    this.renderFields(2);
+    return this.initialState;
   }
 
   addNumberAfterStep() {
     this.renderFields(1);
-    console.log(this.resultOfMowes);
   }
 
   /**
@@ -245,21 +228,27 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() { }
+  getStatus() {
+    return this.gameStatus;
+  }
 
   /**
    * Starts the game.
    */
 
   start() {
-    this.getState();
-
-    console.log(this.initialState);
+    this.renderFields(2);
+    this.gameStatus = 'playing';
+    this.getStatus();
   }
   /**
    * Resets the game.
    */
-  restart() { }
+  restart() {
+    this.gameStatus = 'idle';
+    this.getStatus();
+    this.gameScore = 0;
+  }
 
   // Add your own methods here
 }
