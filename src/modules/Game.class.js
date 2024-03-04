@@ -36,6 +36,7 @@ class Game {
     this.copyState = [...initialState];
   }
 
+  // Function for check if any rows or columns were changed
   toComapare(comparingArr, toCompare) {
     if (comparingArr.length !== toCompare.length) {
       return false;
@@ -43,42 +44,72 @@ class Game {
 
     return comparingArr.every((val, index) => {
       if (Array.isArray(val) && Array.isArray(toCompare[index])) {
-        if (!this.toComapare(val, toCompare[index])) {
-          return false;
+        if (this.toComapare(val, toCompare[index])) {
+          return true;
         };
-      } else if (val !== toCompare[index]) {
-        return false;
+      } else if (val === toCompare[index]) {
+        return true;
       }
 
-      return true;
+      return false;
     });
   }
 
-  horizontalMoves(direction) {
-    const toCompare = [...this.copyState];
+  // Function for check if 2048 is present
+  setWinGame(cell) {
+    if (cell === 2048) {
+      this.gameStatus = 'win';
+      this.getStatus();
+    }
+  }
 
+  isGameLoseVertical() {
     for (let i = 0; i < this.copyState.length; i++) {
-      const row = this.copyState[i];
+      const col = this.copyState.map(row => row[i]);
+
+      if (col.some((element, index) =>
+        index < col.length - 1
+        && element === col[index + 1])) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  isGameLoseHorizontal() {
+    for (let i = 0; i < this.copyState.length; i++) {
+      if (this.copyState[i].some((element, index) =>
+        index < this.copyState[i].length - 1
+        && element === this.copyState[i][index + 1])) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  // Function for horizontal moves cell
+  horizontalMoves(direction) {
+    const toCompare = JSON.parse(JSON.stringify(this.copyState));
+
+    this.copyState.forEach((row, i) => {
       const newRow = [];
 
-      for (let j = 0; j < row.length - 1; j++) {
+      for (let j = 0; j < row.length; j++) {
         let nextIndex = j + 1;
 
-        if (row[j] !== 0) {
-          while (nextIndex < row.length && row[nextIndex] === 0) {
-            nextIndex++;
-          }
+        if (row[j] === 0) {
+          nextIndex++;
+          continue;
+        }
 
-          if (nextIndex < row.length && row[nextIndex] === row[j]) {
+        if (row[j] !== 0) {
+          if (nextIndex < row.length && row[j] === row[nextIndex]) {
             row[j] += row[nextIndex];
             this.gameScore += row[j];
             row[nextIndex] = 0;
           }
-        }
-      }
-
-      for (let j = 0; j < row.length; j++) {
-        if (row[j] !== 0) {
           newRow.push(row[j]);
         }
       }
@@ -87,41 +118,47 @@ class Game {
         direction === 'left' ? newRow.push(0) : newRow.unshift(0);
       }
       this.copyState[i] = newRow;
-    }
+    });
 
     if (!this.toComapare(toCompare, this.copyState)) {
       this.addNumberAfterStep();
     }
 
+    if (!this.isGameLoseVertical() && !this.isGameLoseHorizontal()) {
+      this.gameStatus = 'lose';
+      this.getStatus();
+    }
+
+    console.log(this.isGameLoseVertical());
+    console.log(this.isGameLoseHorizontal());
+
     return this.copyState;
   }
 
+  // Function for vertical moves cell
   verticalMoves(direction) {
-    const toCompare = [...this.copyState];
+    const toCompare = JSON.parse(JSON.stringify(this.copyState));
+    let col = [];
 
-    this.copyState.map((_, i) => {
-      const col = this.copyState.map(c => c[i]);
-
-      for (let j = 0; j < col.length - 1; j++) {
-        if (col[j] !== 0) {
-          let nextIndex = j + 1;
-
-          while (nextIndex < col.length && col[nextIndex] === 0) {
-            nextIndex++;
-          }
-
-          if (nextIndex < col.length && col[nextIndex] === col[j]) {
-            col[j] += col[nextIndex];
-            this.gameScore += col[j];
-            col[nextIndex] = 0;
-          }
-        }
-      }
+    this.copyState.forEach((_, i) => {
+      col = this.copyState.map(c => c[i]);
 
       const newColumn = [];
 
       for (let j = 0; j < col.length; j++) {
+        let nextIndex = j + 1;
+
+        if (col[j] === 0) {
+          nextIndex++;
+          continue;
+        }
+
         if (col[j] !== 0) {
+          if (nextIndex < col.length && col[j] === col[nextIndex]) {
+            col[j] += col[nextIndex];
+            this.gameScore += col[j];
+            col[nextIndex] = 0;
+          }
           newColumn.push(col[j]);
         }
       }
@@ -130,13 +167,21 @@ class Game {
         direction === 'up' ? newColumn.push(0) : newColumn.unshift(0);
       }
 
-      for (let j = 0; j < this.copyState.length; j++) {
-        this.copyState[j][i] = newColumn[j];
+      for (let k = 0; k < this.copyState.length; k++) {
+        this.copyState[k][i] = newColumn[k];
       }
     });
 
     if (!this.toComapare(toCompare, this.copyState)) {
       this.addNumberAfterStep();
+    }
+
+    console.log(this.isGameLoseVertical());
+    console.log(this.isGameLoseHorizontal());
+
+    if (!this.isGameLoseVertical() && !this.isGameLoseHorizontal) {
+      this.gameStatus = 'lose';
+      this.getStatus();
     }
 
     return this.copyState;
@@ -168,11 +213,15 @@ class Game {
   /**
    * @returns {number[][]}
    */
+
+  // Function search cell === 0 and fill the number if it's possible
   getIndexes() {
     const emptyFields = [];
 
     this.copyState.map((row, i) => {
       row.map((col, j) => {
+        this.setWinGame(col);
+
         if (col === 0) {
           emptyFields.push([i, j]);
         }
@@ -188,15 +237,22 @@ class Game {
     return Math.random() < 0.1 ? 4 : 2;
   }
 
+  // Function cells with number
   renderFields(maxNumbers) {
     const indexes = [];
 
-    if (!this.getIndexes()) {
-      return;
-    }
-
     while (indexes.length < maxNumbers) {
-      const index = [this.getIndexes()[0], this.getIndexes()[1]];
+      let index = [...this.getIndexes()];
+      const includesSubArray = indexes.some(arr =>
+        arr.every((value, i) => value === index[i]));
+
+      if (includesSubArray && maxNumbers === 2) {
+        index = [...this.getIndexes()];
+      }
+
+      if (!index.length < 0) {
+        return;
+      }
 
       if (this.copyState[index[0]][index[1]] !== 0) {
         break;
@@ -211,7 +267,7 @@ class Game {
   }
 
   getState() {
-    return this.initialState;
+    return this.copyState;
   }
 
   addNumberAfterStep() {
@@ -247,7 +303,10 @@ class Game {
   restart() {
     this.gameStatus = 'idle';
     this.getStatus();
+    this.copyState = JSON.parse(JSON.stringify(this.initialState));
+    this.getState();
     this.gameScore = 0;
+    this.getScore();
   }
 
   // Add your own methods here

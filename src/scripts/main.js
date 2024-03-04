@@ -6,6 +6,7 @@ const game = new Game();
 
 const gameUIFields = [[], [], [], []];
 const startGameButton = document.querySelector('.button.start');
+// const restartGameButton = document.querySelector('.button.restart');
 const gameFieldRows = [...document.querySelectorAll('.field-row')];
 let gameFieldCell = [...document.querySelectorAll('.field-row .field-cell')];
 
@@ -41,7 +42,13 @@ startGameButton.addEventListener('click', el => {
   game.start();
   renderUIFields();
   renderGameDesc();
+  el.target.className = 'button restart';
+  el.target.textContent = 'Restart';
 });
+
+// restartGameButton.addEventListener('click', el => {
+//   game.restart();
+// });
 
 document.addEventListener('keydown', ev => {
   if (game.gameStatus === 'idle') {
