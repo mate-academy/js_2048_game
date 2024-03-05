@@ -4,79 +4,80 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #2a584e;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #3c5755;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #5d91ab;
+    color: #f9f6f2;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #326d8a;
+    color: #f9f6f2;
   }
 
   &--8 {
-    background: #f2b179;
+    background: #084d6f;
     color: #f9f6f2;
   }
 
   &--16 {
-    background: #f59563;
+    background: #5c3e94;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #3f2178;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
+    background: #a022ab;
     color: #f9f6f2;
   }
 
   &--128 {
-    background: #edcf72;
+    background: #6d0c7e;
     color: #f9f6f2;
   }
 
   &--256 {
-    background: #edcc61;
+    background: #830d4e;
     color: #f9f6f2;
   }
 
   &--512 {
-    background: #edc850;
+    background: #61123e;
     color: #f9f6f2;
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #4b042c;
     color: #f9f6f2;
   }
 
   &--2048 {
-    background: #edc22e;
+    background: #aa5307;
     color: #f9f6f2;
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: #273e3d;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -91,11 +92,12 @@ body {
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: #aa5307;
+  color: #cdcde3;
   width: 75px;
   height: 75px;
   font-size: 24px;
+  font-weight: 800;
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -109,11 +111,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #281b76;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #cdcde3;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -127,38 +129,40 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: #cdcde3;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
   width: 75px;
   height: 75px;
 
-  transition: 0.25s ease background;
+  transition: 0.25s ease all;
 }
 
 .start {
-  background: #1dae28;
+  background: #281b76;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: #1d1549;
+    transform: scale(1.05);
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #552985;
 
   &:hover {
-    background: #f87474;
+    background: #5e368a;
+    transform: scale(1.05);
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #281b76;
+  color: #cdcde3;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
