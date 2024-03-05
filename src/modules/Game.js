@@ -47,36 +47,18 @@ class Game {
   }
 
   moveLeft() {
-    this.move(() => this.#board.getMovedLeftState());
+    this.#move(() => this.#board.getMovedLeftState());
   }
   moveRight() {
-    this.move(() => this.#board.getMovedRightState());
+    this.#move(() => this.#board.getMovedRightState());
   }
   moveUp() {
-    this.move(() => this.#board.getMovedUpState());
+    this.#move(() => this.#board.getMovedUpState());
   }
   moveDown() {
-    this.move(() => this.#board.getMovedDownState());
+    this.#move(() => this.#board.getMovedDownState());
   }
 
-  move(cb) {
-    this.#checkLose();
-
-    if (this.#status !== Game.STATUSES.playing) {
-      return;
-    }
-
-    const { newState, mergedValues } = cb();
-
-    if (JSON.stringify(newState) === JSON.stringify(this.#board.getState())) {
-      return;
-    }
-
-    this.#score += mergedValues.reduce((sum, value) => sum + value, 0);
-    this.#board = new Board(newState);
-    this.#checkWin();
-    this.#fillRandomCell();
-  }
   /**
    * @returns {number}
    */
@@ -125,6 +107,28 @@ class Game {
     this.#status = Game.STATUSES.idle;
     this.#score = 0;
     this.#board = new Board(this.#initialState);
+  }
+
+  /**
+   *
+   * @param {() => {newState: number[][], mergedValues: number[]}} cb
+   */
+  #move(cb) {
+    if (this.#status !== Game.STATUSES.playing) {
+      return;
+    }
+
+    const { newState, mergedValues } = cb();
+
+    if (JSON.stringify(newState) === JSON.stringify(this.#board.getState())) {
+      return;
+    }
+
+    this.#score += mergedValues.reduce((sum, value) => sum + value, 0);
+    this.#board = new Board(newState);
+    this.#fillRandomCell();
+    this.#checkWin();
+    this.#checkLose();
   }
 
   #checkWin() {
