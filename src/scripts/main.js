@@ -6,6 +6,7 @@ const game = new Game();
 
 document.addEventListener('DOMContentLoaded', () => {
   const gameUIFields = [[], [], [], []];
+  const gameScoreInfo = document.querySelector('.game-score');
   const startGameButton = document.querySelector('.button.start');
   const messageLose = document.querySelector('.message-lose');
   const messageWin = document.querySelector('.message-win');
@@ -54,10 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
         startGameButton.classList.add('restart');
         startGameButton.textContent = 'Restart';
         messageStart.classList.add('hidden');
+        gameScoreInfo.textContent = 0;
         break;
       case 'button restart':
         hideMessageGame(messageLose, 'lose');
         hideMessageGame(messageWin, 'win');
+        gameScoreInfo.textContent = 0;
         game.restart();
         game.start();
         renderUIFields();
@@ -82,24 +85,28 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'ArrowLeft':
         game.moveLeft();
         renderGameDesc();
+        gameScoreInfo.textContent = game.getScore();
         showMessageGame(messageWin, 'win');
         showMessageGame(messageLose, 'lose');
         break;
       case 'ArrowRight':
         game.moveRight();
         renderGameDesc();
+        gameScoreInfo.textContent = game.getScore();
         showMessageGame(messageWin, 'win');
         showMessageGame(messageLose, 'lose');
         break;
       case 'ArrowUp':
         game.moveUp();
         renderGameDesc();
+        gameScoreInfo.textContent = game.getScore();
         showMessageGame(messageWin, 'win');
         showMessageGame(messageLose, 'lose');
         break;
       case 'ArrowDown':
         game.moveDown();
         renderGameDesc();
+        gameScoreInfo.textContent = game.getScore();
         showMessageGame(messageWin, 'win');
         showMessageGame(messageLose, 'lose');
         break;
