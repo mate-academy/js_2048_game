@@ -129,8 +129,6 @@ class Game {
       this.state[i] = newRow;
     });
 
-    console.log(this.getScore());
-
     if (!this.toComapare(toCompare, this.state)) {
       this.addNumberAfterStep();
     }
