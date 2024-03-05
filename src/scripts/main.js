@@ -4,77 +4,121 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-const gameUIFields = [[], [], [], []];
-const startGameButton = document.querySelector('.button.start');
-// const restartGameButton = document.querySelector('.button.restart');
-const gameFieldRows = [...document.querySelectorAll('.field-row')];
-let gameFieldCell = [...document.querySelectorAll('.field-row .field-cell')];
+document.addEventListener('DOMContentLoaded', () => {
+  const gameUIFields = [[], [], [], []];
+  const startGameButton = document.querySelector('.button.start');
+  const messageLose = document.querySelector('.message-lose');
+  const messageWin = document.querySelector('.message-win');
+  const messageStart = document.querySelector('.message-start');
+  const gameFieldRows = [...document.querySelectorAll('.field-row')];
+  const gameFieldCell
+    = [...document.querySelectorAll('.field-row .field-cell')];
 
-const renderUIFields = () => {
-  for (let i = 0; i < gameFieldRows.length; i++) {
-    gameUIFields[i] = gameFieldRows[i];
+  const renderUIFields = () => {
+    let cells = [...gameFieldCell];
 
-    for (let j = 0; j < gameFieldRows.length; j++) {
-      gameUIFields[i][j] = gameFieldCell[j];
-    }
-    gameFieldCell = gameFieldCell.slice(4);
-  }
-};
+    gameFieldRows.forEach((_, i) => {
+      gameUIFields[i] = gameFieldRows[i];
 
-const renderGameDesc = () => {
-  game.copyState.map((row, i) => {
-    row.map((coll, j) => {
-      gameUIFields[i][j].textContent = '';
-
-      if (gameUIFields[i][j].textContent === '') {
-        gameUIFields[i][j].className = `field-cell`;
-      }
-
-      if (coll > 0) {
-        gameUIFields[i][j].append(coll);
-        gameUIFields[i][j].className = `field-cell field-cell--${coll}`;
-      }
+      gameFieldRows.forEach((__, j) => {
+        gameUIFields[i][j] = cells[j];
+      });
+      cells = cells.slice(4);
     });
+  };
+
+  const renderGameDesc = () => {
+    game.state.forEach((row, i) => {
+      row.forEach((coll, j) => {
+        gameUIFields[i][j].textContent = '';
+
+        if (gameUIFields[i][j].textContent === '') {
+          gameUIFields[i][j].className = `field-cell`;
+        }
+
+        if (coll > 0) {
+          gameUIFields[i][j].append(coll);
+          gameUIFields[i][j].className = `field-cell field-cell--${coll}`;
+        }
+      });
+    });
+  };
+
+  document.addEventListener('click', el => {
+    switch (el.srcElement.className) {
+      case 'button start':
+        game.start();
+        renderUIFields();
+        renderGameDesc();
+        startGameButton.classList.remove('start');
+        startGameButton.classList.add('restart');
+        startGameButton.textContent = 'Restart';
+        messageStart.classList.add('hidden');
+        break;
+      case 'button restart':
+        hideMessageGame(messageLose, 'lose');
+        hideMessageGame(messageWin, 'win');
+        game.restart();
+        game.start();
+        renderUIFields();
+        renderGameDesc();
+        break;
+      default:
+        break;
+    }
   });
-};
 
-startGameButton.addEventListener('click', el => {
-  game.start();
-  renderUIFields();
-  renderGameDesc();
-  el.target.className = 'button restart';
-  el.target.textContent = 'Restart';
-});
+  document.addEventListener('keydown', ev => {
+    if (game.gameStatus === 'idle') {
+      return;
+    }
 
-// restartGameButton.addEventListener('click', el => {
-//   game.restart();
-// });
+    if (game.gameStatus === 'win'
+      || game.gameStatus === 'lose') {
+      return;
+    }
 
-document.addEventListener('keydown', ev => {
-  if (game.gameStatus === 'idle') {
-    return;
-  }
+    switch (ev.key) {
+      case 'ArrowLeft':
+        game.moveLeft();
+        renderGameDesc();
+        showMessageGame(messageWin, 'win');
+        showMessageGame(messageLose, 'lose');
+        break;
+      case 'ArrowRight':
+        game.moveRight();
+        renderGameDesc();
+        showMessageGame(messageWin, 'win');
+        showMessageGame(messageLose, 'lose');
+        break;
+      case 'ArrowUp':
+        game.moveUp();
+        renderGameDesc();
+        showMessageGame(messageWin, 'win');
+        showMessageGame(messageLose, 'lose');
+        break;
+      case 'ArrowDown':
+        game.moveDown();
+        renderGameDesc();
+        showMessageGame(messageWin, 'win');
+        showMessageGame(messageLose, 'lose');
+        break;
+      default:
+        break;
+    }
+  });
 
-  switch (ev.key) {
-    case 'ArrowLeft':
-      game.moveLeft();
-      renderGameDesc();
-      break;
-    case 'ArrowRight':
-      game.moveRight();
-      renderGameDesc();
-      break;
-    case 'ArrowUp':
-      game.moveUp();
-      renderGameDesc();
-      break;
-    case 'ArrowDown':
-      game.moveDown();
-      renderGameDesc();
-      break;
-    default:
-      break;
-  }
+  const showMessageGame = (messageSelector, gameStatus) => {
+    if (game.gameStatus === gameStatus) {
+      messageSelector.classList.remove('hidden');
+    }
+  };
+
+  const hideMessageGame = (messageSelector, gameStatus) => {
+    if (game.gameStatus === gameStatus) {
+      messageSelector.classList.add('hidden');
+    }
+  };
 });
 
 // Write your code here

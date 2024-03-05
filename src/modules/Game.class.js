@@ -21,6 +21,10 @@ class Game {
    * initial state.
    */
 
+  copyState(state) {
+    return JSON.parse(JSON.stringify(state));
+  }
+
   constructor(
     initialState = [
       [0, 0, 0, 0],
@@ -33,9 +37,8 @@ class Game {
     this.initialState = initialState;
     this.gameStatus = gameStatus;
     this.gameScore = gameScore;
-    this.copyState = [...initialState];
+    this.state = this.copyState(initialState);
   }
-
   // Function for check if any rows or columns were changed
   toComapare(comparingArr, toCompare) {
     if (comparingArr.length !== toCompare.length) {
@@ -64,36 +67,42 @@ class Game {
   }
 
   isGameLoseVertical() {
-    for (let i = 0; i < this.copyState.length; i++) {
-      const col = this.copyState.map(row => row[i]);
+    for (let i = 0; i < this.state.length; i++) {
+      const col = this.state.map(row => row[i]);
 
-      if (col.some((element, index) =>
-        index < col.length - 1
-        && element === col[index + 1])) {
-        return true;
+      for (let j = 0; j < col.length - 1; j++) {
+        if (col[j] === 0 || col[j] === col[j + 1]) {
+          return false;
+        }
       }
     }
 
-    return false;
+    return true;
   }
 
   isGameLoseHorizontal() {
-    for (let i = 0; i < this.copyState.length; i++) {
-      if (this.copyState[i].some((element, index) =>
-        index < this.copyState[i].length - 1
-        && element === this.copyState[i][index + 1])) {
-        return true;
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state[i].length - 1; j++) {
+        const row = this.state[i];
+
+        if (row[j] === 0 || row[j] === row[j + 1]) {
+          return false;
+        }
       }
     }
 
-    return false;
+    return true;
   }
 
   // Function for horizontal moves cell
   horizontalMoves(direction) {
-    const toCompare = JSON.parse(JSON.stringify(this.copyState));
+    if (this.getStatus() === 'idle') {
+      return;
+    }
 
-    this.copyState.forEach((row, i) => {
+    const toCompare = this.copyState(this.state);
+
+    this.state.map((row, i) => {
       const newRow = [];
 
       for (let j = 0; j < row.length; j++) {
@@ -117,31 +126,30 @@ class Game {
       while (newRow.length < row.length) {
         direction === 'left' ? newRow.push(0) : newRow.unshift(0);
       }
-      this.copyState[i] = newRow;
+      this.state[i] = newRow;
     });
 
-    if (!this.toComapare(toCompare, this.copyState)) {
+    if (!this.toComapare(toCompare, this.state)) {
       this.addNumberAfterStep();
     }
 
-    if (!this.isGameLoseVertical() && !this.isGameLoseHorizontal()) {
+    if (this.isGameLoseVertical() && this.isGameLoseHorizontal()) {
       this.gameStatus = 'lose';
       this.getStatus();
     }
-
-    console.log(this.isGameLoseVertical());
-    console.log(this.isGameLoseHorizontal());
-
-    return this.copyState;
   }
 
   // Function for vertical moves cell
   verticalMoves(direction) {
-    const toCompare = JSON.parse(JSON.stringify(this.copyState));
+    if (this.getStatus() === 'idle') {
+      return;
+    }
+
+    const toCompare = this.copyState(this.state);
     let col = [];
 
-    this.copyState.forEach((_, i) => {
-      col = this.copyState.map(c => c[i]);
+    this.state.map((_, i) => {
+      col = this.state.map(c => c[i]);
 
       const newColumn = [];
 
@@ -167,24 +175,19 @@ class Game {
         direction === 'up' ? newColumn.push(0) : newColumn.unshift(0);
       }
 
-      for (let k = 0; k < this.copyState.length; k++) {
-        this.copyState[k][i] = newColumn[k];
+      for (let k = 0; k < this.state.length; k++) {
+        this.state[k][i] = newColumn[k];
       }
     });
 
-    if (!this.toComapare(toCompare, this.copyState)) {
+    if (!this.toComapare(toCompare, this.state)) {
       this.addNumberAfterStep();
     }
 
-    console.log(this.isGameLoseVertical());
-    console.log(this.isGameLoseHorizontal());
-
-    if (!this.isGameLoseVertical() && !this.isGameLoseHorizontal) {
+    if (this.isGameLoseVertical() && this.isGameLoseHorizontal()) {
       this.gameStatus = 'lose';
       this.getStatus();
     }
-
-    return this.copyState;
   }
 
   moveLeft() {
@@ -218,8 +221,8 @@ class Game {
   getIndexes() {
     const emptyFields = [];
 
-    this.copyState.map((row, i) => {
-      row.map((col, j) => {
+    this.state.forEach((row, i) => {
+      row.forEach((col, j) => {
         this.setWinGame(col);
 
         if (col === 0) {
@@ -254,7 +257,7 @@ class Game {
         return;
       }
 
-      if (this.copyState[index[0]][index[1]] !== 0) {
+      if (this.state[index[0]][index[1]] !== 0) {
         break;
       }
 
@@ -262,12 +265,12 @@ class Game {
     }
 
     for (const [row, col] of indexes) {
-      this.copyState[row][col] = this.getNumber();
+      this.state[row][col] = this.getNumber();
     }
   }
 
   getState() {
-    return this.copyState;
+    return this.state;
   }
 
   addNumberAfterStep() {
@@ -302,11 +305,8 @@ class Game {
    */
   restart() {
     this.gameStatus = 'idle';
-    this.getStatus();
-    this.copyState = JSON.parse(JSON.stringify(this.initialState));
-    this.getState();
+    this.state = this.copyState(this.initialState);
     this.gameScore = 0;
-    this.getScore();
   }
 
   // Add your own methods here
