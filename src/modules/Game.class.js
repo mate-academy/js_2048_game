@@ -2,11 +2,8 @@
 
 class Game {
   constructor(initialState) {
-    // зберігаємо стан гри який було передано до нашого обєкта
     this.initialState = initialState;
 
-    // тепер зберігаємо стан ношої гри (дошки)
-    // якщо було передано, якщо ні то за замовчуванням
     this.board = initialState || [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -14,22 +11,14 @@ class Game {
       [0, 0, 0, 0],
     ];
 
-    // початковий рахунок 0
     this.boardScore = 0;
-
-    // поточний статус ставимо 'idle'-(непрацюючий)
-    this.currentStatus = 'idle'; // 'playing', 'win', 'lose'
-
-    // !!!!тут поки не розумію що до чого потрібно буде додати коменти
+    this.currentStatus = 'idle';
     this.isAbleToMove = true;
     this.isGameActive = false;
     this.isGameWon = false;
     this.isGameLost = false;
   }
 
-  // тут думаю теж зрозуміло
-  // викликаємо функцію за натиском клавіши
-  // moveLeft() і інші викликаються в 'main.js'
   moveLeft() {
     if (this.isGameActive) {
       this.moveTo('left');
@@ -105,8 +94,6 @@ class Game {
     ];
      * то тести виснуть і не завершуються
      *
-     *
-     *
      */
     this.board = [
       [0, 0, 0, 0],
@@ -116,7 +103,6 @@ class Game {
     ];
 
     this.boardScore = 0;
-
     this.currentStatus = 'idle';
     this.isGameActive = false;
     this.isGameWon = false;
@@ -140,60 +126,30 @@ class Game {
     return randomValue < 0.1 ? 4 : 2;
   }
 
-  // ==========================================================
-  // функція переміщення плиток з номерами відповідно до 'direction'
   moveTo(direction) {
     if (!this.isGameActive) {
       return;
     }
 
-    const numColumns = this.board[0].length; // завжди буде 4 (я так гадаю)
-
-    // тут ми робимо глибоку копію масива 'this.board'
-    // 'JSON.stringify()'- робить з обєкта строку а потім
-    // 'JSON.parse()' уже перетворює строку в обєкт (в нашому випадку масив)
-    // !!!чому ми робимо саме глибоку копію???
-    // тому що вона нам робить копію і масивів всередені масиву
-    // а не просто посилання на них
+    const numColumns = this.board[0].length;
     let currentTable = JSON.parse(JSON.stringify(this.board));
-
-    // змінна для підрахунку очок гри
     let addScore = 0;
 
-    // !!! так тут трішки для мене складнувато!!!
-    // !!! навіщо ми це робимо потрібно теж розібратись!!!!
-    // що ми тут робимо???
-    // ми перетворюємо строки в колонки
-    // зовнішній 'map' приймає тільки індекси а внутрішній формує
-    // формує рядки з однаковими індексами
     const transpose = (table) => {
       return table[0].map((_, colIndex) => table.map((row) => row[colIndex]));
-      // return table.map((_, colIndex) => table.map(row => row[colIndex]));
     };
 
-    // !!! тут більш зрозуміліше що ми робимо але поки що
-    // не зрозуміло навіщо!!!!
     const reverseRow = (table) => {
       return table.map((row) => row.slice().reverse());
     };
 
-    // тут у нас виходить зсув ВПРАВО всієї дошки
     const moveTable = (table) => {
-      // створюємо копію вхідного 'table'
       const newTable = table.map((row) => {
-        // створюємо нові рядки в 'table' без нулів 0
-        // [0, 2, 4, 0] ==> [2, 4]
         let newRow = row.filter((num) => num !== 0);
-        // тут ми отримуємо значення скільки нулів потрібно додати
         const zerosToAdd = numColumns - newRow.length;
 
-        // ми копіюємо 'newRow' з новим масивом з нулями який
-        // створюємо
-        // [2, 4] ==> [0, 0, 2, 4]
-        // (здвигаємо їх щоб вони були поруч для цикла)
         newRow = [...Array(zerosToAdd).fill(0), ...newRow];
 
-        // якщо плитки однакові ОБЄДНУЄМО
         for (let i = newRow.length; i >= 0; i--) {
           if (newRow[i - 1] === newRow[i]) {
             newRow[i - 1] *= 2;
@@ -203,14 +159,10 @@ class Game {
           }
         }
 
-        // знову прибираємо нулі щоб здвинути до краю
-        // [0, 2, 4, 0] ==> [2, 4]
         newRow = newRow.filter((num) => num !== 0);
 
-        // скільки додати нулів
         const zerosToAddEnd = numColumns - newRow.length;
 
-        // знову додаємо нулі щоб числа були біля краю
         newRow = [...Array(zerosToAddEnd).fill(0), ...newRow];
 
         return newRow;
@@ -222,7 +174,6 @@ class Game {
     const isGameOver = () => {
       const GAME_FIELD = 4;
 
-      // тут перевірка чи є хоч один нуль
       for (let i = 0; i < GAME_FIELD; i++) {
         for (let j = 0; j < GAME_FIELD; j++) {
           if (this.board[i][j] === 0) {
@@ -231,22 +182,18 @@ class Game {
         }
       }
 
-      // тут перевірка чи є по горизонталі однакові числа
       for (let i = 0; i < GAME_FIELD; i++) {
         for (let j = 0; j < GAME_FIELD; j++) {
           if (j < GAME_FIELD - 1 && this.board[i][j] === this.board[i][j + 1]) {
             return false;
           }
 
-          // тут перевірка чи є по вертикалі однакові числа
           if (i < GAME_FIELD - 1 && this.board[i][j] === this.board[i + 1][j]) {
             return false;
           }
         }
       }
 
-      // само собою якщо всі цикли нічого не повернули
-      // то гра завершена
       this.isGameActive = false;
       this.isGameLost = true;
 
