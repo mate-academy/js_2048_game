@@ -19,10 +19,6 @@ button.addEventListener('click', () => {
     button.classList.remove('start');
   } else {
     game.restart();
-
-    button.textContent = 'Start';
-    button.classList.add('start');
-    button.classList.remove('restart');
   }
 
   messageStart.classList.add('hidden');
@@ -31,6 +27,38 @@ button.addEventListener('click', () => {
 
   updateUI();
 });
+
+// ==========================================
+let touchStartX, touchStartY;
+let touchEndX, touchEndY;
+
+container.addEventListener('touchstart', (swipe) => {
+  touchStartX = swipe.touches[0].clientX;
+  touchStartY = swipe.touches[0].clientY;
+});
+
+container.addEventListener('touchend', (swipe) => {
+  touchEndX = swipe.changedTouches[0].clientX;
+  touchEndY = swipe.changedTouches[0].clientY;
+
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > 0) {
+      game.moveRight();
+    } else {
+      game.moveLeft();
+    }
+  } else {
+    if (deltaY > 0) {
+      game.moveDown();
+    } else {
+      game.moveUp();
+    }
+  }
+});
+// ==========================================
 
 document.addEventListener('keydown', (keyboard) => {
   switch (keyboard.key) {

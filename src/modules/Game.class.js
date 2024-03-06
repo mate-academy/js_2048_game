@@ -74,27 +74,6 @@ class Game {
   }
 
   restart() {
-    /**
-     * не проходить один тест коли при рестарті
-     * потрібно повернути initialState
-     *
-     *    const INITIAL_STATE = [
-      [2, 2, 4, 4],
-      [2, 2, 4, 4],
-      [2, 2, 4, 4],
-      [0, 0, 4, 4],
-    ];
-     *
-     * але коли роблю так:
-     * this.board = this.initialState || [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-     * то тести виснуть і не завершуються
-     *
-     */
     this.board = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -103,10 +82,12 @@ class Game {
     ];
 
     this.boardScore = 0;
-    this.currentStatus = 'idle';
-    this.isGameActive = false;
+    this.isGameActive = true;
     this.isGameWon = false;
     this.isGameLost = false;
+
+    this.placeNewCell();
+    this.placeNewCell();
   }
 
   placeNewCell() {
