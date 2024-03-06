@@ -46,9 +46,7 @@ const getRandomIndexes = function (array) {
 const includeMod = function (element) {
   const elementClasses = Array.from(element.classList);
 
-  return elementClasses.some((className) => {
-    className.startsWith('field-cell--');
-  });
+  return elementClasses.some((classen) => classen.startsWith('field-cell--'));
 };
 
 // Returns modification of classes
