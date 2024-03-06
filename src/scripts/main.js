@@ -532,54 +532,6 @@ buttonStart.addEventListener('click', function () {
   cells[indexes[1]].classList.add('field-cell--2');
   cells[indexes[1]].textContent = '2';
 
-  // cells[15].classList.add('field-cell--1024');
-  // cells[15].textContent = '1024';
-
-  // cells[2].classList.add('field-cell--1024');
-  // cells[2].textContent = '1024';
-
-  // cells[0].classList.add('field-cell--8');
-  // cells[0].textContent = '8';
-
-  // cells[11].classList.add('field-cell--1024');
-  // cells[11].textContent = '1024';
-
-  // cells[13].classList.add('field-cell--32');
-  // cells[13].textContent = '32';
-
-  // cells[7].classList.add('field-cell--64');
-  // cells[7].textContent = '64';
-
-  // cells[6].classList.add('field-cell--128');
-  // cells[6].textContent = '128';
-
-  // cells[8].classList.add('field-cell--256');
-  // cells[8].textContent = '256';
-
-  // cells[9].classList.add('field-cell--8');
-  // cells[9].textContent = '8';
-
-  // cells[10].classList.add('field-cell--1024');
-  // cells[10].textContent = '1024';
-
-  // cells[1].classList.add('field-cell--256');
-  // cells[1].textContent = '256';
-
-  // cells[4].classList.add('field-cell--512');
-  // cells[4].textContent = '512';
-
-  // cells[5].classList.add('field-cell--2');
-  // cells[5].textContent = '2';
-
-  // cells[14].classList.add('field-cell--128');
-  // cells[14].textContent = '128';
-
-  // cells[3].classList.add('field-cell--8');
-  // cells[3].textContent = '8';
-
-  // cells[12].classList.add('field-cell--64');
-  // cells[12].textContent = '64';
-
   messageStart.classList.add('hidden');
 });
 
