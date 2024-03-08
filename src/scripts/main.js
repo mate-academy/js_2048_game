@@ -1,36 +1,40 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable brace-style */
-/* eslint-disable max-len */
+/* eslint-disable prettier/prettier */
 'use strict';
 
-// Importowanie klasy Game z odpowiedniego katalogu lub pliku, jeśli nie jest dostępna globalnie
+// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
-const game = new Game([
-  [8, 8, 0, 0],
-  [16, 16, 16, 16],
-  [32, 32, 64, 128],
-  [2, 2, 4, 8],
-]);
+const game = new Game(
+  [
+    [1024, 1024, 2, 4],
+    [4, 2, 4, 2],
+    [2, 4, 2, 4],
+    [0, 2, 4, 2],
+  ],
+);
 
+// Write your code here
 function initializeGame()
 {
-  const startButton = document.querySelector('.start');
+  const buttonStart = document.querySelector('.start');
 
-  startButton.addEventListener('click', () =>
+  buttonStart.addEventListener('click', () =>
   {
-    if (startButton.classList.contains('start'))
+    if (buttonStart.classList.contains('start'))
     {
       game.start();
-      startButton.textContent = 'Restart';
-      startButton.classList.remove('start');
-      startButton.classList.add('restart');
-    } else
+      buttonStart.classList.remove('start');
+      buttonStart.classList.add('restart');
+      buttonStart.textContent = 'Restart';
+    }
+    else
     {
       game.restart();
-      startButton.textContent = 'Start';
-      startButton.classList.remove('restart');
-      startButton.classList.add('start');
+      buttonStart.classList.remove('restart');
+      buttonStart.classList.add('start');
+      buttonStart.textContent = 'Start';
     }
+
     updateUI();
   });
 
@@ -61,6 +65,7 @@ function initializeGame()
           break;
       }
       updateUI();
+      game.getStatus();
     }
   });
 }
@@ -76,7 +81,6 @@ function updateUI()
   const cells = document.querySelectorAll('.field-cell');
   let index = 0;
 
-  // Aktualizacja zawartości komórek planszy oraz ich klas CSS
   for (let i = 0; i < state.length; i++)
   {
     for (let j = 0; j < state[i].length; j++)
@@ -92,17 +96,30 @@ function updateUI()
     }
   }
 
-  // Sprawdzenie statusu gry i wyświetlenie odpowiedniej wiadomości (opcjonalne)
   const gameStatus = game.getStatus();
 
-  if (gameStatus === 'win')
+  const messageStart = document.querySelector('.message-start');
+  const messageWin = document.querySelector('.message-win');
+  const messageLose = document.querySelector('.message-lose');
+
+  if (gameStatus === 'playing')
   {
-  } else if (gameStatus === 'lose')
+    messageStart.classList.add('hidden');
+  }
+  else if (gameStatus === 'win')
   {
-  } else
+    messageWin.classList.remove('hidden');
+  }
+  else if (gameStatus === 'lose')
   {
+    messageLose.classList.remove('hidden');
+  }
+  else
+  {
+    messageStart.classList.remove('hidden');
+    messageWin.classList.add('hidden');
+    messageLose.classList.add('hidden');
   }
 }
 
-// Wywołanie funkcji inicjalizującej grę po załadowaniu dokumentu HTML
 document.addEventListener('DOMContentLoaded', initializeGame);
