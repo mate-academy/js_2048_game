@@ -1,5 +1,4 @@
 'use strict';
-
 /**
  * This class represents the game.
  * Now it has a basic structure, that is needed for testing.
@@ -20,9 +19,16 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
     // eslint-disable-next-line no-console
-    console.log(initialState);
+    console.log(initialState, 'initial state');
   }
 
   moveLeft() {}
@@ -55,7 +61,10 @@ class Game {
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+       // eslint-disable-next-line no-console
+    console.log('The game has started');
+  }
 
   /**
    * Resets the game.
