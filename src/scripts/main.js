@@ -4,14 +4,7 @@
 
 // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
-const game = new Game(
-  [
-    [1024, 1024, 2, 4],
-    [4, 2, 4, 2],
-    [2, 4, 2, 4],
-    [0, 2, 4, 2],
-  ],
-);
+const game = new Game();
 
 // Write your code here
 function initializeGame()
