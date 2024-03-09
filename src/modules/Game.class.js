@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 'use strict';
 /**
  * This class represents the game.
@@ -25,15 +27,24 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-    ],
+    ]
   ) {
     // eslint-disable-next-line no-console
     console.log(initialState, 'initial state');
+    this.board = initialState;
+    this.score = 0;
+    this.status = 'idle';
+    // this.rows = rows;
+
+
   }
 
   moveLeft() {}
   moveRight() {}
-  moveUp() {}
+
+  moveUp() {
+
+  }
   moveDown() {}
 
   /**
@@ -61,9 +72,13 @@ class Game {
   /**
    * Starts the game.
    */
-  start() {
-       // eslint-disable-next-line no-console
-    console.log('The game has started');
+  start(name) {
+    // eslint-disable-next-line no-console
+    console.log(Math.floor(Math.random() * 4));
+    console.log('The game has started', this.board[0].cells,  name);
+    this.board[Math.floor(Math.random() * 4)].cells[Math.floor(Math.random() * 4)].innerText = 2;
+    this.board[Math.floor(Math.random() * 4)].cells[Math.floor(Math.random() * 4)].innerText = 2;
+    console.log(this.board[1].cells[1].value, 'board ');
   }
 
   /**
