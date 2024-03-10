@@ -104,12 +104,13 @@ function moveLeft() {
       if (board[row][col] !== 0) {
         let nextCol = col - 1;
 
-        while (nextCol >= 0) {
+        while (nextCol >= 0 && nextCol === col - 1) {
           if (board[row][nextCol] === 0) {
             board[row][nextCol] = board[row][col];
             board[row][col] = 0;
             col = nextCol;
             moved = true;
+            moveLeft();
           } else if (board[row][nextCol] === board[row][col]) {
             mergeCellsHorisontal(nextCol, col, row);
             moved = true;
@@ -134,12 +135,13 @@ function moveRight() {
       if (board[row][col] !== 0) {
         let nextCol = col + 1;
 
-        while (nextCol < 4) {
+        while (nextCol < 4 && nextCol === col + 1) {
           if (board[row][nextCol] === 0) {
             board[row][nextCol] = board[row][col];
             board[row][col] = 0;
             col = nextCol - 1;
             moved = true;
+            moveRight();
           } else if (board[row][nextCol] === board[row][col]) {
             mergeCellsHorisontal(nextCol, col, row);
             moved = true;
@@ -164,12 +166,13 @@ function moveUp() {
       if (board[row][col] !== 0) {
         let nextRow = row - 1;
 
-        while (nextRow >= 0) {
+        while (nextRow >= 0 && nextRow === row - 1) {
           if (board[nextRow][col] === 0) {
             board[nextRow][col] = board[row][col];
             board[row][col] = 0;
             row = nextRow;
             moved = true;
+            moveUp();
           } else if (board[nextRow][col] === board[row][col]) {
             mergeCellsVertical(nextRow, col, row);
             moved = true;
@@ -194,12 +197,13 @@ function moveDown() {
       if (board[row][col] !== 0) {
         let nextRow = row + 1;
 
-        while (nextRow < 4) {
+        while (nextRow < 4 && nextRow === row + 1) {
           if (board[nextRow][col] === 0) {
             board[nextRow][col] = board[row][col];
             board[row][col] = 0;
             row = nextRow;
             moved = true;
+            moveDown();
           } else if (board[nextRow][col] === board[row][col]) {
             mergeCellsVertical(nextRow, col, row);
             moved = true;
