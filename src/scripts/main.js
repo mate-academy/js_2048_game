@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 let score = 0;
 let gameWon = false;
@@ -17,9 +17,9 @@ function initializeBoard() {
   gameWon = false;
   gameOver = false;
   updateBoard();
-  document.querySelector(".message-start").classList.add("hidden");
-  document.querySelector(".button.start").textContent = "Restart";
-  document.querySelector(".button.start").classList.add("restart");
+  document.querySelector('.message-start').classList.add('hidden');
+  document.querySelector('.button.start').textContent = 'Restart';
+  document.querySelector('.button.start').classList.add('restart');
 }
 
 function addRandomTile() {
@@ -43,28 +43,28 @@ function addRandomTile() {
 }
 
 function updateBoard() {
-  const cells = document.querySelectorAll(".field-cell");
+  const cells = document.querySelectorAll('.field-cell');
 
   cells.forEach((cell, index) => {
     const x = Math.floor(index / 4);
     const y = index % 4;
 
-    cell.textContent = board[x][y] === 0 ? "" : board[x][y];
-    cell.className = "field-cell";
+    cell.textContent = board[x][y] === 0 ? '' : board[x][y];
+    cell.className = 'field-cell';
 
     if (board[x][y] !== 0) {
-      cell.classList.add("field-cell--" + board[x][y]);
+      cell.classList.add('field-cell--' + board[x][y]);
     }
   });
 
-  document.querySelector(".game-score").textContent = score;
+  document.querySelector('.game-score').textContent = score;
 
   if (checkWin()) {
     gameWon = true;
-    document.querySelector(".message-win").classList.remove("hidden");
+    document.querySelector('.message-win').classList.remove('hidden');
   } else if (checkGameOver()) {
     gameOver = true;
-    document.querySelector(".message-lose").classList.remove("hidden");
+    document.querySelector('.message-lose').classList.remove('hidden');
   }
 }
 
@@ -75,14 +75,19 @@ function move(direction) {
 
   let moved = false;
 
-  if (direction === "up") {
-    moved = moveUp();
-  } else if (direction === "down") {
-    moved = moveDown();
-  } else if (direction === "left") {
-    moved = moveLeft();
-  } else if (direction === "right") {
-    moved = moveRight();
+  switch (direction) {
+    case 'ArrowUp':
+      moved = moveUp();
+      break;
+    case 'ArrowDown':
+      moved = moveDown();
+      break;
+    case 'ArrowLeft':
+      moved = moveLeft();
+      break;
+    case 'ArrowRight':
+      moved = moveRight();
+      break;
   }
 
   if (moved) {
@@ -106,9 +111,7 @@ function moveLeft() {
             col = nextCol;
             moved = true;
           } else if (board[row][nextCol] === board[row][col]) {
-            board[row][nextCol] *= 2;
-            score += board[row][nextCol];
-            board[row][col] = 0;
+            mergeCellsHorisontal(nextCol, col, row);
             moved = true;
             break;
           } else {
@@ -138,9 +141,7 @@ function moveRight() {
             col = nextCol - 1;
             moved = true;
           } else if (board[row][nextCol] === board[row][col]) {
-            board[row][nextCol] *= 2;
-            score += board[row][nextCol];
-            board[row][col] = 0;
+            mergeCellsHorisontal(nextCol, col, row);
             moved = true;
             break;
           } else {
@@ -170,9 +171,7 @@ function moveUp() {
             row = nextRow;
             moved = true;
           } else if (board[nextRow][col] === board[row][col]) {
-            board[nextRow][col] *= 2;
-            score += board[nextRow][col];
-            board[row][col] = 0;
+            mergeCellsVertical(nextRow, col, row);
             moved = true;
             break;
           } else {
@@ -202,9 +201,7 @@ function moveDown() {
             row = nextRow;
             moved = true;
           } else if (board[nextRow][col] === board[row][col]) {
-            board[nextRow][col] *= 2;
-            score += board[nextRow][col];
-            board[row][col] = 0;
+            mergeCellsVertical(nextRow, col, row);
             moved = true;
             break;
           } else {
@@ -217,6 +214,18 @@ function moveDown() {
   }
 
   return moved;
+}
+
+function mergeCellsVertical(nextRow, col, row) {
+  board[nextRow][col] *= 2;
+  score += board[nextRow][col];
+  board[row][col] = 0;
+}
+
+function mergeCellsHorisontal(nextCol, col, row) {
+  board[row][nextCol] *= 2;
+  score += board[row][nextCol];
+  board[row][col] = 0;
 }
 
 function checkWin() {
@@ -250,31 +259,23 @@ function checkGameOver() {
   return true;
 }
 
-document.addEventListener("keydown", function (typeOfEvent) {
-  if (typeOfEvent.key === "ArrowUp") {
-    move("up");
-  } else if (typeOfEvent.key === "ArrowDown") {
-    move("down");
-  } else if (typeOfEvent.key === "ArrowLeft") {
-    move("left");
-  } else if (typeOfEvent.key === "ArrowRight") {
-    move("right");
-  }
+document.addEventListener('keydown', function (typeOfEvent) {
+  move(typeOfEvent.key);
 });
 
-document.querySelector(".button.start").addEventListener("click", function () {
-  let flag = false;
+document.querySelector('.button.start').addEventListener('click', function () {
+  let isGameStarted = false;
 
   for (let r = 0; r < 4; r++) {
     for (let c = 0; c < 4; c++) {
       if (board[r][c] !== 0) {
-        flag = true;
+        isGameStarted = true;
         break;
       }
     }
   }
 
-  if (flag === true) {
+  if (isGameStarted === true) {
     if (gameOver || gameWon) {
       restart();
     } else {
@@ -300,8 +301,8 @@ function restart() {
   gameWon = false;
   gameOver = false;
 
-  document.querySelector(".message-lose").classList.add("hidden");
-  document.querySelector(".message-win").classList.add("hidden");
+  document.querySelector('.message-lose').classList.add('hidden');
+  document.querySelector('.message-win').classList.add('hidden');
 
   initializeBoard();
 }
