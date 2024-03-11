@@ -47,17 +47,35 @@ class Game {
 
   }
   moveDown() {
-    for (let row = 0; row <= this.board.length - 2; row++) {
+    // let touched = false;
+
+    // for (let row = 0; row <= this.board.length - 2; row++) {
+    //   console.log(this.board[row], 'the row');
+    //   for (let cell = 0; cell <= this.board[row].length - 1 ; cell++) {
+    //     if ((this.board[row][cell] === this.board[row + 1][cell])) {
+    //       this.board[row + 1][cell] = this.board[row][cell] * 2;
+    //       this.board[row][cell] = 0;
+    //       touched = true;
+    //       this.renderBoard();
+    //       console.log(this.board, 'board2');
+    //     }
+    //   }
+    // }
+    for (let row = this.board.length - 1; row >= 1; row--) {
       console.log(this.board[row], 'the row');
       for (let cell = 0; cell <= this.board[row].length - 1 ; cell++) {
-        if (this.board[row][cell] === this.board[row + 1][cell]) {
-          this.board[row + 1][cell] = this.board[row][cell] * 2;
-          this.board[row][cell] = 0;
+        if ((this.board[row][cell] === this.board[row - 1][cell])) {
+          this.board[row][cell] = this.board[row - 1][cell] * 2;
+          this.board[row - 1][cell] = 0;
+          // touched = true;
           this.renderBoard();
           console.log(this.board, 'board2');
         }
       }
     }
+
+
+
     this.generateNumbers();
   }
 
@@ -126,7 +144,6 @@ class Game {
   }
 
   renderBoard() {
-
     for (let line = 0; line <= this.board.length - 1; line++) {
       for (let col = 0; col <= this.board[line].length - 1; col++) {
         this.cells[line].cells[col].innerText = this.board[line][col];
