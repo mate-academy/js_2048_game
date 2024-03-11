@@ -12,16 +12,14 @@ const startButton = document.getElementById('start-button');
 window.addEventListener('keyup', handleKey);
 
 
-
-const cells = [
-  [0, 2, 0, 4],
-  [0, 0, 0, 8],
-  [0, 0, 0, 16],
-  [0, 0, 0, 16],
-];
 const rows = document.getElementsByClassName('field-row');
 const rows2 = document.getElementsByClassName('field-cell');
-const game = new Game(rows);
+const game = new Game([
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+],rows);
 
 console.log(rows2);
 
@@ -29,8 +27,8 @@ game.start('kuku');
 
 function handleKey(event) {
   console.log(event.code);
-  if(event.code === 'ArrowUp') {
-    game.moveUp();
+  if(event.code === 'ArrowDown') {
+    game.moveDown();
   }
 }
 // let count  = 0;

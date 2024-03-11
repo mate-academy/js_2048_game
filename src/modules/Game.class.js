@@ -27,13 +27,14 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-    ]
+    ], cells
   ) {
     // eslint-disable-next-line no-console
     console.log(initialState, 'initial state');
     this.board = initialState;
     this.score = 0;
     this.status = 'idle';
+    this.cells = cells;
     // this.rows = rows;
 
 
@@ -43,28 +44,49 @@ class Game {
   moveRight() {}
 
   moveUp() {
-    let count = 0;
-    for (let line = 0; line <= this.board.length - 2; line++) {
-      console.log(this.board[line] ,'Move up!');
 
-      for (let cell = 0; cell <= this.board[line].cells.length - 1; cell++) {
-        // console.log(this.board[line].cells.length - 2, 'cell length');
-        const condition = this.board[line].cells[cell].innerText === this.board[line + 1].cells[cell].innerText && this.board[line].cells[cell].innerText.length > 0;
-        count++
-
-        console.log(this.board[line].cells[0].innerText,'we are here', count);
-        if (condition) {
-          console.log(this.board[line].cells[cell].innerText, 'uiii');
-        }
-        else {
-          console.log('noooo');
-        }
-      }
-    }
-    // this.board[Math.floor(Math.random() * 4)].cells[Math.floor(Math.random() * 4)].innerText = 2;
-    // this.board[Math.floor(Math.random() * 4)].cells[Math.floor(Math.random() * 4)].innerText = 2;
   }
-  moveDown() {}
+  moveDown() {
+    // let count = 0;
+    // const next = false;
+
+    // this.board.forEach((row, index) => {
+    //   console.log(row[index]);
+    // })
+    // console.log(this.board, 'tiles');
+    // for (let line = 0; line <= this.board.length - 2; line++) {
+    //   console.log(this.board[line] ,'Move down!');
+
+    //   for (let cell = 0; cell <= this.board[line].cells.length - 1; cell++) {
+
+    //     const condition = this.board[line].cells[cell].innerText === this.board[line + 1].cells[cell].innerText && this.board[line].cells[cell].innerText.length > 0;
+
+
+    //     const condition2 = this.board[line].cells[cell].innerText === this.board[line + 1].cells[cell].innerText && this.board[line].cells[cell].innerText.length === 0;
+
+    //     count++;
+
+
+    //     if (condition && !next) {
+
+    //       this.board[line].cells[cell].innerText = '';
+    //       this.board[line + 1].cells[cell].innerText = +this.board[line + 1].cells[cell].innerText * 2;
+    //       next === true;
+    //     }
+
+        // if (this.board[line + 1].cells[cell].innerText = '' &&  this.board[line].cells[cell].innerText !== '') {
+        //   this.board[line + 1].cells[cell].innerText = this.board[line].cells[cell].innerText;
+        // }
+
+
+      //   else {
+      //     console.log('noooo');
+      //   }
+      // }
+    // }
+    this.generateNumbers();
+
+  }
 
   /**
    * @returns {number}
@@ -93,13 +115,16 @@ class Game {
    */
   start(name) {
     // eslint-disable-next-line no-console
-    console.log(Math.floor(Math.random() * 4));
-    console.log('The game has started', this.board[0].cells,  name);
-    this.board[1].cells[2].innerText = 2;
-    this.board[2].cells[2].innerText = 2;
-    // this.board[Math.floor(Math.random() * 4)].cells[Math.floor(Math.random() * 4)].innerText = 2;
-    // this.board[Math.floor(Math.random() * 4)].cells[Math.floor(Math.random() * 4)].innerText = 2;
-    console.log(this.board[1].cells[1].value, 'board ');
+
+    // this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] = 2;
+    // this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] = 2;
+    this.board[0][2] = 2;
+    this.board[1][2] = 2;
+    this.board[2][2] = 2;
+
+    // console.log(this.board, 'board');
+    this.renderBoard()
+    // console.log(this.cells, 'board ');
   }
 
   /**
@@ -108,6 +133,34 @@ class Game {
   restart() {}
 
   // Add your own methods here
+
+  generateNumbers() {
+    const empty = [];
+        for (let line = 0; line <= this.board.length - 1; line++) {
+      for (let col = 0; col <= this.board[line].length - 1; col++) {
+        if (this.board[line][col] === 0) {
+          empty.push([line, col]);
+        }
+      }
+    }
+    const coords = Math.floor(Math.random() * empty.length);
+
+    const test = empty[coords]
+    this.board[test[0]][test[1]] = 2;
+    this.renderBoard()
+
+  }
+
+  renderBoard() {
+
+    for (let line = 0; line <= this.board.length - 1; line++) {
+      for (let col = 0; col <= this.board[line].length - 1; col++) {
+        if (this.board[line][col] !== 0) {
+          this.cells[line].cells[col].innerText = this.board[line][col];
+        }
+      }
+    }
+  }
 }
 
 module.exports = Game;
