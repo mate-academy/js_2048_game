@@ -47,45 +47,18 @@ class Game {
 
   }
   moveDown() {
-    // let count = 0;
-    // const next = false;
-
-    // this.board.forEach((row, index) => {
-    //   console.log(row[index]);
-    // })
-    // console.log(this.board, 'tiles');
-    // for (let line = 0; line <= this.board.length - 2; line++) {
-    //   console.log(this.board[line] ,'Move down!');
-
-    //   for (let cell = 0; cell <= this.board[line].cells.length - 1; cell++) {
-
-    //     const condition = this.board[line].cells[cell].innerText === this.board[line + 1].cells[cell].innerText && this.board[line].cells[cell].innerText.length > 0;
-
-
-    //     const condition2 = this.board[line].cells[cell].innerText === this.board[line + 1].cells[cell].innerText && this.board[line].cells[cell].innerText.length === 0;
-
-    //     count++;
-
-
-    //     if (condition && !next) {
-
-    //       this.board[line].cells[cell].innerText = '';
-    //       this.board[line + 1].cells[cell].innerText = +this.board[line + 1].cells[cell].innerText * 2;
-    //       next === true;
-    //     }
-
-        // if (this.board[line + 1].cells[cell].innerText = '' &&  this.board[line].cells[cell].innerText !== '') {
-        //   this.board[line + 1].cells[cell].innerText = this.board[line].cells[cell].innerText;
-        // }
-
-
-      //   else {
-      //     console.log('noooo');
-      //   }
-      // }
-    // }
+    for (let row = 0; row <= this.board.length - 2; row++) {
+      console.log(this.board[row], 'the row');
+      for (let cell = 0; cell <= this.board[row].length - 1 ; cell++) {
+        if (this.board[row][cell] === this.board[row + 1][cell]) {
+          this.board[row + 1][cell] = this.board[row][cell] * 2;
+          this.board[row][cell] = 0;
+          this.renderBoard();
+          console.log(this.board, 'board2');
+        }
+      }
+    }
     this.generateNumbers();
-
   }
 
   /**
@@ -120,7 +93,7 @@ class Game {
     // this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] = 2;
     this.board[0][2] = 2;
     this.board[1][2] = 2;
-    this.board[2][2] = 2;
+    this.board[2][2] = 4;
 
     // console.log(this.board, 'board');
     this.renderBoard()
@@ -146,7 +119,8 @@ class Game {
     const coords = Math.floor(Math.random() * empty.length);
 
     const test = empty[coords]
-    this.board[test[0]][test[1]] = 2;
+    if (test !== undefined) {this.board[test[0]][test[1]] = 2;}
+    // console.log(this.board, 'board2');
     this.renderBoard()
 
   }
@@ -155,8 +129,9 @@ class Game {
 
     for (let line = 0; line <= this.board.length - 1; line++) {
       for (let col = 0; col <= this.board[line].length - 1; col++) {
-        if (this.board[line][col] !== 0) {
-          this.cells[line].cells[col].innerText = this.board[line][col];
+        this.cells[line].cells[col].innerText = this.board[line][col];
+        if (this.board[line][col] === 0) {
+          this.cells[line].cells[col].innerText = '';
         }
       }
     }
