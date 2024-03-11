@@ -33,17 +33,27 @@ class Game {
 
   #status = 'idle';
   #score = 0;
+  #isForCheck = false;
+  #state;
+  #initialState;
 
-  constructor(initialState = Game.deafultInitialState) {
-    this.state = initialState.map((arr) => [...arr]);
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(initialState = Game.deafultInitialState, isForCheck = false) {
+    this.#initialState = initialState.map((arr) => [...arr]);
+    this.#applyInitialState();
+    this.#isForCheck = isForCheck;
   }
 
   moveLeft() {
-    const mergedCellsIndexes = new Set();
+    let isStateChanged = false;
 
-    this.state.forEach((arr) => {
+    if (this.#status !== 'playing' && !this.#isForCheck) {
+      return isStateChanged;
+    }
+
+    const stateBeforeMove = this.getState();
+
+    this.#state.forEach((arr) => {
+      const mergedCellsIndexes = new Set();
       const emptyIndexes = [];
 
       for (let i = 0; i < arr.length; i++) {
@@ -56,6 +66,7 @@ class Game {
 
         if (emptyIndexes.length) {
           cellIndex = emptyIndexes.shift();
+          emptyIndexes.push(i);
 
           arr[cellIndex] = arr[i];
           arr[i] = 0;
@@ -73,26 +84,52 @@ class Game {
           arr[cellIndex] = 0;
           emptyIndexes.unshift(cellIndex);
           this.#score += arr[previousCellIndex];
+
+          if (arr[previousCellIndex] >= 2048) {
+            this.#status = 'win';
+          }
         }
       }
     });
 
-    this.#addNumber();
+    if (!this.#isSameState(stateBeforeMove)) {
+      this.#addNumber();
+
+      isStateChanged = true;
+    }
+
+    if (!this.#isForCheck && !this.#isMovePossible()) {
+      this.#status = 'lose';
+    }
+
+    return isStateChanged;
   }
   moveRight() {
     this.#reverse();
-    this.moveLeft();
+
+    const result = this.moveLeft();
+
     this.#reverse();
+
+    return result;
   }
   moveUp() {
     this.#rotate();
-    this.moveLeft();
+
+    const result = this.moveLeft();
+
     this.#rotate();
+
+    return result;
   }
   moveDown() {
     this.#rotate();
-    this.moveRight();
+
+    const result = this.moveRight();
+
     this.#rotate();
+
+    return result;
   }
 
   /**
@@ -106,7 +143,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.state.map((arr) => [...arr]);
+    return this.#state.map((arr) => [...arr]);
   }
 
   /**
@@ -128,6 +165,7 @@ class Game {
    */
   start() {
     this.#addNumber();
+    this.#addNumber();
     this.#status = 'playing';
   }
 
@@ -135,11 +173,27 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.#clearState();
-    this.start();
+    this.#applyInitialState();
+    this.#score = 0;
+    this.#status = 'idle';
   }
 
   // Add your own methods here
+  #applyInitialState() {
+    this.#state = this.#initialState.map((arr) => [...arr]);
+  }
+
+  #isMovePossible() {
+    const gameCopy = new Game(this.getState(), true);
+
+    return (
+      gameCopy.moveLeft() ||
+      gameCopy.moveRight() ||
+      gameCopy.moveUp() ||
+      gameCopy.moveDown()
+    );
+  }
+
   #addNumber() {
     const number = Math.random() > 0.1 ? 2 : 4;
     const emptyFields = this.#findEmptyFields();
@@ -151,7 +205,7 @@ class Game {
     const randomIndex = Math.floor(Math.random() * emptyFields.length);
     const { x, y } = emptyFields[randomIndex];
 
-    this.state[y][x] = number;
+    this.#state[y][x] = number;
 
     return true;
   }
@@ -159,7 +213,7 @@ class Game {
   #findEmptyFields() {
     const result = [];
 
-    this.state.forEach((arr, y) => {
+    this.#state.forEach((arr, y) => {
       arr.forEach((cell, x) => {
         if (cell === 0) {
           result.push({ x, y });
@@ -170,23 +224,25 @@ class Game {
     return result;
   }
 
-  #clearState() {
-    this.state = this.state.map((arr) => new Array(arr.length).fill(0));
-  }
-
   #reverse() {
-    this.state.forEach((arr) => arr.reverse());
+    this.#state.forEach((arr) => arr.reverse());
   }
 
   #rotate() {
-    this.state = this.state.map((arr, j) => {
+    this.#state = this.#state.map((arr, j) => {
       const newArr = [];
 
       for (let i = 0; i < arr.length; i++) {
-        newArr.push(this.state[i][j]);
+        newArr.push(this.#state[i][j]);
       }
 
       return newArr;
+    });
+  }
+
+  #isSameState(state) {
+    return this.#state.every((arr, i) => {
+      return arr.every((el, j) => el === state[i][j]);
     });
   }
 }
