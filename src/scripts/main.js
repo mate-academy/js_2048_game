@@ -20,7 +20,7 @@ function keyListener(e) {
       break;
   }
 
-  update(game);
+  update();
 }
 
 function update() {

@@ -6,6 +6,26 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
+  static get deafultSize() {
+    return 4;
+  }
+
+  static get deafultInitialState() {
+    return new Array(Game.deafultSize)
+      .fill(null)
+      .map((el) => new Array(Game.deafultSize).fill(0));
+  }
+  // current game status
+  #status = 'idle';
+  // current score
+  #score = 0;
+  // flag for Game objects exiting only for checking moves
+  #isForCheck = false;
+  // current state of gamefield
+  #state;
+  // initial state of gamefield
+  #initialState;
+
   /**
    * Creates a new game instance.
    *
@@ -20,25 +40,8 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-
-  static get deafultSize() {
-    return 4;
-  }
-
-  static get deafultInitialState() {
-    return new Array(Game.deafultSize)
-      .fill(null)
-      .map((el) => new Array(Game.deafultSize).fill(0));
-  }
-
-  #status = 'idle';
-  #score = 0;
-  #isForCheck = false;
-  #state;
-  #initialState;
-
   constructor(initialState = Game.deafultInitialState, isForCheck = false) {
-    this.#initialState = initialState.map((arr) => [...arr]);
+    this.#initialState = initialState.map((row) => [...row]);
     this.#applyInitialState();
     this.#isForCheck = isForCheck;
   }
@@ -50,14 +53,12 @@ class Game {
       return isStateChanged;
     }
 
-    const stateBeforeMove = this.getState();
-
-    this.#state.forEach((arr) => {
+    this.#state.forEach((row) => {
       const mergedCellsIndexes = new Set();
       const emptyIndexes = [];
 
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i] === 0) {
+      for (let i = 0; i < row.length; i++) {
+        if (row[i] === 0) {
           emptyIndexes.push(i);
           continue;
         }
@@ -68,34 +69,34 @@ class Game {
           cellIndex = emptyIndexes.shift();
           emptyIndexes.push(i);
 
-          arr[cellIndex] = arr[i];
-          arr[i] = 0;
+          row[cellIndex] = row[i];
+          row[i] = 0;
+          isStateChanged = true;
         }
 
         const previousCellIndex = cellIndex - 1;
 
         if (
           previousCellIndex >= 0 &&
-          arr[previousCellIndex] === arr[cellIndex] &&
+          row[previousCellIndex] === row[cellIndex] &&
           !mergedCellsIndexes.has(previousCellIndex)
         ) {
           mergedCellsIndexes.add(previousCellIndex);
-          arr[previousCellIndex] *= 2;
-          arr[cellIndex] = 0;
+          row[previousCellIndex] *= 2;
+          row[cellIndex] = 0;
           emptyIndexes.unshift(cellIndex);
-          this.#score += arr[previousCellIndex];
+          this.#score += row[previousCellIndex];
+          isStateChanged = true;
 
-          if (arr[previousCellIndex] >= 2048) {
+          if (row[previousCellIndex] >= 2048) {
             this.#status = 'win';
           }
         }
       }
     });
 
-    if (!this.#isSameState(stateBeforeMove)) {
+    if (isStateChanged) {
       this.#addNumber();
-
-      isStateChanged = true;
     }
 
     if (!this.#isForCheck && !this.#isMovePossible()) {
@@ -143,7 +144,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.#state.map((arr) => [...arr]);
+    return this.#state.map((row) => [...row]);
   }
 
   /**
@@ -180,9 +181,12 @@ class Game {
 
   // Add your own methods here
   #applyInitialState() {
-    this.#state = this.#initialState.map((arr) => [...arr]);
+    this.#state = this.#initialState.map((row) => [...row]);
   }
-
+  /**
+   * Checks if any move is possible
+   * @returns {boolean}
+   */
   #isMovePossible() {
     const gameCopy = new Game(this.getState(), true);
 
@@ -193,7 +197,10 @@ class Game {
       gameCopy.moveDown()
     );
   }
-
+  /**
+   * Returns if adding number to state was succesfull
+   * @returns {boolean}
+   */
   #addNumber() {
     const number = Math.random() > 0.1 ? 2 : 4;
     const emptyFields = this.#findEmptyFields();
@@ -209,12 +216,15 @@ class Game {
 
     return true;
   }
-
+  /**
+   * Returns positions of empty fields in state
+   * @returns {({ x: number, y: number})[]}
+   */
   #findEmptyFields() {
     const result = [];
 
-    this.#state.forEach((arr, y) => {
-      arr.forEach((cell, x) => {
+    this.#state.forEach((row, y) => {
+      row.forEach((cell, x) => {
         if (cell === 0) {
           result.push({ x, y });
         }
@@ -223,26 +233,20 @@ class Game {
 
     return result;
   }
-
+  // reverser rows of state
   #reverse() {
-    this.#state.forEach((arr) => arr.reverse());
+    this.#state.forEach((row) => row.reverse());
   }
-
+  // changes idexes from state[x][y] to state[y][x] rotating state array
   #rotate() {
-    this.#state = this.#state.map((arr, j) => {
-      const newArr = [];
+    this.#state = this.#state.map((row, i) => {
+      const newRow = [];
 
-      for (let i = 0; i < arr.length; i++) {
-        newArr.push(this.#state[i][j]);
+      for (let j = 0; j < row.length; j++) {
+        newRow.push(this.#state[j][i]);
       }
 
-      return newArr;
-    });
-  }
-
-  #isSameState(state) {
-    return this.#state.every((arr, i) => {
-      return arr.every((el, j) => el === state[i][j]);
+      return newRow;
     });
   }
 }
