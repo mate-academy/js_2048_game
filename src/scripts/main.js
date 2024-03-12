@@ -27,8 +27,8 @@ game.start('kuku');
 
 function handleKey(event) {
   console.log(event.code);
-  if(event.code === 'ArrowDown') {
-    game.moveDown();
+  if(event.code === 'ArrowUp') {
+    game.moveUp();
   }
 }
 // let count  = 0;

@@ -45,77 +45,21 @@ class Game {
 
   moveUp() {
 
-  }
-
-
-  compress(col) {
-    // for (let col = 0; col < this.board[0].length; col++) {
-    //   const column = this.board.map(row => row[col]);
-    //   console.log(column, this.board[0],'this is it');
-    // }
-    // Remove empty cells
-    const compressedColumn = col.filter(cell => cell.value !== 0);
-    // Fill the column with compressed cells followed by empty cells
-    col.forEach((cell, index) => {
-      return cell.value === index >= col.length - compressedColumn.length
-        ? compressedColumn[index - (col.length - compressedColumn.length)].value
-        : 0;
-    });
-  }
-
-  moveDown() {
-
     for (let col = 0; col < this.board[0].length; col++) {
       const column = this.board.map(row => row[col]);
+      console.log(column, 'column');
+      // Compress the column
+      this.compress(column);
+      // Merge cells in the column
+      this.merge(column);
+      for (let row = 0; row < this.board.length; row++) {
+        this.board[row][col] = column[row];
+      }
+      // this.renderBoard();
+      console.log(this.board, 'board!!');
     }
 
 
-
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    // for (let row = 0; row <= this.board.length - 2; row++) {
-    //   // let touch = false;
-
-    //   for (let col = 0; col <= this.board[row].length; col++) {
-
-    //     if (this.board[row + 1][col] === 0) {
-    //       // touch = true;
-    //       this.board[row + 1][col] = this.board[row][col];
-    //       this.board[row][col] = 0;
-    //     }
-    //     if ((this.board[row][col] === this.board[row + 1][col]) && this.board[row + 1][col] > 0) {
-
-    //       this.board[row + 1][col] = this.board[row][col] * 2;
-    //       this.board[row][col] = 0;
-    //     }
-    //     if (this.board[row + 2] !== undefined) {
-    //     }
-    //   }
-    // }
-
-//!!!!!!!!!!!!!!!!!!!!!!!
-
-    // for (let row = this.board.length - 1; row >= 1; row--) {
-    // let touch = false;
-    // console.log(this.board[row], 'the row');
-    // for (let cell = 0; cell <= this.board[row].length - 1 ; cell++) {
-    //   const condition = (this.board[row][cell] === this.board[row - 1][cell]);
-    //   if (condition) {
-    //     this.board[row][cell] = this.board[row - 1][cell] * 2;
-    //     this.board[row - 1][cell] = 0;
-    //     // this.renderBoard();
-    //     touch = true;
-    //     console.log(this.board, 'board2');
-    //   }
-    //   if (this.board[row - 1][cell] === 0) {
-    //     // this.board[row][cell] = this.board[row - 1][cell] * 2;
-    //     this.board[row - 1][cell] = this.board[row][cell];
-    //     // this.renderBoard();
-    //     this.board[row][cell] = 0;
-    //     console.log(this.board, 'board2');
-    //   }
-    // }
     this.renderBoard();
 
     // }
@@ -123,6 +67,38 @@ class Game {
 
 
     // this.generateNumbers();
+  }
+
+  merge(column) {
+   console.log(column, 'merge');
+    for (let i = column.length; i > 0; i--) {
+      if (column[i] === column[i - 1]) {
+        column[i] *= 2;
+        console.log(column[i], 'value');
+        column[i - 1] = 0;
+        // this.score += column[i];
+      }
+    }
+  }
+
+
+  compress(col) {
+
+    const compressedColumn = col.filter(cell => cell !== 0);
+    // console.log(compressedColumn, col, 'compressed column2');
+
+    col.forEach(function(part, index, array) {
+       array[index] = index < compressedColumn.length
+       ? compressedColumn[index]
+       : 0;
+    });
+
+    // console.log(compressedColumn, col, 'compressed column3');
+
+  }
+
+  moveDown() {
+
   }
 
   /**
@@ -158,7 +134,7 @@ class Game {
     this.board[0][2] = 2;
     // this.board[1][2] = 2;
     // this.board[2][2] = 4;
-    this.board[1][0] = 2;
+    this.board[1][0] = 4;
     this.board[2][0] = 2;
     this.board[3][0] = 2;
     this.board[1][2] = 2;
@@ -167,6 +143,9 @@ class Game {
     this.board[0][3] = 2;
     this.board[2][3] = 2;
     this.board[3][3] = 2;
+    this.board[1][1] = 2;
+    this.board[2][1] = 2;
+    this.board[3][1] = 2;
     // this.board[3][0] = 2;
 
     // console.log(this.board, 'board');
