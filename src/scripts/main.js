@@ -556,3 +556,52 @@ document.addEventListener('keydown', (ev) => {
     moveRight(cells);
   }
 });
+
+document.addEventListener('touchmove', (ev) => {
+  // Зупинка браузерного стандартного обробника подій
+  ev.preventDefault();
+
+  const touch = ev.touches[0]; // Отримуємо перший торк
+  const x = touch.clientX; // Координати торку по X
+  const y = touch.clientY; // Координати торку по Y
+
+  const isMessageWinVisible = !messageWin.classList.contains('hidden');
+
+  if (isMessageWinVisible) {
+    return;
+  }
+
+  // Визначення напрямку руху пальця
+  const deltaX = x - touchStartX;
+  const deltaY = y - touchStartY;
+  const absDeltaX = Math.abs(deltaX);
+  const absDeltaY = Math.abs(deltaY);
+
+  if (absDeltaX > absDeltaY) {
+    // Рух по горизонталі
+    if (deltaX > 0) {
+      moveRight(cells);
+    } else {
+      moveLeft(cells);
+    }
+  } else {
+    // Рух по вертикалі
+    if (deltaY > 0) {
+      moveDown(cells);
+    } else {
+      moveUp(cells);
+    }
+  }
+});
+
+// Зберігання початкових координат для розрахунку зміщення
+let touchStartX = 0;
+let touchStartY = 0;
+
+// Обробник початку торку
+document.addEventListener('touchstart', (ev) => {
+  const touch = ev.touches[0]; // Отримуємо перший торк
+
+  touchStartX = touch.clientX; // Зберігаємо початкову координату X
+  touchStartY = touch.clientY; // Зберігаємо початкову координату Y
+});
