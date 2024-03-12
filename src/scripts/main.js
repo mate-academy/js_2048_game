@@ -1,21 +1,21 @@
-'use strict';
+"use strict";
 
 let valueBoard;
 const rows = 4;
 const columns = 4;
 let score = 0;
 
-const buttonStart = document.querySelector('.start');
-const fieldRows = document.querySelectorAll('tr');
-const cells = document.querySelectorAll('td');
-const messageStart = document.querySelector('.message-start');
-const messageWin = document.querySelector('.message-win');
-const messageLose = document.querySelector('.message-lose');
+const buttonStart = document.querySelector(".start");
+const fieldRows = document.querySelectorAll("tr");
+const cells = document.querySelectorAll("td");
+const messageStart = document.querySelector(".message-start");
+const messageWin = document.querySelector(".message-win");
+const messageLose = document.querySelector(".message-lose");
 
 const board = [];
 
-[...fieldRows].forEach(row => {
-  const cell = row.querySelectorAll('td');
+[...fieldRows].forEach((row) => {
+  const cell = row.querySelectorAll("td");
 
   board.push(cell);
 });
@@ -47,7 +47,7 @@ function updateCell(cell, num) {
     cell.textContent = num;
     cell.classList.add(`field-cell--${num}`);
   } else if (num === 0) {
-    cell.textContent = '';
+    cell.textContent = "";
   }
 }
 
@@ -75,7 +75,7 @@ function addNumber() {
       activeCell = true;
     }
   }
-};
+}
 
 function hasEmptyCell() {
   for (let i = 0; i < rows; i++) {
@@ -87,21 +87,22 @@ function hasEmptyCell() {
   }
 
   return false;
-};
+}
 
-document.addEventListener('click', (ev) => {
+document.addEventListener("click", (ev) => {
   ev.preventDefault();
 
-  if (ev.target.closest('.start')) {
+  if (ev.target.closest(".start")) {
     messageStart.classList.add(`hidden`);
-    buttonStart.textContent = 'Restart';
+    buttonStart.textContent = "Restart";
     buttonStart.classList.add(`restart`);
     buttonStart.classList.remove(`start`);
     setGame();
-    document.addEventListener('keydown', playGame);
-  } else if (ev.target.closest('.restart')) {
+    document.addEventListener("keydown", playGame);
+  } else if (ev.target.closest(".restart")) {
     setGame();
     score = 0;
+    document.querySelector(".game-score").textContent = score;
   }
 });
 
@@ -120,7 +121,7 @@ function hasAdjacentSameNumbers(data) {
 }
 
 function filterZero(data) {
-  const newRow = data.filter(num => num !== 0);
+  const newRow = data.filter((num) => num !== 0);
 
   return newRow;
 }
@@ -179,7 +180,7 @@ function moveLeft() {
   hasActions(actions);
   checkLose();
   checkWin();
-};
+}
 
 function moveRight() {
   const actions = [];
@@ -191,7 +192,7 @@ function moveRight() {
     row.reverse();
     [row, flag] = move(row);
     actions.push(flag);
-    valueBoard[r] = row.reverse(); ;
+    valueBoard[r] = row.reverse();
 
     for (let c = 0; c < columns; c++) {
       const number = valueBoard[r][c];
@@ -202,15 +203,19 @@ function moveRight() {
   hasActions(actions);
   checkLose();
   checkWin();
-};
+}
 
 function moveUp() {
   const actions = [];
   let flag;
 
   for (let c = 0; c < columns; c++) {
-    let column = [valueBoard[0][c], valueBoard[1][c],
-      valueBoard[2][c], valueBoard[3][c]];
+    let column = [
+      valueBoard[0][c],
+      valueBoard[1][c],
+      valueBoard[2][c],
+      valueBoard[3][c],
+    ];
 
     [column, flag] = move(column);
     actions.push(flag);
@@ -234,8 +239,12 @@ function moveDown() {
   let flag;
 
   for (let c = 0; c < columns; c++) {
-    let column = [valueBoard[3][c], valueBoard[2][c],
-      valueBoard[1][c], valueBoard[0][c]];
+    let column = [
+      valueBoard[3][c],
+      valueBoard[2][c],
+      valueBoard[1][c],
+      valueBoard[0][c],
+    ];
 
     [column, flag] = move(column);
     actions.push(flag);
@@ -256,10 +265,10 @@ function moveDown() {
 }
 
 function checkWin() {
-  [...cells].forEach(cell => {
-    if (cell.textContent === '2048') {
+  [...cells].forEach((cell) => {
+    if (cell.textContent === "2048") {
       messageWin.classList.remove(`hidden`);
-      document.removeEventListener('keydown', playGame);
+      document.removeEventListener("keydown", playGame);
 
       setTimeout(() => {
         document.location.reload();
@@ -278,19 +287,19 @@ function playGame(e) {
   e.preventDefault();
 
   switch (e.key) {
-    case 'ArrowRight':
+    case "ArrowRight":
       moveRight();
       break;
-    case 'ArrowLeft':
+    case "ArrowLeft":
       moveLeft();
       break;
-    case 'ArrowDown':
+    case "ArrowDown":
       moveDown();
       break;
-    case 'ArrowUp':
+    case "ArrowUp":
       moveUp();
       break;
   }
 
-  document.querySelector('.game-score').textContent = score;
+  document.querySelector(".game-score").textContent = score;
 }
