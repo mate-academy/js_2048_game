@@ -3,7 +3,6 @@
 const messegLose = document.querySelector('.message-lose');
 const messegWin = document.querySelector('.message-win');
 const messegStart = document.querySelector('.message-start');
-const Startbutton = document.querySelector('.start');
 const Restarttbutton = document.querySelector('.restart');
 const scoreTable = document.querySelector('.game-score');
 const tiles = document.getElementsByClassName('tile');
@@ -20,7 +19,7 @@ let board = [
 
 let stopGame = false;
 
-Startbutton.addEventListener('click', () => {
+document.addEventListener('DOMContentLoaded', () => {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       const tile = document.createElement('div');
@@ -33,7 +32,6 @@ Startbutton.addEventListener('click', () => {
     }
   }
 
-  Startbutton.classList.add('hidden');
   messegStart.classList.add('hidden');
   Restarttbutton.classList.remove('hidden');
 
