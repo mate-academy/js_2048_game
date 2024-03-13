@@ -21,12 +21,12 @@ const game = new Game([
   [0, 0, 0, 0],
 ],rows);
 
-console.log(rows2);
+// console.log(rows2);
 
 game.start('kuku');
 
 function handleKey(event) {
-  console.log(event.code);
+  // console.log(event.code);
   if(event.code === 'ArrowUp') {
     game.moveUp();
   }

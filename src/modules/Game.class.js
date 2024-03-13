@@ -30,7 +30,7 @@ class Game {
     ], cells
   ) {
     // eslint-disable-next-line no-console
-    console.log(initialState, 'initial state');
+    // console.log(initialState, 'initial state');
     this.board = initialState;
     this.score = 0;
     this.status = 'idle';
@@ -47,16 +47,18 @@ class Game {
 
     for (let col = 0; col < this.board[0].length; col++) {
       const column = this.board.map(row => row[col]);
-      console.log(column, 'column');
+      // console.log(column, 'column');
       // Compress the column
       this.compress(column);
+      // this.renderBoard();
+      // debugger;
       // Merge cells in the column
       this.merge(column);
       for (let row = 0; row < this.board.length; row++) {
         this.board[row][col] = column[row];
       }
       // this.renderBoard();
-      console.log(this.board, 'board!!');
+      // console.log(this.board, 'board!!');
     }
 
 
@@ -66,16 +68,19 @@ class Game {
 
 
 
-    // this.generateNumbers();
+    this.generateNumbers();
   }
 
   merge(column) {
-   console.log(column, 'merge');
-    for (let i = column.length; i > 0; i--) {
-      if (column[i] === column[i - 1]) {
+    // debugger;
+
+   console.log(column, 'col for merge');
+    for (let i = 0; i <= column.length - 1; i++) {
+      console.log(column[i], 'column[i]');
+      if (column[i] === column[i + 1] && column[i] > 0) {
         column[i] *= 2;
-        console.log(column[i], 'value');
-        column[i - 1] = 0;
+        console.log(column[i], column[i - 1], 'value');
+        column[i + 1] = 0;
         // this.score += column[i];
       }
     }
@@ -83,9 +88,9 @@ class Game {
 
 
   compress(col) {
-
+      console.log(col, 'col before compression');
     const compressedColumn = col.filter(cell => cell !== 0);
-    // console.log(compressedColumn, col, 'compressed column2');
+  
 
     col.forEach(function(part, index, array) {
        array[index] = index < compressedColumn.length
@@ -93,7 +98,7 @@ class Game {
        : 0;
     });
 
-    // console.log(compressedColumn, col, 'compressed column3');
+    console.log(compressedColumn, col, 'compressed column3');
 
   }
 
@@ -131,21 +136,23 @@ class Game {
 
     // this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] = 2;
     // this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] = 2;
-    this.board[0][2] = 2;
-    // this.board[1][2] = 2;
-    // this.board[2][2] = 4;
-    this.board[1][0] = 4;
-    this.board[2][0] = 2;
-    this.board[3][0] = 2;
-    this.board[1][2] = 2;
-    this.board[2][2] = 2;
-    this.board[3][2] = 2;
-    this.board[0][3] = 2;
-    this.board[2][3] = 2;
-    this.board[3][3] = 2;
+    this.board[0][1] = 2;
+
+  
     this.board[1][1] = 2;
     this.board[2][1] = 2;
     this.board[3][1] = 2;
+
+
+    this.board[0][2] = 4;
+    this.board[2][2] = 2;
+    this.board[3][2] = 2;
+
+    this.board[3][3] = 2;
+ 
+    this.board[1][0] = 2;
+    // this.board[2][0] = 2;
+    this.board[3][0] = 2;
     // this.board[3][0] = 2;
 
     // console.log(this.board, 'board');
