@@ -28,12 +28,15 @@ const game = new Game([
 game.start('kuku');
 
 function handleKey(event) {
-  // console.log(event.code);
+  console.log(event.code);
   if(event.code === 'ArrowUp') {
     game.moveUp();
   }
   if(event.code === 'ArrowDown') {
     game.moveDown();
+  }
+  if(event.code === 'ArrowLeft') {
+    game.moveLeft();
   }
 }
 

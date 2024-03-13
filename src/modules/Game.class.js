@@ -41,7 +41,16 @@ class Game {
 
   }
 
-  moveLeft() { }
+  moveLeft() { 
+    for (let row = 0; row <= this.board.length - 1; row++) {
+      console.log(typeof this.board[row], 'row left');
+      this.compressLeft(this.board[row]);
+      this.merge(this.board[row]);
+      this.compressLeft(this.board[row]);
+    }
+    this.renderBoard();
+
+  }
   moveRight() { }
 
   moveUp() {
@@ -60,13 +69,12 @@ class Game {
 
   merge(column) {
     // debugger;
-
-   console.log(column, 'col for merge');
+  //  console.log(column, 'col for merge');
     for (let i = 0; i <= column.length - 1; i++) {
-      console.log(column[i], 'column[i]');
+      // console.log(column[i], 'column[i]');
       if (column[i] === column[i + 1] && column[i] > 0) {
         column[i] *= 2;
-        console.log(column[i], column[i - 1], 'value');
+        // console.log(column[i], column[i - 1], 'value');
         column[i + 1] = 0;
         this.score += column[i];
       }
@@ -74,12 +82,12 @@ class Game {
   }
   mergeDown(column) {
     // debugger;
-   console.log(column, 'col for merge');
+  //  console.log(column, 'col for merge');
     for (let i = 0; i <= column.length - 1; i++) {
-      console.log(column[i], 'column[i]');
+      // console.log(column[i], 'column[i]');
       if (column[i] === column[i + 1] && column[i] > 0) {
         column[i + 1] *= 2;
-        console.log(column[i], column[i - 1], 'value');
+        // console.log(column[i], column[i - 1], 'value');
         column[i] = 0;
         this.score += column[i];
       }
@@ -87,8 +95,22 @@ class Game {
   }
 
 
+  compressLeft(row) {
+      console.log(row, 'row before compression');
+    const compressedColumn = row.filter(cell => cell !== 0);
+    console.log(compressedColumn, 'compressed');
+    while (compressedColumn.length < 4) {
+      compressedColumn.push(0);
+    }
+    row.forEach(function(part, index, array) {
+      array[index] = compressedColumn[index]
+   });
+   console.log(row, 'row after all');
+  }
+
+
   compress(col) {
-      console.log(col, 'col before compression');
+      // console.log(col, 'col before compression');
     const compressedColumn = col.filter(cell => cell !== 0);
   
     while (compressedColumn.length < 4) {
@@ -97,18 +119,10 @@ class Game {
     col.forEach(function(part, index, array) {
       array[index] = compressedColumn[index]
    });
-
-    // col.forEach(function(part, index, array) {
-    //    array[index] = index < compressedColumn.length
-    //    ? compressedColumn[index]
-    //    : 0;
-    // });
-
-    console.log(compressedColumn, col, 'compressed column3');
-
   }
+
   compressDown(col) {
-      console.log(col, 'col before compression');
+      // console.log(col, 'col before compression');
       // debugger;
       const compressedColumn = col.filter(cell => cell !== 0);
   
@@ -119,7 +133,7 @@ class Game {
        array[index] = compressedColumn[index]
     });
 
-    console.log(compressedColumn, col, 'compressed column3');
+    // console.log(compressedColumn, col, 'compressed column3');
 
   }
 
@@ -226,7 +240,7 @@ class Game {
         }
       }
     }
-    console.log(this.score, 'score');
+    // console.log(this.score, 'score');
     this.scoreElement[0].innerText = this.score;
   }
 }
