@@ -27,7 +27,7 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-    ], cells
+    ], cells, scoreElement,
   ) {
     // eslint-disable-next-line no-console
     // console.log(initialState, 'initial state');
@@ -35,6 +35,7 @@ class Game {
     this.score = 0;
     this.status = 'idle';
     this.cells = cells;
+    this.scoreElement = scoreElement;
     // this.rows = rows;
 
 
@@ -44,30 +45,15 @@ class Game {
   moveRight() { }
 
   moveUp() {
-
     for (let col = 0; col < this.board[0].length; col++) {
       const column = this.board.map(row => row[col]);
-      // console.log(column, 'column');
-      // Compress the column
       this.compress(column);
-      // this.renderBoard();
-      // debugger;
-      // Merge cells in the column
       this.merge(column);
       for (let row = 0; row < this.board.length; row++) {
         this.board[row][col] = column[row];
       }
-      // this.renderBoard();
-      // console.log(this.board, 'board!!');
     }
-
-
     this.renderBoard();
-
-    // }
-
-
-
     this.generateNumbers();
   }
 
@@ -81,7 +67,7 @@ class Game {
         column[i] *= 2;
         console.log(column[i], column[i - 1], 'value');
         column[i + 1] = 0;
-        // this.score += column[i];
+        this.score += column[i];
       }
     }
   }
@@ -132,6 +118,7 @@ class Game {
    * Starts the game.
    */
   start(name) {
+    this.status = 'playing';
     // eslint-disable-next-line no-console
 
     // this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] = 2;
@@ -194,6 +181,8 @@ class Game {
         }
       }
     }
+    console.log(this.score, 'score');
+    this.scoreElement[0].innerText = this.score;
   }
 }
 

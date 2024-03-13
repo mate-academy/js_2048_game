@@ -13,13 +13,15 @@ window.addEventListener('keyup', handleKey);
 
 
 const rows = document.getElementsByClassName('field-row');
-const rows2 = document.getElementsByClassName('field-cell');
+// const rows2 = document.getElementsByClassName('field-cell');
+const scoreElement = document.getElementsByClassName('game-score');
+console.log(scoreElement, 'scoreElement');
 const game = new Game([
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
-],rows);
+],rows, scoreElement);
 
 // console.log(rows2);
 
@@ -31,13 +33,4 @@ function handleKey(event) {
     game.moveUp();
   }
 }
-// let count  = 0;
-// for (let rowIndex = 0; rowIndex <= rows.length; rowIndex++) {
-//   console.log(rows[rowIndex])
-//   for (let colIndex = 0; colIndex <= 3; colIndex++) {
-//     count++;
-//     console.log(cells[colIndex]);
-//     console.log(rows[rowIndex].cells[colIndex].innerText = count);
-//   }
-// }
-// console.log(rows[3].cells[2].innerText='2', 'rows');
+
