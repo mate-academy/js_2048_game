@@ -32,5 +32,8 @@ function handleKey(event) {
   if(event.code === 'ArrowUp') {
     game.moveUp();
   }
+  if(event.code === 'ArrowDown') {
+    game.moveDown();
+  }
 }
 

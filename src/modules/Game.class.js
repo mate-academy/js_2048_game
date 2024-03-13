@@ -49,6 +49,7 @@ class Game {
       const column = this.board.map(row => row[col]);
       this.compress(column);
       this.merge(column);
+      this.compress(column)
       for (let row = 0; row < this.board.length; row++) {
         this.board[row][col] = column[row];
       }
@@ -71,17 +72,51 @@ class Game {
       }
     }
   }
+  mergeDown(column) {
+    // debugger;
+   console.log(column, 'col for merge');
+    for (let i = 0; i <= column.length - 1; i++) {
+      console.log(column[i], 'column[i]');
+      if (column[i] === column[i + 1] && column[i] > 0) {
+        column[i + 1] *= 2;
+        console.log(column[i], column[i - 1], 'value');
+        column[i] = 0;
+        this.score += column[i];
+      }
+    }
+  }
 
 
   compress(col) {
       console.log(col, 'col before compression');
     const compressedColumn = col.filter(cell => cell !== 0);
   
-
+    while (compressedColumn.length < 4) {
+      compressedColumn.push(0);
+    }
     col.forEach(function(part, index, array) {
-       array[index] = index < compressedColumn.length
-       ? compressedColumn[index]
-       : 0;
+      array[index] = compressedColumn[index]
+   });
+
+    // col.forEach(function(part, index, array) {
+    //    array[index] = index < compressedColumn.length
+    //    ? compressedColumn[index]
+    //    : 0;
+    // });
+
+    console.log(compressedColumn, col, 'compressed column3');
+
+  }
+  compressDown(col) {
+      console.log(col, 'col before compression');
+      // debugger;
+      const compressedColumn = col.filter(cell => cell !== 0);
+  
+      while (compressedColumn.length < 4) {
+        compressedColumn.unshift(0);
+      }
+    col.forEach(function(part, index, array) {
+       array[index] = compressedColumn[index]
     });
 
     console.log(compressedColumn, col, 'compressed column3');
@@ -89,7 +124,17 @@ class Game {
   }
 
   moveDown() {
-
+    for (let col = 0; col < this.board[0].length; col++) {
+      const column = this.board.map(row => row[col]);
+      this.compressDown(column);
+      this.mergeDown(column);
+      this.compressDown(column);
+      for (let row = 0; row < this.board.length; row++) {
+        this.board[row][col] = column[row];
+      }
+    }
+    this.renderBoard();
+    // this.generateNumbers();
   }
 
   /**
