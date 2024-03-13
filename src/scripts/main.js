@@ -11,17 +11,20 @@ const startButton = document.getElementById('start-button');
 
 window.addEventListener('keyup', handleKey);
 
-
 const rows = document.getElementsByClassName('field-row');
 // const rows2 = document.getElementsByClassName('field-cell');
 const scoreElement = document.getElementsByClassName('game-score');
 console.log(scoreElement, 'scoreElement');
-const game = new Game([
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-],rows, scoreElement);
+const game = new Game(
+  [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ],
+  rows,
+  scoreElement,
+);
 
 // console.log(rows2);
 
@@ -29,14 +32,16 @@ game.start('kuku');
 
 function handleKey(event) {
   console.log(event.code);
-  if(event.code === 'ArrowUp') {
+  if (event.code === 'ArrowUp') {
     game.moveUp();
   }
-  if(event.code === 'ArrowDown') {
+  if (event.code === 'ArrowDown') {
     game.moveDown();
   }
-  if(event.code === 'ArrowLeft') {
+  if (event.code === 'ArrowLeft') {
     game.moveLeft();
   }
+  if (event.code === 'ArrowRight') {
+    game.moveRight();
+  }
 }
-
