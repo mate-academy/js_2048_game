@@ -1,68 +1,153 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
-class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+import { Ceil } from "./Ceil.class";
+import { Tile } from "./Tile.class";
+
+const GRID_SIZE = 4;
+const CELLS_COUNT = GRID_SIZE * GRID_SIZE;
+
+export class Game {
+  constructor(gridElement) {
+    this.cells = [];
+    for (let i = 0; i < CELLS_COUNT; i++) {
+      this.cells.push(
+        new Ceil(gridElement, i % GRID_SIZE, Math.floor(i / GRID_SIZE))
+      );
+    }
+
+    this.score = 0;
+    this.cellsGroupedByColumn = this.groupCellsByColumn();
+    this.cellsGroupedByReversedColumn = this.cellsGroupedByColumn.map(column => [...column].reverse());
+    this.cellsGroupedByRow = this.groupCellsByRow();
+    this.cellsGroupedByReversedRow = this.cellsGroupedByRow.map(raw => [...raw].reverse());
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  getRandomEmptyCell() {
+    const emptyCells = this.cells.filter(cell => cell.isEmpty());
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+    return emptyCells[randomIndex];
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  groupCellsByColumn() {
+    return this.cells.reduce((groupedCells, cell) => {
+      groupedCells[cell.x] = groupedCells[cell.x] || [];
+      groupedCells[cell.x][cell.y] = cell;
+      return groupedCells;
+    }, []);
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  groupCellsByRow() {
+    return this.cells.reduce((groupedCells, cell) => {
+      groupedCells[cell.y] = groupedCells[cell.y] || [];
+      groupedCells[cell.y][cell.x] = cell;
+      return groupedCells;
+    }, []);
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  moveUp() {
+    this.slideTiles(this.cellsGroupedByColumn);
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  moveDown() {
+    this.slideTiles(this.cellsGroupedByReversedColumn);
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  moveLeft() {
+    this.slideTiles(this.cellsGroupedByRow);
+  }
 
-  // Add your own methods here
+  moveRight() {
+    this.slideTiles(this.cellsGroupedByReversedRow);
+  }
+
+  canMoveUp() {
+    return this.canMove(this.cellsGroupedByColumn);
+  }
+
+  canMoveDown() {
+    return this.canMove(this.cellsGroupedByReversedColumn);
+  }
+
+  canMoveLeft() {
+    return this.canMove(this.cellsGroupedByRow);
+  }
+
+  canMoveRight() {
+    return this.canMove(this.cellsGroupedByReversedRow);
+  }
+
+  canMove(groupedCells) {
+    return groupedCells.some(group =>  this.canMoveInGroup(group));
+  }
+
+  canMoveInGroup(group) {
+    return group.some((cell, index) => {
+      if (index === 0) {
+        return false;
+      }
+
+      if (cell.isEmpty()) {
+        return false;
+      }
+
+      const targetCell = group[index - 1];
+      return targetCell.canAccept(cell.linkedTile);
+    });
+  }
+
+  slideTiles(groupedCells) {
+    const promises = [];
+
+    groupedCells.forEach(group => this.slideTilesInGroup(group, promises));
+
+    Promise.all(promises);
+    this.cells.forEach(cell => {
+      cell.hasTileForMerge() && cell.mergeTiles()
+    });
+  }
+
+  slideTilesInGroup(group, promises) {
+    for (let i = 1; i < group.length; i++) {
+      if (group[i].isEmpty()) {
+        continue;
+      }
+
+      const cellWithTile = group[i];
+
+      let targetCell;
+      let j = i - 1;
+      while (j >= 0 && group[j].canAccept(cellWithTile.linkedTile)) {
+        targetCell = group[j];
+        j--;
+      }
+
+      if (!targetCell) {
+        continue;
+      }
+
+      promises.push(cellWithTile.linkedTile.waitForTransitionEnd());
+
+      if (targetCell.isEmpty()) {
+        targetCell.linkTile(cellWithTile.linkedTile);
+      } else {
+        targetCell.linkTileForMerge(cellWithTile.linkedTile);
+      }
+
+      cellWithTile.unlinkTile();
+    }
+  }
+
+  start(gridElement) {
+    this.getRandomEmptyCell().linkTile(new Tile(gridElement));
+    this.getRandomEmptyCell().linkTile(new Tile(gridElement));
+  }
+
+  restart() {
+    const tiles = document.querySelectorAll('.tile');
+    tiles.forEach(tile => {
+      tile.remove();
+    });
+
+    this.cells.forEach(cell => cell.unlinkTile());
+  }
 }
-
-module.exports = Game;
