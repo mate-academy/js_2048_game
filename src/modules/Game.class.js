@@ -98,19 +98,6 @@ class Game {
     }
   }
 
-  // compressLeft(row) {
-  //     console.log(row, 'row before compression');
-  //   const compressedColumn = row.filter(cell => cell !== 0);
-  //   console.log(compressedColumn, 'compressed');
-  //   while (compressedColumn.length < 4) {
-  //     compressedColumn.push(0);
-  //   }
-  //   row.forEach(function(part, index, array) {
-  //     array[index] = compressedColumn[index]
-  //  });
-  //  console.log(row, 'row after all');
-  // }
-
   compress(col) {
     // console.log(col, 'col before compression');
     const compressedColumn = col.filter((cell) => cell !== 0);
@@ -181,8 +168,10 @@ class Game {
     this.status = 'playing';
     // eslint-disable-next-line no-console
 
-    this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] = 2;
-    this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] = 2;
+    this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
+      2;
+    this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
+      2;
     // this.board[0][1] = 2;
 
     // this.board[0][1] = 2;
@@ -247,7 +236,6 @@ class Game {
     }
     this.scoreElement[0].innerText = this.score;
   }
-
 }
 
 module.exports = Game;
