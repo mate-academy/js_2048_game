@@ -28,55 +28,65 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ],
-    cells,
-    scoreElement,
+    // cells,
   ) {
     // eslint-disable-next-line no-console
-    // console.log(initialState, 'initial state');
     this.board = initialState;
     this.score = 0;
     this.status = 'idle';
-    this.cells = cells;
-    this.scoreElement = scoreElement;
-    // this.rows = rows;
+    this.cells = document.getElementsByClassName('field-row');
+    this.scoreElement = document.getElementsByClassName('game-score');
   }
 
   moveLeft() {
     for (let row = 0; row <= this.board.length - 1; row++) {
-      // console.log(typeof this.board[row], 'row left');
-      this.compress(this.board[row]);
-      this.merge(this.board[row]);
-      this.compress(this.board[row]);
+      this._compress(this.board[row]);
+      this._merge(this.board[row]);
+      this._compress(this.board[row]);
     }
-    this.renderBoard();
-    this.generateNumbers();
+    this._renderBoard();
+    this._generateNumbers();
   }
+
   moveRight() {
     for (let row = 0; row <= this.board.length - 1; row++) {
-      console.log(typeof this.board[row], 'row right');
-      this.compressDown(this.board[row]);
-      this.mergeDown(this.board[row]);
-      this.compressDown(this.board[row]);
+      this._compressDown(this.board[row]);
+      this._mergeDown(this.board[row]);
+      this._compressDown(this.board[row]);
     }
-    this.renderBoard();
-    this.generateNumbers();
+    this._renderBoard();
+    this._generateNumbers();
   }
 
   moveUp() {
     for (let col = 0; col < this.board[0].length; col++) {
       const column = this.board.map((row) => row[col]);
-      this.compress(column);
-      this.merge(column);
-      this.compress(column);
+      this._compress(column);
+      this._merge(column);
+      this._compress(column);
       for (let row = 0; row < this.board.length; row++) {
         this.board[row][col] = column[row];
       }
     }
-    this.renderBoard();
-    this.generateNumbers();
+    this._renderBoard();
+    this._generateNumbers();
   }
 
-  merge(column) {
+  moveDown() {
+    for (let col = 0; col < this.board[0].length; col++) {
+      const column = this.board.map((row) => row[col]);
+      this._compressDown(column);
+      this._mergeDown(column);
+      this._compressDown(column);
+      for (let row = 0; row < this.board.length; row++) {
+        this.board[row][col] = column[row];
+      }
+    }
+    this._renderBoard();
+    this._generateNumbers();
+  }
+
+  _merge(column) {
     for (let i = 0; i <= column.length - 1; i++) {
       if (column[i] === column[i + 1] && column[i] > 0) {
         column[i] *= 2;
@@ -86,9 +96,8 @@ class Game {
       }
     }
   }
-  mergeDown(column) {
-    // debugger;
-    //  console.log(column, 'col for merge');
+
+  _mergeDown(column) {
     for (let i = column.length - 1; i > 0; i--) {
       if (column[i] === column[i - 1] && column[i] > 0) {
         column[i] *= 2;
@@ -98,8 +107,7 @@ class Game {
     }
   }
 
-  compress(col) {
-    // console.log(col, 'col before compression');
+  _compress(col) {
     const compressedColumn = col.filter((cell) => cell !== 0);
 
     while (compressedColumn.length < 4) {
@@ -110,9 +118,7 @@ class Game {
     });
   }
 
-  compressDown(col) {
-    // console.log(col, 'col before compression');
-    // debugger;
+  _compressDown(col) {
     const compressedColumn = col.filter((cell) => cell !== 0);
 
     while (compressedColumn.length < 4) {
@@ -121,33 +127,21 @@ class Game {
     col.forEach(function (part, index, array) {
       array[index] = compressedColumn[index];
     });
-
-    // console.log(compressedColumn, col, 'compressed column3');
-  }
-
-  moveDown() {
-    for (let col = 0; col < this.board[0].length; col++) {
-      const column = this.board.map((row) => row[col]);
-      this.compressDown(column);
-      this.mergeDown(column);
-      this.compressDown(column);
-      for (let row = 0; row < this.board.length; row++) {
-        this.board[row][col] = column[row];
-      }
-    }
-    this.renderBoard();
-    this.generateNumbers();
   }
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.board;
+  }
 
   /**
    * Returns the current game status.
@@ -159,54 +153,33 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start(name) {
-    this.status = 'playing';
+  start() {
     // eslint-disable-next-line no-console
-
     this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
       2;
     this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
       2;
-    // this.board[0][1] = 2;
 
-    // this.board[0][1] = 2;
-    // this.board[1][0] = 2;
-    // this.board[2][0] = 2;
-    // this.board[3][0] = 2;
+    this.status = 'playing';
 
-    // this.board[0][1] = 2;
-    // this.board[0][2] = 2;
-    // this.board[0][3] = 2;
-
-    // this.board[0][2] = 4;
-    // this.board[2][2] = 2;
-    // this.board[3][2] = 2;
-
-    // this.board[3][3] = 2;
-
-    // this.board[1][0] = 2;
-    // // this.board[2][0] = 2;
-    // this.board[3][0] = 2;
-    // this.board[3][0] = 2;
-
-    // console.log(this.board, 'board');
-    this.renderBoard();
-    // console.log(this.cells, 'board ');
+    this._renderBoard();
   }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() { }
 
   // Add your own methods here
 
-  generateNumbers() {
+  _generateNumbers() {
     const empty = [];
     for (let line = 0; line <= this.board.length - 1; line++) {
       for (let col = 0; col <= this.board[line].length - 1; col++) {
@@ -217,24 +190,34 @@ class Game {
     }
     const coords = Math.floor(Math.random() * empty.length);
 
-    const test = empty[coords];
-    if (test !== undefined) {
-      this.board[test[0]][test[1]] = 2;
+    const emptyCell = empty[coords];
+    if (emptyCell !== undefined) {
+      this.board[emptyCell[0]][emptyCell[1]] = this._getNumber();
     }
-    // console.log(this.board, 'board2');
-    this.renderBoard();
+
+    setTimeout(() => {
+      this._renderBoard();
+    }, 500);
   }
 
-  renderBoard() {
+  _renderBoard() {
     for (let line = 0; line <= this.board.length - 1; line++) {
       for (let col = 0; col <= this.board[line].length - 1; col++) {
         this.cells[line].cells[col].innerText = this.board[line][col];
+        this.cells[line].cells[col].classList.value =
+          `field-cell field-cell--${this.cells[line].cells[col].innerText}`;
         if (this.board[line][col] === 0) {
           this.cells[line].cells[col].innerText = '';
         }
       }
     }
     this.scoreElement[0].innerText = this.score;
+  }
+
+  _getNumber() {
+    const numbers = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
+    const index = Math.floor(Math.random() * numbers.length);
+    return numbers[index];
   }
 }
 
