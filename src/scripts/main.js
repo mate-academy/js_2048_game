@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use strict';
 
 const messegLose = document.querySelector('.message-lose');
@@ -6,6 +7,7 @@ const messegStart = document.querySelector('.message-start');
 const Restarttbutton = document.querySelector('.restart');
 const scoreTable = document.querySelector('.game-score');
 const tiles = document.getElementsByClassName('tile');
+const StartButton = document.querySelector('.start');
 
 const rows = 4;
 const columns = 4;
@@ -19,7 +21,7 @@ let board = [
 
 let stopGame = false;
 
-document.addEventListener('DOMContentLoaded', () => {
+StartButton.addEventListener('click', () => {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       const tile = document.createElement('div');
@@ -32,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  StartButton.classList.add('hidden');
   messegStart.classList.add('hidden');
   Restarttbutton.classList.remove('hidden');
 
@@ -60,11 +63,13 @@ Restarttbutton.addEventListener('click', function restartGame() {
   messegWin.classList.add('hidden');
   addNum();
   addNum();
+
+  stopGame = false;
 });
 
 function endGame() {
   if (gameOver()) {
-    stopGame = false;
+    stopGame = true;
     messegLose.classList.remove('hidden');
   }
 }
@@ -86,24 +91,35 @@ function addNum() {
     return true;
   }
 
-  let found = false;
+  const emptyCells = [];
 
-  while (!found) {
-    const r = Math.floor(Math.random() * rows);
-    const c = Math.floor(Math.random() * columns);
-
-    if (board[r][c] === 0) {
-      const num = Math.random() < 0.01 ? 4 : 2; // Fix the missing parentheses
-
-      board[r][c] = num;
-
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
-
-      tile.innerText = num.toString();
-      tile.classList.add(`tile--${num}`);
-      found = true;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (board[r][c] === 0) {
+        emptyCells.push({
+          row: r,
+          column: c,
+        });
+      }
     }
   }
+
+  if (emptyCells.length === 0) {
+    return false;
+  }
+
+  const randomIndex = Math.floor(Math.random() * emptyCells.length);
+  const { row, column } = emptyCells[randomIndex];
+  const num = Math.random() < 0.01 ? 4 : 2;
+
+  board[row][column] = num;
+
+  const tile = document.getElementById(row.toString() + '-' + column.toString());
+
+  tile.innerText = num.toString();
+  tile.classList.add(`tile--${num}`);
+
+  return true;
 }
 
 function upDateTile(tile, num) {
@@ -130,24 +146,20 @@ document.addEventListener('keydown', even => {
   }
 
   switch (even.key) {
-    case 'ArrowLeft':
-      slideLeft();
-      addNum();
-      break;
-
     case 'ArrowRight':
       slideRight();
-      addNum();
       break;
 
-    case 'ArrowDown':
-      slideDown();
-      addNum();
+    case 'ArrowLeft':
+      slideLeft();
       break;
 
     case 'ArrowUp':
       slideUp();
-      addNum();
+      break;
+
+    case 'ArrowDown':
+      slideDown();
       break;
   }
 
@@ -181,13 +193,16 @@ function slide(row) {
 }
 
 function slideLeft() {
-  endGame();
+  let moved = false;
 
   for (let r = 0; r < rows; r++) {
-    let row = board[r];
+    const originalRow = board[r].slice();
 
-    row = slide(row);
-    board[r] = row;
+    board[r] = slide(board[r]);
+
+    if (!arraysEqual(originalRow, board[r])) {
+      moved = true;
+    }
 
     for (let c = 0; c < columns; c++) {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
@@ -195,66 +210,116 @@ function slideLeft() {
 
       upDateTile(tile, num);
     }
+  }
+
+  if (moved) {
+    addNum();
+    endGame();
   }
 }
 
 function slideRight() {
-  endGame();
+  let moved = false;
 
   for (let r = 0; r < rows; r++) {
-    let row = board[r];
+    const originalRow = board[r].slice();
+    const shiftedRow = slide(board[r].slice().reverse()).reverse();
 
-    row.reverse();
-    row = slide(row);
-    board[r] = row.reverse();
+    board[r] = shiftedRow;
+
+    if (!arraysEqual(originalRow, board[r])) {
+      moved = true;
+    }
 
     for (let c = 0; c < columns; c++) {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
+
       const num = board[r][c];
 
       upDateTile(tile, num);
     }
+  }
+
+  if (moved) {
+    addNum();
+    endGame();
   }
 }
 
 function slideUp() {
-  endGame();
+  let moved = false;
 
   for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
-
-    row = slide(row);
+    const originalCol = getColumn(board, c).slice();
+    const shiftedCol = slide(getColumn(board, c)).slice();
 
     for (let r = 0; r < rows; r++) {
-      board[r][c] = row[r];
+      board[r][c] = shiftedCol[r];
+    }
 
+    if (!arraysEqual(originalCol, getColumn(board, c))) {
+      moved = true;
+    }
+
+    for (let r = 0; r < rows; r++) {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
       const num = board[r][c];
 
       upDateTile(tile, num);
     }
+  }
+
+  if (moved) {
+    addNum();
+    endGame();
   }
 }
 
 function slideDown() {
-  endGame();
+  let moved = false;
 
   for (let c = 0; c < columns; c++) {
-    let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
-
-    row.reverse();
-    row = slide(row);
-    row.reverse();
+    const originalCol = getColumn(board, c).slice().reverse();
+    const shiftedCol = slide(getColumn(board, c).slice().reverse()).reverse();
 
     for (let r = 0; r < rows; r++) {
-      board[r][c] = row[r];
+      board[r][c] = shiftedCol[r];
+    }
 
+    if (!arraysEqual(originalCol, getColumn(board, c).slice().reverse())) {
+      moved = true;
+    }
+
+    for (let r = 0; r < rows; r++) {
       const tile = document.getElementById(r.toString() + '-' + c.toString());
       const num = board[r][c];
 
       upDateTile(tile, num);
     }
   }
+
+  if (moved) {
+    addNum();
+    endGame();
+  }
+}
+
+function getColumn(matrix, col) {
+  return matrix.map(row => row[col]);
+}
+
+function arraysEqual(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 function gameOver() {
@@ -277,4 +342,7 @@ function gameOver() {
   }
 
   return true;
+
+  // eslint-disable-next-line no-console, no-unreachable
+  console.log('Finish');
 }
