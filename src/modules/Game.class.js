@@ -175,7 +175,10 @@ class Game {
   /**
    * Resets the game.
    */
-  restart() { }
+  restart() { 
+    this.board = initialState;
+    this.status = 'playing';
+  }
 
   // Add your own methods here
 
@@ -220,6 +223,7 @@ class Game {
     }
     if (this.status === 'playing' && this.count > 1) {
       startButton.innerText = 'Restart';
+      startButton.classList.add('restart');
       messageContainer.children[2].classList.add('hidden');
     } else {
       startButton.innerText = 'Start';
@@ -232,7 +236,6 @@ class Game {
       messageContainer.children[0].classList.remove('hidden');
     }
     this.scoreElement[0].innerText = this.score;
-    console.log(this._checkLoose(), 'check whether the game is not finished');
   }
 
   _getNumber() {

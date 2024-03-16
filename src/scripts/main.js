@@ -12,7 +12,10 @@ const game = new Game([
 ]);
 
 const startButton = document.getElementById('start-button');
-startButton.addEventListener('click', () => game.start());
+startButton.addEventListener('click', () => {
+  console.log(game.getStatus());
+  game.start();
+});
 
 window.addEventListener('keyup', handleKey);
 
