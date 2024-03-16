@@ -175,9 +175,19 @@ class Game {
   /**
    * Resets the game.
    */
-  restart() { 
-    this.board = initialState;
+  restart() {
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
     this.status = 'playing';
+    this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
+      2;
+    this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
+      2;
+    this._renderBoard();
   }
 
   // Add your own methods here
@@ -230,9 +240,10 @@ class Game {
     }
     if (this.score >= 2048) {
       messageContainer.children[1].classList.remove('hidden')
-    } 
+    }
     if (!this._checkLoose()) {
       console.log('game is ended');
+      this.status = 'lose';
       messageContainer.children[0].classList.remove('hidden');
     }
     this.scoreElement[0].innerText = this.score;

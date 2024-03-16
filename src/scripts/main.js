@@ -14,7 +14,11 @@ const game = new Game([
 const startButton = document.getElementById('start-button');
 startButton.addEventListener('click', () => {
   console.log(game.getStatus());
-  game.start();
+  if (game.getStatus() === 'idle') {
+    game.start();
+  } else {
+    game.restart();
+  }
 });
 
 window.addEventListener('keyup', handleKey);
