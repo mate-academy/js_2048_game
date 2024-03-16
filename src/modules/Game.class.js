@@ -36,6 +36,7 @@ class Game {
     this.status = 'idle';
     this.cells = document.getElementsByClassName('field-row');
     this.scoreElement = document.getElementsByClassName('game-score');
+    this.count = 0;
   }
 
   moveLeft() {
@@ -166,7 +167,6 @@ class Game {
       2;
     this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
       2;
-
     this.status = 'playing';
 
     this._renderBoard();
@@ -194,13 +194,20 @@ class Game {
     if (emptyCell !== undefined) {
       this.board[emptyCell[0]][emptyCell[1]] = this._getNumber();
     }
-
+    if (emptyCell === undefined && this.checkLoose()) {
+      console.log('game is ended');
+    }
+    // console.log(empty, emptyCell, 'detect when there is no space to move');
     setTimeout(() => {
       this._renderBoard();
     }, 500);
   }
 
   _renderBoard() {
+    const startButton = document.getElementById('start-button');
+    const messageContainer = document.getElementById("message-container")
+    this.count++;
+    // console.log(messageContainer.children[2].classList.add('hidden'), 'count');
     for (let line = 0; line <= this.board.length - 1; line++) {
       for (let col = 0; col <= this.board[line].length - 1; col++) {
         this.cells[line].cells[col].innerText = this.board[line][col];
@@ -211,13 +218,43 @@ class Game {
         }
       }
     }
+    if (this.status === 'playing' && this.count > 1) {
+      startButton.innerText = 'Restart';
+    } else {
+      startButton.innerText = 'Start';
+    }
+    if (this.score < 2048) {
+
+    } else {
+
+    }
     this.scoreElement[0].innerText = this.score;
+    console.log(this.checkLoose(), 'check whether the game is not finished');
   }
 
   _getNumber() {
     const numbers = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
     const index = Math.floor(Math.random() * numbers.length);
     return numbers[index];
+  }
+
+  checkLoose() {
+    if (this.board.some(row => row.some(cell => cell === 0))) {
+      return true;
+    }
+
+    for (let x = 0; x < this.board.length; x++) {
+      for (let i = 0; i < this.board[x].length; i++) {
+        if (i < this.board[x].length - 1
+          && this.board[x][i] === this.board[x][i + 1]) {
+          return true;
+        }
+        if (x < this.board[x].length - 1 && this.board[x][i] === this.board[x + 1][i]) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
 
