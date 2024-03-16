@@ -194,9 +194,9 @@ class Game {
     if (emptyCell !== undefined) {
       this.board[emptyCell[0]][emptyCell[1]] = this._getNumber();
     }
-    if (emptyCell === undefined && this.checkLoose()) {
-      console.log('game is ended');
-    }
+    // if (!this._checkLoose()) {
+    //   console.log('game is ended');
+    // }
     // console.log(empty, emptyCell, 'detect when there is no space to move');
     setTimeout(() => {
       this._renderBoard();
@@ -205,9 +205,9 @@ class Game {
 
   _renderBoard() {
     const startButton = document.getElementById('start-button');
-    const messageContainer = document.getElementById("message-container")
+    const messageContainer = document.getElementById("message-container");
+    console.log(messageContainer.children[0].className);
     this.count++;
-    // console.log(messageContainer.children[2].classList.add('hidden'), 'count');
     for (let line = 0; line <= this.board.length - 1; line++) {
       for (let col = 0; col <= this.board[line].length - 1; col++) {
         this.cells[line].cells[col].innerText = this.board[line][col];
@@ -220,16 +220,19 @@ class Game {
     }
     if (this.status === 'playing' && this.count > 1) {
       startButton.innerText = 'Restart';
+      messageContainer.children[2].classList.add('hidden');
     } else {
       startButton.innerText = 'Start';
     }
-    if (this.score < 2048) {
-
-    } else {
-
+    if (this.score >= 2048) {
+      messageContainer.children[1].classList.remove('hidden')
+    } 
+    if (!this._checkLoose()) {
+      console.log('game is ended');
+      messageContainer.children[0].classList.remove('hidden');
     }
     this.scoreElement[0].innerText = this.score;
-    console.log(this.checkLoose(), 'check whether the game is not finished');
+    console.log(this._checkLoose(), 'check whether the game is not finished');
   }
 
   _getNumber() {
@@ -238,7 +241,7 @@ class Game {
     return numbers[index];
   }
 
-  checkLoose() {
+  _checkLoose() {
     if (this.board.some(row => row.some(cell => cell === 0))) {
       return true;
     }
