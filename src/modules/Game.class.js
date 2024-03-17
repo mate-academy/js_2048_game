@@ -28,9 +28,7 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ],
-    // cells,
   ) {
-    // eslint-disable-next-line no-console
     this.board = initialState;
     this.score = 0;
     this.status = 'idle';
