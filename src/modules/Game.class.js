@@ -229,9 +229,7 @@ class Game {
       this.board[emptyCell[0]][emptyCell[1]] = this._getNumber();
     }
 
-    setTimeout(() => {
-      this._renderBoard();
-    }, 500);
+    this._renderBoard();
   }
 
   _renderBoard() {
