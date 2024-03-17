@@ -1,7 +1,5 @@
-/* eslint-disable */
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 
 const game = new Game([
@@ -12,6 +10,7 @@ const game = new Game([
 ]);
 
 const startButton = document.getElementById('start-button');
+
 startButton.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
@@ -22,17 +21,20 @@ startButton.addEventListener('click', () => {
 
 window.addEventListener('keyup', handleKey);
 
-function handleKey(event) {
-  if (event.code === 'ArrowUp') {
+function handleKey(action) {
+  if (action.code === 'ArrowUp') {
     game.moveUp();
   }
-  if (event.code === 'ArrowDown') {
+
+  if (action.code === 'ArrowDown') {
     game.moveDown();
   }
-  if (event.code === 'ArrowLeft') {
+
+  if (action.code === 'ArrowLeft') {
     game.moveLeft();
   }
-  if (event.code === 'ArrowRight') {
+
+  if (action.code === 'ArrowRight') {
     game.moveRight();
   }
 }
