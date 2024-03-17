@@ -163,34 +163,39 @@ class Game {
    */
   start() {
     // eslint-disable-next-line no-console
-    this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
-      2;
-    this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
-      2;
-    this.status = 'playing';
+    console.log(this.status, this.status === 'idle',  'class start');
+    if (this.status === 'idle') {
+      this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
+        2;
+      this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
+        2;
+      this.status = 'playing';
 
-    this._renderBoard();
+      this._renderBoard();
+    }
   }
 
   /**
    * Resets the game.
    */
   restart() {
-    this.board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    this.status = 'playing';
-    this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
-      2;
-    this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
-      2;
-    this._renderBoard();
+    console.log(this.count, 'count');
+    if (this.count > 0) {
+      this.board = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
+      this.status = 'playing';
+      this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
+        2;
+      this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
+        2;
+      this._renderBoard();
+    }
+    this.count = 0;
   }
-
-  // Add your own methods here
 
   _generateNumbers() {
     const empty = [];
@@ -206,11 +211,8 @@ class Game {
     const emptyCell = empty[coords];
     if (emptyCell !== undefined) {
       this.board[emptyCell[0]][emptyCell[1]] = this._getNumber();
+      this.count++;
     }
-    // if (!this._checkLoose()) {
-    //   console.log('game is ended');
-    // }
-    // console.log(empty, emptyCell, 'detect when there is no space to move');
     setTimeout(() => {
       this._renderBoard();
     }, 500);
@@ -220,7 +222,6 @@ class Game {
     const startButton = document.getElementById('start-button');
     const messageContainer = document.getElementById("message-container");
     console.log(messageContainer.children[0].className);
-    this.count++;
     for (let line = 0; line <= this.board.length - 1; line++) {
       for (let col = 0; col <= this.board[line].length - 1; col++) {
         this.cells[line].cells[col].innerText = this.board[line][col];
@@ -231,7 +232,7 @@ class Game {
         }
       }
     }
-    if (this.status === 'playing' && this.count > 1) {
+    if (this.status === 'playing' && this.count > 0) {
       startButton.innerText = 'Restart';
       startButton.classList.add('restart');
       messageContainer.children[2].classList.add('hidden');
