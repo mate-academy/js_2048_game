@@ -220,13 +220,6 @@ class Game {
     const empty = this._getEmptyCells();
 
     this.count++;
-    // for (let line = 0; line <= this.board.length - 1; line++) {
-    //   for (let col = 0; col <= this.board[line].length - 1; col++) {
-    //     if (this.board[line][col] === 0) {
-    //       empty.push([line, col]);
-    //     }
-    //   }
-    // }
 
     const coords = Math.floor(Math.random() * empty.length);
 
