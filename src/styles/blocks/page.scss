@@ -1,0 +1,15 @@
+.page {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  &__body {
+    overflow: hidden;
+    background-color: $body-bg-color;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}

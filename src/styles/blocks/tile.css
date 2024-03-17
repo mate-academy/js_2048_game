@@ -1,0 +1,11 @@
+.tile {
+  --x: 0;
+  --y: 0;
+  --tile-calc: (12vmin + 1vmin);
+  --tile-color: #fff;
+
+  box-sizing: border-box;
+  top: calc(var(--y) * var(--tile-calc));
+  left: calc(var(--x) * var(--tile-calc));
+  background-color: var(--tile-color);
+}
