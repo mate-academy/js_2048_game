@@ -249,7 +249,7 @@ class Game {
       }
     }
 
-    if (this.status === 'playing' && this.count > 0) {
+    if (this.status === 'playing') {
       startButton.innerText = 'Restart';
       startButton.classList.add('restart');
     }
