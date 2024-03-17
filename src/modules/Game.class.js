@@ -234,9 +234,11 @@ class Game {
     } 
     if (this.status === 'playing') {
       messageContainer.children[2].classList.add('hidden');
+      messageContainer.children[1].classList.add('hidden');
+      messageContainer.children[0].classList.add('hidden');
     }  
     if (this.score >= 2048) {
-      messageContainer.children[1].classList.remove('hidden')
+      messageContainer.children[1].classList.remove('hidden');
     }
     if (!this._checkLoose()) {
       this.status = 'lose';
