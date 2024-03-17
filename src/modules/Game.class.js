@@ -162,8 +162,6 @@ class Game {
    * Starts the game.
    */
   start() {
-    // eslint-disable-next-line no-console
-    console.log(this.status, this.status === 'idle',  'class start');
     if (this.status === 'idle') {
       this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
         2;
@@ -179,7 +177,6 @@ class Game {
    * Resets the game.
    */
   restart() {
-    console.log(this.count, 'count');
     if (this.count > 0) {
       this.board = [
         [0, 0, 0, 0],
@@ -221,7 +218,6 @@ class Game {
   _renderBoard() {
     const startButton = document.getElementById('start-button');
     const messageContainer = document.getElementById("message-container");
-    console.log(messageContainer.children[0].className);
     for (let line = 0; line <= this.board.length - 1; line++) {
       for (let col = 0; col <= this.board[line].length - 1; col++) {
         this.cells[line].cells[col].innerText = this.board[line][col];
@@ -235,18 +231,17 @@ class Game {
     if (this.status === 'playing' && this.count > 0) {
       startButton.innerText = 'Restart';
       startButton.classList.add('restart');
+    } 
+    if (this.status === 'playing') {
       messageContainer.children[2].classList.add('hidden');
-    } else {
-      startButton.innerText = 'Start';
-    }
+    }  
     if (this.score >= 2048) {
       messageContainer.children[1].classList.remove('hidden')
     }
     if (!this._checkLoose()) {
-      console.log('game is ended');
       this.status = 'lose';
       messageContainer.children[0].classList.remove('hidden');
-    }
+    } 
     this.scoreElement[0].innerText = this.score;
   }
 
