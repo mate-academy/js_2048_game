@@ -13,12 +13,9 @@ const game = new Game([
 
 const startButton = document.getElementById('start-button');
 startButton.addEventListener('click', () => {
-  console.log(game.getStatus(), game.getStatus() === 'idle', 'it is a button');
   if (game.getStatus() === 'idle') {
-    console.log(game.getStatus(), 'm?');
     game.start();
   } else {
-    console.log('restart');
     game.restart();
   }
 });
