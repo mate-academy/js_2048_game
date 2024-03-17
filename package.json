@@ -1,6 +1,7 @@
 {
   "name": "2048",
   "version": "1.0.0",
+  "homepage": ".",
   "description": "2048 game",
   "scripts": {
     "init": "mate-scripts init",
