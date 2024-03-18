@@ -45,7 +45,6 @@ class Game {
       this._renderBoard();
       this._generateNumbers();
     }
-
   }
 
   moveRight() {
@@ -58,28 +57,25 @@ class Game {
       this._renderBoard();
       this._generateNumbers();
     }
-
   }
 
   moveUp() {
     if (this._checkNextStep(this.board, 'up')) {
       for (let col = 0; col < this.board[0].length; col++) {
         const column = this.board.map((row) => row[col]);
-  
+
         this._compress(column);
         this._merge(column);
         this._compress(column);
-  
+
         for (let row = 0; row < this.board.length; row++) {
           this.board[row][col] = column[row];
         }
       }
       this._generateNumbers();
-  
-      this._renderBoard();
-  
-    }
 
+      this._renderBoard();
+    }
   }
 
   moveDown() {
@@ -98,9 +94,7 @@ class Game {
       this._generateNumbers();
 
       this._renderBoard();
-
     }
-
   }
 
   _checkMoveDown(array) {
@@ -145,7 +139,8 @@ class Game {
   }
 
   _checkNextStep(copy, direction) {
-    const copyBoard = copy.map(subArray => subArray.slice());
+    const copyBoard = copy.map((subArray) => subArray.slice());
+
     switch (direction) {
       case 'down':
         this._checkMoveDown(copyBoard);
@@ -162,6 +157,7 @@ class Game {
       default:
         break;
     }
+
     for (let row = 0; row < this.board.length; row++) {
       for (let col = 0; col < this.board[row].length; col++) {
         if (this.board[row][col] !== copyBoard[row][col]) {
@@ -257,6 +253,7 @@ class Game {
       this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
         2;
     }
+
     if (this._getEmptyCells().length !== 14) {
       this.start();
     }
