@@ -36,55 +36,141 @@ class Game {
   }
 
   moveLeft() {
-    for (let row = 0; row <= this.board.length - 1; row++) {
-      this._compress(this.board[row]);
-      this._merge(this.board[row]);
-      this._compress(this.board[row]);
+    if (this._checkNextStep(this.board, 'left')) {
+      for (let row = 0; row <= this.board.length - 1; row++) {
+        this._compress(this.board[row]);
+        this._merge(this.board[row]);
+        this._compress(this.board[row]);
+      }
+      this._renderBoard();
+      this._generateNumbers();
     }
-    this._renderBoard();
-    this._generateNumbers();
+
   }
 
   moveRight() {
-    for (let row = 0; row <= this.board.length - 1; row++) {
-      this._compressDown(this.board[row]);
-      this._mergeDown(this.board[row]);
-      this._compressDown(this.board[row]);
+    if (this._checkNextStep(this.board, 'right')) {
+      for (let row = 0; row <= this.board.length - 1; row++) {
+        this._compressDown(this.board[row]);
+        this._mergeDown(this.board[row]);
+        this._compressDown(this.board[row]);
+      }
+      this._renderBoard();
+      this._generateNumbers();
     }
-    this._renderBoard();
-    this._generateNumbers();
+
   }
 
   moveUp() {
-    for (let col = 0; col < this.board[0].length; col++) {
-      const column = this.board.map((row) => row[col]);
-
-      this._compress(column);
-      this._merge(column);
-      this._compress(column);
-
-      for (let row = 0; row < this.board.length; row++) {
-        this.board[row][col] = column[row];
+    if (this._checkNextStep(this.board, 'up')) {
+      for (let col = 0; col < this.board[0].length; col++) {
+        const column = this.board.map((row) => row[col]);
+  
+        this._compress(column);
+        this._merge(column);
+        this._compress(column);
+  
+        for (let row = 0; row < this.board.length; row++) {
+          this.board[row][col] = column[row];
+        }
       }
+      this._generateNumbers();
+  
+      this._renderBoard();
+  
     }
-    this._renderBoard();
-    this._generateNumbers();
+
   }
 
   moveDown() {
-    for (let col = 0; col < this.board[0].length; col++) {
-      const column = this.board.map((row) => row[col]);
+    if (this._checkNextStep(this.board, 'down')) {
+      for (let col = 0; col < this.board[0].length; col++) {
+        const column = this.board.map((row) => row[col]);
+
+        this._compressDown(column);
+        this._mergeDown(column);
+        this._compressDown(column);
+
+        for (let row = 0; row < this.board.length; row++) {
+          this.board[row][col] = column[row];
+        }
+      }
+      this._generateNumbers();
+
+      this._renderBoard();
+
+    }
+
+  }
+
+  _checkMoveDown(array) {
+    for (let col = 0; col < array[0].length; col++) {
+      const column = array.map((row) => row[col]);
 
       this._compressDown(column);
       this._mergeDown(column);
       this._compressDown(column);
 
-      for (let row = 0; row < this.board.length; row++) {
-        this.board[row][col] = column[row];
+      for (let row = 0; row < array.length; row++) {
+        array[row][col] = column[row];
       }
     }
-    this._renderBoard();
-    this._generateNumbers();
+  }
+  _checkMoveUp(array) {
+    for (let col = 0; col < array[0].length; col++) {
+      const column = array.map((row) => row[col]);
+
+      this._compress(column);
+      this._merge(column);
+      this._compress(column);
+
+      for (let row = 0; row < array.length; row++) {
+        array[row][col] = column[row];
+      }
+    }
+  }
+  _checkMoveLeft(array) {
+    for (let row = 0; row <= array.length - 1; row++) {
+      this._compress(array[row]);
+      this._merge(array[row]);
+      this._compress(array[row]);
+    }
+  }
+  _checkMoveRight(array) {
+    for (let row = 0; row <= array.length - 1; row++) {
+      this._compressDown(array[row]);
+      this._mergeDown(array[row]);
+      this._compressDown(array[row]);
+    }
+  }
+
+  _checkNextStep(copy, direction) {
+    const copyBoard = copy.map(subArray => subArray.slice());
+    switch (direction) {
+      case 'down':
+        this._checkMoveDown(copyBoard);
+        break;
+      case 'up':
+        this._checkMoveUp(copyBoard);
+        break;
+      case 'left':
+        this._checkMoveLeft(copyBoard);
+        break;
+      case 'right':
+        this._checkMoveRight(copyBoard);
+        break;
+      default:
+        break;
+    }
+    for (let row = 0; row < this.board.length; row++) {
+      for (let col = 0; col < this.board[row].length; col++) {
+        if (this.board[row][col] !== copyBoard[row][col]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   _merge(column) {
@@ -170,13 +256,13 @@ class Game {
 
       this.board[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)] =
         2;
-
-      if (this._getEmptyCells().length !== 14) {
-        this.start();
-      }
-      this.status = 'playing';
-      this._renderBoard();
     }
+    if (this._getEmptyCells().length !== 14) {
+      this.start();
+    }
+
+    this.status = 'playing';
+    this._renderBoard();
   }
 
   _getEmptyCells() {
