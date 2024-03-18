@@ -8,6 +8,7 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  overflow: hidden;
 }
 
 .field-cell {
@@ -20,6 +21,39 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+}
+
+.game-field {
+  position: relative;
+  display: flex;
+  background: #bbada0;
+  border-spacing: 10px;
+  border-radius: 5px;
+
+  &__tbody {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.tile {
+  position: absolute;
+  z-index: 1;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  color: #776e65;
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: center;
+  user-select: none;
+  line-height: 75px;
+  transition:
+    top 0.3s ease-in-out,
+    left 0.2s ease-in-out,
+    color 0.3s,
+    background-color 0.3s;
 
   &--2 {
     background: #eee4da;
@@ -75,12 +109,6 @@ body {
   }
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
-}
-
 .game-header {
   display: flex;
   width: 100%;
@@ -116,11 +144,7 @@ h1 {
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
-  margin: 0 8px 0 0;
-}
-
-.controls {
-  display: flex;
+  margin: 0;
 }
 
 .button {
@@ -183,5 +207,36 @@ h1 {
 
 .message-container {
   width: 100%;
-  height: 150px;
+}
+
+.anim-show {
+  animation: show 0.3s ease-in-out backwards 0.3s;
+}
+
+.anim-merge {
+  animation: merge 0.3s;
+}
+
+@keyframes show {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
