@@ -199,8 +199,9 @@ function up() {
 }
 
 function transposeGameField() {
-  newGameField = newGameField[0].map((el, colIndex) =>
-    newGameField.map((row) => row[colIndex]),
+  newGameField = newGameField[0].map(
+    (el, colIndex) => newGameField.map((row) => row[colIndex]),
+    // eslint-disable-next-line function-paren-newline
   );
 }
 
