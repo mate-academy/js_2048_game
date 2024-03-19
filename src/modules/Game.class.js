@@ -175,7 +175,7 @@ class Game {
         column[i] *= 2;
 
         column[i + 1] = 0;
-        this.score += column[i];
+        this.score += column[i] / 2;
       }
     }
   }
@@ -185,7 +185,7 @@ class Game {
       if (column[i] === column[i - 1] && column[i] > 0) {
         column[i] *= 2;
         column[i - 1] = 0;
-        this.score += column[i];
+        this.score += column[i] / 2;
       }
     }
   }
@@ -297,6 +297,7 @@ class Game {
       this._renderBoard();
     }
     this.count = 0;
+    this.score = 0;
   }
 
   _generateNumbers() {
@@ -343,7 +344,7 @@ class Game {
       messageContainer.children[0].classList.add('hidden');
     }
 
-    if (this.score >= 2048) {
+    if (this.board.some((row) => row.some((cell) => cell === 2048))) {
       messageContainer.children[1].classList.remove('hidden');
     }
 
