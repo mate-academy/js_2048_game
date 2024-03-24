@@ -24,6 +24,9 @@ button.addEventListener('click', (e) => {
     button.className = 'button start';
     button.textContent = 'Start';
     messageStart.classList.remove('hidden');
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
+
     render();
   }
 });
