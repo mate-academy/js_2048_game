@@ -3,7 +3,7 @@
 import { renderField, stylingCells } from '../scripts/main';
 
 const field = [
-  [0, 0, 1024, 1024],
+  [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -170,30 +170,6 @@ class Game {
     }
 
     return false;
-  }
-
-  checkLose() {
-    const isFilledArray = this.field.flat().includes(0);
-
-    if (isFilledArray) {
-      return false;
-    }
-
-    for (let i = 0; i < this.field.length; i++) {
-      for (let j = 0; j < this.field[i].length; j++) {
-        const cannotBeMerged =
-          (isFilledArray && this.field[i][j] !== this.field[i - 1][j]) ||
-          this.field[i][j] !== this.field[i + 1][j] ||
-          this.field[i][j] !== this.field[i][j + 1] ||
-          this.field[i][j] !== this.field[i][j - 1];
-
-        if (cannotBeMerged) {
-          this.gameStatus = 'lose';
-
-          return true;
-        }
-      }
-    }
   }
 
   canMoveCellsRight() {

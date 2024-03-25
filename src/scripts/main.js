@@ -106,10 +106,14 @@ document.addEventListener('keyup', (action) => {
         handleUpButtonClickAndUpdateField();
       }
 
-      if (!game.canMoveCellsUp()) {
-        if (game.checkLose()) {
-          messageLoseGame.classList.remove('hidden');
-        }
+      if (
+        !game.canMoveCellsDown() &&
+        !game.canMoveCellsUp() &&
+        !game.canMoveCellsRight() &&
+        !game.canMoveCellsLeft()
+      ) {
+        game.gameStatus = 'lose';
+        messageLoseGame.classList.remove('hidden');
       }
       break;
     case 'ArrowLeft':
@@ -117,10 +121,14 @@ document.addEventListener('keyup', (action) => {
         handleLeftButtonClickAndUpdateField();
       }
 
-      if (!game.canMoveCellsLeft()) {
-        if (game.checkLose()) {
-          messageLoseGame.classList.remove('hidden');
-        }
+      if (
+        !game.canMoveCellsDown() &&
+        !game.canMoveCellsUp() &&
+        !game.canMoveCellsRight() &&
+        !game.canMoveCellsLeft()
+      ) {
+        game.gameStatus = 'lose';
+        messageLoseGame.classList.remove('hidden');
       }
       break;
     case 'ArrowDown':
@@ -128,10 +136,14 @@ document.addEventListener('keyup', (action) => {
         handleDownButtonClickAndUpdateField();
       }
 
-      if (!game.canMoveCellsDown()) {
-        if (game.checkLose()) {
-          messageLoseGame.classList.remove('hidden');
-        }
+      if (
+        !game.canMoveCellsDown() &&
+        !game.canMoveCellsUp() &&
+        !game.canMoveCellsRight() &&
+        !game.canMoveCellsLeft()
+      ) {
+        game.gameStatus = 'lose';
+        messageLoseGame.classList.remove('hidden');
       }
       break;
     case 'ArrowRight':
@@ -139,10 +151,14 @@ document.addEventListener('keyup', (action) => {
         handleRightButtonClickAndUpdateField();
       }
 
-      if (!game.canMoveCellsRight()) {
-        if (game.checkLose()) {
-          messageLoseGame.classList.remove('hidden');
-        }
+      if (
+        !game.canMoveCellsDown() &&
+        !game.canMoveCellsUp() &&
+        !game.canMoveCellsRight() &&
+        !game.canMoveCellsLeft()
+      ) {
+        game.gameStatus = 'lose';
+        messageLoseGame.classList.remove('hidden');
       }
       break;
     default:
