@@ -32,8 +32,11 @@ function handleUpButtonClickAndUpdateField() {
     game.moveUp();
     game.addingNumberToField();
     renderField();
-    game.checkVictory();
     stylingCells();
+  }
+
+  if (game.checkVictory()) {
+    messageWinGame.classList.remove('hidden');
   }
 }
 
@@ -42,8 +45,11 @@ function handleDownButtonClickAndUpdateField() {
     game.moveDown();
     game.addingNumberToField();
     renderField();
-    game.checkVictory();
     stylingCells();
+  }
+
+  if (game.checkVictory()) {
+    messageWinGame.classList.remove('hidden');
   }
 }
 
@@ -52,8 +58,11 @@ function handleRightButtonClickAndUpdateField() {
     game.moveRight();
     game.addingNumberToField();
     renderField();
-    game.checkVictory();
     stylingCells();
+  }
+
+  if (game.checkVictory()) {
+    messageWinGame.classList.remove('hidden');
   }
 }
 
@@ -62,8 +71,11 @@ function handleLeftButtonClickAndUpdateField() {
     game.moveLeft();
     game.addingNumberToField();
     renderField();
-    game.checkVictory();
     stylingCells();
+  }
+
+  if (game.checkVictory()) {
+    messageWinGame.classList.remove('hidden');
   }
 }
 

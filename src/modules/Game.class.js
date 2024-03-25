@@ -3,7 +3,7 @@
 import { renderField, stylingCells } from '../scripts/main';
 
 const field = [
-  [0, 0, 0, 0],
+  [0, 0, 1024, 1024],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -162,7 +162,6 @@ class Game {
     for (let i = 0; i < this.field.length; i++) {
       for (let j = 0; j < this.field[i].length; j++) {
         if (this.field[i][j] === 2048) {
-          // this.messageWinGame.classList.remove('hidden');
           this.gameStatus = 'win';
 
           return true;
