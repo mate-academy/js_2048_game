@@ -1,0 +1,224 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 7,
+    "passes": 6,
+    "pending": 0,
+    "failures": 1,
+    "start": "2024-03-26T10:14:21.791Z",
+    "end": "2024-03-26T10:14:59.662Z",
+    "duration": 37451,
+    "testsRegistered": 7,
+    "passPercent": 85.71428571428571,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "c25edfda-5b7f-4c46-888b-75a6c0edc438",
+      "title": "",
+      "fullFile": "cypress\\integration\\js2048Game.spec.js",
+      "file": "cypress\\integration\\js2048Game.spec.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "17f2cab6-629e-470b-8b3a-238bc2d9fe19",
+          "title": "2048 game",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should show the initial score",
+              "fullTitle": "2048 game should show the initial score",
+              "timedOut": null,
+              "duration": 236,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('.button.start').click();\ncy.get('.game-score').should('have.value', '');",
+              "err": {},
+              "uuid": "de92b4fe-dc42-46d5-98ce-7d3f88280111",
+              "parentUUID": "17f2cab6-629e-470b-8b3a-238bc2d9fe19",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the left and up only",
+              "fullTitle": "2048 game should show the score shuffling to the left and up only",
+              "timedOut": null,
+              "duration": 564,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.shuffleBoxes('{leftArrow}', '{upArrow}', 3);\ncy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);",
+              "err": {},
+              "uuid": "8c0f541b-c4e2-42be-86fc-d33bd6ae1fd6",
+              "parentUUID": "17f2cab6-629e-470b-8b3a-238bc2d9fe19",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the right and up only",
+              "fullTitle": "2048 game should show the score shuffling to the right and up only",
+              "timedOut": null,
+              "duration": 567,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.shuffleBoxes('{rightArrow}', '{upArrow}', 3);\ncy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);",
+              "err": {},
+              "uuid": "58e9ba2d-de60-4f93-84f2-41bf0e7fd6a0",
+              "parentUUID": "17f2cab6-629e-470b-8b3a-238bc2d9fe19",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the right and down only",
+              "fullTitle": "2048 game should show the score shuffling to the right and down only",
+              "timedOut": null,
+              "duration": 559,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.shuffleBoxes('{rightArrow}', '{downArrow}', 3);\ncy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);",
+              "err": {},
+              "uuid": "7a566bbe-5e0d-484b-a8be-29eae1c9d5eb",
+              "parentUUID": "17f2cab6-629e-470b-8b3a-238bc2d9fe19",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show the score shuffling to the left and down only",
+              "fullTitle": "2048 game should show the score shuffling to the left and down only",
+              "timedOut": null,
+              "duration": 562,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.shuffleBoxes('{leftArrow}', '{downArrow}', 3);\ncy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);",
+              "err": {},
+              "uuid": "6c989e94-d015-4b45-b7ae-acf141316f91",
+              "parentUUID": "17f2cab6-629e-470b-8b3a-238bc2d9fe19",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should reset the score",
+              "fullTitle": "2048 game should reset the score",
+              "timedOut": null,
+              "duration": 640,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.shuffleBoxes('{leftArrow}', '{downArrow}', 3);\ncy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);\ncy.get('.button.restart').click();\ncy.get('.game-score').should('have.value', '');",
+              "err": {},
+              "uuid": "305467bc-07a0-431f-a31d-3ea3268a8f69",
+              "parentUUID": "17f2cab6-629e-470b-8b3a-238bc2d9fe19",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show message in case of the loss",
+              "fullTitle": "2048 game should show message in case of the loss",
+              "timedOut": null,
+              "duration": 34323,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('.button.start').click();\nfor (var n = 0; n < 100; n++) {\n  cy.get('body').type('{rightArrow}');\n  cy.get('body').type('{downArrow}');\n  cy.get('body').type('{leftArrow}');\n  cy.get('body').type('{upArrow}');\n}\ncy.contains('You lose! Restart the game?').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying: expected '<p.message.message-lose.hidden>' to be 'visible'\n\nThis element `<p.message.message-lose.hidden>` is not visible because it has CSS property: `display: none`",
+                "estack": "AssertionError: Timed out retrying: expected '<p.message.message-lose.hidden>' to be 'visible'\n\nThis element `<p.message.message-lose.hidden>` is not visible because it has CSS property: `display: none`\n    at Context.eval (http://localhost:8080/__cypress/tests?p=cypress\\integration\\js2048Game.spec.js:147:48)",
+                "diff": null
+              },
+              "uuid": "742ccddd-ea08-442e-b484-79ccd531b69a",
+              "parentUUID": "17f2cab6-629e-470b-8b3a-238bc2d9fe19",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "de92b4fe-dc42-46d5-98ce-7d3f88280111",
+            "8c0f541b-c4e2-42be-86fc-d33bd6ae1fd6",
+            "58e9ba2d-de60-4f93-84f2-41bf0e7fd6a0",
+            "7a566bbe-5e0d-484b-a8be-29eae1c9d5eb",
+            "6c989e94-d015-4b45-b7ae-acf141316f91",
+            "305467bc-07a0-431f-a31d-3ea3268a8f69"
+          ],
+          "failures": [
+            "742ccddd-ea08-442e-b484-79ccd531b69a"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 37451,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "6.2.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "raw_reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "5.1.0"
+    }
+  }
+}
