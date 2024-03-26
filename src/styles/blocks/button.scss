@@ -1,0 +1,30 @@
+.button {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: $secondary-text-color;
+  font-family: sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  width: 75px;
+  height: 75px;
+
+  transition: 0.25s ease;
+
+  &.start {
+    background: #8cb9bd;
+    font-size: 20px;
+  
+    &:hover {
+      background: #4ab4bd;
+    }
+  }
+
+  &.restart {
+    background: #ffaf9d;
+  
+    &:hover {
+      background: #f65e3b;
+    }
+  }
+}

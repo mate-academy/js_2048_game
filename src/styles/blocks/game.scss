@@ -1,0 +1,53 @@
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 0, 10px;
+    box-sizing: border-box;
+  }
+
+  &__title {
+    color: $ceil-2048-background-color;
+    width: 95px;
+    height: 60px;
+    font-size: 40px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  &__field {
+    background: $field-background-color;
+    border-spacing: 10px;
+    border-radius: 5px;
+    color: $field-text-color;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: $info-background-color;
+    width: 75px;
+    height: 60px;
+    border-radius: 5px;
+    color: $info-text-color;
+    box-sizing: border-box;
+    font-size: 16px;
+    margin: 0 8px 0 0;
+  }
+  
+  &__controls {
+    display: flex;
+  }
+}
