@@ -1,7 +1,7 @@
 /* eslint-disable no-inner-declarations */
 'use strict';
 
-const button = document.querySelector('.button');
+const button = document.querySelector('button');
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
@@ -15,8 +15,6 @@ const gameScore = document.querySelector('.game-score');
 gameScore.innerText = 0;
 
 const gameField = document.querySelector('.game-field');
-
-let countOfMoves = 0;
 
 let gameOver = 0;
 
@@ -188,28 +186,42 @@ function emptyCellCheck() {
     gameField.classList.add('game-over');
     gameOver++;
   }
+
+  if (gameOver > 0 && count === 24) {
+    gameField.classList.add('game-over');
+    messageLose.classList.remove('hidden');
+  }
+}
+
+function clearCells() {
+  cellsArr.forEach(cell => {
+    cell.innerText = '';
+  });
+  colorCells();
 }
 
 colorCells();
 
 button.addEventListener('click', () => {
-  location.reload();
-});
+  if (button.classList.contains('start')) {
+    button.innerText = 'Restart';
+    button.classList.remove('start');
+    button.classList.add('restart');
+    messageStart.classList.add('hidden');
+    addNewNumber();
+    addNewNumber();
 
-document.addEventListener('keydown', (e) => {
-  if (
-    e.code === 'ArrowDown'
-    || e.code === 'ArrowUp'
-    || e.code === 'ArrowLeft'
-    || e.code === 'ArrowRight'
-  ) {
-    if (countOfMoves === 0) {
-      button.innerText = 'Restart';
-      button.classList.remove('start');
-      button.classList.add('restart');
-      messageStart.classList.add('hidden');
-      countOfMoves++;
-    }
+    return;
+  }
+
+  if (button.classList.contains('restart')) {
+    clearCells();
+    messageWin.classList.add('hidden');
+    messageLose.classList.add('hidden');
+    gameField.classList.remove('game-over');
+    gameOver = 0;
+    addNewNumber();
+    addNewNumber();
   }
 });
 
@@ -243,8 +255,6 @@ document.addEventListener('keydown', (e) => {
       colorCells();
     }
 
-    emptyCellCheck();
-
     const numbersArrAfter = cellsArr.map((cell) => cell.innerText);
 
     if (
@@ -253,6 +263,10 @@ document.addEventListener('keydown', (e) => {
     ) {
       addNewNumber();
     }
+
+    setTimeout(() => {
+      emptyCellCheck();
+    }, 100);
   }
 });
 
@@ -280,8 +294,6 @@ document.addEventListener('keydown', (e) => {
       colorCells();
     }
 
-    emptyCellCheck();
-
     const numbersArrAfter = cellsArr.map((cell) => cell.innerText);
 
     if (
@@ -290,6 +302,10 @@ document.addEventListener('keydown', (e) => {
     ) {
       addNewNumber();
     }
+
+    setTimeout(() => {
+      emptyCellCheck();
+    }, 100);
   }
 });
 
@@ -323,8 +339,6 @@ document.addEventListener('keydown', (e) => {
       colorCells();
     }
 
-    emptyCellCheck();
-
     const numbersArrAfter = cellsArr.map((cell) => cell.innerText);
 
     if (
@@ -333,6 +347,10 @@ document.addEventListener('keydown', (e) => {
     ) {
       addNewNumber();
     }
+
+    setTimeout(() => {
+      emptyCellCheck();
+    }, 100);
   }
 });
 
@@ -360,8 +378,6 @@ document.addEventListener('keydown', (e) => {
       colorCells();
     }
 
-    emptyCellCheck();
-
     const numbersArrAfter = cellsArr.map((cell) => cell.innerText);
 
     if (
@@ -370,5 +386,9 @@ document.addEventListener('keydown', (e) => {
     ) {
       addNewNumber();
     }
+
+    setTimeout(() => {
+      emptyCellCheck();
+    }, 100);
   }
 });
