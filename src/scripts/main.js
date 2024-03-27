@@ -219,6 +219,7 @@ button.addEventListener('click', () => {
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
     gameField.classList.remove('game-over');
+    gameScore.innerText = 0;
     gameOver = 0;
     addNewNumber();
     addNewNumber();
