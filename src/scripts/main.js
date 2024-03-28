@@ -51,6 +51,7 @@ function start() {
     case 'idle':
       game.start();
       toggleButton('restart');
+      removeStartMessage();
       break;
     case 'playing':
     case 'win':
@@ -62,6 +63,14 @@ function start() {
   }
 
   update();
+}
+
+function removeStartMessage() {
+  const startMessage = document.querySelector('.message-start');
+
+  if (startMessage) {
+    startMessage.remove();
+  }
 }
 
 function toggleButton(text) {
