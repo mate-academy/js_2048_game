@@ -43,6 +43,12 @@ function update() {
     case 'LOSE':
       changeMessage('LOSE');
       break;
+    case 'NO_MOVES':
+      changeMessage('NO_MOVES');
+      break;
+    default:
+      changeMessage('HIDE_MESSAGE');
+      break;
   }
 }
 
@@ -92,12 +98,21 @@ function changeMessage(type) {
     case 'START':
       messageClass = '.message-start';
       break;
+    case 'NO_MOVES':
+      messageClass = '.message-no-moves';
+      break;
+    case 'HIDE_MESSAGE':
+      messageContainer
+        .querySelectorAll('.message')
+        .forEach((msg) => msg.classList.add('hidden'));
+
+      return;
     default:
-      throw new Error('unkown type');
+      throw new Error('unknown type');
   }
 
   messageContainer.querySelector(':not(.hidden)').classList.toggle('hidden');
-  messageContainer.querySelector(messageClass).classList.toggle('hidden');
+  messageContainer.querySelector(messageClass).classList.remove('hidden');
 }
 
 const Game = require('../modules/Game.class');

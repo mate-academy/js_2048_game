@@ -124,6 +124,7 @@ h1 {
 }
 
 .button {
+  box-sizing: border-box;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -148,7 +149,12 @@ h1 {
 
 .restart {
   background: #f1b2b2;
-
+  font-size: 13px;
+  width: 75px;
+  height: 75px;
+  overflow: hidden; /* Add this property */
+  text-overflow: ellipsis; /* Optional: add ellipsis (...) if the text overflows */
+  white-space: nowrap; /* Optional: prevent the text from wrapping */
   &:hover {
     background: #f87474;
   }
