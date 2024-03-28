@@ -5,6 +5,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   background: #fbf8ef;
+  background-color: #776e65;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
@@ -144,6 +145,10 @@ h1 {
   &:hover {
     background: #179921;
   }
+
+  &::after {
+    content: 'Start';
+  }
 }
 
 .restart {
@@ -151,6 +156,10 @@ h1 {
 
   &:hover {
     background: #f87474;
+  }
+
+  &::after {
+    content: 'Restart';
   }
 }
 
