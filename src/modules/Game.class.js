@@ -27,10 +27,10 @@ class Game {
    * initial state.
    */
   // initialStateDefault = [
-  //   [0, 16, 32, 8],
-  //   [0, 16, 32, 4],
-  //   [8, 16, 64, 2],
-  //   [8, 16, 128, 2],
+  //   [0, 16, 0, 8],
+  //       [8, 0, 16, 0],
+  //       [0, 8, 0, 32],
+  //       [32, 0, 8, 0],
   // ];
   initialStateDefault = [
     [0, 0, 0, 0],
@@ -48,10 +48,19 @@ class Game {
     this.initialStateDefault = copyState(initialState);
   }
 
+  checkVictory() {
+    const isVictory = !!this.initialState.flat().find((item) => item === 2048);
+
+    if (isVictory) {
+      this.status = 'win';
+    }
+  }
+
   moveLeft() {
     if (!this.isStatusPlaying()) {
       return;
     }
+  let isUpdated = false;
     for (let row = 0; row < this.count; row++) {
       for (let col = 0; col < this.count; col++) {
         for (let innerColumn = col + 1; innerColumn < this.count; innerColumn++) {
@@ -61,12 +70,16 @@ class Game {
           if (currentItem === 0 && nextItem !== 0) {
             this.initialState[row][col] = nextItem;
             this.initialState[row][innerColumn] = 0;
+            isUpdated = true
             continue;
           }
 
           if (currentItem !== 0 && nextItem === currentItem) {
-            this.initialState[row][col] = currentItem * 2;
+            const mergedValue = currentItem * 2;
+            this.initialState[row][col] = mergedValue;
             this.initialState[row][innerColumn] = 0;
+            this.score += mergedValue;
+            isUpdated = true
             break;
           }
 
@@ -82,12 +95,18 @@ class Game {
       }
     }
 
-    this.transposeState();
+    if (isUpdated) {
+      this.transposeState();
+      this.checkVictory();
+    }
   }
   moveRight() {
     if (!this.isStatusPlaying()) {
       return;
     }
+
+    let isUpdated = false;
+
     for (let row = 0; row < this.count; row++) {
       for (let col = this.count - 1; col >= 0; col--) {
         for (let innerColumn = col - 1; innerColumn >= 0; innerColumn--) {
@@ -97,17 +116,21 @@ class Game {
           if (currentItem === 0 && nextItem !== 0) {
             this.initialState[row][col] = nextItem;
             this.initialState[row][innerColumn] = 0;
+            isUpdated = true;
             continue;
           }
 
           if (currentItem !== 0 && nextItem === currentItem) {
-            this.initialState[row][col] = currentItem * 2;
+            const mergedValue = currentItem * 2;
+            this.initialState[row][col] = mergedValue;
             this.initialState[row][innerColumn] = 0;
+            this.score += mergedValue;
+            isUpdated = true;
             break;
           }
 
           if (currentItem !== 0 && nextItem === 0) {
-            continue;
+            break;
           }
 
 
@@ -118,12 +141,18 @@ class Game {
       }
     }
 
-    this.transposeState();
+    if (isUpdated) {
+      this.transposeState();
+      this.checkVictory();
+    }
   }
   moveUp() {
     if (!this.isStatusPlaying()) {
       return;
     }
+
+    let isUpdated = false;
+
     for (let col = 0; col < this.count; col++) {
       for (let row = 0; row < this.count; row++) {
         for (let innerRow = row + 1; innerRow < this.count; innerRow++) {
@@ -133,12 +162,16 @@ class Game {
           if (currentItem === 0 && nextItem !== 0) {
             this.initialState[row][col] = nextItem;
             this.initialState[innerRow][col] = 0;
+            isUpdated = true;
             continue;
           }
 
           if (currentItem !== 0 && nextItem === currentItem) {
-            this.initialState[row][col] = currentItem * 2;
+            const mergedValue = currentItem * 2;
+            this.initialState[row][col] = mergedValue;
             this.initialState[innerRow][col] = 0;
+            this.score += mergedValue;
+            isUpdated = true;
             break;
           }
 
@@ -153,12 +186,16 @@ class Game {
       }
     }
 
-    this.transposeState();
+    if (isUpdated) {
+      this.transposeState();
+      this.checkVictory();
+    }
   }
   moveDown() {
     if (!this.isStatusPlaying()) {
       return;
     }
+    let isUpdated = false;
 
     for (let col = 0; col < this.count; col++) {
       for (let row = this.count - 1; row >= 0; row--) {
@@ -169,12 +206,16 @@ class Game {
           if (currentItem === 0 && nextItem !== 0) {
             this.initialState[row][col] = nextItem;
             this.initialState[innerRow][col] = 0;
+            isUpdated = true;
             continue;
           }
 
           if (currentItem !== 0 && nextItem === currentItem) {
-            this.initialState[row][col] = currentItem * 2;
+            const mergedValue = currentItem * 2;
+            this.initialState[row][col] = mergedValue;
             this.initialState[innerRow][col] = 0;
+            this.score += mergedValue;
+            isUpdated = true;
             break;
           }
 
@@ -188,7 +229,10 @@ class Game {
         }
       }
     }
-    this.transposeState();
+    if (isUpdated) {
+      this.transposeState();
+      this.checkVictory();
+    }
   }
 
   /**
@@ -239,12 +283,6 @@ class Game {
     this.initialState = this.initialStateDefault;
     this.status = 'idle';
     this.score = 0;
-  }
-
-  // Add your own methods here
-
-  setState() {
-
   }
 
   generateNewNumber() {

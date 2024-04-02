@@ -31,6 +31,7 @@ document.addEventListener('keydown', ({ key }) => {
     game.moveDown();
   }
 
+  document.querySelector('.game-score').innerText = game.getScore();
   rerenderGrid();
 });
 
