@@ -207,7 +207,7 @@ class Game {
     }
   }
 
-  // Atention this is used to revert each line of this.#state, dont to revert any array. 
+  // Revert each line of this.#state, dont use to revert any array. 
   #reverse() {
     this.#state.forEach((e, i, arr) => arr[i].reverse());
   }
