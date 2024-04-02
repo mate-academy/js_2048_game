@@ -5,6 +5,12 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
+
+
+function copyState(state) {
+  return state.map(row => [...row]);
+}
+
 class Game {
   /**
    * Creates a new game instance.
@@ -20,6 +26,12 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
+  // initialStateDefault = [
+  //   [0, 16, 32, 8],
+  //   [0, 16, 32, 4],
+  //   [8, 16, 64, 2],
+  //   [8, 16, 128, 2],
+  // ];
   initialStateDefault = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -28,13 +40,18 @@ class Game {
   ];
   count = 4;
 
+  score = 0;
   status = 'idle';
 
   constructor(initialState = this.initialStateDefault) {
-    this.initialState = initialState;
+    this.initialState = copyState(initialState);
+    this.initialStateDefault = copyState(initialState);
   }
 
   moveLeft() {
+    if (!this.isStatusPlaying()) {
+      return;
+    }
     for (let row = 0; row < this.count; row++) {
       for (let col = 0; col < this.count; col++) {
         for (let innerColumn = col + 1; innerColumn < this.count; innerColumn++) {
@@ -44,11 +61,22 @@ class Game {
           if (currentItem === 0 && nextItem !== 0) {
             this.initialState[row][col] = nextItem;
             this.initialState[row][innerColumn] = 0;
+            continue;
           }
 
           if (currentItem !== 0 && nextItem === currentItem) {
             this.initialState[row][col] = currentItem * 2;
             this.initialState[row][innerColumn] = 0;
+            break;
+          }
+
+
+          if (currentItem !== 0 && nextItem === 0) {
+            continue;
+          }
+
+          if (currentItem !== 0 && nextItem !== currentItem) {
+            break;
           }
         }
       }
@@ -57,6 +85,9 @@ class Game {
     this.transposeState();
   }
   moveRight() {
+    if (!this.isStatusPlaying()) {
+      return;
+    }
     for (let row = 0; row < this.count; row++) {
       for (let col = this.count - 1; col >= 0; col--) {
         for (let innerColumn = col - 1; innerColumn >= 0; innerColumn--) {
@@ -66,11 +97,22 @@ class Game {
           if (currentItem === 0 && nextItem !== 0) {
             this.initialState[row][col] = nextItem;
             this.initialState[row][innerColumn] = 0;
+            continue;
           }
 
           if (currentItem !== 0 && nextItem === currentItem) {
             this.initialState[row][col] = currentItem * 2;
             this.initialState[row][innerColumn] = 0;
+            break;
+          }
+
+          if (currentItem !== 0 && nextItem === 0) {
+            continue;
+          }
+
+
+          if (currentItem !== 0 && nextItem !== currentItem) {
+            break;
           }
         }
       }
@@ -79,6 +121,9 @@ class Game {
     this.transposeState();
   }
   moveUp() {
+    if (!this.isStatusPlaying()) {
+      return;
+    }
     for (let col = 0; col < this.count; col++) {
       for (let row = 0; row < this.count; row++) {
         for (let innerRow = row + 1; innerRow < this.count; innerRow++) {
@@ -88,11 +133,21 @@ class Game {
           if (currentItem === 0 && nextItem !== 0) {
             this.initialState[row][col] = nextItem;
             this.initialState[innerRow][col] = 0;
+            continue;
           }
 
           if (currentItem !== 0 && nextItem === currentItem) {
             this.initialState[row][col] = currentItem * 2;
             this.initialState[innerRow][col] = 0;
+            break;
+          }
+
+          if (currentItem !== 0 && nextItem === 0) {
+            continue;
+          }
+
+          if (currentItem !== 0 && nextItem !== currentItem) {
+            break;
           }
         }
       }
@@ -101,6 +156,10 @@ class Game {
     this.transposeState();
   }
   moveDown() {
+    if (!this.isStatusPlaying()) {
+      return;
+    }
+
     for (let col = 0; col < this.count; col++) {
       for (let row = this.count - 1; row >= 0; row--) {
         for (let innerRow = row - 1; innerRow >= 0; innerRow--) {
@@ -110,11 +169,21 @@ class Game {
           if (currentItem === 0 && nextItem !== 0) {
             this.initialState[row][col] = nextItem;
             this.initialState[innerRow][col] = 0;
+            continue;
           }
 
           if (currentItem !== 0 && nextItem === currentItem) {
             this.initialState[row][col] = currentItem * 2;
             this.initialState[innerRow][col] = 0;
+            break;
+          }
+
+          if (currentItem !== 0 && nextItem === 0) {
+            continue;
+          }
+
+          if (currentItem !== 0 && nextItem !== currentItem) {
+            break;
           }
         }
       }
@@ -126,7 +195,11 @@ class Game {
    * @returns {number}
    */
   getScore() {
-    // this.initialState.flat().reduce((sum, curr) => sum + curr, 0);
+    return this.score;
+  }
+
+  isStatusPlaying() {
+    return this.status === 'playing';
   }
 
   /**
@@ -163,13 +236,9 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.initialState = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.initialState = this.initialStateDefault;
     this.status = 'idle';
+    this.score = 0;
   }
 
   // Add your own methods here

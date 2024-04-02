@@ -4,6 +4,7 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
+window.game = game;
 // Write your code here
 
 const startButton = document.querySelector('.start');
