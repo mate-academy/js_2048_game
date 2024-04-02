@@ -163,8 +163,13 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.initialState = this.initialStateDefault;
-    this.start();
+    this.initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.status = 'idle';
   }
 
   // Add your own methods here

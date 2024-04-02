@@ -28,7 +28,6 @@ document.addEventListener('keydown', ({ key }) => {
 
   if (key === 'ArrowDown') {
     game.moveDown();
-    console.log(34);
   }
 
   rerenderGrid();
@@ -41,7 +40,9 @@ function rerenderGrid() {
       = document.querySelectorAll('.field-row')[index].children[innerIndex];
 
       element.innerText = value;
-      element.classList.add(`field-cell--${value}`);
+
+      element.className = '';
+      element.classList.add('field-cell', `field-cell--${value}`);
     });
   });
 }
