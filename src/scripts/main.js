@@ -24,68 +24,75 @@ const bgColorByNumber = {
   1024: 'field-cell--1024',
   2048: 'field-cell--2048',
 };
+
 const actions = {
-  'idle': () => {
-    game.status = 'playing';
+  idle: () => {
+    game.setStatus('playing');
     actions.playing();
     messages[0].className = 'message message-lose hidden';
     messages[1].className = 'message message-win hidden';
     messages[2].className = 'message message-start hidden';
-    messages[3].className = 'message message-restart'
-  }, 
-  'playing': () => {
+    messages[3].className = 'message message-restart';
+  },
+  playing: () => {
     for (let line = 0; line < 4; line++) {
       for (let column = 0; column < 4; column++) {
-        cells[line * 4 + column].textContent = (game.getState()[line][column]) || '';
+        cells[line * 4 + column].textContent =
+          game.getState()[line][column] || '';
       }
     }
-
+    setStyles();
     score.textContent = game.getScore();
   },
-  'win': () => {
+  win: () => {
     actions.playing();
     messages[0].className = 'message message-lose hidden';
     messages[1].className = 'message message-win';
     messages[2].className = 'message message-start hidden';
-    messages[3].className = 'message message-restart hidden'
-  }, 
-  'lose': () => {
+    messages[3].className = 'message message-restart hidden';
+  },
+  lose: () => {
     messages[0].className = 'message message-lose';
     messages[1].className = 'message message-win hidden';
     messages[2].className = 'message message-start hidden';
     messages[3].className = 'message message-restart hidden';
-  }
+  },
 };
-const bindState = (status) => {
-  (actions[status] || (() => console.log('Invalido inválida.')))();
+
+function bindState(arg) {
+  actions[arg]();
 }
+
 const setStyles = () => {
   for (const cell of cells) {
-    cell.className = (bgColorByNumber[cell.textContent]) 
+    cell.className = bgColorByNumber[cell.textContent]
       ? 'field-cell ' + bgColorByNumber[cell.textContent]
       : 'field-cell';
   }
-}
+};
 
-// Write your code here
-document.addEventListener('keydown', event =>  {
+// Event Listeners
+document.addEventListener('keydown', (eventKey) => {
   if (game.getStatus() === 'playing') {
-    if (event.key === 'ArrowDown') {
+    if (eventKey.key === 'ArrowDown') {
       game.moveDown();
-    } else if (event.key === 'ArrowUp') {
+
+      bindState(game.getStatus());
+    } else if (eventKey.key === 'ArrowUp') {
       game.moveUp();
-    } else if (event.key === 'ArrowRight') {
+      bindState(game.getStatus());
+    } else if (eventKey.key === 'ArrowRight') {
       game.moveRight();
-    } else if (event.key === 'ArrowLeft') {
+    } else if (eventKey.key === 'ArrowLeft') {
       game.moveLeft();
+      bindState(game.getStatus());
     }
-    bindState(game.getStatus());
-    setStyles();
   }
 });
 
-startAndRestartButton.addEventListener('click', event => {
+startAndRestartButton.addEventListener('click', (clickStartRestartEvent) => {
   game.restart();
   bindState(game.getStatus());
+  setStyles();
   startAndRestartButton.className = 'button restart';
 });

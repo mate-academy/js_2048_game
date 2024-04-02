@@ -23,6 +23,7 @@ body {
   user-select: none;
 
   &--2 {
+    transition: background-color 500ms ease;
     background: #eee4da;
   }
 
