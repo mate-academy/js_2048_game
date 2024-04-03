@@ -10,7 +10,7 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
+.field_cell {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
@@ -20,6 +20,8 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+
+  transition: all 0.3s;
 
   &--2 {
     background: #eee4da;
@@ -75,13 +77,13 @@ body {
   }
 }
 
-.game-field {
+.game_field {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
 }
 
-.game-header {
+.game_header {
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -134,7 +136,7 @@ h1 {
   width: 75px;
   height: 75px;
 
-  transition: 0.25s ease background;
+  transition: 0.25s ease;
 }
 
 .start {
@@ -151,6 +153,10 @@ h1 {
 
   &:hover {
     background: #f87474;
+  }
+
+  &:focus {
+    outline: solid #69615a medium;
   }
 }
 
@@ -176,12 +182,12 @@ h1 {
   width: 350px;
 }
 
-.message-win {
+.message_win {
   background: #edc22e;
   color: #f9f6f2;
 }
 
-.message-container {
+.message_container {
   width: 100%;
   height: 150px;
 }
