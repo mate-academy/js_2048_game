@@ -3,18 +3,18 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 const container = document.querySelector('.container');
-const gameField = document.querySelector('.game-field');
+const gameField = document.querySelector('.game_field');
 const button = container.querySelector('.button');
-const gameScore = container.querySelector('.game-score');
+const gameScore = container.querySelector('.game_score');
 
 const messages = {
-  start: container.querySelector('.message-start'),
-  restart: container.querySelector('.message-restart'),
-  lose: container.querySelector('.message-lose'),
-  win: container.querySelector('.message-win'),
+  start: container.querySelector('.message_start'),
+  restart: container.querySelector('.message_restart'),
+  lose: container.querySelector('.message_lose'),
+  win: container.querySelector('.message_win'),
 };
 
-const fieldRows = [...gameField.querySelectorAll('.field-row')];
+const fieldRows = [...gameField.querySelectorAll('.field_row')];
 const fieldCells = fieldRows.map((row) => [...row.children]);
 
 function displayGameField(state, cellElements) {
@@ -23,8 +23,8 @@ function displayGameField(state, cellElements) {
       const currentCell = cellElements[i][j];
 
       currentCell.className = !cell
-        ? 'field-cell'
-        : `field-cell field-cell--${cell}`;
+        ? 'field_cell'
+        : `field_cell field_cell--${cell}`;
       currentCell.innerHTML = !cell ? '' : cell;
     });
   });
