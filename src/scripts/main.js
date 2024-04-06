@@ -29,10 +29,10 @@ const actions = {
   idle: () => {
     game.setStatus('playing');
     actions.playing();
-    messages[0].className = 'message message-lose hidden';
-    messages[1].className = 'message message-win hidden';
-    messages[2].className = 'message message-start hidden';
-    messages[3].className = 'message message-restart';
+    messages[0].classList.add('hidden');
+    messages[1].classList.add('hidden');
+    messages[2].classList.add('hidden');
+    messages[3].classList.remove('hidden');
   },
   playing: () => {
     for (let line = 0; line < 4; line++) {
@@ -46,16 +46,17 @@ const actions = {
   },
   win: () => {
     actions.playing();
-    messages[0].className = 'message message-lose hidden';
-    messages[1].className = 'message message-win';
-    messages[2].className = 'message message-start hidden';
-    messages[3].className = 'message message-restart hidden';
+    messages[0].classList.add('hidden');
+    messages[1].classList.remove('hidden');
+    messages[2].classList.add('hidden');
+    messages[3].classList.add('hidden');
   },
   lose: () => {
-    messages[0].className = 'message message-lose';
-    messages[1].className = 'message message-win hidden';
-    messages[2].className = 'message message-start hidden';
-    messages[3].className = 'message message-restart hidden';
+    actions.playing();
+    messages[0].classList.remove('hidden');
+    messages[1].classList.add('hidden');
+    messages[2].classList.add('hidden');
+    messages[3].classList.add('hidden');
   },
 };
 
@@ -76,13 +77,13 @@ document.addEventListener('keydown', (eventKey) => {
   if (game.getStatus() === 'playing') {
     if (eventKey.key === 'ArrowDown') {
       game.moveDown();
-
       bindState(game.getStatus());
     } else if (eventKey.key === 'ArrowUp') {
       game.moveUp();
       bindState(game.getStatus());
     } else if (eventKey.key === 'ArrowRight') {
       game.moveRight();
+      bindState(game.getStatus());
     } else if (eventKey.key === 'ArrowLeft') {
       game.moveLeft();
       bindState(game.getStatus());
@@ -91,8 +92,8 @@ document.addEventListener('keydown', (eventKey) => {
 });
 
 startAndRestartButton.addEventListener('click', (clickStartRestartEvent) => {
-  game.restart();
+  game.start();
   bindState(game.getStatus());
   setStyles();
-  startAndRestartButton.className = 'button restart';
+  startAndRestartButton.classList.add('restart');
 });

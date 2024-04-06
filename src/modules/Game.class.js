@@ -6,7 +6,6 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
-
   // This are variables used in entire instance of class
   #SIZE = 4;
   #score = 0;
@@ -29,10 +28,10 @@ class Game {
    */
   constructor(initialState) {
     if (!initialState) {
-      this.#state = new Array(4).fill(0);
+      this.#state = new Array(this.#SIZE).fill(0);
 
       for (const i in this.#state) {
-        this.#state[i] = new Array(4).fill(0);
+        this.#state[i] = new Array(this.#SIZE).fill(0);
       }
 
       this.#initialState = this.#getStateCopy();
@@ -40,73 +39,35 @@ class Game {
       this.#state = this.#getStateCopy(initialState);
       this.#initialState = this.#getStateCopy();
     }
-    this.#SIZE = 4;
     this.#status = 'idle';
   }
 
-
   // This is a required method
   moveLeft() {
-    if (this.#status === 'playing') {
-      const previousState = this.#getStateCopy().flat();
-
-      this.#makeMove();
-
-      if (this.#state.flat().some((e, i) => e !== previousState[i])) {
-        this.#randomizer();
-        this.#checkIfLose();
-      }
-    }
+    this.#makeMove();
   }
 
   // This is a required method
   moveRight() {
-    if (this.#status === 'playing') {
-      const previousState = this.#getStateCopy().flat();
-
-      this.#reverse();
-      this.#makeMove();
-      this.#reverse();
-
-      if (this.#state.flat().some((e, i) => e !== previousState[i])) {
-        this.#checkIfLose();
-        this.#randomizer();
-      }
-    }
+    this.#reverse();
+    this.#makeMove();
+    this.#reverse();
   }
 
   // This is a required method
   moveUp() {
-    if (this.#status === 'playing') {
-      const previousState = this.#getStateCopy().flat();
-
-      this.#tranpose();
-      this.#makeMove();
-      this.#tranpose();
-
-      if (this.#state.flat().some((e, i) => e !== previousState[i])) {
-        this.#checkIfLose();
-        this.#randomizer();
-      }
-    }
+    this.#tranpose();
+    this.#makeMove();
+    this.#tranpose();
   }
 
   // This is a required method
   moveDown() {
-    if (this.#status === 'playing') {
-      const previousState = this.#getStateCopy().flat();
-
-      this.#tranpose();
-      this.#reverse();
-      this.#makeMove();
-      this.#reverse();
-      this.#tranpose();
-
-      if (this.#state.flat().some((e, i) => e !== previousState[i])) {
-        this.#checkIfLose();
-        this.#randomizer();
-      }
-    }
+    this.#tranpose();
+    this.#reverse();
+    this.#makeMove();
+    this.#reverse();
+    this.#tranpose();
   }
 
   /**
@@ -167,19 +128,21 @@ class Game {
 
   // Resets the game.
   restart() {
-    this.start();
+    this.#score = 0;
+    this.#status = 'playing';
+    this.#state = this.#getStateCopy(this.#initialState);
     this.#status = 'idle';
   }
 
   /**
-   * Put 2 or 4 in freely cells if they exists 
+   * Put 2 or 4 in freely cells if they exists
    */
   #randomizer() {
     const empties = [];
     let idxSorted;
 
-    for (let line = 0; line < 4; line++) {
-      for (let column = 0; column < 4; column++) {
+    for (let line = 0; line < this.#SIZE; line++) {
+      for (let column = 0; column < this.#SIZE; column++) {
         if (this.#state[line][column] === 0) {
           empties.push([line, column]);
         }
@@ -198,8 +161,8 @@ class Game {
   #tranpose() {
     let tempRetriveVar;
 
-    for (let ln = 0; ln < 4; ln++) {
-      for (let cl = ln; cl < 4; cl++) {
+    for (let ln = 0; ln < this.#SIZE; ln++) {
+      for (let cl = ln; cl < this.#SIZE; cl++) {
         tempRetriveVar = this.#state[ln][cl];
         this.#state[ln][cl] = this.#state[cl][ln];
         this.#state[cl][ln] = tempRetriveVar;
@@ -207,7 +170,7 @@ class Game {
     }
   }
 
-  // Revert each line of this.#state, dont use to revert any array. 
+  // Only reverte this.#state array lines, it dont to revert any array.
   #reverse() {
     this.#state.forEach((e, i, arr) => arr[i].reverse());
   }
@@ -237,14 +200,16 @@ class Game {
             allSides.includes(0) ||
             allSides.includes(this.#state[line][column])
           ) {
-            return;
+            return false;
           }
+        } else {
+          return false;
         }
         allSides = [];
       }
     }
 
-    this.#status = 'lose';
+    return true;
   }
 
   /**
@@ -255,50 +220,48 @@ class Game {
    * @returns
    */
   #getStateCopy(arr = this.#state) {
-    return arr.map((e) => e.slice());
+    return arr.map((e) => [...e]);
   }
 
-  // Make left movement
+  // Make left movement by default
   #makeMove() {
-    let limit;
+    if (this.#status === 'playing') {
+      const previousState = this.#getStateCopy().flat();
 
-    for (let line = 0; line < 4; line++) {
-      limit = this.#SIZE - 1;
+      for (const line in this.#state) {
+        let nonZeros = this.#state[line].filter((e) => e !== 0);
+        let i = 0;
 
-      for (let column = 0; column < limit; column++) {
-        if (this.#state[line][column] === 0) {
-          for (let idx = column; idx < this.#SIZE - 1; idx++) {
-            this.#state[line][idx] = this.#state[line][idx + 1];
-            this.#state[line][idx + 1] = 0;
+        while (i < nonZeros.length) {
+          if (nonZeros[i + 1] === nonZeros[i]) {
+            nonZeros[i + 1] = 0;
+            nonZeros[i] *= 2;
+            this.#score += nonZeros[i];
+
+            if (nonZeros[i] === 2048) {
+              this.#status = 'win';
+            }
+            i += 2;
+            continue;
           }
 
-          column--;
-          limit--;
-
-          continue;
-        } else if (this.#state[line][column + 1] === 0) {
-          for (let idx = column + 1; idx < this.#SIZE - 1; idx++) {
-            this.#state[line][idx] = this.#state[line][idx + 1];
-            this.#state[line][idx + 1] = 0;
-          }
-
-          limit--;
-          column--;
-
-          continue;
-        } else if (
-          this.#state[line][column] === this.#state[line][column + 1]
-        ) {
-          this.#state[line][column] *= 2;
-          this.#state[line][column + 1] = 0;
-          this.#score += this.#state[line][column];
-
-          if (this.#state[line][column] === 2048) {
-            this.#status = 'win';
-          }
+          i++;
         }
+
+        nonZeros = nonZeros.filter((e) => e !== 0);
+
+        this.#state[line] = [
+          ...nonZeros,
+          ...new Array(this.#SIZE - nonZeros.length).fill(0),
+        ];
+      }
+
+      if (this.#state.flat().some((e, i) => e !== previousState[i])) {
+        this.#randomizer();
       }
     }
+
+    this.#status = this.#checkIfLose() ? 'lose' : this.#status;
   }
 }
 
