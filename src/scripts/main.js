@@ -2,25 +2,25 @@
 // Uncomment the next lines to use your game instance in the browser
 
 function keyListener(e) {
-  if (game2048.getStatus() !== 'playing') {
+  if (game.getStatus() !== 'playing') {
     return;
   }
 
   switch (e.key) {
     case 'ArrowDown':
-      game2048.moveDown();
+      game.moveDown();
       break;
 
     case 'ArrowLeft':
-      game2048.moveLeft();
+      game.moveLeft();
       break;
 
     case 'ArrowRight':
-      game2048.moveRight();
+      game.moveRight();
       break;
 
-    case 'ArrowUP':
-      game2048.moveUp();
+    case 'ArrowUp':
+      game.moveUp();
       break;
   }
 
@@ -28,7 +28,7 @@ function keyListener(e) {
 }
 
 function update() {
-  game2048.getState().forEach((row, i) => {
+  game.getState().forEach((row, i) => {
     row.forEach((el, j) => {
       let cellCssClass = 'field-cell';
 
@@ -38,9 +38,9 @@ function update() {
     });
   });
 
-  scoreELement.innerText = game2048.getScore();
+  scoreElement.innerText = game.getScore();
 
-  switch (game2048.getStatus().toUpperCase()) {
+  switch (game.getStatus().toUpperCase()) {
     case 'WIN':
       changeMessage('WIN');
       break;
@@ -54,16 +54,16 @@ function update() {
 }
 
 function start() {
-  switch (game2048.getStatus()) {
+  switch (game.getStatus()) {
     case 'idle':
-      game2048.start();
+      game.start();
       toggleButton('restart');
       removeStartMessage();
       break;
     case 'playing':
     case 'win':
     case 'lose':
-      game2048.restart();
+      game.restart();
       toggleButton('start');
       changeMessage('START');
       break;
@@ -73,7 +73,7 @@ function start() {
 }
 
 function removeStartMessage() {
-  const startMessage = document.querySelector('message-start');
+  const startMessage = document.querySelector('.message-start');
 
   if (startMessage) {
     startMessage.remove();
@@ -104,7 +104,6 @@ function changeMessage(type) {
   }
 
   messageContainer.querySelector(':not(.hidden)').classList.toggle('hidden');
-  messageContainer.querySelector(messageClass).classList.remove('hidden');
 }
 
 function hideAllMessanges() {
@@ -114,14 +113,14 @@ function hideAllMessanges() {
 }
 
 const Game = require('../modules/Game.class');
-const game2048 = new Game();
+const game = new Game();
 
 const gameField = document.querySelector('.game-field');
 
 const gameCells = Array.from(gameField.querySelectorAll('.field-row')).map(
   (row) => Array.from(row.children),
 );
-const scoreELement = document.querySelector('game-score');
+const scoreElement = document.querySelector('.game-score');
 const messageContainer = document.querySelector('.message-container');
 const button = document.querySelector('.button.start');
 

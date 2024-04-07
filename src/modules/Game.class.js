@@ -43,12 +43,12 @@ class Game {
   moveLeft() {
     let isStateChanged = false;
 
-    if (this.#status !== 'playing' && !this.#isForCheck) {
+    if (this.getStatus() !== 'playing' && !this.#isForCheck) {
       return isStateChanged;
     }
 
     this.#state.forEach((row) => {
-      const mergedCellIndexes = new Set();
+      const mergedCellsIndexes = new Set();
       const emptyIndexes = [];
 
       for (let i = 0; i < row.length; i++) {
@@ -73,13 +73,15 @@ class Game {
         if (
           previousCellIndex >= 0 &&
           row[previousCellIndex] === row[cellIndex] &&
-          !mergedCellIndexes.has(previousCellIndex)
+          !mergedCellsIndexes.has(previousCellIndex)
         ) {
-          mergedCellIndexes.add(previousCellIndex);
+          mergedCellsIndexes.add(previousCellIndex);
           row[previousCellIndex] *= 2;
           row[cellIndex] = 0;
           emptyIndexes.unshift(cellIndex);
+
           this.#score += row[previousCellIndex];
+
           isStateChanged = true;
 
           if (row[previousCellIndex] >= 2048) {
@@ -164,9 +166,9 @@ class Game {
    * Starts the game.
    */
   start() {
-    this.#addNumber();
-    this.#addNumber();
     this.#status = 'playing';
+    this.#addNumber();
+    this.#addNumber();
   }
 
   /**
