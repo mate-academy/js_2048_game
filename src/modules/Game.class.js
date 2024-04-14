@@ -21,9 +21,21 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    const emptyBoard = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    this.emptyBoard = emptyBoard.slice();
+
+    this.state = initialState ?? emptyBoard.concat();
+    this.emptyBoard = emptyBoard.concat();
   }
+
+  // Game has status 'idle' by default
+  status = 'idle';
 
   moveLeft() {}
   moveRight() {}
@@ -33,12 +45,19 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.state.reduce(
+      (prev, row) => prev + row.reduce((acc, cell) => acc + cell),
+      0,
+    );
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.state;
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +69,104 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = 'playing';
+    this.createRandomTile();
+    this.createRandomTile();
+    this.printTiles();
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    // Clear the state info
+    this.clearTheBoard();
+
+    // Clear the board
+    this.printTiles();
+
+    // Restart the game status
+    this.status = 'idle';
+
+    // LATER --- CHECK WHETHER YOU NEED TO CALCULATE THE SCORE AGAIN
+  }
 
   // Add your own methods here
+  createRandomTile() {
+    const rowOptions = [0, 1, 2, 3];
+    const cellOptions = [0, 1, 2, 3];
+
+    // Choose random from 0 - 3
+    let row = this.randomNumber(3);
+
+    // Keep assigning rows if the current one doesn't contain a 0
+    while (!this.state[row].includes(0)) {
+      // Assign the row
+      row = this.randomNumber(rowOptions.length - 1);
+
+      // Remove random form the options array so you don't choose it again
+      rowOptions.splice(row, 1);
+    }
+
+    let cell = this.randomNumber(3);
+
+    // Keep assigning a cell while the current one is occupied
+    while (this.state[row][cell] !== 0) {
+      // Assign the cell
+      cell = this.randomNumber(rowOptions.length - 1);
+
+      // Remove random form the options array so you don't choose it again
+      cellOptions.splice(row, 1);
+    }
+
+    this.state[row][cell] = this.generateCellValue();
+  }
+
+  randomNumber(max) {
+    return Math.round(Math.random() * max);
+  }
+
+  generateCellValue() {
+    const result = Math.random();
+
+    return result > 0.9 ? 4 : 2;
+  }
+
+  printTiles() {
+    const cells = document.getElementsByClassName('field-cell');
+
+    const flatState = this.state.flat();
+
+    for (let i = 0; i < flatState.length; i++) {
+      const currentCell = cells[i];
+      const currentState = flatState[i];
+
+      if (currentState > 0) {
+        currentCell.textContent = currentState;
+        currentCell.className = `field-cell field-cell--${currentState}`;
+      } else {
+        currentCell.textContent = '';
+        currentCell.className = 'field-cell';
+      }
+    }
+  }
+
+  clearTheBoard() {
+    this.state = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+  }
 }
 
 module.exports = Game;
