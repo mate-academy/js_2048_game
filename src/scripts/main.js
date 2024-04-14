@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use strict';
 
 // Uncomment the next lines to use your game instance in the browser
@@ -33,42 +32,45 @@ function initialize() {
 
 initialize();
 
+// eslint-disable-next-line no-console
 console.log('initialized - end of code');
 
 function handleKeyDown(keyEvent) {
   keyEvent.preventDefault();
 
-  if (keyEvent.key === 'ArrowUp') {
-    console.log('Up arrow');
-    moveTilesUp(game);
-    game.createRandomTile();
-    game.printTiles();
-  }
+  switch (keyEvent.key) {
+    case 'ArrowUp':
+      if (moveTilesUp(game) === true) {
+        game.createRandomTile();
+        game.printTiles();
+      }
+      break;
 
-  if (keyEvent.key === 'ArrowDown') {
-    console.log('down arrow');
-    moveTilesDown(game);
-    game.createRandomTile();
-    game.printTiles();
-  }
+    case 'ArrowDown':
+      if (moveTilesDown(game) === true) {
+        game.createRandomTile();
+        game.printTiles();
+      }
+      break;
 
-  if (keyEvent.key === 'ArrowRight') {
-    console.log('right arrow');
-    moveTilesRight(game);
-    game.createRandomTile();
-    game.printTiles();
-  }
+    case 'ArrowRight':
+      if (moveTilesRight(game) === true) {
+        game.createRandomTile();
+        game.printTiles();
+      }
+      break;
 
-  if (keyEvent.key === 'ArrowLeft') {
-    console.log('left arrow');
-    moveTilesLeft(game);
-    game.createRandomTile();
-    game.printTiles();
+    case 'ArrowLeft':
+      if (moveTilesLeft(game) === true) {
+        game.createRandomTile();
+        game.printTiles();
+      }
+      break;
   }
 }
 
 function moveTilesRight(gameInstance) {
-  // const movesCounter = 0;
+  let didTilesMove = false;
 
   for (let row = 0; row < 4; row++) {
     for (let tile = 2; tile >= 0; tile--) {
@@ -87,16 +89,18 @@ function moveTilesRight(gameInstance) {
             gameInstance.state[row][tile];
           // Reset the tile we just moved
           gameInstance.state[row][tile] = 0;
+
+          didTilesMove = true;
         }
       }
     }
   }
 
-  // return movesCounter;
+  return didTilesMove;
 }
 
 function moveTilesLeft(gameInstance) {
-  // const movesCounter = 0;
+  let didTilesMove = false;
 
   for (let row = 0; row < 4; row++) {
     for (let tile = 1; tile < 4; tile++) {
@@ -115,16 +119,18 @@ function moveTilesLeft(gameInstance) {
             gameInstance.state[row][tile];
           // Reset the tile we just moved
           gameInstance.state[row][tile] = 0;
+
+          didTilesMove = true;
         }
       }
     }
   }
 
-  // return movesCounter;
+  return didTilesMove;
 }
 
 function moveTilesDown(gameInstance) {
-  // const movesCounter = 0;
+  let didTilesMove = false;
 
   // Iterate through every column
   for (let column = 0; column < 4; column++) {
@@ -150,16 +156,18 @@ function moveTilesDown(gameInstance) {
             gameInstance.state[tile][column];
           // Reset the tile we just moved
           gameInstance.state[tile][column] = 0;
+
+          didTilesMove = true;
         }
       }
     }
   }
 
-  // return movesCounter;
+  return didTilesMove;
 }
 
 function moveTilesUp(gameInstance) {
-  // const movesCounter = 0;
+  let didTilesMove = false;
 
   // Iterate through every column
   for (let column = 0; column < 4; column++) {
@@ -185,10 +193,12 @@ function moveTilesUp(gameInstance) {
             gameInstance.state[tile][column];
           // Reset the tile we just moved
           gameInstance.state[tile][column] = 0;
+
+          didTilesMove = true;
         }
       }
     }
   }
 
-  // return movesCounter;
+  return didTilesMove;
 }

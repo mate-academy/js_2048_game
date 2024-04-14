@@ -109,22 +109,30 @@ class Game {
 
     // Keep assigning rows if the current one doesn't contain a 0
     while (!this.state[row].includes(0)) {
-      // Assign the row
-      row = this.randomNumber(rowOptions.length - 1);
+      if (rowOptions.length === 0) {
+        return;
+      }
 
       // Remove random form the options array so you don't choose it again
       rowOptions.splice(row, 1);
+
+      // Assign the row
+      row = this.randomNumber(rowOptions.length - 1);
     }
 
     let cell = this.randomNumber(3);
 
     // Keep assigning a cell while the current one is occupied
     while (this.state[row][cell] !== 0) {
-      // Assign the cell
-      cell = this.randomNumber(rowOptions.length - 1);
+      if (cellOptions.length === 0) {
+        return;
+      }
 
       // Remove random form the options array so you don't choose it again
       cellOptions.splice(row, 1);
+
+      // Assign the cell
+      cell = this.randomNumber(rowOptions.length - 1);
     }
 
     this.state[row][cell] = this.generateCellValue();
