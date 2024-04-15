@@ -1,28 +1,30 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const game = new Game();
+
 const button = document.querySelector('.start');
 const score = document.querySelector('.game-score');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
+const messageStart = document.querySelector('.message-start');
 
-// Write your code here
 function initialize() {
   button.addEventListener('click', () => {
     if (button.classList.contains('start')) {
-      // Change the button to Reset
       button.className = 'button restart';
       button.textContent = 'Restart';
 
-      // Start the game
       game.start();
+      messageStart.classList.add('hidden');
     } else {
-      // Change the button to Start
       button.className = 'button start';
       button.textContent = 'Start';
 
-      // Restart the game
       game.restart();
+      messageStart.classList.remove('hidden');
+      messageWin.classList.add('hidden');
+      messageLose.classList.add('hidden');
       document.removeEventListener('keydown', handleKeyDown);
     }
 
@@ -32,45 +34,50 @@ function initialize() {
 
 initialize();
 
-// eslint-disable-next-line no-console
-console.log('initialized - end of code');
-
 function handleKeyDown(keyEvent) {
   keyEvent.preventDefault();
 
+  if (game.getStatus() !== Game.Status.playing) {
+    return;
+  }
+
+  let didTilesMove = false;
+
   switch (keyEvent.key) {
     case 'ArrowUp':
-      if (game.moveTilesUp(game) === true) {
-        game.createRandomTile();
-        game.printTiles();
-        updateScore(game.getScore());
-      }
+      didTilesMove = game.moveUp();
       break;
 
     case 'ArrowDown':
-      if (game.moveTilesDown(game) === true) {
-        game.createRandomTile();
-        game.printTiles();
-        updateScore(game.getScore());
-      }
+      didTilesMove = game.moveDown();
       break;
 
     case 'ArrowRight':
-      if (game.moveTilesRight(game) === true) {
-        game.createRandomTile();
-        game.printTiles();
-        updateScore(game.getScore());
-      }
+      didTilesMove = game.moveRight();
       break;
 
     case 'ArrowLeft':
-      if (game.moveTilesLeft(game) === true) {
-        game.createRandomTile();
-        game.printTiles();
-        updateScore(game.getScore());
-      }
+      didTilesMove = game.moveLeft();
       break;
   }
+
+  if (didTilesMove) {
+    updateScore(game.getScore());
+
+    if (game.getStatus() === Game.Status.lose) {
+      handleLostGame();
+    } else if (game.getStatus() === Game.Status.win) {
+      handleWonGame();
+    }
+  }
+}
+
+function handleLostGame() {
+  messageLose.classList.remove('hidden');
+}
+
+function handleWonGame() {
+  messageWin.classList.remove('hidden');
 }
 
 function updateScore(newScore) {

@@ -27,29 +27,19 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
-    const emptyBoard = [
+  constructor(
+    initialState = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-    ];
-
-    this.emptyBoard = emptyBoard.slice();
-
-    this.state = initialState ?? emptyBoard.concat();
-    this.emptyBoard = emptyBoard.concat();
+    ],
+  ) {
+    this.initialState = [...initialState.concat()];
+    this.state = [...initialState.concat()];
     this.status = Game.Status.idle;
     this.score = 0;
   }
-
-  // Game has status 'idle' by default
-  status = 'idle';
-
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
 
   /**
    * @returns {number}
@@ -76,6 +66,8 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
+    this.updateStatus();
+
     return this.status;
   }
 
@@ -83,9 +75,12 @@ class Game {
    * Starts the game.
    */
   start() {
-    this.status = 'playing';
+    this.status = Game.Status.playing;
+    this.state = this.initialState.concat();
+
     this.createRandomTile();
     this.createRandomTile();
+
     this.printTiles();
   }
 
@@ -93,35 +88,36 @@ class Game {
    * Resets the game.
    */
   restart() {
-    // Clear the state info
     this.clearTheBoard();
 
-    // Clear the board
     this.printTiles();
 
-    // Restart the game status
-    this.status = 'idle';
+    this.status = Game.Status.idle;
 
-    // LATER --- CHECK WHETHER YOU NEED TO CALCULATE THE SCORE AGAIN
+    this.score = 0;
   }
 
-  moveTilesRight() {
+  moveRight() {
+    if (this.status !== Game.Status.playing) {
+      return;
+    }
+
     let didTilesMove = false;
 
     for (let row = 0; row < 4; row++) {
+      let didJustMerged = false;
+
       for (let tile = 2; tile >= 0; tile--) {
-        // Check whether the tile we want to move isn't empty
         if (this.state[row][tile] > 0) {
           let moveTileBy = 0;
           let merge = false;
 
-          // Check how far can we move the tile
           while (this.state[row][tile + moveTileBy + 1] === 0) {
             moveTileBy++;
           }
 
-          // Check whether if we go one tile further we can merge
           if (
+            !didJustMerged &&
             this.state[row][tile + moveTileBy + 1] === this.state[row][tile]
           ) {
             moveTileBy++;
@@ -129,18 +125,19 @@ class Game {
           }
 
           if (moveTileBy > 0) {
-            if (merge) {
+            if (!didJustMerged && merge) {
+              didJustMerged = true;
+
               const newNumber = this.state[row][tile + moveTileBy] * 2;
 
-              // Merge current tile to the left
               this.state[row][tile + moveTileBy] = newNumber;
 
               this.score += newNumber;
             } else {
-              // Move the tile to the right
+              didJustMerged = false;
+
               this.state[row][tile + moveTileBy] = this.state[row][tile];
             }
-            // Reset the tile we just moved
             this.state[row][tile] = 0;
 
             didTilesMove = true;
@@ -149,26 +146,34 @@ class Game {
       }
     }
 
+    if (didTilesMove) {
+      this.createRandomTile();
+    }
+
     return didTilesMove;
   }
 
-  moveTilesLeft() {
+  moveLeft() {
+    if (this.status !== Game.Status.playing) {
+      return;
+    }
+
     let didTilesMove = false;
 
     for (let row = 0; row < 4; row++) {
+      let didJustMerged = false;
+
       for (let tile = 1; tile < 4; tile++) {
-        // Check whether the tile we want to move isn't empty
         if (this.state[row][tile] > 0) {
           let moveTileBy = 0;
           let merge = false;
 
-          // Check how far can we move the tile
           while (this.state[row][tile - moveTileBy - 1] === 0) {
             moveTileBy++;
           }
 
-          // Check whether if we go one tile further we can merge
           if (
+            !didJustMerged &&
             this.state[row][tile - moveTileBy - 1] === this.state[row][tile]
           ) {
             moveTileBy++;
@@ -176,18 +181,20 @@ class Game {
           }
 
           if (moveTileBy > 0) {
-            if (merge) {
+            if (!didJustMerged && merge) {
+              didJustMerged = true;
+
               const newNumber = this.state[row][tile - moveTileBy] * 2;
 
-              // Merge current tile to the left
               this.state[row][tile - moveTileBy] = newNumber;
 
               this.score += newNumber;
             } else {
-              // Move the tile to the [CHECK DIRECTION] left
+              didJustMerged = false;
+
               this.state[row][tile - moveTileBy] = this.state[row][tile];
             }
-            // Reset the tile we just moved
+
             this.state[row][tile] = 0;
 
             didTilesMove = true;
@@ -196,24 +203,28 @@ class Game {
       }
     }
 
+    if (didTilesMove) {
+      this.createRandomTile();
+    }
+
     return didTilesMove;
   }
 
-  moveTilesUp() {
+  moveUp() {
+    if (this.status !== Game.Status.playing) {
+      return;
+    }
+
     let didTilesMove = false;
 
-    // Iterate through every column
     for (let column = 0; column < 4; column++) {
-      // Iterate through the current column
-      for (let tile = 1; tile < 4; tile++) {
-        // Iterate through each tile in the current column
+      let didJustMerged = false;
 
-        // Check whether the tile we want to move isn't empty
+      for (let tile = 1; tile < 4; tile++) {
         if (this.state[tile][column] > 0) {
           let moveTileBy = 0;
           let merge = false;
 
-          // Check how far can we move the tile
           while (
             tile - moveTileBy - 1 >= 0 &&
             this.state[tile - moveTileBy - 1][column] === 0
@@ -221,8 +232,8 @@ class Game {
             moveTileBy++;
           }
 
-          // Check whether if we go one tile further we can merge
           if (
+            !didJustMerged &&
             tile - moveTileBy - 1 >= 0 &&
             this.state[tile - moveTileBy - 1][column] ===
               this.state[tile][column]
@@ -232,18 +243,20 @@ class Game {
           }
 
           if (moveTileBy > 0) {
-            if (merge) {
+            if (!didJustMerged && merge) {
+              didJustMerged = true;
+
               const newNumber = this.state[tile - moveTileBy][column] * 2;
 
-              // Merge current tile to the right
               this.state[tile - moveTileBy][column] = newNumber;
 
               this.score += newNumber;
             } else {
-              // Move the tile [CHECK DIRECTION] down
+              didJustMerged = false;
+
               this.state[tile - moveTileBy][column] = this.state[tile][column];
             }
-            // Reset the tile we just moved
+
             this.state[tile][column] = 0;
 
             didTilesMove = true;
@@ -252,24 +265,28 @@ class Game {
       }
     }
 
+    if (didTilesMove) {
+      this.createRandomTile();
+    }
+
     return didTilesMove;
   }
 
-  moveTilesDown() {
+  moveDown() {
+    if (this.status !== Game.Status.playing) {
+      return;
+    }
+
     let didTilesMove = false;
 
-    // Iterate through every column
     for (let column = 0; column < 4; column++) {
-      // Iterate through the current column
-      for (let tile = 2; tile >= 0; tile--) {
-        // Iterate through each tile in the current column
+      let didJustMerged = false;
 
-        // Check whether the tile we want to move isn't empty
+      for (let tile = 2; tile >= 0; tile--) {
         if (this.state[tile][column] > 0) {
           let moveTileBy = 0;
           let merge = false;
 
-          // Check how far can we move the tile
           while (
             tile + moveTileBy + 1 < this.state.length &&
             this.state[tile + moveTileBy + 1][column] === 0
@@ -277,8 +294,8 @@ class Game {
             moveTileBy++;
           }
 
-          // Check whether if we go one tile further we can merge
           if (
+            !didJustMerged &&
             tile + moveTileBy + 1 < this.state.length &&
             this.state[tile + moveTileBy + 1][column] ===
               this.state[tile][column]
@@ -288,18 +305,20 @@ class Game {
           }
 
           if (moveTileBy > 0) {
-            if (merge) {
+            if (!didJustMerged && merge) {
+              didJustMerged = true;
+
               const newNumber = this.state[tile + moveTileBy][column] * 2;
 
-              // Merge current tile to the right
               this.state[tile + moveTileBy][column] = newNumber;
 
               this.score += newNumber;
             } else {
-              // Move the tile [CHECK DIRECTION] down
+              didJustMerged = false;
+
               this.state[tile + moveTileBy][column] = this.state[tile][column];
             }
-            // Reset the tile we just moved
+
             this.state[tile][column] = 0;
 
             didTilesMove = true;
@@ -308,46 +327,36 @@ class Game {
       }
     }
 
+    if (didTilesMove) {
+      this.createRandomTile();
+    }
+
     return didTilesMove;
   }
 
-  // Add your own methods here
-  createRandomTile() {
-    const rowOptions = [0, 1, 2, 3];
-    const cellOptions = [0, 1, 2, 3];
+  isPlaying() {
+    return this.getStatus() === Game.Status.playing;
+  }
 
-    // Choose random from 0 - 3
+  createRandomTile() {
     let row = this.randomNumber(3);
 
-    // Keep assigning rows if the current one doesn't contain a 0
     while (!this.state[row].includes(0)) {
-      if (rowOptions.length === 0) {
-        return;
-      }
-
-      // Remove random form the options array so you don't choose it again
-      rowOptions.splice(row, 1);
-
-      // Assign the row
-      row = this.randomNumber(rowOptions.length - 1);
+      row = this.randomNumber(3);
     }
 
-    let cell = this.randomNumber(3);
+    let cellIndex = this.randomNumber(3);
 
-    // Keep assigning a cell while the current one is occupied
-    while (this.state[row][cell] !== 0) {
-      if (cellOptions.length === 0) {
-        return;
-      }
-
-      // Remove random form the options array so you don't choose it again
-      cellOptions.splice(row, 1);
-
-      // Assign the cell
-      cell = this.randomNumber(rowOptions.length - 1);
+    while (this.state[row][cellIndex] !== 0) {
+      cellIndex = this.randomNumber(3);
     }
 
-    this.state[row][cell] = this.generateCellValue();
+    const newState = this.state.map((currentRow) => currentRow.slice());
+
+    newState[row][cellIndex] = this.generateCellValue();
+    this.state = newState;
+
+    this.printTiles();
   }
 
   randomNumber(max) {
@@ -360,6 +369,50 @@ class Game {
     return result > 0.9 ? 4 : 2;
   }
 
+  updateStatus() {
+    if (this.didPlayerWin()) {
+      this.status = Game.Status.win;
+    } else if (this.didPlayerLose()) {
+      this.status = Game.Status.lose;
+    }
+  }
+
+  didPlayerWin() {
+    for (const tile of this.state.flat()) {
+      if (tile === 2048) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  didPlayerLose() {
+    for (const tile of this.state.flat()) {
+      if (tile === 0) {
+        return false;
+      }
+    }
+
+    for (let row = 0; row <= 3; row++) {
+      for (let tile = 0; tile <= 2; tile++) {
+        if (this.state[row][tile] === this.state[row][tile + 1]) {
+          return false;
+        }
+      }
+    }
+
+    for (let column = 0; column <= 3; column++) {
+      for (let tile = 0; tile <= 2; tile++) {
+        if (this.state[tile][column] === this.state[tile + 1][column]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   printTiles() {
     const cells = document.getElementsByClassName('field-cell');
 
@@ -370,22 +423,21 @@ class Game {
       const currentState = flatState[i];
 
       if (currentState > 0) {
-        currentCell.textContent = currentState;
-        currentCell.className = `field-cell field-cell--${currentState}`;
+        if (currentCell !== undefined) {
+          currentCell.textContent = currentState;
+          currentCell.className = `field-cell field-cell--${currentState}`;
+        }
       } else {
-        currentCell.textContent = '';
-        currentCell.className = 'field-cell';
+        if (currentCell !== undefined) {
+          currentCell.textContent = '';
+          currentCell.className = 'field-cell';
+        }
       }
     }
   }
 
   clearTheBoard() {
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.state = this.initialState.concat();
   }
 }
 
