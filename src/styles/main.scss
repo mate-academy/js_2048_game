@@ -21,6 +21,11 @@ body {
   vertical-align: center;
   user-select: none;
 
+  &--active {
+    transition: 100ms;
+    animation: show 200ms;
+  }
+
   &--2 {
     background: #eee4da;
   }
@@ -74,6 +79,13 @@ body {
     color: #f9f6f2;
   }
 }
+
+// @keyframes show {
+//   0% {
+//     opacity: 0.5;
+//     transform: scale(0);
+//   }
+// }
 
 .game-field {
   background: #bbada0;
@@ -148,6 +160,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  font-size: 18px;
 
   &:hover {
     background: #f87474;
