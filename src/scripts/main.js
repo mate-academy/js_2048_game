@@ -67,14 +67,6 @@ function resetInfo() {
   });
 }
 
-/* function updateInfo(item) {
-  item.innerHTML !== ''
-    ? (item.className = `field-cell field-cell--${item.innerHTML}`)
-    : (item.className = 'field-cell');
-
-  gameScore.innerHTML = score;
-} */
-
 function updateInfo(item) {
   if (item.innerHTML !== '') {
     item.className = `field-cell field-cell--${item.innerHTML}`;
