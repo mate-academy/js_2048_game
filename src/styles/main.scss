@@ -10,6 +10,13 @@ body {
   font-weight: 900;
 }
 
+$transition-duration: 0.1s;
+$timing-function: ease-in-out;
+
+* {
+  transition: all $transition-duration $timing-function;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
