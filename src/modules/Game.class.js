@@ -23,30 +23,14 @@ class Game {
   constructor(initialState) {
     // eslint-disable-next-line no-console
     this.initializeBoard();
-    this.renderBoard();
     this.addKeyboardListeners();
-    this.getScore();
-    this.start();
-    this.isGameOver();
-    this.isWinner();
-    // this.status();
-    this.restart();
-    this.boardMessage();
-    // this.getStatus();
   }
 
   initializeBoard() {
     this.rows = 4;
     this.columns = 4;
-
-    this.board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-
-    this.score = 0;
+    this.getState();
+    this.getScore();
   }
 
   findEmptyCells() {
@@ -112,8 +96,6 @@ class Game {
       }
       boardElement.appendChild(row);
     }
-
-    // this.status();
   }
 
   addKeyboardListeners() {
@@ -173,7 +155,7 @@ class Game {
 
     const boardChanged = !this.areArraysEqual(previousBoard, this.board);
 
-    if (boardChanged) {
+    if (boardChanged && !this.isWinner()) {
       this.createCell();
     }
 
@@ -228,7 +210,7 @@ class Game {
 
     const boardChanged = !this.areArraysEqual(previousBoard, this.board);
 
-    if (boardChanged) {
+    if (boardChanged && !this.isWinner()) {
       this.createCell();
     }
 
@@ -284,7 +266,7 @@ class Game {
 
     const boardChanged = !this.areArraysEqual(previousBoard, this.board);
 
-    if (boardChanged) {
+    if (boardChanged && !this.isWinner()) {
       this.createCell();
     }
 
@@ -328,7 +310,7 @@ class Game {
 
     const boardChanged = !this.areArraysEqual(previousBoard, this.board);
 
-    if (boardChanged) {
+    if (boardChanged && !this.isWinner()) {
       this.createCell();
     }
 
@@ -353,6 +335,13 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
     return this.board;
   }
 
@@ -367,7 +356,18 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
-    // const statusWin
+    const gameover = this.isGameOver();
+    const isWinner = this.isWinner();
+
+    if (this.isBoardEmpty()) {
+      return 'idle';
+    } else if (gameover && isWinner) {
+      return 'win';
+    } else if (gameover) {
+      return 'lose';
+    } else {
+      return 'playing';
+    }
   }
 
   boardMessage() {
@@ -420,43 +420,15 @@ class Game {
 
     return true;
   }
-
-  status() {
-    // const gameover = this.isGameOver();
-    // const isWiner = this.isWinner();
-    // if (gameover) {
-    //   console.log('game over');
-    // }
-    // if (isWiner) {
-    //   console.log('WINNER');
-    // }
-  }
   /**
    * Starts the game.
    */
   start() {
-    const startButton = document.querySelector('.start');
-
-    startButton.addEventListener('click', () => {
-      if (startButton.classList.contains('restart')) {
-        startButton.classList.remove('restart');
-        startButton.classList.add('start');
-        startButton.textContent = 'Start';
-        this.restart();
-
-        return;
-      }
-
-      // startButton.textContent = 'Restart';
-      // startButton.classList.remove('start');
-      // startButton.classList.add('restart');
-
-      if (this.isBoardEmpty()) {
-        this.createCell();
-        this.createCell();
-        this.renderBoard();
-      }
-    });
+    if (this.isBoardEmpty()) {
+      this.createCell();
+      this.createCell();
+      this.renderBoard();
+    }
   }
 
   isBoardEmpty() {

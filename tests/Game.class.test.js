@@ -100,7 +100,7 @@ describe('Game', () => {
       expect(sum(game2048)).toBeLessThanOrEqual(8);
     });
 
-    it.only('should add two cells with values 2 or 4 to a custom state', () => {
+    it('should add two cells with values 2 or 4 to a custom state', () => {
       const game2048 = new Game([
         [2, 0, 0, 0],
         [0, 4, 0, 0],

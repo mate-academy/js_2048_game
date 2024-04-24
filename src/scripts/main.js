@@ -7,12 +7,22 @@ const game = new Game();
 
 const startButton = document.querySelector('.start');
 
-    startButton.addEventListener('click', () => {
-      game.start();
+startButton.addEventListener('click', () => {
+  const gameStatus = game.getStatus();
 
-      startButton.textContent = 'Restart';
-      startButton.classList.remove('start');
-      startButton.classList.add('restart');
-    })
+  if (gameStatus === 'idle') {
+    game.start();
+
+    startButton.textContent = 'Restart';
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+  } else {
+    game.restart();
+
+    startButton.classList.remove('restart');
+    startButton.classList.add('start');
+    startButton.textContent = 'Start';
+  }
+});
 
 // Write your code here
