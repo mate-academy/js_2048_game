@@ -1,5 +1,5 @@
+[DEMO LINK](https://artemvlasiuk.github.io/js_2048_game/)
 # 2048 game
-
 Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
 If you are still here, let's do it.
 
@@ -44,7 +44,7 @@ You can change the HTM/CSS layout if you need it.
 ## Deploy and Pull Request
 
 1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
+    - [DEMO LINK](https://artemvlasiuk.github.io/js_2048_game/)
 2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
     - Run `npm run test` command to test your code;
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
