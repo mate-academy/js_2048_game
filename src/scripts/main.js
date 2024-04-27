@@ -44,8 +44,6 @@ const generate = () => {
   const randomNumber = Math.random() < 0.9 ? 2 : 4;
 
   randomEmptyCell.textContent = randomNumber;
-  start.textContent = 'Reset';
-  start.classList.add('restart');
 
   if (!checkAvailableMoves()) {
     gameOver();
@@ -58,6 +56,9 @@ const keyboardHandler = keyboard;
 
 const starting = () => {
   score = 0;
+  gameScore.textContent = score;
+  start.textContent = 'Reset';
+  start.classList.add('restart');
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
   messageStart.classList.add('hidden');
