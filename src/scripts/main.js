@@ -54,15 +54,34 @@ const generate = () => {
   addColours();
 };
 
+const keyboardHandler = keyboard;
+
 const starting = () => {
   score = 0;
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
   messageStart.classList.add('hidden');
+  document.addEventListener('keydown', keyboardHandler);
 
   generate();
   generate();
 };
+
+function keyboard(event) {
+  if (event.key === 'ArrowUp') {
+    keyUp();
+    console.log('Натиснута клавіша "Вгору"');
+  } else if (event.key === 'ArrowDown') {
+    keyDown();
+    console.log('Натиснута клавіша "Вниз"');
+  } else if (event.key === 'ArrowLeft') {
+    keyLeft();
+    console.log('Натиснута клавіша "Вліво"');
+  } else if (event.key === 'ArrowRight') {
+    keyRight();
+    console.log('Натиснута клавіша "Вправо"');
+  }
+}
 
 starting();
 
@@ -80,18 +99,17 @@ function checkAvailableMoves() {
 
   for (let i = 0; i < cellsArray.length - width; i++) {
     if (
-      cellsArray[i].textContent === cellsArray[i + width].textContent
-      && cellsArray[i].textContent !== ''
+      cellsArray[i].textContent === cellsArray[i + width].textContent &&
+      cellsArray[i].textContent !== ''
     ) {
       return true;
     }
   }
 
-  // Перевірка об'єднання вниз
   for (let i = width; i < cellsArray.length; i++) {
     if (
-      cellsArray[i].textContent === cellsArray[i - width].textContent
-      && cellsArray[i].textContent !== ''
+      cellsArray[i].textContent === cellsArray[i - width].textContent &&
+      cellsArray[i].textContent !== ''
     ) {
       return true;
     }
@@ -100,8 +118,8 @@ function checkAvailableMoves() {
   for (let i = 0; i < cellsArray.length; i++) {
     if (i % width !== 0) {
       if (
-        cellsArray[i].textContent === cellsArray[i - 1].textContent
-        && cellsArray[i].textContent !== ''
+        cellsArray[i].textContent === cellsArray[i - 1].textContent &&
+        cellsArray[i].textContent !== ''
       ) {
         return true;
       }
@@ -110,22 +128,6 @@ function checkAvailableMoves() {
 
   return false;
 }
-
-document.addEventListener('keydown', function(event) {
-  if (event.key === 'ArrowUp') {
-    keyUp();
-    console.log('Натиснута клавіша "Вгору"');
-  } else if (event.key === 'ArrowDown') {
-    keyDown();
-    console.log('Натиснута клавіша "Вниз"');
-  } else if (event.key === 'ArrowLeft') {
-    keyLeft();
-    console.log('Натиснута клавіша "Вліво"');
-  } else if (event.key === 'ArrowRight') {
-    keyRight();
-    console.log('Натиснута клавіша "Вправо"');
-  }
-});
 
 const width = 4;
 
@@ -139,8 +141,8 @@ function moveUp() {
     const newColumn = filteredColumn.concat(zeros);
 
     index.forEach((e, index) => {
-      cellsArray[e].textContent
-        = newColumn[index] === 0 ? '' : newColumn[index];
+      cellsArray[e].textContent =
+        newColumn[index] === 0 ? '' : newColumn[index];
     });
   }
 }
@@ -155,8 +157,8 @@ function moveDown() {
     const newColumn = zeros.concat(filteredColumn);
 
     index.forEach((e, index) => {
-      cellsArray[e].textContent
-        = newColumn[index] === 0 ? '' : newColumn[index];
+      cellsArray[e].textContent =
+        newColumn[index] === 0 ? '' : newColumn[index];
     });
   }
 }
@@ -226,8 +228,8 @@ function keyRight() {
 function combineColumn() {
   for (let i = 0; i < 12; i++) {
     if (
-      cellsArray[i].textContent === cellsArray[i + width].textContent
-      && cellsArray[i].textContent !== ''
+      cellsArray[i].textContent === cellsArray[i + width].textContent &&
+      cellsArray[i].textContent !== ''
     ) {
       const combinedTotal = parseInt(cellsArray[i].textContent) * 2;
 
@@ -243,8 +245,8 @@ function combineColumn() {
 function combineRow() {
   for (let i = 0; i < 15; i++) {
     if (
-      cellsArray[i].textContent === cellsArray[i + 1].textContent
-      && cellsArray[i].textContent !== ''
+      cellsArray[i].textContent === cellsArray[i + 1].textContent &&
+      cellsArray[i].textContent !== ''
     ) {
       const combinedTotal = parseInt(cellsArray[i].textContent) * 2;
 
@@ -307,9 +309,9 @@ function checkForWin() {
     if (cellsArray[i].textContent == 2048) {
       messageWin.classList.remove('hidden');
       gameStart();
-      document.removeEventListener('keydown', control);
     }
   }
+  // document.removeEventListener('keydown', 'keyboard');
 }
 
 function gameOver() {
@@ -331,4 +333,5 @@ function gameStart() {
   messageStart.classList.remove('hidden');
   start.textContent = 'Start';
   start.classList.remove('restart');
+  document.removeEventListener('keydown', keyboardHandler);
 }
