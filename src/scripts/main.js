@@ -52,7 +52,7 @@ const generate = () => {
   addColours();
 };
 
-const keyboardHandler = keyboard;
+const keyboardHandler = handleKeyPress;
 
 const starting = () => {
   score = 0;
@@ -68,19 +68,15 @@ const starting = () => {
   generate();
 };
 
-function keyboard(event) {
+function handleKeyPress(event) {
   if (event.key === 'ArrowUp') {
     keyUp();
-    console.log('Натиснута клавіша "Вгору"');
   } else if (event.key === 'ArrowDown') {
     keyDown();
-    console.log('Натиснута клавіша "Вниз"');
   } else if (event.key === 'ArrowLeft') {
     keyLeft();
-    console.log('Натиснута клавіша "Вліво"');
   } else if (event.key === 'ArrowRight') {
     keyRight();
-    console.log('Натиснута клавіша "Вправо"');
   }
 }
 
@@ -141,9 +137,8 @@ function moveUp() {
     const zeros = Array(missing).fill(0);
     const newColumn = filteredColumn.concat(zeros);
 
-    index.forEach((e, index) => {
-      cellsArray[e].textContent =
-        newColumn[index] === 0 ? '' : newColumn[index];
+    index.forEach((e, i) => {
+      cellsArray[e].textContent = newColumn[i] === 0 ? '' : newColumn[i];
     });
   }
 }
