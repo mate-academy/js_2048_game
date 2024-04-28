@@ -1,25 +1,66 @@
 body {
   margin: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
   background: #fbf8ef;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  box-sizing: border-box;
+}
+
+.main {
+  width: 350px;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.game-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #bbada0;
+}
+
+.square {
+  display: flex;
+  margin: 1%;
+  border-radius: 5px;
+  background: rgba(238,228,218,0.35);
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  box-sizing: border-box;
+  width: 75px;
+  height: 75px;
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
   border-radius: 5px;
   color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
   user-select: none;
+  width: 75px;
+  height: 75px;
+  display: flex;
+  z-index: 1;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  background: #d6cdc4;
+  transition: top 0.25s, left 0.25s, width 1s, height 1s;
 
   &--2 {
     background: #eee4da;
@@ -75,10 +116,52 @@ body {
   }
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+.row1 {
+  top: 74.5%;
+}
+
+.row2 {
+  top: 51%;
+}
+
+.row3 {
+  top: 27.5%;
+}
+
+.row4 {
+  top: 4%;
+}
+
+.column1 {
+  left: 4%;
+}
+
+.column2 {
+  left: 27.5%;
+}
+
+.column3 {
+  left: 51%;
+}
+
+.column4 {
+  left: 74.5%;
+}
+
+@keyframes blink {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.7);
+  }
+   100% {
+    transform: scale(1);
+  }
+}
+
+.merged {
+  animation: blink 0.25s;
 }
 
 .game-header {
@@ -86,7 +169,6 @@ body {
   width: 100%;
   justify-content: space-between;
   margin-bottom: 24px;
-  padding: 10px;
   box-sizing: border-box;
 }
 
@@ -134,7 +216,7 @@ h1 {
   width: 75px;
   height: 75px;
 
-  transition: 0.25s ease background;
+  transition: 0.3s ease background;
 }
 
 .start {
@@ -167,13 +249,6 @@ h1 {
 
 .hidden {
   display: none;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
 }
 
 .message-win {

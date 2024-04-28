@@ -1,63 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="page">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048</title>
     <link rel="stylesheet" href="./styles/main.scss">
+    <script
+      type="text/javascript"
+      src="./scripts/main.js"
+      defer
+      ></script>
   </head>
   <body>
-    <div class="container">
+    <main class="main">
       <div class="game-header">
         <h1>2048</h1>
         <div class="controls">
           <p class="info">
-            Score: <span class="game-score">0</span>
+            Score: <span class="game-score" id="scoreElement">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button
+            id="start"
+            class="button start"
+            onclick="startNewGame()">Start</button>
         </div>
       </div>
-
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
+      <div class="container">
+        <div class="game-field">
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+        </div>
+        <div class="tileContainer"></div>
+      </div>
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
         <p class="message message-win hidden">Winner! Congrats! You did it!</p>
         <p class="message message-start">Press "Start" to begin game. Good luck!</p>
       </div>
-    </div>
-    <script type="text/javascript" src="scripts/main.js"></script>
+    </main>
   </body>
 </html>
+
