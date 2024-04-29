@@ -1,4 +1,3 @@
-/* eslint-disable no-unmodified-loop-condition */
 'use strict';
 
 let board = [];
@@ -102,6 +101,7 @@ function onDirectionKeyPress(gameEvent) {
   }
 }
 
+/* eslint-disable no-unmodified-loop-condition */
 function moveTiles(directionY, directionX) {
   let movePossible = false;
   let mergedRecently = false;
