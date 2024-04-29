@@ -1,14 +1,10 @@
 .game-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  gap: var(--s-board-gap);
 
   width: 100%;
   padding: 10px;
   background: $c-game-header;
   border-radius: $s-border-radius;
-
-  &__right {
-    display: flex;
-    gap: var(--s-board-gap);
-  }
 }

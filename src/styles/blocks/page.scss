@@ -1,5 +1,6 @@
 .page {
   font-family: sans-serif;
   font-weight: 900;
-  font-size: clamp(18px, 3vmin, 70px);
+  font-size: clamp(16px, 5vw, 24px);
+  user-select: none;
 }

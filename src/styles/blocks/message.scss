@@ -12,27 +12,28 @@
 
   &__content {
     position: relative;
-    height: 60vmin;
+    width: clamp(280px, 93.75vw, 420px);
     /* stylelint-disable-next-line */
     aspect-ratio: 1;
 
     @include column;
     align-items: center;
-    gap: 20%;
+    justify-content: center;
+    gap: 30px;
 
-    font-size: 0.8rem;
+    font-size: clamp(16px, 5vw, 20px);
     text-align: center;
     color: $c-main-text;
 
     background: $c-accent-text;
-    padding: 10% 10px;
+    padding: 60px 10px 40px;
     border-radius: $s-border-radius;
 
     animation: showMessageContent 1s forwards;
   }
 
   &__try-again {
-    height: 50px;
+    min-height: 40px;
     width: 50%;
 
     color: $c-accent-text;
@@ -42,6 +43,11 @@
 
     background-color: $c-game-board;
     border-radius: $s-border-radius;
+
+    &:hover {
+      transition: $a-transition-time;
+      filter: brightness(1.2);
+    }
   }
 
   &__close {
@@ -49,8 +55,13 @@
     top: 20px;
     right: 20px;
   
-    font-size: 1.5rem;
+    font-size: 24px;
     color: $c-main-text;
     line-height: 85%;
+    
+    &:hover {
+      transition: $a-transition-time;
+      filter: brightness(0.8);
+    }
   }
 }

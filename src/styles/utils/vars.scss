@@ -24,12 +24,12 @@ $z-modal: 3;
 $z-card: 2;
 
 //sizes
-$s-tile-cell: clamp(54px, 15vmin, 88px);
+$s-tile-cell: clamp(60px, 13vw, 88px);
 $s-border-radius: 5px;
 
 html {
-  --s-board-gap: 1.5vmin;
-  --s-cell: clamp(54px, 15vmin, 88px);
+  --s-board-gap: 10px;
+  --s-cell: clamp(60px, 18.75vw, 88px);
 }
 
 //animations

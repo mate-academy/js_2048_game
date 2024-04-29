@@ -1,8 +1,10 @@
 .advertisement {
   @include center;
   
+  text-align: center;
   align-self: stretch;
-  height: 6vh;
+  height: 42px;
+  font-size: clamp(16px, 5vw, 20px);
 
   background-color: $c-accent-text;
   color: $c-main-text;

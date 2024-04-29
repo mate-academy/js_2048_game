@@ -1,8 +1,8 @@
 .main {
   @include center;
   
-  width: 100vw;
-  height: 100vh;
+  max-width: 100vw;
+  min-height: 100vh;
   
   background: $c-bg;
   

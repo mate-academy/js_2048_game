@@ -22,7 +22,7 @@
   &--button {
     font-weight: 700;
     font-size: 0.85rem;
-    transition: $a-transition-time ease;
+    transition: background $a-transition-time ease ;
     
     &:hover {
       filter: saturate(150%);

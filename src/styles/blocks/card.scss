@@ -33,6 +33,7 @@
       $c-end-card calc(100% - (12 - var(--i)) * 9%),
       $c-start-card calc((12 - var(--i)) * 9%),
     );
+      font-size: calc(1.5rem - var(--i) * 0.03rem);
     }
   }
 
