@@ -101,7 +101,6 @@ function onDirectionKeyPress(gameEvent) {
   }
 }
 
-/* eslint-disable no-unmodified-loop-condition */
 function moveTiles(directionY, directionX) {
   let movePossible = false;
   let mergedRecently = false;
@@ -112,6 +111,7 @@ function moveTiles(directionY, directionX) {
 
     for (let i = 0; i < 4; i++) {
       let j = startX;
+      /* eslint-disable no-unmodified-loop-condition */
 
       while ((j <= 3 && stepX === 1) || (j >= 0 && stepX === -1)) {
         if (board[i][j] === 0) {
