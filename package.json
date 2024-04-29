@@ -1,7 +1,7 @@
 {
   "name": "gulp-boilerplate",
   "version": "1.0.0",
-  "description": "Frontend boilerplate based on gulp",
+  "description": "This version of the 2048 game is designed for quick, fun play on both mobile and desktop devices.",
   "main": "index.js",
   "engines": {
     "node": "^14.0.0"
@@ -18,7 +18,7 @@
     "test": "npm run lint && npm run test:only"
   },
   "keywords": [],
-  "author": "Mate Academy",
+  "author": "Softjey",
   "license": "GPL-3.0",
   "devDependencies": {
     "@linthtml/linthtml": "^0.3.2",
