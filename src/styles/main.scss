@@ -10,6 +10,10 @@ body {
   font-weight: 900;
 }
 
+[class*="field-cell"]{
+  text-align: center;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -17,7 +21,6 @@ body {
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
   vertical-align: center;
   user-select: none;
 
