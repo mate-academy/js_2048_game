@@ -7,6 +7,8 @@ const tileContainer = document.querySelector('.tileContainer');
 const scoreElement = document.getElementById('scoreElement');
 const start = document.getElementById('start');
 
+start.addEventListener('click', startNewGame);
+
 function createBoard() {
   for (let i = 0; i < 4; i++) {
     const row = [];
