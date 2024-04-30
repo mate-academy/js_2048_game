@@ -15,9 +15,10 @@ class Game {
   }
 
   Slide() {
-    // const previosBoard = this.board.forEach((outer) =>
-    //   outer.forEach((inner) => inner),
-    // );
+    const previousBoard = this.board.map(
+      (outer) => outer.map((_, i) => outer[i]), 
+      // eslint-disable-line function-paren-newline
+    );
 
     for (let row = 0; row < BOARD_SIZE; row++) {
       let MargedTile;
@@ -48,6 +49,11 @@ class Game {
           }
         }
       }
+    }
+
+    if (JSON.stringify(this.board) !== JSON.stringify(previousBoard)) {
+      this.#setRandomTile();
+      this.#setRandomTile();
     }
   }
 
@@ -128,7 +134,7 @@ class Game {
 
         if (cellValue !== 0) {
           cells[cellIndex].textContent = cellValue;
-          cells[cellIndex].classList.add(`field-cell--${cellValue}`);
+          cells[cellIndex].className = ` field-cell field-cell--${cellValue}`;
         } else {
           cells[cellIndex].className = 'field-cell';
           cells[cellIndex].textContent = '';
@@ -155,7 +161,27 @@ class Game {
     });
   }
 
-  // Add your own methods here
+  #setRandomTile() {
+    const number = Math.ceil(Math.random() * 10) > 9 ? 4 : 2;
+
+    let randomRow, randomCol;
+
+    const getRandomNumber = () => Math.floor(Math.random() * 4);
+
+    const placeNumber = () => {
+      randomRow = getRandomNumber();
+      randomCol = getRandomNumber();
+
+      if (this.board[randomRow][randomCol] === 0) {
+        this.board[randomRow][randomCol] = number;
+        this.setBoard();
+      } else {
+        placeNumber();
+      }
+    };
+
+    placeNumber();
+  }
 }
 
 module.exports = Game;
