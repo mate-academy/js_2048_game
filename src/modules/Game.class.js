@@ -1,22 +1,26 @@
 'use strict';
 
 const BOARD_SIZE = 4;
+const DEFAULT_BOARD = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 
 class Game {
-  constructor(
-    board = [
-      [2, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 2],
-    ],
-  ) {
+  constructor(board = DEFAULT_BOARD) {
     this.board = board;
+    this.score = 0;
+    this.status = 'idle';
   }
 
   Slide() {
+    const score = document.querySelector('.game-score');
+    let scoreToAdd = 0;
+
     const previousBoard = this.board.map(
-      (outer) => outer.map((_, i) => outer[i]), 
+      (outer) => outer.map((_, i) => outer[i]),
       // eslint-disable-line function-paren-newline
     );
 
@@ -40,6 +44,8 @@ class Game {
 
             this.board[row][tile - howFarMove] =
               this.board[row][tile] + this.board[row][tile - howFarMove];
+
+            scoreToAdd += this.board[row][tile - howFarMove];
           } else {
             this.board[row][tile - howFarMove] = this.board[row][tile];
           }
@@ -47,13 +53,17 @@ class Game {
           if (tile - howFarMove !== tile) {
             this.board[row][tile] = 0;
           }
+
+          if (this.board.flat().includes(2048)) {
+            this.status = 'win';
+          }
         }
       }
     }
 
     if (JSON.stringify(this.board) !== JSON.stringify(previousBoard)) {
       this.#setRandomTile();
-      this.#setRandomTile();
+      score.innerHTML = `${+score.innerHTML + scoreToAdd}`;
     }
   }
 
@@ -83,46 +93,39 @@ class Game {
     this.setBoard();
   }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getState() {
+    return this.board;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  start() {
+    this.status = 'playing';
+    this.#setRandomTile();
+    this.#setRandomTile();
+  }
 
-  /**
-   * Resets the game.
-   */
   restart() {
+    const score = document.querySelector('.game-score');
+
     this.board = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
-  }
 
-  canMove() {}
+    this.start();
+
+    this.score = 0;
+    score.innerHTML = 0;
+  }
 
   setBoard() {
     const cells = document.querySelectorAll('.field-cell');
