@@ -54,9 +54,9 @@ document.addEventListener('keydown', (e) => {
     const gameStatus = game.getStatus();
 
     if (
-      gameStatus === 'idle' ||
-      gameStatus === 'lose' ||
-      gameStatus === 'win'
+      gameStatus === Game.STATUS_IDLE ||
+      gameStatus === Game.STATUS_LOSE ||
+      gameStatus === Game.STATUS_WIN
     ) {
       return;
     }
@@ -118,7 +118,7 @@ document.addEventListener('keydown', (e) => {
     const isPlayerWin = game.checkIsPlayerWin();
 
     if (isPlayerWin) {
-      game.status = 'win';
+      game.status = Game.STATUS_WIN;
       winMessage.classList.remove('hidden');
 
       return;
@@ -129,7 +129,7 @@ document.addEventListener('keydown', (e) => {
     const isPlayerLose = game.checkIsPlayerLose();
 
     if (isPlayerLose) {
-      game.status = 'lose';
+      game.status = Game.STATUS_LOSE;
       loseMessage.classList.remove('hidden');
     }
   }

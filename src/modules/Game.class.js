@@ -30,9 +30,14 @@ class Game {
   ) {
     this.initialState = initialState;
     this.state = JSON.parse(JSON.stringify(initialState));
-    this.status = 'idle';
+    this.status = Game.STATUS_IDLE;
     this.score = 0;
   }
+
+  static STATUS_IDLE = 'idle';
+  static STATUS_PLAYING = 'playing';
+  static STATUS_WIN = 'win';
+  static STATUS_LOSE = 'lose';
 
   moveLeft() {
     const state = this.getState();
@@ -96,206 +101,27 @@ class Game {
   }
 
   moveRight() {
-    const state = this.getState();
-
     // below I update the state if ArrowRight was pressed
 
-    for (let row = 0; row < 4; row++) {
-      const cache = [];
-
-      // here I push all digits (except 0) of current row in the state
-      // to the cache array
-
-      for (let cell = 0; cell < 4; cell++) {
-        const currentDigit = state[row][cell];
-
-        if (!currentDigit) {
-          continue;
-        }
-
-        cache.push(currentDigit);
-      }
-
-      // here I sum equal numbers in the cache array and update the score
-
-      // if we press ArrowRight, digits should sum from right/end to left/start
-      // [4, 4, 4] -> [4, 8]
-      // but I used the cycle 'for' for inconvenience from start to end
-      // and therefore reverse cache array twice
-
-      cache.reverse();
-
-      for (let i = 0; i < cache.length; i++) {
-        const currentDigit = cache[i];
-        const nextDigit = i + 1 < cache.length ? cache[i + 1] : null;
-
-        if (!nextDigit) {
-          break;
-        }
-
-        if (currentDigit === nextDigit) {
-          const prevScore = this.getScore();
-          const currentScore = prevScore + currentDigit * 2;
-
-          this.score = currentScore;
-
-          cache.splice(i, 2, currentDigit * 2);
-        }
-      }
-
-      cache.reverse();
-
-      // if row doesn't change then go to the next row
-
-      if (cache.length === 4) {
-        continue;
-      }
-
-      // here I need to fill cache array with 0 for equality cache.length === 4
-
-      while (cache.length < 4) {
-        cache.unshift(0);
-      }
-
-      // here I rewrite current row in the state
-
-      for (let cell = 0; cell < 4; cell++) {
-        state[row][cell] = cache[cell];
-      }
-    }
+    this.reverseStateByRows();
+    this.moveLeft();
+    this.reverseStateByRows();
   }
 
   moveUp() {
-    const state = this.getState();
-
     // below I update the state if ArrowUp was pressed
 
-    for (let col = 0; col < 4; col++) {
-      const cache = [];
-
-      // here I push all digits (except 0) of current column in the state
-      // to the cache array
-
-      for (let row = 0; row < 4; row++) {
-        const currentDigit = state[row][col];
-
-        if (!currentDigit) {
-          continue;
-        }
-
-        cache.push(currentDigit);
-      }
-
-      // here I sum equal numbers in the cache array and update the score
-
-      for (let i = 0; i < cache.length; i++) {
-        const currentDigit = cache[i];
-        const nextDigit = i + 1 < cache.length ? cache[i + 1] : null;
-
-        if (!nextDigit) {
-          break;
-        }
-
-        if (currentDigit === nextDigit) {
-          const prevScore = this.getScore();
-          const currentScore = prevScore + currentDigit * 2;
-
-          this.score = currentScore;
-
-          cache.splice(i, 2, currentDigit * 2);
-        }
-      }
-
-      // if column doesn't change then go to the next column
-
-      if (cache.length === 4) {
-        continue;
-      }
-
-      // here I need to fill cache array with 0 for equality cache.length === 4
-
-      while (cache.length < 4) {
-        cache.push(0);
-      }
-
-      // here I rewrite current column in the state
-
-      for (let row = 0; row < 4; row++) {
-        state[row][col] = cache[row];
-      }
-    }
+    this.rotateStateBackwardBy90Deg();
+    this.moveLeft();
+    this.rotateStateForwardBy90Deg();
   }
 
   moveDown() {
-    const state = this.getState();
-
     // below I update the state if ArrowDown was pressed
 
-    for (let col = 0; col < 4; col++) {
-      const cache = [];
-
-      // here I push all digits (except 0) of current column in the state
-      // to the cache array
-
-      for (let row = 0; row < 4; row++) {
-        const currentDigit = state[row][col];
-
-        if (!currentDigit) {
-          continue;
-        }
-
-        cache.push(currentDigit);
-      }
-
-      // here I sum equal numbers in the cache array and update the score
-
-      // if we press ArrowDown, digits should sum from down/end to up/start
-      // [4,
-      //  4, -> [4,
-      //  4]     8]
-      // but I used the cycle 'for' for inconvenience from start to end
-      // and therefore reverse cache array twice
-
-      cache.reverse();
-
-      for (let i = 0; i < cache.length; i++) {
-        const currentDigit = cache[i];
-        const nextDigit = i + 1 < cache.length ? cache[i + 1] : null;
-
-        if (!nextDigit) {
-          break;
-        }
-
-        if (currentDigit === nextDigit) {
-          const prevScore = this.getScore();
-          const currentScore = prevScore + currentDigit * 2;
-
-          this.score = currentScore;
-
-          cache.splice(i, 2, currentDigit * 2);
-        }
-      }
-
-      cache.reverse();
-
-      // if column doesn't change then go to the next column
-
-      if (cache.length === 4) {
-        continue;
-      }
-
-      // here I need to fill cache array with 0 for equality cache.length === 4
-
-      while (cache.length < 4) {
-        cache.unshift(0);
-      }
-
-      // here I rewrite current column in the state
-
-      for (let row = 0; row < 4; row++) {
-        state[row][col] = cache[row];
-      }
-    }
+    this.rotateStateForwardBy90Deg();
+    this.moveLeft();
+    this.rotateStateBackwardBy90Deg();
   }
 
   /**
@@ -331,7 +157,7 @@ class Game {
    */
   start() {
     this.state = JSON.parse(JSON.stringify(this.initialState));
-    this.status = 'playing';
+    this.status = Game.STATUS_PLAYING;
     this.score = 0;
     this.addRandomDigitToEmptyCell(2);
   }
@@ -341,11 +167,41 @@ class Game {
    */
   restart() {
     this.state = JSON.parse(JSON.stringify(this.initialState));
-    this.status = 'idle';
+    this.status = Game.STATUS_IDLE;
     this.score = 0;
   }
 
   // Add your own methods here
+
+  rotateStateBackwardBy90Deg() {
+    const state = this.getState();
+    const stateCopy = JSON.parse(JSON.stringify(state));
+
+    for (let j = 3; j >= 0; j--) {
+      for (let i = 0; i < 4; i++) {
+        state[3 - j][i] = stateCopy[i][j];
+      }
+    }
+  }
+
+  rotateStateForwardBy90Deg() {
+    const state = this.getState();
+    const stateCopy = JSON.parse(JSON.stringify(state));
+
+    for (let i = 3; i >= 0; i--) {
+      for (let j = 0; j < 4; j++) {
+        state[j][3 - i] = stateCopy[i][j];
+      }
+    }
+  }
+
+  reverseStateByRows() {
+    const state = this.getState();
+
+    for (let row = 0; row < 4; row++) {
+      state[row].reverse();
+    }
+  }
 
   checkIsPlayerWin() {
     const state = this.getState();
