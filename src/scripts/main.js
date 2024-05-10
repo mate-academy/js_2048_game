@@ -75,3 +75,4 @@ function handleKeyDown(keyEvent) {
 function updateScore(newScore) {
   score.textContent = newScore;
 }
+
