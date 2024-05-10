@@ -1,26 +1,21 @@
-# 2048 game
+1. Replace `<your_account>` with your Github username in the link
+    - [DEMO LINK](https://OPTIMISTIXX.github.io/js_2048_game/)
+2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
+    - Run `npm run test` command to test your code;
+    - Run `npm run test:only -- -n` to run fast test ignoring linter;
+    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+
+### Task: 2048 game
 
 Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+If you are still here, let's do it
 
 In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
 Don't play for too long! We need you to write the code!
 
 Okay, what do we have?
 1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
-  - constructor with `initialState` parameter (value is optional, defaults to the empty board)
-  - `getState()`
-  - `getScore()`
-  - `getStatus()`
-  - `moveLeft()`
-  - `moveRight()`
-  - `moveUp()`
-  - `moveDown()`
-  - `start()`
-  - `restart()`
-
-3) Reference.
+2) Reference.
 
 That's it!
 
@@ -37,11 +32,7 @@ Okay, okay. Also, we have some rules:
 8) The `game over` message should be shown if there are no more available moves.
 9) Hide start message when game starts.
 10) Change the `Start` button to `Restart` after the first move.
-11) `Restart` button should reset the game to the initial state.
-12) Increase score with each move. The score should be increased by the sum of all merged cells.
-13) The game consists of 2 main parts:
-  - game logic written in `src/modules/Game.class.js` module that exports `Game` class
-  - game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
+11) Increase score with each move. The score should be increased by the sum of all merged cells.
 
 Hints:
 - You have class `field-cell--%cell_value%`, for styling cell in the game.
@@ -52,18 +43,8 @@ Hints:
     ```js
     document.addEventListener('keydown', event => console.log(event.key));
     ```
-- Adding animation to the game is optional. It is a bit tricky, but you can try it if you want. Probably, you will need to extend the Game class with additional methods and create a separate board storage with Tile entities to operate their corresponding DOM elements' positions.
 
-You can change the HTML/CSS layout if you need it.
+You can change the HTM/CSS layout if you need it.
 
 ![Preview](./src/images/reference.png)
-
-## Deploy and Pull Request
-
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
 
