@@ -23,6 +23,10 @@ class Game {
   }
 
   moveLeft() {
+    if (this.getStatus() !== Game.gameStatuses.playing) {
+      return;
+    }
+
     const updatedState = this.state.map((row) => this.move(row));
 
     if (JSON.stringify(this.getState()) !== JSON.stringify(updatedState)) {
@@ -32,6 +36,10 @@ class Game {
   }
 
   moveRight() {
+    if (this.getStatus() !== Game.gameStatuses.playing) {
+      return;
+    }
+
     const reverseState = this.state.map((row) => [...row].reverse());
 
     const updatedState = reverseState.map((row) => {
@@ -45,6 +53,10 @@ class Game {
   }
 
   moveUp() {
+    if (this.getStatus() !== Game.gameStatuses.playing) {
+      return;
+    }
+
     const rotateState = this.rotateMatrixCounteClockwise(this.getState());
 
     const updatedState = rotateState.map((row) => this.move(row));
@@ -58,6 +70,10 @@ class Game {
   }
 
   moveDown() {
+    if (this.getStatus() !== Game.gameStatuses.playing) {
+      return;
+    }
+
     const rotateState = this.rotateMatrixClockwise(this.getState());
 
     const updatedState = rotateState.map((row) => this.move(row));
@@ -161,9 +177,8 @@ class Game {
   }
 
   restart() {
-    this.resetState();
     this.status = Game.gameStatuses.idle;
-    this.score = 0;
+    this.resetState();
   }
 
   getEmptyCells() {
@@ -205,6 +220,7 @@ class Game {
 
   resetState() {
     this.state = this.initialState.map((row) => [...row]);
+    this.score = 0;
   }
 
   isStateValid(currentState) {
