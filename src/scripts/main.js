@@ -127,7 +127,7 @@ start.addEventListener('click', async () => {
 let isUseEventListener = true;
 
 document.documentElement.addEventListener('keydown', async function (evenet) {
-  if (game.getStatus() === 'lose') {
+  if (game.getStatus() !== 'start') {
     return;
   }
 
