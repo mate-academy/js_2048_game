@@ -184,18 +184,18 @@ gameBoard.addEventListener('touchmove', async function (evenet) {
   const diffY = currentY - startPositionY;
 
   if (Math.abs(diffX) > Math.abs(diffY)) {
-    if (diffX > 100) {
+    if (diffX > 50) {
       await moverGame('moveRight');
       isUseEventListener = false;
-    } else if (diffX < -100) {
+    } else if (diffX < -50) {
       await moverGame('moveLeft');
       isUseEventListener = false;
     }
   } else {
-    if (diffY > 100) {
+    if (diffY > 50) {
       await moverGame('moveDown');
       isUseEventListener = false;
-    } else if (diffY < -100) {
+    } else if (diffY < -50) {
       await moverGame('moveUp');
       isUseEventListener = false;
     }
