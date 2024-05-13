@@ -379,8 +379,9 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
+    this.start();
     this.score = 0;
-    this.status = 'none';
+    this.status = 'start';
   }
 
   // Add your own methods here

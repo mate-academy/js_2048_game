@@ -116,9 +116,6 @@ start.addEventListener('click', async () => {
     await game.start();
     setAllGameBoard();
   } else {
-    start.classList.add('start');
-    start.classList.remove('restart');
-    start.textContent = 'Start';
     await game.restart();
     setAllGameBoard();
   }
