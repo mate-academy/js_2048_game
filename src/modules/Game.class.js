@@ -55,7 +55,7 @@ class Game {
     this.status = 'none';
   }
 
-  async gameAdderItem() {
+  async gameAdderItem(addWith = '') {
     const startGameAdder = async () => {
       const [stateRow, stateColumn] = randomizer(this.initialState);
 
@@ -71,10 +71,10 @@ class Game {
       );
     }, 0);
 
-    if (isItemsZero >= 2) {
+    if (addWith === 'start') {
       await startGameAdder();
       await startGameAdder();
-    } else if (isItemsZero === 1) {
+    } else if (isItemsZero >= 1) {
       await startGameAdder();
     }
   }
@@ -393,7 +393,7 @@ class Game {
    * Starts the game.
    */
   async start() {
-    await this.gameAdderItem();
+    await this.gameAdderItem('start');
     this.status = 'start';
   }
 
