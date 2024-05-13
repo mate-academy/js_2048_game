@@ -154,6 +154,14 @@ h1 {
   }
 }
 
+.undo {
+  background: #6799ff;
+
+  &:hover {
+    background: #3f8cff;
+  }
+}
+
 .message {
   box-sizing: border-box;
   width: 100%;

@@ -9,7 +9,7 @@ const score = document.querySelector('.game-score');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
-const undoButton = document.querySelector('.undo'); // New undo button
+const undoButton = document.querySelector('.undo');
 
 initialize();
 
@@ -32,9 +32,8 @@ function initialize() {
     document.addEventListener('keydown', handleKeyDown);
   });
 
-  // Event listener for the undo button
   undoButton.addEventListener('click', () => {
-    game.undo(); // Call the undo method
+    game.undo();
     updateScore(game.getScore());
   });
 }
