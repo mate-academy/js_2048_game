@@ -123,47 +123,85 @@ start.addEventListener('click', async () => {
 
 let isUseEventListener = true;
 
+const moverGame = async (moveToGamePosition) => {
+  isUseEventListener = false;
+  await game[moveToGamePosition]();
+  await setAllGameBoard();
+  isUseEventListener = true;
+};
+
 document.documentElement.addEventListener('keydown', async function (evenet) {
-  if (game.getStatus() !== 'start') {
+  if (game.getStatus() !== 'start' || !isUseEventListener) {
     return;
   }
 
-  if (isUseEventListener) {
-    switch (evenet.key) {
-      case 'ArrowRight': {
-        isUseEventListener = false;
-        await game.moveRight();
-        await setAllGameBoard();
-        isUseEventListener = true;
-        break;
-      }
+  switch (evenet.key) {
+    case 'ArrowRight': {
+      await moverGame('moveRight');
+      break;
+    }
 
-      case 'ArrowLeft': {
-        isUseEventListener = false;
-        await game.moveLeft();
-        await setAllGameBoard();
-        isUseEventListener = true;
-        break;
-      }
+    case 'ArrowLeft': {
+      await moverGame('moveLeft');
+      break;
+    }
 
-      case 'ArrowUp': {
-        isUseEventListener = false;
-        await game.moveUp();
-        await setAllGameBoard();
-        isUseEventListener = true;
-        break;
-      }
+    case 'ArrowUp': {
+      await moverGame('moveUp');
+      break;
+    }
 
-      case 'ArrowDown': {
-        isUseEventListener = false;
-        await game.moveDown();
-        await setAllGameBoard();
-        isUseEventListener = true;
-        break;
-      }
+    case 'ArrowDown': {
+      await moverGame('moveDown');
+      break;
+    }
 
-      default:
-        break;
+    default:
+      break;
+  }
+});
+
+let startPositionX, startPositionY;
+
+const gameBoard = document.querySelector('.game-field');
+
+gameBoard.addEventListener('touchstart', function (evenet) {
+  startPositionX = evenet.touches[0].clientX;
+  startPositionY = event.touches[0].clientY;
+});
+
+gameBoard.addEventListener('touchmove', async function (evenet) {
+  if (game.getStatus() !== 'start' || !isUseEventListener) {
+    return;
+  }
+
+  const currentX = evenet.touches[0].clientX;
+  const currentY = evenet.touches[0].clientY;
+
+  const diffX = currentX - startPositionX;
+  const diffY = currentY - startPositionY;
+
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (diffX > 100) {
+      await moverGame('moveRight');
+      isUseEventListener = false;
+    } else if (diffX < -100) {
+      await moverGame('moveLeft');
+      isUseEventListener = false;
+    }
+  } else {
+    if (diffY > 100) {
+      await moverGame('moveDown');
+      isUseEventListener = false;
+    } else if (diffY < -100) {
+      await moverGame('moveUp');
+      isUseEventListener = false;
     }
   }
+});
+
+gameBoard.addEventListener('touchend', function () {
+  startPositionX = null;
+  startPositionY = null;
+  isUseEventListener = true;
 });
