@@ -80,6 +80,8 @@ class Game {
   }
 
   async moveLeft() {
+    const tempState = this.initialState;
+
     const goToLeft = async () => {
       this.initialState = this.initialState.map((item, index) => {
         const zeroItem = item.filter((num) => num === 0);
@@ -111,9 +113,16 @@ class Game {
 
     await goToLeft();
     await goToLefttLast();
+
+    if (tempState.toString() === this.initialState.toString()) {
+      return;
+    }
+
     await this.gameAdderItem();
   }
   async moveRight() {
+    const tempState = this.initialState;
+
     const goToRight = async () => {
       this.initialState = this.initialState.map((item, index) => {
         const zeroItem = item.filter((num) => num === 0);
@@ -145,9 +154,16 @@ class Game {
 
     await goToRight();
     await goToRightLast();
+
+    if (tempState.toString() === this.initialState.toString()) {
+      return;
+    }
+
     await this.gameAdderItem();
   }
   async moveUp() {
+    const tempState = this.initialState;
+
     const goToTop = async () => {
       const columnsItems = [
         this.initialState.map((item) => item[0]),
@@ -203,9 +219,16 @@ class Game {
 
     await goToTop();
     await goToTopLast();
+
+    if (tempState.toString() === this.initialState.toString()) {
+      return;
+    }
+
     await this.gameAdderItem();
   }
   async moveDown() {
+    const tempState = this.initialState;
+
     const goToDown = async () => {
       const columnsItems = [
         this.initialState.map((item) => item[0]),
@@ -261,6 +284,11 @@ class Game {
 
     await goToDown();
     await goToDownLast();
+
+    if (tempState.toString() === this.initialState.toString()) {
+      return;
+    }
+
     await this.gameAdderItem();
   }
 
