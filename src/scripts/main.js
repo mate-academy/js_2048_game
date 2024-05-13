@@ -171,6 +171,8 @@ gameBoard.addEventListener('touchstart', function (evenet) {
 });
 
 gameBoard.addEventListener('touchmove', async function (evenet) {
+  evenet.preventDefault();
+
   if (game.getStatus() !== 'start' || !isUseEventListener) {
     return;
   }
