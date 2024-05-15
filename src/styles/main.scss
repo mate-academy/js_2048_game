@@ -1,3 +1,9 @@
+:root {
+  --gap-size: 5px;
+  --cell-size: 75px;
+  --grid-size: 4;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -10,16 +16,46 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-size), var(--cell-size));
+  grid-template-rows: repeat(var(--grid-size), var(--cell-size));
+  gap: var(--gap-size);
+  background-color: #776e65;
+  border: 5px solid #776e65;
+  border-radius: 5px;
+  position: relative;
+}
+
+.cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: var(--cell-size);
+  height: var(--cell-size);
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+}
+
+.tile {
+  --x: 1;
+  --y: 2;
+
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75px;
+  width: 75px;
+  border-radius: 5px;
+  background-color: #edc22e;
+  top: calc(var(--y) * var(--cell-size) + var(--y) * var(--gap-size));
+  left: calc(var(--x) * var(--cell-size) + var(--x) * var(--gap-size));
+  color: #776e65;
+  animation: show 200ms ease-in-out;
+  transition: 100ms ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -72,6 +108,13 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
   }
 }
 
@@ -133,24 +176,25 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
+  outline: none;
 
   transition: 0.25s ease background;
-}
 
-.start {
-  background: #1dae28;
-  font-size: 20px;
+  &--start {
+    background: #1dae28;
+    font-size: 20px;
 
-  &:hover {
-    background: #179921;
+    &:hover {
+      background: #179921;
+    }
   }
-}
 
-.restart {
-  background: #f1b2b2;
+  &--restart {
+    background: #f1b2b2;
 
-  &:hover {
-    background: #f87474;
+    &:hover {
+      background: #f87474;
+    }
   }
 }
 
@@ -163,10 +207,15 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
-}
 
-.hidden {
-  display: none;
+  &--hidden {
+    display: none;
+  }
+
+  &--win {
+    background: #edc22e;
+    color: #f9f6f2;
+  }
 }
 
 .container {
@@ -174,11 +223,6 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
-}
-
-.message-win {
-  background: #edc22e;
-  color: #f9f6f2;
 }
 
 .message-container {
