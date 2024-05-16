@@ -211,43 +211,36 @@ async function handleInput(e) {
     return;
   }
 
+  let moveFunction;
+
   switch (e.key) {
     case 'ArrowUp':
-      if (!canMoveUp()) {
-        setupInput();
-
-        return;
-      }
-      await moveUp();
+      moveFunction = moveUp;
       break;
     case 'ArrowDown':
-      if (!canMoveDown()) {
-        setupInput();
-
-        return;
-      }
-      await moveDown();
+      moveFunction = moveDown;
       break;
     case 'ArrowLeft':
-      if (!canMoveLeft()) {
-        setupInput();
-
-        return;
-      }
-      await moveLeft();
+      moveFunction = moveLeft;
       break;
     case 'ArrowRight':
-      if (!canMoveRight()) {
-        setupInput();
-
-        return;
-      }
-      await moveRight();
+      moveFunction = moveRight;
       break;
     default:
+      moveFunction = null;
+  }
+
+  if (moveFunction) {
+    if (!moveFunction()) {
       setupInput();
 
       return;
+    }
+    await moveFunction();
+  } else {
+    setupInput();
+
+    return;
   }
 
   grid.cells.forEach((cell) => cell.mergeTiles());
@@ -261,6 +254,7 @@ async function handleInput(e) {
 
     return;
   }
+
   setupInput();
 }
 
