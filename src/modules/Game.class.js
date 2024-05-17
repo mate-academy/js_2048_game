@@ -108,12 +108,13 @@ class Game {
     let moved = false;
 
     for (let r = 0; r < this.size; r++) {
+      const originalRow = [...this.board[r]];
       let newRow = this.slide(this.board[r].slice().reverse());
 
       newRow = this.combine(newRow);
       newRow = this.slide(newRow).reverse();
 
-      if (this.board[r].toString() !== newRow.toString()) {
+      if (originalRow.toString() !== newRow.toString()) {
         moved = true;
       }
 
