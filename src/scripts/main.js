@@ -58,9 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   startButton.addEventListener('click', () => {
-    if (game.getStatus() === 'idle' || game.getStatus() === 'lose') {
+    const buttonText = startButton.textContent;
+
+    if (buttonText === 'Start') {
       startGame();
-    } else {
+    } else if (buttonText === 'Restart') {
       restartGame();
     }
   });
