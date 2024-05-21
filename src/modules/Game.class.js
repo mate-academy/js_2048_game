@@ -137,7 +137,6 @@ class Game {
 
   restart() {
     this.status = 'idle';
-
     this.board = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -145,6 +144,7 @@ class Game {
       [0, 0, 0, 0],
     ];
     this.score = 0;
+    this.start();
   }
 
   slideRow(row) {

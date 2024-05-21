@@ -58,8 +58,6 @@ button.addEventListener('click', () => {
     render();
   } else {
     game.restart();
-    button.textContent = 'Start';
-    button.classList.replace('restart', 'start');
     render();
   }
 });
