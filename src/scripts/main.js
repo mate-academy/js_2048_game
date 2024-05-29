@@ -11,10 +11,11 @@ const refs = {
 };
 
 const WIN_VALUE = 2048;
-const FIELD_LENGTH = 15;
+const FIELD_SIZE = 16; // Adjusted to the total number of cells
 const NEW_CELL_VALUE = 2;
 const RARE_NEW_CELL_VALUE = 4;
 const RARE_CELL_CHANCE = 10;
+const FIELD_LENGTH = 4;
 
 const inputHandler = ({ key }) => {
   moveCells(key);
@@ -30,17 +31,16 @@ function newGame() {
 }
 
 function getRandomCell() {
-  if (!hasFreeSpace()) {
+  const emptyCells = [...refs.fieldCells]
+    .map((cell, index) => (cell.textContent === '' ? index : -1))
+    .filter(index => index !== -1);
+
+  if (emptyCells.length === 0) {
     return -1;
   }
 
-  let randomCell = getRandomNum(FIELD_LENGTH);
-
-  while (refs.fieldCells[randomCell].textContent !== '') {
-    randomCell = getRandomNum(FIELD_LENGTH);
-  }
-
-  return randomCell;
+  const randomIndex = getRandomNum(emptyCells.length);
+  return emptyCells[randomIndex];
 }
 
 function getToken() {
@@ -63,11 +63,15 @@ function resetField() {
   score.textContent = '0';
 
   [messageStart, messageLose, messageWin].forEach(({ classList }) =>
-    classList.add('hidden'),
-);
+    classList.add('hidden')
+  );
 
   fieldCells.forEach((cell) => {
-    cell.classList.remove(cell.classList[1]);
+    [...cell.classList].forEach(cls => {
+      if (cls.startsWith('field-cell--')) {
+        cell.classList.remove(cls);
+      }
+    });
     cell.textContent = '';
   });
 }
@@ -83,9 +87,14 @@ function updateStartButton() {
 function moveCells(keyPressed) {
   updateStartButton();
 
-  !rearrangeCells(keyPressed) && addCell(getRandomCell(), getToken());
+  const cellsMoved = rearrangeCells(keyPressed);
+  if (!cellsMoved) {
+    addCell(getRandomCell(), getToken());
+  }
 
-  !hasFreeSpace() && !hasPossibleMoves() && finishGame(refs.messageLose);
+  if (!hasFreeSpace() && !hasPossibleMoves()) {
+    finishGame(refs.messageLose);
+  }
 }
 
 function addCell(cellPosition, cellValue) {
@@ -94,9 +103,10 @@ function addCell(cellPosition, cellValue) {
   }
 
   const { fieldCells } = refs;
+  const cell = fieldCells[cellPosition];
 
-  fieldCells[cellPosition].classList.add(`field-cell--${cellValue}`);
-  fieldCells[cellPosition].textContent = cellValue;
+  cell.classList.add(`field-cell--${cellValue}`);
+  cell.textContent = cellValue;
 }
 
 function finishGame(endGameMessage) {
@@ -114,51 +124,50 @@ function updateScore(points) {
 function rearrangeCells(direction) {
   const { fieldCells, fieldRows } = refs;
 
-  const rows =
-    direction === 'ArrowLeft' || direction === 'ArrowRight'
-      ? [...fieldRows]
-      : createFieldColumns(fieldCells);
+  const rows = (direction === 'ArrowLeft' || direction === 'ArrowRight')
+    ? [...fieldRows]
+    : createFieldColumns(fieldCells);
 
   const initialRowValues = rows
     .map((row) => [...row.children].map((cel) => cel.textContent))
     .flat();
 
   rows.forEach((row) => {
-    const initialCells =
-      direction === 'ArrowLeft' || direction === 'ArrowUp'
-        ? [...row.children]
-        : [...row.children].reverse();
+    const initialCells = (direction === 'ArrowLeft' || direction === 'ArrowUp')
+      ? [...row.children]
+      : [...row.children].reverse();
 
     const filledCellsValues = initialCells
       .filter((cell) => cell.textContent !== '')
       .map(({ textContent }) => textContent);
 
-    filledCellsValues.forEach((cell, i) => {
-      if (
-        filledCellsValues[i - 1] !== undefined &&
-        filledCellsValues[i - 1] === filledCellsValues[i]
-      ) {
-        updateScore(+filledCellsValues[i] + +filledCellsValues[i - 1]);
-
-        filledCellsValues[i - 1] =
-          +filledCellsValues[i] + +filledCellsValues[i - 1];
-
+    for (let i = 1; i < filledCellsValues.length; i++) {
+      if (filledCellsValues[i] === filledCellsValues[i - 1]) {
+        filledCellsValues[i - 1] = (parseInt(filledCellsValues[i - 1]) * 2).toString();
+        updateScore(parseInt(filledCellsValues[i - 1]));
         filledCellsValues.splice(i, 1);
+        filledCellsValues.push('');
       }
-    });
+    }
 
-    const updatedCells =
-      direction === 'ArrowLeft' || direction === 'ArrowUp'
-        ? [...filledCellsValues, '', '', '', ''].slice(0, 4)
-        : [...filledCellsValues, '', '', '', ''].slice(0, 4).reverse();
+    const updatedCells = (direction === 'ArrowLeft' || direction === 'ArrowUp')
+      ? [...filledCellsValues, '', '', '', ''].slice(0, FIELD_LENGTH)
+      : [...filledCellsValues, '', '', '', ''].slice(0, FIELD_LENGTH).reverse();
 
-    [...row.children].forEach((cell, i2) => {
-      const cellValue = updatedCells[i2];
-
+    [...row.children].forEach((cell, i) => {
+      const cellValue = updatedCells[i];
       cell.textContent = cellValue;
-      cell.classList[1] && cell.classList.remove(cell.classList[1]);
-      +cellValue === WIN_VALUE && finishGame(refs.messageWin);
-      cellValue && cell.classList.add(`field-cell--${cellValue}`);
+      [...cell.classList].forEach(cls => {
+        if (cls.startsWith('field-cell--')) {
+          cell.classList.remove(cls);
+        }
+      });
+      if (cellValue) {
+        cell.classList.add(`field-cell--${cellValue}`);
+        if (parseInt(cellValue) === WIN_VALUE) {
+          finishGame(refs.messageWin);
+        }
+      }
     });
   });
 
@@ -166,21 +175,22 @@ function rearrangeCells(direction) {
     .map((row) => [...row.children].map((cel) => cel.textContent))
     .flat();
 
-  return JSON.stringify(initialRowValues) === JSON.stringify(finalRowValues);
+  return !arraysEqual(initialRowValues, finalRowValues);
 }
 
 function hasPossibleMoves() {
   const { fieldRows } = refs;
 
-  for (let i = 0; i < fieldRows.length; i++) {
-    for (let i2 = 0; i2 < fieldRows[i].children.length; i2++) {
-      const cell = fieldRows[i].children[i2];
+  for (let rowIndex = 0; rowIndex < fieldRows.length; rowIndex++) {
+    for (let cellIndex = 0; cellIndex < fieldRows[rowIndex].children.length; cellIndex++) {
+      const cell = fieldRows[rowIndex].children[cellIndex];
+      const cellValue = cell.textContent;
 
       if (
-        (fieldRows[i].children[i2 + 1] &&
-          cell.textContent === fieldRows[i].children[i2 + 1].textContent) ||
-        (fieldRows[i + 1] &&
-          cell.textContent === fieldRows[i + 1].children[i2].textContent)
+        (fieldRows[rowIndex].children[cellIndex + 1] &&
+          cellValue === fieldRows[rowIndex].children[cellIndex + 1].textContent) ||
+        (fieldRows[rowIndex + 1] &&
+          cellValue === fieldRows[rowIndex + 1].children[cellIndex].textContent)
       ) {
         return true;
       }
@@ -191,22 +201,29 @@ function hasPossibleMoves() {
 }
 
 function createFieldColumns(cells) {
-  const rowsCount = 4;
-  const numCols = cells.length / rowsCount;
-
+  const numCols = cells.length / FIELD_LENGTH;
   const fieldColumns = [];
 
-  for (let row = 0; row < rowsCount; row++) {
+  for (let row = 0; row < FIELD_LENGTH; row++) {
     const children = [];
-
     for (let col = 0; col < numCols; col++) {
-      const index = col * rowsCount + row;
-
+      const index = col * FIELD_LENGTH + row;
       children.push(cells[index]);
     }
-
     fieldColumns.push({ children });
   }
 
   return fieldColumns;
+}
+
+function arraysEqual(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+  return true;
 }
