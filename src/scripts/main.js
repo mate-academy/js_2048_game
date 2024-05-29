@@ -88,7 +88,7 @@ function moveCells(keyPressed) {
   updateStartButton();
 
   const cellsMoved = rearrangeCells(keyPressed);
-  if (!cellsMoved) {
+  if (cellsMoved) {
     addCell(getRandomCell(), getToken());
   }
 
