@@ -20,6 +20,9 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition:
+    background 350ms,
+    color 350ms;
 
   &--2 {
     background: #eee4da;
