@@ -139,12 +139,12 @@ function rearrangeCells(direction) {
 
     const filledCellsValues = initialCells
       .filter((cell) => cell.textContent !== '')
-      .map(({ textContent }) => textContent);
+      .map(({ textContent }) => parseInt(textContent));
 
     for (let i = 1; i < filledCellsValues.length; i++) {
       if (filledCellsValues[i] === filledCellsValues[i - 1]) {
-        filledCellsValues[i - 1] = (parseInt(filledCellsValues[i - 1]) * 2).toString();
-        updateScore(parseInt(filledCellsValues[i - 1]));
+        filledCellsValues[i - 1] = filledCellsValues[i - 1] * 2;
+        updateScore(filledCellsValues[i - 1]);
         filledCellsValues.splice(i, 1);
         filledCellsValues.push('');
       }
@@ -156,7 +156,7 @@ function rearrangeCells(direction) {
 
     [...row.children].forEach((cell, i) => {
       const cellValue = updatedCells[i];
-      cell.textContent = cellValue;
+      cell.textContent = cellValue ? cellValue.toString() : '';
       [...cell.classList].forEach(cls => {
         if (cls.startsWith('field-cell--')) {
           cell.classList.remove(cls);
@@ -164,7 +164,7 @@ function rearrangeCells(direction) {
       });
       if (cellValue) {
         cell.classList.add(`field-cell--${cellValue}`);
-        if (parseInt(cellValue) === WIN_VALUE) {
+        if (cellValue === WIN_VALUE) {
           finishGame(refs.messageWin);
         }
       }
