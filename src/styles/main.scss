@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: transform 0.2s ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -73,6 +74,19 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+}
+
+@keyframes appear {
+  from {
+    transform: scale(0.7);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.cell-transition {
+  animation: appear 0.3s ease-in-out;
 }
 
 .game-field {
@@ -133,6 +147,9 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   transition: 0.25s ease background;
 }
