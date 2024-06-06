@@ -6,17 +6,17 @@ Old as this world but popular as openai api, classic game 2048. The original is 
 
 # [Demolink](https://haduigon.github.io/react-todo-app/#/)
 
-# _Status:_
+# Status:
 
 Done
 
-[![GitHub license](https://img.shields.io/github/license/haduigon/react-todo-app)](https://github.com/haduigon/react-todo-app/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/haduigon/js_2048_game)](https://github.com/haduigon/js_2048_game/blob/master/LICENSE)
 
-[![GitHub stars](https://img.shields.io/github/stars/haduigon/rreact-todo-app)](https://github.com/haduigon/react-todo-app/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/haduigon/js_2048_game)](https://github.com/haduigon/js_2048_game/stargazers)
 
-[![GitHub issues](https://img.shields.io/github/issues/haduigon/react-todo-app)](https://github.com/haduigon/react-todo-app/issues)
+[![GitHub issues](https://img.shields.io/github/issues/haduigon/js_2048_game)](https://github.com/haduigon/js_2048_game/issues)
 
-[![GitHub forks](https://img.shields.io/github/forks/haduigon/react-todo-app)](https://github.com/haduigon/react-todo-app/network)
+[![GitHub forks](https://img.shields.io/github/forks/haduigon/js_2048_game)](https://github.com/haduigon/js_2048_game/network)
 
 # Technologies list:
 
