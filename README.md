@@ -2,7 +2,7 @@
 
 # Description:
 
-Old as this world but popular as openai api classic game 2048. The original is here : [click](https://play2048.co/)
+Old as this world but popular as openai api, classic game 2048. The original is here : [click](https://play2048.co/)
 
 # [Demolink](https://haduigon.github.io/react-todo-app/#/)
 
@@ -20,29 +20,44 @@ Done
 
 # Technologies list:
 
-[![React](https://img.shields.io/badge/React-18.3.1-green)](https://react.dev/)
+[![HTML](https://img.shields.io/badge/HTML-green)](https://react.dev/)
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.4.5-green)](https://www.typescriptlang.org/)
+[![JS](https://img.shields.io/badge/Javascript-green)](https://www.typescriptlang.org/)
 
-[![React Context](https://img.shields.io/badge/React%20Context-0.0.3-blue)](https://reactjs.org/docs/context.html)
+[![CSS](https://img.shields.io/badge/CSS-blue)](https://reactjs.org/docs/context.html)
 
-[![Fetch](https://img.shields.io/badge/Fetch-1.1.0-orange)](https://axios.com)
 
-[![React-transition-group](https://img.shields.io/badge/React%20transition%20group-4.4.5-orange)](https://reactcommunity.org/react-transition-group/)
+# 2048 Game has next features:
 
-# React todo app has next features:
+- The game board is 4x4 (16 cells), but it can be easily adjusted to any size in the code. 
 
-- User can create, store, delete, update, toggle and filter his tasks.
+- Each cell can be empty or contain a number from the sequence: 2, 4, 8, ... 2^n.
 
-- Responsive, nice design.
+- The game begins with 2 cells filled with either a 2 or a 4.
 
-- Error warning.
+- Click the Start button to begin the game.
 
-- All changes are saved in the server.
+- Use the keyboard arrows to move the cells.
 
-- Wait function was used to simulate server requests to demonstrate the loader.
+- All numbers move in the chosen direction until all empty cells are filled.
 
-- Filter stires in url.
+- Two identical cells merge into a doubled number.
+
+- A merged cell can't merge again in the same move.
+
+- A move is valid if at least one cell changes.
+
+- After each move, a 2 or 4 appears in a random empty cell, with a 10% chance of being a 4.
+
+- When a cell reaches the value of 2048, a win message is displayed.
+
+- The game ends if no moves are available.
+
+- The score increases by the total of all merged cells.
+
+- The highest score is saved in local storage.
+
+- Click the Restart button to start a new game.
 
 # Usage as always is very simple:
 
