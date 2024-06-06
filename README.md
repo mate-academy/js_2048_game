@@ -20,11 +20,11 @@ Done
 
 # Technologies list:
 
-[![HTML](https://img.shields.io/badge/HTML-green)](https://react.dev/)
+[![HTML](https://img.shields.io/badge/HTML-green)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 
-[![JS](https://img.shields.io/badge/Javascript-green)](https://www.typescriptlang.org/)
+[![JS](https://img.shields.io/badge/Javascript-green)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
-[![CSS](https://img.shields.io/badge/CSS-blue)](https://reactjs.org/docs/context.html)
+[![CSS](https://img.shields.io/badge/CSS-blue)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 
 
 # 2048 Game has next features:
@@ -70,12 +70,16 @@ npm start
 # Screenshots are bellow:
 
 <details>
-  <img width="1792" alt="Screenshot 2024-06-06 at 15 38 06" src="https://github.com/haduigon/react_todo-app-with-api/assets/20277989/699d3cb0-333b-4788-ad43-8afa4e023fa5">
+  <img width="1792" alt="Screenshot 2024-06-06 at 17 56 04" src="https://github.com/haduigon/js_2048_game/assets/20277989/fe3a8619-98ac-42eb-b2a7-7fbb49160aa6">
 </details>
 
 # Reflection
 
-Building a todo app in React JS will enhance your skills in managing asynchronous data with Promises. Set up your project, create components for tasks, and fetch data using Fetch API or Axios. Store tasks in local state, Redux, or local storage and update the UI using async/await. This project will improve your understanding of state management and error handling in React. Thank you for watching 👨‍🦲
+Creating a 2048 game in vanilla JavaScript was a challenging and rewarding task that improved my algorithmic and OOP skills. Setting up a dynamic 4x4 grid and implementing cell movements and merges based on arrow key inputs enhanced my coding and problem-solving abilities.
+
+Managing the game state, including scores, win/loss detection, and real-time UI updates, taught me efficient DOM manipulation. Adding user-friendly features like Start and Restart buttons and saving high scores in local storage made the game more engaging.
+
+Overall, this project deepened my understanding of JavaScript and increased my confidence in tackling complex coding challenges.  Keep in touch 👨‍🦲
 
 
 
