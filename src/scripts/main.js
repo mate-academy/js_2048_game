@@ -62,10 +62,10 @@ function handleKeyDown(keyEvent) {
 
     const newStatus = game.getStatus();
 
-    if (newStatus === Game.Status.win) {
-      winMessage.classList.remove('hidden');
-    } else if (newStatus === Game.Status.lose) {
+    if (newStatus === Game.Status.lose) {
       loseMessage.classList.remove('hidden');
+    } else if (newStatus === Game.Status.win) {
+      winMessage.classList.remove('hidden');
     }
   }
 }
