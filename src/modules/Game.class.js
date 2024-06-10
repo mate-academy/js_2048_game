@@ -19,8 +19,10 @@ class Game {
 
     const updatedState = this.state.map((row) => this.move(row));
 
-    this.updateGameState(updatedState);
-    this.addCells();
+    if (JSON.stringify(this.getState()) !== JSON.stringify(updatedState)) {
+      this.updateGameState(updatedState);
+      this.addCells();
+    }
   }
 
   moveRight() {
@@ -34,8 +36,10 @@ class Game {
       return this.move(row).reverse();
     });
 
-    this.updateGameState(updatedState);
-    this.addCells();
+    if (JSON.stringify(this.getState()) !== JSON.stringify(updatedState)) {
+      this.updateGameState(updatedState);
+      this.addCells();
+    }
   }
 
   moveUp() {
@@ -49,8 +53,10 @@ class Game {
 
     const unRotateState = this.rotateMatrixClockwise(updatedState);
 
-    this.updateGameState(unRotateState);
-    this.addCells();
+    if (JSON.stringify(this.getState()) !== JSON.stringify(unRotateState)) {
+      this.updateGameState(unRotateState);
+      this.addCells();
+    }
   }
 
   moveDown() {
@@ -64,8 +70,10 @@ class Game {
 
     const unRotateState = this.rotateMatrixCounterClockwise(updatedState);
 
-    this.updateGameState(unRotateState);
-    this.addCells();
+    if (this.getState() !== JSON.stringify(unRotateState)) {
+      this.updateGameState(unRotateState);
+      this.addCells();
+    }
   }
 
   move(row) {
