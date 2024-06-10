@@ -70,7 +70,7 @@ class Game {
 
     const unRotateState = this.rotateMatrixCounterClockwise(updatedState);
 
-    if (this.getState() !== JSON.stringify(unRotateState)) {
+    if (JSON.stringify(this.getState()) !== JSON.stringify(unRotateState)) {
       this.updateGameState(unRotateState);
       this.addCells();
     }
