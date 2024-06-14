@@ -106,6 +106,14 @@ class Game {
     this.gameStatus = Game.gameStatus.lose;
   }
 
+  updateState(newState) {
+    if (JSON.stringify(newState) !== JSON.stringify(this.getState())) {
+      this.state = newState;
+      this.updateBoard();
+      this.generateTile();
+    }
+  }
+
   moveLeft() {
     if (this.getStatus() !== Game.gameStatus.playing) {
       return;
@@ -113,11 +121,7 @@ class Game {
 
     const newState = this.getState().map((row) => this.compareAndMerge(row));
 
-    if (JSON.stringify(newState) !== JSON.stringify(this.getState())) {
-      this.state = newState;
-      this.updateBoard();
-      this.generateTile();
-    }
+    this.updateState(newState);
   }
 
   moveRight() {
@@ -131,11 +135,7 @@ class Game {
 
     const reversedState = newState.map((row) => row.reverse());
 
-    if (JSON.stringify(reversedState) !== JSON.stringify(this.getState())) {
-      this.state = reversedState;
-      this.updateBoard();
-      this.generateTile();
-    }
+    this.updateState(reversedState);
   }
 
   moveUp() {
@@ -160,11 +160,7 @@ class Game {
       }
     }
 
-    if (JSON.stringify(newState) !== JSON.stringify(this.getState())) {
-      this.state = newState;
-      this.updateBoard();
-      this.generateTile();
-    }
+    this.updateState(newState);
   }
 
   moveDown() {
@@ -190,11 +186,7 @@ class Game {
       }
     }
 
-    if (JSON.stringify(newState) !== JSON.stringify(this.getState())) {
-      this.state = newState;
-      this.updateBoard();
-      this.generateTile();
-    }
+    this.updateState(newState);
   }
 
   getScore() {
