@@ -1,12 +1,4 @@
 'use strict';
-
-// ініціалізувати
-// сгенерувати дві ячейки в випадковому місці
-// зробити метод рендеру цієї ячейки
-// методи:
-// - create cell
-// - update cell
-// - remove cell
 class Game {
   static gameStatus = {
     idle: 'idle',
@@ -49,8 +41,6 @@ class Game {
     const minTilesToAdd = Math.min(count, availableTiles.length);
 
     if (!availableTiles.length) {
-      this.availableMoves();
-
       return;
     }
 
@@ -80,95 +70,137 @@ class Game {
           return;
         }
 
-        if (num === 2048) {
-          this.gameStatus = Game.gameStatus.win;
-        }
-
         cell.classList.add(`field-cell--${num}`);
         cell.innerHTML = num;
       });
     });
+
+    this.isWin();
+    this.isLose();
   }
 
-  availableMoves() {
-    const newState = this.getState().map((row) => this.compareAndMerge(row));
+  isWin() {
+    this.state.flat().some((tile) => {
+      if (tile === 2048) {
+        this.gameStatus = Game.gameStatus.win;
+      }
+    });
+  }
 
-    if (JSON.stringify(newState) === JSON.stringify(this.state)) {
-      this.gameStatus = Game.gameStatus.lose;
+  isLose() {
+    if (this.getEmptyTiles().length > 0) {
+      return;
     }
+
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        if (
+          this.state[r][c] === this.state[r + 1][c] ||
+          this.state[r][c] === this.state[r][c + 1]
+        ) {
+          return;
+        }
+      }
+    }
+
+    this.gameStatus = Game.gameStatus.lose;
   }
 
   moveLeft() {
+    if (this.getStatus() !== Game.gameStatus.playing) {
+      return;
+    }
+
     const newState = this.getState().map((row) => this.compareAndMerge(row));
 
-    this.state = newState;
-    this.updateBoard();
-    this.generateTile();
+    if (JSON.stringify(newState) !== JSON.stringify(this.getState())) {
+      this.state = newState;
+      this.updateBoard();
+      this.generateTile();
+    }
   }
 
   moveRight() {
+    if (this.getStatus() !== Game.gameStatus.playing) {
+      return;
+    }
+
     const newState = this.getState().map((row) => {
-      return this.compareAndMerge(row.reverse());
+      return this.compareAndMerge([...row].reverse());
     });
 
-    this.state = newState.map((row) => row.reverse());
-    this.updateBoard();
-    this.generateTile();
+    const reversedState = newState.map((row) => row.reverse());
+
+    if (JSON.stringify(reversedState) !== JSON.stringify(this.getState())) {
+      this.state = reversedState;
+      this.updateBoard();
+      this.generateTile();
+    }
   }
 
   moveUp() {
-    for (let i = 0; i < 4; i++) {
+    if (this.getStatus() !== Game.gameStatus.playing) {
+      return;
+    }
+
+    const newState = Game.getInitialState();
+
+    for (let c = 0; c < 4; c++) {
       let rowFromCol = [
-        this.state[0][i],
-        this.state[1][i],
-        this.state[2][i],
-        this.state[3][i],
+        this.state[0][c],
+        this.state[1][c],
+        this.state[2][c],
+        this.state[3][c],
       ];
 
       rowFromCol = this.compareAndMerge(rowFromCol);
 
-      this.state[0][i] = rowFromCol[0];
-      this.state[1][i] = rowFromCol[1];
-      this.state[2][i] = rowFromCol[2];
-      this.state[3][i] = rowFromCol[3];
+      for (let r = 0; r < 4; r++) {
+        newState[r][c] = rowFromCol[r];
+      }
     }
 
-    this.updateBoard();
-    this.generateTile();
+    if (JSON.stringify(newState) !== JSON.stringify(this.getState())) {
+      this.state = newState;
+      this.updateBoard();
+      this.generateTile();
+    }
   }
 
   moveDown() {
-    for (let i = 0; i < 4; i++) {
+    if (this.getStatus() !== Game.gameStatus.playing) {
+      return;
+    }
+
+    const newState = Game.getInitialState();
+
+    for (let c = 0; c < 4; c++) {
       let rowFromCol = [
-        this.state[0][i],
-        this.state[1][i],
-        this.state[2][i],
-        this.state[3][i],
+        this.state[0][c],
+        this.state[1][c],
+        this.state[2][c],
+        this.state[3][c],
       ];
 
       rowFromCol = this.compareAndMerge(rowFromCol.reverse());
       rowFromCol.reverse();
 
-      this.state[0][i] = rowFromCol[0];
-      this.state[1][i] = rowFromCol[1];
-      this.state[2][i] = rowFromCol[2];
-      this.state[3][i] = rowFromCol[3];
+      for (let r = 0; r < 4; r++) {
+        newState[r][c] = rowFromCol[r];
+      }
     }
 
-    this.updateBoard();
-    this.generateTile();
+    if (JSON.stringify(newState) !== JSON.stringify(this.getState())) {
+      this.state = newState;
+      this.updateBoard();
+      this.generateTile();
+    }
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
     return this.score;
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.state;
   }
@@ -199,9 +231,6 @@ class Game {
     return row.filter((num) => num !== 0);
   }
 
-  // Add your own methods here
-  getNextIterableCells() {}
-
   compareAndMerge(row) {
     let changedRow = this.filterZero(row);
 
@@ -218,8 +247,6 @@ class Game {
     while (changedRow.length < 4) {
       changedRow.push(0);
     }
-
-    // console.log(changedRow);
 
     return changedRow;
   }
