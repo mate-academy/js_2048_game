@@ -47,13 +47,17 @@ document.addEventListener('keyup', (e) => {
 
   switch (e.code) {
     case 'ArrowLeft':
-      return game.moveLeft();
+      game.moveLeft();
+      break;
     case 'ArrowRight':
-      return game.moveRight();
+      game.moveRight();
+      break;
     case 'ArrowUp':
-      return game.moveUp();
+      game.moveUp();
+      break;
     case 'ArrowDown':
-      return game.moveDown();
+      game.moveDown();
+      break;
   }
 
   score.innerHTML = game.getScore();

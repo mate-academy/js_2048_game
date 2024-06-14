@@ -92,11 +92,11 @@ class Game {
       return;
     }
 
-    for (let r = 0; r < 3; r++) {
-      for (let c = 0; c < 3; c++) {
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
         if (
-          this.state[r][c] === this.state[r + 1][c] ||
-          this.state[r][c] === this.state[r][c + 1]
+          (r < 3 && this.state[r][c] === this.state[r + 1][c]) ||
+          (c < 3 && this.state[r][c] === this.state[r][c + 1])
         ) {
           return;
         }
