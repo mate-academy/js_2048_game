@@ -1,7 +1,25 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../modules/Game.class');
+const game = new Game();
 
-// Write your code here
+const startBtn = document.querySelector('.start');
+const table = document.querySelector('.game-field');
+const rows = [...table.querySelectorAll('.field-row')];
+
+startBtn.addEventListener('click', () => {
+  game.start();
+
+  const gameState = game.getState();
+
+  gameState.forEach((row, i) => {
+    row.forEach((cell, j) => {
+      const currentCell = rows[i].children[j];
+
+      currentCell.className = !cell
+        ? 'field-cell'
+        : `field-cell field-cell--${cell}`;
+      currentCell.innerHTML = !cell ? '' : cell;
+    });
+  });
+});

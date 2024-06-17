@@ -1,28 +1,24 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  static initialState = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
+  static status = {
+    idle: 'idle',
+    playing: 'playing',
+    win: 'win',
+    lose: 'lose',
+  };
+
+  constructor(initialState = Game.initialState) {
+    this.state = JSON.parse(JSON.stringify(initialState));
+    this.status = Game.status.idle;
+    this.score = 0;
   }
 
   moveLeft() {}
@@ -30,37 +26,53 @@ class Game {
   moveUp() {}
   moveDown() {}
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getState() {
+    return this.state;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  start() {
+    const getRandomN = () => Math.floor(Math.random() * 16) + 1;
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    const getRandomCell = (n) => {
+      const row = Math.ceil(n / 4) - 1;
+      const cell = n % 4 === 0 ? 3 : (n % 4) - 1;
+
+      return [row, cell];
+    };
+
+    const getRandomCells = () => {
+      const n1 = getRandomN();
+      let n2;
+
+      do {
+        n2 = getRandomN();
+      } while (n1 === n2);
+
+      return [getRandomCell(n1), getRandomCell(n2)];
+    };
+
+    const cells = getRandomCells();
+
+    this.status = Game.status.playing;
+
+    cells.forEach(
+      ([row, cell]) => (this.state[row][cell] = Math.random() < 0.9 ? 2 : 4),
+    );
+  }
+
+  restart() {
+    this.status = Game.status.idle;
+    this.state = JSON.parse(JSON.stringify(Game.initialState));
+    this.score = 0;
+  }
 
   // Add your own methods here
 }
