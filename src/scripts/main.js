@@ -3,12 +3,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const Game = require('../modules/Game.class');
   const game = new Game();
-  // const game = new Game([
-  //   [2, 0, 0, 0],
-  //   [0, 4, 0, 0],
-  //   [0, 0, 8, 0],
-  //   [0, 0, 0, 16],
-  // ]);
   const startRestartButton = document.querySelector('.button');
   let isFirstMove = true;
   const gStatus = () => game.getStatus();
@@ -19,10 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const messageStart = document.querySelector('.message-start');
   const messageWin = document.querySelector('.message-win');
   const messageLose = document.querySelector('.message-lose');
-  // const gameFieldRows = document.querySelectorAll('.field-row');
   const gameScore = document.querySelector('.game-score');
-  // const cellSize = 75;
-  // const cellSpace = 10;
 
   // #region create game field cells array
   const rows = document.querySelectorAll('.field-row');
@@ -33,20 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   // #endregion
 
-  // #region create game field cells array
-
-  // function createCellsColumn(array, idx) {
-  //   const column = [];
-
-  //   array.forEach((row) => {
-  //     column.push(row[idx]);
-  //   });
-
-  //   return column;
-  // }
-
-  // #endregion
-
   // #region clear game field
   const resetGame = () => {
     game.restart();
@@ -55,17 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     messageLose.classList.add('hidden');
   };
   // #endregion
-
-  // // #region add class for styling
-
-  // const addValueToCell = (row, col, value) => {
-  //   const cell = gameFieldCells[row][col];
-
-  //   cell.textContent = value;
-  //   cell.classList.add(`field-cell--${value}`);
-  // };
-
-  // // #endregion
 
   // #region change start/restart button text and class
   const changeButtonStartToRestart = () => {

@@ -48,17 +48,10 @@ class Game {
     ];
 
     this.score = 0;
-
     this.cellMax = 0;
-
     this.fieldSize = 4;
-
     this.isAvailableMovement = true;
-
-    // -----------------
-
     this.status = this.gameStatus.idle;
-
     this.isCustomInitial = !!initialCustomState;
     this.defaultState = initialCustomState || this.initialField;
 
@@ -126,7 +119,7 @@ class Game {
   start() {
     this.status = this.gameStatus.playing;
 
-    this.generateRandomCellOnField();
+    this.generateRandomCellOnField(2);
   }
 
   /**
