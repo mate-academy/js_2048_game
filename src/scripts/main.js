@@ -6,20 +6,41 @@ const game = new Game();
 const startBtn = document.querySelector('.start');
 const table = document.querySelector('.game-field');
 const rows = [...table.querySelectorAll('.field-row')];
+const startMessage = document.querySelector('.message-start');
 
-startBtn.addEventListener('click', () => {
-  game.start();
-
+const updateTableCells = () => {
   const gameState = game.getState();
 
   gameState.forEach((row, i) => {
     row.forEach((cell, j) => {
       const currentCell = rows[i].children[j];
 
-      currentCell.className = !cell
-        ? 'field-cell'
-        : `field-cell field-cell--${cell}`;
-      currentCell.innerHTML = !cell ? '' : cell;
+      currentCell.className = 'field-cell';
+
+      if (cell) {
+        currentCell.classList.add(`field-cell--${cell}`);
+        currentCell.textContent = cell;
+      } else {
+        currentCell.textContent = '';
+      }
     });
   });
+};
+
+startBtn.addEventListener('click', () => {
+  const isActive = game.status === Game.status.playing;
+
+  if (!isActive) {
+    game.start();
+
+    updateTableCells();
+  } else {
+    game.restart();
+
+    updateTableCells();
+  }
+
+  startBtn.className = !isActive ? 'button restart' : 'button start';
+  startBtn.textContent = !isActive ? 'Restart' : 'Start';
+  startMessage.style = `display: ${!isActive ? 'none' : 'block'}`;
 });
