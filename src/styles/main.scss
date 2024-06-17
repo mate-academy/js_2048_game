@@ -10,6 +10,10 @@ body {
   font-weight: 900;
 }
 
+tbody {
+  position: relative;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -20,6 +24,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: transform 0.2s ease;
 
   &--2 {
     background: #eee4da;

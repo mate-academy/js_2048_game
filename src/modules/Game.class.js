@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 'use strict';
 
 /**
@@ -20,25 +21,90 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+
+  // Default game fiels is 4x4
+
+  constructor(initialCustomState) {
+    // declare constants
+    this.direction = {
+      up: 'up',
+      down: 'down',
+      left: 'left',
+      right: 'right',
+    };
+
+    this.gameStatus = {
+      idle: 'idle',
+      playing: 'playing',
+      win: 'win',
+      lose: 'lose',
+    };
+
+    this.initialField = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    this.score = 0;
+
+    this.cellMax = 0;
+
+    this.fieldSize = 4;
+
+    this.isAvailableMovement = true;
+
+    // -----------------
+
+    this.status = this.gameStatus.idle;
+
+    this.isCustomInitial = !!initialCustomState;
+    this.defaultState = initialCustomState || this.initialField;
+
+    this.state =
+      initialCustomState && initialCustomState.length === this.fieldSize
+        ? initialCustomState
+        : this.initialField;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    this.status = this.gameStatus.playing;
+    this.sumGameFieldByRow(this.direction.left);
+    this.generateRandomCellOnField();
+  }
+
+  moveRight() {
+    this.status = this.gameStatus.playing;
+    this.sumGameFieldByRow(this.direction.right);
+    this.generateRandomCellOnField();
+  }
+
+  moveUp() {
+    this.status = this.gameStatus.playing;
+    this.sumGameFieldByColumn(this.direction.up);
+    this.generateRandomCellOnField();
+  }
+
+  moveDown() {
+    this.status = this.gameStatus.playing;
+    this.sumGameFieldByColumn(this.direction.down);
+    this.generateRandomCellOnField();
+  }
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.state;
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +116,260 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = this.gameStatus.playing;
+
+    this.generateRandomCellOnField();
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.state = this.defaultState;
+    this.score = 0;
+    this.status = this.gameStatus.idle;
+  }
 
-  // Add your own methods here
+  /**
+   * Get cell's max value.
+   */
+
+  gMaxCell() {
+    return this.cellMax;
+  }
+
+  /**
+   * Get if cells can move.
+   */
+
+  getMoveAvailability() {
+    return this.isAvailableMovement;
+  }
+
+  // helpers
+
+  getMaxValueCell(gameField) {
+    return Math.max(...gameField.flat());
+  }
+
+  getRandomCellValue() {
+    return Math.random() < 0.9 ? 2 : 4;
+  }
+
+  getRandomCellIndex(gameFieldSize = this.fieldSize) {
+    const row = Math.floor(Math.random() * gameFieldSize);
+    const col = Math.floor(Math.random() * gameFieldSize);
+
+    return { row, col };
+  }
+
+  sumRow(row, size = this.fieldSize, rtl = true) {
+    // right to left (rtl or TRUE) represent summ cell with RIGHT or DOWN click
+    // left to right (ltr or FALSE) represent summ cell with LEFT or UP click
+
+    let isSumm = false;
+    let sum = 0;
+
+    if (rtl) {
+      const rightToLeftSum = row.reduceRight((newRow, value, i) => {
+        if (!value) {
+          return newRow;
+        }
+
+        const firstValue = newRow[0];
+
+        if (value === firstValue && !isSumm) {
+          isSumm = true;
+          sum = firstValue * 2;
+
+          return [firstValue * 2, ...newRow.slice(1)];
+        }
+
+        return [value, ...newRow];
+      }, []);
+
+      const rowWithCollapsedRtl =
+        rightToLeftSum.length === 4
+          ? rightToLeftSum
+          : [
+              ...new Array(size - rightToLeftSum.length).fill(0),
+              ...rightToLeftSum,
+            ];
+
+      return {
+        row: rowWithCollapsedRtl,
+        summCollapsed: sum,
+      };
+    }
+
+    const leftToRightSum = row.reduce((newRow, value, i) => {
+      if (!value) {
+        return newRow;
+      }
+
+      if (i === 0) {
+        newRow.push(value);
+
+        return newRow;
+      }
+
+      if (value === newRow[newRow.length - 1] && !isSumm) {
+        isSumm = true;
+        sum = newRow.slice(-1) * 2;
+
+        return [...newRow.slice(0, -1), newRow.slice(-1) * 2];
+      }
+
+      return [...newRow, value];
+    }, []);
+
+    const rowWithCollapsedLtr =
+      leftToRightSum.length === 4
+        ? leftToRightSum
+        : [
+            ...leftToRightSum,
+            ...new Array(size - leftToRightSum.length).fill(0),
+          ];
+
+    return {
+      row: rowWithCollapsedLtr,
+      summCollapsed: sum,
+    };
+  }
+
+  transposeField(field) {
+    const transposedField = field.reduce((newArr, row) => {
+      row.forEach((item, itemIdx) => {
+        newArr[itemIdx] = [...(newArr[itemIdx] || []), item];
+      });
+
+      return newArr;
+    }, []);
+
+    return transposedField;
+  }
+
+  getAvailabilityMovement(field) {
+    let sumOfCollapsedCells = 0;
+
+    // check for free cells
+
+    const hasFreeCell = field.flat().includes(0);
+
+    if (hasFreeCell) {
+      return true;
+    }
+
+    // check availablityt for left or right movement
+    field.forEach((row) => {
+      const { summCollapsed: leftCollapsed } = this.sumRow(
+        row,
+        this.fieldSize,
+        this.direction.left,
+      );
+      const { summCollapsed: rightCollapsed } = this.sumRow(
+        row,
+        this.fieldSize,
+        this.direction.right,
+      );
+
+      sumOfCollapsedCells += leftCollapsed + rightCollapsed;
+    });
+
+    // check availablity for up or down movement
+
+    const tr = this.transposeField(field);
+
+    tr.forEach((row) => {
+      const { summCollapsed: upCollapsed } = this.sumRow(
+        row,
+        this.fieldSize,
+        this.direction.up,
+      );
+      const { summCollapsed: downCollapsed } = this.sumRow(
+        row,
+        this.fieldSize,
+        this.direction.down,
+      );
+
+      sumOfCollapsedCells += upCollapsed + downCollapsed;
+    });
+
+    return sumOfCollapsedCells > 0;
+  }
+
+  // game logic methods
+
+  sumGameFieldByRow(direction) {
+    const gameField = this.state;
+    const size = this.fieldSize;
+    let scoreByField = this.score || 0;
+
+    const calculatedGameField = gameField.map((row) => {
+      const { row: rowCollaped, summCollapsed } = this.sumRow(
+        row,
+        size,
+        // eslint-disable-next-line no-unneeded-ternary
+        direction === this.direction.right ? true : false,
+      );
+
+      scoreByField += summCollapsed;
+
+      return rowCollaped;
+    });
+
+    this.score = scoreByField;
+    this.state = calculatedGameField;
+    this.cellMax = this.getMaxValueCell(calculatedGameField);
+  }
+
+  sumGameFieldByColumn(direction) {
+    const gameField = this.state;
+    const size = this.fieldSize;
+    let scoreByField = this.score || 0;
+
+    const calculatedGameField = this.transposeField(gameField).map((row) => {
+      const { row: rowCollaped, summCollapsed } = this.sumRow(
+        row,
+        size,
+        // eslint-disable-next-line no-unneeded-ternary
+        direction === this.direction.down ? true : false,
+      );
+
+      scoreByField += summCollapsed;
+
+      return rowCollaped;
+    });
+
+    this.score = scoreByField;
+    this.state = this.transposeField(calculatedGameField);
+    this.cellMax = this.getMaxValueCell(calculatedGameField);
+  }
+
+  generateRandomCellOnField(qty = 1) {
+    const gameField = this.state;
+
+    for (let i = 0; i < qty; i++) {
+      let cell = this.getRandomCellIndex();
+      const cellValue = this.getRandomCellValue();
+
+      while (gameField[cell.row][cell.col]) {
+        cell = this.getRandomCellIndex();
+      }
+
+      gameField[cell.row][cell.col] = cellValue;
+    }
+
+    this.isAvailableMovement = this.getAvailabilityMovement(gameField);
+  }
 }
 
 module.exports = Game;
