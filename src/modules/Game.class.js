@@ -21,10 +21,18 @@ class Game {
     this.score = 0;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    this.moveAndMerge(this.state, 'left');
+  }
+  moveRight() {
+    this.moveAndMerge(this.state, 'right');
+  }
+  moveUp() {
+    this.moveAndMerge(this.state, 'up');
+  }
+  moveDown() {
+    this.moveAndMerge(this.state, 'down');
+  }
 
   getScore() {
     return this.score;
@@ -74,7 +82,64 @@ class Game {
     this.score = 0;
   }
 
-  // Add your own methods here
+  moveAndMerge(grid, direction) {
+    const size = grid.length;
+
+    const moveRow = (row, reverse = false) => {
+      if (reverse) {
+        row.reverse();
+      }
+
+      const nonZeroElements = row.filter((value) => value !== 0);
+
+      for (let i = 0; i < nonZeroElements.length - 1; i++) {
+        if (nonZeroElements[i] === nonZeroElements[i + 1]) {
+          nonZeroElements[i] *= 2;
+          nonZeroElements[i + 1] = 0;
+        }
+      }
+
+      const mergedElements = nonZeroElements.filter((value) => value !== 0);
+
+      while (mergedElements.length < row.length) {
+        mergedElements.push(0);
+      }
+
+      if (reverse) {
+        mergedElements.reverse();
+      }
+
+      return mergedElements;
+    };
+
+    const getColumn = (gridToGetFrom, colIndex) =>
+      gridToGetFrom.map((row) => row[colIndex]);
+
+    const setColumn = (gridToSetTo, colIndex, newCol) => {
+      newCol.forEach((value, rowIndex) => {
+        gridToSetTo[rowIndex][colIndex] = value;
+      });
+    };
+
+    if (direction === 'left' || direction === 'right') {
+      const reverse = direction === 'right';
+
+      for (let row = 0; row < size; row++) {
+        grid[row] = moveRow(grid[row], reverse);
+      }
+    } else if (direction === 'up' || direction === 'down') {
+      const reverse = direction === 'down';
+
+      for (let col = 0; col < size; col++) {
+        const column = getColumn(grid, col);
+        const newColumn = moveRow(column, reverse);
+
+        setColumn(grid, col, newColumn);
+      }
+    }
+
+    return grid;
+  }
 }
 
 module.exports = Game;

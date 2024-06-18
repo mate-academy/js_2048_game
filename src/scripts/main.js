@@ -7,6 +7,7 @@ const startBtn = document.querySelector('.start');
 const table = document.querySelector('.game-field');
 const rows = [...table.querySelectorAll('.field-row')];
 const startMessage = document.querySelector('.message-start');
+const score = document.querySelector('.game-score');
 
 const updateTableCells = () => {
   const gameState = game.getState();
@@ -32,15 +33,39 @@ startBtn.addEventListener('click', () => {
 
   if (!isActive) {
     game.start();
-
-    updateTableCells();
   } else {
     game.restart();
-
-    updateTableCells();
   }
+
+  updateTableCells();
 
   startBtn.className = !isActive ? 'button restart' : 'button start';
   startBtn.textContent = !isActive ? 'Restart' : 'Start';
   startMessage.style = `display: ${!isActive ? 'none' : 'block'}`;
+});
+
+document.addEventListener('keydown', (e) => {
+  e.preventDefault();
+
+  if (game.getStatus() === 'playing') {
+    switch (e.key) {
+      case 'ArrowUp':
+        game.moveUp();
+        break;
+      case 'ArrowDown':
+        game.moveDown();
+        break;
+      case 'ArrowLeft':
+        game.moveLeft();
+        break;
+      case 'ArrowRight':
+        game.moveRight();
+        break;
+      default:
+        return;
+    }
+
+    updateTableCells();
+    score.textContent = game.getScore();
+  }
 });
