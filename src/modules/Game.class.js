@@ -22,16 +22,24 @@ class Game {
   }
 
   moveLeft() {
-    this.moveAndMerge(this.state, 'left');
+    if (this.getStatus() === 'playing') {
+      this.moveAndMerge(this.state, 'left');
+    }
   }
   moveRight() {
-    this.moveAndMerge(this.state, 'right');
+    if (this.getStatus() === 'playing') {
+      this.moveAndMerge(this.state, 'right');
+    }
   }
   moveUp() {
-    this.moveAndMerge(this.state, 'up');
+    if (this.getStatus() === 'playing') {
+      this.moveAndMerge(this.state, 'up');
+    }
   }
   moveDown() {
-    this.moveAndMerge(this.state, 'down');
+    if (this.getStatus() === 'playing') {
+      this.moveAndMerge(this.state, 'down');
+    }
   }
 
   getScore() {
@@ -47,33 +55,9 @@ class Game {
   }
 
   start() {
-    const getRandomN = () => Math.floor(Math.random() * 16) + 1;
-
-    const getRandomCell = (n) => {
-      const row = Math.ceil(n / 4) - 1;
-      const cell = n % 4 === 0 ? 3 : (n % 4) - 1;
-
-      return [row, cell];
-    };
-
-    const getRandomCells = () => {
-      const n1 = getRandomN();
-      let n2;
-
-      do {
-        n2 = getRandomN();
-      } while (n1 === n2);
-
-      return [getRandomCell(n1), getRandomCell(n2)];
-    };
-
-    const cells = getRandomCells();
-
     this.status = Game.status.playing;
-
-    cells.forEach(
-      ([row, cell]) => (this.state[row][cell] = Math.random() < 0.9 ? 2 : 4),
-    );
+    this.addRandomTile(this.state);
+    this.addRandomTile(this.state);
   }
 
   restart() {
@@ -95,6 +79,7 @@ class Game {
       for (let i = 0; i < nonZeroElements.length - 1; i++) {
         if (nonZeroElements[i] === nonZeroElements[i + 1]) {
           nonZeroElements[i] *= 2;
+          this.score += nonZeroElements[i];
           nonZeroElements[i + 1] = 0;
         }
       }
@@ -138,7 +123,31 @@ class Game {
       }
     }
 
-    return grid;
+    return this.addRandomTile(grid);
+  }
+
+  addRandomTile(resGrid) {
+    const size = resGrid.length;
+    const emptyCells = [];
+
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        if (resGrid[row][col] === 0) {
+          emptyCells.push([row, col]);
+        }
+      }
+    }
+
+    if (emptyCells.length === 0) {
+      return resGrid;
+    }
+
+    const [randomRow, randomCol] =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+    resGrid[randomRow][randomCol] = Math.random() < 0.1 ? 4 : 2;
+
+    return resGrid;
   }
 }
 
