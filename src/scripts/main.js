@@ -11,7 +11,7 @@ startButton.addEventListener('click', () => {
   startButton.classList.remove('start');
   startButton.classList.add('restart');
 
-  tds.forEach(td => {
+  tds.forEach((td) => {
     td.innerText = '';
     td.classList = 'field-cell';
   });
@@ -20,10 +20,10 @@ startButton.addEventListener('click', () => {
 
   startButton.innerText = 'Restart';
 
-  messages.forEach(message => {
+  messages.forEach((message) => {
     if (!message.classList.contains('hidden')) {
       message.classList.add('hidden');
-    };
+    }
   });
 
   score.innerText = 0;
@@ -92,8 +92,7 @@ function cheackPossibleMovement() {
       const rightCell = board[r] && board[r][i + 1];
       const downCell = board[r + 1] && board[r + 1][i];
 
-      if (currentCell === rightCell
-        || currentCell === downCell) {
+      if (currentCell === rightCell || currentCell === downCell) {
         return true;
       }
     }
@@ -192,7 +191,7 @@ function slideDown() {
 function setClass() {
   const tds = table.querySelectorAll('td');
 
-  tds.forEach(td => {
+  tds.forEach((td) => {
     td.classList = 'field-cell';
 
     if (td.innerText) {
@@ -209,7 +208,7 @@ function slide(row) {
       filteredRow[i] *= 2;
       filteredRow[i + 1] = 0;
       score.innerText = Number(score.innerText) + filteredRow[i];
-    };
+    }
   }
 
   filteredRow = filterZero(filteredRow);
@@ -223,7 +222,7 @@ function slide(row) {
 
 function filterZero(row) {
   return row.filter((cell) => cell);
-};
+}
 
 function convertToNumberBoard() {
   const trs = Array.from(table.querySelector('tbody').children);
