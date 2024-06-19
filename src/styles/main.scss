@@ -148,6 +148,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  display: none;
 
   &:hover {
     background: #f87474;
@@ -177,7 +178,20 @@ h1 {
 }
 
 .message-win {
+  display: none;
   background: #edc22e;
+  color: #f9f6f2;
+}
+
+.message-lose {
+  display: none;
+  background: #fa2828;
+  color: #f9f6f2;
+}
+
+.message-start {
+  display: inline-block;
+  background: #1dae28;
   color: #f9f6f2;
 }
 
