@@ -6,6 +6,10 @@ const rowsLength = table.querySelectorAll('tr').length;
 const score = document.body.querySelector('.game-score');
 
 startButton.addEventListener('click', () => {
+  start();
+});
+
+function start() {
   const tds = table.querySelectorAll('td');
 
   startButton.classList.remove('start');
@@ -30,7 +34,7 @@ startButton.addEventListener('click', () => {
   addRandomCell();
   addRandomCell();
   setClass();
-});
+}
 
 document.addEventListener('keydown', (e) => {
   e.preventDefault();
@@ -39,27 +43,49 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('keyup', (e) => {
   e.preventDefault();
 
+  const hasStartButton = startButton.innerText === 'Start';
+
   if (getWin()) {
     return;
   }
 
-  if (startButton.innerText === 'Start') {
-    return;
-  }
-
   if (e.code === 'ArrowLeft') {
+    if (hasStartButton) {
+      start();
+
+      return;
+    }
+
     slideLeft();
   }
 
   if (e.code === 'ArrowRight') {
+    if (hasStartButton) {
+      start();
+
+      return;
+    }
+
     slideRight();
   }
 
   if (e.code === 'ArrowUp') {
+    if (hasStartButton) {
+      start();
+
+      return;
+    }
+
     slideUp();
   }
 
   if (e.code === 'ArrowDown') {
+    if (hasStartButton) {
+      start();
+
+      return;
+    }
+
     slideDown();
   }
 });
