@@ -1,7 +1,106 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../modules/Game.class');
+const field = document.querySelector('.game-field');
+const startBtn = document.querySelector('.start');
+const messages = document.querySelectorAll('.message');
+const scoreDisplay = document.querySelector('.game-score');
 
-// Write your code here
+const STATUS_CLASSES = {
+  start: 'message-start',
+  win: 'message-win',
+  lose: 'message-lose',
+};
+
+const game = new Game();
+let firstMove = true;
+
+startBtn.addEventListener('click', () => {
+  if (startBtn.textContent === 'Start') {
+    game.start();
+
+    showMessage(null);
+    showScore(game.getScore());
+
+    updateField();
+  }
+
+  if (startBtn.textContent === 'Restart') {
+    game.restart();
+    updateStartBtn(false);
+    firstMove = true;
+
+    showMessage(STATUS_CLASSES.start);
+    showScore(game.getScore());
+
+    updateField();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (game.status === 'idle') {
+    return false;
+  }
+
+  if (game.status === 'playing') {
+    const keyActions = {
+      ArrowUp: () => game.moveUp(),
+      ArrowRight: () => game.moveRight(),
+      ArrowDown: () => game.moveDown(),
+      ArrowLeft: () => game.moveLeft(),
+    };
+
+    const action = keyActions[e.key];
+
+    if (action && action()) {
+      updateField();
+    }
+  }
+
+  if (firstMove) {
+    updateStartBtn(true);
+    firstMove = false;
+  }
+
+  showScore(game.getScore());
+
+  if (game.status === 'win') {
+    showMessage(STATUS_CLASSES.win);
+  }
+
+  if (game.status === 'lose') {
+    showMessage(STATUS_CLASSES.lose);
+  }
+});
+
+function showMessage(statusClass) {
+  messages.forEach((message) => {
+    if (message.classList.contains(statusClass)) {
+      message.classList.remove('hidden');
+    } else {
+      message.classList.add('hidden');
+    }
+  });
+}
+
+function showScore(score) {
+  scoreDisplay.textContent = score;
+}
+
+function updateField() {
+  const fragment = game.updateField(field);
+
+  field.appendChild(fragment);
+}
+
+function updateStartBtn(isRestart) {
+  if (isRestart) {
+    startBtn.classList.remove('start');
+    startBtn.classList.add('restart');
+    startBtn.textContent = 'Restart';
+  } else {
+    startBtn.classList.remove('restart');
+    startBtn.classList.add('start');
+    startBtn.textContent = 'Start';
+  }
+}
