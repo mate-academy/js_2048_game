@@ -8,6 +8,8 @@ const table = document.querySelector('.game-field');
 const rows = [...table.querySelectorAll('.field-row')];
 const startMessage = document.querySelector('.message-start');
 const score = document.querySelector('.game-score');
+// const lose = document.querySelector('.message-lose');
+const win = document.querySelector('.message-win');
 
 const updateTableCells = () => {
   const gameState = game.getState();
@@ -68,5 +70,9 @@ document.addEventListener('keydown', (e) => {
 
     updateTableCells();
     score.textContent = game.getScore();
+
+    if (game.getStatus() === 'win') {
+      win.classList.toggle('hidden');
+    }
   }
 });

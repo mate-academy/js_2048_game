@@ -80,8 +80,13 @@ class Game {
       for (let i = 0; i < nonZeroElements.length - 1; i++) {
         if (nonZeroElements[i] === nonZeroElements[i + 1]) {
           nonZeroElements[i] *= 2;
-          this.score += nonZeroElements[i];
           nonZeroElements[i + 1] = 0;
+
+          this.score += nonZeroElements[i];
+
+          if (this.score === 2048) {
+            this.status = Game.status.win;
+          }
         }
       }
 
@@ -124,7 +129,10 @@ class Game {
       }
     }
 
-    if (JSON.stringify(prevGameState) === JSON.stringify(grid)) {
+    if (
+      JSON.stringify(prevGameState) === JSON.stringify(grid) ||
+      this.status === 'win'
+    ) {
       return prevGameState;
     }
 
