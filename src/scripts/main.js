@@ -90,7 +90,13 @@ document.addEventListener('keyup', (e) => {
   }
 });
 
-function addRandomCell() {
+function addRandomCell(oldFlatBoardCopy = []) {
+  const flatBoard = convertToNumberBoard().flat();
+  const isStartBoard = flatBoard.filter((el) => el).length < 2;
+  const hasBoardChange = !oldFlatBoardCopy.every(
+    (el, index) => el === flatBoard[index],
+  );
+
   const allcells = Array.from(table.querySelectorAll('td'));
   const emptyCells = allcells.filter((cell) => !cell.innerText);
   const randomNumber = Math.floor(Math.random() * (emptyCells.length - 1));
@@ -101,6 +107,10 @@ function addRandomCell() {
 
     loseMessage.classList.remove('hidden');
 
+    return;
+  }
+
+  if (!hasBoardChange && !isStartBoard) {
     return;
   }
 
@@ -129,6 +139,7 @@ function cheackPossibleMovement() {
 
 function slideLeft() {
   const board = convertToNumberBoard();
+  const flatBoardCopy = [...board].flat();
 
   for (let i = 0; i < rowsLength; i++) {
     let row = board[i];
@@ -140,12 +151,13 @@ function slideLeft() {
   const flatBoard = board.flat();
 
   convertToTableBoard(flatBoard);
-  addRandomCell();
+  addRandomCell(flatBoardCopy);
   setClass();
 }
 
 function slideRight() {
   const board = convertToNumberBoard();
+  const flatBoardCopy = [...board].flat();
 
   for (let i = 0; i < rowsLength; i++) {
     let row = board[i];
@@ -160,12 +172,13 @@ function slideRight() {
   const flatBoard = board.flat();
 
   convertToTableBoard(flatBoard);
-  addRandomCell();
+  addRandomCell(flatBoardCopy);
   setClass();
 }
 
 function slideUp() {
   const board = convertToNumberBoard();
+  const flatBoardCopy = [...board].flat();
 
   for (let c = 0; c < rowsLength; c++) {
     let row = [];
@@ -184,12 +197,13 @@ function slideUp() {
   const flatBoard = board.flat();
 
   convertToTableBoard(flatBoard);
-  addRandomCell();
+  addRandomCell(flatBoardCopy);
   setClass();
 }
 
 function slideDown() {
   const board = convertToNumberBoard();
+  const flatBoardCopy = [...board].flat();
 
   for (let c = 0; c < rowsLength; c++) {
     let row = [];
@@ -210,7 +224,7 @@ function slideDown() {
   const flatBoard = board.flat();
 
   convertToTableBoard(flatBoard);
-  addRandomCell();
+  addRandomCell(flatBoardCopy);
   setClass();
 }
 
