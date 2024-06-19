@@ -23,22 +23,22 @@ class Game {
 
   moveLeft() {
     if (this.getStatus() === 'playing') {
-      this.moveAndMerge(this.state, 'left');
+      this.state = this.moveAndMerge(this.state, 'left');
     }
   }
   moveRight() {
     if (this.getStatus() === 'playing') {
-      this.moveAndMerge(this.state, 'right');
+      this.state = this.moveAndMerge(this.state, 'right');
     }
   }
   moveUp() {
     if (this.getStatus() === 'playing') {
-      this.moveAndMerge(this.state, 'up');
+      this.state = this.moveAndMerge(this.state, 'up');
     }
   }
   moveDown() {
     if (this.getStatus() === 'playing') {
-      this.moveAndMerge(this.state, 'down');
+      this.state = this.moveAndMerge(this.state, 'down');
     }
   }
 
@@ -66,7 +66,8 @@ class Game {
     this.score = 0;
   }
 
-  moveAndMerge(grid, direction) {
+  moveAndMerge(prevGameState, direction) {
+    const grid = JSON.parse(JSON.stringify(prevGameState));
     const size = grid.length;
 
     const moveRow = (row, reverse = false) => {
@@ -121,6 +122,10 @@ class Game {
 
         setColumn(grid, col, newColumn);
       }
+    }
+
+    if (JSON.stringify(prevGameState) === JSON.stringify(grid)) {
+      return prevGameState;
     }
 
     return this.addRandomTile(grid);

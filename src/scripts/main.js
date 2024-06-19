@@ -42,6 +42,7 @@ startBtn.addEventListener('click', () => {
   startBtn.className = !isActive ? 'button restart' : 'button start';
   startBtn.textContent = !isActive ? 'Restart' : 'Start';
   startMessage.style = `display: ${!isActive ? 'none' : 'block'}`;
+  score.textContent = game.getScore();
 });
 
 document.addEventListener('keydown', (e) => {
