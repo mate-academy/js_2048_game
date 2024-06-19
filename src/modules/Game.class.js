@@ -16,6 +16,7 @@ class Game {
   };
 
   constructor(initialState = Game.initialState) {
+    this.initialState = JSON.parse(JSON.stringify(initialState));
     this.state = JSON.parse(JSON.stringify(initialState));
     this.status = Game.status.idle;
     this.score = 0;
@@ -62,7 +63,7 @@ class Game {
 
   restart() {
     this.status = Game.status.idle;
-    this.state = JSON.parse(JSON.stringify(Game.initialState));
+    this.state = JSON.parse(JSON.stringify(this.initialState));
     this.score = 0;
   }
 
@@ -129,10 +130,15 @@ class Game {
       }
     }
 
-    if (
-      JSON.stringify(prevGameState) === JSON.stringify(grid) ||
-      this.status === 'win'
-    ) {
+    if (JSON.stringify(prevGameState) === JSON.stringify(grid)) {
+      if (!this.movesAvailable(prevGameState)) {
+        this.status = Game.status.lose;
+      }
+
+      return prevGameState;
+    }
+
+    if (this.status === 'win') {
       return prevGameState;
     }
 
@@ -161,6 +167,34 @@ class Game {
     resGrid[randomRow][randomCol] = Math.random() < 0.1 ? 4 : 2;
 
     return resGrid;
+  }
+
+  movesAvailable(grid) {
+    const size = grid.length;
+
+    // Check for empty cells
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        if (grid[row][col] === 0) {
+          return true;
+        }
+      }
+    }
+
+    // Check for possible merges
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        if (col < size - 1 && grid[row][col] === grid[row][col + 1]) {
+          return true; // horizontally
+        }
+
+        if (row < size - 1 && grid[row][col] === grid[row + 1][col]) {
+          return true; // vertically
+        }
+      }
+    }
+
+    return false;
   }
 }
 

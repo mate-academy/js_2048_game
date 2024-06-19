@@ -8,7 +8,7 @@ const table = document.querySelector('.game-field');
 const rows = [...table.querySelectorAll('.field-row')];
 const startMessage = document.querySelector('.message-start');
 const score = document.querySelector('.game-score');
-// const lose = document.querySelector('.message-lose');
+const lose = document.querySelector('.message-lose');
 const win = document.querySelector('.message-win');
 
 const updateTableCells = () => {
@@ -33,7 +33,7 @@ const updateTableCells = () => {
 startBtn.addEventListener('click', () => {
   const isActive = game.status === Game.status.playing;
 
-  if (!isActive) {
+  if (game.status === Game.status.idle) {
     game.start();
   } else {
     game.restart();
@@ -45,6 +45,7 @@ startBtn.addEventListener('click', () => {
   startBtn.textContent = !isActive ? 'Restart' : 'Start';
   startMessage.style = `display: ${!isActive ? 'none' : 'block'}`;
   score.textContent = game.getScore();
+  lose.classList.add('hidden');
 });
 
 document.addEventListener('keydown', (e) => {
@@ -70,6 +71,10 @@ document.addEventListener('keydown', (e) => {
 
     updateTableCells();
     score.textContent = game.getScore();
+
+    if (game.getStatus() === 'lose') {
+      lose.classList.toggle('hidden');
+    }
 
     if (game.getStatus() === 'win') {
       win.classList.toggle('hidden');
