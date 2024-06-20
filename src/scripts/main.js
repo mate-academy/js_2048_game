@@ -12,7 +12,14 @@ const STATUS_CLASSES = {
   lose: 'message-lose',
 };
 
-let game = new Game();
+const INITIAL_STATE = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+
+let game = new Game(INITIAL_STATE);
 let firstMove = true;
 let gameStart = false;
 
@@ -23,7 +30,7 @@ startBtn.addEventListener('click', () => {
     if (gameStart) {
       game.start();
     } else {
-      game = new Game();
+      game = new Game(INITIAL_STATE);
       game.start();
       gameStart = true;
     }
