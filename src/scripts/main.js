@@ -1,7 +1,7 @@
 'use strict';
 
 const Game = require('../modules/Game.class');
-const field = document.querySelector('.game-field');
+const field = document.querySelector('.game-field tbody');
 const startBtn = document.querySelector('.start');
 const messages = document.querySelectorAll('.message');
 const scoreDisplay = document.querySelector('.game-score');
