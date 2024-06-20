@@ -13,11 +13,6 @@ class Game {
     [0, 0, 0, 0],
   ];
 
-  #STATUS_IDLE = 'idle';
-  #STATUS_PLAYING = 'playing';
-  #STATUS_WIN = 'win';
-  #STATUS_LOSE = 'lose';
-
   // #DEFAULT_STATE = [
   //   [1, 1, 1, 1],
   //   [2, 2, 2, 2],
@@ -38,6 +33,10 @@ class Game {
 
   constructor(initialState = this.#copyState(this.#DEFAULT_STATE)) {
     this.matrix = initialState;
+    this.statusIdle = 'idle';
+    this.statusPlaying = 'playing';
+    this.statusWin = 'win';
+    this.statusLose = 'lose';
   }
 
   moveLeft() {
@@ -72,12 +71,12 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() { }
+  getScore() {}
 
   /**
    * @returns {number[][]}
    */
-  getState() { }
+  getState() {}
 
   /**
    * Returns the current game status.
@@ -92,7 +91,7 @@ class Game {
   getStatus() {
     // if ()
 
-    return this.#STATUS_IDLE;
+    return this.statusIdle;
   }
 
   start() {
