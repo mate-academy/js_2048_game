@@ -13,6 +13,25 @@ class Game {
     [0, 0, 0, 0],
   ];
 
+  #STATUS_IDLE = 'idle';
+  #STATUS_PLAYING = 'playing';
+  #STATUS_WIN = 'win';
+  #STATUS_LOSE = 'lose';
+
+  // #DEFAULT_STATE = [
+  //   [1, 1, 1, 1],
+  //   [2, 2, 2, 2],
+  //   [3, 3, 3, 3],
+  //   [0, 0, 0, 0],
+  // ];
+
+  // #DEFAULT_STATE = [
+  //   [1, 1, 1, 1],
+  //   [2, 2, 2, 2],
+  //   [0, 0, 0, 0],
+  //   [0, 0, 0, 0],
+  // ];
+
   #copyState(state) {
     return state.map((arr) => [...arr]);
   }
@@ -22,19 +41,32 @@ class Game {
   }
 
   moveLeft() {
+    this.slideTilesLeft(this.matrix);
+
     this.createRandomTile();
+
+    this.drawTiles();
   }
   moveRight() {
+    this.slideTilesRight(this.matrix);
+
     this.createRandomTile();
+
+    this.drawTiles();
   }
   moveUp() {
     this.slideTilesUp(this.getMatrixGroupedByCols());
 
     this.createRandomTile();
-    console.log(this.matrix);
+
+    this.drawTiles();
   }
   moveDown() {
+    this.slideTilesDown(this.getMatrixGroupedByCols());
+
     this.createRandomTile();
+
+    this.drawTiles();
   }
 
   /**
@@ -57,19 +89,17 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() { }
+  getStatus() {
+    // if ()
 
-  /**
-   * Starts the game.
-   */
+    return this.#STATUS_IDLE;
+  }
+
   start() {
     this.createRandomTile();
     this.createRandomTile();
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     this.matrix = this.#copyState(this.#DEFAULT_STATE);
 
@@ -105,6 +135,7 @@ class Game {
 
     emptyTile.textContent = randomDigit;
     emptyTile.classList.add(`field-cell--${randomDigit}`);
+    emptyTile.style.transition = '.5s';
   }
 
   getMatrixGroupedByCols() {
@@ -132,15 +163,117 @@ class Game {
   }
 
   slideTilesUp(groupedMatrix) {
-    groupedMatrix.map((group) => this.slideUp(group));
+    groupedMatrix.map((group) => {
+      for (let i = 1; i < 4; i++) {
+        while (group[i - 1] === 0 && group[i] !== 0) {
+          group[i - 1] = group[i];
+          group[i] = 0;
+          i--;
+        }
+
+        // merge tiles
+        if (group[i] === group[i - 1] && group[i] !== 0) {
+          group[i - 1] = group[i] + group[i - 1];
+          group[i] = 0;
+          i++;
+        }
+
+        // while (group[i - 1] === 0 && group[i] !== 0) {
+        //   group[i - 1] = group[i];
+        //   group[i] = 0;
+        //   i--;
+        // }
+      }
+
+      return group;
+    });
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        this.matrix[i][j] = groupedMatrix[j][i];
+      }
+    }
   }
 
-  slideUp(group) {
-    for (let i = 1; i < 4; i++) {
-      while (group[i - 1] === 0 && group[i] !== 0) {
-        group[i - 1] = group[i];
-        group[i] = 0;
-        i--;
+  slideTilesLeft(groupedMatrix) {
+    groupedMatrix.map((group) => {
+      for (let i = 1; i < 4; i++) {
+        while (group[i - 1] === 0 && group[i] !== 0) {
+          group[i - 1] = group[i];
+          group[i] = 0;
+          i--;
+        }
+
+        if (group[i] === group[i - 1] && group[i] !== 0) {
+          group[i - 1] = group[i] + group[i - 1];
+          group[i] = 0;
+          i++;
+        }
+      }
+
+      return group;
+    });
+  }
+
+  slideTilesDown(groupedMatrix) {
+    groupedMatrix.map((group) => {
+      for (let i = 2; i >= 0; i--) {
+        while (group[i + 1] === 0 && group[i] !== 0) {
+          group[i + 1] = group[i];
+          group[i] = 0;
+          i++;
+        }
+
+        if (group[i] === group[i + 1] && group[i] !== 0) {
+          group[i + 1] = group[i] + group[i + 1];
+          group[i] = 0;
+          i--;
+        }
+      }
+
+      return group;
+    });
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        this.matrix[i][j] = groupedMatrix[j][i];
+      }
+    }
+  }
+
+  slideTilesRight(groupedMatrix) {
+    groupedMatrix.map((group) => {
+      for (let i = 2; i >= 0; i--) {
+        while (group[i + 1] === 0 && group[i] !== 0) {
+          group[i + 1] = group[i];
+          group[i] = 0;
+          i++;
+        }
+
+        if (group[i] === group[i + 1] && group[i] !== 0) {
+          group[i + 1] = group[i] + group[i + 1];
+          group[i] = 0;
+          i--;
+        }
+      }
+
+      return group;
+    });
+  }
+
+  drawTiles() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        const getRow = document.querySelector(`.field-row:nth-child(${i + 1})`);
+        const tile = getRow.querySelector(`.field-cell:nth-child(${j + 1})`);
+
+        tile.textContent = '';
+        tile.className = 'field-cell';
+
+        if (this.matrix[i][j] !== 0) {
+          tile.textContent = `${this.matrix[i][j]}`;
+          tile.classList.add(`field-cell--${this.matrix[i][j]}`);
+        }
       }
     }
   }

@@ -7,6 +7,8 @@ const game = new Game();
 // Write your code here
 const startBtn = document.querySelector('.start');
 const restartBtn = document.querySelector('.restart');
+
+// eslint-disable-next-line no-shadow
 const arrowsToggle = (event) => {
   if (event.key === 'ArrowUp') {
     game.moveUp();
@@ -17,7 +19,7 @@ const arrowsToggle = (event) => {
   } else if (event.key === 'ArrowDown') {
     game.moveDown();
   }
-};;
+};
 
 startBtn.addEventListener('click', () => {
   startBtn.classList.add('hidden');
