@@ -12,13 +12,21 @@ const STATUS_CLASSES = {
   lose: 'message-lose',
 };
 
-const game = new Game();
+let game = new Game();
 let firstMove = true;
+let gameStart = false;
 
 startBtn.addEventListener('click', () => {
   if (startBtn.textContent === 'Start') {
-    game.start();
+    gameStart = !gameStart; // if startBtn push one more time
 
+    if (gameStart) {
+      game.start();
+    } else {
+      game = new Game();
+      game.start();
+      gameStart = true;
+    }
     showMessage(null);
     showScore(game.getScore());
 

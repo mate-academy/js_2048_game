@@ -1,36 +1,53 @@
 'use strict';
 
 class Game {
-  static INITIAL_STATE = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  // static INITIAL_STATE = [
+  //   [0, 0, 0, 0],
+  //   [0, 0, 0, 0],
+  //   [0, 0, 0, 0],
+  //   [0, 0, 0, 0],
+  // ];
 
-  static getInitialState(state) {
-    return state || Game.INITIAL_STATE.map((row) => [...row]);
-  }
+  // static getInitialState(state) {
+  //   return state || Game.INITIAL_STATE.map((row) => [...row]);
+  // }
 
-  constructor(initialState = null) {
-    this.state = Game.getInitialState(initialState);
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.initialState = initialState;
+    // this.state = Game.getInitialState(initialState);
+    this.state = this.initialState.map((row) => [...row]);
     this.hasMoved = false;
     this.status = 'idle';
     this.score = 0;
   }
 
   moveLeft() {
-    return this.makeMove('left');
+    if (this.status === 'playing') {
+      return this.makeMove('left');
+    }
   }
   moveRight() {
-    return this.makeMove('right');
+    if (this.status === 'playing') {
+      return this.makeMove('right');
+    }
   }
   moveUp() {
-    return this.makeMove('up');
+    if (this.status === 'playing') {
+      return this.makeMove('up');
+    }
   }
 
   moveDown() {
-    return this.makeMove('down');
+    if (this.status === 'playing') {
+      return this.makeMove('down');
+    }
   }
 
   makeMove(direction) {
@@ -164,7 +181,8 @@ class Game {
   }
 
   restart() {
-    this.state = Game.getInitialState();
+    // this.state = Game.getInitialState();
+    this.state = this.initialState.map((row) => [...row]);
     this.status = 'idle';
     this.score = 0;
   }
