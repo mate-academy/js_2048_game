@@ -54,35 +54,26 @@ class Game {
     this.status = this.gameStatus.idle;
     this.isCustomInitial = !!initialCustomState;
     this.defaultState = initialCustomState || this.initialField;
-
-    this.state =
-      initialCustomState && initialCustomState.length === this.fieldSize
-        ? initialCustomState
-        : this.initialField;
   }
 
   moveLeft() {
     this.status = this.gameStatus.playing;
     this.sumGameFieldByRow(this.direction.left);
-    this.generateRandomCellOnField();
   }
 
   moveRight() {
     this.status = this.gameStatus.playing;
     this.sumGameFieldByRow(this.direction.right);
-    this.generateRandomCellOnField();
   }
 
   moveUp() {
     this.status = this.gameStatus.playing;
     this.sumGameFieldByColumn(this.direction.up);
-    this.generateRandomCellOnField();
   }
 
   moveDown() {
     this.status = this.gameStatus.playing;
     this.sumGameFieldByColumn(this.direction.down);
-    this.generateRandomCellOnField();
   }
 
   /**
@@ -117,6 +108,10 @@ class Game {
    * Starts the game.
    */
   start() {
+    this.state =
+      this.isCustomInitial && this.initialCustomState.length === this.fieldSize
+        ? this.initialCustomState
+        : this.initialField;
     this.status = this.gameStatus.playing;
 
     this.generateRandomCellOnField(2);
@@ -126,7 +121,13 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.state = this.defaultState;
+    if (this.isCustomInitial) {
+      this.state = this.defaultState;
+    } else {
+      this.state = this.initialField;
+      this.generateRandomCellOnField(2);
+    }
+
     this.score = 0;
     this.status = this.gameStatus.idle;
   }
@@ -250,6 +251,13 @@ class Game {
     return transposedField;
   }
 
+  compareGameField(array1, array2) {
+    const array1Json = JSON.stringify(array1);
+    const array2Json = JSON.stringify(array2);
+
+    return array1Json === array2Json;
+  }
+
   getAvailabilityMovement(field) {
     let sumOfCollapsedCells = 0;
 
@@ -319,9 +327,19 @@ class Game {
       return rowCollaped;
     });
 
+    const isGameFieldChanged = !this.compareGameField(
+      gameField,
+      calculatedGameField,
+    );
+
+    if (!isGameFieldChanged) {
+      return;
+    }
+
     this.score = scoreByField;
     this.state = calculatedGameField;
     this.cellMax = this.getMaxValueCell(calculatedGameField);
+    this.generateRandomCellOnField();
   }
 
   sumGameFieldByColumn(direction) {
@@ -342,13 +360,23 @@ class Game {
       return rowCollaped;
     });
 
+    const isGameFieldChanged = !this.compareGameField(
+      gameField,
+      calculatedGameField,
+    );
+
+    if (!isGameFieldChanged) {
+      return;
+    }
+
     this.score = scoreByField;
     this.state = this.transposeField(calculatedGameField);
     this.cellMax = this.getMaxValueCell(calculatedGameField);
+    this.generateRandomCellOnField();
   }
 
   generateRandomCellOnField(qty = 1) {
-    const gameField = this.state;
+    const gameField = JSON.parse(JSON.stringify(this.state));
 
     for (let i = 0; i < qty; i++) {
       let cell = this.getRandomCellIndex();
@@ -360,6 +388,7 @@ class Game {
 
       gameField[cell.row][cell.col] = cellValue;
     }
+    this.state = gameField;
 
     this.isAvailableMovement = this.getAvailabilityMovement(gameField);
   }

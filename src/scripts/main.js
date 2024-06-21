@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const Game = require('../modules/Game.class');
   const game = new Game();
   const startRestartButton = document.querySelector('.button');
-  let isFirstMove = true;
   const gStatus = () => game.getStatus();
   const gState = () => game.getState();
   const gScore = () => game.getScore();
@@ -38,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     startRestartButton.classList.remove('start');
     startRestartButton.classList.add('restart');
     startRestartButton.textContent = 'Restart';
-    isFirstMove = false;
   };
 
   const changeButtonRestartToStart = () => {
@@ -92,42 +90,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // #region keyboardListener
 
   const kbListener = (e) => {
+    if (gStatus() === 'playing') {
+      changeButtonStartToRestart();
+    }
+
     switch (e.key) {
       case 'ArrowLeft':
         game.moveLeft();
         refreshGameField();
-
-        if (gStatus() === 'playing') {
-          changeButtonStartToRestart();
-        }
-
         break;
       case 'ArrowRight':
         game.moveRight();
         refreshGameField();
-
-        if (gStatus() === 'playing') {
-          changeButtonStartToRestart();
-        }
-
         break;
       case 'ArrowUp':
         game.moveUp();
         refreshGameField();
-
-        if (gStatus() === 'playing') {
-          changeButtonStartToRestart();
-        }
-
         break;
       case 'ArrowDown':
         game.moveDown();
         refreshGameField();
-
-        if (gStatus() === 'playing') {
-          changeButtonStartToRestart();
-        }
-
         break;
       default:
         break;
@@ -139,13 +121,21 @@ document.addEventListener('DOMContentLoaded', () => {
   startRestartButton.addEventListener('click', (e) => {
     e.preventDefault();
 
-    if (gStatus() === 'playing' && !isFirstMove) {
+    const isResetButton = e.target.classList.contains('restart');
+    const isStartButton = e.target.classList.contains('start');
+
+    if (gStatus() === 'playing' && isResetButton) {
       resetGame();
       changeButtonRestartToStart();
       document.addEventListener('keydown', kbListener);
     }
 
-    if (gStatus() === 'idle' && isFirstMove) {
+    if (gStatus() === 'playing' && isStartButton) {
+      resetGame();
+      refreshGameField();
+    }
+
+    if (gStatus() === 'idle' && isStartButton) {
       game.start();
 
       e.currentTarget.blur();
