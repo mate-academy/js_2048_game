@@ -33,74 +33,92 @@ class Game {
 
   constructor(initialState = this.#copyState(this.#DEFAULT_STATE)) {
     this.matrix = initialState;
-    this.statusIdle = 'idle';
-    this.statusPlaying = 'playing';
-    this.statusWin = 'win';
-    this.statusLose = 'lose';
+
+    this.status = 'idle';
+
+    this.score = 0;
   }
 
   moveLeft() {
+    if (this.getStatus() !== 'playing') {
+      return;
+    }
+
     this.slideTilesLeft(this.matrix);
 
     this.createRandomTile();
 
     this.drawTiles();
+    console.log(this.matrix);
+
+    this.winOrLose();
   }
   moveRight() {
+    if (this.getStatus() !== 'playing') {
+      return;
+    }
+
     this.slideTilesRight(this.matrix);
 
     this.createRandomTile();
 
     this.drawTiles();
+    console.log(this.matrix);
+
+    this.winOrLose();
   }
   moveUp() {
+    if (this.getStatus() !== 'playing') {
+      return;
+    }
+
     this.slideTilesUp(this.getMatrixGroupedByCols());
 
     this.createRandomTile();
 
     this.drawTiles();
+    console.log(this.matrix);
+
+    this.winOrLose();
   }
   moveDown() {
+    if (this.getStatus() !== 'playing') {
+      return;
+    }
+
     this.slideTilesDown(this.getMatrixGroupedByCols());
 
     this.createRandomTile();
 
     this.drawTiles();
+
+    console.log(this.matrix);
+
+    this.winOrLose();
   }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getState() {
+    return this.matrix;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
-    // if ()
-
-    return this.statusIdle;
+    return this.status;
   }
 
   start() {
     this.createRandomTile();
     this.createRandomTile();
+
+    this.status = 'playing';
   }
 
   restart() {
     this.matrix = this.#copyState(this.#DEFAULT_STATE);
+    this.status = 'idle';
 
     this.clearMatrix();
   }
@@ -162,30 +180,7 @@ class Game {
   }
 
   slideTilesUp(groupedMatrix) {
-    groupedMatrix.map((group) => {
-      for (let i = 1; i < 4; i++) {
-        while (group[i - 1] === 0 && group[i] !== 0) {
-          group[i - 1] = group[i];
-          group[i] = 0;
-          i--;
-        }
-
-        // merge tiles
-        if (group[i] === group[i - 1] && group[i] !== 0) {
-          group[i - 1] = group[i] + group[i - 1];
-          group[i] = 0;
-          i++;
-        }
-
-        // while (group[i - 1] === 0 && group[i] !== 0) {
-        //   group[i - 1] = group[i];
-        //   group[i] = 0;
-        //   i--;
-        // }
-      }
-
-      return group;
-    });
+    groupedMatrix.map((group) => this.slideAndMergeTilesFromStart(group));
 
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
@@ -195,43 +190,11 @@ class Game {
   }
 
   slideTilesLeft(groupedMatrix) {
-    groupedMatrix.map((group) => {
-      for (let i = 1; i < 4; i++) {
-        while (group[i - 1] === 0 && group[i] !== 0) {
-          group[i - 1] = group[i];
-          group[i] = 0;
-          i--;
-        }
-
-        if (group[i] === group[i - 1] && group[i] !== 0) {
-          group[i - 1] = group[i] + group[i - 1];
-          group[i] = 0;
-          i++;
-        }
-      }
-
-      return group;
-    });
+    groupedMatrix.map((group) => this.slideAndMergeTilesFromStart(group));
   }
 
   slideTilesDown(groupedMatrix) {
-    groupedMatrix.map((group) => {
-      for (let i = 2; i >= 0; i--) {
-        while (group[i + 1] === 0 && group[i] !== 0) {
-          group[i + 1] = group[i];
-          group[i] = 0;
-          i++;
-        }
-
-        if (group[i] === group[i + 1] && group[i] !== 0) {
-          group[i + 1] = group[i] + group[i + 1];
-          group[i] = 0;
-          i--;
-        }
-      }
-
-      return group;
-    });
+    groupedMatrix.map((group) => this.slideAndMergeTilesFromEnd(group));
 
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
@@ -241,23 +204,65 @@ class Game {
   }
 
   slideTilesRight(groupedMatrix) {
-    groupedMatrix.map((group) => {
-      for (let i = 2; i >= 0; i--) {
-        while (group[i + 1] === 0 && group[i] !== 0) {
-          group[i + 1] = group[i];
-          group[i] = 0;
-          i++;
-        }
+    groupedMatrix.map((group) => this.slideAndMergeTilesFromEnd(group));
+  }
 
-        if (group[i] === group[i + 1] && group[i] !== 0) {
-          group[i + 1] = group[i] + group[i + 1];
-          group[i] = 0;
-          i--;
-        }
+  slideAndMergeTilesFromStart(group) {
+    for (let i = 1; i < 4; i++) {
+      while (group[i - 1] === 0 && group[i] !== 0) {
+        group[i - 1] = group[i];
+        group[i] = 0;
+        i--;
       }
+    }
 
-      return group;
-    });
+    for (let i = 1; i < group.length; i++) {
+      if (group[i] === group[i - 1] && group[i] !== 0) {
+        group[i - 1] = group[i] + group[i - 1];
+        this.score += group[i - 1];
+        group[i] = 0;
+        i--;
+      }
+    }
+
+    for (let i = 1; i < 4; i++) {
+      while (group[i - 1] === 0 && group[i] !== 0) {
+        group[i - 1] = group[i];
+        group[i] = 0;
+        i--;
+      }
+    }
+
+    return group;
+  }
+
+  slideAndMergeTilesFromEnd(group) {
+    for (let i = 2; i >= 0; i--) {
+      while (group[i + 1] === 0 && group[i] !== 0) {
+        group[i + 1] = group[i];
+        group[i] = 0;
+        i++;
+      }
+    }
+
+    for (let i = group.length - 2; i >= 0; i--) {
+      if (group[i] === group[i + 1] && group[i] !== 0) {
+        group[i + 1] = group[i] + group[i + 1];
+        this.score += group[i + 1];
+        group[i] = 0;
+        i++;
+      }
+    }
+
+    for (let i = 2; i >= 0; i--) {
+      while (group[i + 1] === 0 && group[i] !== 0) {
+        group[i + 1] = group[i];
+        group[i] = 0;
+        i++;
+      }
+    }
+
+    return group;
   }
 
   drawTiles() {
@@ -276,6 +281,38 @@ class Game {
       }
     }
   }
-}
 
+  canIMove() {
+    if (
+      this.matrix !== this.slideTilesDown(this.getMatrixGroupedByCols()) ||
+      this.matrix !== this.slideTilesUp(this.getMatrixGroupedByCols()) ||
+      this.matrix !== this.slideTilesLeft(this.matrix) ||
+      this.matrix !== this.slideTilesRight(this.matrix)
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  winOrLose() {
+    let counter = 0;
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.matrix[i][j] === 2048) {
+          this.status = 'win';
+        }
+
+        if (this.matrix[i][j] !== 0) {
+          counter++;
+        }
+
+        if (counter === 16) {
+          this.status = 'lose';
+        }
+      }
+    }
+  }
+}
 module.exports = Game;

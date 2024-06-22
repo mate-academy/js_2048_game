@@ -7,17 +7,25 @@ const game = new Game();
 // Write your code here
 const startBtn = document.querySelector('.start');
 const restartBtn = document.querySelector('.restart');
+const store = document.querySelector('.game-score');
+const startMessage = document.querySelector('.message-start');
+const loseMessage = document.querySelector('.message-lose');
+const winMessage = document.querySelector('.message-win');
 
 // eslint-disable-next-line no-shadow
 const arrowsToggle = (event) => {
   if (event.key === 'ArrowUp') {
     game.moveUp();
+    store.textContent = game.score;
   } else if (event.key === 'ArrowLeft') {
     game.moveLeft();
+    store.textContent = game.score;
   } else if (event.key === 'ArrowRight') {
     game.moveRight();
+    store.textContent = game.score;
   } else if (event.key === 'ArrowDown') {
     game.moveDown();
+    store.textContent = game.score;
   }
 };
 
@@ -36,5 +44,34 @@ restartBtn.addEventListener('click', () => {
 
   game.restart();
 
+  game.score = 0;
+  store.textContent = game.score;
+
   document.removeEventListener('keydown', arrowsToggle);
 });
+
+console.log(loseMessage, startMessage, winMessage);
+
+switch (game.getStatus()) {
+  case 'idle':
+    startMessage.classList.remove('hidden');
+    loseMessage.classList.add('hidden');
+    winMessage.classList.add('hidden');
+    break;
+  case 'playing':
+    startMessage.classList.add('hidden');
+    loseMessage.classList.add('hidden');
+    winMessage.classList.add('hidden');
+    break;
+  case 'win':
+    winMessage.classList.remove('hidden');
+    document.removeEventListener('keydown', arrowsToggle);
+    break;
+  case 'lose':
+    console.log(123);
+    loseMessage.classList.remove('hidden');
+    document.removeEventListener('keydown', arrowsToggle);
+    break;
+  default:
+    break;
+}
