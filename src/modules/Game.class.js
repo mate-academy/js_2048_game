@@ -26,7 +26,7 @@ class Game {
 
   moveLeft() {
     // [2, 2, 4, 0]
-    if (this.status === Game.STATUS_WIN) {
+    if (this.status === Game.STATUS_WIN || this.status === Game.STATUS_LOSE) {
       return;
     }
 
@@ -56,10 +56,14 @@ class Game {
     }
 
     this.addRandomTile();
+
+    if (!this.movesAvailable()) {
+      this.status = Game.STATUS_LOSE;
+    }
   }
 
   moveRight() {
-    if (this.status === Game.STATUS_WIN) {
+    if (this.status === Game.STATUS_WIN || this.status === Game.STATUS_LOSE) {
       return;
     }
 
@@ -90,10 +94,14 @@ class Game {
     }
 
     this.addRandomTile();
+
+    if (!this.movesAvailable()) {
+      this.status = Game.STATUS_LOSE;
+    }
   }
 
   moveUp() {
-    if (this.status === Game.STATUS_WIN) {
+    if (this.status === Game.STATUS_WIN || this.status === Game.STATUS_LOSE) {
       return;
     }
 
@@ -131,10 +139,14 @@ class Game {
     }
 
     this.addRandomTile();
+
+    if (!this.movesAvailable()) {
+      this.status = Game.STATUS_LOSE;
+    }
   }
 
   moveDown() {
-    if (this.status === Game.STATUS_WIN) {
+    if (this.status === Game.STATUS_WIN || this.status === Game.STATUS_LOSE) {
       return;
     }
 
@@ -172,6 +184,10 @@ class Game {
     }
 
     this.addRandomTile();
+
+    if (!this.movesAvailable()) {
+      this.status = Game.STATUS_LOSE;
+    }
   }
 
   getScore() {
@@ -214,6 +230,34 @@ class Game {
     const { x, y } = emptyTiles[randomIndex];
 
     this.state[x][y] = Math.random() < 0.9 ? 2 : 4;
+  }
+
+  movesAvailable() {
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state[i].length; j++) {
+        if (this.state[i][j] === 0) {
+          return true;
+        }
+
+        if (i > 0 && this.state[i][j] === this.state[i - 1][j]) {
+          return true;
+        }
+
+        if (i < this.state.length - 1 && this.state[i][j] === this.state[i + 1][j]) {
+          return true;
+        }
+
+        if (j > 0 && this.state[i][j] === this.state[i][j - 1]) {
+          return true;
+        }
+
+        if (j < this.state[i].length - 1 && this.state[i][j] === this.state[i][j + 1]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }
 
