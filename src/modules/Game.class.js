@@ -243,7 +243,10 @@ class Game {
           return true;
         }
 
-        if (i < this.state.length - 1 && this.state[i][j] === this.state[i + 1][j]) {
+        if (
+          i < this.state.length - 1 &&
+          this.state[i][j] === this.state[i + 1][j]
+        ) {
           return true;
         }
 
@@ -251,7 +254,10 @@ class Game {
           return true;
         }
 
-        if (j < this.state[i].length - 1 && this.state[i][j] === this.state[i][j + 1]) {
+        if (
+          j < this.state[i].length - 1 &&
+          this.state[i][j] === this.state[i][j + 1]
+        ) {
           return true;
         }
       }
