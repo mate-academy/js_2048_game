@@ -1,68 +1,220 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  static WIN_NUMBER = 2048;
+  static STATUS_PLAYING = 'playing';
+  static STATUS_IDLE = 'idle';
+  static STATUS_LOSE = 'lose';
+  static STATUS_WIN = 'win';
+  static DEFAULT_STATE = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
+  constructor(initialState = Game.DEFAULT_STATE) {
+    this.initialState = initialState;
+    this.state = this.deepCloneArray(this.initialState);
+    this.status = Game.STATUS_IDLE;
+    this.score = 0;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  deepCloneArray(arr) {
+    return arr.map((row) => [...row]);
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  moveLeft() {
+    // [2, 2, 4, 0]
+    if (this.status === Game.STATUS_WIN) {
+      return;
+    }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+    for (let i = 0; i < this.state.length; i++) {
+      let row = this.state[i].filter((val) => val !== 0); // [2, 2, 4]
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+      for (let j = 0; j < row.length - 1; j++) {
+        if (row[j] === row[j + 1]) {
+          row[j] *= 2;
+          row[j + 1] = 0; // [4, 0, 4]
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+          if (row[j] === Game.WIN_NUMBER) {
+            this.status = Game.STATUS_WIN;
+          }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+          this.score += row[j];
+        }
+      }
 
-  // Add your own methods here
+      row = row.filter((val) => val !== 0); // [4, 4]
+
+      while (row.length < this.state[i].length) {
+        row.push(0);
+      } // [4, 4, 0, 0]
+
+      this.state[i] = row;
+    }
+
+    this.addRandomTile();
+  }
+
+  moveRight() {
+    if (this.status === Game.STATUS_WIN) {
+      return;
+    }
+
+    // [0, 4, 2, 2]
+    for (let i = 0; i < this.state.length; i++) {
+      let row = this.state[i].filter((val) => val !== 0); // [4, 2, 2]
+
+      for (let j = row.length - 1; j > 0; j--) {
+        if (row[j] === row[j - 1]) {
+          row[j] *= 2;
+          row[j - 1] = 0;
+
+          if (row[j] === Game.WIN_NUMBER) {
+            this.status = Game.STATUS_WIN;
+          }
+
+          this.score += row[j]; // [4, 0, 4]
+        }
+      }
+
+      row = row.filter((val) => val !== 0); // [4, 4]
+
+      while (row.length < this.state[i].length) {
+        row.unshift(0);
+      } // [0, 0, 4, 4]
+
+      this.state[i] = row;
+    }
+
+    this.addRandomTile();
+  }
+
+  moveUp() {
+    if (this.status === Game.STATUS_WIN) {
+      return;
+    }
+
+    for (let col = 0; col < this.state[0].length; col++) {
+      let column = [];
+
+      for (let row = 0; row < this.state.length; row++) {
+        if (this.state[row][col] !== 0) {
+          column.push(this.state[row][col]);
+        }
+      }
+
+      for (let i = 0; i < column.length - 1; i++) {
+        if (column[i] === column[i + 1]) {
+          column[i] *= 2;
+          column[i + 1] = 0;
+
+          if (column[i] === Game.WIN_NUMBER) {
+            this.status = Game.STATUS_WIN;
+          }
+
+          this.score += column[i];
+        }
+      }
+
+      column = column.filter((val) => val !== 0);
+
+      while (column.length < this.state.length) {
+        column.push(0);
+      }
+
+      for (let row = 0; row < this.state.length; row++) {
+        this.state[row][col] = column[row];
+      }
+    }
+
+    this.addRandomTile();
+  }
+
+  moveDown() {
+    if (this.status === Game.STATUS_WIN) {
+      return;
+    }
+
+    for (let col = 0; col < this.state[0].length; col++) {
+      let column = [];
+
+      for (let row = 0; row < this.state.length; row++) {
+        if (this.state[row][col] !== 0) {
+          column.push(this.state[row][col]);
+        }
+      }
+
+      for (let i = column.length - 1; i > 0; i--) {
+        if (column[i] === column[i - 1]) {
+          column[i] *= 2;
+          column[i - 1] = 0;
+
+          if (column[i] === Game.WIN_NUMBER) {
+            this.status = Game.STATUS_WIN;
+          }
+
+          this.score += column[i];
+        }
+      }
+
+      column = column.filter((val) => val !== 0);
+
+      while (column.length < this.state.length) {
+        column.unshift(0);
+      }
+
+      for (let row = 0; row < this.state.length; row++) {
+        this.state[row][col] = column[row];
+      }
+    }
+
+    this.addRandomTile();
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  getState() {
+    return this.state;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
+  start() {
+    this.status = Game.STATUS_PLAYING;
+
+    this.addRandomTile();
+    this.addRandomTile();
+  }
+
+  restart() {
+    this.state = this.deepCloneArray(this.initialState);
+    this.score = 0;
+    this.status = Game.STATUS_IDLE;
+  }
+
+  addRandomTile() {
+    const emptyTiles = [];
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state[i].length; j++) {
+        if (this.state[i][j] === 0) {
+          emptyTiles.push({ x: i, y: j });
+        }
+      }
+    }
+
+    const randomIndex = Math.floor(Math.random() * emptyTiles.length);
+    const { x, y } = emptyTiles[randomIndex];
+
+    this.state[x][y] = Math.random() < 0.9 ? 2 : 4;
+  }
 }
 
 module.exports = Game;
