@@ -26,9 +26,15 @@ class Game {
 
   moveLeft() {
     // [2, 2, 4, 0]
-    if (this.status === Game.STATUS_WIN || this.status === Game.STATUS_LOSE) {
+    if (
+      this.status === Game.STATUS_WIN ||
+      this.status === Game.STATUS_LOSE ||
+      this.status === Game.STATUS_IDLE
+    ) {
       return;
     }
+
+    const prevState = JSON.stringify(this.state);
 
     for (let i = 0; i < this.state.length; i++) {
       let row = this.state[i].filter((val) => val !== 0); // [2, 2, 4]
@@ -55,7 +61,9 @@ class Game {
       this.state[i] = row;
     }
 
-    this.addRandomTile();
+    if (prevState !== JSON.stringify(this.state)) {
+      this.addRandomTile();
+    }
 
     if (!this.movesAvailable()) {
       this.status = Game.STATUS_LOSE;
@@ -63,9 +71,15 @@ class Game {
   }
 
   moveRight() {
-    if (this.status === Game.STATUS_WIN || this.status === Game.STATUS_LOSE) {
+    if (
+      this.status === Game.STATUS_WIN ||
+      this.status === Game.STATUS_LOSE ||
+      this.status === Game.STATUS_IDLE
+    ) {
       return;
     }
+
+    const prevState = JSON.stringify(this.state);
 
     // [0, 4, 2, 2]
     for (let i = 0; i < this.state.length; i++) {
@@ -93,7 +107,9 @@ class Game {
       this.state[i] = row;
     }
 
-    this.addRandomTile();
+    if (prevState !== JSON.stringify(this.state)) {
+      this.addRandomTile();
+    }
 
     if (!this.movesAvailable()) {
       this.status = Game.STATUS_LOSE;
@@ -101,9 +117,15 @@ class Game {
   }
 
   moveUp() {
-    if (this.status === Game.STATUS_WIN || this.status === Game.STATUS_LOSE) {
+    if (
+      this.status === Game.STATUS_WIN ||
+      this.status === Game.STATUS_LOSE ||
+      this.status === Game.STATUS_IDLE
+    ) {
       return;
     }
+
+    const prevState = JSON.stringify(this.state);
 
     for (let col = 0; col < this.state[0].length; col++) {
       let column = [];
@@ -138,7 +160,9 @@ class Game {
       }
     }
 
-    this.addRandomTile();
+    if (prevState !== JSON.stringify(this.state)) {
+      this.addRandomTile();
+    }
 
     if (!this.movesAvailable()) {
       this.status = Game.STATUS_LOSE;
@@ -146,9 +170,15 @@ class Game {
   }
 
   moveDown() {
-    if (this.status === Game.STATUS_WIN || this.status === Game.STATUS_LOSE) {
+    if (
+      this.status === Game.STATUS_WIN ||
+      this.status === Game.STATUS_LOSE ||
+      this.status === Game.STATUS_IDLE
+    ) {
       return;
     }
+
+    const prevState = JSON.stringify(this.state);
 
     for (let col = 0; col < this.state[0].length; col++) {
       let column = [];
@@ -183,7 +213,9 @@ class Game {
       }
     }
 
-    this.addRandomTile();
+    if (prevState !== JSON.stringify(this.state)) {
+      this.addRandomTile();
+    }
 
     if (!this.movesAvailable()) {
       this.status = Game.STATUS_LOSE;

@@ -27,14 +27,21 @@ button.addEventListener('click', () => {
 });
 
 function handleKeyPress(e) {
-  if (e.key === 'ArrowDown') {
-    game.moveDown();
-  } else if (e.key === 'ArrowUp') {
-    game.moveUp();
-  } else if (e.key === 'ArrowRight') {
-    game.moveRight();
-  } else if (e.key === 'ArrowLeft') {
-    game.moveLeft();
+  switch (e.key) {
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    default:
+      return;
   }
 
   updateGame();
