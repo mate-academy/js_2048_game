@@ -1,22 +1,22 @@
 'use strict';
 
 class Game {
-  constructor(initialState = Game.DEFAULT_STATE) {
-    this.WIN_NUMBER = 2048;
-    this.STATUS_PLAYING = 'playing';
-    this.STATUS_IDLE = 'idle';
-    this.STATUS_LOSE = 'lose';
-    this.STATUS_WIN = 'win';
-    this.DEFAULT_STATE = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+  static WIN_NUMBER = 2048;
+  static STATUS_PLAYING = 'playing';
+  static STATUS_IDLE = 'idle';
+  static STATUS_LOSE = 'lose';
+  static STATUS_WIN = 'win';
+  static DEFAULT_STATE = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
 
+  constructor(initialState = Game.DEFAULT_STATE) {
     this.initialState = initialState;
     this.state = this.deepCloneArray(this.initialState);
-    this.status = this.STATUS_IDLE;
+    this.status = Game.STATUS_IDLE;
     this.score = 0;
   }
 
