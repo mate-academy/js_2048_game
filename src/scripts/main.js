@@ -12,19 +12,24 @@ const score = document.querySelector('.game-score');
 
 // eslint-disable-next-line no-shadow
 const arrowsToggle = (event) => {
-  if (event.key === 'ArrowUp') {
-    game.moveUp();
-    score.textContent = game.score;
-  } else if (event.key === 'ArrowLeft') {
-    game.moveLeft();
-    score.textContent = game.score;
-  } else if (event.key === 'ArrowRight') {
-    game.moveRight();
-    score.textContent = game.score;
-  } else if (event.key === 'ArrowDown') {
-    game.moveDown();
-    score.textContent = game.score;
+  switch (event.key) {
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+    default:
+      return;
   }
+
+  score.textContent = game.score;
 };
 
 startBtn.addEventListener('click', () => {
