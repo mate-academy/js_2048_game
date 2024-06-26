@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  position: relative;
 
   &--2 {
     background: #eee4da;
@@ -79,7 +80,28 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  position: relative;
+  z-index: -1;
 }
+
+// .field-cell__number {
+//   display: inline-flex;
+//   align-items: center;
+//   justify-content: center;
+//   height: 100%;
+//   width: 100%;
+//   transition: all 0.3s ease 0s;
+//   position: relative;
+//   z-index: 2;
+
+//   &.merge {
+//     animation: merge 0.3s ease-in-out;
+//   }
+
+//   &.appearance {
+//     animation: appearance 0.3s ease-in-out;
+//   }
+// }
 
 .game-header {
   display: flex;
@@ -184,4 +206,56 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.tile-container {
+  position: relative;
+}
+
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes appearance {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.tile {
+  position: absolute;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.tile-merge {
+  /* Add styles for merge animation, e.g. */
+  animation: merge-animation 0.2s;
+}
+
+@keyframes merge-animation {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
