@@ -1,68 +1,158 @@
+/* eslint-disable max-len */
+/* eslint-disable no-console */
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
+import { fillRandomEmptyPlaces } from '../scripts/randomAddCellToEmpty';
+// eslint-disable-next-line max-len
+import { fillRandomEmptyPlacesStart } from '../scripts/fillRandomEmptyPlacesStart';
+import { moveTiles } from '../scripts/moveTile';
+import { Arrow } from './constants';
+
+const { STATUS_RUN } = require('./constants');
+
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
+  initialState;
+
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.initialState = initialState;
+
+    console.log(this.initialState);
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveUp() {
+    const { tileField } = this.initialState;
+    const size = tileField.length;
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+    const { mergeOccurred, tileField: newTileField } = moveTiles(
+      tileField,
+      size,
+      Arrow.UP,
+    );
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+    if (mergeOccurred) {
+      moveTiles(newTileField, size, Arrow.UP); // Compact tiles again after merging
+    }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+    fillRandomEmptyPlaces(this.initialState.tileField);
+    console.log(newTileField); // Log the updated tileField after moving up
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  moveLeft() {
+    const { tileField } = this.initialState;
+    const size = tileField.length;
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    const { mergeOccurred, tileField: newTileField } = moveTiles(
+      tileField,
+      size,
+      Arrow.LEFT,
+    );
 
-  // Add your own methods here
+    if (mergeOccurred) {
+      moveTiles(newTileField, size, Arrow.LEFT);
+    }
+
+    fillRandomEmptyPlaces(this.initialState.tileField);
+  }
+
+  moveRight() {
+    const { tileField } = this.initialState;
+    const size = tileField.length;
+
+    const { mergeOccurred, tileField: newTileField } = moveTiles(
+      tileField,
+      size,
+      Arrow.RIGHT,
+    );
+
+    if (mergeOccurred) {
+      moveTiles(newTileField, size, Arrow.RIGHT); // Compact tiles again after merging
+    }
+
+    fillRandomEmptyPlaces(this.initialState.tileField);
+  }
+
+  moveDown() {
+    const { tileField } = this.initialState;
+    const size = tileField.length;
+
+    const { mergeOccurred, tileField: newTileField } = moveTiles(
+      tileField,
+      size,
+      Arrow.DOWN,
+    );
+
+    if (mergeOccurred) {
+      moveTiles(newTileField, size, Arrow.DOWN); // Compact tiles again after merging
+    }
+
+    fillRandomEmptyPlaces(this.initialState.tileField);
+  }
+
+  getScore() {
+    let score = 0;
+
+    for (let i = 0; i < this.initialState.tileField.length; i++) {
+      for (let j = 0; j < this.initialState.tileField[i].length; j++) {
+        score += this.initialState.tileField[i][j];
+      }
+    }
+
+    this.initialState.score = score;
+  }
+
+  getState() {
+    return this.initialState;
+  }
+
+  getStatus() {
+    // eslint-disable-next-line no-console
+    console.log('Current status:', this.initialState.status);
+  }
+
+  start() {
+    fillRandomEmptyPlacesStart(this.initialState.tileField);
+    this.initialState.status = STATUS_RUN;
+  }
+
+  restart() {
+    this.initialState.score = 0;
+
+    this.initialState.tileField = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+  }
+
+  setTile() {
+    // eslint-disable-next-line max-len
+    const table = document.querySelector('.game-field');
+
+    if (table) {
+      const rows = table.querySelectorAll('.field-row');
+
+      for (let i = 0; i < this.initialState.tileField.length; i++) {
+        const cells = rows[i].querySelectorAll('.field-cell');
+
+        for (let j = 0; j < this.initialState.tileField[i].length; j++) {
+          const cell = cells[j];
+          const cellValue = this.initialState.tileField[i][j];
+
+          const currentClass = `field-cell--${cellValue}`;
+
+          cell.className = 'field-cell';
+
+          if (cellValue !== 0) {
+            cell.classList.add(currentClass);
+            cell.textContent = `${cellValue}`;
+          } else {
+            cell.textContent = '';
+          }
+        }
+      }
+    }
+  }
 }
 
 module.exports = Game;
