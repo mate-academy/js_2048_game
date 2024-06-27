@@ -1,3 +1,13 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  outline: none;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -10,17 +20,72 @@ body {
   font-weight: 900;
 }
 
+h1 {
+  background: #edc22e;
+  color: #f9f6f2;
+  width: 75px;
+  height: 75px;
+  font-size: 24px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 350px;
+  row-gap: 24px;
+}
+
+
+.game-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+
+.tile-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.game-field {
+  position: relative;
+  background: #bbada0;
+  border-radius: 5px;
+  padding: 10px;
+  display: grid;
+  grid-template-rows: repeat(4, 75px);
+  grid-template-columns: 1fr;
+  gap: 10px;
+
+}
+
+.field-row {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: repeat(4, 75px);
+  gap: 10px;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
   border-radius: 5px;
   color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
-  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &--2 {
     background: #eee4da;
@@ -76,56 +141,6 @@ body {
   }
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
-  position: relative;
-  z-index: -1;
-}
-
-// .field-cell__number {
-//   display: inline-flex;
-//   align-items: center;
-//   justify-content: center;
-//   height: 100%;
-//   width: 100%;
-//   transition: all 0.3s ease 0s;
-//   position: relative;
-//   z-index: 2;
-
-//   &.merge {
-//     animation: merge 0.3s ease-in-out;
-//   }
-
-//   &.appearance {
-//     animation: appearance 0.3s ease-in-out;
-//   }
-// }
-
-.game-header {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  margin: 0;
-}
-
 .info {
   display: flex;
   flex-direction: column;
@@ -155,7 +170,6 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-
   transition: 0.25s ease background;
 }
 
@@ -191,13 +205,6 @@ h1 {
   display: none;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
-}
-
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
@@ -208,8 +215,20 @@ h1 {
   height: 150px;
 }
 
-.tile-container {
-  position: relative;
+
+.tile {
+  position: absolute;
+  transition: transform 0.2s top .2s, left .2s;
+  top: 0;
+  left: 0;
+
+  &.merge {
+    animation: merge 0.2s;
+  }
+
+  &.new {
+    animation: new 0.2s;
+  }
 }
 
 @keyframes merge {
@@ -226,33 +245,9 @@ h1 {
   }
 }
 
-@keyframes appearance {
+@keyframes new {
   0% {
     transform: scale(0);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-.tile {
-  position: absolute;
-  transition: transform 0.2s, opacity 0.2s;
-}
-
-.tile-merge {
-  /* Add styles for merge animation, e.g. */
-  animation: merge-animation 0.2s;
-}
-
-@keyframes merge-animation {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.2);
   }
 
   100% {

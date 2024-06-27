@@ -19,105 +19,61 @@ const updateFields = () => {
   const tiles = game.getTiles();
   // const board = game.getState();
 
-  tiles.forEach((anim) => {
-    const {
-      currentPosition,
-      newPosition,
-      value,
-      // type
-    } = anim;
-    let tile = document.querySelector(
-      `.tile[data-row="${currentPosition.row}"][data-col="${currentPosition.col}"]`,
-    );
+  if (!tiles.length) {
+    [...tileContainer.childNodes].forEach((node) => node.remove());
 
-    if (!tile) {
-      tile = document.createElement('div');
-      tile.classList.add('field-cell', 'tile');
-      tile.classList.add(`field-cell--${value}`);
-      tile.setAttribute('data-row', newPosition.row);
-      tile.setAttribute('data-col', newPosition.col);
-      tile.innerText = value;
-      tileContainer.appendChild(tile);
-    }
+    return;
+  }
+  // prev
+  // current
 
-    tile.style.transform = `translate(${newPosition.col * 85}px, ${newPosition.row * 85}px)`;
-  });
+  [...tiles]
+    .filter((tile) => tile.type === 'new')
+    .forEach((anim) => {
+      const { prev, current, value, type } = anim;
+      let tile = document.querySelector(
+        `.tile[data-row="${prev.row}"][data-col="${prev.col}"]`,
+      );
+
+      if (!tile) {
+        tile = document.createElement('div');
+        tile.classList.add('field-cell', 'tile');
+        tile.classList.add(`field-cell--${value}`);
+        tile.setAttribute('data-row', current.row);
+        tile.setAttribute('data-col', current.col);
+        tile.innerText = value;
+        tileContainer.appendChild(tile);
+      }
+
+      const x = current.col * 85 + 10;
+      const y = current.row * 85 + 10;
+
+      // requestAnimationFrame(() => {})
+      // tile.style.transform = `translate(${x}px, ${y}px)`;
+
+      tile.style.top = `${y}px`;
+      tile.style.left = `${x}px`;
+
+      if (type === 'move') {
+        tile.classList.add('move');
+      } else if (type === 'merge') {
+        tile.classList.add('merge');
+        tile.innerText = value;
+      } else if (type === 'new') {
+        tile.classList.add('new');
+      }
+
+      tile.addEventListener('animationend', (e) => {
+        tile.classList.remove('move');
+        tile.classList.remove('merge');
+        tile.classList.remove('new');
+        tile.setAttribute('data-row', current.row);
+        tile.setAttribute('data-col', current.col);
+      });
+    });
 };
 
-// const updateFields = () => {
-// if (game.getStatus() === 'lose' || game.getStatus() === 'win') {
-//   return;
-// }
-
-//   const animations = game.getAnimations();
-
-//   game.board.forEach((row, i) => {
-//     row.forEach((cell, j) => {
-//       const fieldCell = [...gameField.tBodies[0].rows][i].cells[j];
-//       const classes = fieldCell.classList;
-
-//       Array.from(classes).forEach((cls) => {
-//         if (cls.startsWith('field-cell--')) {
-//           fieldCell.classList.remove(cls);
-//         }
-//       });
-
-//       if (cell !== 0) {
-//         const span = document.createElement('span');
-
-//         if (fieldCell.childNodes.length) {
-//           fieldCell.innerHTML = '';
-//         }
-
-//         fieldCell.classList.add(`field-cell--${cell}`);
-
-//         span.classList.add('field-cell__number');
-//         span.classList.add(`field-cell--${cell}`);
-//         span.innerText = cell;
-//         fieldCell.appendChild(span);
-//       } else {
-//         if (fieldCell.childNodes.length) {
-//           fieldCell.innerHTML = '';
-//         }
-//       }
-//     });
-//   });
-// };
-
-// const renderAnimations = () => {
-//   const animations = game.getAnimations();
-
-//   animations.forEach((anim) => {
-//     const { prev, current, value, type } = anim;
-//     let tile = document.querySelector(
-//       `.tile[data-row="${prev.row}"][data-col="${prev.col}"]`,
-//     );
-
-// if (!tile) {
-//   tile = document.createElement('div');
-//   tile.classList.add('field-cell', 'tile');
-//   tile.classList.add(`tile--${value}`);
-//   tile.setAttribute('data-row', current.row);
-//   tile.setAttribute('data-col', current.col);
-//   tileContainer.appendChild(tile);
-// }
-
-//     if (type === 'move') {
-//       tile.classList.add('tile-move');
-//     } else if (type === 'merge') {
-//       tile.classList.add('tile-merge');
-//       tile.innerText = value;
-//     }
-
-//     tile.addEventListener('transitionend', () => {
-//       tile.classList.remove('tile-move');
-//       tile.classList.remove('tile-merge');
-//       tile.setAttribute('data-row', current.row);
-//       tile.setAttribute('data-col', current.col);
-//     });
-//   });
-// };
-
+// Допрацювати
 const checkStatus = () => {
   const currentStatus = game.getStatus();
 
@@ -167,6 +123,7 @@ button.addEventListener('click', (e) => {
 
     game.start();
     updateFields();
+    gameScore.innerText = game.getScore();
     document.addEventListener('keydown', setControl);
   } else if (button.classList.contains('restart')) {
     button.classList.add('start');
@@ -176,6 +133,7 @@ button.addEventListener('click', (e) => {
 
     game.restart();
     updateFields();
+    gameScore.innerText = game.getScore();
     document.removeEventListener('keydown', setControl);
   }
 });

@@ -77,8 +77,6 @@ class Game {
     const rowStep = rowDelta > 0 ? -1 : 1;
     const colStep = colDelta > 0 ? -1 : 1;
 
-    this.animations = [];
-
     // Move tiles
     for (let row = 0; row < this.board.length; row++) {
       for (let col = 0; col < this.board[0].length; col++) {
@@ -101,9 +99,7 @@ class Game {
           }
 
           if (targetRow !== currentRow || targetCol !== currentCol) {
-            this.tiles.forEach((tile) => {});
-
-            this.animations.push({
+            this.tiles.push({
               prev: { row: currentRow, col: currentCol },
               current: { row: targetRow, col: targetCol },
               value: this.board[currentRow][currentCol],
@@ -140,7 +136,7 @@ class Game {
 
           this.score += newPlate;
 
-          this.animations.push({
+          this.tiles.push({
             prev: { row: nextRow, col: nextCol },
             current: { row: currentRow, col: currentCol },
             value: newPlate,
@@ -176,7 +172,7 @@ class Game {
           }
 
           if (targetRow !== currentRow || targetCol !== currentCol) {
-            this.animations.push({
+            this.tiles.push({
               prev: { row: currentRow, col: currentCol },
               current: { row: targetRow, col: targetCol },
               value: this.board[currentRow][currentCol],
@@ -245,7 +241,9 @@ class Game {
    */
   restart() {
     this.board = this.initialState.map((row) => [...row]);
+    this.tiles = [];
     this.status = gameStatus.idle;
+    this.score = 0;
   }
 
   canMove() {
@@ -275,8 +273,8 @@ class Game {
       this.board[row][col] = number;
 
       this.tiles.push({
-        currentPosition: { row, col },
-        newPosition: { row, col },
+        prev: { row, col },
+        current: { row, col },
         value: this.board[row][col],
         type: 'new',
       });
