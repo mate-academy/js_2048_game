@@ -3,8 +3,8 @@ import { gameStatus } from '../utils/const';
 import { Cell } from './Cell.class';
 import { Tile } from './Tile.class';
 
-const FIELDSIZE = 4;
-const CELLSCOUNT = FIELDSIZE * FIELDSIZE;
+const FIEL_DSIZE = 4;
+const CELLS_COUNT = FIEL_DSIZE * FIEL_DSIZE;
 
 export class GameField {
   constructor(gameField) {
@@ -13,9 +13,9 @@ export class GameField {
     this.status = gameStatus.idle;
     this.score = 0;
 
-    for (let i = 0; i < CELLSCOUNT; i++) {
+    for (let i = 0; i < CELLS_COUNT; i++) {
       this.cells.push(
-        new Cell(gameField, i % FIELDSIZE, Math.floor(i / FIELDSIZE)),
+        new Cell(gameField, i % FIEL_DSIZE, Math.floor(i / FIEL_DSIZE)),
       );
     }
 
