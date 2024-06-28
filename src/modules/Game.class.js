@@ -1,301 +1,187 @@
-'use strict';
+/* eslint-disable function-paren-newline */
+import { gameStatus } from '../utils/const';
+import { Cell } from './Cell.class';
+import { Tile } from './Tile.class';
 
-const { gameStatus } = require('../utils/const');
+const FIELDSIZE = 4;
+const CELLSCOUNT = FIELDSIZE * FIELDSIZE;
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
-class Game {
-  /**
-   * this.tiles = [
-   *  {prev:{row:0, col:2}, current:{row:2, col:2}}
-   * ];
-   */
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(
-    initialState = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ],
-  ) {
-    this.initialState = initialState.map((row) => [...row]);
-    this.board = initialState.map((row) => [...row]);
+export class GameField {
+  constructor(gameField) {
+    this.gameField = gameField;
+    this.cells = [];
     this.status = gameStatus.idle;
     this.score = 0;
-    this.tiles = [];
-  }
 
-  moveUp() {
-    this.move('up');
-  }
-
-  moveDown() {
-    this.move('down');
-  }
-
-  moveLeft() {
-    this.move('left');
-  }
-
-  moveRight() {
-    this.move('right');
-  }
-
-  move(direction) {
-    if (this.status !== 'playing') {
-      return;
+    for (let i = 0; i < CELLSCOUNT; i++) {
+      this.cells.push(
+        new Cell(gameField, i % FIELDSIZE, Math.floor(i / FIELDSIZE)),
+      );
     }
 
-    let boardIsChanged = false;
-    const deltas = {
-      up: { row: -1, col: 0 },
-      down: { row: 1, col: 0 },
-      left: { row: 0, col: -1 },
-      right: { row: 0, col: 1 },
-    };
+    this.cellsGroupedByColumn = this.groupCellsByColumn();
 
-    const { row: rowDelta, col: colDelta } = deltas[direction];
-    const startRow = rowDelta > 0 ? this.board.length - 1 : 0;
-    const startCol = colDelta > 0 ? this.board[0].length - 1 : 0;
-    const rowStep = rowDelta > 0 ? -1 : 1;
-    const colStep = colDelta > 0 ? -1 : 1;
+    this.cellsGroupedByReversColumn = this.cellsGroupedByColumn.map((column) =>
+      [...column].reverse(),
+    );
 
-    // Move tiles
-    for (let row = 0; row < this.board.length; row++) {
-      for (let col = 0; col < this.board[0].length; col++) {
-        const currentRow = Math.abs(startRow + row * rowStep);
-        const currentCol = Math.abs(startCol + col * colStep);
+    this.cellsGroupByRow = this.groupCellsByRow();
 
-        if (this.board[currentRow][currentCol] !== 0) {
-          let targetRow = currentRow;
-          let targetCol = currentCol;
-
-          while (
-            targetRow + rowDelta >= 0 &&
-            targetRow + rowDelta < this.board.length &&
-            targetCol + colDelta >= 0 &&
-            targetCol + colDelta < this.board[0].length &&
-            this.board[targetRow + rowDelta][targetCol + colDelta] === 0
-          ) {
-            targetRow += rowDelta;
-            targetCol += colDelta;
-          }
-
-          if (targetRow !== currentRow || targetCol !== currentCol) {
-            this.tiles.push({
-              prev: { row: currentRow, col: currentCol },
-              current: { row: targetRow, col: targetCol },
-              value: this.board[currentRow][currentCol],
-              type: 'move',
-            });
-
-            this.board[targetRow][targetCol] =
-              this.board[currentRow][currentCol];
-            this.board[currentRow][currentCol] = 0;
-            boardIsChanged = true;
-          }
-        }
-      }
-    }
-
-    // Merge tiles
-    for (let row = 0; row < this.board.length; row++) {
-      for (let col = 0; col < this.board[0].length; col++) {
-        const currentRow = Math.abs(startRow + row * rowStep);
-        const currentCol = Math.abs(startCol + col * colStep);
-
-        const nextRow = currentRow + rowDelta;
-        const nextCol = currentCol + colDelta;
-
-        if (
-          nextRow >= 0 &&
-          nextRow < this.board.length &&
-          nextCol >= 0 &&
-          nextCol < this.board[0].length &&
-          this.board[currentRow][currentCol] !== 0 &&
-          this.board[currentRow][currentCol] === this.board[nextRow][nextCol]
-        ) {
-          const newPlate = this.board[currentRow][currentCol] * 2;
-
-          this.score += newPlate;
-
-          this.tiles.push({
-            prev: { row: nextRow, col: nextCol },
-            current: { row: currentRow, col: currentCol },
-            value: newPlate,
-            type: 'merge',
-          });
-
-          this.board[currentRow][currentCol] = newPlate;
-          this.board[nextRow][nextCol] = 0;
-          boardIsChanged = true;
-        }
-      }
-    }
-
-    // Move tiles again after merging
-    for (let row = 0; row < this.board.length; row++) {
-      for (let col = 0; col < this.board[0].length; col++) {
-        const currentRow = Math.abs(startRow + row * rowStep);
-        const currentCol = Math.abs(startCol + col * colStep);
-
-        if (this.board[currentRow][currentCol] !== 0) {
-          let targetRow = currentRow;
-          let targetCol = currentCol;
-
-          while (
-            targetRow + rowDelta >= 0 &&
-            targetRow + rowDelta < this.board.length &&
-            targetCol + colDelta >= 0 &&
-            targetCol + colDelta < this.board[0].length &&
-            this.board[targetRow + rowDelta][targetCol + colDelta] === 0
-          ) {
-            targetRow += rowDelta;
-            targetCol += colDelta;
-          }
-
-          if (targetRow !== currentRow || targetCol !== currentCol) {
-            this.tiles.push({
-              prev: { row: currentRow, col: currentCol },
-              current: { row: targetRow, col: targetCol },
-              value: this.board[currentRow][currentCol],
-              type: 'move',
-            });
-
-            this.board[targetRow][targetCol] =
-              this.board[currentRow][currentCol];
-            this.board[currentRow][currentCol] = 0;
-            boardIsChanged = true;
-          }
-        }
-      }
-    }
-
-    if (boardIsChanged) {
-      this.generateNumberInRandomCell();
-    }
-
-    this.canMove();
-  }
-
-  getTiles() {
-    return this.tiles;
+    this.cellsGroupByReversRow = this.cellsGroupByRow.map((row) =>
+      [...row].reverse(),
+    );
   }
 
   /**
-   * @returns {number}
-   */
-  getScore() {
-    return this.score;
-  }
-
-  /**
-   * @returns {number[][]}
-   */
-  getState() {
-    return this.board;
-  }
-
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {
-    return this.status;
-  }
-
-  /**
-   * Starts the game.
+   * Start the game.
    */
   start() {
     this.status = gameStatus.playing;
-    this.generateNumberInRandomCell();
-    this.generateNumberInRandomCell();
+    this.getRandomEmptyCell().linkTile(new Tile(this.gameField));
+    this.getRandomEmptyCell().linkTile(new Tile(this.gameField));
   }
 
   /**
    * Resets the game.
    */
   restart() {
-    this.board = this.initialState.map((row) => [...row]);
-    this.tiles = [];
+    this.cells.forEach((cell) => {
+      if (cell.linkedTile) {
+        cell.linkedTile.removeFromDom();
+        cell.unlinkTile();
+      }
+    });
     this.status = gameStatus.idle;
     this.score = 0;
   }
 
-  canMove() {
-    const emptyCells = this.findEmptyCells();
-
-    if (!emptyCells.length) {
-      this.status = gameStatus.lose;
-    }
+  getScore() {
+    return this.score;
   }
 
-  getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  getStatus() {
+    return this.status;
   }
 
-  getRandomNumber() {
-    return Math.random() < 0.1 ? 4 : 2;
+  getRandomEmptyCell() {
+    const emptyCells = this.cells.filter((cell) => cell.isEmpty());
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+
+    return emptyCells[randomIndex];
   }
 
-  generateNumberInRandomCell() {
-    const emptyCells = this.findEmptyCells();
+  groupCellsByColumn() {
+    return this.cells.reduce((groupedCells, cell) => {
+      groupedCells[cell.x] = groupedCells[cell.x] || [];
+      groupedCells[cell.x][cell.y] = cell;
 
-    if (emptyCells.length !== 0) {
-      const randomIndex = this.getRandomInt(0, emptyCells.length - 1);
-      const { row, col } = emptyCells[randomIndex];
-      const number = this.getRandomNumber();
-
-      this.board[row][col] = number;
-
-      this.tiles.push({
-        prev: { row, col },
-        current: { row, col },
-        value: this.board[row][col],
-        type: 'new',
-      });
-    } else {
-      this.status = gameStatus.lose;
-    }
+      return groupedCells;
+    }, []);
   }
 
-  findEmptyCells() {
-    const emptyCells = [];
+  groupCellsByRow() {
+    return this.cells.reduce((groupedCells, cell) => {
+      groupedCells[cell.y] = groupedCells[cell.y] || [];
+      groupedCells[cell.y][cell.x] = cell;
 
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[i].length; j++) {
-        if (this.board[i][j] === 0) {
-          emptyCells.push({ row: i, col: j });
-        }
+      return groupedCells;
+    }, []);
+  }
+
+  async slideTiles(groupedCells) {
+    const transitionPromises = [];
+
+    groupedCells.forEach((group) =>
+      this.slideTilesInGroup(group, transitionPromises),
+    );
+
+    await Promise.all(transitionPromises);
+
+    this.cells.forEach((cell) => {
+      if (cell.hasTileForMerge()) {
+        this.score += cell.mergeTiles();
       }
+    });
+  }
+
+  slideTilesInGroup(group, promises) {
+    for (let i = 1; i < group.length; i++) {
+      if (group[i].isEmpty()) {
+        continue;
+      }
+
+      const cellWithTile = group[i];
+      let targetCell;
+      let j = i - 1;
+
+      while (j >= 0 && group[j].canAccept(cellWithTile.linkedTile)) {
+        targetCell = group[j];
+        j--;
+      }
+
+      if (!targetCell) {
+        continue;
+      }
+
+      promises.push(cellWithTile.linkTile.waitForTransitionEnd);
+
+      if (targetCell.isEmpty()) {
+        targetCell.linkTile(cellWithTile.linkedTile);
+      } else {
+        targetCell.linkTileForMerge(cellWithTile.linkedTile);
+      }
+
+      cellWithTile.unlinkTile();
+    }
+  }
+
+  canMove(groupedCells) {
+    return groupedCells.some((group) => this.canMoveInGroup(group));
+  }
+
+  canMoveInGroup(group) {
+    return group.some((cell, index) => {
+      if (index === 0 || cell.isEmpty()) {
+        return false;
+      }
+
+      return group[index - 1].canAccept(cell.linkedTile);
+    });
+  }
+
+  canPlay() {
+    if (
+      !this.canMove(this.cellsGroupedByColumn) &&
+      !this.canMove(this.cellsGroupedByReversColumn) &&
+      !this.canMove(this.cellsGroupByRow) &&
+      !this.canMove(this.cellsGroupByReversRow)
+    ) {
+      this.status = gameStatus.lose;
+    }
+  }
+
+  async moveUp() {
+    await this.move(this.cellsGroupedByColumn);
+  }
+  async moveDown() {
+    await this.move(this.cellsGroupedByReversColumn);
+  }
+  async moveLeft() {
+    await this.move(this.cellsGroupByRow);
+  }
+  async moveRight() {
+    await this.move(this.cellsGroupByReversRow);
+  }
+
+  async move(direction) {
+    if (this.canMove(direction)) {
+      const newTile = new Tile(this.gameField);
+
+      await this.slideTiles(direction);
+
+      this.getRandomEmptyCell().linkTile(newTile);
     }
 
-    return emptyCells;
+    this.canPlay();
   }
 }
-
-module.exports = Game;

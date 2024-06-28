@@ -42,14 +42,12 @@ h1 {
   row-gap: 24px;
 }
 
-
 .game-header {
   display: flex;
   width: 100%;
   justify-content: space-between;
   padding: 10px;
 }
-
 
 .tile-container {
   position: absolute;
@@ -58,34 +56,44 @@ h1 {
 }
 
 .game-field {
+  --cell-size: 75px;
+  --cell-gap: 10px;
+
   position: relative;
   background: #bbada0;
   border-radius: 5px;
-  padding: 10px;
   display: grid;
-  grid-template-rows: repeat(4, 75px);
-  grid-template-columns: 1fr;
-  gap: 10px;
-
+  grid-template: repeat(4, var(--cell-size)) / repeat(4, var(--cell-size));
+  gap: var(--cell-gap);
+  padding: var(--cell-gap);
 }
 
-.field-row {
-  display: grid;
-  grid-template-rows: 1fr;
-  grid-template-columns: repeat(4, 75px);
-  gap: 10px;
+.tile {
+  position: absolute;
+  top: calc(var(--y) * var(--cell-size) + (var(--y) + 1) * var(--cell-gap));
+  left: calc(var(--x) * var(--cell-size) + (var(--x) + 1) * var(--cell-gap));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    top 0.2s,
+    left 0.2s;
+
+  &.merge {
+    animation: merge 0.2s;
+  }
+
+  &.show {
+    animation: show 0.2s;
+  }
 }
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: var(--cell-size);
+  height: var(--cell-size);
   border-radius: 5px;
   color: #776e65;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   &--2 {
     background: #eee4da;
@@ -215,24 +223,21 @@ h1 {
   height: 150px;
 }
 
-
-.tile {
-  position: absolute;
-  transition: transform 0.2s top .2s, left .2s;
-  top: 0;
-  left: 0;
-
-  &.merge {
-    animation: merge 0.2s;
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
   }
 
-  &.new {
-    animation: new 0.2s;
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
 @keyframes merge {
   0% {
+    opacity: 0.5;
     transform: scale(1);
   }
 
@@ -241,16 +246,7 @@ h1 {
   }
 
   100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes new {
-  0% {
-    transform: scale(0);
-  }
-
-  100% {
+    opacity: 1;
     transform: scale(1);
   }
 }
