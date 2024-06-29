@@ -70,7 +70,6 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {}
-
   /**
    * Starts the game.
    */
@@ -81,6 +80,7 @@ class Game {
   /**
    * Resets the game.
    */
+
   restart() {
     this.clickRestartButton();
     this.resetBoard();
@@ -101,11 +101,11 @@ class Game {
     if (emptyCells.length > 0) {
       // choose random number between 0 and emptyCells.length
       const randomCell = Math.floor(
-        Math.random() * Math.floor(emptyCells.length + 1),
+        Math.random() * Math.floor(emptyCells.length),
       );
 
       // choose random value for cell (2 or 4), 4 probability is 10%
-      const randomValue = Math.random() < 0.1 ? 4 : 2;
+      const randomValue = Math.random() <= 0.1 ? 4 : 2;
 
       // pick randomly chosen number from randomCell
       const RandomTilePosition = emptyCells[randomCell];
@@ -116,13 +116,12 @@ class Game {
       this.board[row][cell] = randomValue;
 
       // insert random value inside html
-      const changingCell = this.ROWS_NODE[row].childNodes[cell];
+      const changingCell = this.ROWS_NODE[row].children[cell];
 
       // insert class modificator and append value as text
-      if (typeof changingCell.classList !== 'undefined') {
-        changingCell.classList.add(`field-cell--${randomValue}`);
-        changingCell.innerHTML = randomValue.toString();
-      }
+      changingCell.classList.add(`field-cell--${randomValue}`);
+      changingCell.innerHTML = randomValue.toString();
+      // }
     }
   }
 
