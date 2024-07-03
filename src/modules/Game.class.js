@@ -49,7 +49,7 @@ class Game {
     this.updateUI();
   }
 
-  move(transform, untransform) {
+  move(transform, untransform, checkVertical) {
     if (this.getStatus() !== Game.GAME_STATUS.playing) {
       return false;
     }
@@ -85,12 +85,22 @@ class Game {
 
     const transformedNewState = transform(newState);
 
-    if (!this.areStatesEqual(this.state, transformedNewState)) {
-      canMove = true;
-      this.state = transformedNewState;
-      this.addCell();
-      this.updateUI();
-      this.checkStatus();
+    if (checkVertical) {
+      if (!this.areStatesEqual(this.state, transformedNewState)) {
+        canMove = true;
+        this.state = transformedNewState;
+        this.addCell();
+        this.updateUI();
+        this.checkStatus();
+      }
+    } else {
+      if (!this.areStatesEqual(untransform(this.state), transformedNewState)) {
+        canMove = true;
+        this.state = transformedNewState;
+        this.addCell();
+        this.updateUI();
+        this.checkStatus();
+      }
     }
 
     return canMove;
@@ -100,6 +110,7 @@ class Game {
     return this.move(
       (state) => state,
       (state) => state,
+      false,
     );
   }
 
@@ -107,6 +118,7 @@ class Game {
     return this.move(
       (state) => state.map((row) => row.reverse()),
       (state) => state.map((row) => row.reverse()),
+      false,
     );
   }
 
@@ -114,6 +126,7 @@ class Game {
     return this.move(
       (state) => this.transpose(state),
       (state) => this.transpose(state),
+      true,
     );
   }
 
@@ -121,6 +134,7 @@ class Game {
     return this.move(
       (state) => this.transpose(state.map((row) => row.reverse())),
       (state) => this.transpose(state).map((row) => row.reverse()),
+      true,
     );
   }
 
