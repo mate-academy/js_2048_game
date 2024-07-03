@@ -3,6 +3,13 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
+const ARROW_KEYS = {
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+  UP: 'ArrowUp',
+  DOWN: 'ArrowDown',
+};
+
 const button = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
@@ -40,18 +47,22 @@ function move(e) {
     let canMove = false;
 
     switch (e.key) {
-      case 'ArrowLeft':
+      case ARROW_KEYS.LEFT:
         canMove = game.moveLeft();
         break;
-      case 'ArrowRight':
+
+      case ARROW_KEYS.RIGHT:
         canMove = game.moveRight();
         break;
-      case 'ArrowUp':
+
+      case ARROW_KEYS.UP:
         canMove = game.moveUp();
         break;
-      case 'ArrowDown':
+
+      case ARROW_KEYS.DOWN:
         canMove = game.moveDown();
         break;
+
       default:
         break;
     }
