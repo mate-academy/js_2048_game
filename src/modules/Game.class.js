@@ -51,7 +51,7 @@ class Game {
 
   move(transform, untransform) {
     if (this.getStatus() !== Game.GAME_STATUS.playing) {
-      return;
+      return false;
     }
 
     let canMove = false;
@@ -85,7 +85,8 @@ class Game {
 
     const transformedNewState = transform(newState);
 
-    if (canMove) {
+    if (!this.areStatesEqual(this.state, transformedNewState)) {
+      canMove = true;
       this.state = transformedNewState;
       this.addCell();
       this.updateUI();
@@ -211,6 +212,17 @@ class Game {
     if (!canMove && !canMerge) {
       this.status = Game.GAME_STATUS.lose;
     }
+  }
+
+  areStatesEqual(state1, state2) {
+    for (let i = 0; i < state1.length; i++) {
+      for (let j = 0; j < state1[i].length; j++) {
+        if (state1[i][j] !== state2[i][j]) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
 
