@@ -211,9 +211,6 @@ class Game {
           }
         }
 
-        // eslint-disable-next-line
-        console.log(resultBoard);
-
         const arraysEqual = () => {
           for (let row = 0; row < this.board.length; row++) {
             for (let cell = 0; cell < this.board.length; cell++) {
@@ -444,6 +441,8 @@ class Game {
       START_BUTTON_NODE.innerHTML = 'Restart';
       START_BUTTON_NODE.classList.replace('start', 'restart');
 
+      document.querySelector('.message-win').classList.toggle('hidden', true);
+
       this.clickRestartButton();
     });
   }
@@ -531,7 +530,7 @@ class Game {
     };
 
     if (winCellExists()) {
-      document.querySelector('.message-win').remove('hidden');
+      document.querySelector('.message-win').classList.remove('hidden');
     }
   }
 
