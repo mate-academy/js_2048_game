@@ -33,6 +33,7 @@ class Game {
     this.ROWS_NODE = [...document.querySelectorAll('.field-row')];
     this.LOSE_MESSAGE_NODE = document.querySelector('.message-lose');
     this.SCORE_NODE = document.querySelector('.game-score');
+    this.remove = false;
   }
 
   moveLeft() {
@@ -425,9 +426,13 @@ class Game {
     const START_BUTTON_NODE = document.querySelector('.button.start');
     const START_MESSAGE_NODE = document.querySelector('.message.message-start');
 
-    START_BUTTON_NODE.addEventListener('click', () => {
+    const startButtonClickHandler = () => {
       this.placeRandomTile(true);
       this.placeRandomTile(true);
+
+      if (this.remove) {
+        START_BUTTON_NODE.removeEventListener('click', startButtonClickHandler);
+      }
 
       this.moveRight();
       this.moveLeft();
@@ -444,7 +449,9 @@ class Game {
       document.querySelector('.message-win').classList.toggle('hidden', true);
 
       this.clickRestartButton();
-    });
+    };
+
+    START_BUTTON_NODE.addEventListener('click', startButtonClickHandler);
   }
 
   clickRestartButton() {
@@ -455,6 +462,7 @@ class Game {
 
     if (RESTART_BUTTON_NODE !== null) {
       RESTART_BUTTON_NODE.addEventListener('click', () => {
+        this.remove = true;
         this.resetBoard();
         this.resetScore();
 
