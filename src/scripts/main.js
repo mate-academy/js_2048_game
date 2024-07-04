@@ -4,4 +4,3 @@ const game = new Game();
 
 // Write your code here
 game.start();
-game.restart();

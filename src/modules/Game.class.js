@@ -1,5 +1,4 @@
 'use strict';
-
 /**
  * This class represents the game.
  * Now it has a basic structure, that is needed for testing.
@@ -29,13 +28,11 @@ class Game {
     ];
 
     this.score = 0;
-
     this.ROWS_NODE = [...document.querySelectorAll('.field-row')];
     this.LOSE_MESSAGE_NODE = document.querySelector('.message-lose');
     this.SCORE_NODE = document.querySelector('.game-score');
     this.remove = false;
   }
-
   moveCells() {
     document.addEventListener('keydown', (e) => {
       let newBoard;
@@ -59,7 +56,6 @@ class Game {
               if (newBoard[col][cell] === newBoard[col][cell + 1]) {
                 newBoard[col][cell] *= 2;
                 newBoard[col][cell + 1] = 0;
-
                 this.score += newBoard[col][cell];
                 this.scoreChangeColor();
               }
@@ -85,7 +81,6 @@ class Game {
             this.checkWin();
           }
           break;
-
         case 'ArrowDown':
           newBoard = [[], [], [], []];
           resultBoard = [[], [], [], []];
@@ -105,7 +100,6 @@ class Game {
               if (newBoard[col][cell] === newBoard[col][cell - 1] && merge) {
                 newBoard[col][cell] *= 2;
                 newBoard[col][cell - 1] = 0;
-
                 this.score += newBoard[col][cell];
                 this.scoreChangeColor();
                 merge = false;
@@ -132,7 +126,6 @@ class Game {
             this.checkWin();
           }
           break;
-
         case 'ArrowLeft':
           newBoard = [];
 
@@ -143,7 +136,6 @@ class Game {
               if (newRow[i] === newRow[i + 1]) {
                 newRow[i] *= 2;
                 newRow[i + 1] = 0;
-
                 this.score += newRow[i];
                 this.scoreChangeColor();
               }
@@ -154,6 +146,7 @@ class Game {
             while (filteredRow.length < 4) {
               filteredRow.push(0);
             }
+
             newBoard.push(filteredRow);
           });
 
@@ -177,7 +170,6 @@ class Game {
               if (newRow[i] === newRow[i - 1]) {
                 newRow[i] *= 2;
                 newRow[i - 1] = 0;
-
                 this.score += newRow[i];
                 this.scoreChangeColor();
               }
@@ -239,15 +231,15 @@ class Game {
   /**
    * @returns {number}
    */
+
   getScore() {
     this.SCORE_NODE.innerHTML = `${this.score}`;
   }
-
   /**
    * @returns {number[][]}
    */
-  getState() {}
 
+  getState() {}
   /**
    * Returns the current game status.
    *
@@ -264,17 +256,14 @@ class Game {
    */
   start() {
     this.clickStartButton();
+    this.moveCells();
   }
-
   /**
    * Resets the game.
    */
-
   restart() {
-    this.clickRestartButton();
     this.resetBoard();
   }
-
   placeRandomTile(firstOnes) {
     const emptyCells = [];
 
@@ -292,16 +281,13 @@ class Game {
       const randomCell = Math.floor(
         Math.random() * Math.floor(emptyCells.length),
       );
-
       // choose random value for cell (2 or 4), 4 probability is 10%
       const randomValue = Math.random() <= 0.1 ? 4 : 2;
-
       // pick randomly chosen number from randomCell
       const RandomTilePosition = emptyCells[randomCell];
-
       const { row, cell } = RandomTilePosition;
-
       // add random value to the board
+
       this.board[row][cell] = randomValue;
 
       // insert random value inside html
@@ -319,44 +305,38 @@ class Game {
       }
     }
   }
-
   clickStartButton() {
-    const START_BUTTON_NODE = document.querySelector('.button.start');
-    const START_MESSAGE_NODE = document.querySelector('.message.message-start');
-
+    const START_BUTTON_NODE = document.querySelector('.button');
     const startButtonClickHandler = () => {
-      this.placeRandomTile(true);
-      this.placeRandomTile(true);
+      if (!this.remove) {
+        // eslint-disable-next-line no-shadow
+        const START_BUTTON_NODE = document.querySelector('.button.start');
+        const START_MESSAGE_NODE = document.querySelector(
+          '.message.message-start',
+        );
 
-      if (this.remove) {
-        START_BUTTON_NODE.removeEventListener('click', startButtonClickHandler);
+        this.placeRandomTile(true);
+        this.placeRandomTile(true);
+        START_MESSAGE_NODE.innerHTML = 'Your ad can be here';
+
+        START_MESSAGE_NODE.classList.replace(
+          'message-start',
+          'message-restart',
+        );
+        START_BUTTON_NODE.innerHTML = 'Restart';
+        START_BUTTON_NODE.classList.replace('start', 'restart');
+        document.querySelector('.message-win').classList.toggle('hidden', true);
+        this.remove = true;
+
+        return;
       }
 
-      this.moveCells();
+      const RESTART_BUTTON_NODE = document.querySelector('.button.restart');
+      const RESTART_MESSAGE_NODE = document.querySelector(
+        '.message.message-restart',
+      );
 
-      START_MESSAGE_NODE.innerHTML = 'Your ad can be here';
-
-      START_MESSAGE_NODE.classList.replace('message-start', 'message-restart');
-
-      START_BUTTON_NODE.innerHTML = 'Restart';
-      START_BUTTON_NODE.classList.replace('start', 'restart');
-
-      document.querySelector('.message-win').classList.toggle('hidden', true);
-
-      this.clickRestartButton();
-    };
-
-    START_BUTTON_NODE.addEventListener('click', startButtonClickHandler);
-  }
-
-  clickRestartButton() {
-    const RESTART_BUTTON_NODE = document.querySelector('.button.restart');
-    const RESTART_MESSAGE_NODE = document.querySelector(
-      '.message.message-restart',
-    );
-
-    if (RESTART_BUTTON_NODE !== null) {
-      RESTART_BUTTON_NODE.addEventListener('click', () => {
+      if (RESTART_BUTTON_NODE !== null) {
         this.remove = true;
         this.resetBoard();
         this.resetScore();
@@ -370,12 +350,12 @@ class Game {
           'message-restart',
           'message-start',
         );
-
         this.LOSE_MESSAGE_NODE.classList.toggle('hidden', true);
+      }
+      this.remove = false;
+    };
 
-        this.clickStartButton();
-      });
-    }
+    START_BUTTON_NODE.addEventListener('click', startButtonClickHandler);
   }
 
   resetBoard() {
@@ -418,7 +398,6 @@ class Game {
       this.LOSE_MESSAGE_NODE.classList.remove('hidden');
     }
   }
-
   checkWin() {
     const winCellExists = () => {
       let result = false;
@@ -445,5 +424,4 @@ class Game {
     }, 400);
   }
 }
-
 module.exports = Game;

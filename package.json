@@ -6,6 +6,8 @@
   "author": "Mate Academy",
   "license": "GPL-3.0",
   "scripts": {
+    "lint:js": "eslint .",
+    "lint:fix": "eslint --fix .",
     "init": "mate-scripts init",
     "start": "mate-scripts start",
     "style-format": "npx stylelint 'src/**/*.scss' --fix --allow-empty-input",
