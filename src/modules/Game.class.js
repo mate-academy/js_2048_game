@@ -36,306 +36,204 @@ class Game {
     this.remove = false;
   }
 
-  moveLeft() {
+  moveCells() {
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') {
-        const newBoard = [];
+      let newBoard;
+      let resultBoard;
 
-        this.board.map((row) => {
-          const newRow = row.filter((cell) => cell !== 0);
+      switch (e.key) {
+        case 'ArrowUp':
+          newBoard = [[], [], [], []];
+          resultBoard = [[], [], [], []];
 
-          for (let i = 0; i < newRow.length; i++) {
-            if (newRow[i] === newRow[i + 1]) {
-              newRow[i] *= 2;
-              newRow[i + 1] = 0;
-
-              this.score += newRow[i];
-              this.scoreChangeColor();
-            }
-          }
-
-          const filteredRow = newRow.filter((cell) => cell !== 0);
-
-          while (filteredRow.length < 4) {
-            filteredRow.push(0);
-          }
-
-          newBoard.push(filteredRow);
-        });
-
-        const arraysEqual = () => {
-          for (let row = 0; row < this.board.length; row++) {
-            for (let cell = 0; cell < this.board.length; cell++) {
-              if (this.board[row][cell] !== newBoard[row][cell]) {
-                return false;
+          for (let cell = 0; cell < this.board.length; cell++) {
+            for (let col = 0; col < this.board.length; col++) {
+              if (this.board[col][cell] !== 0) {
+                newBoard[cell].push(this.board[col][cell]);
               }
             }
           }
 
-          return true;
-        };
+          for (let col = 0; col < newBoard.length; col++) {
+            for (let cell = 0; cell < newBoard[col].length; cell++) {
+              if (newBoard[col][cell] === newBoard[col][cell + 1]) {
+                newBoard[col][cell] *= 2;
+                newBoard[col][cell + 1] = 0;
 
-        if (!arraysEqual()) {
-          this.board = newBoard;
-
-          this.ROWS_NODE.forEach((row, rowIndex) => {
-            const cells = [...row.cells];
-
-            cells.forEach((cell, cellIndex) => {
-              const boardValue = this.board[rowIndex][cellIndex];
-
-              if (cell.textContent !== boardValue) {
-                if (boardValue === 0) {
-                  cell.className = `field-cell`;
-                  cell.textContent = '';
-                } else {
-                  cell.textContent = boardValue;
-                  cell.className = `field-cell field-cell--${boardValue}`;
-                }
+                this.score += newBoard[col][cell];
+                this.scoreChangeColor();
               }
-            });
+            }
+
+            while (newBoard[col].length < 4) {
+              newBoard[col].push(0);
+            }
+          }
+
+          for (let col = 0; col < newBoard.length; col++) {
+            for (let cell = 0; cell < newBoard.length; cell++) {
+              resultBoard[cell][col] = newBoard[col][cell];
+            }
+          }
+
+          if (!this.arraysEqual(this.board, resultBoard)) {
+            this.board = resultBoard;
+            this.updateBoard();
+            this.getScore();
+            this.placeRandomTile();
+            this.checkGameOver();
+            this.checkWin();
+          }
+          break;
+
+        case 'ArrowDown':
+          newBoard = [[], [], [], []];
+          resultBoard = [[], [], [], []];
+
+          for (let cell = 0; cell < this.board.length; cell++) {
+            for (let col = 0; col < this.board.length; col++) {
+              if (this.board[col][cell] !== 0) {
+                newBoard[cell].push(this.board[col][cell]);
+              }
+            }
+          }
+
+          for (let col = 0; col < newBoard.length; col++) {
+            let merge = true;
+
+            for (let cell = newBoard[col].length - 1; cell >= 0; cell--) {
+              if (newBoard[col][cell] === newBoard[col][cell - 1] && merge) {
+                newBoard[col][cell] *= 2;
+                newBoard[col][cell - 1] = 0;
+
+                this.score += newBoard[col][cell];
+                this.scoreChangeColor();
+                merge = false;
+              }
+            }
+
+            while (newBoard[col].length < 4) {
+              newBoard[col].unshift(0);
+            }
+          }
+
+          for (let col = 0; col < newBoard.length; col++) {
+            for (let cell = 0; cell < newBoard.length; cell++) {
+              resultBoard[cell][col] = newBoard[col][cell];
+            }
+          }
+
+          if (!this.arraysEqual(this.board, resultBoard)) {
+            this.board = resultBoard;
+            this.updateBoard();
+            this.getScore();
+            this.placeRandomTile();
+            this.checkGameOver();
+            this.checkWin();
+          }
+          break;
+
+        case 'ArrowLeft':
+          newBoard = [];
+
+          this.board.forEach((row) => {
+            const newRow = row.filter((cell) => cell !== 0);
+
+            for (let i = 0; i < newRow.length - 1; i++) {
+              if (newRow[i] === newRow[i + 1]) {
+                newRow[i] *= 2;
+                newRow[i + 1] = 0;
+
+                this.score += newRow[i];
+                this.scoreChangeColor();
+              }
+            }
+
+            const filteredRow = newRow.filter((cell) => cell !== 0);
+
+            while (filteredRow.length < 4) {
+              filteredRow.push(0);
+            }
+            newBoard.push(filteredRow);
           });
 
-          this.getScore();
-          this.placeRandomTile();
-          this.checkGameOver();
-          this.checkWin();
-        }
+          if (!this.arraysEqual(this.board, newBoard)) {
+            this.board = newBoard;
+            this.updateBoard();
+            this.getScore();
+            this.placeRandomTile();
+            this.checkGameOver();
+            this.checkWin();
+          }
+          break;
+
+        case 'ArrowRight':
+          newBoard = [];
+
+          this.board.forEach((row) => {
+            const newRow = row.filter((cell) => cell !== 0);
+
+            for (let i = newRow.length - 1; i > 0; i--) {
+              if (newRow[i] === newRow[i - 1]) {
+                newRow[i] *= 2;
+                newRow[i - 1] = 0;
+
+                this.score += newRow[i];
+                this.scoreChangeColor();
+              }
+            }
+
+            const filteredRow = newRow.filter((cell) => cell !== 0);
+
+            while (filteredRow.length < 4) {
+              filteredRow.unshift(0);
+            }
+            newBoard.push(filteredRow);
+          });
+
+          if (!this.arraysEqual(this.board, newBoard)) {
+            this.board = newBoard;
+            this.updateBoard();
+            this.getScore();
+            this.placeRandomTile();
+            this.checkGameOver();
+            this.checkWin();
+          }
+          break;
       }
     });
   }
 
-  moveRight() {
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') {
-        const newBoard = [];
+  updateBoard() {
+    this.ROWS_NODE.forEach((row, rowIndex) => {
+      const cells = [...row.cells];
 
-        this.board.map((row) => {
-          const newRow = row.filter((cell) => cell !== 0);
+      cells.forEach((cell, cellIndex) => {
+        const boardValue = this.board[rowIndex][cellIndex];
 
-          for (let i = newRow.length - 1; i > 0; i--) {
-            if (newRow[i] === newRow[i - 1]) {
-              newRow[i] *= 2;
-              newRow[i - 1] = 0;
-
-              this.score += newRow[i];
-              this.scoreChangeColor();
-            }
+        if (cell.textContent !== boardValue) {
+          if (boardValue === 0) {
+            cell.className = `field-cell`;
+            cell.textContent = '';
+          } else {
+            cell.textContent = boardValue;
+            cell.className = `field-cell field-cell--${boardValue}`;
           }
-
-          const filteredRow = newRow.filter((cell) => cell !== 0);
-
-          while (filteredRow.length < 4) {
-            filteredRow.unshift(0);
-          }
-
-          newBoard.push(filteredRow);
-        });
-
-        const arraysEqual = () => {
-          for (let row = 0; row < this.board.length; row++) {
-            for (let cell = 0; cell < this.board.length; cell++) {
-              if (this.board[row][cell] !== newBoard[row][cell]) {
-                return false;
-              }
-            }
-          }
-
-          return true;
-        };
-
-        if (!arraysEqual()) {
-          this.board = newBoard;
-
-          this.ROWS_NODE.forEach((row, rowIndex) => {
-            const cells = [...row.cells];
-
-            cells.forEach((cell, cellIndex) => {
-              const boardValue = this.board[rowIndex][cellIndex];
-
-              if (cell.textContent !== boardValue) {
-                if (boardValue === 0) {
-                  cell.className = `field-cell`;
-                  cell.textContent = '';
-                } else {
-                  cell.textContent = boardValue;
-                  cell.className = `field-cell field-cell--${boardValue}`;
-                }
-              }
-            });
-          });
-
-          this.getScore();
-          this.placeRandomTile();
-          this.checkGameOver();
-          this.checkWin();
         }
-      }
+      });
     });
   }
 
-  moveUp() {
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowUp') {
-        const newBoard = [[], [], [], []];
-        const resultBoard = [[], [], [], []];
-
-        for (let cell = 0; cell < this.board.length; cell++) {
-          for (let col = 0; col < this.board.length; col++) {
-            if (this.board[col][cell] !== 0) {
-              newBoard[cell].push(this.board[col][cell]);
-            }
-          }
-        }
-
-        // merge and append zeros to the end
-        for (let col = 0; col < newBoard.length; col++) {
-          for (let cell = 0; cell < newBoard[col].length; cell++) {
-            if (newBoard[col][cell] === newBoard[col][cell + 1]) {
-              newBoard[col][cell] *= 2;
-              newBoard[col][cell + 1] = 0;
-
-              this.score += newBoard[col][cell];
-              this.scoreChangeColor();
-            }
-          }
-
-          while (newBoard[col].length < 4) {
-            newBoard[col].push(0);
-          }
-        }
-
-        // make columns from rows
-        for (let col = 0; col < newBoard.length; col++) {
-          for (let cell = 0; cell < newBoard.length; cell++) {
-            resultBoard[cell][col] = newBoard[col][cell];
-          }
-        }
-
-        const arraysEqual = () => {
-          for (let row = 0; row < this.board.length; row++) {
-            for (let cell = 0; cell < this.board.length; cell++) {
-              if (this.board[row][cell] !== resultBoard[row][cell]) {
-                return false;
-              }
-            }
-          }
-
-          return true;
-        };
-
-        if (!arraysEqual()) {
-          this.board = resultBoard;
-
-          this.ROWS_NODE.forEach((row, rowIndex) => {
-            const cells = [...row.cells];
-
-            cells.forEach((cell, cellIndex) => {
-              const boardValue = this.board[rowIndex][cellIndex];
-
-              if (cell.textContent !== boardValue) {
-                if (boardValue === 0) {
-                  cell.className = `field-cell`;
-                  cell.textContent = '';
-                } else {
-                  cell.textContent = boardValue;
-                  cell.className = `field-cell field-cell--${boardValue}`;
-                }
-              }
-            });
-          });
-
-          this.getScore();
-          this.placeRandomTile();
-          this.checkGameOver();
-          this.checkWin();
+  arraysEqual(board1, board2) {
+    for (let row = 0; row < board1.length; row++) {
+      for (let cell = 0; cell < board1.length; cell++) {
+        if (board1[row][cell] !== board2[row][cell]) {
+          return false;
         }
       }
-    });
-  }
+    }
 
-  moveDown() {
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowDown') {
-        const newBoard = [[], [], [], []];
-        const resultBoard = [[], [], [], []];
-
-        for (let cell = 0; cell < this.board.length; cell++) {
-          for (let col = 0; col < this.board.length; col++) {
-            if (this.board[col][cell] !== 0) {
-              newBoard[cell].push(this.board[col][cell]);
-            }
-          }
-        }
-
-        // merge and append zeros to the end
-        for (let col = 0; col < newBoard.length; col++) {
-          let merge = true;
-
-          for (let cell = 0; cell < newBoard[col].length; cell++) {
-            if (newBoard[col][cell] === newBoard[col][cell + 1] && merge) {
-              newBoard[col][cell + 1] *= 2;
-              newBoard[col][cell] = 0;
-
-              this.score += newBoard[col][cell + 1];
-              this.scoreChangeColor();
-
-              merge = false;
-            }
-          }
-
-          while (newBoard[col].length < 4) {
-            newBoard[col].unshift(0);
-          }
-        }
-
-        // make columns from rows
-        for (let col = 0; col < newBoard.length; col++) {
-          for (let cell = 0; cell < newBoard.length; cell++) {
-            resultBoard[cell][col] = newBoard[col][cell];
-          }
-        }
-
-        const arraysEqual = () => {
-          for (let row = 0; row < this.board.length; row++) {
-            for (let cell = 0; cell < this.board.length; cell++) {
-              if (this.board[row][cell] !== resultBoard[row][cell]) {
-                return false;
-              }
-            }
-          }
-
-          return true;
-        };
-
-        if (!arraysEqual()) {
-          this.board = resultBoard;
-
-          this.ROWS_NODE.forEach((row, rowIndex) => {
-            const cells = [...row.cells];
-
-            cells.forEach((cell, cellIndex) => {
-              const boardValue = this.board[rowIndex][cellIndex];
-
-              if (cell.textContent !== boardValue) {
-                if (boardValue === 0) {
-                  cell.className = `field-cell`;
-                  cell.textContent = '';
-                } else {
-                  cell.textContent = boardValue;
-                  cell.className = `field-cell field-cell--${boardValue}`;
-                }
-              }
-            });
-          });
-
-          this.getScore();
-          this.placeRandomTile();
-          this.checkGameOver();
-          this.checkWin();
-        }
-      }
-    });
+    return true;
   }
 
   /**
@@ -434,10 +332,7 @@ class Game {
         START_BUTTON_NODE.removeEventListener('click', startButtonClickHandler);
       }
 
-      this.moveRight();
-      this.moveLeft();
-      this.moveUp();
-      this.moveDown();
+      this.moveCells();
 
       START_MESSAGE_NODE.innerHTML = 'Your ad can be here';
 
