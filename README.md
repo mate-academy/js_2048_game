@@ -16,9 +16,13 @@ Objective: Combine tiles with the same numbers to reach the 2048 tile.
 
 Controls:
 Arrow Keys: Use the Up, Down, Left, and Right arrow keys to move the tiles.
+
 Swipe Gestures: On touch devices, swipe in the direction you want the tiles to move.
+
 Combining Tiles: When two tiles with the same number collide, they merge into one tile with the sum of their numbers.
+
 Winning the Game: The game is won when a tile with the number 2048 appears on the board.
+
 Game Over: The game is over when there are no more possible moves.
 
 
