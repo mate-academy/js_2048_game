@@ -18,5 +18,6 @@ Combining Tiles: When two tiles with the same number collide, they merge into on
 Winning the Game: The game is won when a tile with the number 2048 appears on the board.
 Game Over: The game is over when there are no more possible moves.
 
+
 ACCESS
 - [DEMO LINK](https://mikezhylka.github.io/js_2048_game/)
