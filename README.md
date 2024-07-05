@@ -5,12 +5,15 @@ Welcome to the 2048 game! This is a popular single-player sliding block puzzle g
 FEATURES
 
 Responsive Design: Play the game on any device, from desktop to mobile.
+
 Keyboard and Swipe Controls: Play using arrow keys on your keyboard or swipe gestures on your touch device.
+
 Restart Option: Restart the game anytime with a simple click of a button.
 
 GAMEPLAY
 
 Objective: Combine tiles with the same numbers to reach the 2048 tile.
+
 Controls:
 Arrow Keys: Use the Up, Down, Left, and Right arrow keys to move the tiles.
 Swipe Gestures: On touch devices, swipe in the direction you want the tiles to move.
