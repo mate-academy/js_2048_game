@@ -19,12 +19,13 @@ class Game {
   #status = 'idle';
   // current score
   #score = 0;
-  // flag for Game objects exiting only for checking moves
+  // flag for Game objects existing only for checking moves
   #isForCheck = false;
   // current state of gamefield
   #state;
   // initial state of gamefield
   #initialState;
+
   /**
    * Creates a new game instance.
    *
@@ -135,7 +136,6 @@ class Game {
   /**
    * @returns {number}
    */
-
   getScore() {
     return this.#score;
   }
@@ -143,7 +143,6 @@ class Game {
   /**
    * @returns {number[][]}
    */
-
   getState() {
     return this.#state.map((row) => [...row]);
   }
@@ -198,7 +197,7 @@ class Game {
     );
   }
   /**
-   * Returns if adding number to state was succesfull
+   * Returns if adding number to state was successful
    * @returns {boolean}
    */
   #addNumber() {
