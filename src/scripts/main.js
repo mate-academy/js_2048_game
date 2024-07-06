@@ -1,4 +1,5 @@
-('use strict');
+'use strict';
+
 import Game from '../modules/Game.class.js';
 
 function keyListener(e) {
@@ -58,7 +59,6 @@ function start() {
     case 'lose':
       game.restart();
       toggleButton('start');
-      changeMessage('START');
       break;
   }
 

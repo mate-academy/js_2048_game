@@ -5,6 +5,7 @@ class Game {
     this.size = 4;
     this.state = initialState || this.generateEmptyState();
     this.started = false;
+    this.status = 'idle'; // Definindo o status inicial como 'idle'
   }
 
   getState() {
@@ -12,13 +13,12 @@ class Game {
   }
 
   getScore() {
-    // Implement score logic if needed
+    // Implementar lógica de pontuação se necessário
     return 0;
   }
 
   getStatus() {
-    // Implement status logic if needed
-    return 'running';
+    return this.status;
   }
 
   moveLeft() {
@@ -73,6 +73,7 @@ class Game {
 
   start() {
     this.started = true;
+    this.status = 'playing'; // Atualiza o status para 'playing'
     this.generateNewCell();
     this.generateNewCell();
   }
@@ -80,6 +81,7 @@ class Game {
   restart() {
     this.state = this.generateEmptyState();
     this.started = false;
+    this.status = 'idle'; // Reinicia o status para 'idle'
   }
 
   generateEmptyState() {
