@@ -1,68 +1,152 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(initialState = null) {
+    this.size = 4;
+    this.state = initialState || this.generateEmptyState();
+    this.started = false;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  getState() {
+    return this.state;
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    // Implement score logic if needed
+    return 0;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getStatus() {
+    // Implement status logic if needed
+    return 'running';
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  moveLeft() {
+    if (!this.started) {
+      return;
+    }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+    const newState = this.state.map((row) => this.moveRowLeft(row));
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    this.state = newState;
 
-  // Add your own methods here
+    this.generateNewCell();
+  }
+
+  moveRight() {
+    if (!this.started) {
+      return;
+    }
+
+    const newState = this.state.map((row) => this.moveRowRight(row));
+
+    this.state = newState;
+
+    this.generateNewCell();
+  }
+
+  moveUp() {
+    if (!this.started) {
+      return;
+    }
+
+    const transposedState = this.transposeState(this.state);
+    const newState = transposedState.map((row) => this.moveRowLeft(row));
+
+    this.state = this.transposeState(newState);
+
+    this.generateNewCell();
+  }
+
+  moveDown() {
+    if (!this.started) {
+      return;
+    }
+
+    const transposedState = this.transposeState(this.state);
+    const newState = transposedState.map((row) => this.moveRowRight(row));
+
+    this.state = this.transposeState(newState);
+
+    this.generateNewCell();
+  }
+
+  start() {
+    this.started = true;
+    this.generateNewCell();
+    this.generateNewCell();
+  }
+
+  restart() {
+    this.state = this.generateEmptyState();
+    this.started = false;
+  }
+
+  generateEmptyState() {
+    return Array.from({ length: this.size }, () => Array(this.size).fill(0));
+  }
+
+  generateNewCell() {
+    const emptyCells = [];
+
+    for (let row = 0; row < this.size; row++) {
+      for (let col = 0; col < this.size; col++) {
+        if (this.state[row][col] === 0) {
+          emptyCells.push({ row, col });
+        }
+      }
+    }
+
+    if (emptyCells.length > 0) {
+      const { row, col } =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+      this.state[row][col] = Math.random() < 0.9 ? 2 : 4;
+    }
+  }
+
+  moveRowLeft(row) {
+    const newRow = row.filter((val) => val !== 0);
+    const missingZeros = this.size - newRow.length;
+    const zerosArray = Array(missingZeros).fill(0);
+    const movedRow = newRow.concat(zerosArray);
+
+    return this.mergeCells(movedRow);
+  }
+
+  moveRowRight(row) {
+    const newRow = row.filter((val) => val !== 0);
+    const missingZeros = this.size - newRow.length;
+    const zerosArray = Array(missingZeros).fill(0);
+    const movedRow = zerosArray.concat(newRow);
+
+    return this.mergeCells(movedRow.reverse()).reverse();
+  }
+
+  mergeCells(row) {
+    for (let i = 0; i < this.size - 1; i++) {
+      if (row[i] === row[i + 1]) {
+        row[i] *= 2;
+        row[i + 1] = 0;
+      }
+    }
+
+    return row;
+  }
+
+  transposeState(state) {
+    const result = [];
+
+    for (let col = 0; col < this.size; col++) {
+      result[col] = [];
+
+      for (let row = 0; row < this.size; row++) {
+        result[col].push(state[row][col]);
+      }
+    }
+
+    return result;
+  }
 }
 
 module.exports = Game;
