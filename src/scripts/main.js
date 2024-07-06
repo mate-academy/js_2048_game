@@ -1,7 +1,5 @@
 'use strict';
 
-import Game from '../modules/Game.class.js';
-
 function keyListener(e) {
   if (game.getStatus() !== 'playing') {
     return;
@@ -45,6 +43,12 @@ function update() {
     case 'LOSE':
       changeMessage('LOSE');
       break;
+    case 'NO_MOVES':
+      changeMessage('NO_MOVES');
+      break;
+    default:
+      hideAllMessages();
+      break;
   }
 }
 
@@ -53,16 +57,26 @@ function start() {
     case 'idle':
       game.start();
       toggleButton('restart');
+      removeStartMessage();
       break;
     case 'playing':
     case 'win':
     case 'lose':
       game.restart();
       toggleButton('start');
+      changeMessage('START');
       break;
   }
 
   update();
+}
+
+function removeStartMessage() {
+  const startMessage = document.querySelector('.message-start');
+
+  if (startMessage) {
+    startMessage.remove();
+  }
 }
 
 function toggleButton(text) {
@@ -84,14 +98,23 @@ function changeMessage(type) {
     case 'START':
       messageClass = '.message-start';
       break;
+    case 'NO_MOVES':
+      messageClass = '.message-no-moves';
+      break;
     default:
-      throw new Error('unkown type');
+      throw new Error('unknown type');
   }
 
-  messageContainer.querySelector(':not(.hidden)').classList.toggle('hidden');
-  messageContainer.querySelector(messageClass).classList.toggle('hidden');
+  messageContainer.querySelector(messageClass).classList.remove('hidden');
 }
 
+function hideAllMessages() {
+  messageContainer
+    .querySelectorAll('.message')
+    .forEach((msg) => msg.classList.add('hidden'));
+}
+
+const Game = require('../modules/Game.class');
 const game = new Game();
 
 const gameField = document.querySelector('.game-field');
