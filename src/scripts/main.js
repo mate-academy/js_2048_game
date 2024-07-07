@@ -7,13 +7,6 @@ const score = document.querySelector('.game-score');
 
 const game = new Game(initialState());
 
-// const game = new Game([
-//   [1024, 1024, 16, 8],
-//   [0, 2, 2, 4],
-//   [0, 0, 0, 0],
-//   [0, 0, 0, 0],
-// ]);
-
 startButton.addEventListener('click', () => {
   if (startButton.classList.contains('start')) {
     startButton.classList.remove('start');

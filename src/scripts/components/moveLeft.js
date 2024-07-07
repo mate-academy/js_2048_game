@@ -1,4 +1,6 @@
 const moveLeft = (state) => {
+  let noMove = true;
+
   for (let i = 0; i < state.length; i += 1) {
     const line = state[i];
     const lastCell = [0, line[0]];
@@ -23,6 +25,7 @@ const moveLeft = (state) => {
         lastCell[0] += 1;
         j -= 1;
         lastCell[1] = state[j][lastCell[0]];
+        noMove = false;
         continue;
       }
 
@@ -32,7 +35,7 @@ const moveLeft = (state) => {
         lastCell[1] = num;
         lastFreeCell += 1;
         state[i][j] = 0;
-
+        noMove = false;
         continue;
       }
 
@@ -42,6 +45,10 @@ const moveLeft = (state) => {
         continue;
       }
     }
+  }
+
+  if (noMove) {
+    return false;
   }
 
   return state;

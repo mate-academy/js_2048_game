@@ -26,20 +26,7 @@ class Game {
 
     const afterMove = moveLeft(this.getState());
 
-    if (this.isFull(afterMove)) {
-      this.gameOver();
-
-      return;
-    }
-
-    const newState = addNewNumToState(afterMove);
-
-    this.state = newState;
-    renderNums(newState);
-
-    if (this.has2048(this.state)) {
-      this.winner();
-    }
+    this.applyChanges(afterMove);
   }
 
   moveRight() {
@@ -49,20 +36,7 @@ class Game {
 
     const afterMove = moveRight(this.getState());
 
-    if (this.isFull(afterMove)) {
-      this.gameOver();
-
-      return;
-    }
-
-    const newState = addNewNumToState(afterMove);
-
-    this.state = newState;
-    renderNums(newState);
-
-    if (this.has2048(this.state)) {
-      this.winner();
-    }
+    this.applyChanges(afterMove);
   }
 
   moveUp() {
@@ -72,20 +46,7 @@ class Game {
 
     const afterMove = moveUp(this.getState());
 
-    if (this.isFull(afterMove)) {
-      this.gameOver();
-
-      return;
-    }
-
-    const newState = addNewNumToState(afterMove);
-
-    this.state = newState;
-    renderNums(newState);
-
-    if (this.has2048(this.state)) {
-      this.winner();
-    }
+    this.applyChanges(afterMove);
   }
 
   moveDown() {
@@ -95,20 +56,7 @@ class Game {
 
     const afterMove = moveDown(this.getState());
 
-    if (this.isFull(afterMove)) {
-      this.gameOver();
-
-      return;
-    }
-
-    const newState = addNewNumToState(afterMove);
-
-    this.state = newState;
-    renderNums(newState);
-
-    if (this.has2048(this.state)) {
-      this.winner();
-    }
+    this.applyChanges(afterMove);
   }
 
   getScore() {
@@ -123,16 +71,6 @@ class Game {
     return this.state.map((row) => [...row]);
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     return this.status;
   }
@@ -145,6 +83,27 @@ class Game {
   restart() {
     this.state = initialState();
     renderNums(this.getState());
+  }
+
+  applyChanges(afterMove) {
+    if (!afterMove) {
+      return;
+    }
+
+    if (this.isFull(afterMove)) {
+      this.gameOver();
+
+      return;
+    }
+
+    const newState = addNewNumToState(afterMove);
+
+    this.state = newState;
+    renderNums(newState);
+
+    if (this.has2048(this.state)) {
+      this.winner();
+    }
   }
 
   isFull(afterMove) {
