@@ -1,44 +1,127 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
+const { gameStatus } = require('../constants/gameStatus');
+const {
+  default: addNewNumToState,
+} = require('../scripts/components/addNewNum');
+const { default: initialState } = require('../scripts/components/initialState');
+const { default: moveDown } = require('../scripts/components/moveDown');
+const { default: moveLeft } = require('../scripts/components/moveLeft');
+const { default: moveRight } = require('../scripts/components/moveRight');
+const { default: moveUp } = require('../scripts/components/moveUp');
+const { default: renderNums } = require('../scripts/components/renderNums');
+
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  state = [];
+  status = gameStatus.idle;
+
+  constructor(data) {
+    this.state = data;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    if (this.getStatus() !== gameStatus.playing) {
+      return;
+    }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+    const afterMove = moveLeft(this.getState());
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+    if (this.isFull(afterMove)) {
+      this.gameOver();
+
+      return;
+    }
+
+    const newState = addNewNumToState(afterMove);
+
+    this.state = newState;
+    renderNums(newState);
+
+    if (this.has2048(this.state)) {
+      this.winner();
+    }
+  }
+
+  moveRight() {
+    if (this.getStatus() !== gameStatus.playing) {
+      return;
+    }
+
+    const afterMove = moveRight(this.getState());
+
+    if (this.isFull(afterMove)) {
+      this.gameOver();
+
+      return;
+    }
+
+    const newState = addNewNumToState(afterMove);
+
+    this.state = newState;
+    renderNums(newState);
+
+    if (this.has2048(this.state)) {
+      this.winner();
+    }
+  }
+
+  moveUp() {
+    if (this.getStatus() !== gameStatus.playing) {
+      return;
+    }
+
+    const afterMove = moveUp(this.getState());
+
+    if (this.isFull(afterMove)) {
+      this.gameOver();
+
+      return;
+    }
+
+    const newState = addNewNumToState(afterMove);
+
+    this.state = newState;
+    renderNums(newState);
+
+    if (this.has2048(this.state)) {
+      this.winner();
+    }
+  }
+
+  moveDown() {
+    if (this.getStatus() !== gameStatus.playing) {
+      return;
+    }
+
+    const afterMove = moveDown(this.getState());
+
+    if (this.isFull(afterMove)) {
+      this.gameOver();
+
+      return;
+    }
+
+    const newState = addNewNumToState(afterMove);
+
+    this.state = newState;
+    renderNums(newState);
+
+    if (this.has2048(this.state)) {
+      this.winner();
+    }
+  }
+
+  getScore() {
+    if (this.status === gameStatus.idle) {
+      return 0;
+    }
+
+    return this.state.flat().reduce((acc, elem) => acc + elem, 0);
+  }
+
+  getState() {
+    return this.state.map((row) => [...row]);
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +133,37 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  start() {
+    this.status = gameStatus.playing;
+    renderNums(this.getState());
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  restart() {
+    this.state = initialState();
+    renderNums(this.getState());
+  }
 
-  // Add your own methods here
+  isFull(afterMove) {
+    return afterMove.flat().every((cell) => cell !== 0);
+  }
+
+  gameOver() {
+    this.status = gameStatus.lose;
+    document.querySelector('.message-lose').classList.remove('hidden');
+  }
+
+  has2048(afterMove) {
+    return afterMove.flat().includes(2048);
+  }
+
+  winner() {
+    this.status = gameStatus.win;
+    document.querySelector('.message-win').classList.remove('hidden');
+  }
 }
 
 module.exports = Game;
