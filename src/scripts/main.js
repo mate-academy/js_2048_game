@@ -3,92 +3,94 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-const container = document.querySelector('.container');
-const gameField = document.querySelector('.game-field');
-const button = container.querySelector('.button');
-const gameScore = container.querySelector('.game-score');
+const cells = document.getElementsByClassName('field-cell');
+const score = document.getElementsByClassName('game-score')[0];
+const startAndRestartButton = document.getElementsByClassName('button')[0];
+const messages = document.getElementsByClassName('message');
 
-const fieldRows = [...gameField.querySelectorAll('.field-row')];
-const fieldCells = fieldRows.map((row) => [...row.children]);
-
-const messages = {
-  idle: container.querySelector('.message-start'),
-  lose: container.querySelector('.message-lose'),
-  win: container.querySelector('.message-win'),
+const bgColorByNumber = {
+  2: 'field-cell--2',
+  4: 'field-cell--4',
+  8: 'field-cell--8',
+  16: 'field-cell--16',
+  32: 'field-cell--32',
+  64: 'field-cell--64',
+  128: 'field-cell--128',
+  256: 'field-cell--256',
+  512: 'field-cell--512',
+  1024: 'field-cell--1024',
+  2048: 'field-cell--2048',
 };
 
-function fillGameField(state) {
-  state.forEach((row, i) => {
-    row.forEach((cell, j) => {
-      const currentCell = fieldCells[i][j];
-
-      currentCell.className = !cell
-        ? 'field-cell'
-        : `field-cell field-cell--${cell}`;
-      currentCell.innerHTML = !cell ? '' : cell;
-    });
-  });
-}
-
-function showMessage() {
-  const gameStatus = game.getStatus();
-
-  for (const key in messages) {
-    if (Object.hasOwnProperty.call(messages, key)) {
-      const message = messages[key];
-
-      if (message) {
-        message.classList.toggle('hidden', key !== gameStatus);
+const actions = {
+  idle: () => {
+    game.setStatus('playing');
+    actions.playing();
+    messages[0].classList.add('hidden');
+    messages[1].classList.add('hidden');
+    messages[2].classList.add('hidden');
+    messages[3].classList.remove('hidden');
+  },
+  playing: () => {
+    for (let line = 0; line < 4; line++) {
+      for (let column = 0; column < 4; column++) {
+        cells[line * 4 + column].textContent =
+          game.getState()[line][column] || '';
       }
     }
-  }
+    setStyles();
+    score.textContent = game.getScore();
+  },
+  win: () => {
+    actions.playing();
+    messages[0].classList.add('hidden');
+    messages[1].classList.remove('hidden');
+    messages[2].classList.add('hidden');
+    messages[3].classList.add('hidden');
+  },
+  lose: () => {
+    actions.playing();
+    messages[0].classList.remove('hidden');
+    messages[1].classList.add('hidden');
+    messages[2].classList.add('hidden');
+    messages[3].classList.add('hidden');
+  },
+};
+
+function bindState(arg) {
+  actions[arg]();
 }
 
-function updateScore(score) {
-  gameScore.innerHTML = score;
-}
-
-button.addEventListener('click', () => {
-  const buttonText = button.textContent;
-
-  if (buttonText === 'Start') {
-    game.start();
-    button.textContent = 'Restart';
-    button.classList.replace('start', 'restart');
-  } else {
-    game.restart();
-    updateScore(0);
-    button.textContent = 'Start';
-    button.classList.replace('restart', 'start');
+const setStyles = () => {
+  for (const cell of cells) {
+    cell.className = bgColorByNumber[cell.textContent]
+      ? 'field-cell ' + bgColorByNumber[cell.textContent]
+      : 'field-cell';
   }
+};
 
-  const state = game.getState();
-
-  fillGameField(state);
-  showMessage();
+// Event Listeners
+document.addEventListener('keydown', (eventKey) => {
+  if (game.getStatus() === 'playing') {
+    if (eventKey.key === 'ArrowDown') {
+      game.moveDown();
+      bindState(game.getStatus());
+    } else if (eventKey.key === 'ArrowUp') {
+      game.moveUp();
+      bindState(game.getStatus());
+    } else if (eventKey.key === 'ArrowRight') {
+      game.moveRight();
+      bindState(game.getStatus());
+    } else if (eventKey.key === 'ArrowLeft') {
+      game.moveLeft();
+      bindState(game.getStatus());
+    }
+  }
 });
 
-document.addEventListener('keydown', (keyEvent) => {
-  keyEvent.preventDefault();
-
-  if (game.getStatus() !== 'playing') {
-    return;
-  }
-
-  const moveActions = {
-    ArrowUp: game.moveUp,
-    ArrowDown: game.moveDown,
-    ArrowLeft: game.moveLeft,
-    ArrowRight: game.moveRight,
-  };
-
-  const action = moveActions[keyEvent.key];
-
-  if (action) {
-    action.call(game);
-  }
-
-  fillGameField(game.getState());
-  updateScore(game.getScore());
-  showMessage();
+startAndRestartButton.addEventListener('click', (clickStartRestartEvent) => {
+  game.start();
+  bindState(game.getStatus());
+  setStyles();
+  startAndRestartButton.classList.add('restart');
 });
