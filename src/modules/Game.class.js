@@ -148,6 +148,8 @@ class Game {
     this.score = 0;
     this.status = Game.STATUS.playing;
     this.randomNumber();
+    this.randomNumber();
+    this.loseOrWin();
   }
 
   randomNumber() {
@@ -171,7 +173,7 @@ class Game {
     const { row, col } = emptyCells[randomIndex];
 
     // Place a 2 or 4 in the selected cell
-    const newValue = Math.random() < 0.8 ? 2 : 4;
+    const newValue = Math.floor(Math.random() * 10) + 1 > 8 ? 4 : 2;
     this.state[row][col] = newValue;
   }
 
@@ -182,13 +184,12 @@ class Game {
     for (let i = 0; i < this.state.length; i++) {
       for (let j = 0; j < this.state[i].length; j++) {
         if (this.state[i][j] === 2048) {
-              this.status = Game.STATUS.win;
-              return;
+          this.status = Game.STATUS.win;
+          return;
         }
         if (this.state[i][j] === 0) {
-              isZero = true;
+          isZero = true;
         }
-        // Check for possible moves horizontally and vertically -- Also AI helped to check
         if (j < this.state[i].length - 1 && this.state[i][j] === this.state[i][j + 1]) {
           hasMove = true;
         }
@@ -200,7 +201,7 @@ class Game {
     }
 
     if (!isZero && !hasMove) {
-        this.status = Game.STATUS.lose;
+      this.status = Game.STATUS.lose;
     }
   }
     
