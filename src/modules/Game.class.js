@@ -1,5 +1,7 @@
 'use strict';
 
+const { getRandomArrayIndex } = require('../scripts/utils');
+
 /**
  * This class represents the game.
  * Now it has a basic structure, that is needed for testing.
@@ -20,14 +22,26 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
     // eslint-disable-next-line no-console
-    this.state = initialState;
+    this.initialState = initialState;
+    this.state = this.initialState.map((row) => [...row]);
     this.score = 0;
     this.status = 'idle';
   }
 
   moveLeft() {
+    if (!this.canMoveLeft()) {
+      return;
+    }
+
     if (this.status === 'playing') {
       this.state = this.moveHorizontally(this.state, 'ArrowLeft');
 
@@ -35,7 +49,12 @@ class Game {
       this.isGameContinue();
     }
   }
+
   moveRight() {
+    if (!this.canMoveRight()) {
+      return;
+    }
+
     if (this.status === 'playing') {
       this.state = this.moveHorizontally(this.state, 'ArrowRight');
 
@@ -45,6 +64,10 @@ class Game {
   }
 
   moveUp() {
+    if (!this.canMoveUp()) {
+      return;
+    }
+
     if (this.status === 'playing') {
       this.state = this.moveVertically(this.state, 'ArrowUp');
 
@@ -52,7 +75,12 @@ class Game {
       this.isGameContinue();
     }
   }
+
   moveDown() {
+    if (!this.canMoveDown()) {
+      return;
+    }
+
     if (this.status === 'playing') {
       this.state = this.moveVertically(this.state, 'ArrowDown');
 
@@ -102,12 +130,7 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.state = this.initialState.map((row) => [...row]);
 
     this.score = 0;
     this.status = 'idle';
@@ -115,17 +138,15 @@ class Game {
 
   // Add your own methods here
   getEmptyCells() {
-    const emptyCells = [];
-
-    this.state.forEach((row, rowIndex) => {
+    return this.state.reduce((emptyCells, row, rowIndex) => {
       row.forEach((item, colIndex) => {
         if (item === 0) {
           emptyCells.push({ rowIndex, colIndex });
         }
       });
-    });
 
-    return emptyCells;
+      return emptyCells;
+    }, []);
   }
 
   addTile() {
@@ -134,7 +155,7 @@ class Game {
     const emptyCells = this.getEmptyCells();
 
     if (emptyCells.length > 0) {
-      const emptyCellIndex = Math.floor(Math.random() * emptyCells.length);
+      const emptyCellIndex = getRandomArrayIndex(emptyCells);
 
       const { rowIndex, colIndex } = emptyCells[emptyCellIndex];
 
@@ -143,8 +164,8 @@ class Game {
   }
 
   moveHorizontally(currentState, direction) {
-    return currentState.map((line) => {
-      let oldLine = line.filter((item) => item !== 0);
+    return currentState.map((row) => {
+      let oldLine = row.filter((item) => item !== 0);
 
       if (direction === 'ArrowRight') {
         oldLine = oldLine.reverse();
@@ -170,7 +191,13 @@ class Game {
         } while (newLine.length < 4);
       }
 
-      return direction === 'ArrowRight' ? newLine.reverse() : newLine;
+      const result = direction === 'ArrowRight' ? newLine.reverse() : newLine;
+
+      if (row.join('') === newLine.join('')) {
+        return row;
+      }
+
+      return result;
     });
   }
 
@@ -195,39 +222,81 @@ class Game {
   }
 
   isBoardHas2048() {
-    let res = false;
-
-    this.state.forEach((row) => {
-      if (row.includes(2048)) {
-        res = true;
-      }
-    });
-
-    return res;
+    return this.state.some((row) => row.includes(2048));
   }
 
-  isMoveAvailable() {
-    if (this.getEmptyCells().length > 0) {
-      return true;
-    }
+  reverseBoard() {
+    this.state = this.state.map((row) => row.reverse());
+  }
 
-    for (let row = 0; row < this.state.length; row++) {
-      for (let col = 0; col < this.state[0].length - 1; col++) {
-        if (this.state[row][col] === this.state[row][col + 1]) {
+  transposeBoard() {
+    this.state = this.state[0].map((_, colI) => {
+      return this.state.map((row) => row[colI]);
+    });
+  }
+
+  canMoveLeft() {
+    return this.state.some((row) => {
+      const rowWithValues = row.filter((item) => item !== 0);
+
+      if (rowWithValues.length === 0) {
+        return false;
+      }
+
+      for (let i = 0; i < rowWithValues.length; i++) {
+        if (rowWithValues[i] === rowWithValues[i + 1]) {
+          return true;
+        }
+
+        if (
+          row.indexOf(rowWithValues[i]) !==
+          rowWithValues.indexOf(rowWithValues[i])
+        ) {
           return true;
         }
       }
-    }
+    });
+  }
 
-    for (let col = 0; col < this.state[0].length; col++) {
-      for (let row = 0; row < this.state.length - 1; row++) {
-        if (this.state[row][col] === this.state[row + 1][col]) {
-          return true;
-        }
-      }
-    }
+  canMoveRight() {
+    this.reverseBoard();
 
-    return false;
+    const permission = this.canMoveLeft();
+
+    this.reverseBoard();
+
+    return permission;
+  }
+
+  canMoveUp() {
+    this.transposeBoard();
+
+    const permission = this.canMoveLeft();
+
+    this.transposeBoard();
+
+    return permission;
+  }
+
+  canMoveDown() {
+    this.transposeBoard();
+    this.reverseBoard();
+
+    const permission = this.canMoveLeft();
+
+    this.reverseBoard();
+    this.transposeBoard();
+
+    return permission;
+  }
+
+  canMove() {
+    return (
+      this.canMoveLeft() ||
+      this.canMoveRight() ||
+      this.canMoveUp() ||
+      this.canMoveDown()
+    );
   }
 
   isGameContinue() {
@@ -237,13 +306,13 @@ class Game {
       return false;
     }
 
-    if (this.isMoveAvailable()) {
-      return true;
-    } else {
+    if (!this.canMove()) {
       this.status = 'lose';
 
       return false;
     }
+
+    return true;
   }
 }
 

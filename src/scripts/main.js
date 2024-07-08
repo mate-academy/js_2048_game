@@ -1,16 +1,16 @@
 'use strict';
 
-const initialState = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
+// const initialState = [
+//   [0, 0, 0, 0],
+//   [0, 0, 0, 0],
+//   [0, 0, 0, 0],
+//   [0, 0, 0, 0],
+// ];
 
 // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const { getCapitalizedWord } = require('./utils');
-const game = new Game(initialState);
+const game = new Game();
 
 // Write your code here
 // const field = document.querySelector('.game-field');
@@ -47,7 +47,7 @@ button.addEventListener('click', () => {
   button.textContent = getCapitalizedWord(afterClickClasses[1]);
 });
 
-// const moveKeys = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
+const moveKeys = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
 
 document.addEventListener('keydown', (e) => {
   const gameStatus = game.getStatus();
@@ -72,8 +72,10 @@ document.addEventListener('keydown', (e) => {
     game.moveDown();
   }
 
-  changeField();
-  manageMessage();
+  if (moveKeys.includes(e.key)) {
+    changeField();
+    manageMessage();
+  }
 });
 
 function changeField() {
