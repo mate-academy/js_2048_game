@@ -50,20 +50,25 @@ const addField = () => {
 };
 
 const handleKeyDown = (e) => {
-  if (e.key === 'ArrowLeft') {
-    game.moveLeft();
-  }
+  switch (e.key) {
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
 
-  if (e.key === 'ArrowRight') {
-    game.moveRight();
-  }
+    case 'ArrowRight':
+      game.moveLeft();
+      break;
 
-  if (e.key === 'ArrowUp') {
-    game.moveUp();
-  }
+    case 'ArrowUp':
+      game.moveUp();
+      break;
 
-  if (e.key === 'ArrowDown') {
-    game.moveDown();
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+
+    default:
+      return;
   }
 
   addField();
