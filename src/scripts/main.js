@@ -52,23 +52,21 @@ const addField = () => {
 const handleKeyDown = (e) => {
   if (e.key === 'ArrowLeft') {
     game.moveLeft();
-    addField();
   }
 
   if (e.key === 'ArrowRight') {
     game.moveRight();
-    addField();
   }
 
   if (e.key === 'ArrowUp') {
     game.moveUp();
-    addField();
   }
 
   if (e.key === 'ArrowDown') {
     game.moveDown();
-    addField();
   }
+
+  addField();
 };
 
 const handleStart = () => {
@@ -76,17 +74,19 @@ const handleStart = () => {
 
   if (game.getStatus() === 'playing') {
     game.restart();
-    addField();
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
   }
 
   if (game.getStatus() === 'idle') {
     game.start();
-    addField();
     startBtn.classList.remove('start');
     startBtn.classList.add('restart');
     startBtn.textContent = 'Restart';
     messageStart.classList.add('hidden');
   }
+
+  addField();
 };
 
 startBtn.addEventListener('click', handleStart);
