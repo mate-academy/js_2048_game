@@ -17,9 +17,9 @@ class Game {
   ]
 
   constructor(initialState = Game.INITIAL_STATE) {
+    this.status = Game.STATUS.idle;
     this.initialState = initialState;
     this.score = 0;
-    this.status = Game.STATUS.idle;
     this.state = this.initialState.map((row) => row.slice())
     
   }
@@ -140,16 +140,15 @@ class Game {
 
   restart() {
     this.initialState = Game.INITIAL_STATE;
+    this.status = Game.STATUS.idle;
     this.state = this.initialState.map((row) => row.slice());
-    this.start()
+    this.score = 0;
   }
 
   start() {
-    this.score = 0;
     this.status = Game.STATUS.playing;
     this.randomNumber();
     this.randomNumber();
-    this.loseOrWin();
   }
 
   randomNumber() {

@@ -37,14 +37,33 @@ function displayNumbers(state) {
 }
 
 buttonStart.addEventListener('click',()=> {
-    buttonStart.textContent = 'Restart';
-    buttonStart.classList.remove('start');
-    buttonStart.classList.add('restart');
-    game.restart()
-    displayNumbers(game.getState());
-    gameScore.textContent = game.getScore();
-    startMessage.className = 'hidden';
-    loseMessage.classList.add('hidden');
+    if (buttonStart.classList.contains('start')) {
+        buttonStart.textContent = 'Restart';
+
+        buttonStart.classList.remove('start');
+        buttonStart.classList.add('restart');
+    
+        game.start()
+        displayNumbers(game.getState());
+    
+        gameScore.textContent = game.getScore();
+        
+        startMessage.classList.add('hidden');
+        loseMessage.classList.add('hidden');
+    } else{
+        buttonStart.textContent = 'Start';
+
+        buttonStart.classList.remove('restart');
+        buttonStart.classList.add('start');
+
+        game.restart();
+        displayNumbers(game.getState());
+
+        gameScore.textContent = game.getScore();
+
+        startMessage.classList.remove('hidden');
+        loseMessage.classList.add('hidden');
+    }
 });
 
 const key = document.addEventListener('keydown', (event)=> {
