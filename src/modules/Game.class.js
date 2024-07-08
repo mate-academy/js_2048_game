@@ -259,7 +259,7 @@ class Game {
     if (JSON.stringify(arr) !== JSON.stringify(this.gameState)) {
       this.gameState = arr;
       this.addNewCell();
-      this.gameScore = score;
+      this.gameScore += score;
       this.checkinitialState();
     }
   }

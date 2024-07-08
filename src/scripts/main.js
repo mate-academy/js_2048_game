@@ -6,6 +6,7 @@ const scoreCeil = document.querySelector('.game-score');
 const startBtn = document.querySelector('.start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
+const messageStart = document.querySelector('.message-start');
 
 const game = new Game();
 
@@ -51,7 +52,6 @@ const addField = () => {
 const handleKeyDown = (e) => {
   if (e.key === 'ArrowLeft') {
     game.moveLeft();
-    game.checkgameState();
     addField();
   }
 
@@ -85,6 +85,7 @@ const handleStart = () => {
     startBtn.classList.remove('start');
     startBtn.classList.add('restart');
     startBtn.textContent = 'Restart';
+    messageStart.classList.add('hidden');
   }
 };
 
