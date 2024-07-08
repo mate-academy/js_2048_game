@@ -1,66 +1,78 @@
-import Game from './modules/Game.class.js';
+'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const game = new Game();
-  const scoreElement = document.getElementById('score');
-  const startRestartButton = document.getElementById('start-restart-btn');
-  const statusMessage = document.getElementById('status-message');
+const Game = require('../modules/Game.class');
+const game = new Game();
 
-  const render = () => {
-    const board = game.getState();
+const startBtn = document.querySelector('.start');
+const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
 
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
-        const cell = document.getElementById(`cell-${r}-${c}`);
-        const value = board[r][c];
+function updateUI() {
+  const board = game.getState();
+  const score = game.getScore();
+  const statusGame = game.getStatus();
 
-        cell.textContent = value === 0 ? '' : value;
-        cell.className = `game-cell game-cell--${value}`;
-      }
+  document.querySelector('.game-score').textContent = score;
+
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      const cell = document.querySelector(
+        `.field-row:nth-child(${row + 1}) .field-cell:nth-child(${col + 1})`,
+      );
+
+      cell.textContent = board[row][col] === 0 ? '' : board[row][col];
+      cell.className = `field-cell field-cell--${board[row][col]}`;
     }
-    scoreElement.textContent = game.getScore();
+  }
 
-    const gameStatus = game.getStatus();
+  if (statusGame === 'playing') {
+    startMessage.classList.add('hidden');
+  } else if (statusGame === 'win') {
+    winMessage.classList.remove('hidden');
 
-    if (gameStatus === 'won') {
-      statusMessage.textContent = 'You won!';
-      statusMessage.classList.remove('hidden');
-    } else if (gameStatus === 'lost') {
-      statusMessage.textContent = 'Game Over!';
-      statusMessage.classList.remove('hidden');
-    } else {
-      statusMessage.classList.add('hidden');
-    }
-  };
+    document.querySelector('.restart').addEventListener('click', () => {
+      winMessage.classList.add('hidden');
+    });
+  } else if (statusGame === 'lose') {
+    loseMessage.classList.remove('hidden');
 
-  startRestartButton.addEventListener('click', () => {
-    game.restart();
-    startRestartButton.textContent = 'Restart';
-    render();
-  });
+    document.querySelector('.restart').addEventListener('click', () => {
+      loseMessage.classList.add('hidden');
+    });
+  } else {
+    winMessage.classList.add('hidden');
+    loseMessage.classList.add('hidden');
+  }
+}
 
-  document.addEventListener('keydown', (evt) => {
-    if (game.getStatus() !== 'playing') {
-      return;
-    }
-
-    switch (evt.key) {
-      case 'ArrowLeft':
-        game.moveLeft();
-        break;
-      case 'ArrowRight':
-        game.moveRight();
-        break;
-      case 'ArrowUp':
-        game.moveUp();
-        break;
-      case 'ArrowDown':
-        game.moveDown();
-        break;
-    }
-    render();
-  });
-
+startBtn.addEventListener('click', () => {
   game.start();
-  render();
+  updateUI();
+  startBtn.textContent = 'Restart';
+  startBtn.classList.add('restart');
+  startBtn.classList.remove('start');
+});
+
+document.addEventListener('keydown', (e) => {
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
+  switch (e.key) {
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+  }
+
+  updateUI();
 });

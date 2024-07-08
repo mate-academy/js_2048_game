@@ -6,110 +6,68 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <title>2048 Game</title>
+    <title>2048</title>
     <link
       rel="stylesheet"
-      href="style.css"
+      href="./styles/main.scss"
     />
   </head>
   <body>
-    <div class="game-container">
-      <div class="header">
+    <div class="container">
+      <div class="game-header">
         <h1>2048</h1>
-        <div class="score-board">
-          <div>
+        <div class="controls">
+          <p class="info">
             Score:
-            <span id="score">0</span>
-          </div>
-          <button
-            id="start-restart-btn"
-            class="start"
-          >
-            Start
-          </button>
+            <span class="game-score">0</span>
+          </p>
+          <button class="button start">Start</button>
         </div>
       </div>
-      <div class="game-board">
-        <div class="game-row">
-          <div
-            class="game-cell"
-            id="cell-0-0"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-0-1"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-0-2"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-0-3"
-          ></div>
-        </div>
-        <div class="game-row">
-          <div
-            class="game-cell"
-            id="cell-1-0"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-1-1"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-1-2"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-1-3"
-          ></div>
-        </div>
-        <div class="game-row">
-          <div
-            class="game-cell"
-            id="cell-2-0"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-2-1"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-2-2"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-2-3"
-          ></div>
-        </div>
-        <div class="game-row">
-          <div
-            class="game-cell"
-            id="cell-3-0"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-3-1"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-3-2"
-          ></div>
-          <div
-            class="game-cell"
-            id="cell-3-3"
-          ></div>
-        </div>
-      </div>
-      <div
-        id="status-message"
-        class="hidden"
-      >
-        You won!
+
+      <table class="game-field">
+        <tbody>
+          <tr class="field-row">
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+          </tr>
+
+          <tr class="field-row">
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+          </tr>
+
+          <tr class="field-row">
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+          </tr>
+
+          <tr class="field-row">
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+            <td class="field-cell"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="message-container">
+        <p class="message message-lose hidden">You lose! Restart the game?</p>
+        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
+        <p class="message message-start">
+          Press "Start" to begin game. Good luck!
+        </p>
       </div>
     </div>
-    <script src="main.js"></script>
+    <script
+      src="scripts/main.js"
+      type="module"
+    ></script>
   </body>
 </html>
