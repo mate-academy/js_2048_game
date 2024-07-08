@@ -56,7 +56,7 @@ const handleKeyDown = (e) => {
       break;
 
     case 'ArrowRight':
-      game.moveLeft();
+      game.moveRight();
       break;
 
     case 'ArrowUp':
