@@ -7,14 +7,7 @@ const startBtn = document.querySelector('.start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 
-const field = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
-
-const game = new Game(field);
+const game = new Game();
 
 const addField = () => {
   if (game.getStatus() === 'win') {
@@ -33,12 +26,12 @@ const addField = () => {
     return;
   }
 
-  for (let i = 0; i < game.field.length; i++) {
+  for (let i = 0; i < game.gameState.length; i++) {
     const fieldCell = [...fieldRow[i].querySelectorAll('.field-cell')];
 
-    for (let j = 0; j < game.field[i].length; j++) {
+    for (let j = 0; j < game.gameState[i].length; j++) {
       const cell = fieldCell[j];
-      const cellValue = game.field[i][j];
+      const cellValue = game.gameState[i][j];
 
       if (cellValue === 0 && cell.textContent > 0) {
         cell.classList.remove(`field-cell--${cell.textContent}`);
@@ -58,6 +51,7 @@ const addField = () => {
 const handleKeyDown = (e) => {
   if (e.key === 'ArrowLeft') {
     game.moveLeft();
+    game.checkgameState();
     addField();
   }
 
@@ -82,7 +76,6 @@ const handleStart = () => {
 
   if (game.getStatus() === 'playing') {
     game.restart();
-    game.start();
     addField();
   }
 

@@ -22,7 +22,13 @@ class Game {
    */
   constructor(initialState) {
     // eslint-disable-next-line no-console
-    this.field = [...initialState];
+    this.initialState = initialState || [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.gameState = this.initialState.map((row) => [...row]);
     this.gameStatus = 'idle';
     this.gameScore = 0;
     this.zeroCell = 16;
@@ -36,9 +42,9 @@ class Game {
   addNewCell() {
     const emptyCells = [];
 
-    for (let i = 0; i < this.field.length; i++) {
-      for (let j = 0; j < this.field[i].length; j++) {
-        if (this.field[i][j] === 0) {
+    for (let i = 0; i < this.gameState.length; i++) {
+      for (let j = 0; j < this.gameState[i].length; j++) {
+        if (this.gameState[i][j] === 0) {
           emptyCells.push([i, j]);
         }
       }
@@ -47,29 +53,25 @@ class Game {
     if (emptyCells.length > 0) {
       const [row, cell] = emptyCells[this.random(emptyCells.length - 1)];
 
-      this.field[row][cell] = this.number[this.random(9)];
+      this.gameState[row][cell] = this.number[this.random(9)];
       this.zeroCell--;
     }
   }
 
-  checkField() {
+  checkinitialState() {
     let count = 0;
-    let score = 0;
 
-    for (let i = 0; i < this.field.length; i++) {
-      for (let j = 0; j < this.field[i].length; j++) {
-        if (this.field[i][j] === 0) {
+    for (let i = 0; i < this.gameState.length; i++) {
+      for (let j = 0; j < this.gameState[i].length; j++) {
+        if (this.gameState[i][j] === 0) {
           count++;
         } else {
-          score += this.field[i][j];
-
-          if (this.field[i][j] === 2048) {
+          if (this.gameState[i][j] === 2048) {
             this.gameStatus = 'win';
           }
         }
       }
     }
-    this.gameScore = score;
     this.zeroCell = count;
 
     if (count === 0 && !this.canMove()) {
@@ -78,22 +80,22 @@ class Game {
   }
 
   canMove() {
-    for (let i = 0; i < this.field.length; i++) {
-      for (let j = 0; j < this.field[i].length; j++) {
-        if (this.field[i][j] === 0) {
+    for (let i = 0; i < this.gameState.length; i++) {
+      for (let j = 0; j < this.gameState[i].length; j++) {
+        if (this.gameState[i][j] === 0) {
           return true;
         }
 
         if (
-          j < this.field[i].length - 1 &&
-          this.field[i][j] === this.field[i][j + 1]
+          j < this.gameState[i].length - 1 &&
+          this.gameState[i][j] === this.gameState[i][j + 1]
         ) {
           return true;
         }
 
         if (
-          i < this.field.length - 1 &&
-          this.field[i][j] === this.field[i + 1][j]
+          i < this.gameState.length - 1 &&
+          this.gameState[i][j] === this.gameState[i + 1][j]
         ) {
           return true;
         }
@@ -104,16 +106,21 @@ class Game {
   }
 
   moveLeft() {
-    const arr = [];
+    if (this.gameStatus !== 'playing') {
+      return;
+    }
 
-    for (let i = 0; i < this.field.length; i++) {
-      let row = this.field[i].filter((num) => num !== 0);
+    const arr = [];
+    let score = 0;
+
+    for (let i = 0; i < this.gameState.length; i++) {
+      let row = this.gameState[i].filter((num) => num !== 0);
 
       for (let j = 0; j < row.length - 1; j++) {
         if (row[j] === row[j + 1]) {
           row[j] *= 2;
           row[j + 1] = 0;
-          this.gameScore += row[j];
+          score += row[j];
         }
       }
 
@@ -125,24 +132,30 @@ class Game {
       arr.push(row);
     }
 
-    if (JSON.stringify(arr) !== JSON.stringify(this.field)) {
-      this.field = arr;
+    if (JSON.stringify(arr) !== JSON.stringify(this.gameState)) {
+      this.gameState = arr;
       this.addNewCell();
+      this.gameScore += score;
+      this.checkinitialState();
     }
-    this.checkField();
   }
 
   moveRight() {
-    const arr = [];
+    if (this.gameStatus !== 'playing') {
+      return;
+    }
 
-    for (let i = 0; i < this.field.length; i++) {
-      let row = this.field[i].filter((num) => num !== 0);
+    const arr = [];
+    let score = 0;
+
+    for (let i = 0; i < this.gameState.length; i++) {
+      let row = this.gameState[i].filter((num) => num !== 0);
 
       for (let j = row.length - 1; j > 0; j--) {
         if (row[j] === row[j - 1]) {
           row[j] *= 2;
           row[j - 1] = 0;
-          this.gameScore += row[j];
+          score += row[j];
         }
       }
 
@@ -154,22 +167,28 @@ class Game {
       arr.push(row);
     }
 
-    if (JSON.stringify(arr) !== JSON.stringify(this.field)) {
-      this.field = arr;
+    if (JSON.stringify(arr) !== JSON.stringify(this.gameState)) {
+      this.gameState = arr;
       this.addNewCell();
+      this.gameScore += score;
+      this.checkinitialState();
     }
-    this.checkField();
   }
 
   moveUp() {
-    const arr = [[], [], [], []];
+    if (this.gameStatus !== 'playing') {
+      return;
+    }
 
-    for (let i = 0; i < this.field.length; i++) {
+    const arr = [[], [], [], []];
+    let score = 0;
+
+    for (let i = 0; i < this.gameState.length; i++) {
       let column = [
-        this.field[0][i],
-        this.field[1][i],
-        this.field[2][i],
-        this.field[3][i],
+        this.gameState[0][i],
+        this.gameState[1][i],
+        this.gameState[2][i],
+        this.gameState[3][i],
       ];
 
       column = column.filter((num) => num !== 0);
@@ -178,7 +197,7 @@ class Game {
         if (column[j] === column[j + 1]) {
           column[j] *= 2;
           column[j + 1] = 0;
-          this.gameScore += column[j];
+          score += column[j];
         }
       }
 
@@ -188,26 +207,32 @@ class Game {
         column.push(0);
       }
 
-      for (let j = 0; j < this.field.length; j++) {
+      for (let j = 0; j < this.gameState.length; j++) {
         arr[j][i] = column[j];
       }
     }
 
-    if (JSON.stringify(arr) !== JSON.stringify(this.field)) {
-      this.field = arr;
+    if (JSON.stringify(arr) !== JSON.stringify(this.gameState)) {
+      this.gameState = arr;
       this.addNewCell();
+      this.gameScore += score;
+      this.checkinitialState();
     }
-    this.checkField();
   }
   moveDown() {
-    const arr = [[], [], [], []];
+    if (this.gameStatus !== 'playing') {
+      return;
+    }
 
-    for (let i = 0; i < this.field.length; i++) {
+    const arr = [[], [], [], []];
+    let score = 0;
+
+    for (let i = 0; i < this.gameState.length; i++) {
       let column = [
-        this.field[0][i],
-        this.field[1][i],
-        this.field[2][i],
-        this.field[3][i],
+        this.gameState[0][i],
+        this.gameState[1][i],
+        this.gameState[2][i],
+        this.gameState[3][i],
       ];
 
       column = column.filter((num) => num !== 0);
@@ -216,7 +241,7 @@ class Game {
         if (column[j] === column[j - 1]) {
           column[j] *= 2;
           column[j - 1] = 0;
-          this.gameScore += column[j];
+          score += column[j];
         }
       }
 
@@ -226,16 +251,17 @@ class Game {
         column.unshift(0);
       }
 
-      for (let j = 0; j < this.field.length; j++) {
+      for (let j = 0; j < this.gameState.length; j++) {
         arr[j][i] = column[j];
       }
     }
 
-    if (JSON.stringify(arr) !== JSON.stringify(this.field)) {
-      this.field = arr;
+    if (JSON.stringify(arr) !== JSON.stringify(this.gameState)) {
+      this.gameState = arr;
       this.addNewCell();
+      this.gameScore = score;
+      this.checkinitialState();
     }
-    this.checkField();
   }
 
   /**
@@ -249,7 +275,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.field;
+    return this.gameState;
   }
 
   /**
@@ -270,27 +296,19 @@ class Game {
    * Starts the game.
    */
   start() {
+    this.addNewCell();
+    this.addNewCell();
     this.gameStatus = 'playing';
-
-    this.addNewCell();
-    this.addNewCell();
   }
 
   /**
    * Resets the game.
    */
   restart() {
-    this.field = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.gameState = this.initialState.map((row) => [...row]);
+    this.gameStatus = 'idle';
     this.gameScore = 0;
     this.zeroCell = 16;
   }
-
-  // Add your own methods here
 }
-
 module.exports = Game;
