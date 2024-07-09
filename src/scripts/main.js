@@ -1,95 +1,75 @@
-/* eslint-disable no-console */
 'use strict';
 
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-const container = document.querySelector('.container');
-const gameField = document.querySelector('.game-field');
-const button = container.querySelector('.button');
-const gameScore = container.querySelector('.game-score');
+const startBtn = document.querySelector('.start');
+const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
+const score = document.querySelector('.game-score');
 
-const fieldRows = [...gameField.querySelectorAll('.field-row')];
-const fieldCells = fieldRows.map((row) => [...row.children]);
+initialize();
 
-const messages = {
-  idle: container.querySelector('.message-start'),
-  lose: container.querySelector('.message-lose'),
-  win: container.querySelector('.message-win'),
-};
+function initialize() {
+  startBtn.addEventListener('click', () => {
+    if (startBtn.classList.contains('start')) {
+      startBtn.className = 'button restart';
+      startBtn.textContent = 'Restart';
+      startMessage.classList.add('hidden');
+      game.start();
+    } else {
+      startBtn.className = 'button start';
+      startBtn.textContent = 'Start';
+      startMessage.classList.remove('hidden');
+      winMessage.classList.add('hidden');
+      loseMessage.classList.add('hidden');
+      score.textContent = '0';
 
-function fillGameField(state) {
-  state.forEach((row, i) => {
-    row.forEach((cell, j) => {
-      const currentCell = fieldCells[i][j];
+      document.removeEventListener('keydown', handleKeyDown);
+      game.restart();
+    }
 
-      currentCell.className = !cell
-        ? 'field-cell'
-        : `field-cell field-cell--${cell}`;
-      currentCell.innerHTML = !cell ? '' : cell;
-    });
+    document.addEventListener('keydown', handleKeyDown);
   });
 }
 
-function showMessage() {
-  const gameStatus = game.getStatus();
+function handleKeyDown(keyEvent) {
+  keyEvent.preventDefault();
 
-  for (const key in messages) {
-    if (Object.hasOwnProperty.call(messages, key)) {
-      const message = messages[key];
+  let numbersMove = false;
 
-      if (message) {
-        message.classList.toggle('hidden', key !== gameStatus);
-      }
+  switch (keyEvent.key) {
+    case 'ArrowUp':
+      numbersMove = game.moveUp();
+      break;
+
+    case 'ArrowDown':
+      numbersMove = game.moveDown();
+      break;
+
+    case 'ArrowRight':
+      numbersMove = game.moveRight();
+      break;
+
+    case 'ArrowLeft':
+      numbersMove = game.moveLeft();
+      break;
+  }
+
+  if (numbersMove) {
+    updateScore(game.getScore());
+
+    const newStatus = game.getStatus();
+
+    if (newStatus === Game.Status.lose) {
+      loseMessage.classList.remove('hidden');
+    } else if (newStatus === Game.Status.win) {
+      winMessage.classList.remove('hidden');
     }
   }
 }
 
-function updateScore(score) {
-  gameScore.innerHTML = score;
+function updateScore(newScore) {
+  score.textContent = newScore;
 }
-
-button.addEventListener('click', () => {
-  const buttonText = button.textContent;
-
-  if (buttonText === 'Start') {
-    game.start();
-    button.textContent = 'Restart';
-    button.classList.replace('start', 'restart');
-  } else {
-    game.restart();
-    updateScore(0);
-    button.textContent = 'Start';
-    button.classList.replace('restart', 'start');
-  }
-
-  const state = game.getState();
-
-  fillGameField(state);
-  showMessage();
-});
-
-document.addEventListener('keydown', (keyEvent) => {
-  keyEvent.preventDefault();
-
-  if (game.getStatus() !== 'playing') {
-    return;
-  }
-
-  const moveActions = {
-    ArrowUp: game.moveUp,
-    ArrowDown: game.moveDown,
-    ArrowLeft: game.moveLeft,
-    ArrowRight: game.moveRight,
-  };
-
-  const action = moveActions[keyEvent.key];
-
-  if (action) {
-    action.call(game);
-  }
-
-  fillGameField(game.getState());
-  updateScore(game.getScore());
-  showMessage();
-});
