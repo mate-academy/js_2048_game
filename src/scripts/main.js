@@ -72,27 +72,18 @@ document.addEventListener('keydown', (e) => {
   switch (e.key) {
     case 'ArrowUp':
       game.moveUp();
-      displayNumbers(game.getState());
-      gameScore.textContent = game.getScore();
-      loseOrWin(game.getStatus());
       break;
     case 'ArrowDown':
       game.moveDown();
-      displayNumbers(game.getState());
-      gameScore.textContent = game.getScore();
-      loseOrWin(game.getStatus());
       break;
     case 'ArrowLeft':
       game.moveLeft();
-      displayNumbers(game.getState());
-      gameScore.textContent = game.getScore();
-      loseOrWin(game.getStatus());
       break;
     case 'ArrowRight':
       game.moveRight();
-      displayNumbers(game.getState());
-      gameScore.textContent = game.getScore();
-      loseOrWin(game.getStatus());
       break;
   }
+  displayNumbers(game.getState());
+  gameScore.textContent = game.getScore();
+  loseOrWin(game.getStatus());
 });
