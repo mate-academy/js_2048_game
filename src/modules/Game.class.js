@@ -31,11 +31,7 @@ class Game {
 
         let newRowArr = this.state[i].filter((el) => el > 0);
 
-        for (
-          let counter = newRowArr.length;
-          counter < this.state.length;
-          counter++
-        ) {
+        for (let index = newRowArr.length; index < this.state.length; index++) {
           newRowArr.push(0);
         }
 
@@ -50,11 +46,7 @@ class Game {
 
         newRowArr = newRowArr.filter((el) => el > 0);
 
-        for (
-          let counter = newRowArr.length;
-          counter < this.state.length;
-          counter++
-        ) {
+        for (let index = newRowArr.length; index < this.state.length; index++) {
           newRowArr.push(0);
         }
 
@@ -77,11 +69,7 @@ class Game {
 
         let newRowArr = this.state[i].filter((el) => el > 0);
 
-        for (
-          let counter = newRowArr.length;
-          counter < this.state.length;
-          counter++
-        ) {
+        for (let index = newRowArr.length; index < this.state.length; index++) {
           newRowArr.unshift(0);
         }
 
@@ -96,11 +84,7 @@ class Game {
 
         newRowArr = newRowArr.filter((el) => el > 0);
 
-        for (
-          let counter = newRowArr.length;
-          counter < this.state.length;
-          counter++
-        ) {
+        for (let index = newRowArr.length; index < this.state.length; index++) {
           newRowArr.unshift(0);
         }
 
@@ -171,10 +155,14 @@ class Game {
   randomNumber() {
     const emptyCells = [];
 
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (this.state[i][j] === 0) {
-          emptyCells.push({ i, j });
+    for (let rowIndex = 0; rowIndex < this.state.length; rowIndex++) {
+      for (
+        let colIndex = 0;
+        colIndex < this.state[rowIndex].length;
+        colIndex++
+      ) {
+        if (this.state[rowIndex][colIndex] === 0) {
+          emptyCells.push({ row: rowIndex, col: colIndex });
         }
       }
     }
