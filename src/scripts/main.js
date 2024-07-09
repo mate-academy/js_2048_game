@@ -31,10 +31,6 @@ button.addEventListener('click', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if (game.getStatus() !== 'playing') {
-    return;
-  }
-
   switch (e.code) {
     case 'KeyA':
     case 'ArrowLeft':

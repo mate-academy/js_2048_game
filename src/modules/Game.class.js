@@ -234,27 +234,25 @@ class Game {
 
   checkLose() {
     if (this.getEmptyCells().length > 0) {
-      return false;
+      return;
     }
 
     for (let r = 0; r < this.state.length; r++) {
-      for (let c = 0; c < this.state[r].length; c++) {
+      for (let c = 0; c < this.state[r].length - 1; c++) {
+        if (this.state[r][c] === this.state[r][c + 1]) {
+          return;
+        }
+
         if (
-          (r > 0 && this.state[r][c] === this.state[r - 1][c]) ||
-          (r < this.state.length - 1 &&
-            this.state[r][c] === this.state[r + 1][c]) ||
-          (c > 0 && this.state[r][c] === this.state[r][c - 1]) ||
-          (c < this.state[r].length - 1 &&
-            this.state[r][c] === this.state[r][c + 1])
+          r < this.state.length - 1 &&
+          this.state[r][c] === this.state[r + 1][c]
         ) {
-          return false;
+          return;
         }
       }
     }
 
     this.status = 'lose';
-
-    return true;
   }
 }
 
