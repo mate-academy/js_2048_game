@@ -1,4 +1,5 @@
 'use strict';
+
 // Module
 const Game = require('../modules/Game.class');
 const game = new Game();
@@ -11,86 +12,87 @@ const startMessage = document.querySelector('.message-start');
 const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
 
-
 function loseOrWin(statusToCheck) {
-    if(statusToCheck === Game.STATUS.lose) {
-        loseMessage.classList.remove('hidden')
-    }
+  if (statusToCheck === Game.STATUS.lose) {
+    loseMessage.classList.remove('hidden');
+  }
 
-    if(statusToCheck === Game.STATUS.win) {
-        winMessage.classList.remove('hidden')
-    }
-
+  if (statusToCheck === Game.STATUS.win) {
+    winMessage.classList.remove('hidden');
+  }
 }
 
 function displayNumbers(state) {
-    for (let i = 0; i < fieldRow.length; i++) {
-        for( let j = 0; j < fieldRow[i].children.length; j++) {
-            fieldRow[i].children[j].textContent = ''
-            fieldRow[i].children[j].className = `field-cell`;
-            if(state[i][j] > 0) {
-                fieldRow[i].children[j].textContent = state[i][j];
-                fieldRow[i].children[j].className = `field-cell field-cell--${state[i][j]}`
-            }
-        }
+  for (let i = 0; i < fieldRow.length; i++) {
+    for (let j = 0; j < fieldRow[i].children.length; j++) {
+      fieldRow[i].children[j].textContent = '';
+      fieldRow[i].children[j].className = `field-cell`;
+
+      if (state[i][j] > 0) {
+        fieldRow[i].children[j].textContent = state[i][j];
+
+        fieldRow[i].children[j].className =
+          `field-cell field-cell--${state[i][j]}`;
+      }
     }
+  }
 }
 
-buttonStart.addEventListener('click',()=> {
-    if (buttonStart.classList.contains('start')) {
-        buttonStart.textContent = 'Restart';
+buttonStart.addEventListener('click', () => {
+  if (buttonStart.classList.contains('start')) {
+    buttonStart.textContent = 'Restart';
 
-        buttonStart.classList.remove('start');
-        buttonStart.classList.add('restart');
-    
-        game.start()
-        displayNumbers(game.getState());
-    
-        gameScore.textContent = game.getScore();
-        
-        startMessage.classList.add('hidden');
-        loseMessage.classList.add('hidden');
-    } else{
-        buttonStart.textContent = 'Start';
+    buttonStart.classList.remove('start');
+    buttonStart.classList.add('restart');
 
-        buttonStart.classList.remove('restart');
-        buttonStart.classList.add('start');
+    game.start();
+    displayNumbers(game.getState());
 
-        game.restart();
-        displayNumbers(game.getState());
+    gameScore.textContent = game.getScore();
 
-        gameScore.textContent = game.getScore();
+    startMessage.classList.add('hidden');
+    loseMessage.classList.add('hidden');
+  } else {
+    buttonStart.textContent = 'Start';
 
-        startMessage.classList.remove('hidden');
-        loseMessage.classList.add('hidden');
-    }
+    buttonStart.classList.remove('restart');
+    buttonStart.classList.add('start');
+
+    game.restart();
+    displayNumbers(game.getState());
+
+    gameScore.textContent = game.getScore();
+
+    startMessage.classList.remove('hidden');
+    loseMessage.classList.add('hidden');
+  }
 });
 
-const key = document.addEventListener('keydown', (event)=> {
-    switch(event.key){
-        case 'ArrowUp':
-            game.moveUp();
-            displayNumbers(game.getState());
-            gameScore.textContent = game.getScore();
-            loseOrWin(game.getStatus());
-            break;
-        case 'ArrowDown':
-            game.moveDown();
-            displayNumbers(game.getState());
-            gameScore.textContent = game.getScore();
-            loseOrWin(game.getStatus());
-            break;
-        case 'ArrowLeft':
-            game.moveLeft();
-            displayNumbers(game.getState());
-            gameScore.textContent = game.getScore();
-            loseOrWin(game.getStatus());
-            break;
-        case 'ArrowRight':
-            game.moveRight();
-            displayNumbers(game.getState());
-            gameScore.textContent = game.getScore();
-            loseOrWin(game.getStatus());
-            break;
-    }
-})
+document.addEventListener('keydown', (e) => {
+  switch (e.key) {
+    case 'ArrowUp':
+      game.moveUp();
+      displayNumbers(game.getState());
+      gameScore.textContent = game.getScore();
+      loseOrWin(game.getStatus());
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      displayNumbers(game.getState());
+      gameScore.textContent = game.getScore();
+      loseOrWin(game.getStatus());
+      break;
+    case 'ArrowLeft':
+      game.moveLeft();
+      displayNumbers(game.getState());
+      gameScore.textContent = game.getScore();
+      loseOrWin(game.getStatus());
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      displayNumbers(game.getState());
+      gameScore.textContent = game.getScore();
+      loseOrWin(game.getStatus());
+      break;
+  }
+});
