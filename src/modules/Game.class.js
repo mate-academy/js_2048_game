@@ -8,32 +8,16 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ]) {
-    this.INITIAL_STATE = initialState;
-    this.state = JSON.parse(JSON.stringify(this.INITIAL_STATE));
-    this.score = 0;
     this.status = 'idle';
-    this.buttonStart = document.querySelector('.start');
-    this.initializeGame();
-  }
-
-  initializeGame() {
-    this.buttonStart.addEventListener('click', () => {
-      if (this.status === 'idle'
-        || this.status === 'lose'
-        || this.status === 'win'
-      ) {
-        this.start();
-      } else {
-        this.restart();
-      }
-
-      this.updateUI();
-      document.querySelector('.message-win').classList.add('hidden');
-      document.querySelector('.message-lose').classList.add('hidden');
-    });
+    this.score = 0;
+    this.initialState = initialState;
+    this.state = initialState.map((row) => [...row]);
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
     let moved = false;
 
     for (let row = 0; row < 4; row++) {
@@ -66,18 +50,27 @@ class Game {
   }
 
   moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
     this.state = this.state.map(row => row.reverse());
     this.moveLeft();
     this.state = this.state.map(row => row.reverse());
   }
 
   moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
     this.state = this.transpose(this.state);
     this.moveLeft();
     this.state = this.transpose(this.state);
   }
 
   moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
     this.state = this.transpose(this.state).map(row => row.reverse());
     this.moveLeft();
     this.state = this.state.map(row => row.reverse());
@@ -103,28 +96,17 @@ class Game {
   start() {
     this.status = 'playing';
     this.score = 0;
+    this.state = this.initialState.map((row) => [...row]);
     this.addNewTile();
     this.addNewTile();
     this.updateUI();
-
-    const messageStart = document.querySelector('.message-start');
-
-    messageStart.classList.add('hidden');
-    this.buttonStart.textContent = 'Restart';
-    this.buttonStart.classList.replace('start', 'restart');
   }
 
   restart() {
-    this.state = JSON.parse(JSON.stringify(this.INITIAL_STATE));
     this.score = 0;
     this.status = 'idle';
+    this.state = this.initialState.map((row) => [...row]);
     this.updateUI();
-
-    const messageStart = document.querySelector('.message-start');
-
-    messageStart.classList.remove('hidden');
-    this.buttonStart.textContent = 'Start';
-    this.buttonStart.classList.replace('restart', 'start');
   }
 
   addNewTile() {
@@ -164,7 +146,11 @@ class Game {
         = `field-cell ${cellValue > 0 ? `field-cell--${cellValue}` : ''}`;
     });
 
-    document.querySelector('.game-score').textContent = this.score;
+    const gameScore = document.querySelector('.game-score');
+
+    if (gameScore) {
+      gameScore.textContent = this.score;
+    }
 
     if (this.status === 'win') {
       document.querySelector('.message-win').classList.remove('hidden');

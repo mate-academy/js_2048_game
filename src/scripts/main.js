@@ -3,6 +3,52 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
+const button = document.querySelector('.button');
+const messageStart = document.querySelector('.message-start');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
+const gameScore = document.querySelector('.game-score');
+
+button.addEventListener('click', activateGame);
+
+function activateGame() {
+  button.classList.toggle('restart');
+  button.classList.toggle('start');
+  messageStart.classList.toggle('hidden');
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  gameScore.textContent = 0;
+
+  if (button.className.includes('start')) {
+    button.textContent = 'Start';
+
+    game.restart();
+  }
+
+  if (button.className.includes('restart')) {
+    button.textContent = 'Restart';
+
+    game.start();
+  }
+
+  document.addEventListener('keydown', handleKeydown);
+}
+
+//     if (this.status === 'idle'
+//       || this.status === 'lose'
+//       || this.status === 'win'
+//     ) {
+//       this.start();
+//     } else {
+//       this.restart();
+//     }
+
+//     this.updateUI();
+//     document.querySelector('.message-win').classList.add('hidden');
+//     document.querySelector('.message-lose').classList.add('hidden');
+//   });
+// }
+
 function handleKeydown(e) {
   if (game.getStatus() !== 'playing') {
     return;
@@ -31,7 +77,5 @@ function handleKeydown(e) {
     document.querySelector('.message-lose').classList.remove('hidden');
   }
 }
-
-document.addEventListener('keydown', handleKeydown);
 
 game.updateUI();
