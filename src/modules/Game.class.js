@@ -240,15 +240,12 @@ class Game {
     for (let r = 0; r < this.state.length; r++) {
       for (let c = 0; c < this.state[r].length; c++) {
         if (
-          r < this.state.length - 1 &&
-          this.state[r][c] === this.state[r + 1][c]
-        ) {
-          return false;
-        }
-
-        if (
-          c < this.state[r].length - 1 &&
-          this.state[r][c] === this.state[r][c + 1]
+          (r > 0 && this.state[r][c] === this.state[r - 1][c]) ||
+          (r < this.state.length - 1 &&
+            this.state[r][c] === this.state[r + 1][c]) ||
+          (c > 0 && this.state[r][c] === this.state[r][c - 1]) ||
+          (c < this.state[r].length - 1 &&
+            this.state[r][c] === this.state[r][c + 1])
         ) {
           return false;
         }
