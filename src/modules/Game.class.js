@@ -35,8 +35,10 @@ class Game {
       moved = true;
     }
 
-    if (moved && !this.checkWin() && !this.checkLose()) {
+    if (moved) {
       this.addRandomTile();
+      this.checkWin();
+      this.checkLose();
     }
   }
   moveRight() {
@@ -62,8 +64,10 @@ class Game {
       moved = true;
     }
 
-    if (moved && !this.checkWin() && !this.checkLose()) {
+    if (moved) {
       this.addRandomTile();
+      this.checkWin();
+      this.checkLose();
     }
   }
   moveUp() {
@@ -95,8 +99,10 @@ class Game {
       moved = true;
     }
 
-    if (moved && !this.checkWin() && !this.checkLose()) {
+    if (moved) {
       this.addRandomTile();
+      this.checkWin();
+      this.checkLose();
     }
   }
   moveDown() {
@@ -131,8 +137,10 @@ class Game {
       moved = true;
     }
 
-    if (moved && !this.checkWin() && !this.checkLose()) {
+    if (moved) {
       this.addRandomTile();
+      this.checkWin();
+      this.checkLose();
     }
   }
 
@@ -209,9 +217,6 @@ class Game {
       newRow.push(0);
     }
 
-    this.checkWin();
-    this.checkLose();
-
     return newRow;
   }
 
@@ -249,6 +254,7 @@ class Game {
         }
       }
     }
+
     this.status = 'lose';
 
     return true;

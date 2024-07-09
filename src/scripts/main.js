@@ -24,8 +24,6 @@ button.addEventListener('click', (e) => {
     renderGameBoard();
 
     messageStart.classList.remove('hidden');
-    messageWin.classList.add('hidden');
-    messageLose.classList.add('hidden');
     button.classList.remove('restart');
     button.textContent = 'Start';
     button.classList.add('start');
@@ -33,38 +31,37 @@ button.addEventListener('click', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
   switch (e.code) {
     case 'KeyA':
     case 'ArrowLeft':
       game.moveLeft();
-      renderGameBoard();
-      checkGameOver();
       break;
 
     case 'KeyW':
     case 'ArrowUp':
       game.moveUp();
-      renderGameBoard();
-      checkGameOver();
       break;
 
     case 'KeyD':
     case 'ArrowRight':
       game.moveRight();
-      renderGameBoard();
-      checkGameOver();
       break;
 
     case 'KeyS':
     case 'ArrowDown':
       game.moveDown();
-      renderGameBoard();
-      checkGameOver();
       break;
 
     default:
       break;
   }
+
+  renderGameBoard();
+  checkGameOver();
 });
 
 function renderGameBoard() {
@@ -93,7 +90,11 @@ function renderGameBoard() {
 function checkGameOver() {
   if (game.getStatus() === 'lose') {
     messageLose.classList.remove('hidden');
+    messageWin.classList.add('hidden');
+    messageStart.classList.add('hidden');
   } else if (game.getStatus() === 'win') {
     messageWin.classList.remove('hidden');
+    messageLose.classList.add('hidden');
+    messageStart.classList.add('hidden');
   }
 }
