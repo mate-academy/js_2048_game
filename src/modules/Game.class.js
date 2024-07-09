@@ -20,6 +20,7 @@ class Game {
   constructor(initialState = Game.getInitialState()) {
     this.gameStatus = Game.gameStatus.idle;
     this.score = 0;
+    this.initialState = JSON.parse(JSON.stringify(initialState));
     this.state = initialState;
   }
 
@@ -214,7 +215,7 @@ class Game {
    */
   restart() {
     this.score = 0;
-    this.state = Game.getInitialState();
+    this.state = this.initialState;
     this.gameStatus = Game.gameStatus.idle;
     this.updateBoard();
   }
