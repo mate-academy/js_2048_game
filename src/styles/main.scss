@@ -20,6 +20,11 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition:
+    transform 0.15s ease-in-out,
+    background-color 0.1s ease,
+    color 0.1s ease;
+  position: relative;
 
   &--2 {
     background: #eee4da;
@@ -134,7 +139,7 @@ h1 {
   width: 75px;
   height: 75px;
 
-  transition: 0.25s ease background;
+  transition: 0.1s ease background;
 }
 
 .start {
@@ -148,6 +153,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  border: none;
 
   &:hover {
     background: #f87474;
