@@ -380,12 +380,12 @@ class Game {
       const currentState = flatState[i];
 
       if (currentState > 0) {
-        if (currentCell !== undefined) {
+        if (currentCell) {
           currentCell.textContent = currentState;
           currentCell.className = `field-cell field-cell--${currentState}`;
         }
       } else {
-        if (currentCell !== undefined) {
+        if (currentCell) {
           currentCell.textContent = '';
           currentCell.className = 'field-cell';
         }
