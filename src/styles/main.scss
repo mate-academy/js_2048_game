@@ -23,55 +23,73 @@ body {
 
   &--2 {
     background: #eee4da;
+    animation: show 200ms ease-in-out;
   }
 
   &--4 {
     background: #ede0c8;
+    animation: show 200ms ease-in-out;
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
+    animation: show 200ms ease-in-out;
   }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+    animation: show 200ms ease-in-out;
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+    animation: show 200ms ease-in-out;
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+    animation: show 200ms ease-in-out;
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    animation: show 200ms ease-in-out;
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    animation: show 200ms ease-in-out;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    animation: show 200ms ease-in-out;
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+    animation: show 200ms ease-in-out;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    animation: show 200ms ease-in-out;
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
   }
 }
 
