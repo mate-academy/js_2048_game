@@ -209,6 +209,9 @@ class Game {
       newRow.push(0);
     }
 
+    this.checkWin();
+    this.checkLose();
+
     return newRow;
   }
 
