@@ -43,7 +43,7 @@ class Game {
     }
 
     if (this.status === 'playing') {
-      this.state = this.moveHorizontally(this.state, 'ArrowLeft');
+      this.move();
 
       this.addTile();
       this.isGameContinue();
@@ -56,7 +56,9 @@ class Game {
     }
 
     if (this.status === 'playing') {
-      this.state = this.moveHorizontally(this.state, 'ArrowRight');
+      this.reverseBoard();
+      this.move();
+      this.reverseBoard();
 
       this.addTile();
       this.isGameContinue();
@@ -69,7 +71,9 @@ class Game {
     }
 
     if (this.status === 'playing') {
-      this.state = this.moveVertically(this.state, 'ArrowUp');
+      this.transposeBoard();
+      this.move();
+      this.transposeBoard();
 
       this.addTile();
       this.isGameContinue();
@@ -82,7 +86,11 @@ class Game {
     }
 
     if (this.status === 'playing') {
-      this.state = this.moveVertically(this.state, 'ArrowDown');
+      this.transposeBoard();
+      this.reverseBoard();
+      this.move();
+      this.reverseBoard();
+      this.transposeBoard();
 
       this.addTile();
       this.isGameContinue();
@@ -163,62 +171,28 @@ class Game {
     }
   }
 
-  moveHorizontally(currentState, direction) {
-    return currentState.map((row) => {
-      let oldLine = row.filter((item) => item !== 0);
+  move() {
+    this.state = this.state.map((row) => row.filter((v) => v !== 0));
 
-      if (direction === 'ArrowRight') {
-        oldLine = oldLine.reverse();
-      }
-
-      const newLine = [];
-
-      for (let i = 0; i < oldLine.length; i++) {
-        if (oldLine[i] === oldLine[i + 1]) {
-          newLine.push(oldLine[i] * 2);
+    this.state.forEach((newRow) => {
+      for (let i = 0; i < newRow.length - 1; i++) {
+        if (newRow[i] === newRow[i + 1]) {
+          this.score += newRow[i] * 2;
+          newRow[i] += newRow[i + 1];
+          newRow[i + 1] = 0;
           i++;
-
-          this.score += oldLine[i] * 2;
           continue;
         }
-
-        newLine.push(oldLine[i]);
       }
-
-      if (newLine.length < 4) {
-        do {
-          newLine.push(0);
-        } while (newLine.length < 4);
-      }
-
-      const result = direction === 'ArrowRight' ? newLine.reverse() : newLine;
-
-      if (row.join('') === newLine.join('')) {
-        return row;
-      }
-
-      return result;
     });
-  }
 
-  moveVertically(currentState, direction) {
-    let newState = currentState;
+    this.state = this.state.map((row) => row.filter((v) => v !== 0));
 
-    if (direction === 'ArrowDown') {
-      newState = newState.reverse();
-    }
-
-    newState = newState[0].map((_, colI) => newState.map((row) => row[colI]));
-
-    newState = this.moveHorizontally(newState, 'ArrowLeft');
-
-    newState = newState[0].map((_, colI) => newState.map((row) => row[colI]));
-
-    if (direction === 'ArrowDown') {
-      newState = newState.reverse();
-    }
-
-    return newState;
+    this.state.forEach((row) => {
+      while (row.length < 4) {
+        row.push(0);
+      }
+    });
   }
 
   isBoardHas2048() {

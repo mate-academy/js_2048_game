@@ -7,13 +7,13 @@
 //   [0, 0, 0, 0],
 // ];
 
+const { getCapitalizedWord } = require('./utils');
+
 // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
-const { getCapitalizedWord } = require('./utils');
 const game = new Game();
 
 // Write your code here
-// const field = document.querySelector('.game-field');
 
 const button = document.querySelector('.button');
 const tbody = document.querySelector('tbody');
