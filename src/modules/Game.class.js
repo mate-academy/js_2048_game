@@ -51,31 +51,89 @@ class Game {
     this.score = 0;
   }
 
-  moveLeft() {
+  move(direction) {
     if (this.status !== Game.Status.playing) {
-      return;
+      return false;
     }
 
-    this.saveState();
+    const directionConfig = {
+      left: {
+        rowStart: 0,
+        rowEnd: 4,
+        colStart: 1,
+        colEnd: 4,
+        rowInc: 1,
+        colInc: 1,
+        rowOp: (r, t) => r,
+        colOp: (c, t) => c - t,
+      },
+      right: {
+        rowStart: 0,
+        rowEnd: 4,
+        colStart: 2,
+        colEnd: -1,
+        rowInc: 1,
+        colInc: -1,
+        rowOp: (r, t) => r,
+        colOp: (c, t) => c + t,
+      },
+      up: {
+        rowStart: 1,
+        rowEnd: 4,
+        colStart: 0,
+        colEnd: 4,
+        rowInc: 1,
+        colInc: 1,
+        rowOp: (r, t) => r - t,
+        colOp: (c, t) => c,
+      },
+      down: {
+        rowStart: 2,
+        rowEnd: -1,
+        colStart: 0,
+        colEnd: 4,
+        rowInc: -1,
+        colInc: 1,
+        rowOp: (r, t) => r + t,
+        colOp: (c, t) => c,
+      },
+    };
+
+    const { rowStart, rowEnd, colStart, colEnd, rowInc, colInc, rowOp, colOp } =
+      directionConfig[direction];
 
     let didTilesMove = false;
 
-    for (let row = 0; row < 4; row++) {
+    for (let row = rowStart; row !== rowEnd; row += rowInc) {
       let didJustMerged = false;
 
-      for (let tile = 1; tile < 4; tile++) {
-        if (this.state[row][tile] > 0) {
-          let moveTile = 0;
+      for (let tile = colStart; tile !== colEnd; tile += colInc) {
+        const currentRow = rowOp(row, 0);
+        const currentCol = colOp(tile, 0);
 
+        if (this.state[currentRow][currentCol] > 0) {
+          let moveTile = 0;
           let merge = false;
 
-          while (this.state[row][tile - moveTile - 1] === 0) {
+          while (
+            this.isValidPosition(
+              rowOp(row, moveTile + 1),
+              colOp(tile, moveTile + 1),
+            ) &&
+            this.state[rowOp(row, moveTile + 1)][colOp(tile, moveTile + 1)] ===
+              0
+          ) {
             moveTile++;
           }
 
           if (
             !didJustMerged &&
-            this.state[row][tile - moveTile - 1] === this.state[row][tile]
+            this.isValidPosition(
+              rowOp(row, moveTile + 1),
+              colOp(tile, moveTile + 1),
+            ) &&
+            this.state[rowOp(row, moveTile + 1)][colOp(tile, moveTile + 1)] ===
+              this.state[currentRow][currentCol]
           ) {
             moveTile++;
             merge = true;
@@ -85,19 +143,19 @@ class Game {
             if (!didJustMerged && merge) {
               didJustMerged = true;
 
-              const newNumber = this.state[row][tile - moveTile] * 2;
+              const newNumber =
+                this.state[rowOp(row, moveTile)][colOp(tile, moveTile)] * 2;
 
-              this.state[row][tile - moveTile] = newNumber;
-
+              this.state[rowOp(row, moveTile)][colOp(tile, moveTile)] =
+                newNumber;
               this.score += newNumber;
             } else {
               didJustMerged = false;
 
-              this.state[row][tile - moveTile] = this.state[row][tile];
+              this.state[rowOp(row, moveTile)][colOp(tile, moveTile)] =
+                this.state[currentRow][currentCol];
             }
-
-            this.state[row][tile] = 0;
-
+            this.state[currentRow][currentCol] = 0;
             didTilesMove = true;
           }
         }
@@ -109,190 +167,26 @@ class Game {
     }
 
     return didTilesMove;
+  }
+
+  moveLeft() {
+    return this.move('left');
   }
 
   moveRight() {
-    if (this.status !== Game.Status.playing) {
-      return;
-    }
-
-    this.saveState();
-
-    let didTilesMove = false;
-
-    for (let row = 0; row < 4; row++) {
-      let didJustMerged = false;
-
-      for (let tile = 2; tile >= 0; tile--) {
-        if (this.state[row][tile] > 0) {
-          let moveTile = 0;
-          let merge = false;
-
-          while (this.state[row][tile + moveTile + 1] === 0) {
-            moveTile++;
-          }
-
-          if (
-            !didJustMerged &&
-            this.state[row][tile + moveTile + 1] === this.state[row][tile]
-          ) {
-            moveTile++;
-            merge = true;
-          }
-
-          if (moveTile > 0) {
-            if (!didJustMerged && merge) {
-              didJustMerged = true;
-
-              const newNumber = this.state[row][tile + moveTile] * 2;
-
-              this.state[row][tile + moveTile] = newNumber;
-
-              this.score += newNumber;
-            } else {
-              didJustMerged = false;
-
-              this.state[row][tile + moveTile] = this.state[row][tile];
-            }
-
-            this.state[row][tile] = 0;
-            didTilesMove = true;
-          }
-        }
-      }
-    }
-
-    if (didTilesMove) {
-      this.createRandomTile();
-    }
-
-    return didTilesMove;
+    return this.move('right');
   }
 
   moveUp() {
-    if (this.status !== Game.Status.playing) {
-      return;
-    }
-
-    this.saveState();
-
-    let didTilesMove = false;
-
-    for (let column = 0; column < 4; column++) {
-      let didJustMerged = false;
-
-      for (let tile = 1; tile < 4; tile++) {
-        if (this.state[tile][column] > 0) {
-          let moveTile = 0;
-          let merge = false;
-
-          while (
-            tile - moveTile - 1 >= 0 &&
-            this.state[tile - moveTile - 1][column] === 0
-          ) {
-            moveTile++;
-          }
-
-          if (
-            !didJustMerged &&
-            tile - moveTile - 1 >= 0 &&
-            this.state[tile - moveTile - 1][column] === this.state[tile][column]
-          ) {
-            moveTile++;
-            merge = true;
-          }
-
-          if (moveTile > 0) {
-            if (!didJustMerged && merge) {
-              didJustMerged = true;
-
-              const newNumber = this.state[tile - moveTile][column] * 2;
-
-              this.state[tile - moveTile][column] = newNumber;
-
-              this.score += newNumber;
-            } else {
-              didJustMerged = false;
-
-              this.state[tile - moveTile][column] = this.state[tile][column];
-            }
-
-            this.state[tile][column] = 0;
-
-            didTilesMove = true;
-          }
-        }
-      }
-    }
-
-    if (didTilesMove) {
-      this.createRandomTile();
-    }
-
-    return didTilesMove;
+    return this.move('up');
   }
 
   moveDown() {
-    if (this.status !== Game.Status.playing) {
-      return;
-    }
+    return this.move('down');
+  }
 
-    this.saveState();
-
-    let didTilesMove = false;
-
-    for (let column = 0; column < 4; column++) {
-      let didJustMerged = false;
-
-      for (let tile = 2; tile >= 0; tile--) {
-        if (this.state[tile][column] > 0) {
-          let moveTile = 0;
-          let merge = false;
-
-          while (
-            tile + moveTile + 1 < this.state.length &&
-            this.state[tile + moveTile + 1][column] === 0
-          ) {
-            moveTile++;
-          }
-
-          if (
-            !didJustMerged &&
-            tile + moveTile + 1 < this.state.length &&
-            this.state[tile + moveTile + 1][column] === this.state[tile][column]
-          ) {
-            moveTile++;
-            merge = true;
-          }
-
-          if (moveTile > 0) {
-            if (!didJustMerged && merge) {
-              didJustMerged = true;
-
-              const newNumber = this.state[tile + moveTile][column] * 2;
-
-              this.state[tile + moveTile][column] = newNumber;
-
-              this.score += newNumber;
-            } else {
-              didJustMerged = false;
-
-              this.state[tile + moveTile][column] = this.state[tile][column];
-            }
-
-            this.state[tile][column] = 0;
-
-            didTilesMove = true;
-          }
-        }
-      }
-    }
-
-    if (didTilesMove) {
-      this.createRandomTile();
-    }
-
-    return didTilesMove;
+  isValidPosition(row, col) {
+    return row >= 0 && row < 4 && col >= 0 && col < 4;
   }
 
   saveState() {
@@ -343,6 +237,8 @@ class Game {
         return true;
       }
     }
+
+    return false;
   }
 
   didPlayerLose() {
