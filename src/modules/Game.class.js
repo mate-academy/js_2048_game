@@ -48,6 +48,7 @@ class Game {
 
     for (let i = 0; i < minTilesToAdd; i++) {
       const randomIndex = Math.floor(Math.random() * availableTiles.length);
+
       const [row, col] = availableTiles.splice(randomIndex, 1)[0];
 
       this.state[row][col] = Math.random() >= 0.9 ? 4 : 2;
@@ -114,87 +115,79 @@ class Game {
     }
   }
 
-  move(direction) {
+  moveLeft() {
+    if (this.getStatus() !== Game.gameStatus.playing) {
+      return;
+    }
+
+    const newState = this.getState().map((row) => this.compareAndMerge(row));
+
+    this.updateState(newState);
+  }
+
+  moveRight() {
+    if (this.getStatus() !== Game.gameStatus.playing) {
+      return;
+    }
+
+    const newState = this.getState().map((row) => {
+      return this.compareAndMerge([...row].reverse());
+    });
+
+    const reversedState = newState.map((row) => row.reverse());
+
+    this.updateState(reversedState);
+  }
+
+  moveUp() {
     if (this.getStatus() !== Game.gameStatus.playing) {
       return;
     }
 
     const newState = Game.getInitialState();
 
-    for (let i = 0; i < 4; i++) {
-      let rowOrCol = this.getTilesForRowOrColumn(i, direction);
+    for (let c = 0; c < 4; c++) {
+      let rowFromCol = [
+        this.state[0][c],
+        this.state[1][c],
+        this.state[2][c],
+        this.state[3][c],
+      ];
 
-      rowOrCol = this.compareAndMerge(rowOrCol, direction);
-      this.setTilesForRowOrColumn(newState, rowOrCol, i, direction);
+      rowFromCol = this.compareAndMerge(rowFromCol);
+
+      for (let r = 0; r < 4; r++) {
+        newState[r][c] = rowFromCol[r];
+      }
     }
 
     this.updateState(newState);
   }
 
-  getTilesForRowOrColumn(index, direction) {
-    switch (direction) {
-      case 'left':
-        return [...this.state[index]];
-      case 'right':
-        return [...this.state[index]].reverse();
-      case 'up':
-        return [
-          this.state[0][index],
-          this.state[1][index],
-          this.state[2][index],
-          this.state[3][index],
-        ];
-      case 'down':
-        return [
-          this.state[3][index],
-          this.state[2][index],
-          this.state[1][index],
-          this.state[0][index],
-        ];
-      default:
-        return [];
+  moveDown() {
+    if (this.getStatus() !== Game.gameStatus.playing) {
+      return;
     }
-  }
 
-  setTilesForRowOrColumn(newState, tiles, index, direction) {
-    switch (direction) {
-      case 'left':
-        tiles.forEach((value, i) => (newState[index][i] = value));
-        break;
-      case 'right':
-        tiles.reverse().forEach((value, i) => (newState[index][i] = value));
-        break;
-      case 'up':
-        tiles.forEach((value, i) => (newState[i][index] = value));
-        break;
-      case 'down':
-        tiles.reverse().forEach((value, i) => (newState[i][index] = value));
-        break;
-    }
-  }
+    const newState = Game.getInitialState();
 
-  compareAndMerge(rowOrCol, direction) {
-    let changedRowOrCol = this.filterZero(rowOrCol);
+    for (let c = 0; c < 4; c++) {
+      let rowFromCol = [
+        this.state[0][c],
+        this.state[1][c],
+        this.state[2][c],
+        this.state[3][c],
+      ];
 
-    for (let i = 0; i < changedRowOrCol.length - 1; i++) {
-      if (changedRowOrCol[i] === changedRowOrCol[i + 1]) {
-        changedRowOrCol[i] += changedRowOrCol[i + 1];
-        changedRowOrCol[i + 1] = 0;
-        this.score += changedRowOrCol[i];
+      rowFromCol = this.compareAndMerge(rowFromCol.reverse());
+      rowFromCol.reverse();
+
+      for (let r = 0; r < 4; r++) {
+        newState[r][c] = rowFromCol[r];
       }
     }
 
-    changedRowOrCol = this.filterZero(changedRowOrCol);
-
-    while (changedRowOrCol.length < 4) {
-      changedRowOrCol.push(0);
-    }
-
-    return changedRowOrCol;
-  }
-
-  filterZero(rowOrCol) {
-    return rowOrCol.filter((num) => num !== 0);
+    this.updateState(newState);
   }
 
   getScore() {
@@ -209,16 +202,46 @@ class Game {
     return this.gameStatus;
   }
 
+  /**
+   * Starts the game.
+   */
   start() {
     this.gameStatus = Game.gameStatus.playing;
     this.generateTile(2);
   }
 
+  /**
+   * Resets the game.
+   */
   restart() {
     this.score = 0;
     this.state = this.initialState;
     this.gameStatus = Game.gameStatus.idle;
     this.updateBoard();
+  }
+
+  filterZero(row) {
+    return row.filter((num) => num !== 0);
+  }
+
+  compareAndMerge(row) {
+    let changedRow = this.filterZero(row);
+
+    for (let i = 0; i < changedRow.length; i++) {
+      if (changedRow[i] === changedRow[i + 1]) {
+        changedRow[i] += changedRow[i + 1];
+        changedRow[i + 1] = 0;
+        this.score += changedRow[i];
+      }
+    }
+
+    changedRow = this.filterZero(changedRow);
+
+    while (changedRow.length < 4) {
+      changedRow.push(0);
+    }
+
+    return changedRow;
   }
 }
 
