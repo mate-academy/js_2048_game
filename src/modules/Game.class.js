@@ -5,7 +5,7 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
-class Game {
+export default class Game {
   /**
    * Creates a new game instance.
    *
@@ -20,9 +20,17 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.board = initialState;
+    this.score = 0;
+    // console.log(initialState);
   }
 
   moveLeft() {}
@@ -55,14 +63,52 @@ class Game {
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.score = 0;
+    this.createNewCell();
+    this.createNewCell();
+    console.log(this.board);
+  }
 
   /**
    * Resets the game.
    */
   restart() {}
 
-  // Add your own methods here
-}
+  createNewCell() {
+    const emptyCell = [];
 
-module.exports = Game;
+    this.board.forEach((row, rowIndex) => {
+      row.forEach((cell, collIndex) => {
+        if (cell === 0) {
+          emptyCell.push({ row: rowIndex, col: collIndex });
+        }
+      });
+    });
+
+    if (emptyCell.length === 0) {
+      // Если нет пустых ячеек, выход из метода или обработка случая, когда доска заполнена
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * emptyCell.length);
+
+    if (emptyCell[randomIndex]) {
+      const { row: rowObj, col: colObj } = emptyCell[randomIndex];
+      const cellValue = Math.random() < 0.9 ? 2 : 4;
+
+      this.board[rowObj][colObj] = cellValue;
+
+      const table = document.querySelector('.game-field');
+      const rowElement = table.querySelectorAll('.field-row')[rowObj];
+      const colElement = rowElement.querySelectorAll('.field-cell')[colObj];
+
+      const newCell = document.createElement('div');
+
+      newCell.classList.add(`field-cell--${cellValue}`);
+      newCell.textContent = cellValue;
+
+      colElement.appendChild(newCell);
+    }
+  }
+}
