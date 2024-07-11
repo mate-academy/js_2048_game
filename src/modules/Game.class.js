@@ -33,7 +33,16 @@ export default class Game {
     // console.log(initialState);
   }
 
-  moveLeft() {}
+  moveLeft() {
+    // eslint-disable-next-line no-shadow
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') {
+        const activeCells = document.querySelectorAll(
+          `.field-cell--2, .field-cell--4, .field-cell--8, .field-cell--16, .field-cell--32, .field-cell--64, .field-cell--128, .field-cell--256, .field-cell--512, .field-cell--1024, .field-cell--2048`,
+        );
+      }
+    });
+  }
   moveRight() {}
   moveUp() {}
   moveDown() {}
@@ -67,7 +76,7 @@ export default class Game {
     this.score = 0;
     this.createNewCell();
     this.createNewCell();
-    console.log(this.board);
+    // console.log(this.board);
   }
 
   /**
@@ -87,7 +96,8 @@ export default class Game {
     });
 
     if (emptyCell.length === 0) {
-      // Если нет пустых ячеек, выход из метода или обработка случая, когда доска заполнена
+      // Если нет пустых ячеек, выход из метода или обработка случая,
+      // когда доска заполнена
       return;
     }
 
@@ -106,6 +116,11 @@ export default class Game {
       const newCell = document.createElement('div');
 
       newCell.classList.add(`field-cell--${cellValue}`);
+
+      newCell.style.cssText =
+        // eslint-disable-next-line max-len
+        'display: flex; justify-content: center; align-items: center; height: 100%';
+
       newCell.textContent = cellValue;
 
       colElement.appendChild(newCell);
