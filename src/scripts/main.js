@@ -71,19 +71,26 @@ const setStyles = () => {
 
 // Event Listeners
 document.addEventListener('keydown', (eventKey) => {
+  const gameStatus = game.getStatus();
+
   if (game.getStatus() === 'playing') {
-    if (eventKey.key === 'ArrowDown') {
-      game.moveDown();
-      bindState(game.getStatus());
-    } else if (eventKey.key === 'ArrowUp') {
-      game.moveUp();
-      bindState(game.getStatus());
-    } else if (eventKey.key === 'ArrowRight') {
-      game.moveRight();
-      bindState(game.getStatus());
-    } else if (eventKey.key === 'ArrowLeft') {
-      game.moveLeft();
-      bindState(game.getStatus());
+    switch (eventKey.key) {
+      case 'ArrowDown':
+        game.moveDown();
+        bindState(gameStatus);
+        break;
+      case 'ArrowUp':
+        game.moveUp();
+        bindState(gameStatus);
+        break;
+      case 'ArrowRight':
+        game.moveRight();
+        bindState(gameStatus);
+        break;
+      case 'ArrowLeft':
+        game.moveLeft();
+        bindState(gameStatus);
+        break;
     }
   }
 });

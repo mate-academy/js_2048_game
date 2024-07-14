@@ -98,6 +98,7 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
+
   getStatus() {
     return this.#status;
   }
