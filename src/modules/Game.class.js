@@ -1,269 +1,366 @@
 'use strict';
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
+
 class Game {
-  // This are variables used in entire instance of class
-  #SIZE = 4;
-  #score = 0;
-  #state = [];
-  #status = '';
-  #initialState = undefined;
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    if (!initialState) {
-      this.#state = new Array(this.#SIZE).fill(0);
+  static STATUS = {
+    idle: 'idle',
+    playing: 'playing',
+    win: 'win',
+    lose: 'lose',
+  };
 
-      for (const i in this.#state) {
-        this.#state[i] = new Array(this.#SIZE).fill(0);
-      }
-
-      this.#initialState = this.#getStateCopy();
-    } else {
-      this.#state = this.#getStateCopy(initialState);
-      this.#initialState = this.#getStateCopy();
-    }
-    this.#status = 'idle';
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.status = Game.STATUS.idle;
+    this.score = 0;
+    this.initialState = initialState;
+    this.state = initialState.map((row) => [...row]);
   }
 
-  // This is a required method
-  moveLeft() {
-    this.#makeMove();
-  }
-
-  // This is a required method
-  moveRight() {
-    this.#reverse();
-    this.#makeMove();
-    this.#reverse();
-  }
-
-  // This is a required method
-  moveUp() {
-    this.#tranpose();
-    this.#makeMove();
-    this.#tranpose();
-  }
-
-  // This is a required method
-  moveDown() {
-    this.#tranpose();
-    this.#reverse();
-    this.#makeMove();
-    this.#reverse();
-    this.#tranpose();
-  }
-
-  /**
-   * This is a required method.
-   *
-   * @returns {number}
-   */
-  getScore() {
-    return this.#score;
-  }
-
-  /**
-   * This is a requirement method.
-   *
-   * @returns {number[][]}
-   */
   getState() {
-    return this.#getStateCopy();
+    return this.state;
   }
 
-  /**
-   * Returns the current game status.
-   * This is a requirement method
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
+  getScore() {
+    return this.score;
+  }
 
   getStatus() {
-    return this.#status;
+    return this.status;
   }
 
-  /**
-   * Starts the game.
-   * Update game status.
-   *
-   * @param {string} value
-   *
-   */
-  setStatus(value) {
-    this.#status = value;
-  }
-
-  /**
-   * Resets the game.
-   * This method shoud be private, but the tests consider it as public
-   */
-  start() {
-    this.#score = 0;
-    this.#status = 'playing';
-    this.#state = this.#getStateCopy(this.#initialState);
-
-    // Is called twice by requirements
-    this.#randomizer();
-    this.#randomizer();
-  }
-
-  // Resets the game.
-  restart() {
-    this.#score = 0;
-    this.#status = 'playing';
-    this.#state = this.#getStateCopy(this.#initialState);
-    this.#status = 'idle';
-  }
-
-  /**
-   * Put 2 or 4 in freely cells if they exists
-   */
-  #randomizer() {
-    const empties = [];
-    let idxSorted;
-
-    for (let line = 0; line < this.#SIZE; line++) {
-      for (let column = 0; column < this.#SIZE; column++) {
-        if (this.#state[line][column] === 0) {
-          empties.push([line, column]);
-        }
-      }
+  moveLeft() {
+    if (this.getStatus() !== Game.STATUS.playing) {
+      return;
     }
 
-    if (empties.length > 0) {
-      idxSorted = Math.floor(Math.random() * empties.length);
+    let canMove = false;
+    const newState = this.state.map((row) => {
+      const filteredRow = row.filter((cell) => cell !== 0);
+      const newRow = [];
 
-      this.#state[empties[idxSorted][0]][empties[idxSorted][1]] =
-        Math.floor(Math.random() * 10) < 9 ? 2 : 4;
-    }
-  }
+      for (let i = 0; i < filteredRow.length; i++) {
+        if (filteredRow[i] === filteredRow[i + 1]) {
+          const mergedValue = filteredRow[i] * 2;
 
-  // Matrix transformation transpose operation.
-  #tranpose() {
-    let tempRetriveVar;
-
-    for (let ln = 0; ln < this.#SIZE; ln++) {
-      for (let cl = ln; cl < this.#SIZE; cl++) {
-        tempRetriveVar = this.#state[ln][cl];
-        this.#state[ln][cl] = this.#state[cl][ln];
-        this.#state[cl][ln] = tempRetriveVar;
-      }
-    }
-  }
-
-  // Only reverte this.#state array lines, it dont to revert any array.
-  #reverse() {
-    this.#state.forEach((e, i, arr) => arr[i].reverse());
-  }
-
-  // Check if movements isn't possible than change this.status.
-  #checkIfLose() {
-    let allSides = [];
-
-    for (let column = 0; column < this.#SIZE; column++) {
-      for (let line = 0; line < this.#SIZE; line++) {
-        if (this.#state[line][column] !== 0) {
-          allSides.push(
-            this.#state[line - 1] !== undefined
-              ? this.#state[line - 1][column]
-              : undefined,
-          );
-
-          allSides.push(
-            this.#state[line + 1] !== undefined
-              ? this.#state[line + 1][column]
-              : undefined,
-          );
-          allSides.push(this.#state[line][column + 1]);
-          allSides.push(this.#state[line][column - 1]);
-
-          if (
-            allSides.includes(0) ||
-            allSides.includes(this.#state[line][column])
-          ) {
-            return false;
-          }
-        } else {
-          return false;
-        }
-        allSides = [];
-      }
-    }
-
-    return true;
-  }
-
-  /**
-   * This method copy two dimensional array.
-   * In this code is always used to copy the state Two dimensional Array
-   *
-   * @param {Array} arr
-   * @returns
-   */
-  #getStateCopy(arr = this.#state) {
-    return arr.map((e) => [...e]);
-  }
-
-  // Make left movement by default
-  #makeMove() {
-    if (this.#status === 'playing') {
-      const previousState = this.#getStateCopy().flat();
-
-      for (const line in this.#state) {
-        let nonZeros = this.#state[line].filter((e) => e !== 0);
-        let i = 0;
-
-        while (i < nonZeros.length) {
-          if (nonZeros[i + 1] === nonZeros[i]) {
-            nonZeros[i + 1] = 0;
-            nonZeros[i] *= 2;
-            this.#score += nonZeros[i];
-
-            if (nonZeros[i] === 2048) {
-              this.#status = 'win';
-            }
-            i += 2;
-            continue;
-          }
-
+          newRow.push(mergedValue);
+          this.score += mergedValue;
           i++;
+          canMove = true;
+        } else {
+          newRow.push(filteredRow[i]);
         }
-
-        nonZeros = nonZeros.filter((e) => e !== 0);
-
-        this.#state[line] = [
-          ...nonZeros,
-          ...new Array(this.#SIZE - nonZeros.length).fill(0),
-        ];
       }
 
-      if (this.#state.flat().some((e, i) => e !== previousState[i])) {
-        this.#randomizer();
+      while (newRow.length < row.length) {
+        newRow.push(0);
+      }
+
+      if (!canMove && !row.every((cell, index) => cell === newRow[index])) {
+        canMove = true;
+      }
+
+      return newRow;
+    });
+
+    if (canMove) {
+      this.state = newState;
+      this.addCell();
+      this.setState();
+      this.checkStatus();
+    }
+
+    return canMove;
+  }
+
+  moveRight() {
+    if (this.getStatus() !== Game.STATUS.playing) {
+      return;
+    }
+
+    let canMove = false;
+    const newState = this.state.map((row) => {
+      const filteredRow = row.filter((cell) => cell !== 0);
+      const newRow = [];
+
+      for (let i = filteredRow.length - 1; i >= 0; i--) {
+        if (filteredRow[i] === filteredRow[i - 1]) {
+          const mergedValue = filteredRow[i] * 2;
+
+          newRow.unshift(mergedValue);
+          this.score += mergedValue;
+          i--;
+          canMove = true;
+        } else {
+          newRow.unshift(filteredRow[i]);
+        }
+      }
+
+      while (newRow.length < row.length) {
+        newRow.unshift(0);
+      }
+
+      if (!canMove && !row.every((cell, index) => cell === newRow[index])) {
+        canMove = true;
+      }
+
+      return newRow;
+    });
+
+    if (canMove) {
+      this.state = newState;
+      this.addCell();
+      this.setState();
+      this.checkStatus();
+    }
+
+    return canMove;
+  }
+
+  moveUp() {
+    if (this.getStatus() !== Game.STATUS.playing) {
+      return;
+    }
+
+    let canMove = false;
+    const newState = this.state.map((row) => [...row]);
+
+    for (let c = 0; c < this.state[0].length; c++) {
+      const filteredColumn = [];
+
+      for (let r = 0; r < this.state.length; r++) {
+        if (this.state[r][c] !== 0) {
+          filteredColumn.push(this.state[r][c]);
+        }
+      }
+
+      const newColumn = [];
+
+      for (let i = 0; i < filteredColumn.length; i++) {
+        if (filteredColumn[i] === filteredColumn[i + 1]) {
+          const mergedValue = filteredColumn[i] * 2;
+
+          newColumn.push(mergedValue);
+          this.score += mergedValue;
+          i++;
+          canMove = true;
+        } else {
+          newColumn.push(filteredColumn[i]);
+        }
+      }
+
+      while (newColumn.length < this.state.length) {
+        newColumn.push(0);
+      }
+
+      for (let r = 0; r < this.state.length; r++) {
+        if (newState[r][c] !== newColumn[r]) {
+          newState[r][c] = newColumn[r];
+          canMove = true;
+        }
       }
     }
 
-    this.#status = this.#checkIfLose() ? 'lose' : this.#status;
+    if (canMove) {
+      this.state = newState;
+      this.addCell();
+      this.setState();
+      this.checkStatus();
+    }
+
+    return canMove;
+  }
+
+  moveDown() {
+    if (this.getStatus() !== Game.STATUS.playing) {
+      return;
+    }
+
+    let canMove = false;
+    const newState = this.state.map((row) => [...row]);
+
+    for (let c = 0; c < this.state[0].length; c++) {
+      const filteredColumn = [];
+
+      for (let r = this.state.length - 1; r >= 0; r--) {
+        if (this.state[r][c] !== 0) {
+          filteredColumn.push(this.state[r][c]);
+        }
+      }
+
+      const newColumn = [];
+
+      for (let i = 0; i < filteredColumn.length; i++) {
+        if (filteredColumn[i] === filteredColumn[i + 1]) {
+          const mergedValue = filteredColumn[i] * 2;
+
+          newColumn.unshift(mergedValue);
+          this.score += mergedValue;
+          i++;
+          canMove = true;
+        } else {
+          newColumn.unshift(filteredColumn[i]);
+        }
+      }
+
+      while (newColumn.length < this.state.length) {
+        newColumn.unshift(0);
+      }
+
+      for (let r = 0; r < this.state.length; r++) {
+        if (newState[r][c] !== newColumn[r]) {
+          newState[r][c] = newColumn[r];
+          canMove = true;
+        }
+      }
+    }
+
+    if (canMove) {
+      this.state = newState;
+      this.addCell();
+      this.setState();
+      this.checkStatus();
+    }
+
+    return canMove;
+  }
+
+  start() {
+    this.status = Game.STATUS.playing;
+    this.state = this.initialState.map((row) => [...row]);
+    this.addCell();
+    this.addCell();
+    this.setState();
+  }
+
+  restart() {
+    this.score = 0;
+    this.status = Game.STATUS.idle;
+    this.state = this.initialState.map((row) => [...row]);
+    this.setState();
+  }
+
+  addCell() {
+    const emptyCells = [];
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state[i].length; j++) {
+        if (this.state[i][j] === 0) {
+          emptyCells.push({ r: i, c: j });
+        }
+      }
+    }
+
+    if (emptyCells.length === 0) {
+      return;
+    }
+
+    const randomIndex = this.addRandomNumber(emptyCells.length);
+    const { r, c } = emptyCells[randomIndex];
+    const newState = this.state.map((row) => [...row]);
+
+    newState[r][c] = this.getRandomCell();
+    this.state = newState;
+  }
+
+  setState() {
+    const cells = document.querySelectorAll('.field-cell');
+    const stateValues = this.state.flat();
+
+    if (cells.length === 0) {
+      return;
+    }
+
+    for (let i = 0; i < stateValues.length; i++) {
+      const currentCell = cells[i];
+      const currentValue = stateValues[i];
+
+      if (!currentCell) {
+        continue;
+      }
+
+      currentCell.className = 'field-cell';
+
+      if (currentValue > 0) {
+        currentCell.textContent = currentValue;
+        currentCell.classList.add(`field-cell--${currentValue}`);
+      } else {
+        currentCell.textContent = '';
+      }
+    }
+  }
+
+  addRandomNumber(max) {
+    return Math.floor(Math.random() * max);
+  }
+
+  getRandomCell() {
+    return Math.random() < 0.9 ? 2 : 4;
+  }
+
+  checkStatus() {
+    let canMove = false;
+    let canMerge = false;
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state[i].length; j++) {
+        if (this.state[i][j] === 2048) {
+          this.status = Game.STATUS.win;
+
+          return;
+        }
+      }
+    }
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state[i].length - 1; j++) {
+        if (this.state[i][j] === this.state[i][j + 1]) {
+          canMerge = true;
+          break;
+        }
+      }
+
+      if (canMerge) {
+        break;
+      }
+    }
+
+    if (!canMerge) {
+      for (let i = 0; i < this.state.length - 1; i++) {
+        for (let j = 0; j < this.state[i].length; j++) {
+          if (this.state[i][j] === this.state[i + 1][j]) {
+            canMerge = true;
+            break;
+          }
+        }
+
+        if (canMerge) {
+          break;
+        }
+      }
+    }
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state[i].length; j++) {
+        if (this.state[i][j] === 0) {
+          canMove = true;
+          break;
+        }
+      }
+
+      if (canMove) {
+        break;
+      }
+    }
+
+    if (!canMove && !canMerge) {
+      this.status = Game.STATUS.lose;
+    }
   }
 }
 
