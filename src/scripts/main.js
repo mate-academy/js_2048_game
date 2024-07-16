@@ -3,6 +3,13 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
+const arrowKeys = {
+  left: 'ArrowLeft',
+  right: 'ArrowRight',
+  up: 'ArrowUp',
+  down: 'ArrowDown',
+};
+
 function initializeGame() {
   const boardElement = document.querySelector('.game-field');
   const scoreElement = document.querySelector('.game-score');
@@ -65,20 +72,20 @@ function initializeGame() {
   document.addEventListener('keydown', (keyEvent) => {
     const key = keyEvent.key;
 
-    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key)) {
+    if (Object.values(arrowKeys).includes(key)) {
       keyEvent.preventDefault();
 
       switch (key) {
-        case 'ArrowLeft':
+        case arrowKeys.left:
           game.moveLeft();
           break;
-        case 'ArrowRight':
+        case arrowKeys.right:
           game.moveRight();
           break;
-        case 'ArrowUp':
+        case arrowKeys.up:
           game.moveUp();
           break;
-        case 'ArrowDown':
+        case arrowKeys.down:
           game.moveDown();
           break;
       }
