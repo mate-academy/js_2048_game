@@ -9,8 +9,10 @@ const msgStartEl = document.querySelector('.message-start');
 const msgWinEl = document.querySelector('.message-win');
 const msgLoseEl = document.querySelector('.message-lose');
 const game = new Game();
+
 function update() {
   const curBoard = game.getBoard();
+
   for (let row = 0; row < curBoard.length; row++) {
     for (let i = 0; i < curBoard[row].length; i++) {
       const cel = boardEl.rows[row].cells[i];
@@ -27,21 +29,25 @@ function update() {
     }
   }
 
-  scoreMax.textContent = game.getScoreMax();
-  scoreCur.textContent = game.getScore();
+  scoreMax.textContent = String(game.getScoreMax());
+  scoreCur.textContent = String(game.getScore());
 
   if (game.getStatus() === 'idle') {
-    startBt.classList = 'button start';
+    startBt.className = 'button start';
     startBt.textContent = 'Start';
   } else {
-    startBt.classList = 'button restart';
+    startBt.className = 'button restart';
     startBt.textContent = 'Restart';
   }
 
   switch (game.getStatus()) {
     case 'playing':
-      [msgStartEl, msgWinEl, msgLoseEl].forEach((msg) =>
-        !msg?.classList.contains('hidden') ? msg?.classList.add('hidden') : '',
+      [msgStartEl, msgWinEl, msgLoseEl].forEach(
+        (msg) =>
+          !msg?.classList.contains('hidden')
+            ? msg?.classList.add('hidden')
+            : '',
+        // eslint-disable-next-line function-paren-newline
       );
       break;
 

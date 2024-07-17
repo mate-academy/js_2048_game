@@ -28,8 +28,10 @@ class Game {
    * @returns blank board array
    */
   _getBlankBoard() {
-    return Array.from({ length: 4 }, (e) =>
-      Array.from({ length: 4 }, (e) => 0),
+    return Array.from(
+      { length: 4 },
+      () => Array.from({ length: 4 }, () => 0),
+      // eslint-disable-next-line function-paren-newline
     );
   }
 
@@ -66,7 +68,8 @@ class Game {
     let randRow;
     let randCol;
 
-    // Run this random generator until row and collum position in given board are zero (vacant)
+    // Run this random generator until row and
+    // collum position in given board are zero(vacant)
     do {
       randRow = Math.floor(Math.random() * boardArrs.length);
       randCol = Math.floor(Math.random() * boardArrs[0].length);
@@ -74,6 +77,7 @@ class Game {
 
     // Add 2 or 4 with 4 10% probability
     let randValue = 2;
+
     if (Math.floor(Math.random() * 100 + 1) <= 10) {
       randValue = 4;
     }
@@ -91,6 +95,7 @@ class Game {
     // Check if winning score reached
     if (this.scoreCurrent >= 2048) {
       this.gameStatus = 'win';
+
       return false;
     }
 
@@ -160,6 +165,7 @@ class Game {
     // Run for each row: filter-out Zeros appen zeroes from the left
     for (let r = 0; r < arr.length; r++) {
       const temp = arr[r].filter((e) => e);
+
       arr[r] = Array.from(
         { length: arr[r].length - temp.length },
         () => 0,
@@ -175,6 +181,7 @@ class Game {
     // Run for each row: filter-out Zeros appen zeroes from the right
     for (let r = 0; r < arr.length; r++) {
       const temp = arr[r].filter((e) => e);
+
       arr[r] = temp.concat(
         Array.from({ length: arr[r].length - temp.length }, () => 0),
       );
@@ -203,8 +210,8 @@ class Game {
       case 'left':
         for (let row = 0; row < this.board.length; row++) {
           for (let col = 0; col < this.board[row].length - 1; col++) {
-            let el = this.board[row][col];
-            let elRight = this.board[row][col + 1];
+            const el = this.board[row][col];
+            const elRight = this.board[row][col + 1];
 
             if (el && elRight && el === elRight) {
               this.board[row][col] = el + elRight;
@@ -219,8 +226,8 @@ class Game {
       case 'right':
         for (let row = this.board.length - 1; row >= 0; row--) {
           for (let col = this.board[row].length - 1; col >= 1; col--) {
-            let el = this.board[row][col];
-            let elLeft = this.board[row][col - 1];
+            const el = this.board[row][col];
+            const elLeft = this.board[row][col - 1];
 
             if (el && elLeft && el === elLeft) {
               this.board[row][col] = el + elLeft;
