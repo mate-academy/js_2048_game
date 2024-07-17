@@ -41,6 +41,7 @@ class Game {
   _initialize() {
     this.board = [...this._getBlankBoard()];
     this._genRandCells();
+    this._genRandCells();
   }
 
   /**
@@ -48,14 +49,12 @@ class Game {
    * @returns {undefined}
    */
   _genRandCells() {
-    for (let index = 0; index < 2; index++) {
-      const randTile = this._generateRandomTile(this.board);
+    const randTile = this._generateRandomTile(this.board);
 
-      if (!randTile) {
-        return;
-      }
-      this.board[randTile[0]][randTile[1]] = randTile[2];
+    if (!randTile) {
+      return;
     }
+    this.board[randTile[0]][randTile[1]] = randTile[2];
   }
 
   /**
