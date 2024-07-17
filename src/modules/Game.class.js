@@ -103,7 +103,7 @@ class Game {
       this.board.reduce(
         (acc, cur) => acc + cur.filter((cell) => cell === 0).length,
         0,
-      ) < 2
+      ) === 0
     ) {
       this.gameStatus = 'lose';
 
@@ -114,47 +114,74 @@ class Game {
     return true;
   }
 
+  _didTileMoved(newArr, oldArr) {
+    // Check if newArr same as board
+    for (let row = 0; row < oldArr.length; row++) {
+      for (let col = 0; col < oldArr[row].length; col++) {
+        if (oldArr[row][col] !== newArr[row][col]) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
   moveLeft() {
     if (this.getStatus() === 'playing') {
+      const newTimeArr = this.board;
       this.board = this._shiftLeft(this.board);
       this._combineTiles('left');
       this.board = this._shiftLeft(this.board);
-      this._genRandCells();
-      this._checkGameStatus();
+
+      if (this._didTileMoved(newTimeArr, this.board) !== false) {
+        this._genRandCells();
+        this._checkGameStatus();
+      }
     }
   }
 
   moveRight() {
     if (this.getStatus() === 'playing') {
+      const newTimeArr = this.board;
       this.board = this._shiftRight(this.board);
       this._combineTiles('right');
       this.board = this._shiftRight(this.board);
-      this._genRandCells();
-      this._checkGameStatus();
+
+      if (this._didTileMoved(newTimeArr, this.board) !== false) {
+        this._genRandCells();
+        this._checkGameStatus();
+      }
     }
   }
 
   moveUp() {
     if (this.getStatus() === 'playing') {
+      const newTimeArr = this.board;
       this.board = this._transpose(this.board);
       this.board = this._shiftLeft(this.board);
       this._combineTiles('left');
       this.board = this._shiftLeft(this.board);
       this.board = this._transpose(this.board);
-      this._genRandCells();
-      this._checkGameStatus();
+
+      if (this._didTileMoved(newTimeArr, this.board) !== false) {
+        this._genRandCells();
+        this._checkGameStatus();
+      }
     }
   }
 
   moveDown() {
     if (this.getStatus() === 'playing') {
+      const newTimeArr = this.board;
       this.board = this._transpose(this.board);
       this.board = this._shiftRight(this.board);
       this._combineTiles('right');
       this.board = this._shiftRight(this.board);
       this.board = this._transpose(this.board);
-      this._genRandCells();
-      this._checkGameStatus();
+
+      if (this._didTileMoved(newTimeArr, this.board) !== false) {
+        this._genRandCells();
+        this._checkGameStatus();
+      }
     }
   }
 
