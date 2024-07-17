@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -12,14 +13,20 @@
       href="./styles/main.scss"
     />
   </head>
+
   <body>
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
         <div class="controls">
           <p class="info">
+            Best Score:
+            <span class="game-score maxScore">0</span>
+          </p>
+
+          <p class="info">
             Score:
-            <span class="game-score">0</span>
+            <span class="game-score curScore">0</span>
           </p>
           <button class="button start">Start</button>
         </div>
@@ -65,6 +72,10 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      src="scripts/main.js"
+      type="module"
+    ></script>
   </body>
+
 </html>
