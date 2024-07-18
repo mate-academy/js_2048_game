@@ -123,11 +123,13 @@ class Game {
         }
       }
     }
+
     return false;
   }
   moveLeft() {
     if (this.getStatus() === 'playing') {
       const newTimeArr = this.board;
+
       this.board = this._shiftLeft(this.board);
       this._combineTiles('left');
       this.board = this._shiftLeft(this.board);
@@ -142,6 +144,7 @@ class Game {
   moveRight() {
     if (this.getStatus() === 'playing') {
       const newTimeArr = this.board;
+
       this.board = this._shiftRight(this.board);
       this._combineTiles('right');
       this.board = this._shiftRight(this.board);
@@ -156,6 +159,7 @@ class Game {
   moveUp() {
     if (this.getStatus() === 'playing') {
       const newTimeArr = this.board;
+
       this.board = this._transpose(this.board);
       this.board = this._shiftLeft(this.board);
       this._combineTiles('left');
@@ -172,6 +176,7 @@ class Game {
   moveDown() {
     if (this.getStatus() === 'playing') {
       const newTimeArr = this.board;
+
       this.board = this._transpose(this.board);
       this.board = this._shiftRight(this.board);
       this._combineTiles('right');
