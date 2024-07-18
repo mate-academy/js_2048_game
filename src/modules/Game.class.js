@@ -59,6 +59,7 @@ class Game {
               cell.textContent = '';
               cell.className = 'field-cell';
               cell = targetCell;
+              hasChanged = true;
             } else if (
               targetCell.textContent === cell.textContent &&
               !merged[currentCol - 1]
@@ -91,9 +92,7 @@ class Game {
       }
     });
 
-    if (hasChanged) {
-      this.spawnRandomNumber();
-    }
+    return hasChanged;
   }
 
   moveRight(hideMessages) {
@@ -118,6 +117,7 @@ class Game {
               cell.textContent = '';
               cell.className = 'field-cell';
               cell = targetCell;
+              hasChanged = true;
             } else if (
               targetCell.textContent === cell.textContent &&
               !merged[currentCol + 1]
@@ -150,9 +150,7 @@ class Game {
       }
     });
 
-    if (hasChanged) {
-      this.spawnRandomNumber();
-    }
+    return hasChanged;
   }
 
   moveUp(hideMessages) {
@@ -177,6 +175,7 @@ class Game {
               cell.textContent = '';
               cell.className = 'field-cell';
               cell = targetCell;
+              hasChanged = true;
             } else if (
               targetCell.textContent === cell.textContent &&
               !merged[currentRow - 1]
@@ -209,9 +208,7 @@ class Game {
       }
     }
 
-    if (hasChanged) {
-      this.spawnRandomNumber();
-    }
+    return hasChanged;
   }
 
   moveDown(hideMessages) {
@@ -236,6 +233,7 @@ class Game {
               cell.textContent = '';
               cell.className = 'field-cell';
               cell = targetCell;
+              hasChanged = true;
             } else if (
               targetCell.textContent === cell.textContent &&
               !merged[currentRow + 1]
@@ -268,9 +266,7 @@ class Game {
       }
     }
 
-    if (hasChanged) {
-      this.spawnRandomNumber();
-    }
+    return hasChanged;
   }
 }
 

@@ -49,7 +49,7 @@ function spawnNumbers() {
 }
 
 function handleKeyDown(evt) {
-  if (!gameActive || this.score >= 8) {
+  if (!gameActive) {
     return;
   }
 
@@ -59,22 +59,27 @@ function handleKeyDown(evt) {
     return;
   }
 
+  let hasChanged = false;
+
   switch (evt.key) {
     case 'ArrowUp':
-      game.moveUp(hideMessages);
+      hasChanged = game.moveUp(hideMessages);
       break;
     case 'ArrowDown':
-      game.moveDown(hideMessages);
+      hasChanged = game.moveDown(hideMessages);
       break;
     case 'ArrowLeft':
-      game.moveLeft(hideMessages);
+      hasChanged = game.moveLeft(hideMessages);
       break;
     case 'ArrowRight':
-      game.moveRight(hideMessages);
+      hasChanged = game.moveRight(hideMessages);
       break;
   }
-  spawnRandomNumber();
-  checkLoseCondition();
+
+  if (hasChanged) {
+    spawnRandomNumber();
+    checkLoseCondition();
+  }
 }
 
 function spawnRandomNumber() {
