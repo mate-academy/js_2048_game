@@ -39,6 +39,7 @@ class Game {
 
   moveLeft(hideMessages) {
     const rows = document.querySelectorAll('.field-row');
+    let hasChanged = false;
 
     rows.forEach((row) => {
       const merged = [false, false, false, false];
@@ -70,6 +71,7 @@ class Game {
               cell.className = 'field-cell';
               merged[currentCol - 1] = true;
               this.getScore(newValue);
+              hasChanged = true;
 
               if (newValue === 2048) {
                 hideMessages();
@@ -88,10 +90,15 @@ class Game {
         }
       }
     });
+
+    if (hasChanged) {
+      this.spawnRandomNumber();
+    }
   }
 
   moveRight(hideMessages) {
     const rows = document.querySelectorAll('.field-row');
+    let hasChanged = false;
 
     rows.forEach((row) => {
       const merged = [false, false, false, false];
@@ -123,6 +130,7 @@ class Game {
               cell.className = 'field-cell';
               merged[currentCol + 1] = true;
               this.getScore(newValue);
+              hasChanged = true;
 
               if (newValue === 2048) {
                 hideMessages();
@@ -141,10 +149,15 @@ class Game {
         }
       }
     });
+
+    if (hasChanged) {
+      this.spawnRandomNumber();
+    }
   }
 
   moveUp(hideMessages) {
     const rows = document.querySelectorAll('.field-row');
+    let hasChanged = false;
 
     for (let col = 0; col < 4; col++) {
       const merged = [false, false, false, false];
@@ -176,6 +189,7 @@ class Game {
               cell.className = 'field-cell';
               merged[currentRow - 1] = true;
               this.getScore(newValue);
+              hasChanged = true;
 
               if (newValue === 2048) {
                 hideMessages();
@@ -194,10 +208,15 @@ class Game {
         }
       }
     }
+
+    if (hasChanged) {
+      this.spawnRandomNumber();
+    }
   }
 
   moveDown(hideMessages) {
     const rows = document.querySelectorAll('.field-row');
+    let hasChanged = false;
 
     for (let col = 0; col < 4; col++) {
       const merged = [false, false, false, false];
@@ -229,6 +248,7 @@ class Game {
               cell.className = 'field-cell';
               merged[currentRow + 1] = true;
               this.getScore(newValue);
+              hasChanged = true;
 
               if (newValue === 2048) {
                 hideMessages();
@@ -246,6 +266,10 @@ class Game {
           }
         }
       }
+    }
+
+    if (hasChanged) {
+      this.spawnRandomNumber();
     }
   }
 }
