@@ -97,14 +97,13 @@ class Game {
 
       return false;
     }
-
     // Check if less then 2 evaliable tiles exist on the board
-    if (
-      this.board.reduce(
-        (acc, cur) => acc + cur.filter((cell) => cell === 0).length,
-        0,
-      ) === 0
-    ) {
+    const freeTiles = this.board.reduce(
+      (acc, cur) => acc + cur.filter((cell) => cell === 0).length,
+      0,
+    );
+
+    if (this._anyMovesLeft() === false && freeTiles === 0) {
       this.gameStatus = 'lose';
 
       return false;
@@ -126,67 +125,29 @@ class Game {
 
     return false;
   }
-  moveLeft() {
-    if (this.getStatus() === 'playing') {
-      const newTimeArr = this.board;
 
-      this.board = this._shiftLeft(this.board);
-      this._combineTiles('left');
-      this.board = this._shiftLeft(this.board);
+  _anyMovesLeft() {
+    const posMoves = [
+      this._combineTiles('ArrowLeft', this.board)['score'],
+      this._combineTiles('ArrowRight', this.board)['score'],
+      this._combineTiles('ArrowUp', this.board)['score'],
+      this._combineTiles('ArrowDown', this.board)['score'],
+    ];
 
-      if (this._didTileMoved(newTimeArr, this.board) !== false) {
-        this._genRandCells();
-        this._checkGameStatus();
-      }
-    }
+    return posMoves.some((m) => m !== 0);
   }
 
-  moveRight() {
+  moves(direction) {
     if (this.getStatus() === 'playing') {
-      const newTimeArr = this.board;
+      const beforeMoveBoard = this._arrayDeepCopy(this.board);
+      const combBoard = this._combineTiles(direction, this.board);
+      this.board = this._arrayDeepCopy(combBoard['board']);
+      this.scoreCurrent += combBoard['score'];
 
-      this.board = this._shiftRight(this.board);
-      this._combineTiles('right');
-      this.board = this._shiftRight(this.board);
-
-      if (this._didTileMoved(newTimeArr, this.board) !== false) {
+      if (this._didTileMoved(beforeMoveBoard, this.board)) {
         this._genRandCells();
-        this._checkGameStatus();
       }
-    }
-  }
-
-  moveUp() {
-    if (this.getStatus() === 'playing') {
-      const newTimeArr = this.board;
-
-      this.board = this._transpose(this.board);
-      this.board = this._shiftLeft(this.board);
-      this._combineTiles('left');
-      this.board = this._shiftLeft(this.board);
-      this.board = this._transpose(this.board);
-
-      if (this._didTileMoved(newTimeArr, this.board) !== false) {
-        this._genRandCells();
-        this._checkGameStatus();
-      }
-    }
-  }
-
-  moveDown() {
-    if (this.getStatus() === 'playing') {
-      const newTimeArr = this.board;
-
-      this.board = this._transpose(this.board);
-      this.board = this._shiftRight(this.board);
-      this._combineTiles('right');
-      this.board = this._shiftRight(this.board);
-      this.board = this._transpose(this.board);
-
-      if (this._didTileMoved(newTimeArr, this.board) !== false) {
-        this._genRandCells();
-        this._checkGameStatus();
-      }
+      this._checkGameStatus();
     }
   }
 
@@ -236,40 +197,71 @@ class Game {
     return temp;
   }
 
-  _combineTiles(direction) {
-    switch (direction) {
-      case 'left':
-        for (let row = 0; row < this.board.length; row++) {
-          for (let col = 0; col < this.board[row].length - 1; col++) {
-            const el = this.board[row][col];
-            const elRight = this.board[row][col + 1];
+  _combineTiles(direction, board) {
+    function combLeft() {
+      for (let row = 0; row < tempBoard.length; row++) {
+        for (let col = 0; col < tempBoard[row].length - 1; col++) {
+          const el = tempBoard[row][col];
+          const elRight = tempBoard[row][col + 1];
 
-            if (el && elRight && el === elRight) {
-              this.board[row][col] = el + elRight;
-              this.board[row][col + 1] = 0;
-              col++;
-              this.scoreCurrent += el + elRight;
-            }
+          if (el && elRight && el === elRight) {
+            tempBoard[row][col] = el + elRight;
+            tempBoard[row][col + 1] = 0;
+            col++;
+            tempScore = el + elRight;
           }
         }
+      }
+    }
+    function combRight() {
+      for (let row = tempBoard.length - 1; row >= 0; row--) {
+        for (let col = tempBoard[row].length - 1; col >= 1; col--) {
+          const el = tempBoard[row][col];
+          const elLeft = tempBoard[row][col - 1];
+
+          if (el && elLeft && el === elLeft) {
+            tempBoard[row][col] = el + elLeft;
+            tempBoard[row][col - 1] = 0;
+            col--;
+            tempScore = el + elLeft;
+          }
+        }
+      }
+    }
+
+    let tempBoard = this._arrayDeepCopy(board);
+    let tempScore = 0;
+    switch (direction) {
+      case 'ArrowLeft':
+        tempBoard = this._shiftLeft(tempBoard);
+        combLeft();
+        tempBoard = this._shiftLeft(tempBoard);
         break;
 
-      case 'right':
-        for (let row = this.board.length - 1; row >= 0; row--) {
-          for (let col = this.board[row].length - 1; col >= 1; col--) {
-            const el = this.board[row][col];
-            const elLeft = this.board[row][col - 1];
+      case 'ArrowRight':
+        tempBoard = this._shiftRight(tempBoard);
+        combRight();
+        tempBoard = this._shiftRight(tempBoard);
+        break;
 
-            if (el && elLeft && el === elLeft) {
-              this.board[row][col] = el + elLeft;
-              this.board[row][col - 1] = 0;
-              col--;
-              this.scoreCurrent += el + elLeft;
-            }
-          }
-        }
+      case 'ArrowUp':
+        tempBoard = this._transpose(tempBoard);
+        tempBoard = this._shiftLeft(tempBoard);
+        combLeft();
+        tempBoard = this._shiftLeft(tempBoard);
+        tempBoard = this._transpose(tempBoard);
+        break;
+
+      case 'ArrowDown':
+        tempBoard = this._transpose(tempBoard);
+        tempBoard = this._shiftRight(tempBoard);
+        combLeft();
+        tempBoard = this._shiftRight(tempBoard);
+        tempBoard = this._transpose(tempBoard);
         break;
     }
+
+    return { board: tempBoard, score: tempScore };
   }
 
   /**
@@ -313,12 +305,43 @@ class Game {
    * Resets the game.
    */
   restart() {
-    if (this.scoreMax < this.scoreCurrent && this.getStatus() === 'win') {
-      this.scoreMax = this.scoreCurrent;
-    }
+    this._updateMaxScore(this.scoreCurrent);
     this.scoreCurrent = 0;
     this.gameStatus = 'playing';
     this._initialize();
+  }
+
+  _arrayDeepCopy(obj) {
+    if (typeof obj !== 'object' || obj === null) {
+      return obj;
+    }
+
+    if (obj instanceof Date) {
+      return new Date(obj.getTime());
+    }
+
+    if (obj instanceof Array) {
+      return obj.reduce((arr, item, i) => {
+        arr[i] = this._arrayDeepCopy(item);
+        return arr;
+      }, []);
+    }
+
+    if (obj instanceof Object) {
+      return Object.keys(obj).reduce((newObj, key) => {
+        newObj[key] = this._arrayDeepCopy(obj[key]);
+        return newObj;
+      }, {});
+    }
+  }
+
+  _updateMaxScore(curScore) {
+    if (
+      this.scoreMax < curScore &&
+      (this.getStatus() === 'win' || this.getStatus() === 'lose')
+    ) {
+      this.scoreMax = curScore;
+    }
   }
 }
 
