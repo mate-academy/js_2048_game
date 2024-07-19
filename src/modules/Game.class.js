@@ -92,11 +92,12 @@ class Game {
    */
   _checkGameStatus() {
     // Check if winning score reached
-    if (this.scoreCurrent >= 2048) {
+    if (this.board.some((row) => row.some((cell) => cell === 2048))) {
       this.gameStatus = 'win';
 
       return false;
     }
+
     // Check if less then 2 evaliable tiles exist on the board
     const freeTiles = this.board.reduce(
       (acc, cur) => acc + cur.filter((cell) => cell === 0).length,
@@ -141,6 +142,7 @@ class Game {
     if (this.getStatus() === 'playing') {
       const beforeMoveBoard = this._arrayDeepCopy(this.board);
       const combBoard = this._combineTiles(direction, this.board);
+
       this.board = this._arrayDeepCopy(combBoard['board']);
       this.scoreCurrent += combBoard['score'];
 
@@ -213,6 +215,7 @@ class Game {
         }
       }
     }
+
     function combRight() {
       for (let row = tempBoard.length - 1; row >= 0; row--) {
         for (let col = tempBoard[row].length - 1; col >= 1; col--) {
@@ -231,6 +234,7 @@ class Game {
 
     let tempBoard = this._arrayDeepCopy(board);
     let tempScore = 0;
+
     switch (direction) {
       case 'ArrowLeft':
         tempBoard = this._shiftLeft(tempBoard);
@@ -323,6 +327,7 @@ class Game {
     if (obj instanceof Array) {
       return obj.reduce((arr, item, i) => {
         arr[i] = this._arrayDeepCopy(item);
+
         return arr;
       }, []);
     }
@@ -330,6 +335,7 @@ class Game {
     if (obj instanceof Object) {
       return Object.keys(obj).reduce((newObj, key) => {
         newObj[key] = this._arrayDeepCopy(obj[key]);
+
         return newObj;
       }, {});
     }
