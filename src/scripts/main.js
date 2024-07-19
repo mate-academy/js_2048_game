@@ -1,24 +1,36 @@
 'use strict';
 
+// Is it just me, or this script is really ugly?
+
+// Model access
 const Game = require('../modules/Game.class');
 const game = new Game();
 
 let debugMode = false;
+
+// Element queries
 const score = document.querySelector('.game-score');
 const startButton = document.querySelector('.button.start');
+const messageStart = document.querySelector('.message-start');
+const messageWin = document.querySelector('.message-win');
+const messageLose = document.querySelector('.message-lose');
 
 const playingFieldCells = [
   ...document.querySelectorAll('.field-cell').values(),
 ];
-const playingField = playingFieldCells.reduce(
-  (matrix, cell, index) => {
-    matrix[Math.floor(index / 4)][index % 4] = cell;
 
-    return matrix;
-  },
-  [[], [], [], []],
-);
+const playingField = [];
 
+for (let row = 0; row < Game.const.PLAYING_FIELD_SIZE; row++) {
+  playingField[row] = new Array(Game.const.PLAYING_FIELD_SIZE);
+
+  for (let column = 0; column < Game.const.PLAYING_FIELD_SIZE; column++) {
+    playingField[row][column] =
+      playingFieldCells[row * Game.const.PLAYING_FIELD_SIZE + column];
+  }
+}
+
+// event listening
 playingField.forEach((row, rowIndex) => {
   row.forEach((element, columnIndex) => {
     element.addEventListener('click', () => {
@@ -27,11 +39,11 @@ playingField.forEach((row, rowIndex) => {
   });
 });
 
-const messageStart = document.querySelector('.message-start');
-const messageWin = document.querySelector('.message-win');
-const messageLose = document.querySelector('.message-lose');
+startButton.addEventListener('click', startButtonClickHandler);
+document.addEventListener('keydown', keydownEventHandler);
 
-startButton.addEventListener('click', () => {
+// functions
+function startButtonClickHandler() {
   if (startButton.classList.contains('start')) {
     startButton.classList.replace('start', 'restart');
     startButton.textContent = 'Restart';
@@ -43,17 +55,14 @@ startButton.addEventListener('click', () => {
   messageLose.classList.add('hidden');
 
   game.restart();
+  game.start();
   syncCellValues();
-});
+}
 
-document.addEventListener('keydown', (event) => {
-  if (game.getStatus() !== 'playing') {
-    return;
-  }
+function keydownEventHandler(keydown) {
+  let needSync = true;
 
-  let needUpdate = true;
-
-  switch (event.key) {
+  switch (keydown.key) {
     case 'ArrowRight':
       game.moveRight();
       break;
@@ -68,36 +77,32 @@ document.addEventListener('keydown', (event) => {
       break;
     case 'F6':
       debugMode = !debugMode;
+      // eslint-disable-next-line no-console
       console.log(`debug mode: ${debugMode}`);
-      needUpdate = false;
+      needSync = false;
       break;
     default:
-      needUpdate = false;
+      needSync = false;
       break;
   }
 
-  if (needUpdate) {
+  if (needSync) {
+    switch (game.getStatus()) {
+      case Game.const.STATUS_WIN:
+        messageWin.classList.remove('hidden');
+        break;
+      case Game.const.STATUS_LOSE:
+        messageLose.classList.remove('hidden');
+        break;
+    }
+
     syncCellValues();
-
-    setTimeout(() => {
-      game.populateRandomly(2);
-      syncCellValues();
-
-      switch (game.getStatus()) {
-        case 'win':
-          messageWin.classList.remove('hidden');
-          break;
-        case 'lose':
-          messageLose.classList.remove('hidden');
-          break;
-      }
-    }, 300);
   }
-});
+}
 
 function syncCellValues() {
-  for (let row = 0; row < 4; row++) {
-    for (let column = 0; column < 4; column++) {
+  for (let row = 0; row < Game.const.PLAYING_FIELD_SIZE; row++) {
+    for (let column = 0; column < Game.const.PLAYING_FIELD_SIZE; column++) {
       const viewCell = playingField[row][column];
       const value = game.getCell(row, column);
 
