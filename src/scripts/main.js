@@ -298,6 +298,8 @@ const render = () => {
   }
   gameIsWin();
   messageWin.classList.toggle('hidden', !isWin);
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
 
   if (!isStart) {
     messageContainer.appendChild(messageStart);
@@ -324,6 +326,9 @@ button.addEventListener('click', () => {
   if (messageContainer.contains(messageStart)) {
     messageContainer.removeChild(messageStart);
   }
+
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
 
   generateRandomNumber();
   generateRandomNumber();
