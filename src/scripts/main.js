@@ -82,16 +82,16 @@ document.addEventListener('keydown', (event) => {
     setTimeout(() => {
       game.populateRandomly(2);
       syncCellValues();
-    }, 300);
 
-    switch (game.getStatus()) {
-      case 'win':
-        messageWin.classList.remove('hidden');
-        break;
-      case 'lose':
-        messageLose.classList.remove('hidden');
-        break;
-    }
+      switch (game.getStatus()) {
+        case 'win':
+          messageWin.classList.remove('hidden');
+          break;
+        case 'lose':
+          messageLose.classList.remove('hidden');
+          break;
+      }
+    }, 300);
   }
 });
 
