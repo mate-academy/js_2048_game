@@ -44,6 +44,9 @@ class Game {
     this._genRandCells();
   }
 
+  _clearBoard() {
+    this.board = this._getBlankBoard();
+  }
   /**
    * Generate 2 random tiles and populates the board
    * @returns {undefined}
@@ -145,6 +148,7 @@ class Game {
 
       this.board = this._arrayDeepCopy(combBoard['board']);
       this.scoreCurrent += combBoard['score'];
+      this._updateMaxScore(this.scoreCurrent);
 
       if (this._didTileMoved(beforeMoveBoard, this.board)) {
         this._genRandCells();
@@ -309,10 +313,9 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this._updateMaxScore(this.scoreCurrent);
     this.scoreCurrent = 0;
-    this.gameStatus = 'playing';
-    this._initialize();
+    this.gameStatus = 'idle';
+    this._clearBoard();
   }
 
   _arrayDeepCopy(obj) {
@@ -342,10 +345,7 @@ class Game {
   }
 
   _updateMaxScore(curScore) {
-    if (
-      this.scoreMax < curScore &&
-      (this.getStatus() === 'win' || this.getStatus() === 'lose')
-    ) {
+    if (this.scoreMax < curScore) {
       this.scoreMax = curScore;
     }
   }
