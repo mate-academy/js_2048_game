@@ -15,9 +15,7 @@ let gameFields = [
   [0, 0, 0, 0],
 ];
 
-let score = gameFields.reduce((acc, row) => {
-  return acc + row.reduce((rowSum, cell) => rowSum + cell, 0);
-}, 0);
+let score = 0;
 
 let isStart = false;
 
@@ -29,58 +27,74 @@ function gameOver() {
   for (let row = 0; row < gameFields.length; row++) {
     for (let column = 0; column < gameFields[row].length; column++) {
       if (gameFields[row][column] === 0) {
-        return;
+        return false;
       }
 
-      if (column < gameFields[row].length - 1
-        && gameFields[row][column] === gameFields[row][column + 1]) {
-        return;
+      if (
+        column < gameFields[row].length - 1
+        && gameFields[row][column] === gameFields[row][column + 1]
+      ) {
+        return false;
       }
 
-      if (row < gameFields.length - 1
-        && gameFields[row][column] === gameFields[row + 1][column]) {
-        return;
+      if (
+        row < gameFields.length - 1
+        && gameFields[row][column] === gameFields[row + 1][column]
+      ) {
+        return false;
       }
     }
   }
 
   messageLose.classList.remove('hidden');
+
+  return true;
 }
 
 function gameIsWin() {
-  const result = gameFields.some(field => field.some(tile => tile === 2048));
+  for (let row = 0; row < gameFields.length; row++) {
+    for (let column = 0; column < gameFields[row].length; column++) {
+      if (gameFields[row][column] === 2048) {
+        isWin = true;
+        messageWin.classList.remove('hidden');
 
-  if (result) {
-    isWin = true;
+        return true;
+      }
+    }
   }
+
+  return false;
 }
 
 function moveTilesRight() {
   let moved = false;
 
   for (let row = 0; row < gameFields.length; row++) {
-    for (let column = 1; column < gameFields[row].length; column++) {
-      const current = gameFields[row][column];
-      const next = gameFields[row][column - 1];
+    let newRow = gameFields[row].filter((tile) => tile !== 0);
 
-      if (next > 0) {
-        if (current === 0) {
-          gameFields[row][column] = next;
-          gameFields[row][column - 1] = 0;
-          column = -1;
-          moved = true;
-        } else if (current === next) {
-          gameFields[row][column] *= 2;
-          gameFields[row][column - 1] = 0;
-          score += gameFields[row][column];
-          moved = true;
-        }
+    for (let i = newRow.length - 1; i > 0; i--) {
+      if (newRow[i] === newRow[i - 1]) {
+        newRow[i] *= 2;
+        newRow[i - 1] = 0;
+        score += newRow[i];
+        moved = true;
       }
     }
+    newRow = newRow.filter((tile) => tile !== 0);
+
+    while (newRow.length < 4) {
+      newRow.unshift(0);
+    }
+
+    if (JSON.stringify(newRow) !== JSON.stringify(gameFields[row])) {
+      moved = true;
+    }
+    gameFields[row] = newRow;
   }
 
   if (moved) {
     generateRandomNumber();
+    render();
   }
 }
 
@@ -88,121 +102,164 @@ function moveTilesLeft() {
   let moved = false;
 
   for (let row = 0; row < gameFields.length; row++) {
-    for (let column = gameFields[row].length - 1; column >= 0; column--) {
-      const current = gameFields[row][column];
-      const next = gameFields[row][column + 1];
+    let newRow = gameFields[row].filter((tile) => tile !== 0);
 
-      if (next > 0) {
-        if (current === 0) {
-          gameFields[row][column] = next;
-          gameFields[row][column + 1] = 0;
-          column = gameFields[row].length;
-          moved = true;
-        } else if (current === next) {
-          gameFields[row][column] *= 2;
-          gameFields[row][column + 1] = 0;
-          score += gameFields[row][column];
-          moved = true;
-        }
+    for (let i = 0; i < newRow.length - 1; i++) {
+      if (newRow[i] === newRow[i + 1]) {
+        newRow[i] *= 2;
+        newRow[i + 1] = 0;
+        score += newRow[i];
+        moved = true;
       }
     }
+    newRow = newRow.filter((tile) => tile !== 0);
+
+    while (newRow.length < 4) {
+      newRow.push(0);
+    }
+
+    if (JSON.stringify(newRow) !== JSON.stringify(gameFields[row])) {
+      moved = true;
+    }
+    gameFields[row] = newRow;
   }
 
   if (moved) {
     generateRandomNumber();
+    render();
   }
 }
 
 function moveTilesUp() {
   let moved = false;
 
-  for (let column = 0; column < gameFields[0].length; column++) {
-    for (let row = 0; row < gameFields.length - 1; row++) {
-      const current = gameFields[row][column];
-      const next = gameFields[row + 1][column];
+  for (let column = 0; column < 4; column++) {
+    let newCol = [];
 
-      if (next > 0) {
-        if (current === 0) {
-          [gameFields[row][column], gameFields[row + 1][column]] = [next, 0];
-          row = -1;
-          moved = true;
-        } else if (current === next) {
-          gameFields[row][column] *= 2;
-          gameFields[row + 1][column] = 0;
-          score += gameFields[row][column];
-          moved = true;
-        }
+    for (let row = 0; row < 4; row++) {
+      if (gameFields[row][column] !== 0) {
+        newCol.push(gameFields[row][column]);
       }
+    }
+
+    for (let i = 0; i < newCol.length - 1; i++) {
+      if (newCol[i] === newCol[i + 1]) {
+        newCol[i] *= 2;
+        newCol[i + 1] = 0;
+        score += newCol[i];
+        moved = true;
+      }
+    }
+    newCol = newCol.filter((tile) => tile !== 0);
+
+    while (newCol.length < 4) {
+      newCol.push(0);
+    }
+
+    for (let row = 0; row < 4; row++) {
+      if (gameFields[row][column] !== newCol[row]) {
+        moved = true;
+      }
+      gameFields[row][column] = newCol[row];
     }
   }
 
   if (moved) {
     generateRandomNumber();
+    render();
   }
 }
 
 function moveTilesDown() {
   let moved = false;
 
-  for (let column = 0; column < gameFields[0].length; column++) {
-    for (let row = gameFields.length - 1; row > 0; row--) {
-      const current = gameFields[row][column];
-      const next = gameFields[row - 1][column];
+  for (let column = 0; column < 4; column++) {
+    let newCol = [];
 
-      if (next > 0) {
-        if (current === 0) {
-          gameFields[row][column] = next;
-          gameFields[row - 1][column] = 0;
-          row = gameFields.length;
-          moved = true;
-        } else if (current === next) {
-          gameFields[row][column] *= 2;
-          gameFields[row - 1][column] = 0;
-          score += gameFields[row][column];
-          moved = true;
-        }
+    for (let row = 0; row < 4; row++) {
+      if (gameFields[row][column] !== 0) {
+        newCol.push(gameFields[row][column]);
       }
+    }
+
+    for (let i = newCol.length - 1; i > 0; i--) {
+      if (newCol[i] === newCol[i - 1]) {
+        newCol[i] *= 2;
+        newCol[i - 1] = 0;
+        score += newCol[i];
+        moved = true;
+      }
+    }
+
+    newCol = newCol.filter((tile) => tile !== 0);
+
+    while (newCol.length < 4) {
+      newCol.unshift(0);
+    }
+
+    for (let row = 0; row < 4; row++) {
+      if (gameFields[row][column] !== newCol[row]) {
+        moved = true;
+      }
+      gameFields[row][column] = newCol[row];
     }
   }
 
   if (moved) {
     generateRandomNumber();
+    render();
   }
 }
 
 function generateRandomNumber() {
-  let randomCell = Math.floor(Math.random() * 4);
-  let randomRow = Math.floor(Math.random() * 4);
+  const emptyCells = [];
 
-  while (gameFields[randomCell][randomRow] !== 0) {
-    randomCell = Math.floor(Math.random() * 4);
-    randomRow = Math.floor(Math.random() * 4);
+  for (let row = 0; row < 4; row++) {
+    for (let column = 0; column < 4; column++) {
+      if (gameFields[row][column] === 0) {
+        emptyCells.push({
+          row, column,
+        });
+      }
+    }
   }
 
-  const number = Math.random() < 0.1 ? 4 : 2;
+  if (emptyCells.length > 0) {
+    const { row, column }
+      = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    const number = Math.random() < 0.1 ? 4 : 2;
 
-  gameFields[randomCell][randomRow] = number;
+    gameFields[row][column] = number;
+  }
 }
 
 function handleKeyPress(ev) {
   if (isStart) {
+    let moved = false;
+
     switch (ev.key) {
       case 'ArrowUp':
         moveTilesUp();
+        moved = true;
         break;
       case 'ArrowDown':
         moveTilesDown();
+        moved = true;
         break;
       case 'ArrowLeft':
         moveTilesLeft();
+        moved = true;
         break;
       case 'ArrowRight':
         moveTilesRight();
+        moved = true;
         break;
     }
-  }
 
-  render();
+    if (moved) {
+      render();
+    }
+  }
 }
 
 const render = () => {
@@ -236,7 +293,9 @@ const render = () => {
     tbody.appendChild(row);
   }
 
-  gameOver();
+  if (gameOver()) {
+    return;
+  }
   gameIsWin();
   messageWin.classList.toggle('hidden', !isWin);
 
@@ -261,6 +320,11 @@ button.addEventListener('click', () => {
 
   button.classList.add('restart');
   button.textContent = 'Restart';
+
+  if (messageContainer.contains(messageStart)) {
+    messageContainer.removeChild(messageStart);
+  }
+
   generateRandomNumber();
   generateRandomNumber();
   render();
