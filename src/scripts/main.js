@@ -47,7 +47,7 @@ startButton.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (event) => {
-  if (game.getStatus() === 'win' || game.getStatus() === 'lose') {
+  if (game.getStatus() !== 'playing') {
     return;
   }
 
