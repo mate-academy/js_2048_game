@@ -18,19 +18,17 @@
     "postinstall": "npm run update",
     "test": "npm run lint && npm run test:only"
   },
-  "dependencies": {
-    "@mate-academy/jest-mochawesome-reporter": "^1.0.0"
-  },
   "devDependencies": {
-    "@linthtml/linthtml": "^0.9.5",
+    "@linthtml/linthtml": "^0.9.6",
     "@mate-academy/eslint-config": "latest",
+    "@mate-academy/jest-mochawesome-reporter": "^1.0.0",
     "@mate-academy/linthtml-config": "latest",
-    "@mate-academy/scripts": "^1.7.5",
+    "@mate-academy/scripts": "^1.8.5",
     "@mate-academy/stylelint-config": "latest",
     "@parcel/transformer-sass": "^2.12.0",
-    "cypress": "^9.7.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-cypress": "^2.11.2",
+    "cypress": "^13.13.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-cypress": "^3.3.0",
     "eslint-plugin-node": "^11.1.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
@@ -38,8 +36,9 @@
     "mochawesome-merge": "^4.3.0",
     "mochawesome-report-generator": "^6.2.0",
     "parcel": "^2.12.0",
-    "prettier": "^3.2.5",
-    "stylelint": "^15.11.0"
+    "prettier": "^3.3.2",
+    "stylelint": "^16.7.0",
+    "stylelint-scss": "^6.4.1"
   },
   "browserslist": [
     "last 2 versions"
@@ -52,7 +51,7 @@
     "tests": {
       "jest": true,
       "backstop": false,
-      "cypress": false
+      "cypress": true
     }
   }
 }
