@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-const tbody = document.querySelector('tbody');
-const gameScore = document.querySelector('.game-score');
-const button = document.querySelector('button');
-const messageStart = document.querySelector('.message-start');
-const messageWin = document.querySelector('.message-win');
-const messageLose = document.querySelector('.message-lose');
-const messageContainer = document.querySelector('.message-container');
+const tbody = document.querySelector("tbody");
+const gameScore = document.querySelector(".game-score");
+const button = document.querySelector("button");
+const messageStart = document.querySelector(".message-start");
+const messageWin = document.querySelector(".message-win");
+const messageLose = document.querySelector(".message-lose");
+const messageContainer = document.querySelector(".message-container");
 
 let gameFields = [
   [0, 0, 0, 0],
@@ -21,7 +21,7 @@ let isStart = false;
 
 let isWin = false;
 
-document.addEventListener('keydown', handleKeyPress);
+document.addEventListener("keydown", handleKeyPress);
 
 function gameOver() {
   for (let row = 0; row < gameFields.length; row++) {
@@ -31,22 +31,22 @@ function gameOver() {
       }
 
       if (
-        column < gameFields[row].length - 1
-        && gameFields[row][column] === gameFields[row][column + 1]
+        column < gameFields[row].length - 1 &&
+        gameFields[row][column] === gameFields[row][column + 1]
       ) {
         return false;
       }
 
       if (
-        row < gameFields.length - 1
-        && gameFields[row][column] === gameFields[row + 1][column]
+        row < gameFields.length - 1 &&
+        gameFields[row][column] === gameFields[row + 1][column]
       ) {
         return false;
       }
     }
   }
 
-  messageLose.classList.remove('hidden');
+  messageLose.classList.remove("hidden");
 
   return true;
 }
@@ -56,7 +56,7 @@ function gameIsWin() {
     for (let column = 0; column < gameFields[row].length; column++) {
       if (gameFields[row][column] === 2048) {
         isWin = true;
-        messageWin.classList.remove('hidden');
+        messageWin.classList.remove("hidden");
 
         return true;
       }
@@ -218,15 +218,16 @@ function generateRandomNumber() {
     for (let column = 0; column < 4; column++) {
       if (gameFields[row][column] === 0) {
         emptyCells.push({
-          row, column,
+          row,
+          column,
         });
       }
     }
   }
 
   if (emptyCells.length > 0) {
-    const { row, column }
-      = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    const { row, column } =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
     const number = Math.random() < 0.1 ? 4 : 2;
 
     gameFields[row][column] = number;
@@ -238,19 +239,19 @@ function handleKeyPress(ev) {
     let moved = false;
 
     switch (ev.key) {
-      case 'ArrowUp':
+      case "ArrowUp":
         moveTilesUp();
         moved = true;
         break;
-      case 'ArrowDown':
+      case "ArrowDown":
         moveTilesDown();
         moved = true;
         break;
-      case 'ArrowLeft':
+      case "ArrowLeft":
         moveTilesLeft();
         moved = true;
         break;
-      case 'ArrowRight':
+      case "ArrowRight":
         moveTilesRight();
         moved = true;
         break;
@@ -267,22 +268,22 @@ const render = () => {
     <span class="game-score">${score}</span>
   `;
 
-  tbody.innerHTML = '';
+  tbody.innerHTML = "";
 
   for (let i = 0; i < gameFields.length; i++) {
-    const row = document.createElement('tr');
+    const row = document.createElement("tr");
 
-    row.classList.add('field-row');
+    row.classList.add("field-row");
 
     for (let j = 0; j < gameFields[i].length; j++) {
       const cellValue = gameFields[i][j];
-      const cell = document.createElement('td');
+      const cell = document.createElement("td");
 
-      cell.textContent = cellValue === 0 ? '' : cellValue;
-      cell.classList.add('field-cell');
+      cell.textContent = cellValue === 0 ? "" : cellValue;
+      cell.classList.add("field-cell");
 
       if (cellValue === 0) {
-        cell.classList.add('field-cell');
+        cell.classList.add("field-cell");
       } else {
         cell.classList.add(`field-cell--${cellValue}`);
       }
@@ -297,9 +298,9 @@ const render = () => {
     return;
   }
   gameIsWin();
-  messageWin.classList.toggle('hidden', !isWin);
-  messageLose.classList.add('hidden');
-  messageWin.classList.add('hidden');
+  messageWin.classList.toggle("hidden", !isWin);
+  messageLose.classList.add("hidden");
+  messageWin.classList.add("hidden");
 
   if (!isStart) {
     messageContainer.appendChild(messageStart);
@@ -308,7 +309,7 @@ const render = () => {
   }
 };
 
-button.addEventListener('click', () => {
+button.addEventListener("click", () => {
   isStart = true;
 
   gameFields = [
@@ -320,15 +321,15 @@ button.addEventListener('click', () => {
 
   score = 0;
 
-  button.classList.add('restart');
-  button.textContent = 'Restart';
+  button.classList.add("restart");
+  button.textContent = "Restart";
 
   if (messageContainer.contains(messageStart)) {
     messageContainer.removeChild(messageStart);
   }
 
-  messageLose.classList.add('hidden');
-  messageWin.classList.add('hidden');
+  messageLose.classList.add("hidden");
+  messageWin.classList.add("hidden");
 
   generateRandomNumber();
   generateRandomNumber();
