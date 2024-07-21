@@ -17,24 +17,23 @@ const messageLose = document.querySelector('.message-lose');
 const gameScore = document.querySelector('.game-score');
 
 body.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') {
-    game.moveLeft();
-    game.updateField(field);
-  }
-
-  if (e.key === 'ArrowRight') {
-    game.moveRight();
-    game.updateField(field);
-  }
-
-  if (e.key === 'ArrowUp') {
-    game.moveUp();
-    game.updateField(field);
-  }
-
-  if (e.key === 'ArrowDown') {
-    game.moveDown();
-    game.updateField(field);
+  switch (e.key) {
+    case 'ArrowLeft':
+      game.moveLeft();
+      game.updateField(field);
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      game.updateField(field);
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      game.updateField(field);
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      game.updateField(field);
+      break;
   }
 
   gameScore.textContent = game.score;

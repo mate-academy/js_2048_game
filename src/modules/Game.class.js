@@ -164,14 +164,27 @@ class Game {
 
   collapse(array, collapseLeft) {
     const result = [];
+    let score = 0;
 
-    for (let i = 0; i < array.length; i++) {
-      if (array[i] === array[i + 1]) {
-        result.push(array[i] * 2);
-        this.score += array[i] * 2;
-        i++;
-      } else {
-        result.push(array[i]);
+    if (collapseLeft) {
+      for (let i = 0; i < array.length; i++) {
+        if (array[i] === array[i + 1]) {
+          result.push(array[i] * 2);
+          score += array[i] * 2;
+          i++;
+        } else {
+          result.push(array[i]);
+        }
+      }
+    } else {
+      for (let i = array.length - 1; i >= 0; i--) {
+        if (array[i] === array[i - 1]) {
+          result.unshift(array[i] * 2);
+          score += array[i] * 2;
+          i--;
+        } else {
+          result.unshift(array[i]);
+        }
       }
     }
 
@@ -182,6 +195,8 @@ class Game {
         result.unshift(0);
       }
     }
+
+    this.score += score;
 
     return result;
   }
