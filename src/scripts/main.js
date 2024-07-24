@@ -3,6 +3,9 @@
 /* eslint-disable no-shadow */
 'use strict';
 
+const Game = require('../modules/Game.class');
+const game = new Game();
+
 document.addEventListener('DOMContentLoaded', () => {
   const game = new Game();
   const scoreElement = document.querySelector('.game-score');

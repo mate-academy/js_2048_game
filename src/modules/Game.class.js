@@ -1,5 +1,4 @@
 /* eslint-disable function-paren-newline */
-/* eslint-disable comma-dangle */
 /* eslint-disable no-shadow */
 'use strict';
 
@@ -19,18 +18,30 @@ class Game {
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
     this.move('left');
   }
 
   moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
     this.move('right');
   }
 
   moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
     this.move('up');
   }
 
   moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
     this.move('down');
   }
 
@@ -56,8 +67,7 @@ class Game {
     this.board = JSON.parse(JSON.stringify(this.initialState));
     this.score = 0;
     this.status = 'idle';
-    this.addRandomTile();
-    this.addRandomTile();
+    // Do not add random tiles here
   }
 
   addRandomTile() {
@@ -183,5 +193,4 @@ class Game {
   }
 }
 
-// Export Game class for use in browser
-window.Game = Game;
+module.exports = Game;
