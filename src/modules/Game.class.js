@@ -4,6 +4,7 @@ class Game {
   constructor(initialState) {
     this.score = 0;
     this.state = 'idle';
+    this.startButtonHasBeenClicked = false;
     this.button = document.querySelector('.start');
 
     this.gameActive = false;
@@ -22,27 +23,29 @@ class Game {
     return this.board;
   }
 
-  updateBoard() {
-    const rows = document.querySelectorAll('.field-row');
-
-    rows.forEach((row, rowIndex) => {
+  updateDOMFromBoard() {
+    for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
-        const cell = row.children[col];
+        const value = this.board[row][col];
 
-        if (cell && cell.textContent !== undefined) {
-          const value = parseInt(cell.textContent) || 0;
+        const cell = document.querySelector(
+          `.field-row:nth-child(${row + 1}) .field-cell:nth-child(${col + 1})`
+        );
 
-          this.board[rowIndex][col] = value;
-        } else {
-          this.board[rowIndex][col] = 0;
+        if (cell) {
+          cell.textContent = value ? value.toString() : '';
+          cell.className = `field-cell field-cell--${value || ''}`;
         }
       }
-    });
+    }
+
+    if (this.board.flat().includes(2048)) {
+      this.updateState('win');
+    }
   }
 
   updateState(newState) {
     this.state = newState;
-    console.log(this.state);
   }
 
   addScore(value) {
@@ -71,20 +74,16 @@ class Game {
       cell.className = 'field-cell';
     });
 
-    this.board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.spawnRandomNumber();
+    this.spawnRandomNumber();
 
-    this.spawnNumbers();
+    this.updateDOMFromBoard();
   }
 
   start() {
     this.updateState('playing');
     this.initializeGame();
-    this.updateBoard();
+    this.startButtonHasBeenClicked = true;
 
     if (this.button) {
       this.button.textContent = 'Restart';
@@ -97,9 +96,17 @@ class Game {
     this.updateState('idle');
     this.gameActive = true;
 
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.updateDOMFromBoard();
+
     if (this.button) {
-      this.button.classList.remove('restart');
-      this.button.classList.add('start');
+      this.button.classList.remove('start');
+      this.button.classList.add('restart');
     }
 
     this.initializeGame();
@@ -110,290 +117,175 @@ class Game {
   }
 
   moveLeft() {
-    const rows = document.querySelectorAll('.field-row');
     let hasChanged = false;
 
-    rows.forEach((row) => {
+    for (let row = 0; row < 4; row++) {
       const merged = [false, false, false, false];
 
       for (let col = 1; col < 4; col++) {
-        let cell = row?.children[col];
-
-        if (cell && cell.textContent !== '') {
+        if (this.board[row][col] !== 0) {
           let currentCol = col;
 
           while (currentCol > 0) {
-            const targetCell = row.children[currentCol - 1];
-
-            if (targetCell && targetCell.textContent === '') {
-              targetCell.textContent = cell.textContent;
-              targetCell.className = cell.className;
-              cell.textContent = '';
-              cell.className = 'field-cell';
-              cell = targetCell;
+            if (this.board[row][currentCol - 1] === 0) {
+              this.board[row][currentCol - 1] = this.board[row][currentCol];
+              this.board[row][currentCol] = 0;
               currentCol--;
               hasChanged = true;
             } else if (
-              targetCell &&
-              targetCell.textContent === cell.textContent &&
+              this.board[row][currentCol - 1] === this.board[row][currentCol] &&
               !merged[currentCol - 1]
             ) {
-              const newValue = parseInt(targetCell.textContent) * 2;
-
-              targetCell.textContent = newValue.toString();
-              targetCell.className = `field-cell field-cell--${newValue}`;
-              cell.textContent = '';
-              cell.className = 'field-cell';
+              this.board[row][currentCol - 1] *= 2;
+              this.board[row][currentCol] = 0;
               merged[currentCol - 1] = true;
-              this.addScore(newValue);
+              this.addScore(this.board[row][currentCol - 1]);
               hasChanged = true;
-
-              if (newValue === 2048) {
-                this.hideMessages();
-                this.updateState('win');
-
-                document
-                  .querySelector('.message-win')
-                  .classList.remove('hidden');
-                this.gameActive = false;
-              }
               break;
             } else {
               break;
             }
-            currentCol--;
           }
         }
       }
-    });
+    }
 
-    this.updateBoard();
+    if (hasChanged) {
+      this.spawnRandomNumber();
+    }
+
+    this.updateDOMFromBoard();
 
     return hasChanged;
   }
 
   moveRight() {
-    const rows = document.querySelectorAll('.field-row');
     let hasChanged = false;
 
-    rows.forEach((row) => {
+    for (let row = 0; row < 4; row++) {
       const merged = [false, false, false, false];
 
       for (let col = 2; col >= 0; col--) {
-        let cell = row?.children[col];
-
-        if (cell && cell.textContent !== '') {
+        if (this.board[row][col] !== 0) {
           let currentCol = col;
 
           while (currentCol < 3) {
-            const targetCell = row.children[currentCol + 1];
-
-            if (targetCell && targetCell.textContent === '') {
-              targetCell.textContent = cell.textContent;
-              targetCell.className = cell.className;
-              cell.textContent = '';
-              cell.className = 'field-cell';
-              cell = targetCell;
+            if (this.board[row][currentCol + 1] === 0) {
+              this.board[row][currentCol + 1] = this.board[row][currentCol];
+              this.board[row][currentCol] = 0;
+              currentCol++;
               hasChanged = true;
             } else if (
-              targetCell &&
-              targetCell.textContent === cell.textContent &&
+              this.board[row][currentCol + 1] === this.board[row][currentCol] &&
               !merged[currentCol + 1]
             ) {
-              const newValue = parseInt(targetCell.textContent) * 2;
-
-              targetCell.textContent = newValue.toString();
-              targetCell.className = `field-cell field-cell--${newValue}`;
-              cell.textContent = '';
-              cell.className = 'field-cell';
+              this.board[row][currentCol + 1] *= 2;
+              this.board[row][currentCol] = 0;
               merged[currentCol + 1] = true;
-              this.addScore(newValue);
+              this.addScore(this.board[row][currentCol + 1]);
               hasChanged = true;
-
-              if (newValue === 2048) {
-                this.hideMessages();
-                this.updateState('win');
-
-                document
-                  .querySelector('.message-win')
-                  .classList.remove('hidden');
-                this.gameActive = false;
-              }
-
               break;
             } else {
               break;
             }
-            currentCol++;
           }
         }
       }
-    });
-    this.updateBoard();
+    }
+
+    if (hasChanged) {
+      this.spawnRandomNumber();
+    }
+
+    this.updateDOMFromBoard();
 
     return hasChanged;
   }
 
   moveUp() {
-    const rows = document.querySelectorAll('.field-row');
     let hasChanged = false;
 
     for (let col = 0; col < 4; col++) {
       const merged = [false, false, false, false];
 
       for (let row = 1; row < 4; row++) {
-        let cell = rows[row]?.children[col];
-
-        if (cell && cell.textContent !== '') {
+        if (this.board[row][col] !== 0) {
           let currentRow = row;
 
           while (currentRow > 0) {
-            const targetCell = rows[currentRow - 1].children[col];
-
-            if (targetCell && targetCell.textContent === '') {
-              targetCell.textContent = cell.textContent;
-              targetCell.className = cell.className;
-              cell.textContent = '';
-              cell.className = 'field-cell';
-              cell = targetCell;
+            if (this.board[currentRow - 1][col] === 0) {
+              this.board[currentRow - 1][col] = this.board[currentRow][col];
+              this.board[currentRow][col] = 0;
+              currentRow--;
               hasChanged = true;
             } else if (
-              targetCell &&
-              targetCell.textContent === cell.textContent &&
+              this.board[currentRow - 1][col] === this.board[currentRow][col] &&
               !merged[currentRow - 1]
             ) {
-              const newValue = parseInt(targetCell.textContent) * 2;
-
-              targetCell.textContent = newValue.toString();
-              targetCell.className = `field-cell field-cell--${newValue}`;
-              cell.textContent = '';
-              cell.className = 'field-cell';
+              this.board[currentRow - 1][col] *= 2;
+              this.board[currentRow][col] = 0;
               merged[currentRow - 1] = true;
-              this.addScore(newValue);
+              this.addScore(this.board[currentRow - 1][col]);
               hasChanged = true;
-
-              if (newValue === 2048) {
-                this.hideMessages();
-                this.updateState('win');
-
-                document
-                  .querySelector('.message-win')
-                  .classList.remove('hidden');
-                this.gameActive = false;
-              }
               break;
             } else {
               break;
             }
-            currentRow--;
           }
         }
       }
     }
-    this.updateBoard();
+
+    if (hasChanged) {
+      this.spawnRandomNumber();
+    }
+
+    this.updateDOMFromBoard();
 
     return hasChanged;
   }
 
   moveDown() {
-    const rows = document.querySelectorAll('.field-row');
     let hasChanged = false;
 
     for (let col = 0; col < 4; col++) {
       const merged = [false, false, false, false];
 
       for (let row = 2; row >= 0; row--) {
-        let cell = rows[row]?.children[col];
-
-        if (cell && cell.textContent !== '') {
+        if (this.board[row][col] !== 0) {
           let currentRow = row;
 
           while (currentRow < 3) {
-            const targetCell = rows[currentRow + 1].children[col];
-
-            if (targetCell && targetCell.textContent === '') {
-              targetCell.textContent = cell.textContent;
-              targetCell.className = cell.className;
-              cell.textContent = '';
-              cell.className = 'field-cell';
-              cell = targetCell;
+            if (this.board[currentRow + 1][col] === 0) {
+              this.board[currentRow + 1][col] = this.board[currentRow][col];
+              this.board[currentRow][col] = 0;
+              currentRow++;
               hasChanged = true;
             } else if (
-              targetCell &&
-              targetCell.textContent === cell.textContent &&
+              this.board[currentRow + 1][col] === this.board[currentRow][col] &&
               !merged[currentRow + 1]
             ) {
-              const newValue = parseInt(targetCell.textContent) * 2;
-
-              targetCell.textContent = newValue.toString();
-              targetCell.className = `field-cell field-cell--${newValue}`;
-              cell.textContent = '';
-              cell.className = 'field-cell';
+              this.board[currentRow + 1][col] *= 2;
+              this.board[currentRow][col] = 0;
               merged[currentRow + 1] = true;
-              this.addScore(newValue);
+              this.addScore(this.board[currentRow + 1][col]);
               hasChanged = true;
-
-              if (newValue === 2048) {
-                this.hideMessages();
-                this.updateState('win');
-
-                document
-                  .querySelector('.message-win')
-                  .classList.remove('hidden');
-                this.gameActive = false;
-              }
               break;
             } else {
               break;
             }
-            currentRow++;
           }
         }
       }
     }
-    this.updateBoard();
+
+    if (hasChanged) {
+      this.spawnRandomNumber();
+    }
+
+    this.updateDOMFromBoard();
 
     return hasChanged;
-  }
-
-  spawnNumbers() {
-    const cels = document.querySelectorAll('.field-cell');
-    const emptyCells = Array.from(cels).filter((cell) => cell.textContent === '');
-
-    if (emptyCells.length < 2) {
-      this.hideMessages();
-
-      const messageLoseElement = document.querySelector('.message-lose');
-
-      if (messageLoseElement) {
-        messageLoseElement.classList.remove('hidden');
-      }
-      this.gameActive = false;
-
-      return;
-    }
-
-    const randomIndex1 = Math.floor(Math.random() * emptyCells.length);
-    const cell1 = emptyCells[randomIndex1];
-
-    emptyCells.splice(randomIndex1, 1);
-
-    const randomIndex2 = Math.floor(Math.random() * emptyCells.length);
-    const cell2 = emptyCells[randomIndex2];
-
-    cell1.innerHTML = '2';
-    cell1.classList.add('field-cell--2');
-
-    const number2 = Math.random() < 0.1 ? 4 : 2;
-
-    cell2.innerHTML = number2.toString();
-    cell2.classList.add(`field-cell--${number2}`);
-
-    if (number2 === 2048) {
-      this.hideMessages();
-      document.querySelector('.message-win').classList.remove('hidden');
-      this.gameActive = false;
-    }
   }
 
   handleKeyDown(evt) {
@@ -403,43 +295,48 @@ class Game {
       return;
     }
 
-    let hasChanged = false;
-
     switch (evt.key) {
       case 'ArrowUp':
-        hasChanged = this.moveUp();
+        this.moveUp();
         break;
       case 'ArrowDown':
-        hasChanged = this.moveDown();
+        this.moveDown();
         break;
       case 'ArrowLeft':
-        hasChanged = this.moveLeft();
+        this.moveLeft();
         break;
       case 'ArrowRight':
-        hasChanged = this.moveRight();
+        this.moveRight();
         break;
-    }
-
-    if (hasChanged) {
-      this.spawnRandomNumber();
-      this.checkLoseCondition();
     }
   }
 
   spawnRandomNumber() {
-    const cels = document.querySelectorAll('.field-cell');
-    const emptyCells = Array.from(cels).filter((cell) => cell.textContent === '');
+    const emptyCells = [];
+
+    // eslint-disable-next-line no-shadow
+    for (let row = 0; row < 4; row++) {
+      // eslint-disable-next-line no-shadow
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 0) {
+          emptyCells.push({ row, col });
+        }
+      }
+    }
 
     if (emptyCells.length === 0) {
+      this.checkLoseCondition();
+
       return;
     }
 
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    const randomCell = emptyCells[randomIndex];
-    const number = Math.random() < 0.1 ? 4 : 2;
+    const { row, col } = emptyCells[randomIndex];
+    const value = Math.random() < 0.9 ? 2 : 4;
 
-    randomCell.innerHTML = number.toString();
-    randomCell.classList.add(`field-cell--${number}`);
+    this.board[row][col] = value;
+
+    this.updateDOMFromBoard();
   }
 
   hideMessages() {
@@ -461,11 +358,10 @@ class Game {
   }
 
   checkLoseCondition() {
-    const cels = document.querySelectorAll('.field-cell');
-    const emptyCells = Array.from(cels).filter((cell) => cell.textContent === '');
+    const hasEmptyCell = this.board.flat().some((cell) => cell === 0);
 
-    if (emptyCells.length === 0) {
-      const canMerge = this.checkPossibleMerges(cels);
+    if (!hasEmptyCell) {
+      const canMerge = this.checkPossibleMerges();
 
       if (!canMerge) {
         this.hideMessages();
@@ -479,17 +375,10 @@ class Game {
   checkPossibleMerges(cels) {
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
-        const cell = cels[row * 4 + col].textContent;
-
-        if (cell === '') {
-          return true;
-        }
-
-        if (col < 3 && cell === cels[row * 4 + (col + 1)].textContent) {
-          return true;
-        }
-
-        if (row < 3 && cell === cels[(row + 1) * 4 + col].textContent) {
+        if (
+          (col < 3 && this.board[row][col] === this.board[row][col + 1]) ||
+          (row < 3 && this.board[row][col] === this.board[row + 1][col])
+        ) {
           return true;
         }
       }

@@ -7,7 +7,11 @@ const game = new Game();
 const button = document.querySelector('.start');
 
 button.addEventListener('click', () => {
-  game.start();
+  if (game.startButtonHasBeenClicked === false) {
+    game.start();
+  } else {
+    game.restart();
+  }
 });
 
 document.addEventListener('keydown', (evt) => game.handleKeyDown(evt));
