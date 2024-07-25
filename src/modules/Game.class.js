@@ -16,10 +16,11 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
-    this.initialState = initialState;
     this.status = Game.Status.idle;
+    this.initialState = JSON.parse(JSON.stringify(initialState));
+    this.state = initialState;
     this.score = 0;
-    this.state = JSON.parse(JSON.stringify(initialState));
+
     this.rows = 4;
     this.columns = 4;
   }
@@ -42,42 +43,79 @@ class Game {
     }
 
     let found = false;
-    const rows = document.querySelectorAll('.field-row');
-    // console.log(document.querySelectorAll('tr')[0]);
 
     while (!found) {
       const r = Math.floor(Math.random() * this.rows);
       const c = Math.floor(Math.random() * this.columns);
 
       if (this.state[r][c] === 0) {
-        this.state[r][c] = 2;
-
-        const row = rows[r];
-        // console.log(r, rows, rows[r]);
-        const tile = row.querySelectorAll('.field-cell')[c];
-
-        tile.innerHTML = '2';
-        tile.classList.add('field-cell--2');
+        this.state[r][c] = Math.random() >= 0.9 ? 4 : 2;
         found = true;
       }
     }
+
+    this.updateTiles();
   }
 
-  updateTile(tile, num) {
-    tile.innerText = '';
-    tile.removeAttribute('class');
-    tile.classList.add('field-cell');
+  filterZero(row) {
+    return row.filter((num) => num !== 0);
+  }
 
-    if (num > 0) {
-      tile.classList.add(`field-cell--${num}`);
-      tile.innerText = num;
+  slide(row) {
+    let changedRow = this.filterZero(row);
+
+    for (let i = 0; i < changedRow.length; i++) {
+      if (changedRow[i] === changedRow[i + 1]) {
+        changedRow[i] += changedRow[i + 1];
+        changedRow[i + 1] = 0;
+        this.score += changedRow[i];
+      }
     }
 
-    if (num >= 2048) {
-      this.status = Game.Status.win;
+    changedRow = this.filterZero(changedRow);
+
+    while (changedRow.length < 4) {
+      changedRow.push(0);
+    }
+
+    return changedRow;
+  }
+
+  updateState(state) {
+    this.state = state;
+    this.updateTiles();
+    this.setTwo();
+  }
+
+  updateTiles() {
+    const fieldRow = document.querySelectorAll('.field-row');
+
+    for (let i = 0; i < fieldRow.length; i++) {
+      const cells = fieldRow[i].querySelectorAll('.field-cell');
+
+      for (let j = 0; j < cells.length; j++) {
+        const num = this.state[i][j];
+
+        cells[j].classList = 'field-cell';
+        cells[j].innerHTML = '';
+
+        if (num > 0) {
+          cells[j].classList.add(`field-cell--${num}`);
+          cells[j].innerHTML = num;
+        }
+      }
     }
 
     this.checkGameOver();
+    this.checkGameWin();
+  }
+
+  checkGameWin() {
+    this.state.flat().some((tile) => {
+      if (tile === 2048) {
+        this.status = Game.Status.win;
+      }
+    });
   }
 
   checkGameOver() {
@@ -85,8 +123,8 @@ class Game {
       return;
     }
 
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
+    for (let r = 0; r < this.rows; r++) {
+      for (let c = 0; c < this.columns; c++) {
         if (
           (r < 3 && this.state[r][c] === this.state[r + 1][c]) ||
           (c < 3 && this.state[r][c] === this.state[r][c + 1])
@@ -99,30 +137,6 @@ class Game {
     this.status = Game.Status.lose;
   }
 
-  filterZero(row) {
-    return row.filter((num) => num !== 0);
-  }
-
-  slide(orow) {
-    let row = this.filterZero(orow);
-
-    for (let i = 0; i < row.length - 1; i++) {
-      if (row[i] === row[i + 1]) {
-        row[i] *= 2;
-        row[i + 1] = 0;
-        this.score += row[i];
-      }
-    }
-
-    row = this.filterZero(row);
-
-    while (row.length < this.columns) {
-      row.push(0);
-    }
-
-    return row;
-  }
-
   moveLeft() {
     if (
       this.getStatus() !== Game.Status.playing &&
@@ -131,22 +145,13 @@ class Game {
       return;
     }
 
-    const rows = document.querySelectorAll('.field-row');
+    const newState = this.getState().map((row) => this.slide(row));
 
-    for (let r = 0; r < this.rows; r++) {
-      let row = this.state[r];
-
-      row = this.slide(row);
-      this.state[r] = row;
-
-      for (let c = 0; c < this.columns; c++) {
-        const tile = rows[r].querySelectorAll('.field-cell')[c];
-        const num = this.state[r][c];
-
-        this.updateTile(tile, num);
-      }
+    if (JSON.stringify(this.state) !== JSON.stringify(newState)) {
+      this.updateState(newState);
     }
   }
+
   moveRight() {
     if (
       this.getStatus() !== Game.Status.playing &&
@@ -155,22 +160,14 @@ class Game {
       return;
     }
 
-    const rows = document.querySelectorAll('.field-row');
+    const newState = this.getState().map((row) => {
+      return this.slide([...row].reverse());
+    });
 
-    for (let r = 0; r < this.rows; r++) {
-      let row = this.state[r];
+    const reversedState = newState.map((row) => row.reverse());
 
-      row.reverse();
-      row = this.slide(row);
-      row.reverse();
-      this.state[r] = row;
-
-      for (let c = 0; c < this.columns; c++) {
-        const tile = rows[r].querySelectorAll('.field-cell')[c];
-        const num = this.state[r][c];
-
-        this.updateTile(tile, num);
-      }
+    if (JSON.stringify(this.state) !== JSON.stringify(reversedState)) {
+      this.updateState(reversedState);
     }
   }
 
@@ -182,7 +179,7 @@ class Game {
       return;
     }
 
-    const rows = document.querySelectorAll('.field-row');
+    const newState = [...this.state.map((arr) => [...arr])];
 
     for (let c = 0; c < this.columns; c++) {
       let row = [
@@ -195,15 +192,20 @@ class Game {
       row = this.slide(row);
 
       for (let r = 0; r < this.rows; r++) {
-        this.state[r][c] = row[r];
-
-        const tile = rows[r].querySelectorAll('.field-cell')[c];
-        const num = this.state[r][c];
-
-        this.updateTile(tile, num);
+        newState[r][c] = row[r];
       }
     }
+
+    if (
+      this.state[0].includes(0) ||
+      this.state[1].includes(0) ||
+      this.state[2].includes(0) ||
+      JSON.stringify(this.state) !== JSON.stringify(newState)
+    ) {
+      this.updateState(newState);
+    }
   }
+
   moveDown() {
     if (
       this.getStatus() !== Game.Status.playing &&
@@ -212,7 +214,7 @@ class Game {
       return;
     }
 
-    const rows = document.querySelectorAll('.field-row');
+    const newState = [...this.state.map((arr) => [...arr])];
 
     for (let c = 0; c < this.columns; c++) {
       let row = [
@@ -222,18 +224,21 @@ class Game {
         this.state[3][c],
       ];
 
-      row.reverse();
-      row = this.slide(row);
+      row = this.slide(row.reverse());
       row.reverse();
 
       for (let r = 0; r < this.rows; r++) {
-        this.state[r][c] = row[r];
-
-        const tile = rows[r].querySelectorAll('.field-cell')[c];
-        const num = this.state[r][c];
-
-        this.updateTile(tile, num);
+        newState[r][c] = row[r];
       }
+    }
+
+    if (
+      this.state[3].includes(0) ||
+      this.state[2].includes(0) ||
+      this.state[1].includes(0) ||
+      JSON.stringify(this.state) !== JSON.stringify(newState)
+    ) {
+      this.updateState(newState);
     }
   }
 
@@ -251,8 +256,6 @@ class Game {
 
   start() {
     this.status = Game.Status.playing;
-    // this.getState();
-    // this.getStatus();
 
     this.setTwo();
     this.setTwo();
@@ -260,14 +263,9 @@ class Game {
 
   restart() {
     this.status = Game.Status.idle;
-    this.state = [...this.initialState];
+    this.state = JSON.parse(JSON.stringify(this.initialState));
     this.score = 0;
-
-    const cells = document.querySelectorAll('.field-cell');
-
-    for (let c = 0; c < cells.length; c++) {
-      this.updateTile(cells[c], 0);
-    }
+    this.updateTiles();
   }
 }
 
