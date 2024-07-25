@@ -10,6 +10,18 @@ export default class Game {
     this.score = 0;
     this.gameActive = false;
     this.cells = document.querySelectorAll('.field-cell');
+
+    this.assignDataAttributes();
+  }
+
+  assignDataAttributes() {
+    this.cells.forEach((cell, index) => {
+      const row = Math.floor(index / this.GRID_SIZE);
+      const col = index % this.GRID_SIZE;
+
+      cell.dataset.row = row;
+      cell.dataset.col = col;
+    });
   }
 
   moveUp() {
@@ -20,9 +32,12 @@ export default class Game {
     for (let col = 0; col < GRID_SIZE; col++) {
       this.moveColumnUp(col);
     }
+
     this.getRandomTile();
     this.addCell();
+    this.checkGameStatus();
   }
+
   moveDown() {
     if (!this.gameActive) {
       return;
@@ -31,22 +46,38 @@ export default class Game {
     for (let col = 0; col < GRID_SIZE; col++) {
       this.moveColumnDown(col);
     }
+
     this.getRandomTile();
     this.addCell();
+    this.checkGameStatus();
   }
+
   moveLeft() {
     if (!this.gameActive) {
       return;
     }
 
-    console.log('moveLeft');
+    for (let row = 0; row < GRID_SIZE; row++) {
+      this.moveColumnLeft(row);
+    }
+
+    this.getRandomTile();
+    this.addCell();
+    this.checkGameStatus();
   }
+
   moveRight() {
     if (!this.gameActive) {
       return;
     }
 
-    console.log('moveRight');
+    for (let row = 0; row < GRID_SIZE; row++) {
+      this.moveColumnRight(row);
+    }
+
+    this.getRandomTile();
+    this.addCell();
+    this.checkGameStatus();
   }
 
   getScore() {
@@ -60,24 +91,81 @@ export default class Game {
   getRandomTile() {
     const emptyTiles = [];
 
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 4; j++) {
-        if (this.board[i][j] === 0) {
-          emptyTiles.push({ i, j });
+    for (let row = 0; row < GRID_SIZE; row++) {
+      for (let col = 0; col < GRID_SIZE; col++) {
+        if (this.board[row][col] === 0) {
+          emptyTiles.push({ row, col });
         }
       }
     }
 
     if (emptyTiles.length) {
-      const { i, j } =
+      const { row, col } =
         emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
 
-      this.board[i][j] = Math.random() < 0.9 ? 2 : 4;
+      this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
+      this.animateNewTile(row, col);
 
-      return { i, j, value: this.board[i][j] };
+      return { row, col, value: this.board[row][col] };
     }
 
     return null;
+  }
+
+  checkWin() {
+    return this.board.flat().includes(2048);
+  }
+
+  checkLose() {
+    for (let row = 0; row < GRID_SIZE; row++) {
+      for (let col = 0; col < GRID_SIZE; col++) {
+        if (this.board[row][col] === 0) {
+          return false;
+        }
+
+        const checkCol =
+          col < GRID_SIZE - 1 &&
+          this.board[row][col] === this.board[row][col + 1];
+
+        const checkRow =
+          row < GRID_SIZE - 1 &&
+          this.board[row][col] === this.board[row + 1][col];
+
+        if (checkCol) {
+          return false;
+        }
+
+        if (checkRow) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  getStatus() {
+    if (this.checkWin()) {
+      return 'win';
+    }
+
+    if (this.checkLose()) {
+      return 'lose';
+    }
+
+    return `playing`;
+  }
+
+  checkGameStatus() {
+    const gameStatus = this.getStatus();
+    const messageWin = document.querySelector('.message-win');
+    const messageLose = document.querySelector('.message-lose');
+
+    if (gameStatus === 'win') {
+      messageWin.classList.remove('hidden');
+    } else if (gameStatus === 'lose') {
+      messageLose.classList.remove('hidden');
+    }
   }
 
   addCell() {
@@ -98,18 +186,6 @@ export default class Game {
       cell.textContent = '';
     });
   }
-
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
 
   start(element) {
     this.gameActive = true;
@@ -144,14 +220,15 @@ export default class Game {
         compressedColumn[i] *= 2;
         compressedColumn.splice(i + 1, 1);
         this.score += compressedColumn[i];
+        this.animateMerge(i, col);
       }
     }
 
-    while (compressedColumn.length < 4) {
+    while (compressedColumn.length < GRID_SIZE) {
       compressedColumn.push(0);
     }
 
-    for (let row = 0; row < 4; row++) {
+    for (let row = 0; row < GRID_SIZE; row++) {
       this.board[row][col] = compressedColumn[row];
     }
   }
@@ -161,20 +238,94 @@ export default class Game {
       .map((row) => row[col])
       .filter((value) => value !== 0);
 
-    for (let i = 0; i < compressedColumn.length - 1; i++) {
-      if (compressedColumn[i] === compressedColumn[i + 1]) {
+    for (let i = compressedColumn.length - 1; i > 0; i--) {
+      if (compressedColumn[i] === compressedColumn[i - 1]) {
         compressedColumn[i] *= 2;
-        compressedColumn.splice(i + 1, 1);
+        compressedColumn.splice(i - 1, 1);
         this.score += compressedColumn[i];
+        this.animateMerge(i, col);
       }
     }
 
-    while (compressedColumn.length < 4) {
-      compressedColumn.push(0);
+    while (compressedColumn.length < GRID_SIZE) {
+      compressedColumn.unshift(0);
     }
 
-    for (let row = 0; row < 4; row++) {
+    for (let row = 0; row < GRID_SIZE; row++) {
       this.board[row][col] = compressedColumn[row];
     }
+  }
+
+  moveColumnLeft(row) {
+    const compressedRow = this.board[row].filter((value) => value !== 0);
+
+    for (let i = 0; i < compressedRow.length - 1; i++) {
+      if (compressedRow[i] === compressedRow[i + 1]) {
+        compressedRow[i] *= 2;
+        compressedRow.splice(i + 1, 1);
+        this.score += compressedRow[i];
+        this.animateMerge(row, i);
+      }
+    }
+
+    while (compressedRow.length < GRID_SIZE) {
+      compressedRow.push(0);
+    }
+
+    this.board[row] = compressedRow;
+  }
+
+  moveColumnRight(row) {
+    const compressedRow = this.board[row].filter((value) => value !== 0);
+
+    for (let i = compressedRow.length - 1; i > 0; i--) {
+      if (compressedRow[i] === compressedRow[i - 1]) {
+        compressedRow[i] *= 2;
+        compressedRow.splice(i - 1, 1);
+        this.score += compressedRow[i];
+        this.animateMerge(row, i);
+      }
+    }
+
+    while (compressedRow.length < GRID_SIZE) {
+      compressedRow.unshift(0);
+    }
+
+    this.board[row] = compressedRow;
+  }
+
+  animateNewTile(row, col) {
+    const cell = document.querySelector(
+      `.field-cell[data-row="${row}"][data-col="${col}"]`,
+    );
+
+    console.log(cell);
+
+    if (!cell) {
+      return;
+    }
+
+    cell.classList.add('field-cell--new');
+
+    setTimeout(() => {
+      cell.classList.remove('field-cell--new');
+      cell.classList.add('field-cell--appear');
+    }, 0);
+  }
+
+  animateMerge(row, col) {
+    const cell = document.querySelector(
+      `.field-cell[data-row="${row}"][data-col="${col}"]`,
+    );
+
+    if (!cell) {
+      return;
+    }
+
+    cell.classList.add('field-cell--merge');
+
+    setTimeout(() => {
+      cell.classList.remove('field-cell--merge');
+    }, 300);
   }
 }

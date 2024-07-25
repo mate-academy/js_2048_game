@@ -18,8 +18,32 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
+  transition:
+    transform 0.3s,
+    opacity 0.3s;
+
+  &--new {
+    transform: scale(0);
+  }
+
+  &--appear {
+    transform: scale(1);
+  }
+
+  &--merge {
+    animation: merge-animation 0.3s;
+  }
+
+  @keyframes merge-animation {
+    0% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 
   &--2 {
     background: #eee4da;
