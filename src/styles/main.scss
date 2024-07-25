@@ -18,8 +18,52 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+
+  &--new {
+    transform: scale(0);
+    opacity: 0;
+    animation: new-tile-animation 0.3s ease-out forwards;
+  }
+
+  @keyframes new-tile-animation {
+    0% {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  &--appear {
+    transform: scale(1.05);
+    transition: transform 0.2s ease-out;
+  }
+
+  &--merge {
+    animation: merge-animation 0.3s ease-out;
+  }
+
+  @keyframes merge-animation {
+    0% {
+      transform: scale(1.2);
+      background: rgba(0, 0, 0, 0);
+    }
+    100% {
+      transform: scale(1);
+      background: inherit;
+    }
+  }
+
+  &--move {
+    transition: transform 0.3s ease;
+  }
 
   &--2 {
     background: #eee4da;
