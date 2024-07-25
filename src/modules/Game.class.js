@@ -11,13 +11,16 @@ export default class Game {
     this.gameActive = false;
     this.cells = document.querySelectorAll('.field-cell');
 
+    this.messageWin = document.querySelector('.message-win');
+    this.messageLose = document.querySelector('.message-lose');
+
     this.assignDataAttributes();
   }
 
   assignDataAttributes() {
     this.cells.forEach((cell, index) => {
-      const row = Math.floor(index / this.GRID_SIZE);
-      const col = index % this.GRID_SIZE;
+      const row = Math.floor(index / GRID_SIZE);
+      const col = index % GRID_SIZE;
 
       cell.dataset.row = row;
       cell.dataset.col = col;
@@ -158,13 +161,11 @@ export default class Game {
 
   checkGameStatus() {
     const gameStatus = this.getStatus();
-    const messageWin = document.querySelector('.message-win');
-    const messageLose = document.querySelector('.message-lose');
 
     if (gameStatus === 'win') {
-      messageWin.classList.remove('hidden');
+      this.messageWin.classList.remove('hidden');
     } else if (gameStatus === 'lose') {
-      messageLose.classList.remove('hidden');
+      this.messageLose.classList.remove('hidden');
     }
   }
 
@@ -194,20 +195,35 @@ export default class Game {
     element.classList.replace('start', 'restart');
     element.textContent = 'Restart';
 
-    this.getRandomTile();
-    this.getRandomTile();
-    this.addCell();
+    setTimeout(() => {
+      this.getRandomTile();
+      this.getRandomTile();
+      this.addCell();
+      this.assignDataAttributes();
+    }, 100);
   }
 
   restart(element) {
     this.gameActive = false;
     this.score = 0;
 
+    const hasHiddenLose = this.messageLose.classList.contains('hidden');
+    const hasHiddenWin = this.messageWin.classList.contains('hidden');
+
+    if (!hasHiddenLose) {
+      this.messageLose.classList.add('hidden');
+    }
+
+    if (!hasHiddenWin) {
+      this.messageWin.classList.add('hidden');
+    }
+
     element.classList.replace('restart', 'start');
     element.textContent = 'Start';
 
     this.board = this.getState();
     this.deleteCell();
+    this.assignDataAttributes();
   }
 
   moveColumnUp(col) {
@@ -299,18 +315,13 @@ export default class Game {
       `.field-cell[data-row="${row}"][data-col="${col}"]`,
     );
 
-    console.log(cell);
+    if (cell) {
+      cell.classList.add('field-cell--new');
 
-    if (!cell) {
-      return;
+      setTimeout(() => {
+        cell.classList.remove('field-cell--new');
+      }, 5000);
     }
-
-    cell.classList.add('field-cell--new');
-
-    setTimeout(() => {
-      cell.classList.remove('field-cell--new');
-      cell.classList.add('field-cell--appear');
-    }, 0);
   }
 
   animateMerge(row, col) {
@@ -318,14 +329,12 @@ export default class Game {
       `.field-cell[data-row="${row}"][data-col="${col}"]`,
     );
 
-    if (!cell) {
-      return;
+    if (cell) {
+      cell.classList.add('field-cell--merge');
+
+      setTimeout(() => {
+        cell.classList.remove('field-cell--merge');
+      }, 4000);
     }
-
-    cell.classList.add('field-cell--merge');
-
-    setTimeout(() => {
-      cell.classList.remove('field-cell--merge');
-    }, 300);
   }
 }
