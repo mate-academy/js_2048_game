@@ -32,12 +32,19 @@ export default class Game {
       return;
     }
 
+    let changed = false;
+
     for (let col = 0; col < GRID_SIZE; col++) {
-      this.moveColumnUp(col);
+      if (this.moveColumnUp(col)) {
+        changed = true;
+      }
     }
 
-    this.getRandomTile();
-    this.addCell();
+    if (changed) {
+      this.getRandomTile();
+      this.addCell();
+    }
+
     this.checkGameStatus();
   }
 
@@ -46,12 +53,19 @@ export default class Game {
       return;
     }
 
+    let changed = false;
+
     for (let col = 0; col < GRID_SIZE; col++) {
-      this.moveColumnDown(col);
+      if (this.moveColumnDown(col)) {
+        changed = true;
+      }
     }
 
-    this.getRandomTile();
-    this.addCell();
+    if (changed) {
+      this.getRandomTile();
+      this.addCell();
+    }
+
     this.checkGameStatus();
   }
 
@@ -60,12 +74,19 @@ export default class Game {
       return;
     }
 
+    let changed = false;
+
     for (let row = 0; row < GRID_SIZE; row++) {
-      this.moveColumnLeft(row);
+      if (this.moveColumnLeft(row)) {
+        changed = true;
+      }
     }
 
-    this.getRandomTile();
-    this.addCell();
+    if (changed) {
+      this.getRandomTile();
+      this.addCell();
+    }
+
     this.checkGameStatus();
   }
 
@@ -74,12 +95,19 @@ export default class Game {
       return;
     }
 
+    let changed = false;
+
     for (let row = 0; row < GRID_SIZE; row++) {
-      this.moveColumnRight(row);
+      if (this.moveColumnRight(row)) {
+        changed = true;
+      }
     }
 
-    this.getRandomTile();
-    this.addCell();
+    if (changed) {
+      this.getRandomTile();
+      this.addCell();
+    }
+
     this.checkGameStatus();
   }
 
@@ -134,11 +162,7 @@ export default class Game {
           row < GRID_SIZE - 1 &&
           this.board[row][col] === this.board[row + 1][col];
 
-        if (checkCol) {
-          return false;
-        }
-
-        if (checkRow) {
+        if (checkCol || checkRow) {
           return false;
         }
       }
@@ -178,6 +202,7 @@ export default class Game {
 
       cell.className = 'field-cell' + hasValue;
       cell.textContent = value || '';
+      this.animateAppear(row, col);
     });
   }
 
@@ -227,6 +252,7 @@ export default class Game {
   }
 
   moveColumnUp(col) {
+    let changed = false;
     const compressedColumn = this.board
       .map((row) => row[col])
       .filter((value) => value !== 0);
@@ -237,6 +263,7 @@ export default class Game {
         compressedColumn.splice(i + 1, 1);
         this.score += compressedColumn[i];
         this.animateMerge(i, col);
+        changed = true;
       }
     }
 
@@ -245,11 +272,18 @@ export default class Game {
     }
 
     for (let row = 0; row < GRID_SIZE; row++) {
+      if (this.board[row][col] !== compressedColumn[row]) {
+        changed = true;
+      }
       this.board[row][col] = compressedColumn[row];
+      this.animateMove(row, col);
     }
+
+    return changed;
   }
 
   moveColumnDown(col) {
+    let changed = false;
     const compressedColumn = this.board
       .map((row) => row[col])
       .filter((value) => value !== 0);
@@ -260,6 +294,7 @@ export default class Game {
         compressedColumn.splice(i - 1, 1);
         this.score += compressedColumn[i];
         this.animateMerge(i, col);
+        changed = true;
       }
     }
 
@@ -268,11 +303,18 @@ export default class Game {
     }
 
     for (let row = 0; row < GRID_SIZE; row++) {
+      if (this.board[row][col] !== compressedColumn[row]) {
+        changed = true;
+      }
       this.board[row][col] = compressedColumn[row];
+      this.animateMove(row, col);
     }
+
+    return changed;
   }
 
   moveColumnLeft(row) {
+    let changed = false;
     const compressedRow = this.board[row].filter((value) => value !== 0);
 
     for (let i = 0; i < compressedRow.length - 1; i++) {
@@ -281,6 +323,7 @@ export default class Game {
         compressedRow.splice(i + 1, 1);
         this.score += compressedRow[i];
         this.animateMerge(row, i);
+        changed = true;
       }
     }
 
@@ -288,10 +331,23 @@ export default class Game {
       compressedRow.push(0);
     }
 
+    if (
+      this.board[row].some((value, index) => value !== compressedRow[index])
+    ) {
+      changed = true;
+    }
+
     this.board[row] = compressedRow;
+
+    for (let col = 0; col < GRID_SIZE; col++) {
+      this.animateMove(row, col);
+    }
+
+    return changed;
   }
 
   moveColumnRight(row) {
+    let changed = false;
     const compressedRow = this.board[row].filter((value) => value !== 0);
 
     for (let i = compressedRow.length - 1; i > 0; i--) {
@@ -300,6 +356,7 @@ export default class Game {
         compressedRow.splice(i - 1, 1);
         this.score += compressedRow[i];
         this.animateMerge(row, i);
+        changed = true;
       }
     }
 
@@ -307,7 +364,19 @@ export default class Game {
       compressedRow.unshift(0);
     }
 
+    if (
+      this.board[row].some((value, index) => value !== compressedRow[index])
+    ) {
+      changed = true;
+    }
+
     this.board[row] = compressedRow;
+
+    for (let col = 0; col < GRID_SIZE; col++) {
+      this.animateMove(row, col);
+    }
+
+    return changed;
   }
 
   animateNewTile(row, col) {
@@ -320,7 +389,21 @@ export default class Game {
 
       setTimeout(() => {
         cell.classList.remove('field-cell--new');
-      }, 5000);
+      }, 300);
+    }
+  }
+
+  animateAppear(row, col) {
+    const cell = document.querySelector(
+      `.field-cell[data-row="${row}"][data-col="${col}"]`,
+    );
+
+    if (cell) {
+      cell.classList.add('field-cell--appear');
+
+      setTimeout(() => {
+        cell.classList.remove('field-cell--appear');
+      }, 200);
     }
   }
 
@@ -334,7 +417,21 @@ export default class Game {
 
       setTimeout(() => {
         cell.classList.remove('field-cell--merge');
-      }, 4000);
+      }, 300);
+    }
+  }
+
+  animateMove(row, col) {
+    const cell = document.querySelector(
+      `.field-cell[data-row="${row}"][data-col="${col}"]`,
+    );
+
+    if (cell) {
+      cell.classList.add('field-cell--move');
+
+      setTimeout(() => {
+        cell.classList.remove('field-cell--move');
+      }, 300);
     }
   }
 }

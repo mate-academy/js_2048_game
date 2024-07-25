@@ -27,13 +27,13 @@ body {
   &--new {
     transform: scale(0);
     opacity: 0;
-    animation: new-tile-animation 0.5s ease-out forwards;
+    animation: new-tile-animation 0.3s ease-out forwards;
   }
 
   @keyframes new-tile-animation {
     0% {
       transform: scale(0);
-      opacity: 0;
+      opacity: 0.5;
     }
     100% {
       transform: scale(1);
@@ -43,11 +43,11 @@ body {
 
   &--appear {
     transform: scale(1.05);
-    opacity: 0.7;
+    transition: transform 0.2s ease-out;
   }
 
   &--merge {
-    animation: merge-animation 0.4s ease-out;
+    animation: merge-animation 0.3s ease-out;
   }
 
   @keyframes merge-animation {
