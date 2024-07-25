@@ -11,6 +11,7 @@ button.addEventListener('click', () => {
     game.start();
   } else {
     game.restart();
+    game.start();
   }
 });
 

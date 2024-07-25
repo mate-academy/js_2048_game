@@ -29,7 +29,7 @@ class Game {
         const value = this.board[row][col];
 
         const cell = document.querySelector(
-          `.field-row:nth-child(${row + 1}) .field-cell:nth-child(${col + 1})`
+          `.field-row:nth-child(${row + 1}) .field-cell:nth-child(${col + 1})`,
         );
 
         if (cell) {
@@ -94,7 +94,7 @@ class Game {
 
   restart() {
     this.updateState('idle');
-    this.gameActive = true;
+    this.gameActive = false;
 
     this.board = [
       [0, 0, 0, 0],
@@ -102,14 +102,18 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
+
+    this.score = 0;
+    this.addScore(0);
+
+    this.hideMessages();
     this.updateDOMFromBoard();
 
     if (this.button) {
-      this.button.classList.remove('start');
-      this.button.classList.add('restart');
+      this.button.classList.remove('restart');
+      this.button.classList.add('start');
+      this.button.textContent = 'Start';
     }
-
-    this.initializeGame();
   }
 
   getStatus() {
@@ -117,6 +121,10 @@ class Game {
   }
 
   moveLeft() {
+    if (this.state !== 'playing') {
+      return false;
+    }
+
     let hasChanged = false;
 
     for (let row = 0; row < 4; row++) {
@@ -160,6 +168,10 @@ class Game {
   }
 
   moveRight() {
+    if (this.state !== 'playing') {
+      return false;
+    }
+
     let hasChanged = false;
 
     for (let row = 0; row < 4; row++) {
@@ -203,6 +215,10 @@ class Game {
   }
 
   moveUp() {
+    if (this.state !== 'playing') {
+      return false;
+    }
+
     let hasChanged = false;
 
     for (let col = 0; col < 4; col++) {
@@ -246,6 +262,10 @@ class Game {
   }
 
   moveDown() {
+    if (this.state !== 'playing') {
+      return false;
+    }
+
     let hasChanged = false;
 
     for (let col = 0; col < 4; col++) {
