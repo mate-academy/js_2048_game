@@ -110,6 +110,14 @@ class Game {
     this.checkGameWin();
   }
 
+  canMove(state) {
+    return state.some((arr) => arr.includes(0));
+  }
+
+  checkUpdate(state) {
+    return JSON.stringify(this.state) !== JSON.stringify(state);
+  }
+
   checkGameWin() {
     this.state.flat().some((tile) => {
       if (tile === 2048) {
@@ -147,7 +155,7 @@ class Game {
 
     const newState = this.getState().map((row) => this.slide(row));
 
-    if (JSON.stringify(this.state) !== JSON.stringify(newState)) {
+    if (this.checkUpdate(newState)) {
       this.updateState(newState);
     }
   }
@@ -166,7 +174,7 @@ class Game {
 
     const reversedState = newState.map((row) => row.reverse());
 
-    if (JSON.stringify(this.state) !== JSON.stringify(reversedState)) {
+    if (this.checkUpdate(reversedState)) {
       this.updateState(reversedState);
     }
   }
@@ -196,12 +204,7 @@ class Game {
       }
     }
 
-    if (
-      this.state[0].includes(0) ||
-      this.state[1].includes(0) ||
-      this.state[2].includes(0) ||
-      JSON.stringify(this.state) !== JSON.stringify(newState)
-    ) {
+    if (this.canMove(this.state.slice(0, 3)) || this.checkUpdate(newState)) {
       this.updateState(newState);
     }
   }
@@ -232,12 +235,7 @@ class Game {
       }
     }
 
-    if (
-      this.state[3].includes(0) ||
-      this.state[2].includes(0) ||
-      this.state[1].includes(0) ||
-      JSON.stringify(this.state) !== JSON.stringify(newState)
-    ) {
+    if (this.canMove(this.state.slice(1)) || this.checkUpdate(newState)) {
       this.updateState(newState);
     }
   }
