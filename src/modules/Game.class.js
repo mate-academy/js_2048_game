@@ -162,6 +162,8 @@ class Game {
       this.spawnRandomNumber();
     }
 
+    this.checkLoseCondition();
+
     this.updateDOMFromBoard();
 
     return hasChanged;
@@ -208,6 +210,8 @@ class Game {
     if (hasChanged) {
       this.spawnRandomNumber();
     }
+
+    this.checkLoseCondition();
 
     this.updateDOMFromBoard();
 
@@ -256,6 +260,8 @@ class Game {
       this.spawnRandomNumber();
     }
 
+    this.checkLoseCondition();
+
     this.updateDOMFromBoard();
 
     return hasChanged;
@@ -302,6 +308,8 @@ class Game {
     if (hasChanged) {
       this.spawnRandomNumber();
     }
+
+    this.checkLoseCondition();
 
     this.updateDOMFromBoard();
 
