@@ -59,16 +59,12 @@ function generateNewNumber() {
     fieldCells[i].textContent
       = gameField[row][col] === 0 ? '' : gameField[row][col];
 
-    fieldCells[i].classList.remove(
-      `field-cell--${gameField[row][col]}`,
-    );
+    fieldCells[i].className = 'field-cell';
 
     if (gameField[row][col] !== 0) {
       fieldCells[i].classList.add(
         `field-cell--${gameField[row][col]}`,
       );
-    } else {
-      fieldCells[i].className = 'field-cell';
     }
   }
 
