@@ -35,7 +35,6 @@ function startGame() {
 function generateNewNumber() {
   const emptyCells = [];
 
-  // Find all empty cells
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
       if (gameField[row][col] === 0) {
@@ -47,23 +46,15 @@ function generateNewNumber() {
     }
   }
 
-  // console.log(emptyCells);
-
-  // Select a random empty cell
   if (emptyCells.length > 0) {
     const randomC = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-    // console.log(randomC);
 
     gameField[randomC.row][randomC.col] = Math.random() < 0.9 ? 2 : 4;
   }
 
-  // Render Game Field
   for (let i = 0; i < fieldCells.length; i++) {
     const row = Math.floor(i / 4);
     const col = i % 4;
-
-    // console.log(col);
 
     fieldCells[i].textContent
       = gameField[row][col] === 0 ? '' : gameField[row][col];
@@ -85,6 +76,8 @@ function generateNewNumber() {
 }
 
 function moveUp() {
+  let moved = false;
+
   for (let col = 0; col < 4; col++) {
     for (let row = 1; row < 4; row++) {
       if (gameField[row][col] !== 0) {
@@ -94,6 +87,7 @@ function moveUp() {
           gameField[currentRow - 1][col] = gameField[currentRow][col];
           gameField[currentRow][col] = 0;
           currentRow--;
+          moved = true;
         }
 
         if (
@@ -103,21 +97,18 @@ function moveUp() {
           gameField[currentRow - 1][col] *= 2;
           score += gameField[currentRow - 1][col];
           gameField[currentRow][col] = 0;
+          moved = true;
         }
-
-        // fieldCells[(currentRow - 1) * 4 + col].classList.add(
-        //   `field-cell--${gameField[currentRow - 1][col]}`,
-        // );
-
-        // fieldCells[(currentRow) * 4 + col].classList.remove(
-        //   `field-cell--${gameField[currentRow][col]}`,
-        // );
       }
     }
   }
+
+  return moved;
 }
 
 function moveDown() {
+  let moved = false;
+
   for (let col = 0; col < 4; col++) {
     for (let row = 2; row >= 0; row--) {
       if (gameField[row][col] !== 0) {
@@ -127,6 +118,7 @@ function moveDown() {
           gameField[currentRow + 1][col] = gameField[currentRow][col];
           gameField[currentRow][col] = 0;
           currentRow++;
+          moved = true;
         }
 
         if (
@@ -136,21 +128,18 @@ function moveDown() {
           gameField[currentRow + 1][col] *= 2;
           score += gameField[currentRow + 1][col];
           gameField[currentRow][col] = 0;
+          moved = true;
         }
-
-        // fieldCells[(currentRow + 1) * 4 + col].classList.add(
-        //   `field-cell--${gameField[currentRow + 1][col]}`,
-        // );
-
-        // fieldCells[(currentRow) * 4 + col].classList.remove(
-        //   `field-cell--${gameField[currentRow][col]}`,
-        // );
       }
     }
   }
+
+  return moved;
 }
 
 function moveRight() {
+  let moved = false;
+
   for (let row = 0; row < 4; row++) {
     for (let col = 2; col >= 0; col--) {
       if (gameField[row][col] !== 0) {
@@ -160,6 +149,7 @@ function moveRight() {
           gameField[row][currentCol + 1] = gameField[row][currentCol];
           gameField[row][currentCol] = 0;
           currentCol++;
+          moved = true;
         }
 
         if (
@@ -169,21 +159,18 @@ function moveRight() {
           gameField[row][currentCol + 1] *= 2;
           score += gameField[row][currentCol + 1];
           gameField[row][currentCol] = 0;
+          moved = true;
         }
-
-        // fieldCells[row + (currentCol + 1) * 4].classList.add(
-        //   `field-cell--${gameField[row][currentCol + 1]}`,
-        // );
-
-        // fieldCells[row + (currentCol) * 4].classList.remove(
-        //   `field-cell--${gameField[row][currentCol]}`,
-        // );
       }
     }
   }
+
+  return moved;
 }
 
 function moveLeft() {
+  let moved = false;
+
   for (let row = 0; row < 4; row++) {
     for (let col = 1; col <= 3; col++) {
       if (gameField[row][col] !== 0) {
@@ -193,6 +180,7 @@ function moveLeft() {
           gameField[row][currentCol - 1] = gameField[row][currentCol];
           gameField[row][currentCol] = 0;
           currentCol--;
+          moved = true;
         }
 
         if (
@@ -202,18 +190,13 @@ function moveLeft() {
           gameField[row][currentCol - 1] *= 2;
           score += gameField[row][currentCol - 1];
           gameField[row][currentCol] = 0;
+          moved = true;
         }
-
-        // fieldCells[row + (currentCol - 1) * 4].classList.add(
-        //   `field-cell--${gameField[row][currentCol - 1]}`,
-        // );
-
-        // fieldCells[row + (currentCol) * 4].classList.remove(
-        //   `field-cell--${gameField[row][currentCol]}`,
-        // );
       }
     }
   }
+
+  return moved;
 }
 
 function checkGameOver() {
@@ -253,27 +236,29 @@ startButton.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
+  let moved = false;
+
   switch (e.key) {
     case 'ArrowUp':
-      moveUp();
-      generateNewNumber();
+      moved = moveUp();
       break;
 
     case 'ArrowDown':
-      moveDown();
-      generateNewNumber();
+      moved = moveDown();
       break;
 
     case 'ArrowRight':
-      moveRight();
-      generateNewNumber();
+      moved = moveRight();
       break;
 
     case 'ArrowLeft':
-      moveLeft();
-      generateNewNumber();
+      moved = moveLeft();
       break;
   };
+
+  if (moved) {
+    generateNewNumber();
+  }
 
   if (checkGameOver()) {
     messageLose.classList.remove('hidden');
