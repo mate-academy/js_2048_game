@@ -4,7 +4,6 @@
 
 // Получение элементов DOM для работы с ними
 const gameField = document.querySelector('.game-field');
-const containerMessage = document.querySelector('.message-container');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 const startMessage = document.querySelector('.message-start');
@@ -32,28 +31,21 @@ class Game {
   initBoard() {
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.columns; c++) {
-        const num = this.board[r][c]; // Получаем текущее знач клетки 0, 2, 4, 8
-        let cell = document.querySelector('.field-cell'); // Получаем ID клетки
-        // по индексам строки и столбца
+        const num = this.board[r][c]; // Получаем текущее значение клетки
+        const cell = document.getElementById(`${r}-${c}`); // Находим ячейку по ID
 
         // Проверяем, существует ли клетка
-        if (!cell) {
-          // cell = document.createElement('div');
-          cell.className = 'field-cell';
-          cell.id = `${r}-${c}`;
-          gameField.appendChild(cell);
+        if (cell) {
+          this.updateField(cell, num); // Обновляем отображение клетки
         }
-
-        this.updateField(cell, num); // Обновляем отображение клетки
       }
     }
   }
 
   // Метод для обновления конкретной клетки
   updateField(field, num) {
-    field.innerText = num === 0 ? '' : num;
-    field.className = ''; // Очищаем классы
-    field.classList.add('field-cell'); // Добавляем базовый класс для клетки
+    field.innerText = num === 0 ? '' : num; // Устанав текст в завис от значения
+    field.className = 'field-cell'; // Сбрасыв классы и устанав базовый класс
 
     if (num > 0) {
       // Добавляем класс в зависимости от значения клетки
@@ -142,6 +134,7 @@ class Game {
       for (let c = 0; c < this.columns; c++) {
         const cell = document.getElementById(`${r}-${c}`);
         let num = this.board[r][c];
+
         this.updateField(cell, num); // Обновляем отображение клетки
       }
     }
@@ -219,6 +212,7 @@ class Game {
       for (let r = 0; r < this.rows; r++) {
         const cell = document.getElementById(`${r}-${c}`);
         let num = this.board[r][c];
+
         this.updateField(cell, num);
       }
     }
@@ -260,6 +254,7 @@ class Game {
 
   restart() {
     this.gameScore = 0;
+    this.getStatus();
   }
 
   // Метод для получения текущего счета
@@ -282,9 +277,20 @@ class Game {
    * 'lose' - игра проиграна
    */
   getStatus() {
-    // Логика для определения текущего статуса игры...
+    const messageElement = document.querySelector('.message');
+
+    if (this.gameScore >= 2048) {
+      messageElement.classList.add(winMessage);
+    }
+
+    if (this.gameScore === 0) {
+      messageElement.classList.add(startMessage);
+    }
+
+    if (this.gameScore < 2048) {
+      messageElement.classList.add(loseMessage);
+    }
   }
-  // Дополнительные методы для вашей логики...
 }
 
 const game = new Game(); // Создаем экземпляр игры
