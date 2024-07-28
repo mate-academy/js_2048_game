@@ -1,7 +1,105 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../modules/Game.class');
+const game = new Game();
 
-// Write your code here
+const startButton = document.querySelector('.start');
+const gameScore = document.querySelector('.game-score');
+const gameBoardRows = document.querySelectorAll('tr');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
+const messageStart = document.querySelector('.message-start');
+
+const updateGameFields = () => {
+  const state = game.getState();
+
+  gameBoardRows.forEach((row, rowIndex) => {
+    for (const cell of row.cells) {
+      cell.textContent = '';
+      cell.className = 'field-cell';
+
+      const cellIndex = cell.cellIndex;
+      const cellValue = state[rowIndex][cellIndex];
+
+      if (cellValue !== 0) {
+        cell.textContent = cellValue;
+        cell.classList.add(`${cell.className}--${cellValue}`);
+      }
+    }
+  });
+};
+
+const updateMessage = () => {
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  messageStart.classList.add('hidden');
+
+  if (game.getStatus() === 'win') {
+    messageWin.classList.remove('hidden');
+  } else if (game.getStatus() === 'lose') {
+    messageLose.classList.remove('hidden');
+  } else if (game.getStatus() === 'idle') {
+    messageStart.classList.remove('hidden');
+  }
+};
+
+const updateScore = () => {
+  gameScore.textContent = game.getScore();
+};
+
+const startGame = () => {
+  if (startButton.textContent === 'Start') {
+    game.start();
+  }
+
+  if (startButton.textContent === 'Restart') {
+    game.restart();
+
+    startButton.textContent = 'Start';
+    startButton.classList.remove('restart');
+    startButton.classList.add('start');
+    updateScore();
+  }
+
+  updateGameFields();
+  updateMessage();
+
+  isFirstMove = true;
+};
+
+let isFirstMove = true;
+
+const handleArrowDown = (e) => {
+  if (game.getStatus() === 'idle') {
+    return;
+  }
+
+  switch (e.key) {
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+  }
+
+  if (isFirstMove) {
+    startButton.textContent = 'Restart';
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+    isFirstMove = false;
+  }
+
+  updateMessage();
+  updateGameFields();
+  updateScore();
+};
+
+startButton.addEventListener('click', startGame);
+document.addEventListener('keydown', handleArrowDown);
