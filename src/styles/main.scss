@@ -1,4 +1,7 @@
 body {
+  --cell-gap: 10px;
+  --cell-size: 75px;
+  
   margin: 0;
   display: flex;
   align-items: center;
@@ -8,6 +11,33 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+}
+
+.game-cell {
+  --coord-y: 0;
+  --coord-x: 0;
+
+  position: absolute;
+  line-height: 75px;
+  transition:
+    top 100ms,
+    left 100ms;
+  top: calc(
+    var(--cell-gap) + (var(--cell-gap) + var(--cell-size)) * var(--coord-y)
+  );
+  left: calc(
+    var(--cell-gap) + (var(--cell-gap) + var(--cell-size)) * var(--coord-x)
+  );
+
+  // animation: show1 300ms ease-in-out 1;
+  // animation-iteration-count: 1;
+}
+
+@keyframes show {
+  1% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
 }
 
 .field-cell {
@@ -79,6 +109,7 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  position: relative;
 }
 
 .game-header {
