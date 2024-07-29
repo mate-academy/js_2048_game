@@ -2,7 +2,6 @@
 
 // Uncomment the next lines to use your game instance in the browser
 import Game from '../modules/Game.class';
-import { fullCell } from '../modules/fullCell.class';
 
 const gameField = document.querySelector('.game-field');
 const messageStart = document.querySelector('p.message-start');
@@ -39,9 +38,10 @@ restartButton.addEventListener('click', () => {
 setupInputOnce();
 
 function setupInputOnce() {
-  window.addEventListener("keydown", handleInput, { once: true });
+  window.addEventListener('keydown', handleInput, { once: true });
 }
 
+// eslint-disable-next-line no-shadow
 function handleInput(event) {
   switch (event.key) {
     case 'ArrowLeft':

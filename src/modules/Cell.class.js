@@ -8,6 +8,7 @@ export class Cell {
     this.y = y;
     this.element = emptyCell;
     this.linkedTile = null;
+    this.linkedTileForMerge = null;
   }
 
   linkTile(tile) {

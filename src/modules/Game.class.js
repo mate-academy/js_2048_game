@@ -31,12 +31,13 @@ export default class Game {
     );
     this.cellsGroupedByRow = this.groupCellsByRow();
 
-    this.cellsGroupedByReversedRow = this.cellsGroupedByRow.map((row) =>
-      [...row].reverse());
+    this.cellsGroupedByReversedRow = this.cellsGroupedByRow.map(
+      (row) => [...row].reverse(),
+      // eslint-disable-next-line function-paren-newline
+    );
   }
 
   init() {
-    // this.createGrid();
     this.createNewTile();
     this.createNewTile();
     this.status = 'playing';
@@ -90,6 +91,9 @@ export default class Game {
       // eslint-disable-next-line no-unused-expressions
       cell.hasTileForMerge() && cell.mergeTiles();
     });
+
+    this.createNewTile();
+    this.updateScore();
   }
 
   slideTilesInGroup(group) {
@@ -117,11 +121,9 @@ export default class Game {
       } else if (
         targetCell.linkedTile.value === cellWithTile.linkedTile.value
       ) {
-        // this.score += targetCell.linkedTile.value * 2;
         const points = targetCell.linkedTile.value * 2;
 
         this.score += points;
-        this.getScore();
 
         targetCell.linkTileForMerge(cellWithTile.linkedTile);
         cellWithTile.unlinkedTile();
@@ -179,7 +181,13 @@ export default class Game {
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.cells.map((cell) => ({
+      x: cell.x,
+      y: cell.y,
+      value: cell.linkedTile ? cell.linkedTile.value : null,
+    }));
+  }
 
   /**
    * Returns the current game status.
@@ -204,6 +212,7 @@ export default class Game {
     this.clearGrid();
 
     this.init();
+    this.status = 'playing';
   }
 
   updateScore() {
@@ -218,6 +227,11 @@ export default class Game {
     const fullCells = document.querySelectorAll('.full-cell');
 
     fullCells.forEach((cell) => cell.remove());
+
+    this.cells.forEach((cell) => {
+      cell.linkedTile = null;
+      cell.linkedTileForMerge = null;
+    });
   }
 
   createNewTile() {

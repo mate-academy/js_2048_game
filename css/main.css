@@ -57,7 +57,7 @@ body {
   align-items: center;
   font-size: 7vmin;
   transition: 100ms;
-  animation: moveCell 200ms;
+  animation: move-cell 200ms;
 }
 @media (min-width: 600px) {
   .full-cell {
@@ -120,7 +120,7 @@ body {
   color: #f9f6f2;
 }
 
-@keyframes moveCell {
+@keyframes move-cell {
   0% {
     opacity: 0.5;
     transform: scale(0);
