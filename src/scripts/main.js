@@ -81,7 +81,7 @@ async function handleInput(e) {
 
   game.createTile();
 
-  if (game.noMovesPossible()) {
+  if (game.noMovesPossible) {
     const message = document.querySelector('.message-lose');
 
     message.classList.remove('hidden');
@@ -95,4 +95,5 @@ async function handleInput(e) {
     setupInput();
   }
 }
+
 setupInput();

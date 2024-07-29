@@ -223,7 +223,7 @@ class Game {
 
     return score;
   }
-  noMovesPossible() {
+  get noMovesPossible() {
     return (
       !this.canMoveDown() &&
       !this.canMoveUp() &&
@@ -387,10 +387,12 @@ class Game {
 
         if (cell.tile) {
           cell.tile.remove();
+          cell.tile = null;
         }
 
         if (cell.mergeTile) {
           cell.mergeTile.remove();
+          cell.tile = null;
         }
       }
     });
