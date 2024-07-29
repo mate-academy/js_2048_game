@@ -6,39 +6,47 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  INITIAL_STATE = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
+  constructor(initialState = this.INITIAL_STATE) {
+    this.state = initialState;
+    this.status = 'idle';
   }
 
   moveLeft() {}
+
   moveRight() {}
+
   moveUp() {}
+
   moveDown() {}
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    let sum = 0;
+
+    for (const row of this.state) {
+      for (const el of row) {
+        sum += el;
+      }
+    }
+
+    return sum;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.state;
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +58,32 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = 'playing';
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.state = this.INITIAL_STATE;
+    this.status = 'idle';
+  }
 
-  // Add your own methods here
+  getRandomPosition() {
+    return [Math.floor(Math.random() * 4), Math.floor(Math.random() * 4)];
+  }
+
+  getRandomValue() {
+    return Math.floor(Math.random() * 10) < 9 ? 2 : 4;
+  }
 }
 
 module.exports = Game;
