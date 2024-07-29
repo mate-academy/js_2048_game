@@ -5,52 +5,176 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
+import { Cell } from './Cell.class';
+import { fullCell } from './fullCell.class';
+
+const GRID_SIZE = 4;
+const CELLS_COUNT = GRID_SIZE * GRID_SIZE;
+
 export default class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(
-    initialState = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ],
-  ) {
-    this.board = initialState;
+  constructor(gridElement) {
+    this.gridElement = gridElement;
+    this.cells = [];
     this.score = 0;
-    // console.log(initialState);
+    this.status = 'idle';
+
+    for (let i = 0; i < CELLS_COUNT; i++) {
+      this.cells.push(
+        new Cell(gridElement, i % GRID_SIZE, Math.floor(i / GRID_SIZE)),
+      );
+    }
+
+    this.cellsGroupedByColumn = this.groupCellsByColumn();
+
+    this.cellsGroupedByReversedColumn = this.cellsGroupedByColumn.map(
+      (column) => [...column].reverse(),
+    );
+    this.cellsGroupedByRow = this.groupCellsByRow();
+
+    this.cellsGroupedByReversedRow = this.cellsGroupedByRow.map((row) =>
+      [...row].reverse());
+  }
+
+  init() {
+    // this.createGrid();
+    this.createNewTile();
+    this.createNewTile();
+    this.status = 'playing';
+  }
+
+  getRandomEmptyCell() {
+    const emptyCells = this.cells.filter((cell) => cell.isEmpty());
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+
+    return emptyCells[randomIndex];
+  }
+
+  groupCellsByColumn() {
+    return this.cells.reduce((groupedCells, cell) => {
+      groupedCells[cell.x] = groupedCells[cell.x] || [];
+      groupedCells[cell.x][cell.y] = cell;
+
+      return groupedCells;
+    }, []);
+  }
+
+  groupCellsByRow() {
+    return this.cells.reduce((groupedCells, cell) => {
+      groupedCells[cell.y] = groupedCells[cell.y] || [];
+      groupedCells[cell.y][cell.x] = cell;
+
+      return groupedCells;
+    }, []);
   }
 
   moveLeft() {
-    // eslint-disable-next-line no-shadow
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowLeft') {
-        const activeCells = document.querySelectorAll(
-          `.field-cell--2, .field-cell--4, .field-cell--8, .field-cell--16, .field-cell--32, .field-cell--64, .field-cell--128, .field-cell--256, .field-cell--512, .field-cell--1024, .field-cell--2048`,
-        );
-      }
+    this.slideTiles(this.cellsGroupedByRow);
+  }
+
+  moveRight() {
+    this.slideTiles(this.cellsGroupedByReversedRow);
+  }
+
+  moveUp() {
+    this.slideTiles(this.cellsGroupedByColumn);
+  }
+
+  moveDown() {
+    this.slideTiles(this.cellsGroupedByReversedColumn);
+  }
+
+  slideTiles(groupedCells) {
+    groupedCells.forEach((group) => this.slideTilesInGroup(group));
+
+    this.cells.forEach((cell) => {
+      // eslint-disable-next-line no-unused-expressions
+      cell.hasTileForMerge() && cell.mergeTiles();
     });
   }
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+
+  slideTilesInGroup(group) {
+    for (let i = 1; i < group.length; i++) {
+      if (group[i].isEmpty()) {
+        continue;
+      }
+
+      const cellWithTile = group[i];
+
+      let targetCell;
+      let j = i - 1;
+
+      while (j >= 0 && group[j].canAccept(cellWithTile.linkedTile)) {
+        targetCell = group[j];
+        j--;
+      }
+
+      if (!targetCell) {
+        continue;
+      }
+
+      if (targetCell.isEmpty()) {
+        targetCell.linkTile(cellWithTile.linkedTile);
+      } else if (
+        targetCell.linkedTile.value === cellWithTile.linkedTile.value
+      ) {
+        // this.score += targetCell.linkedTile.value * 2;
+        const points = targetCell.linkedTile.value * 2;
+
+        this.score += points;
+        this.getScore();
+
+        targetCell.linkTileForMerge(cellWithTile.linkedTile);
+        cellWithTile.unlinkedTile();
+      }
+
+      cellWithTile.unlinkedTile();
+    }
+  }
+
+  canMoveUp() {
+    return this.canMove(this.cellsGroupedByColumn);
+  }
+
+  canMoveDown() {
+    return this.canMove(this.cellsGroupedByReversedColumn);
+  }
+
+  canMoveLeft() {
+    return this.canMove(this.cellsGroupedByRow);
+  }
+
+  canMoveRight() {
+    return this.canMove(this.cellsGroupedByReversedRow);
+  }
+
+  canMove(groupedCells) {
+    return groupedCells.some((group) => this.canMoveInGroup(group));
+  }
+
+  canMoveInGroup(group) {
+    return group.some((cell, index) => {
+      if (index === 0) {
+        return false;
+      }
+
+      if (cell.isEmpty()) {
+        return false;
+      }
+
+      const targetCell = group[index - 1];
+
+      return targetCell.canAccept(cell.linkedTile);
+    });
+  }
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    const scoreElement = document.querySelector('.game-score');
+
+    scoreElement.textContent = this.score;
+  }
 
   /**
    * @returns {number[][]}
@@ -67,63 +191,63 @@ export default class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
   start() {
     this.score = 0;
-    this.createNewCell();
-    this.createNewCell();
-    // console.log(this.board);
+    this.updateScore();
+    this.clearGrid();
+
+    this.init();
+  }
+
+  updateScore() {
+    const scoreElement = document.querySelector('.game-score');
+
+    if (scoreElement) {
+      scoreElement.textContent = this.score;
+    }
+  }
+
+  clearGrid() {
+    const fullCells = document.querySelectorAll('.full-cell');
+
+    fullCells.forEach((cell) => cell.remove());
+  }
+
+  createNewTile() {
+    const cell = this.getRandomEmptyCell();
+
+    if (cell) {
+      // eslint-disable-next-line new-cap
+      const tile = new fullCell(this.gridElement);
+
+      cell.linkTile(tile);
+
+      tile.setXY(cell.x, cell.y);
+    }
   }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.clearGrid();
+    this.score = 0;
+    this.updateScore();
+    this.status = 'playing';
+  }
 
-  createNewCell() {
-    const emptyCell = [];
-
-    this.board.forEach((row, rowIndex) => {
-      row.forEach((cell, collIndex) => {
-        if (cell === 0) {
-          emptyCell.push({ row: rowIndex, col: collIndex });
-        }
-      });
-    });
-
-    if (emptyCell.length === 0) {
-      // Если нет пустых ячеек, выход из метода или обработка случая,
-      // когда доска заполнена
-      return;
-    }
-
-    const randomIndex = Math.floor(Math.random() * emptyCell.length);
-
-    if (emptyCell[randomIndex]) {
-      const { row: rowObj, col: colObj } = emptyCell[randomIndex];
-      const cellValue = Math.random() < 0.9 ? 2 : 4;
-
-      this.board[rowObj][colObj] = cellValue;
-
-      const table = document.querySelector('.game-field');
-      const rowElement = table.querySelectorAll('.field-row')[rowObj];
-      const colElement = rowElement.querySelectorAll('.field-cell')[colObj];
-
-      const newCell = document.createElement('div');
-
-      newCell.classList.add(`field-cell--${cellValue}`);
-
-      newCell.style.cssText =
-        // eslint-disable-next-line max-len
-        'display: flex; justify-content: center; align-items: center; height: 100%';
-
-      newCell.textContent = cellValue;
-
-      colElement.appendChild(newCell);
-    }
+  checkForWin() {
+    return (
+      this.cells.find(
+        (cell) => cell.linkedTile && cell.linkedTile.value === 2048,
+      ) !== undefined
+    );
   }
 }
