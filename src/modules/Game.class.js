@@ -6,6 +6,125 @@
  * Feel free to add more props and methods if needed.
  */
 
+class Cell {
+  #tile;
+  #mergeTile;
+
+  constructor(cellElement, x, y) {
+    this.cellElement = cellElement;
+    this.x = x;
+    this.y = y;
+  }
+
+  set tile(value) {
+    this.#tile = value;
+
+    if (!value) {
+      return;
+    }
+
+    this.tile.x = +this.x;
+    this.tile.y = +this.y;
+  }
+
+  get tile() {
+    return this.#tile;
+  }
+  get mergeTile() {
+    return this.#mergeTile;
+  }
+
+  set mergeTile(value) {
+    this.#mergeTile = value;
+
+    if (!value) {
+      return;
+    }
+
+    this.#mergeTile.x = this.x;
+    this.#mergeTile.y = this.y;
+  }
+
+  canAcceptTile(tile) {
+    return !this.tile || (this.tile.value === tile.value && !this.mergeTile);
+  }
+
+  mergeTiles() {
+    if (!this.tile || !this.#mergeTile) {
+      return;
+    }
+
+    this.tile.value = +this.tile.value + +this.#mergeTile.value;
+
+    this.#mergeTile.remove();
+    this.#mergeTile = null;
+  }
+}
+
+class Tile {
+  #x;
+  #y;
+  #value;
+
+  constructor(parentElement, initValue = Math.random() <= 0.1 ? 4 : 2) {
+    const newTile = document.createElement('div');
+    const { cellElement, x, y } = parentElement;
+
+    newTile.style.setProperty('--coord-y', y);
+    newTile.style.setProperty('--coord-x', x);
+    newTile.textContent = initValue;
+
+    newTile.className = `field-cell game-cell field-cell--${initValue}`;
+    this.tileElement = newTile;
+    this.#x = x;
+    this.#y = y;
+    this.#value = +initValue;
+    cellElement.append(newTile);
+  }
+
+  set x(coordX) {
+    this.#x = +coordX;
+    this.tileElement.style.setProperty('--coord-x', +coordX);
+  }
+
+  get x() {
+    return this.#x;
+  }
+
+  set y(coordY) {
+    this.#y = +coordY;
+    this.tileElement.style.setProperty('--coord-y', +coordY);
+  }
+
+  get y() {
+    return this.#y;
+  }
+
+  set value(value1) {
+    if (value1) {
+      this.#value = +value1;
+      this.tileElement.textContent = value1.toString();
+      this.tileElement.className = `field-cell game-cell field-cell--${value1}`;
+    }
+  }
+
+  get value() {
+    return this.#value;
+  }
+
+  remove() {
+    this.tileElement.remove();
+  }
+
+  waitForTransition() {
+    return new Promise((resolve) => {
+      this.tileElement.addEventListener('transitionend', resolve, {
+        once: true,
+      });
+    });
+  }
+}
+
 class Game {
   /**
    * Creates a new game instance.
@@ -23,46 +142,101 @@ class Game {
    */
   constructor(initialState) {
     // eslint-disable-next-line no-console
+    if (initialState) {
+      this.initialState = initialState;
+    }
     this.cellState = document.querySelectorAll('.field-row');
 
     this.cellState = [...this.cellState].map((row, y) => {
-      const initialRow = initialState[y];
       const cells = [...row.children];
+      const updatedRow = [];
 
       for (let x = 0; x < cells.length; x++) {
-        const initialCell = initialRow[x];
+        const cell = cells[x];
+        const newCell = new Cell(cell, x, y);
 
-        if (initialCell !== 0) {
-          const tile = this.createTile(initialCell, x, y);
+        if (initialState) {
+          const initialRow = initialState[y];
+          const initialValue = initialRow[x];
 
-          cells[x].append(tile);
+          if (initialValue !== 0) {
+            const tile = new Tile(newCell, initialValue);
+
+            newCell.tile = tile;
+          }
         }
 
-        cells[x].setAttribute('data-x', x % 4);
-        cells[x].setAttribute('data-y', y);
+        updatedRow.push(newCell);
       }
 
-      return cells;
+      return updatedRow;
     });
+  }
+  canMoveLeft() {
+    return this.canMove(this.cellState);
   }
 
   moveLeft() {
     return this.slideTiles(this.cellState);
   }
+
+  canMoveRight() {
+    return this.canMove(this.cellState.map((row) => [...row].reverse()));
+  }
+
   moveRight() {
     return this.slideTiles(this.cellState.map((row) => [...row].reverse()));
   }
+
+  canMoveUp() {
+    return this.canMove(this.cellsByColumn);
+  }
+
   moveUp() {
-    this.slideTiles(this.cellsByColumn);
+    return this.slideTiles(this.cellsByColumn);
+  }
+
+  canMoveDown() {
+    return this.canMove(
+      this.cellsByColumn.map((column) => [...column].reverse()),
+    );
   }
   moveDown() {
-    this.slideTiles(this.cellsByColumn.map((column) => [...column].reverse()));
+    return this.slideTiles(
+      this.cellsByColumn.map((column) => [...column].reverse()),
+    );
   }
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    const gameScore = document.querySelector('.game-score');
+    const prevScore = +gameScore.textContent;
+    const score = this.mergedCells.reduce((sum, cell) => {
+      const value = +cell.mergeTile.value;
+
+      return sum + value * 2;
+    }, prevScore);
+
+    gameScore.textContent = `${score}`;
+
+    return score;
+  }
+  noMovesPossible() {
+    return (
+      !this.canMoveDown() &&
+      !this.canMoveUp() &&
+      !this.canMoveLeft() &&
+      !this.canMoveRight()
+    );
+  }
+
+  isWinner() {
+    return this.cellState
+      .flat()
+      .some((cell) => (cell.tile ? +cell.tile.value === 2048 : false));
+  }
 
   /**
    * @returns {number[][]}
@@ -72,12 +246,12 @@ class Game {
       const values = [];
 
       for (let i = 0; i < cells.length; i++) {
-        if (!cells[i].firstElementChild) {
+        if (!cells[i].tile) {
           values.push(0);
           continue;
         }
 
-        const value = +cells[i].firstElementChild.innerText;
+        const value = +cells[i].tile.value;
 
         values.push(value);
       }
@@ -98,7 +272,43 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    const startButton = document.querySelector('.start');
+
+    if (startButton) {
+      return 'idle';
+    }
+
+    if (this.isWinner()) {
+      return 'won';
+    }
+
+    if (this.noMovesPossible()) {
+      return 'lose';
+    }
+
+    return 'playing';
+  }
+
+  canMove(cells) {
+    return cells.some((group) => {
+      return group.some((cell, index) => {
+        if (index === 0) {
+          return false;
+        }
+
+        if (!cell.tile) {
+          return false;
+        }
+
+        return group[index - 1].canAcceptTile(cell.tile);
+      });
+    });
+  }
+
+  get mergedCells() {
+    return this.cellState.flat().filter((cell) => cell.mergeTile);
+  }
 
   get cellsByColumn() {
     const board = this.cellState;
@@ -113,77 +323,14 @@ class Game {
     return newBoard;
   }
 
-  canCellAcceptTile(currCell, newTile) {
-    if (!currCell.firstElementChild) {
-      return true;
-    }
-
-    const newTileValue = +newTile.innerText;
-
-    const currTileValue = +currCell.firstElementChild.innerText;
-    const isMerged = Boolean(currCell.dataset.merged);
-
-    return currTileValue === newTileValue && !isMerged;
-  }
-
-  canMergeTiles(targetCell, tile) {
-    const isMerged = targetCell.getAttribute('data-merged');
-
-    if (isMerged === 'true' || !targetCell.firstChild || !tile) {
-      return false;
-    }
-
-    const tileValue = +tile.innerText;
-    const targetCellValue = +targetCell.firstElementChild.innerText;
-
-    if (tileValue !== targetCellValue) {
-      return false;
-    }
-
-    return true;
-  }
-
-  mergeTiles(targetCell, tile) {
-    const isMerged = targetCell.getAttribute('data-merged');
-
-    if (isMerged === 'true' || !targetCell.firstChild || !tile) {
-      return;
-    }
-
-    const tileValue = +tile.innerText;
-    const targetCellValue = +targetCell.firstElementChild.innerText;
-
-    if (tileValue !== targetCellValue) {
-      return;
-    }
-
-    targetCell.setAttribute('data-merged', 'true');
-
-    const newValue = targetCellValue * 2;
-
-    tile.classList.remove(`field-cell--${tileValue}`);
-    tile.classList.add(`field-cell--${newValue}`);
-    tile.innerText = newValue;
-    targetCell.replaceChildren(tile);
-  }
-
-  clearMergedTiles() {
-    this.cellState.forEach((row) => {
-      for (let i = 0; i < row.length; i++) {
-        row[i].removeAttribute('data-merged');
-      }
-    });
-  }
-
   slideTiles(group) {
-    this.clearMergedTiles();
-
     return Promise.all(
       group.flatMap((cells) => {
         const promises = [];
 
         for (let i = 1; i < cells.length; i++) {
-          const cellTile = cells[i].firstElementChild;
+          const cellTile = cells[i].tile;
+          const currentCell = cells[i];
 
           if (!cellTile) {
             continue;
@@ -194,46 +341,26 @@ class Game {
           for (let j = i - 1; j >= 0; j--) {
             const moveToCell = cells[j];
 
-            if (!this.canCellAcceptTile(moveToCell, cellTile)) {
+            if (!moveToCell.canAcceptTile(cellTile)) {
               break;
             }
 
             lastValidCell = moveToCell;
           }
 
-          if (lastValidCell != null) {
-            const x = lastValidCell.dataset.x;
-            const y = lastValidCell.dataset.y;
+          if (lastValidCell) {
+            if (lastValidCell.tile) {
+              promises.push(cellTile.waitForTransition());
 
-            if (lastValidCell.firstElementChild) {
-              if (this.canMergeTiles(lastValidCell, cellTile)) {
-                cellTile.style.setProperty('--coord-x', x);
-                cellTile.style.setProperty('--coord-y', y);
-
-                promises.push(
-                  this.waitForTransition(cellTile).then(() => {
-                    this.mergeTiles(lastValidCell, cellTile);
-
-                    if (cells[i].firstElementChild) {
-                      cells[i].firstElementChild.remove();
-                    }
-                  }),
-                );
+              if (!lastValidCell.mergeTile) {
+                lastValidCell.mergeTile = cellTile;
               }
             } else {
-              cellTile.style.setProperty('--coord-x', x);
-              cellTile.style.setProperty('--coord-y', y);
-
-              promises.push(
-                this.waitForTransition(cellTile).then(() => {
-                  lastValidCell.append(cellTile);
-
-                  if (cells[i].firstElementChild) {
-                    cells[i].firstElementChild.remove();
-                  }
-                }),
-              );
+              lastValidCell.tile = cellTile;
+              promises.push(cellTile.waitForTransition());
             }
+
+            currentCell.tile = null;
           }
         }
 
@@ -245,60 +372,57 @@ class Game {
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.createTile();
+    this.createTile();
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.cellState.forEach((row) => {
+      for (let i = 0; i < row.length; i++) {
+        const cell = row[i];
 
-  newTile() {
-    const initValue = Math.random() <= 0.1 ? 4 : 2;
-    const emptyCell = this.randomEmptyCell();
-    const x = emptyCell.dataset.x;
-    const y = emptyCell.dataset.y;
+        if (cell.tile) {
+          cell.tile.remove();
+        }
 
-    const gameCell = this.createTile(initValue, x, y);
+        if (cell.mergeTile) {
+          cell.mergeTile.remove();
+        }
+      }
+    });
 
-    emptyCell.appendChild(gameCell);
+    const gameScore = document.querySelector('.game-score');
 
-    return gameCell;
+    gameScore.textContent = '0';
+
+    this.createTile();
+    this.createTile();
+  }
+
+  createTile() {
+    const cell = this.randomEmptyCell;
+
+    cell.tile = new Tile(cell);
+
+    return cell.tile;
   }
 
   get emptyCells() {
-    const cells = [...this.cellState]
-      .reduce((arr, row) => {
-        return arr.concat(...row);
-      }, [])
-      .filter((cell) => cell.children.length === 0);
+    const cells = [...this.cellState].flat().filter((cell) => !cell.tile);
 
     return cells;
   }
 
-  randomEmptyCell() {
+  get randomEmptyCell() {
     const emptyCells = this.emptyCells;
     const randomIndex = () => Math.floor(Math.random() * emptyCells.length);
     const randomCell = emptyCells[randomIndex()];
 
     return randomCell;
-  }
-
-  createTile(initValue, x, y) {
-    const tile = document.createElement('div');
-
-    tile.style.setProperty('--coord-y', y);
-    tile.style.setProperty('--coord-x', x);
-
-    tile.className = `field-cell game-cell field-cell--${initValue}`;
-    tile.innerText = initValue;
-
-    return tile;
-  }
-
-  waitForTransition(tile) {
-    return new Promise((resolve) => {
-      tile.addEventListener('transitionend', resolve, { once: true });
-    });
   }
 }
 
