@@ -17,12 +17,13 @@ button.addEventListener('click', () => {
     game.start();
     button.classList.replace('start', 'restart');
     button.textContent = 'Restart';
+    messageStart.classList.add('hidden');
   } else {
     game.restart();
 
     messages.forEach((message) => {
       if (!message.classList.contains('hiiden')) {
-        messageStart.classList.add('hidden');
+        message.classList.add('hidden');
       }
     });
   }
