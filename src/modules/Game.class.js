@@ -26,18 +26,21 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
+
   // initialStateDefault = [
   //   [0, 16, 0, 8],
   //       [8, 0, 16, 0],
   //       [0, 8, 0, 32],
   //       [32, 0, 8, 0],
   // ];
+
   initialStateDefault = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
+
   count = 4;
 
   score = 0;
@@ -55,12 +58,72 @@ class Game {
       this.status = 'win';
     }
   }
+// начало
+  checkLose() {
+    const canMove = this.canMoveLeft() && this.canMoveRight() && this.canMoveUp() && this.canMoveDown();
+    if (!canMove) {
+      this.status = 'lose';
+    }
+  }
+
+  canMoveLeft() {
+    for (let row = 0; row < this.count; row++) {
+      for (let col = 1; col < this.count; col++) {
+        if (this.initialState[row][col] !== 0) {
+          if (this.initialState[row][col - 1] === 0 || this.initialState[row][col - 1] === this.initialState[row][col]) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  canMoveRight() {
+    for (let row = 0; row < this.count; row++) {
+      for (let col = this.count - 2; col >= 0; col--) {
+        if (this.initialState[row][col] !== 0) {
+          if (this.initialState[row][col + 1] === 0 || this.initialState[row][col + 1] === this.initialState[row][col]) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  canMoveUp() {
+    for (let col = 0; col < this.count; col++) {
+      for (let row = 1; row < this.count; row++) {
+        if (this.initialState[row][col] !== 0) {
+          if (this.initialState[row - 1][col] === 0 || this.initialState[row - 1][col] === this.initialState[row][col]) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  canMoveDown() {
+    for (let col = 0; col < this.count; col++) {
+      for (let row = this.count - 2; row >= 0; row--) {
+        if (this.initialState[row][col] !== 0) {
+          if (this.initialState[row + 1][col] === 0 || this.initialState[row + 1][col] === this.initialState[row][col]) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+// конец
 
   moveLeft() {
     if (!this.isStatusPlaying()) {
       return;
     }
-  let isUpdated = false;
+    let isUpdated = false;
     for (let row = 0; row < this.count; row++) {
       for (let col = 0; col < this.count; col++) {
         for (let innerColumn = col + 1; innerColumn < this.count; innerColumn++) {
@@ -99,6 +162,7 @@ class Game {
       this.transposeState();
       this.checkVictory();
     }
+    this.checkLose()
   }
   moveRight() {
     if (!this.isStatusPlaying()) {
@@ -110,6 +174,7 @@ class Game {
     for (let row = 0; row < this.count; row++) {
       for (let col = this.count - 1; col >= 0; col--) {
         for (let innerColumn = col - 1; innerColumn >= 0; innerColumn--) {
+
           const currentItem = this.initialState[row][col];
           const nextItem = this.initialState[row][innerColumn];
 
@@ -145,6 +210,7 @@ class Game {
       this.transposeState();
       this.checkVictory();
     }
+    this.checkLose()
   }
   moveUp() {
     if (!this.isStatusPlaying()) {
@@ -190,6 +256,7 @@ class Game {
       this.transposeState();
       this.checkVictory();
     }
+    this.checkLose()
   }
   moveDown() {
     if (!this.isStatusPlaying()) {
@@ -233,6 +300,7 @@ class Game {
       this.transposeState();
       this.checkVictory();
     }
+    this.checkLose()
   }
 
   /**
@@ -271,6 +339,9 @@ class Game {
    * Starts the game.
    */
   start() {
+    if (this.status === 'playing') {
+      return;
+    }
     this.transposeState();
     this.transposeState();
     this.status = 'playing';
