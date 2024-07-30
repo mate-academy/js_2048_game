@@ -47,29 +47,21 @@ function handleInput(event) {
     case 'ArrowLeft':
       if (game.canMoveLeft()) {
         game.moveLeft();
-        game.createNewTile();
-        game.checkGameOver();
       }
       break;
     case 'ArrowRight':
       if (game.canMoveRight()) {
         game.moveRight();
-        game.createNewTile();
-        game.checkGameOver();
       }
       break;
     case 'ArrowUp':
       if (game.canMoveUp()) {
         game.moveUp();
-        game.createNewTile();
-        game.checkGameOver();
       }
       break;
     case 'ArrowDown':
       if (game.canMoveDown()) {
         game.moveDown();
-        game.createNewTile();
-        game.checkGameOver();
       }
       break;
     default:
