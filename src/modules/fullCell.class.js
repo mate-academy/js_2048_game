@@ -1,4 +1,4 @@
-export class fullCell {
+export class FullCell {
   constructor(gridElement) {
     this.element = document.createElement('div');
     this.element.classList.add('full-cell');

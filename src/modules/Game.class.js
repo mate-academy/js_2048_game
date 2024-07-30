@@ -6,7 +6,7 @@
  * Feel free to add more props and methods if needed.
  */
 import { Cell } from './Cell.class';
-import { fullCell } from './fullCell.class';
+import { FullCell } from './FullCell.class';
 
 const GRID_SIZE = 4;
 const CELLS_COUNT = GRID_SIZE * GRID_SIZE;
@@ -70,18 +70,22 @@ export default class Game {
 
   moveLeft() {
     this.slideTiles(this.cellsGroupedByRow);
+    this.checkGameOver();
   }
 
   moveRight() {
     this.slideTiles(this.cellsGroupedByReversedRow);
+    this.checkGameOver();
   }
 
   moveUp() {
     this.slideTiles(this.cellsGroupedByColumn);
+    this.checkGameOver();
   }
 
   moveDown() {
     this.slideTiles(this.cellsGroupedByReversedColumn);
+    this.checkGameOver();
   }
 
   slideTiles(groupedCells) {
@@ -213,6 +217,7 @@ export default class Game {
 
     this.init();
     this.status = 'playing';
+    this.checkGameOver();
   }
 
   updateScore() {
@@ -224,9 +229,9 @@ export default class Game {
   }
 
   clearGrid() {
-    const fullCells = document.querySelectorAll('.full-cell');
+    const FullCells = document.querySelectorAll('.full-cell');
 
-    fullCells.forEach((cell) => cell.remove());
+    FullCells.forEach((cell) => cell.remove());
 
     this.cells.forEach((cell) => {
       cell.linkedTile = null;
@@ -239,7 +244,7 @@ export default class Game {
 
     if (cell) {
       // eslint-disable-next-line new-cap
-      const tile = new fullCell(this.gridElement);
+      const tile = new FullCell(this.gridElement);
 
       cell.linkTile(tile);
 
@@ -263,5 +268,19 @@ export default class Game {
         (cell) => cell.linkedTile && cell.linkedTile.value === 2048,
       ) !== undefined
     );
+  }
+
+  checkGameOver() {
+    if (
+      !this.canMoveUp() &&
+      !this.canMoveDown() &&
+      !this.canMoveLeft() &&
+      !this.canMoveRight()
+    ) {
+      const messageLose = document.querySelector('p.message-lose');
+
+      this.status = 'lose';
+      messageLose.classList.remove('hidden');
+    }
   }
 }

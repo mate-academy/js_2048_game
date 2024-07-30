@@ -48,24 +48,28 @@ function handleInput(event) {
       if (game.canMoveLeft()) {
         game.moveLeft();
         game.createNewTile();
+        game.checkGameOver();
       }
       break;
     case 'ArrowRight':
       if (game.canMoveRight()) {
         game.moveRight();
         game.createNewTile();
+        game.checkGameOver();
       }
       break;
     case 'ArrowUp':
       if (game.canMoveUp()) {
         game.moveUp();
         game.createNewTile();
+        game.checkGameOver();
       }
       break;
     case 'ArrowDown':
       if (game.canMoveDown()) {
         game.moveDown();
         game.createNewTile();
+        game.checkGameOver();
       }
       break;
     default:
@@ -76,16 +80,6 @@ function handleInput(event) {
 
   if (game.checkForWin()) {
     messageWin.classList.remove('hidden');
-  }
-
-  if (
-    !game.canMoveUp() &&
-    !game.canMoveDown() &&
-    !game.canMoveLeft() &&
-    !game.canMoveRight()
-  ) {
-    game.status = 'lose';
-    messageLose.classList.remove('hidden');
   }
 
   setupInputOnce();
