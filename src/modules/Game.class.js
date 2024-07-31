@@ -5,126 +5,6 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
-
-class Cell {
-  #tile;
-  #mergeTile;
-
-  constructor(cellElement, x, y) {
-    this.cellElement = cellElement;
-    this.x = x;
-    this.y = y;
-  }
-
-  set tile(value) {
-    this.#tile = value;
-
-    if (!value) {
-      return;
-    }
-
-    this.tile.x = +this.x;
-    this.tile.y = +this.y;
-  }
-
-  get tile() {
-    return this.#tile;
-  }
-  get mergeTile() {
-    return this.#mergeTile;
-  }
-
-  set mergeTile(value) {
-    this.#mergeTile = value;
-
-    if (!value) {
-      return;
-    }
-
-    this.#mergeTile.x = this.x;
-    this.#mergeTile.y = this.y;
-  }
-
-  canAcceptTile(tile) {
-    return !this.tile || (this.tile.value === tile.value && !this.mergeTile);
-  }
-
-  mergeTiles() {
-    if (!this.tile || !this.#mergeTile) {
-      return;
-    }
-
-    this.tile.value = +this.tile.value + +this.#mergeTile.value;
-
-    this.#mergeTile.remove();
-    this.#mergeTile = null;
-  }
-}
-
-class Tile {
-  #x;
-  #y;
-  #value;
-
-  constructor(parentElement, initValue = Math.random() <= 0.1 ? 4 : 2) {
-    const newTile = document.createElement('div');
-    const { cellElement, x, y } = parentElement;
-
-    newTile.style.setProperty('--coord-y', y);
-    newTile.style.setProperty('--coord-x', x);
-    newTile.textContent = initValue;
-
-    newTile.className = `field-cell game-cell field-cell--${initValue}`;
-    this.tileElement = newTile;
-    this.#x = x;
-    this.#y = y;
-    this.#value = +initValue;
-    cellElement.append(newTile);
-  }
-
-  set x(coordX) {
-    this.#x = +coordX;
-    this.tileElement.style.setProperty('--coord-x', +coordX);
-  }
-
-  get x() {
-    return this.#x;
-  }
-
-  set y(coordY) {
-    this.#y = +coordY;
-    this.tileElement.style.setProperty('--coord-y', +coordY);
-  }
-
-  get y() {
-    return this.#y;
-  }
-
-  set value(value1) {
-    if (value1) {
-      this.#value = +value1;
-      this.tileElement.textContent = value1.toString();
-      this.tileElement.className = `field-cell game-cell field-cell--${value1}`;
-    }
-  }
-
-  get value() {
-    return this.#value;
-  }
-
-  remove() {
-    this.tileElement.remove();
-  }
-
-  waitForTransition() {
-    return new Promise((resolve) => {
-      this.tileElement.addEventListener('transitionend', resolve, {
-        once: true,
-      });
-    });
-  }
-}
-
 class Game {
   /**
    * Creates a new game instance.
@@ -143,123 +23,68 @@ class Game {
   constructor(initialState) {
     // eslint-disable-next-line no-console
     if (initialState) {
-      this.initialState = initialState;
+      this.board = initialState;
+    } else {
+      this.board = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
     }
-    this.cellState = document.querySelectorAll('.field-row');
+    this.gameIsStarted = false;
 
-    this.cellState = [...this.cellState].map((row, y) => {
-      const cells = [...row.children];
-      const updatedRow = [];
+    this.tableCells = [...document.querySelectorAll('.field-row')].map(
+      (row, y) => {
+        const newRow = [...row.children];
 
-      for (let x = 0; x < cells.length; x++) {
-        const cell = cells[x];
-        const newCell = new Cell(cell, x, y);
+        for (let x = 0; x < newRow.length; x++) {
+          const cell = newRow[x];
 
-        if (initialState) {
-          const initialRow = initialState[y];
-          const initialValue = initialRow[x];
-
-          if (initialValue !== 0) {
-            const tile = new Tile(newCell, initialValue);
-
-            newCell.tile = tile;
-          }
+          cell.setAttribute('data-column', x);
+          cell.setAttribute('data-row', y);
         }
 
-        updatedRow.push(newCell);
-      }
+        return newRow;
+      },
+    );
 
-      return updatedRow;
-    });
-  }
-  canMoveLeft() {
-    return this.canMove(this.cellState);
+    if (initialState) {
+      for (let y = 0; y < initialState.length; y++) {
+        const row = initialState[y];
+
+        for (let x = 0; x < row.length; x++) {
+          const value = row[x];
+
+          if (value) {
+            this.createTile(x, y, value);
+          }
+        }
+      }
+    }
   }
 
   moveLeft() {
-    return this.slideTiles(this.cellState);
+    if (!this.gameIsStarted) {
+      return;
+    }
+    this.moveTiles({ board: this.board, table: this.tableCells });
+    this.newTile();
   }
-
-  canMoveRight() {
-    return this.canMove(this.cellState.map((row) => [...row].reverse()));
-  }
-
-  moveRight() {
-    return this.slideTiles(this.cellState.map((row) => [...row].reverse()));
-  }
-
-  canMoveUp() {
-    return this.canMove(this.cellsByColumn);
-  }
-
-  moveUp() {
-    return this.slideTiles(this.cellsByColumn);
-  }
-
-  canMoveDown() {
-    return this.canMove(
-      this.cellsByColumn.map((column) => [...column].reverse()),
-    );
-  }
-  moveDown() {
-    return this.slideTiles(
-      this.cellsByColumn.map((column) => [...column].reverse()),
-    );
-  }
+  moveRight() {}
+  moveUp() {}
+  moveDown() {}
 
   /**
    * @returns {number}
    */
-  getScore() {
-    const gameScore = document.querySelector('.game-score');
-    const prevScore = +gameScore.textContent;
-    const score = this.mergedCells.reduce((sum, cell) => {
-      const value = +cell.mergeTile.value;
-
-      return sum + value * 2;
-    }, prevScore);
-
-    gameScore.textContent = `${score}`;
-
-    return score;
-  }
-  get noMovesPossible() {
-    return (
-      !this.canMoveDown() &&
-      !this.canMoveUp() &&
-      !this.canMoveLeft() &&
-      !this.canMoveRight()
-    );
-  }
-
-  isWinner() {
-    return this.cellState
-      .flat()
-      .some((cell) => (cell.tile ? +cell.tile.value === 2048 : false));
-  }
+  getScore() {}
 
   /**
    * @returns {number[][]}
    */
   getState() {
-    const state = this.cellState.map((cells) => {
-      const values = [];
-
-      for (let i = 0; i < cells.length; i++) {
-        if (!cells[i].tile) {
-          values.push(0);
-          continue;
-        }
-
-        const value = +cells[i].tile.value;
-
-        values.push(value);
-      }
-
-      return values;
-    });
-
-    return state;
+    return this.board;
   }
 
   /**
@@ -272,159 +97,176 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {
-    const startButton = document.querySelector('.start');
-
-    if (startButton) {
-      return 'idle';
-    }
-
-    if (this.isWinner()) {
-      return 'won';
-    }
-
-    if (this.noMovesPossible()) {
-      return 'lose';
-    }
-
-    return 'playing';
-  }
-
-  canMove(cells) {
-    return cells.some((group) => {
-      return group.some((cell, index) => {
-        if (index === 0) {
-          return false;
-        }
-
-        if (!cell.tile) {
-          return false;
-        }
-
-        return group[index - 1].canAcceptTile(cell.tile);
-      });
-    });
-  }
-
-  get mergedCells() {
-    return this.cellState.flat().filter((cell) => cell.mergeTile);
-  }
-
-  get cellsByColumn() {
-    const board = this.cellState;
-    const newBoard = [];
-
-    for (let y = 0; y < board.length; y++) {
-      const column = board.map((row) => row[y]);
-
-      newBoard.push(column);
-    }
-
-    return newBoard;
-  }
-
-  slideTiles(group) {
-    return Promise.all(
-      group.flatMap((cells) => {
-        const promises = [];
-
-        for (let i = 1; i < cells.length; i++) {
-          const cellTile = cells[i].tile;
-          const currentCell = cells[i];
-
-          if (!cellTile) {
-            continue;
-          }
-
-          let lastValidCell;
-
-          for (let j = i - 1; j >= 0; j--) {
-            const moveToCell = cells[j];
-
-            if (!moveToCell.canAcceptTile(cellTile)) {
-              break;
-            }
-
-            lastValidCell = moveToCell;
-          }
-
-          if (lastValidCell) {
-            if (lastValidCell.tile) {
-              promises.push(cellTile.waitForTransition());
-
-              if (!lastValidCell.mergeTile) {
-                lastValidCell.mergeTile = cellTile;
-              }
-            } else {
-              lastValidCell.tile = cellTile;
-              promises.push(cellTile.waitForTransition());
-            }
-
-            currentCell.tile = null;
-          }
-        }
-
-        return promises;
-      }),
-    );
-  }
+  getStatus() {}
 
   /**
    * Starts the game.
    */
   start() {
-    this.createTile();
-    this.createTile();
+    this.newTile();
+    this.newTile();
+    this.gameIsStarted = true;
   }
 
   /**
    * Resets the game.
    */
-  restart() {
-    this.cellState.forEach((row) => {
-      for (let i = 0; i < row.length; i++) {
-        const cell = row[i];
+  restart() {}
 
-        if (cell.tile) {
-          cell.tile.remove();
-          cell.tile = null;
-        }
+  get randomCell() {
+    const randomCells = [];
 
-        if (cell.mergeTile) {
-          cell.mergeTile.remove();
-          cell.tile = null;
+    this.board.forEach((row, y) => {
+      for (let x = 0; x < row.length; x++) {
+        if (!row[x] || row[x] === 0) {
+          randomCells.push([x, y]);
         }
       }
     });
 
-    const gameScore = document.querySelector('.game-score');
+    if (randomCells.length === 0) {
+      return;
+    }
 
-    gameScore.textContent = '0';
+    const index = Math.floor(Math.random() * randomCells.length);
 
-    this.createTile();
-    this.createTile();
+    return randomCells[index];
   }
 
-  createTile() {
-    const cell = this.randomEmptyCell;
+  newTile() {
+    const randomCell = this.randomCell;
 
-    cell.tile = new Tile(cell);
+    if (!randomCell) {
+      return;
+    }
 
-    return cell.tile;
+    const [x, y] = randomCell;
+    const randomValue = Math.random() <= 0.1 ? 4 : 2;
+
+    this.board[y][x] = randomValue;
+
+    const cell = this.createTile(x, y, randomValue);
+
+    return cell;
   }
 
-  get emptyCells() {
-    const cells = [...this.cellState].flat().filter((cell) => !cell.tile);
+  createTile(column, row, initValue) {
+    const cellRow = this.tableCells[row];
 
-    return cells;
+    if (!cellRow) {
+      return;
+    }
+
+    const cell = this.tableCells[row][column];
+
+    const newTile = document.createElement('div');
+
+    newTile.style.setProperty('--coord-y', row);
+    newTile.style.setProperty('--coord-x', column);
+    newTile.textContent = initValue;
+
+    newTile.className = `field-cell game-cell field-cell--${initValue}`;
+    cell.append(newTile);
+
+    return cell;
   }
 
-  get randomEmptyCell() {
-    const emptyCells = this.emptyCells;
-    const randomIndex = () => Math.floor(Math.random() * emptyCells.length);
-    const randomCell = emptyCells[randomIndex()];
+  getCoords(cell) {
+    const x = +cell.dataset.x;
+    const y = +cell.dataset.y;
 
-    return randomCell;
+    return { x, y };
+  }
+
+  moveTiles(group) {
+    const { board, table } = group;
+
+    for (let y = 0; y < board.length; y++) {
+      const boardRow = board[y];
+      const tableRow = table[y];
+
+      if (!tableRow) {
+        continue;
+      }
+
+      for (let x = 1; x < boardRow.length; x++) {
+        const cell = boardRow[x];
+        const tableCell = tableRow[x];
+
+        if (cell === 0) {
+          continue;
+        }
+
+        let lastValidIndex;
+
+        for (let i = x - 1; i >= 0; i--) {
+          const prevCell = boardRow[i];
+          const prevTableCell = tableRow[i];
+          const isMerged = prevTableCell.getAttribute('data-merged');
+
+          if (!this.canCellAcceptTile(prevCell, cell, isMerged)) {
+            break;
+          }
+          lastValidIndex = i;
+        }
+
+        if (lastValidIndex || lastValidIndex === 0) {
+          this.mergeTiles(tableRow[lastValidIndex], tableCell);
+
+          if (boardRow[lastValidIndex] === boardRow[x]) {
+            boardRow[lastValidIndex] = boardRow[x] * 2;
+          }
+
+          if (boardRow[lastValidIndex] === 0) {
+            boardRow[lastValidIndex] = boardRow[x];
+          }
+
+          boardRow[x] = 0;
+        }
+      }
+    }
+  }
+
+  canCellAcceptTile(targetCell, tile, isMerged) {
+    return !targetCell || (targetCell === tile && !isMerged);
+  }
+
+  mergeTiles(targetCell, currentCell) {
+    const isMerged = targetCell.getAttribute('data-merged');
+    const currentTile = currentCell.firstElementChild;
+    const targetTile = targetCell.firstElementChild;
+
+    if (isMerged || !currentTile) {
+      return;
+    }
+
+    const x = targetCell.getAttribute('data-column');
+    const y = targetCell.getAttribute('data-row');
+
+    const value = +currentTile.innerText;
+
+    currentTile.style.setProperty('--coord-y', y);
+    currentTile.style.setProperty('--coord-x', x);
+
+    if (targetTile && value === +targetTile.innerText && value !== 0) {
+      currentTile.addEventListener(
+        'transitionend',
+        () => {
+          targetTile.innerText = this.board[y][x];
+          currentCell.removeChild(currentTile);
+          targetCell.setAttribute('data-merged', 'true');
+        },
+        { once: true },
+      );
+    } else {
+      currentTile.addEventListener(
+        'transitionend',
+        () => {
+          targetCell.append(currentTile);
+        },
+        { once: true },
+      );
+    }
   }
 }
 

@@ -3,97 +3,34 @@
 // Uncomment the next lines to use your game instance in the browser
 
 const Game = require('../modules/Game.class');
-const game = new Game();
 
-game.CELL_SIZE = 75;
-game.CELL_GAP = 10;
+const initialState = [
+  [2, 2, 2, 2],
+  [0, 16, 0, 0],
+  [0, 0, 32, 0],
+  [0, 0, 0, 64],
+];
 
-const button = document.querySelector('button');
-const messageStart = document.querySelector('.message-start');
-const messages = document.querySelectorAll('.message');
+const game2048 = new Game(initialState);
 
-button.addEventListener('click', () => {
-  if (button.classList.contains('start')) {
-    game.start();
-    button.classList.replace('start', 'restart');
-    button.textContent = 'Restart';
-    messageStart.classList.add('hidden');
-  } else {
-    game.restart();
+game2048.start();
 
-    messages.forEach((message) => {
-      if (!message.classList.contains('hiiden')) {
-        message.classList.add('hidden');
-      }
-    });
-  }
-});
-
-function setupInput() {
-  document.addEventListener('keydown', handleInput, { once: true });
-}
-
-async function handleInput(e) {
+const handleKeyDown = function handleInput(e) {
   switch (e.key) {
     case 'ArrowLeft':
-      if (!game.canMoveLeft()) {
-        setupInput();
-
-        return;
-      }
-      await game.moveLeft();
+      game2048.moveLeft();
       break;
     case 'ArrowRight':
-      if (!game.canMoveRight()) {
-        setupInput();
-
-        return;
-      }
-      await game.moveRight();
+      game2048.moveRight();
       break;
     case 'ArrowUp':
-      if (!game.canMoveUp()) {
-        setupInput();
-
-        return;
-      }
-      await game.moveUp();
+      game2048.moveUp();
       break;
     case 'ArrowDown':
-      if (!game.canMoveDown()) {
-        setupInput();
-
-        return;
-      }
-      await game.moveDown();
+      game2048.moveDown();
       break;
     default:
-      setupInput();
-
-      return;
   }
+};
 
-  game.getScore();
-
-  game.cellState.flat().forEach((cell) => {
-    cell.mergeTiles();
-  });
-
-  game.createTile();
-
-  if (game.noMovesPossible) {
-    const message = document.querySelector('.message-lose');
-
-    message.classList.remove('hidden');
-  }
-
-  if (game.isWinner()) {
-    const message = document.querySelector('.message-win');
-
-    message.classList.remove('hidden');
-  } else {
-    setupInput();
-  }
-}
-
-setupInput();
+document.addEventListener('keydown', handleKeyDown);
