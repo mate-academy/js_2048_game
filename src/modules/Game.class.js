@@ -1,68 +1,138 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  static Status = {
+    idle: 'idle',
+    playing: 'playing',
+    win: 'win',
+    lose: 'lose',
+  };
+
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.state = [...initialState];
+    this.status = Game.Status.idle;
+    this.score = 0;
+    this.initialState = initialState;
   }
 
-  moveLeft() {}
+  moveLeft() {
+    if (this.status === Game.Status.playing) {
+      let isMovable = false;
+
+      for (let r = 0; r < 4; r++) {
+        const values = [];
+
+        for (let c = 0; c < 4; c++) {
+          if (this.state[r][c] !== 0) {
+            values.push(this.state[r][c]);
+          }
+        }
+
+        for (let i = 0; i < values.length; i++) {
+          if (values[i] === values[i + 1]) {
+            values[i] *= 2;
+            values[i + 1] = 0;
+            this.score += values[i];
+            isMovable = true;
+          }
+        }
+
+        const updatedRow = values.filter((value) => value !== 0);
+
+        while (updatedRow.length < 4) {
+          updatedRow.push(0);
+        }
+
+        for (let c = 0; c < 4; c++) {
+          if (this.state[r][c] !== updatedRow[c]) {
+            this.state[r][c] = updatedRow[c];
+            isMovable = true;
+          }
+        }
+      }
+
+      if (isMovable) {
+        this.getRandomCells();
+        this.checkGameStatus();
+      }
+    }
+  }
+
   moveRight() {}
   moveUp() {}
   moveDown() {}
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getState() {
+    return this.state;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Starts the game.
-   */
   start() {}
 
-  /**
-   * Resets the game.
-   */
   restart() {}
 
-  // Add your own methods here
+  getRandomCells() {
+    const emptyCells = [];
+
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.state[r][c] === 0) {
+          emptyCells.push({ r, c });
+        }
+      }
+    }
+
+    if (emptyCells > 0) {
+      const { randomR, randomC } =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+      this.state[randomR][randomC] = Math.random() < 0.9 ? 2 : 4;
+    }
+  }
+
+  checkGameStatus() {
+    let isMovable = false;
+    let hasEmptyCells = false;
+
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.state[r][c] === 2048) {
+          this.status = Game.Status.win;
+
+          return;
+        }
+
+        if (this.state[r][c] === 0) {
+          hasEmptyCells = true;
+        }
+
+        if (
+          (r < 3 && this.state[r][c] === this.state[r + 1][c]) ||
+          (c < 3 && this.state[r][c] === this.state[r][c + 1])
+        ) {
+          isMovable = true;
+        }
+      }
+    }
+
+    if (!isMovable && !hasEmptyCells) {
+      this.status = Game.Status.lose;
+    }
+  }
 }
 
 module.exports = Game;
