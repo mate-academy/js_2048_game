@@ -31,7 +31,7 @@ class Game {
 
     if (JSON.stringify(this.getState()) !== JSON.stringify(newState)) {
       this.updateGameState(newState);
-      this.addCells();
+      this.insertTiles();
     }
   }
 
@@ -48,7 +48,7 @@ class Game {
 
     if (JSON.stringify(this.getState()) !== JSON.stringify(newState)) {
       this.updateGameState(newState);
-      this.addCells();
+      this.insertTiles();
     }
   }
 
@@ -57,15 +57,15 @@ class Game {
       return;
     }
 
-    const rotateState = this.rotateMatrixCounteClockwise(this.getState());
+    const rotateState = this.rotateLeft(this.getState());
 
     const newState = rotateState.map((row) => this.move(row));
 
-    const unRotateState = this.rotateMatrixClockwise(newState);
+    const unRotateState = this.rotateRight(newState);
 
     if (JSON.stringify(this.getState()) !== JSON.stringify(unRotateState)) {
       this.updateGameState(unRotateState);
-      this.addCells();
+      this.insertTiles();
     }
   }
 
@@ -74,15 +74,15 @@ class Game {
       return;
     }
 
-    const rotateState = this.rotateMatrixClockwise(this.getState());
+    const rotateState = this.rotateRight(this.getState());
 
     const newState = rotateState.map((row) => this.move(row));
 
-    const unRotateState = this.rotateMatrixCounteClockwise(newState);
+    const unRotateState = this.rotateLeft(newState);
 
     if (JSON.stringify(this.getState()) !== JSON.stringify(unRotateState)) {
       this.updateGameState(unRotateState);
-      this.addCells();
+      this.insertTiles();
     }
   }
 
@@ -125,7 +125,7 @@ class Game {
     return [...newRow, ...Array(row.length - newRow.length).fill(0)];
   }
 
-  rotateMatrixClockwise(matrix) {
+  rotateRight(matrix) {
     const n = matrix.length;
     const rotatedMatrix = [];
 
@@ -140,7 +140,7 @@ class Game {
     return rotatedMatrix;
   }
 
-  rotateMatrixCounteClockwise(matrix) {
+  rotateLeft(matrix) {
     const n = matrix.length;
     const rotatedMatrix = [];
 
@@ -169,7 +169,7 @@ class Game {
 
   start() {
     this.status = Game.Status.playing;
-    this.addCells(2);
+    this.insertTiles(2);
   }
 
   restart() {
@@ -177,7 +177,7 @@ class Game {
     this.resetState();
   }
 
-  getEmptyCells() {
+  findEmptyCells() {
     return this.state.reduce((acc, row, rowIndex) => {
       row.forEach((cell, colIndex) => {
         if (cell === 0) {
@@ -189,8 +189,8 @@ class Game {
     }, []);
   }
 
-  createNewTile() {
-    const emptyCells = this.getEmptyCells();
+  generateTiles() {
+    const emptyCells = this.findEmptyCells();
 
     if (!emptyCells.length) {
       return;
@@ -202,9 +202,9 @@ class Game {
     this.state[row][col] = Math.random() < 0.9 ? 2 : 4;
   }
 
-  addCells(count = 1) {
+  insertTiles(count = 1) {
     for (let i = 0; i < count; i++) {
-      this.createNewTile();
+      this.generateTiles();
     }
 
     this.updateGameStatus();
