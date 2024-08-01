@@ -16,22 +16,20 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
-    this.state = [...initialState];
+    this.state = initialState.map((row) => [...row]);
     this.status = Game.Status.idle;
-    this.score = 0;
     this.initialState = initialState;
-    this.rows = 4;
-    this.collumns = 4;
+    this.score = 0;
   }
 
   moveLeft() {
     if (this.status === Game.Status.playing) {
       let isMovable = false;
 
-      for (let r = 0; r < this.rows.length; r++) {
+      for (let r = 0; r < 4; r++) {
         const values = [];
 
-        for (let c = 0; c < this.collumns.length; c++) {
+        for (let c = 0; c < 4; c++) {
           if (this.state[r][c] !== 0) {
             values.push(this.state[r][c]);
           }
@@ -48,7 +46,7 @@ class Game {
 
         const updatedRow = values.filter((value) => value !== 0);
 
-        while (updatedRow.length < this.rows.length) {
+        while (updatedRow.length < 4) {
           updatedRow.push(0);
         }
 
@@ -66,15 +64,14 @@ class Game {
       }
     }
   }
-
   moveRight() {
     if (this.status === Game.Status.playing) {
       let isMovable = false;
 
-      for (let r = 0; r < this.rows.length; r++) {
+      for (let r = 0; r < 4; r++) {
         const values = [];
 
-        for (let c = this.collumns.length - 1; c >= 0; c--) {
+        for (let c = 3; c >= 0; c--) {
           if (this.state[r][c] !== 0) {
             values.push(this.state[r][c]);
           }
@@ -91,13 +88,13 @@ class Game {
 
         const updatedRow = values.filter((value) => value !== 0);
 
-        while (updatedRow.length < this.rows.length) {
-          updatedRow.unshift(0);
+        while (updatedRow.length < 4) {
+          updatedRow.push(0);
         }
 
-        for (let c = 0; c < this.collumns.length; c++) {
-          if (this.state[r][c] !== updatedRow[this.collumns.length - 1 - c]) {
-            this.state[r][c] = updatedRow[this.collumns.length - 1 - c];
+        for (let c = 0; c < 4; c++) {
+          if (this.state[r][c] !== updatedRow[3 - c]) {
+            this.state[r][c] = updatedRow[3 - c];
             isMovable = true;
           }
         }
@@ -109,24 +106,112 @@ class Game {
       }
     }
   }
-  moveUp() {}
-  moveDown() {}
+  moveUp() {
+    if (this.status === Game.Status.playing) {
+      let isMovable = false;
+
+      for (let c = 0; c < 4; c++) {
+        const values = [];
+
+        for (let r = 0; r < 4; r++) {
+          if (this.state[r][c] !== 0) {
+            values.push(this.state[r][c]);
+          }
+        }
+
+        for (let i = 0; i < values.length; i++) {
+          if (values[i] === values[i + 1]) {
+            values[i] *= 2;
+            values[i + 1] = 0;
+            this.score += values[i];
+            isMovable = true;
+          }
+        }
+
+        const updatedColumn = values.filter((value) => value !== 0);
+
+        while (updatedColumn.length < 4) {
+          updatedColumn.push(0);
+        }
+
+        for (let r = 0; r < 4; r++) {
+          if (this.state[r][c] !== updatedColumn[r]) {
+            this.state[r][c] = updatedColumn[r];
+            isMovable = true;
+          }
+        }
+      }
+
+      if (isMovable) {
+        this.getRandomCells();
+        this.checkGameStatus();
+      }
+    }
+  }
+  moveDown() {
+    if (this.status === Game.Status.playing) {
+      let isMovable = false;
+
+      for (let c = 0; c < 4; c++) {
+        const values = [];
+
+        for (let r = 3; r >= 0; r--) {
+          if (this.state[r][c] !== 0) {
+            values.push(this.state[r][c]);
+          }
+        }
+
+        for (let i = 0; i < values.length; i++) {
+          if (values[i] === values[i + 1]) {
+            values[i] *= 2;
+            values[i + 1] = 0;
+            this.score += values[i];
+            isMovable = true;
+          }
+        }
+
+        const updatedColumn = values.filter((value) => value !== 0);
+
+        while (updatedColumn.length < 4) {
+          updatedColumn.push(0);
+        }
+
+        for (let r = 0; r < 4; r++) {
+          if (this.state[r][c] !== updatedColumn[3 - r]) {
+            this.state[r][c] = updatedColumn[3 - r];
+            isMovable = true;
+          }
+        }
+      }
+
+      if (isMovable) {
+        this.getRandomCells();
+        this.checkGameStatus();
+      }
+    }
+  }
 
   getScore() {
     return this.score;
   }
-
   getState() {
     return this.state;
   }
-
   getStatus() {
     return this.status;
   }
 
-  start() {}
+  start() {
+    this.status = Game.Status.playing;
+    this.getRandomCells();
+    this.getRandomCells();
+  }
 
-  restart() {}
+  restart() {
+    this.status = Game.Status.idle;
+    this.state = this.initialState.map((row) => [...row]);
+    this.score = 0;
+  }
 
   getRandomCells() {
     const emptyCells = [];
@@ -134,19 +219,18 @@ class Game {
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
         if (this.state[r][c] === 0) {
-          emptyCells.push({ r, c });
+          emptyCells.push([r, c]);
         }
       }
     }
 
-    if (emptyCells > 0) {
-      const { randomR, randomC } =
+    if (emptyCells.length > 0) {
+      const [randomR, randomC] =
         emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
       this.state[randomR][randomC] = Math.random() < 0.9 ? 2 : 4;
     }
   }
-
   checkGameStatus() {
     let isMovable = false;
     let hasEmptyCells = false;
@@ -178,4 +262,4 @@ class Game {
   }
 }
 
-module.exports = Game;
+export default Game;
