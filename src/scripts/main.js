@@ -1,7 +1,5 @@
 'use strict';
 
-// write your code here
-
 const start = document.querySelector('.start');
 const cells = document.querySelectorAll('.field-cell');
 const messageStart = document.querySelector('.message-start');
@@ -267,7 +265,7 @@ function moveUp() {
         continue;
       }
 
-      if ( // Для переміщення трьох нерівних
+      if (
         i === 3
         && arrayCells[i][j] !== 0
         && arrayCells[i - 1][j] !== 0
@@ -281,7 +279,7 @@ function moveUp() {
         continue;
       }
 
-      if ( // Для переміщення двох нерівних
+      if (
         i >= 2
         && arrayCells[i - 2][j] === 0
         && arrayCells[i - 1][j] !== 0
@@ -294,9 +292,6 @@ function moveUp() {
         continue;
       }
 
-      //
-
-      // переміщення по пустих значеннях
       if (
         i < 3
         && arrayCells[i + 1][j] !== undefined
@@ -308,7 +303,7 @@ function moveUp() {
         continue;
       }
 
-      if ( // Для додавання
+      if (
         i < 3
         && arrayCells[i + 1][j] !== undefined
         && arrayCells[i + 1][j] !== 0
@@ -324,7 +319,7 @@ function moveUp() {
       }
     }
 
-    for (let i = 3; i >= 0; i--) { // переміщення по пустих значеннях
+    for (let i = 3; i >= 0; i--) {
       if (
         i < 3
         && arrayCells[i + 1][j] !== undefined
@@ -358,7 +353,7 @@ function moveDown() {
         continue;
       }
 
-      if ( // Для переміщення трьох нерівних
+      if (
         i === 0
         && arrayCells[i][j] !== 0
         && arrayCells[i + 1][j] !== 0
@@ -372,7 +367,7 @@ function moveDown() {
         continue;
       }
 
-      if ( // Для переміщення двох нерівних
+      if (
         i < 2
         && arrayCells[i][j] !== 0
         && arrayCells[i + 1][j] !== 0
@@ -385,9 +380,6 @@ function moveDown() {
         continue;
       }
 
-      //
-
-      // переміщення по пустих значеннях
       if (
         i > 0
         && arrayCells[i][j] === 0
@@ -399,7 +391,7 @@ function moveDown() {
         continue;
       }
 
-      if ( // Для додавання
+      if (
         i > 0
         && arrayCells[i - 1][j] !== 0
         && arrayCells[i][j] === arrayCells[i - 1][j]
@@ -416,7 +408,6 @@ function moveDown() {
     }
 
     for (let i = 0; i < arrayCells.length; i++) {
-      // переміщення по пустих значеннях
       if (
         i > 0
         && arrayCells[i][j] === 0
@@ -436,7 +427,7 @@ function moveRight() {
     const merger = [true, true, true, true];
 
     for (let j = 0; j < arrayCells[i].length; j++) {
-      if (// Для переміщення трьох нерівних
+      if (
         arrayCells[i][j + 1] !== 0
         && arrayCells[i][j + 2] !== 0
         && arrayCells[i][j] !== 0
@@ -449,7 +440,7 @@ function moveRight() {
         continue;
       }
 
-      if ( // Для переміщення двох нерівних
+      if (
         arrayCells[i][j - 1] !== 0
         && arrayCells[i][j - 1] !== undefined
         && arrayCells[i][j] !== arrayCells[i][j - 1]
@@ -462,9 +453,6 @@ function moveRight() {
         continue;
       }
 
-      //
-
-      // Переміщення по пустих значеннях
       if (
         arrayCells[i][j] === 0
         && arrayCells[i][j - 1] !== 0
@@ -475,7 +463,7 @@ function moveRight() {
         continue;
       }
 
-      if ( // Для додавання
+      if (
         arrayCells[i][j - 1] !== 0
         && arrayCells[i][j] === arrayCells[i][j - 1]
         && arrayCells[i][j - 1] !== undefined
@@ -491,7 +479,6 @@ function moveRight() {
     }
 
     for (let j = 0; j < arrayCells[i].length; j++) {
-      // Переміщення по пустих значеннях
       if (
         arrayCells[i][j] === 0
         && arrayCells[i][j - 1] !== 0
@@ -510,7 +497,7 @@ function moveLeft() {
     const merger = [true, true, true, true];
 
     for (let j = arrayCells[i].length - 1; j >= 0; j--) {
-      if ( // Для переміщення трьох нерівних
+      if (
         arrayCells[i][j - 1] !== 0
         && arrayCells[i][j - 2] !== 0
         && arrayCells[i][j] !== 0
@@ -523,7 +510,7 @@ function moveLeft() {
         continue;
       }
 
-      if ( // Для переміщення двох нерівних
+      if (
         arrayCells[i][j + 1] !== 0
         && arrayCells[i][j + 1] !== undefined
         && arrayCells[i][j] !== arrayCells[i][j - 1]
@@ -536,9 +523,7 @@ function moveLeft() {
         continue;
       }
 
-      //
-
-      if ( // Для проходження пустих значень
+      if (
         arrayCells[i][j] === 0
         && arrayCells[i][j + 1] !== 0
         && arrayCells[i][j + 1] !== undefined
@@ -548,7 +533,7 @@ function moveLeft() {
         continue;
       }
 
-      if ( // Для додавання
+      if (
         arrayCells[i][j + 1] !== 0
         && arrayCells[i][j] === arrayCells[i][j + 1]
         && arrayCells[i][j + 1] !== undefined
@@ -564,7 +549,7 @@ function moveLeft() {
     }
 
     for (let j = arrayCells[i].length - 1; j >= 0; j--) {
-      if ( // Для проходження пустих значень
+      if (
         arrayCells[i][j] === 0
         && arrayCells[i][j + 1] !== 0
         && arrayCells[i][j + 1] !== undefined
@@ -576,5 +561,3 @@ function moveLeft() {
     }
   }
 }
-
-// Test t
