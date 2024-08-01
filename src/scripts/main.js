@@ -1,7 +1,18 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../modules/Game.class');
+const game = new Game();
 
-// Write your code here
+document.addEventListener('keyup', (event) => {
+  if (event.key === 'ArrowLeft') {
+    game.moveLeft();
+  } else if (event.key === 'ArrowRight') {
+    game.moveRight();
+  } else if (event.key === 'ArrowUp') {
+    game.moveUp();
+  } else if (event.key === 'ArrowDown') {
+    game.moveDown();
+  } else if (event.key === 'r') {
+    game.reset();
+  }
+});

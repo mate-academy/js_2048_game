@@ -20,16 +20,18 @@ class Game {
     this.status = Game.Status.idle;
     this.score = 0;
     this.initialState = initialState;
+    this.rows = 4;
+    this.collumns = 4;
   }
 
   moveLeft() {
     if (this.status === Game.Status.playing) {
       let isMovable = false;
 
-      for (let r = 0; r < 4; r++) {
+      for (let r = 0; r < this.rows.length; r++) {
         const values = [];
 
-        for (let c = 0; c < 4; c++) {
+        for (let c = 0; c < this.collumns.length; c++) {
           if (this.state[r][c] !== 0) {
             values.push(this.state[r][c]);
           }
@@ -46,7 +48,7 @@ class Game {
 
         const updatedRow = values.filter((value) => value !== 0);
 
-        while (updatedRow.length < 4) {
+        while (updatedRow.length < this.rows.length) {
           updatedRow.push(0);
         }
 
@@ -65,7 +67,48 @@ class Game {
     }
   }
 
-  moveRight() {}
+  moveRight() {
+    if (this.status === Game.Status.playing) {
+      let isMovable = false;
+
+      for (let r = 0; r < this.rows.length; r++) {
+        const values = [];
+
+        for (let c = this.collumns.length - 1; c >= 0; c--) {
+          if (this.state[r][c] !== 0) {
+            values.push(this.state[r][c]);
+          }
+        }
+
+        for (let i = 0; i < values.length; i++) {
+          if (values[i] === values[i + 1]) {
+            values[i] *= 2;
+            values[i + 1] = 0;
+            this.score += values[i];
+            isMovable = true;
+          }
+        }
+
+        const updatedRow = values.filter((value) => value !== 0);
+
+        while (updatedRow.length < this.rows.length) {
+          updatedRow.unshift(0);
+        }
+
+        for (let c = 0; c < this.collumns.length; c++) {
+          if (this.state[r][c] !== updatedRow[this.collumns.length - 1 - c]) {
+            this.state[r][c] = updatedRow[this.collumns.length - 1 - c];
+            isMovable = true;
+          }
+        }
+      }
+
+      if (isMovable) {
+        this.getRandomCells();
+        this.checkGameStatus();
+      }
+    }
+  }
   moveUp() {}
   moveDown() {}
 
