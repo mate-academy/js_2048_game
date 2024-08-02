@@ -65,7 +65,7 @@ class Game {
   }
 
   moveRight() {
-    for (let r = 0; r < this.rows; r++) {
+    for (let r = 0; r < Game.ROWS; r++) {
       let rowCurrent = this.board[r];
 
       rowCurrent.reverse();
@@ -76,16 +76,59 @@ class Game {
 
       document.querySelector('.game-score').innerText = this.score;
 
-      for (let c = 0; c < this.columns; c++) {
+      for (let c = 0; c < Game.COLUMNS; c++) {
         const tile = document.getElementById(r.toString() + '-' + c.toString());
         const num = this.board[r][c];
 
-        this.updateTile(tile, num);
+        this.updateCell(tile, num);
       }
     }
   }
-  moveUp() {}
-  moveDown() {}
+  moveUp() {
+    for (let c = 0; c < Game.COLUMNS; c++) {
+      let rowCurrent = [
+        this.board[0][c],
+        this.board[1][c],
+        this.board[2][c],
+        this.board[3][c],
+      ];
+
+      rowCurrent = this.slide(rowCurrent);
+
+      for (let r = 0; r < Game.ROWS; r++) {
+        this.board[r][c] = rowCurrent[r];
+
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
+        const num = this.board[r][c];
+
+        this.updateCell(tile, num);
+      }
+    }
+  }
+
+  moveDown() {
+    for (let c = 0; c < Game.COLUMNS; c++) {
+      let rowCurrent = [
+        this.board[0][c],
+        this.board[1][c],
+        this.board[2][c],
+        this.board[3][c],
+      ];
+
+      rowCurrent.reverse();
+      rowCurrent = this.slide(rowCurrent);
+      rowCurrent.reverse();
+
+      for (let r = 0; r < Game.ROWS; r++) {
+        this.board[r][c] = rowCurrent[r];
+
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
+        const num = this.board[r][c];
+
+        this.updateCell(tile, num);
+      }
+    }
+  }
 
   /**
    * @returns {number}
@@ -138,6 +181,18 @@ class Game {
       cell.classList.value = '';
       cell.classList.add('field-cell');
     });
+    document.querySelector('.game-score').innerText = '0';
+  }
+
+  setTheBoard() {
+    for (let r = 0; r < Game.ROWS; r++) {
+      for (let c = 0; c < Game.COLUMNS; c++) {
+        const value = this.setBoard[r][c];
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
+
+        this.updateCell(tile, value);
+      }
+    }
   }
 
   updateCell(cell, value) {
@@ -195,23 +250,14 @@ class Game {
     return false;
   }
 
-  setTheBoard() {
-    for (let r = 0; r < Game.ROWS; r++) {
-      for (let c = 0; c < Game.COLUMNS; c++) {
-        const value = this.setBoard[r][c];
-        const tile = document.getElementById(r.toString() + '-' + c.toString());
-
-        this.updateCell(tile, value);
-      }
-    }
-  }
-
   filterZero(array) {
     return array.filter((num) => num !== 0);
   }
 
   slide(rowCurrent) {
-    let row = this.filterZero(rowCurrent);
+    let row = rowCurrent;
+
+    row = this.filterZero(rowCurrent);
 
     for (let i = 0; i < row.length - 1; i++) {
       if (row[i] === row[i + 1]) {
@@ -223,7 +269,7 @@ class Game {
 
     row = this.filterZero(row);
 
-    while (row.length < this.columns) {
+    while (row.length < Game.ROWS) {
       row.push(0);
     }
 

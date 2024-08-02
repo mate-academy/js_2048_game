@@ -36,14 +36,25 @@ button.onclick = function () {
 
 document.addEventListener('keyup', (e) => {
   if (e.code === 'ArrowLeft') {
-    game.moveLeft();
-    game.setTwo();
+    if (game.status === 'playing') {
+      game.moveLeft();
+      game.setTwo();
+    }
   } else if (e.code === 'ArrowRight') {
-    game.setTwo();
+    if (game.status === 'playing') {
+      game.moveRight();
+      game.setTwo();
+    }
   } else if (e.code === 'ArrowUp') {
-    game.setTwo();
+    if (game.status === 'playing') {
+      game.moveUp();
+      game.setTwo();
+    }
   } else if (e.code === 'ArrowDown') {
-    game.setTwo();
+    if (game.status === 'playing') {
+      game.moveDown();
+      game.setTwo();
+    }
   }
 });
 
