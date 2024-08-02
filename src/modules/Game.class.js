@@ -26,6 +26,8 @@ class Game {
   static PLAYING = 'playing';
   static WIN = 'win';
   static LOSE = 'lose';
+  messegeWin = document.querySelector('.message-win');
+  messegeLose = document.querySelector('.message-lose');
 
   static getInitialStateDefault() {
     return [
@@ -154,7 +156,9 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
@@ -182,6 +186,14 @@ class Game {
       cell.classList.add('field-cell');
     });
     document.querySelector('.game-score').innerText = '0';
+
+    if (!this.messegeWin.classList.contains('hidden')) {
+      document.querySelector('.message-win').classList.add('hidden');
+    }
+
+    if (!this.messegeLose.classList.contains('hidden')) {
+      document.querySelector('.message-lose').classList.add('hidden');
+    }
   }
 
   setTheBoard() {
@@ -274,6 +286,17 @@ class Game {
     }
 
     return row;
+  }
+
+  checkWin() {
+    for (let r = 0; r < Game.ROWS; r++) {
+      for (let c = 0; c < Game.COLUMNS; c++) {
+        if (this.board[r][c] === 2048) {
+          document.querySelector('.message-win').classList.remove('hidden');
+          this.status = Game.WIN;
+        }
+      }
+    }
   }
 }
 

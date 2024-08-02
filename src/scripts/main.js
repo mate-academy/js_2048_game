@@ -38,21 +38,25 @@ document.addEventListener('keyup', (e) => {
   if (e.code === 'ArrowLeft') {
     if (game.status === 'playing') {
       game.moveLeft();
+      game.checkWin();
       game.setTwo();
     }
   } else if (e.code === 'ArrowRight') {
     if (game.status === 'playing') {
       game.moveRight();
+      game.checkWin();
       game.setTwo();
     }
   } else if (e.code === 'ArrowUp') {
     if (game.status === 'playing') {
       game.moveUp();
+      game.checkWin();
       game.setTwo();
     }
   } else if (e.code === 'ArrowDown') {
     if (game.status === 'playing') {
       game.moveDown();
+      game.checkWin();
       game.setTwo();
     }
   }
