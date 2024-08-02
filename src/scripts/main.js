@@ -4,12 +4,7 @@
 
 const Game = require('../modules/Game.class');
 
-const game = new Game([
-  [0, 16, 0, 8],
-  [8, 0, 16, 0],
-  [0, 8, 0, 32],
-  [32, 0, 8, 0],
-]);
+const game = new Game();
 
 const button = document.querySelector('button');
 const messages = document.querySelectorAll('.message');
