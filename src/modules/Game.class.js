@@ -310,12 +310,9 @@ class Game {
       this.canMoveDown(),
     ];
 
-    return arrayOfConditions;
-    // console.log(arrayOfConditions);
-
-    // if (!this.hasEmptyTile()) {
-    //   document.querySelector('.message-lose').classList.remove('hidden');
-    // }
+    if (arrayOfConditions.indexOf(true) === -1) {
+      this.messegeLose.classList.remove('hidden');
+    }
   }
 
   canMoveLeft() {
