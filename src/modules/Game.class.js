@@ -39,8 +39,8 @@ class Game {
   }
 
   constructor(initialState = Game.getInitialStateDefault()) {
-    this.setBoard = structuredClone(initialState);
-    this.board = structuredClone(initialState);
+    this.setBoard = JSON.parse(JSON.stringify(initialState));
+    this.board = JSON.parse(JSON.stringify(initialState));
     this.score = 0;
     this.status = Game.IDLE;
 
@@ -175,7 +175,7 @@ class Game {
    */
   restart() {
     this.score = 0;
-    this.board = structuredClone(this.setBoard);
+    this.board = JSON.parse(JSON.stringify(this.setBoard));
     this.status = Game.IDLE;
 
     const cells = document.querySelectorAll('.field-cell');
