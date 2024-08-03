@@ -312,6 +312,7 @@ class Game {
 
     if (arrayOfConditions.indexOf(true) === -1) {
       this.messegeLose.classList.remove('hidden');
+      this.status = Game.LOSE;
     }
   }
 
