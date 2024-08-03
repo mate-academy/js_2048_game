@@ -219,6 +219,7 @@ class Game {
   }
 
   setTwo() {
+    // check empty cell
     if (!this.hasEmptyTile()) {
       return;
     }
@@ -297,6 +298,94 @@ class Game {
         }
       }
     }
+  }
+
+  checkLose() {
+    for (let r = 0; r < Game.ROWS; r++) {
+      for (let c = 0; c < Game.COLUMNS; c++) {
+        if (this.board[r][c] === 0) {
+          return;
+        }
+      }
+    }
+
+    document.querySelector('.message-lose').classList.remove('hidden');
+  }
+
+  canMoveLeft() {
+    for (let r = 0; r < Game.ROWS; r++) {
+      const row1 = Array.from(this.board[r]);
+      const row2 = this.slide(row1);
+
+      if (!this.isArrayTheSame(row1, row2)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  canMoveRight() {
+    for (let r = 0; r < Game.ROWS; r++) {
+      const row1 = Array.from(this.board[r]);
+      const row2 = this.slide(row1.reverse());
+
+      if (!this.isArrayTheSame(row1, row2)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  canMoveUp() {
+    for (let c = 0; c < Game.COLUMNS; c++) {
+      const row = [
+        this.board[0][c],
+        this.board[1][c],
+        this.board[2][c],
+        this.board[3][c],
+      ];
+
+      const row1 = Array.from(row);
+      const row2 = this.slide([...row1]);
+
+      if (!this.isArrayTheSame(row1, row2)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  canMoveDown() {
+    for (let c = 0; c < Game.COLUMNS; c++) {
+      const row = [
+        this.board[0][c],
+        this.board[1][c],
+        this.board[2][c],
+        this.board[3][c],
+      ];
+
+      const row1 = Array.from(row);
+      const row2 = this.slide([...row1].toReversed()).reverse();
+
+      if (!this.isArrayTheSame(row1, row2)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  isArrayTheSame(row1, row2) {
+    for (let i = 0; i < row1.length; i++) {
+      if (row1[i] !== row2[i]) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
 
