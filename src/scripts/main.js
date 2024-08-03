@@ -38,31 +38,35 @@ document.addEventListener('keyup', (e) => {
   if (e.code === 'ArrowLeft') {
     if (game.status === 'playing' && game.canMoveLeft()) {
       game.moveLeft();
-      game.checkLose();
-      game.checkWin();
       game.setTwo();
     }
+
+    game.checkLose();
+    game.checkWin();
   } else if (e.code === 'ArrowRight') {
     if (game.status === 'playing' && game.canMoveRight()) {
       game.moveRight();
-      game.checkLose();
-      game.checkWin();
       game.setTwo();
     }
+
+    game.checkLose();
+    game.checkWin();
   } else if (e.code === 'ArrowUp') {
     if (game.status === 'playing' && game.canMoveUp()) {
       game.moveUp();
-      game.checkLose();
-      game.checkWin();
       game.setTwo();
     }
+
+    game.checkLose();
+    game.checkWin();
   } else if (e.code === 'ArrowDown') {
     if (game.status === 'playing' && game.canMoveDown()) {
       game.moveDown();
-      game.checkLose();
-      game.checkWin();
       game.setTwo();
     }
+
+    game.checkLose();
+    game.checkWin();
   }
 });
 

@@ -301,15 +301,21 @@ class Game {
   }
 
   checkLose() {
-    for (let r = 0; r < Game.ROWS; r++) {
-      for (let c = 0; c < Game.COLUMNS; c++) {
-        if (this.board[r][c] === 0) {
-          return;
-        }
-      }
-    }
+    // if no empty cell and u cant move left right down up
+    const arrayOfConditions = [
+      this.hasEmptyTile(),
+      this.canMoveLeft(),
+      this.canMoveRight(),
+      this.canMoveUp(),
+      this.canMoveDown(),
+    ];
 
-    document.querySelector('.message-lose').classList.remove('hidden');
+    return arrayOfConditions;
+    // console.log(arrayOfConditions);
+
+    // if (!this.hasEmptyTile()) {
+    //   document.querySelector('.message-lose').classList.remove('hidden');
+    // }
   }
 
   canMoveLeft() {
@@ -317,11 +323,14 @@ class Game {
       const row1 = Array.from(this.board[r]);
       const row2 = this.slide(row1);
 
+      // if two rows not the same
+      // thant mean one of the tile was moved and we can make a move
       if (!this.isArrayTheSame(row1, row2)) {
         return true;
       }
     }
 
+    // if they all same nothing changes
     return false;
   }
 
