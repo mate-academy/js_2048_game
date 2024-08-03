@@ -1,68 +1,243 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(initialState = null) {
+    this.initialState = initialState || [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    this.state = this.initialState.map(row => [...row]);
+    this.score = 0;
+    this.status = Game.STATUS.idle;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  static STATUS = {
+    idle: 'idle',
+    playing: 'playing',
+    win: 'win',
+    lose: 'lose',
+  };
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getState() {
+    return this.state;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  start() {
+    this.status = Game.STATUS.playing;
+    this.resetState();
+    this.addCells(2);
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  restart() {
+    this.resetState();
+    this.status = Game.STATUS.idle;
+  }
 
-  // Add your own methods here
+  resetState() {
+    this.state = this.initialState.map(row => [...row]);
+    this.score = 0;
+  }
+
+  addCells(count = 1) {
+    for (let i = 0; i < count; i++) {
+      this.addNewTile();
+    }
+
+    if (this.isVictory()) {
+      this.status = Game.STATUS.win;
+    } else if (!this.validState()) {
+      this.status = Game.STATUS.lose;
+    }
+  }
+
+  addNewTile() {
+    const emptyCells = this.getEmptyCells();
+
+    if (!emptyCells.length) {
+      return;
+    }
+
+    const randomCell = Math.floor(Math.random() * emptyCells.length);
+    const [row, col] = emptyCells[randomCell];
+
+    this.state[row][col] = Math.random() < 0.9 ? 2 : 4;
+  }
+
+  getEmptyCells() {
+    return this.state
+      .flatMap((row, rowIndex) =>
+        row.map((cell, colIndex) => (cell === 0 ? [rowIndex, colIndex] : null)),
+      )
+      .filter(cell => cell !== null);
+  }
+
+  isVictory() {
+    return this.state.flat().some(tile => tile === 2048);
+  }
+
+  validState() {
+    const size = this.state.length;
+
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        const current = this.state[row][col];
+
+        if (
+          current === 0
+          || (col < size - 1 && current === this.state[row][col + 1])
+          || (row < size - 1 && current === this.state[row + 1][col])
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  moveLeft() {
+    if (this.status !== Game.STATUS.playing) {
+      return;
+    }
+
+    const updatedState = this.state.map(row => this.applyMove(row));
+
+    if (!this.isStateEqual(this.state, updatedState)) {
+      this.state = updatedState;
+      this.addCells();
+    }
+  }
+
+  moveRight() {
+    if (this.status !== Game.STATUS.playing) {
+      return;
+    }
+
+    const reversedState = this.state.map(row => [...row].reverse());
+    const updatedState = reversedState.map(row =>
+      this.applyMove(row).reverse());
+
+    if (!this.isStateEqual(this.state, updatedState)) {
+      this.state = updatedState;
+      this.addCells();
+    }
+  }
+
+  moveUp() {
+    if (this.status !== Game.STATUS.playing) {
+      return;
+    }
+
+    const rotatedState = this.rotateRight(this.state);
+    const updatedState = rotatedState.map(row => this.applyMove(row));
+    const unrotatedState = this.rotateLeft(updatedState);
+
+    if (!this.isStateEqual(this.state, unrotatedState)) {
+      this.state = unrotatedState;
+      this.addCells();
+    }
+  }
+
+  moveDown() {
+    if (this.status !== Game.STATUS.playing) {
+      return;
+    }
+
+    const rotatedState = this.rotateLeft(this.state);
+    const updatedState = rotatedState.map(row => this.applyMove(row));
+    const unrotatedState = this.rotateRight(updatedState);
+
+    if (!this.isStateEqual(this.state, unrotatedState)) {
+      this.state = unrotatedState;
+      this.addCells();
+    }
+  }
+
+  applyMove(row) {
+    const newRow = [];
+    let i = 0;
+
+    while (i < row.length) {
+      const current = row[i];
+      const next = row[i + 1];
+
+      if (current) {
+        if (current === next) {
+          newRow.push(current * 2);
+          this.score += current * 2;
+          i += 2;
+        } else {
+          newRow.push(current);
+          i++;
+        }
+      } else {
+        i++;
+      }
+    }
+
+    while (newRow.length < row.length) {
+      newRow.push(0);
+    }
+
+    return newRow;
+  }
+
+  rotateRight(matrix) {
+    const resultMatrix = [];
+    const cols = matrix[0].length;
+    const rows = matrix.length;
+
+    for (let col = 0; col < cols; col++) {
+      resultMatrix.push(Array.from({ length: rows }, () => 0));
+    }
+
+    for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+      for (let colIndex = 0; colIndex < cols; colIndex++) {
+        const newRow = cols - 1 - colIndex;
+        const newCol = rowIndex;
+
+        resultMatrix[newRow][newCol] = matrix[rowIndex][colIndex];
+      }
+    }
+
+    return resultMatrix;
+  }
+
+  rotateLeft(matrix) {
+    const resultMatrix = [];
+    const cols = matrix[0].length;
+    const rows = matrix.length;
+
+    for (let col = 0; col < cols; col++) {
+      resultMatrix.push(Array.from({ length: rows }, () => 0));
+    }
+
+    for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+      for (let colIndex = 0; colIndex < cols; colIndex++) {
+        const newRow = rowIndex;
+        const newCol = cols - 1 - colIndex;
+
+        resultMatrix[newRow][newCol] = matrix[colIndex][rowIndex];
+      }
+    }
+
+    return resultMatrix;
+  }
+
+  isStateEqual(state1, state2) {
+    return JSON.stringify(state1) === JSON.stringify(state2);
+  }
 }
 
 module.exports = Game;
