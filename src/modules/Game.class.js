@@ -62,6 +62,7 @@ export default class Game {
         if (row[columnIndex - 2] !== 0 && columnIndex - 3 >= 0) {
           if (
             row[columnIndex - 3] === row[columnIndex - 2] &&
+            !mergeFlags[rowIndex][columnIndex - 3] &&
             !mergeFlags[rowIndex][columnIndex - 2]
           ) {
             row[columnIndex - 3] *= 2;
@@ -71,12 +72,17 @@ export default class Game {
           } else if (row[columnIndex - 3] === 0) {
             row[columnIndex - 3] = row[columnIndex - 2];
             row[columnIndex - 2] = 0;
+
+            if (mergeFlags[rowIndex][columnIndex - 2]) {
+              mergeFlags[rowIndex][columnIndex - 3] = true;
+            }
           }
         }
 
         if (row[columnIndex - 1] !== 0 && columnIndex - 2 >= 0) {
           if (
             row[columnIndex - 2] === row[columnIndex - 1] &&
+            !mergeFlags[rowIndex][columnIndex - 2] &&
             !mergeFlags[rowIndex][columnIndex - 1]
           ) {
             row[columnIndex - 2] *= 2;
@@ -86,12 +92,17 @@ export default class Game {
           } else if (row[columnIndex - 2] === 0) {
             row[columnIndex - 2] = row[columnIndex - 1];
             row[columnIndex - 1] = 0;
+
+            if (mergeFlags[rowIndex][columnIndex - 1]) {
+              mergeFlags[rowIndex][columnIndex - 2] = true;
+            }
           }
         }
 
         if (row[columnIndex] !== 0 && columnIndex - 1 >= 0) {
           if (
             row[columnIndex - 1] === row[columnIndex] &&
+            !mergeFlags[rowIndex][columnIndex - 1] &&
             !mergeFlags[rowIndex][columnIndex]
           ) {
             row[columnIndex - 1] *= 2;
@@ -101,6 +112,10 @@ export default class Game {
           } else if (row[columnIndex - 1] === 0) {
             row[columnIndex - 1] = row[columnIndex];
             row[columnIndex] = 0;
+
+            if (mergeFlags[rowIndex][columnIndex]) {
+              mergeFlags[rowIndex][columnIndex - 1] = true;
+            }
           }
         }
       }
@@ -138,6 +153,7 @@ export default class Game {
           if (
             state[rowIndex - 3][columnIndex] ===
               state[rowIndex - 2][columnIndex] &&
+            !mergeFlags[rowIndex - 3][columnIndex] &&
             !mergeFlags[rowIndex - 2][columnIndex]
           ) {
             state[rowIndex - 3][columnIndex] *= 2;
@@ -147,6 +163,10 @@ export default class Game {
           } else if (state[rowIndex - 3][columnIndex] === 0) {
             state[rowIndex - 3][columnIndex] = state[rowIndex - 2][columnIndex];
             state[rowIndex - 2][columnIndex] = 0;
+
+            if (mergeFlags[rowIndex - 2][columnIndex]) {
+              mergeFlags[rowIndex - 3][columnIndex] = true;
+            }
           }
         }
 
@@ -154,6 +174,7 @@ export default class Game {
           if (
             state[rowIndex - 2][columnIndex] ===
               state[rowIndex - 1][columnIndex] &&
+            !mergeFlags[rowIndex - 2][columnIndex] &&
             !mergeFlags[rowIndex - 1][columnIndex]
           ) {
             state[rowIndex - 2][columnIndex] *= 2;
@@ -163,12 +184,17 @@ export default class Game {
           } else if (state[rowIndex - 2][columnIndex] === 0) {
             state[rowIndex - 2][columnIndex] = state[rowIndex - 1][columnIndex];
             state[rowIndex - 1][columnIndex] = 0;
+
+            if (mergeFlags[rowIndex - 1][columnIndex]) {
+              mergeFlags[rowIndex - 2][columnIndex] = true;
+            }
           }
         }
 
         if (rowIndex - 1 >= 0 && state[rowIndex][columnIndex] !== 0) {
           if (
             state[rowIndex - 1][columnIndex] === state[rowIndex][columnIndex] &&
+            !mergeFlags[rowIndex - 1][columnIndex] &&
             !mergeFlags[rowIndex][columnIndex]
           ) {
             state[rowIndex - 1][columnIndex] *= 2;
@@ -178,6 +204,10 @@ export default class Game {
           } else if (state[rowIndex - 1][columnIndex] === 0) {
             state[rowIndex - 1][columnIndex] = state[rowIndex][columnIndex];
             state[rowIndex][columnIndex] = 0;
+
+            if (mergeFlags[rowIndex][columnIndex]) {
+              mergeFlags[rowIndex - 1][columnIndex] = true;
+            }
           }
         }
       }
