@@ -52,6 +52,30 @@ export default class Game {
     this.tableRows = this.tableRows.map((row) => [...row.cells]);
   }
 
+  moveTilesToTheLeft(row, rowIndex, mergeFlags, fromIndex, toIndex) {
+    if (toIndex < 0 || row[fromIndex] === 0) {
+      return;
+    }
+
+    if (
+      row[toIndex] === row[fromIndex] &&
+      !mergeFlags[rowIndex][toIndex] &&
+      !mergeFlags[rowIndex][fromIndex]
+    ) {
+      row[toIndex] *= 2;
+      this.score += row[toIndex];
+      row[fromIndex] = 0;
+      mergeFlags[rowIndex][toIndex] = true;
+    } else if (row[toIndex] === 0) {
+      row[toIndex] = row[fromIndex];
+      row[fromIndex] = 0;
+
+      if (mergeFlags[rowIndex][fromIndex]) {
+        mergeFlags[rowIndex][toIndex] = true;
+      }
+    }
+  }
+
   moveLeft() {
     const clone = structuredClone(this.getState());
 
@@ -59,65 +83,29 @@ export default class Game {
 
     this.getState().forEach((row, rowIndex) => {
       for (let columnIndex = 3; columnIndex > 0; columnIndex--) {
-        if (row[columnIndex - 2] !== 0 && columnIndex - 3 >= 0) {
-          if (
-            row[columnIndex - 3] === row[columnIndex - 2] &&
-            !mergeFlags[rowIndex][columnIndex - 3] &&
-            !mergeFlags[rowIndex][columnIndex - 2]
-          ) {
-            row[columnIndex - 3] *= 2;
-            this.score += row[columnIndex - 3];
-            row[columnIndex - 2] = 0;
-            mergeFlags[rowIndex][columnIndex - 3] = true;
-          } else if (row[columnIndex - 3] === 0) {
-            row[columnIndex - 3] = row[columnIndex - 2];
-            row[columnIndex - 2] = 0;
+        this.moveTilesToTheLeft(
+          row,
+          rowIndex,
+          mergeFlags,
+          columnIndex - 2,
+          columnIndex - 3,
+        );
 
-            if (mergeFlags[rowIndex][columnIndex - 2]) {
-              mergeFlags[rowIndex][columnIndex - 3] = true;
-            }
-          }
-        }
+        this.moveTilesToTheLeft(
+          row,
+          rowIndex,
+          mergeFlags,
+          columnIndex - 1,
+          columnIndex - 2,
+        );
 
-        if (row[columnIndex - 1] !== 0 && columnIndex - 2 >= 0) {
-          if (
-            row[columnIndex - 2] === row[columnIndex - 1] &&
-            !mergeFlags[rowIndex][columnIndex - 2] &&
-            !mergeFlags[rowIndex][columnIndex - 1]
-          ) {
-            row[columnIndex - 2] *= 2;
-            this.score += row[columnIndex - 2];
-            row[columnIndex - 1] = 0;
-            mergeFlags[rowIndex][columnIndex - 2] = true;
-          } else if (row[columnIndex - 2] === 0) {
-            row[columnIndex - 2] = row[columnIndex - 1];
-            row[columnIndex - 1] = 0;
-
-            if (mergeFlags[rowIndex][columnIndex - 1]) {
-              mergeFlags[rowIndex][columnIndex - 2] = true;
-            }
-          }
-        }
-
-        if (row[columnIndex] !== 0 && columnIndex - 1 >= 0) {
-          if (
-            row[columnIndex - 1] === row[columnIndex] &&
-            !mergeFlags[rowIndex][columnIndex - 1] &&
-            !mergeFlags[rowIndex][columnIndex]
-          ) {
-            row[columnIndex - 1] *= 2;
-            this.score += row[columnIndex - 1];
-            row[columnIndex] = 0;
-            mergeFlags[rowIndex][columnIndex - 1] = true;
-          } else if (row[columnIndex - 1] === 0) {
-            row[columnIndex - 1] = row[columnIndex];
-            row[columnIndex] = 0;
-
-            if (mergeFlags[rowIndex][columnIndex]) {
-              mergeFlags[rowIndex][columnIndex - 1] = true;
-            }
-          }
-        }
+        this.moveTilesToTheLeft(
+          row,
+          rowIndex,
+          mergeFlags,
+          columnIndex,
+          columnIndex - 1,
+        );
       }
     });
 
@@ -142,74 +130,60 @@ export default class Game {
     this.updateTable();
   }
 
+  moveTilesUp(state, columnIndex, mergeFlags, fromIndex, toIndex) {
+    if (toIndex < 0 || state[fromIndex][columnIndex] === 0) {
+      return;
+    }
+
+    if (
+      state[toIndex][columnIndex] === state[fromIndex][columnIndex] &&
+      !mergeFlags[fromIndex][columnIndex] &&
+      !mergeFlags[toIndex][columnIndex]
+    ) {
+      state[toIndex][columnIndex] *= 2;
+      this.score += state[toIndex][columnIndex];
+      state[fromIndex][columnIndex] = 0;
+      mergeFlags[toIndex][columnIndex] = true;
+    } else if (state[toIndex][columnIndex] === 0) {
+      state[toIndex][columnIndex] = state[fromIndex][columnIndex];
+      state[fromIndex][columnIndex] = 0;
+
+      if (mergeFlags[fromIndex][columnIndex]) {
+        mergeFlags[toIndex][columnIndex] = true;
+      }
+    }
+  }
+
   moveUp() {
     const clone = structuredClone(this.getState());
 
     const mergeFlags = structuredClone(Game.INITIAL_MERGE_FLAGS);
 
-    this.getState().forEach((row, columnIndex, state) => {
+    this.getState().forEach((_, columnIndex, state) => {
       for (let rowIndex = 3; rowIndex > 0; rowIndex--) {
-        if (rowIndex - 3 >= 0 && state[rowIndex - 2][columnIndex] !== 0) {
-          if (
-            state[rowIndex - 3][columnIndex] ===
-              state[rowIndex - 2][columnIndex] &&
-            !mergeFlags[rowIndex - 3][columnIndex] &&
-            !mergeFlags[rowIndex - 2][columnIndex]
-          ) {
-            state[rowIndex - 3][columnIndex] *= 2;
-            this.score += state[rowIndex - 3][columnIndex];
-            state[rowIndex - 2][columnIndex] = 0;
-            mergeFlags[rowIndex - 3][columnIndex] = true;
-          } else if (state[rowIndex - 3][columnIndex] === 0) {
-            state[rowIndex - 3][columnIndex] = state[rowIndex - 2][columnIndex];
-            state[rowIndex - 2][columnIndex] = 0;
+        this.moveTilesUp(
+          state,
+          columnIndex,
+          mergeFlags,
+          rowIndex - 2,
+          rowIndex - 3,
+        );
 
-            if (mergeFlags[rowIndex - 2][columnIndex]) {
-              mergeFlags[rowIndex - 3][columnIndex] = true;
-            }
-          }
-        }
+        this.moveTilesUp(
+          state,
+          columnIndex,
+          mergeFlags,
+          rowIndex - 1,
+          rowIndex - 2,
+        );
 
-        if (rowIndex - 2 >= 0 && state[rowIndex - 1][columnIndex] !== 0) {
-          if (
-            state[rowIndex - 2][columnIndex] ===
-              state[rowIndex - 1][columnIndex] &&
-            !mergeFlags[rowIndex - 2][columnIndex] &&
-            !mergeFlags[rowIndex - 1][columnIndex]
-          ) {
-            state[rowIndex - 2][columnIndex] *= 2;
-            this.score += state[rowIndex - 2][columnIndex];
-            state[rowIndex - 1][columnIndex] = 0;
-            mergeFlags[rowIndex - 2][columnIndex] = true;
-          } else if (state[rowIndex - 2][columnIndex] === 0) {
-            state[rowIndex - 2][columnIndex] = state[rowIndex - 1][columnIndex];
-            state[rowIndex - 1][columnIndex] = 0;
-
-            if (mergeFlags[rowIndex - 1][columnIndex]) {
-              mergeFlags[rowIndex - 2][columnIndex] = true;
-            }
-          }
-        }
-
-        if (rowIndex - 1 >= 0 && state[rowIndex][columnIndex] !== 0) {
-          if (
-            state[rowIndex - 1][columnIndex] === state[rowIndex][columnIndex] &&
-            !mergeFlags[rowIndex - 1][columnIndex] &&
-            !mergeFlags[rowIndex][columnIndex]
-          ) {
-            state[rowIndex - 1][columnIndex] *= 2;
-            this.score += state[rowIndex - 1][columnIndex];
-            state[rowIndex][columnIndex] = 0;
-            mergeFlags[rowIndex - 1][columnIndex] = true;
-          } else if (state[rowIndex - 1][columnIndex] === 0) {
-            state[rowIndex - 1][columnIndex] = state[rowIndex][columnIndex];
-            state[rowIndex][columnIndex] = 0;
-
-            if (mergeFlags[rowIndex][columnIndex]) {
-              mergeFlags[rowIndex - 1][columnIndex] = true;
-            }
-          }
-        }
+        this.moveTilesUp(
+          state,
+          columnIndex,
+          mergeFlags,
+          rowIndex,
+          rowIndex - 1,
+        );
       }
     });
 
