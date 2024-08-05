@@ -27,6 +27,8 @@ class Game {
       return;
     }
 
+    const oldStateJson = JSON.stringify(this.state);
+
     for (let y = 0; y < Game.GAME_SIZE; y++) {
       const newRow = [];
       let allowToAdd = true;
@@ -57,7 +59,7 @@ class Game {
       this.state[y] = newRow;
     }
 
-    this.doAfterMove();
+    this.doAfterMove(oldStateJson);
   }
 
   moveRight() {
@@ -65,6 +67,7 @@ class Game {
       return;
     }
 
+    const oldStateJson = JSON.stringify(this.state);
     const maxIndex = Game.GAME_SIZE - 1;
 
     for (let y = maxIndex; y >= 0; y--) {
@@ -93,13 +96,15 @@ class Game {
       this.state[y] = newRow;
     }
 
-    this.doAfterMove();
+    this.doAfterMove(oldStateJson);
   }
 
   moveUp() {
     if (this.status !== 'playing') {
       return;
     }
+
+    const oldStateJson = JSON.stringify(this.state);
 
     for (let x = 0; x < Game.GAME_SIZE; x++) {
       const newColumn = [];
@@ -130,7 +135,7 @@ class Game {
       }
     }
 
-    this.doAfterMove();
+    this.doAfterMove(oldStateJson);
   }
 
   moveDown() {
@@ -138,6 +143,7 @@ class Game {
       return;
     }
 
+    const oldStateJson = JSON.stringify(this.state);
     const maxIndex = Game.GAME_SIZE - 1;
 
     for (let x = maxIndex; x >= 0; x--) {
@@ -171,15 +177,17 @@ class Game {
       }
     }
 
-    this.doAfterMove();
+    this.doAfterMove(oldStateJson);
   }
 
-  doAfterMove() {
+  doAfterMove(oldStateJson) {
     if (this.has2048()) {
       return;
     }
 
-    this.addCellToState();
+    if (JSON.stringify(this.state) !== oldStateJson) {
+      this.addCellToState();
+    }
 
     this.hasMove();
   }

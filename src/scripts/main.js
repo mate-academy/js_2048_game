@@ -9,6 +9,8 @@ const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 const score = document.querySelector('.game-score');
 
+fillField();
+
 startButton.addEventListener('click', () => {
   if (startButton.classList.contains('start')) {
     startGame();
