@@ -113,7 +113,40 @@ class Game {
     }
   }
 
-  moveDown() {}
+  moveDown() {
+    const lastIndex = Game.GAME_SIZE - 1;
+
+    for (let x = lastIndex; x >= 0; x--) {
+      const newColumn = [];
+      let allowToAdd = true;
+
+      for (let y = lastIndex; y >= 0; y--) {
+        if (this.state[y][x] === 0) {
+          continue;
+        }
+
+        if (
+          y === lastIndex ||
+          !allowToAdd ||
+          this.state[y][x] !== newColumn[0]
+        ) {
+          newColumn.unshift(this.state[y][x]);
+          allowToAdd = true;
+          continue;
+        }
+
+        newColumn[0] += this.state[y][x];
+        this.score += newColumn[0];
+        allowToAdd = false;
+      }
+
+      for (let y = lastIndex; y >= 0; y--) {
+        const index = y - (Game.GAME_SIZE - newColumn.length);
+
+        this.state[y][x] = newColumn[index] ? newColumn[index] : 0;
+      }
+    }
+  }
 
   /**
    * @returns {number}
