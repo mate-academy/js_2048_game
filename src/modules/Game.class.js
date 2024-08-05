@@ -44,14 +44,41 @@ class Game {
         allowToAdd = false;
       }
 
-      for (let x = newRow.length; x < Game.GAME_SIZE; x++) {
+      while (newRow.length < Game.GAME_SIZE) {
         newRow.push(0);
       }
       this.state[y] = newRow;
     }
   }
 
-  moveRight() {}
+  moveRight() {
+    const lastIndex = Game.GAME_SIZE - 1;
+
+    for (let y = lastIndex; y >= 0; y--) {
+      const newRow = [];
+      let allowToAdd = true;
+
+      for (let x = lastIndex; x >= 0; x--) {
+        if (this.state[y][x] === 0) {
+          continue;
+        }
+
+        if (x === lastIndex || !allowToAdd || this.state[y][x] !== newRow[0]) {
+          newRow.unshift(this.state[y][x]);
+          allowToAdd = true;
+          continue;
+        }
+        newRow[0] += this.state[y][x];
+        this.score += newRow[0];
+        allowToAdd = false;
+      }
+
+      while (newRow.length < Game.GAME_SIZE) {
+        newRow.unshift(0);
+      }
+      this.state[y] = newRow;
+    }
+  }
 
   moveUp() {}
 
