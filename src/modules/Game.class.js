@@ -220,16 +220,7 @@ class Game {
   }
 
   addCellToState() {
-    let isEmptyCellExist = false;
-
-    for (let i = 0; i < Game.GAME_SIZE; i++) {
-      if (this.state[i].includes(0)) {
-        isEmptyCellExist = true;
-        break;
-      }
-    }
-
-    if (!isEmptyCellExist) {
+    if (!this.hasEmptyCell()) {
       return;
     }
 
@@ -242,6 +233,54 @@ class Game {
     }
 
     this.state[y][x] = this.getRandomValue();
+  }
+
+  hasEmptyCell() {
+    for (let i = 0; i < Game.GAME_SIZE; i++) {
+      if (this.state[i].includes(0)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  has2048() {
+    for (let i = 0; i < Game.GAME_SIZE; i++) {
+      if (this.state[i].includes(2048)) {
+        this.status = 'win';
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  hasMove() {
+    if (this.hasEmptyCell()) {
+      return true;
+    }
+
+    for (let y = 0; y < Game.GAME_SIZE; y++) {
+      for (let x = 1; x < Game.GAME_SIZE; x++) {
+        if (this.state[y][x] === this.state[y][x - 1]) {
+          return true;
+        }
+      }
+    }
+
+    for (let x = 0; x < Game.GAME_SIZE; x++) {
+      for (let y = 1; y < Game.GAME_SIZE; y++) {
+        if (this.state[y][x] === this.state[y - 1][x]) {
+          return true;
+        }
+      }
+    }
+
+    this.status = 'lose';
+
+    return false;
   }
 }
 

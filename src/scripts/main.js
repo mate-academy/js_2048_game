@@ -5,6 +5,9 @@ const game = new Game();
 const gameField = document.querySelector('.game-field');
 const startButton = document.querySelector('.button.start');
 const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
+const score = document.querySelector('.game-score');
 
 startButton.addEventListener('click', () => {
   if (startButton.classList.contains('start')) {
@@ -30,6 +33,8 @@ function restartGame() {
   fillField(Game.EMPTY_STATE);
   document.body.removeEventListener('keydown', moveListener);
   startMessage.classList.remove('hidden');
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
 }
 
 function moveListener(e) {
@@ -50,6 +55,16 @@ function moveListener(e) {
 
   game.addCellToState();
   fillField(game.getState());
+
+  if (game.has2048()) {
+    winMessage.classList.remove('hidden');
+    document.body.removeEventListener('keydown', moveListener);
+  }
+
+  if (!game.hasMove()) {
+    loseMessage.classList.remove('hidden');
+    document.body.removeEventListener('keydown', moveListener);
+  }
 }
 
 function fillField(state) {
@@ -66,4 +81,6 @@ function fillField(state) {
       gameField.rows[y].cells[x].textContent = state[y][x];
     }
   }
+
+  score.textContent = game.getScore();
 }
