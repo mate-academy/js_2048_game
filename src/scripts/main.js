@@ -58,13 +58,12 @@ function moveListener(e) {
       break;
   }
 
-  game.addCellToState();
   fillField();
 
-  if (game.has2048()) {
+  if (game.getStatus() === 'win') {
     winMessage.classList.remove('hidden');
     document.body.removeEventListener('keydown', moveListener);
-  } else if (!game.hasMove()) {
+  } else if (game.getStatus() === 'lose') {
     loseMessage.classList.remove('hidden');
     document.body.removeEventListener('keydown', moveListener);
   }

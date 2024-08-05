@@ -52,6 +52,8 @@ class Game {
       }
       this.state[y] = newRow;
     }
+
+    this.doAfterMove();
   }
 
   moveRight() {
@@ -82,6 +84,8 @@ class Game {
       }
       this.state[y] = newRow;
     }
+
+    this.doAfterMove();
   }
 
   moveUp() {
@@ -113,6 +117,8 @@ class Game {
         this.state[y][x] = newColumn[y] ? newColumn[y] : 0;
       }
     }
+
+    this.doAfterMove();
   }
 
   moveDown() {
@@ -148,6 +154,18 @@ class Game {
         this.state[y][x] = newColumn[index] ? newColumn[index] : 0;
       }
     }
+
+    this.doAfterMove();
+  }
+
+  doAfterMove() {
+    if (this.has2048()) {
+      return;
+    }
+
+    this.addCellToState();
+
+    this.hasMove();
   }
 
   /**
