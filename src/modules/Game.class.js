@@ -225,8 +225,8 @@ class Game {
   }
 
   hasEmptyCell() {
-    for (let i = 0; i < Game.GAME_SIZE; i++) {
-      if (this.state[i].includes(0)) {
+    for (let y = 0; y < Game.GAME_SIZE; y++) {
+      if (this.state[y].includes(0)) {
         return true;
       }
     }
@@ -235,8 +235,8 @@ class Game {
   }
 
   has2048() {
-    for (let i = 0; i < Game.GAME_SIZE; i++) {
-      if (this.state[i].includes(2048)) {
+    for (let y = 0; y < Game.GAME_SIZE; y++) {
+      if (this.state[y].includes(2048)) {
         this.status = 'win';
 
         return true;
@@ -247,19 +247,18 @@ class Game {
   }
 
   hasMove() {
-    if (this.hasEmptyCell()) {
-      return true;
-    }
-
     const maxIndex = Game.GAME_SIZE - 1;
 
     for (let y = 0; y < Game.GAME_SIZE; y++) {
-      for (let x = 0; x < Game.GAME_SIZE; x++) {
-        if (x !== maxIndex && this.state[y][x] === this.state[y][x + 1]) {
-          return true;
-        }
+      if (this.state[y].includes(0)) {
+        return true;
+      }
 
-        if (y !== maxIndex && this.state[y][x] === this.state[y + 1][x]) {
+      for (let x = 0; x < Game.GAME_SIZE; x++) {
+        if (
+          (x !== maxIndex && this.state[y][x] === this.state[y][x + 1]) ||
+          (y !== maxIndex && this.state[y][x] === this.state[y + 1][x])
+        ) {
           return true;
         }
       }
