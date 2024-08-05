@@ -7,17 +7,19 @@
  */
 class Game {
   static GAME_SIZE = 4;
-  static EMPTY_STATE = Object.freeze([
-    Object.freeze(Array(Game.GAME_SIZE).fill(0)),
-    Object.freeze(Array(Game.GAME_SIZE).fill(0)),
-    Object.freeze(Array(Game.GAME_SIZE).fill(0)),
-    Object.freeze(Array(Game.GAME_SIZE).fill(0)),
-  ]);
 
-  constructor(initialState) {
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
     this.status = 'idle';
     this.score = 0;
-    this.state = initialState ?? Game.EMPTY_STATE;
+    this.state = initialState;
+    this.initialState = JSON.parse(JSON.stringify(initialState));
   }
 
   moveLeft() {
@@ -180,7 +182,7 @@ class Game {
    * Starts the game.
    */
   start() {
-    this.state = this.getInitialState();
+    this.initializeState();
     this.status = 'playing';
   }
 
@@ -190,6 +192,7 @@ class Game {
   restart() {
     this.status = 'idle';
     this.score = 0;
+    this.state = JSON.parse(JSON.stringify(this.initialState));
   }
 
   getRandomPosition() {
@@ -200,39 +203,25 @@ class Game {
     return Math.floor(Math.random() * 10) < 9 ? 2 : 4;
   }
 
-  getInitialState() {
-    const x1 = this.getRandomPosition();
-    const y1 = this.getRandomPosition();
-    let x2 = this.getRandomPosition();
-    let y2 = this.getRandomPosition();
-
-    while (x1 === x2 && y1 === y2) {
-      x2 = this.getRandomPosition();
-      y2 = this.getRandomPosition();
-    }
-
-    const state = JSON.parse(JSON.stringify(Game.EMPTY_STATE));
-
-    state[y1][x1] = this.getRandomValue();
-    state[y2][x2] = this.getRandomValue();
-
-    return state;
-  }
-
   addCellToState() {
     if (!this.hasEmptyCell()) {
       return;
     }
 
-    let x = this.getRandomPosition();
-    let y = this.getRandomPosition();
+    let x;
+    let y;
 
-    while (this.state[y][x] !== 0) {
+    do {
       x = this.getRandomPosition();
       y = this.getRandomPosition();
-    }
+    } while (this.state[y][x] !== 0);
 
     this.state[y][x] = this.getRandomValue();
+  }
+
+  initializeState() {
+    this.addCellToState();
+    this.addCellToState();
   }
 
   hasEmptyCell() {

@@ -21,7 +21,7 @@ function startGame() {
   startButton.className = 'button restart';
   startButton.textContent = 'Restart';
   game.start();
-  fillField(game.getState());
+  fillField();
   document.body.addEventListener('keydown', moveListener);
   startMessage.classList.add('hidden');
 }
@@ -30,7 +30,7 @@ function restartGame() {
   startButton.className = 'button start';
   startButton.textContent = 'Start';
   game.restart();
-  fillField(Game.EMPTY_STATE);
+  fillField();
   document.body.removeEventListener('keydown', moveListener);
   startMessage.classList.remove('hidden');
   winMessage.classList.add('hidden');
@@ -67,18 +67,18 @@ function moveListener(e) {
   }
 }
 
-function fillField(state) {
+function fillField() {
   for (let y = 0; y < Game.GAME_SIZE; y++) {
     for (let x = 0; x < Game.GAME_SIZE; x++) {
-      if (state[y][x] === 0) {
+      if (game.getState()[y][x] === 0) {
         gameField.rows[y].cells[x].className = `field-cell`;
         gameField.rows[y].cells[x].textContent = '';
         continue;
       }
 
       gameField.rows[y].cells[x].className =
-        `field-cell field-cell--${state[y][x]}`;
-      gameField.rows[y].cells[x].textContent = state[y][x];
+        `field-cell field-cell--${game.getState()[y][x]}`;
+      gameField.rows[y].cells[x].textContent = game.getState()[y][x];
     }
   }
 
