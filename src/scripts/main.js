@@ -29,15 +29,12 @@ function restartGame() {
   startButton.className = 'button start';
   startButton.textContent = 'Start';
   game.restart();
-  fillField(game.EMPTY_STATE);
+  fillField(Game.EMPTY_STATE);
   document.body.removeEventListener('keydown', moveListener);
   startMessage.classList.remove('hidden');
 }
 
 function moveListener(e) {
-  // eslint-disable-next-line no-console
-  console.log(e.code);
-
   switch (e) {
     case 'ArrowUp':
       game.moveUp();

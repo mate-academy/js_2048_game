@@ -6,12 +6,12 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
-  EMPTY_STATE = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  static EMPTY_STATE = Object.freeze([
+    Object.freeze([0, 0, 0, 0]),
+    Object.freeze([0, 0, 0, 0]),
+    Object.freeze([0, 0, 0, 0]),
+    Object.freeze([0, 0, 0, 0]),
+  ]);
 
   constructor(initialState) {
     this.status = 'idle';
@@ -90,7 +90,7 @@ class Game {
       y2 = this.getRandomPosition();
     }
 
-    const state = JSON.parse(JSON.stringify(this.EMPTY_STATE));
+    const state = JSON.parse(JSON.stringify(Game.EMPTY_STATE));
 
     state[x1][y1] = this.getRandomValue();
     state[x2][y2] = this.getRandomValue();
