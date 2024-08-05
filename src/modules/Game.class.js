@@ -39,6 +39,7 @@ class Game {
           allowToAdd = true;
           continue;
         }
+
         newRow[newRow.length - 1] += this.state[y][x];
         this.score += newRow[newRow.length - 1];
         allowToAdd = false;
@@ -68,6 +69,7 @@ class Game {
           allowToAdd = true;
           continue;
         }
+
         newRow[0] += this.state[y][x];
         this.score += newRow[0];
         allowToAdd = false;
@@ -80,7 +82,36 @@ class Game {
     }
   }
 
-  moveUp() {}
+  moveUp() {
+    for (let x = 0; x < Game.GAME_SIZE; x++) {
+      const newColumn = [];
+      let allowToAdd = true;
+
+      for (let y = 0; y < Game.GAME_SIZE; y++) {
+        if (this.state[y][x] === 0) {
+          continue;
+        }
+
+        if (
+          y === 0 ||
+          !allowToAdd ||
+          this.state[y][x] !== newColumn[newColumn.length - 1]
+        ) {
+          newColumn.push(this.state[y][x]);
+          allowToAdd = true;
+          continue;
+        }
+
+        newColumn[newColumn.length - 1] += this.state[y][x];
+        this.score += newColumn[newColumn.length - 1];
+        allowToAdd = false;
+      }
+
+      for (let y = 0; y < Game.GAME_SIZE; y++) {
+        this.state[y][x] = newColumn[y] ? newColumn[y] : 0;
+      }
+    }
+  }
 
   moveDown() {}
 

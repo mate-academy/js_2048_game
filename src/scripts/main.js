@@ -50,10 +50,7 @@ function moveListener(e) {
 
   game.addCellToState();
   fillField(game.getState());
-  checkState(game.getState());
 }
-
-function checkState(state) {}
 
 function fillField(state) {
   for (let y = 0; y < Game.GAME_SIZE; y++) {
