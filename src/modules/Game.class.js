@@ -171,24 +171,25 @@ class Game {
   }
 
   applyMove(row) {
+    const nonEmptyTiles = row.filter(tile => tile !== 0);
     const newRow = [];
-    let i = 0;
+    let skipNext = false;
 
-    while (i < row.length) {
-      const current = row[i];
-      const next = row[i + 1];
+    for (let i = 0; i < nonEmptyTiles.length; i++) {
+      if (skipNext) {
+        skipNext = false;
+        continue;
+      }
 
-      if (current) {
-        if (current === next) {
-          newRow.push(current * 2);
-          this.score += current * 2;
-          i += 2;
-        } else {
-          newRow.push(current);
-          i++;
-        }
+      const current = nonEmptyTiles[i];
+      const next = nonEmptyTiles[i + 1];
+
+      if (current === next) {
+        newRow.push(current * 2);
+        this.score += current * 2;
+        skipNext = true;
       } else {
-        i++;
+        newRow.push(current);
       }
     }
 
