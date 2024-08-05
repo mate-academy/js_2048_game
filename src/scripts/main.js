@@ -1,7 +1,5 @@
 'use strict';
 
-const FIELD_SIZE = 4;
-
 const Game = require('../modules/Game.class');
 const game = new Game();
 const gameField = document.querySelector('.game-field');
@@ -56,8 +54,8 @@ function moveListener(e) {
 function checkState(state) {}
 
 function fillField(state) {
-  for (let y = 0; y < FIELD_SIZE; y++) {
-    for (let x = 0; x < FIELD_SIZE; x++) {
+  for (let y = 0; y < Game.GAME_SIZE; y++) {
+    for (let x = 0; x < Game.GAME_SIZE; x++) {
       if (state[y][x] === 0) {
         gameField.rows[y].cells[x].className = `field-cell`;
         gameField.rows[y].cells[x].textContent = '';

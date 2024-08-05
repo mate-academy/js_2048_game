@@ -6,11 +6,12 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
+  static GAME_SIZE = 4;
   static EMPTY_STATE = Object.freeze([
-    Object.freeze([0, 0, 0, 0]),
-    Object.freeze([0, 0, 0, 0]),
-    Object.freeze([0, 0, 0, 0]),
-    Object.freeze([0, 0, 0, 0]),
+    Object.freeze(Array(Game.GAME_SIZE).fill(0)),
+    Object.freeze(Array(Game.GAME_SIZE).fill(0)),
+    Object.freeze(Array(Game.GAME_SIZE).fill(0)),
+    Object.freeze(Array(Game.GAME_SIZE).fill(0)),
   ]);
 
   constructor(initialState) {
@@ -72,7 +73,7 @@ class Game {
   }
 
   getRandomPosition() {
-    return Math.floor(Math.random() * 4);
+    return Math.floor(Math.random() * Game.GAME_SIZE);
   }
 
   getRandomValue() {
