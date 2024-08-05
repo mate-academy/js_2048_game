@@ -6,39 +6,29 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
-  INITIAL_STATE = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
-
-  constructor(initialState = this.INITIAL_STATE) {
-    this.state = initialState;
+  constructor(initialState) {
     this.status = 'idle';
+    this.score = 0;
+    this.state = initialState ?? this.getInitialState();
   }
 
-  moveLeft() {}
+  moveLeft() {
+  }
 
-  moveRight() {}
+  moveRight() {
+  }
 
-  moveUp() {}
+  moveUp() {
+  }
 
-  moveDown() {}
+  moveDown() {
+  }
 
   /**
    * @returns {number}
    */
   getScore() {
-    let sum = 0;
-
-    for (const row of this.state) {
-      for (const el of row) {
-        sum += el;
-      }
-    }
-
-    return sum;
+    return this.score;
   }
 
   /**
@@ -67,6 +57,8 @@ class Game {
    */
   start() {
     this.status = 'playing';
+
+    this.state = this.getInitialState();
   }
 
   /**
@@ -75,14 +67,39 @@ class Game {
   restart() {
     this.state = this.INITIAL_STATE;
     this.status = 'idle';
+    this.score = 0;
   }
 
   getRandomPosition() {
-    return [Math.floor(Math.random() * 4), Math.floor(Math.random() * 4)];
+    return Math.floor(Math.random() * 4);
   }
 
   getRandomValue() {
     return Math.floor(Math.random() * 10) < 9 ? 2 : 4;
+  }
+
+  getInitialState() {
+    const x1 = this.getRandomPosition();
+    const y1 = this.getRandomPosition();
+    let x2 = this.getRandomPosition();
+    let y2 = this.getRandomPosition();
+
+    while (x1 === x2 && y1 === y2) {
+      x2 = this.getRandomPosition();
+      y2 = this.getRandomPosition();
+    }
+
+    const state = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    state[x1][y1] = this.getRandomValue();
+    state[x2][y2] = this.getRandomValue();
+
+    return state;
   }
 }
 
