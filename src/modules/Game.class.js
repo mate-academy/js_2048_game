@@ -17,7 +17,7 @@ class Game {
   constructor(initialState) {
     this.status = 'idle';
     this.score = 0;
-    this.state = initialState ?? this.getInitialState();
+    this.state = initialState ?? Game.EMPTY_STATE;
   }
 
   moveLeft() {
@@ -116,6 +116,7 @@ class Game {
    * Starts the game.
    */
   start() {
+    this.state = this.getInitialState();
     this.status = 'playing';
   }
 
@@ -123,7 +124,6 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.state = this.getInitialState();
     this.status = 'idle';
     this.score = 0;
   }
