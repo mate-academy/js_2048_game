@@ -6,23 +6,26 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
+  EMPTY_STATE = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
   constructor(initialState) {
     this.status = 'idle';
     this.score = 0;
     this.state = initialState ?? this.getInitialState();
   }
 
-  moveLeft() {
-  }
+  moveLeft() {}
 
-  moveRight() {
-  }
+  moveRight() {}
 
-  moveUp() {
-  }
+  moveUp() {}
 
-  moveDown() {
-  }
+  moveDown() {}
 
   /**
    * @returns {number}
@@ -57,15 +60,13 @@ class Game {
    */
   start() {
     this.status = 'playing';
-
-    this.state = this.getInitialState();
   }
 
   /**
    * Resets the game.
    */
   restart() {
-    this.state = this.INITIAL_STATE;
+    this.state = this.getInitialState();
     this.status = 'idle';
     this.score = 0;
   }
@@ -89,12 +90,7 @@ class Game {
       y2 = this.getRandomPosition();
     }
 
-    const state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    const state = JSON.parse(JSON.stringify(this.EMPTY_STATE));
 
     state[x1][y1] = this.getRandomValue();
     state[x2][y2] = this.getRandomValue();
