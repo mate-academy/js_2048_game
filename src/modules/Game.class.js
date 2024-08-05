@@ -208,7 +208,7 @@ class Game {
   }
 
   updateCell(cell, value) {
-    cell.innerText = '';
+    cell.textContent = '';
     cell.classList.value = '';
     cell.classList.add('field-cell');
 
