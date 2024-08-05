@@ -33,7 +33,7 @@ function restartGame() {
 }
 
 function moveListener(e) {
-  switch (e) {
+  switch (e.code) {
     case 'ArrowUp':
       game.moveUp();
       break;
@@ -48,6 +48,8 @@ function moveListener(e) {
       break;
   }
 
+  game.addCellToState();
+  fillField(game.getState());
   checkState(game.getState());
 }
 
