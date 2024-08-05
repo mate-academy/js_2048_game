@@ -68,6 +68,8 @@ document.addEventListener('keyup', (e) => {
     game.checkLose();
     game.checkWin();
   }
+
+  document.querySelector('.game-score').innerText = game.getScore();
 });
 
 function setCells(element) {

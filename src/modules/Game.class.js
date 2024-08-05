@@ -49,11 +49,11 @@ class Game {
   }
 
   moveLeft() {
+    // debugger;
     for (let r = 0; r < Game.ROWS; r++) {
       let rowCurrent = this.board[r];
 
       rowCurrent = this.slide(rowCurrent);
-      document.querySelector('.game-score').innerText = this.score;
 
       this.board[r] = rowCurrent;
 
@@ -75,8 +75,6 @@ class Game {
       rowCurrent = this.slide(rowCurrent);
 
       this.board[r] = rowCurrent.reverse();
-
-      document.querySelector('.game-score').innerText = this.score;
 
       for (let c = 0; c < Game.COLUMNS; c++) {
         const tile = document.getElementById(r.toString() + '-' + c.toString());
@@ -272,6 +270,10 @@ class Game {
 
     row = this.filterZero(rowCurrent);
 
+    if (row.length === 0) {
+      return [0, 0, 0, 0];
+    }
+
     for (let i = 0; i < row.length - 1; i++) {
       if (row[i] === row[i + 1]) {
         row[i] *= 2;
@@ -319,7 +321,7 @@ class Game {
   canMoveLeft() {
     for (let r = 0; r < Game.ROWS; r++) {
       const row1 = Array.from(this.board[r]);
-      const row2 = this.slide(row1);
+      const row2 = this.canSlide(row1);
 
       // if two rows not the same
       // thant mean one of the tile was moved and we can make a move
@@ -335,7 +337,7 @@ class Game {
   canMoveRight() {
     for (let r = 0; r < Game.ROWS; r++) {
       const row1 = Array.from(this.board[r]);
-      const row2 = this.slide(row1.reverse());
+      const row2 = this.canSlide(row1.reverse());
 
       if (!this.isArrayTheSame(row1, row2)) {
         return true;
@@ -355,7 +357,7 @@ class Game {
       ];
 
       const row1 = Array.from(row);
-      const row2 = this.slide([...row1]);
+      const row2 = this.canSlide([...row1]);
 
       if (!this.isArrayTheSame(row1, row2)) {
         return true;
@@ -375,7 +377,7 @@ class Game {
       ];
 
       const row1 = Array.from(row);
-      const row2 = this.slide([...row1].toReversed()).reverse();
+      const row2 = this.canSlide([...row1].toReversed()).reverse();
 
       if (!this.isArrayTheSame(row1, row2)) {
         return true;
@@ -393,6 +395,31 @@ class Game {
     }
 
     return true;
+  }
+
+  canSlide(rowCurrent) {
+    let row = rowCurrent;
+
+    row = this.filterZero(rowCurrent);
+
+    if (row.length === 0) {
+      return [0, 0, 0, 0];
+    }
+
+    for (let i = 0; i < row.length - 1; i++) {
+      if (row[i] === row[i + 1]) {
+        row[i] *= 2;
+        row[i + 1] = 0;
+      }
+    }
+
+    row = this.filterZero(row);
+
+    while (row.length < Game.ROWS) {
+      row.push(0);
+    }
+
+    return row;
   }
 }
 
