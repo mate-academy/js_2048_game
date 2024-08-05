@@ -55,18 +55,18 @@ class Game {
   }
 
   moveRight() {
-    const lastIndex = Game.GAME_SIZE - 1;
+    const maxIndex = Game.GAME_SIZE - 1;
 
-    for (let y = lastIndex; y >= 0; y--) {
+    for (let y = maxIndex; y >= 0; y--) {
       const newRow = [];
       let allowToAdd = true;
 
-      for (let x = lastIndex; x >= 0; x--) {
+      for (let x = maxIndex; x >= 0; x--) {
         if (this.state[y][x] === 0) {
           continue;
         }
 
-        if (x === lastIndex || !allowToAdd || this.state[y][x] !== newRow[0]) {
+        if (x === maxIndex || !allowToAdd || this.state[y][x] !== newRow[0]) {
           newRow.unshift(this.state[y][x]);
           allowToAdd = true;
           continue;
@@ -116,19 +116,19 @@ class Game {
   }
 
   moveDown() {
-    const lastIndex = Game.GAME_SIZE - 1;
+    const maxIndex = Game.GAME_SIZE - 1;
 
-    for (let x = lastIndex; x >= 0; x--) {
+    for (let x = maxIndex; x >= 0; x--) {
       const newColumn = [];
       let allowToAdd = true;
 
-      for (let y = lastIndex; y >= 0; y--) {
+      for (let y = maxIndex; y >= 0; y--) {
         if (this.state[y][x] === 0) {
           continue;
         }
 
         if (
-          y === lastIndex ||
+          y === maxIndex ||
           !allowToAdd ||
           this.state[y][x] !== newColumn[0]
         ) {
@@ -142,7 +142,7 @@ class Game {
         allowToAdd = false;
       }
 
-      for (let y = lastIndex; y >= 0; y--) {
+      for (let y = maxIndex; y >= 0; y--) {
         const index = y - (Game.GAME_SIZE - newColumn.length);
 
         this.state[y][x] = newColumn[index] ? newColumn[index] : 0;
@@ -251,17 +251,15 @@ class Game {
       return true;
     }
 
+    const maxIndex = Game.GAME_SIZE - 1;
+
     for (let y = 0; y < Game.GAME_SIZE; y++) {
-      for (let x = 1; x < Game.GAME_SIZE; x++) {
-        if (this.state[y][x] === this.state[y][x - 1]) {
+      for (let x = 0; x < Game.GAME_SIZE; x++) {
+        if (x !== maxIndex && this.state[y][x] === this.state[y][x + 1]) {
           return true;
         }
-      }
-    }
 
-    for (let x = 0; x < Game.GAME_SIZE; x++) {
-      for (let y = 1; y < Game.GAME_SIZE; y++) {
-        if (this.state[y][x] === this.state[y - 1][x]) {
+        if (y !== maxIndex && this.state[y][x] === this.state[y + 1][x]) {
           return true;
         }
       }

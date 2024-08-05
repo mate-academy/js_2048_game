@@ -1,7 +1,12 @@
 'use strict';
 
 const Game = require('../modules/Game.class');
-const game = new Game();
+const game = new Game([
+  [128, 128, 0, 8],
+  [16, 8, 16, 32],
+  [8, 16, 32, 64],
+  [16, 32, 0, 128],
+]);
 const gameField = document.querySelector('.game-field');
 const startButton = document.querySelector('.button.start');
 const startMessage = document.querySelector('.message-start');
@@ -54,14 +59,12 @@ function moveListener(e) {
   }
 
   game.addCellToState();
-  fillField(game.getState());
+  fillField();
 
   if (game.has2048()) {
     winMessage.classList.remove('hidden');
     document.body.removeEventListener('keydown', moveListener);
-  }
-
-  if (!game.hasMove()) {
+  } else if (!game.hasMove()) {
     loseMessage.classList.remove('hidden');
     document.body.removeEventListener('keydown', moveListener);
   }
