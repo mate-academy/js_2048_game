@@ -23,6 +23,10 @@ class Game {
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     for (let y = 0; y < Game.GAME_SIZE; y++) {
       const newRow = [];
       let allowToAdd = true;
@@ -57,6 +61,10 @@ class Game {
   }
 
   moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const maxIndex = Game.GAME_SIZE - 1;
 
     for (let y = maxIndex; y >= 0; y--) {
@@ -89,6 +97,10 @@ class Game {
   }
 
   moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     for (let x = 0; x < Game.GAME_SIZE; x++) {
       const newColumn = [];
       let allowToAdd = true;
@@ -122,6 +134,10 @@ class Game {
   }
 
   moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const maxIndex = Game.GAME_SIZE - 1;
 
     for (let x = maxIndex; x >= 0; x--) {
