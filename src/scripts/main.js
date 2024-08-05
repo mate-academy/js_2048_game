@@ -45,16 +45,16 @@ function showMessage() {
 }
 
 function startGame() {
-  if (game.getStatus() === Game.STATUS.idle) {
-    game.start();
+  if (game.getStatus() === Game.STATUS.idle
+  || game.getStatus() === Game.STATUS.lose
+  || game.getStatus() === Game.STATUS.win) {
+    game.start(); // Почати нову гру
     startButton.textContent = 'Restart';
     startButton.classList.remove('start');
     startButton.classList.add('restart');
   } else if (game.getStatus() === Game.STATUS.playing) {
-    game.restart();
-    startButton.textContent = 'Start';
-    startButton.classList.remove('restart');
-    startButton.classList.add('start');
+    game.restart(); // Перезапустити гру
+    game.start(); // Почати нову гру після перезапуску
   }
   render();
 }

@@ -14,12 +14,14 @@ class Game {
     this.status = Game.STATUS.idle;
   }
 
-  static STATUS = {
-    idle: 'idle',
-    playing: 'playing',
-    win: 'win',
-    lose: 'lose',
-  };
+  static get STATUS() {
+    return {
+      idle: 'idle',
+      playing: 'playing',
+      win: 'win',
+      lose: 'lose',
+    };
+  }
 
   getState() {
     return this.state;
@@ -77,7 +79,10 @@ class Game {
   getEmptyCells() {
     return this.state
       .flatMap((row, rowIndex) =>
-        row.map((cell, colIndex) => (cell === 0 ? [rowIndex, colIndex] : null)),
+        row.map((cell, colIndex) => (cell === 0
+          ? [rowIndex, colIndex]
+          : null
+        )),
       )
       .filter(cell => cell !== null);
   }
@@ -126,7 +131,8 @@ class Game {
 
     const reversedState = this.state.map(row => [...row].reverse());
     const updatedState = reversedState.map(row =>
-      this.applyMove(row).reverse());
+      this.applyMove(row).reverse(),
+    );
 
     if (!this.isStateEqual(this.state, updatedState)) {
       this.state = updatedState;
