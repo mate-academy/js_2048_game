@@ -49,7 +49,6 @@ class Game {
   }
 
   moveLeft() {
-    // debugger;
     for (let r = 0; r < Game.ROWS; r++) {
       let rowCurrent = this.board[r];
 
@@ -195,6 +194,7 @@ class Game {
   }
 
   setTheBoard() {
+    // debugger;
     for (let r = 0; r < Game.ROWS; r++) {
       for (let c = 0; c < Game.COLUMNS; c++) {
         const value = this.setBoard[r][c];

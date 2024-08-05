@@ -4,13 +4,13 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-const gameField = document.querySelector('.game-field');
+// const gameField = document.querySelector('.game-field');
 const button = document.querySelector('.button');
 const messegeStart = document.querySelector('.message-start');
 
 // Make cells with Id
 
-setCells(gameField);
+// setCells(gameField);
 
 // button start click
 
@@ -72,18 +72,18 @@ document.addEventListener('keyup', (e) => {
   document.querySelector('.game-score').innerText = game.getScore();
 });
 
-function setCells(element) {
-  const rows = 4;
-  const columns = 4;
+// function setCells(element) {
+//   const rows = 4;
+//   const columns = 4;
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      const cell = document.createElement('div');
+//   for (let r = 0; r < rows; r++) {
+//     for (let c = 0; c < columns; c++) {
+//       const cell = document.createElement('div');
 
-      cell.id = r.toString() + '-' + c.toString();
-      cell.classList.add('field-cell');
+//       cell.id = r.toString() + '-' + c.toString();
+//       cell.classList.add('field-cell');
 
-      element.appendChild(cell);
-    }
-  }
-}
+//       element.appendChild(cell);
+//     }
+//   }
+// }
