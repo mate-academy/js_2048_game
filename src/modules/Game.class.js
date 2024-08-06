@@ -1,3 +1,4 @@
+/* eslint-disable function-paren-newline */
 'use strict';
 
 class Game {
@@ -22,41 +23,36 @@ class Game {
     this.score = 0;
   }
 
+  filterZero(row) {
+    return row.filter((num) => num !== 0);
+  }
+  slide(row) {
+    let updRow = this.filterZero(row);
+
+    for (let i = 0; i < updRow.length - 1; i++) {
+      if (updRow[i] === updRow[i + 1]) {
+        updRow[i] *= 2;
+        updRow[i + 1] = 0;
+        this.score += updRow[i];
+      }
+    }
+    updRow = this.filterZero(updRow);
+
+    while (updRow.length < 4) {
+      updRow.push(0);
+    }
+
+    return updRow;
+  }
   moveLeft() {
     if (this.status === Game.Status.playing) {
       let isMovable = false;
 
-      for (let r = 0; r < 4; r++) {
-        const values = [];
+      const updatedCells = this.state.map((row) => this.slide(row));
 
-        for (let c = 0; c < 4; c++) {
-          if (this.state[r][c] !== 0) {
-            values.push(this.state[r][c]);
-          }
-        }
+      this.state = updatedCells;
 
-        for (let i = 0; i < values.length; i++) {
-          if (values[i] === values[i + 1]) {
-            values[i] *= 2;
-            values[i + 1] = 0;
-            this.score += values[i];
-            isMovable = true;
-          }
-        }
-
-        const updatedRow = values.filter((value) => value !== 0);
-
-        while (updatedRow.length < 4) {
-          updatedRow.push(0);
-        }
-
-        for (let c = 0; c < 4; c++) {
-          if (this.state[r][c] !== updatedRow[c]) {
-            this.state[r][c] = updatedRow[c];
-            isMovable = true;
-          }
-        }
-      }
+      isMovable = true;
 
       if (isMovable) {
         this.getRandomCells();
@@ -64,83 +60,40 @@ class Game {
       }
     }
   }
+
   moveRight() {
     if (this.status === Game.Status.playing) {
       let isMovable = false;
 
-      for (let r = 0; r < 4; r++) {
-        const values = [];
+      const updatedCells = this.state.map((row) =>
+        this.slide(row.reverse()).reverse(),
+      );
 
-        for (let c = 3; c >= 0; c--) {
-          if (this.state[r][c] !== 0) {
-            values.push(this.state[r][c]);
-          }
-        }
+      this.state = updatedCells;
 
-        for (let i = 0; i < values.length; i++) {
-          if (values[i] === values[i + 1]) {
-            values[i] *= 2;
-            values[i + 1] = 0;
-            this.score += values[i];
-            isMovable = true;
-          }
-        }
-
-        const updatedRow = values.filter((value) => value !== 0);
-
-        while (updatedRow.length < 4) {
-          updatedRow.push(0);
-        }
-
-        for (let c = 0; c < 4; c++) {
-          if (this.state[r][c] !== updatedRow[3 - c]) {
-            this.state[r][c] = updatedRow[3 - c];
-            isMovable = true;
-          }
-        }
-      }
+      isMovable = true;
 
       if (isMovable) {
         this.getRandomCells();
         this.checkGameStatus();
       }
     }
+  }
+
+  transposeArray(array) {
+    return array[0].map((col, i) => array.map((row) => row[i]));
   }
   moveUp() {
     if (this.status === Game.Status.playing) {
       let isMovable = false;
 
-      for (let c = 0; c < 4; c++) {
-        const values = [];
+      const updatedCells = this.transposeArray(this.state).map((row) =>
+        this.slide(row),
+      );
 
-        for (let r = 0; r < 4; r++) {
-          if (this.state[r][c] !== 0) {
-            values.push(this.state[r][c]);
-          }
-        }
+      this.state = this.transposeArray(updatedCells);
 
-        for (let i = 0; i < values.length; i++) {
-          if (values[i] === values[i + 1]) {
-            values[i] *= 2;
-            values[i + 1] = 0;
-            this.score += values[i];
-            isMovable = true;
-          }
-        }
-
-        const updatedColumn = values.filter((value) => value !== 0);
-
-        while (updatedColumn.length < 4) {
-          updatedColumn.push(0);
-        }
-
-        for (let r = 0; r < 4; r++) {
-          if (this.state[r][c] !== updatedColumn[r]) {
-            this.state[r][c] = updatedColumn[r];
-            isMovable = true;
-          }
-        }
-      }
+      isMovable = true;
 
       if (isMovable) {
         this.getRandomCells();
@@ -152,37 +105,13 @@ class Game {
     if (this.status === Game.Status.playing) {
       let isMovable = false;
 
-      for (let c = 0; c < 4; c++) {
-        const values = [];
+      const updatedCells = this.transposeArray(this.state).map((row) =>
+        this.slide(row.reverse()).reverse(),
+      );
 
-        for (let r = 3; r >= 0; r--) {
-          if (this.state[r][c] !== 0) {
-            values.push(this.state[r][c]);
-          }
-        }
+      this.state = this.transposeArray(updatedCells);
 
-        for (let i = 0; i < values.length; i++) {
-          if (values[i] === values[i + 1]) {
-            values[i] *= 2;
-            values[i + 1] = 0;
-            this.score += values[i];
-            isMovable = true;
-          }
-        }
-
-        const updatedColumn = values.filter((value) => value !== 0);
-
-        while (updatedColumn.length < 4) {
-          updatedColumn.push(0);
-        }
-
-        for (let r = 0; r < 4; r++) {
-          if (this.state[r][c] !== updatedColumn[3 - r]) {
-            this.state[r][c] = updatedColumn[3 - r];
-            isMovable = true;
-          }
-        }
-      }
+      isMovable = true;
 
       if (isMovable) {
         this.getRandomCells();
