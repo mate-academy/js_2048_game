@@ -73,33 +73,7 @@ class Game {
 
       this.state = matrixMethod(updatedCells);
 
-      this.getRandomCells();
-      this.checkGameStatus();
-    }
-  }
-
-  moveUp() {
-    if (this.status === Game.Status.playing) {
-      const updatedCells = this.transposeArray(this.state).map((row) =>
-        this.slide(row),
-      );
-
-      this.state = this.transposeArray(updatedCells);
-      this.getRandomCells();
-      this.checkGameStatus();
-    }
-  }
-  moveDown() {
-    if (this.status === Game.Status.playing) {
-      const reversedSlide = (row) => this.slide(row.reverse()).reverse();
-
-      const updatedCells = this.transposeArray(this.state).map(
-        (row) => reversedSlide,
-      );
-
-      this.state = this.transposeArray(updatedCells);
-
-      this.getRandomCells();
+      this.getRandomCell();
       this.checkGameStatus();
     }
   }
@@ -116,8 +90,8 @@ class Game {
 
   start() {
     this.status = Game.Status.playing;
-    this.getRandomCells();
-    this.getRandomCells();
+    this.getRandomCell();
+    this.getRandomCell();
   }
 
   restart() {
@@ -126,7 +100,7 @@ class Game {
     this.score = 0;
   }
 
-  getRandomCells() {
+  getRandomCell() {
     const emptyCells = [];
 
     for (let r = 0; r < 4; r++) {
