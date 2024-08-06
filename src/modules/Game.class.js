@@ -7,7 +7,20 @@
  */
 class Game {
   static GAME_SIZE = 4;
-
+  /**
+   * Creates a new game instance.
+   *
+   * @param {number[][]} initialState
+   * The initial state of the board.
+   * @default
+   * [[0, 0, 0, 0],
+   *  [0, 0, 0, 0],
+   *  [0, 0, 0, 0],
+   *  [0, 0, 0, 0]]
+   *
+   * If passed, the board will be initialized with the provided
+   * initial state.
+   */
   constructor(
     initialState = [
       [0, 0, 0, 0],
