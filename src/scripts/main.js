@@ -43,16 +43,16 @@ button.addEventListener('click', () => {
 document.addEventListener('keyup', (e) => {
   switch (e.key) {
     case 'ArrowRight':
-      game.moveRight();
+      game.move('right');
       break;
     case 'ArrowLeft':
-      game.moveLeft();
+      game.move('left');
       break;
     case 'ArrowUp':
-      game.moveUp();
+      game.move('up');
       break;
     case 'ArrowDown':
-      game.moveDown();
+      game.move('down');
       break;
   }
 

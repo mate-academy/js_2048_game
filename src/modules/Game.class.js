@@ -1,5 +1,30 @@
 'use strict';
 
+function transposeArray(array) {
+  return array[0].map((col, i) => array.map((row) => row[i]));
+}
+
+const ROW_MODIFIER_FUNC = {
+  left: (row) => row,
+  right: (row) => row.reverse(),
+  up: (row) => row,
+  down: (row) => row.reverse(),
+};
+
+const MATRIX_MODIFIER_FUNC = {
+  left: (matrix) => matrix,
+  right: (matrix) => matrix,
+  up: transposeArray,
+  down: transposeArray,
+};
+
+const INITIAL_STATE = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+
 class Game {
   static Status = {
     idle: 'idle',
@@ -8,14 +33,7 @@ class Game {
     lose: 'lose',
   };
 
-  constructor(
-    initialState = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ],
-  ) {
+  constructor(initialState = INITIAL_STATE) {
     this.state = initialState.map((row) => [...row]);
     this.status = Game.Status.idle;
     this.initialState = initialState;
@@ -25,7 +43,7 @@ class Game {
   filterZero(row) {
     return row.filter((num) => num !== 0);
   }
-  slide(row) {
+  slide(row, direction) {
     let updRow = this.filterZero(row);
 
     for (let i = 0; i < updRow.length - 1; i++) {
@@ -41,66 +59,38 @@ class Game {
       updRow.push(0);
     }
 
-    return updRow;
+    return ROW_MODIFIER_FUNC[direction](updRow);
   }
-  moveLeft() {
+
+  move(direction) {
+    const rowMethod = ROW_MODIFIER_FUNC[direction];
+    const matrixMethod = MATRIX_MODIFIER_FUNC[direction];
+
     if (this.status === Game.Status.playing) {
-      let isMovable = false;
+      const updatedCells = matrixMethod(this.state).map((row) => {
+        return this.slide(rowMethod(row), direction);
+      });
 
-      const updatedCells = this.state.map((row) => this.slide(row));
+      this.state = matrixMethod(updatedCells);
 
-      this.state = updatedCells;
-
-      isMovable = true;
-
-      if (isMovable) {
-        this.getRandomCells();
-        this.checkGameStatus();
-      }
+      this.getRandomCells();
+      this.checkGameStatus();
     }
   }
 
-  moveRight() {
-    if (this.status === Game.Status.playing) {
-      let isMovable = false;
-      const reversedSlide = (row) => this.slide(row.reverse()).reverse();
-
-      const updatedCells = this.state.map((row) => reversedSlide);
-
-      this.state = updatedCells;
-
-      isMovable = true;
-
-      if (isMovable) {
-        this.getRandomCells();
-        this.checkGameStatus();
-      }
-    }
-  }
-
-  transposeArray(array) {
-    return array[0].map((col, i) => array.map((row) => row[i]));
-  }
   moveUp() {
     if (this.status === Game.Status.playing) {
-      let isMovable = false;
-      const slide = (row) => this.slide(row);
-
-      const updatedCells = this.transposeArray(this.state).map((row) => slide);
+      const updatedCells = this.transposeArray(this.state).map((row) =>
+        this.slide(row),
+      );
 
       this.state = this.transposeArray(updatedCells);
-
-      isMovable = true;
-
-      if (isMovable) {
-        this.getRandomCells();
-        this.checkGameStatus();
-      }
+      this.getRandomCells();
+      this.checkGameStatus();
     }
   }
   moveDown() {
     if (this.status === Game.Status.playing) {
-      let isMovable = false;
       const reversedSlide = (row) => this.slide(row.reverse()).reverse();
 
       const updatedCells = this.transposeArray(this.state).map(
@@ -109,12 +99,8 @@ class Game {
 
       this.state = this.transposeArray(updatedCells);
 
-      isMovable = true;
-
-      if (isMovable) {
-        this.getRandomCells();
-        this.checkGameStatus();
-      }
+      this.getRandomCells();
+      this.checkGameStatus();
     }
   }
 
