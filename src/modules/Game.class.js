@@ -164,13 +164,13 @@ class Game {
     this.putNewGameNumber();
     this.putNewGameNumber();
 
-    return this.getState;
+    // return this.getState;
   }
 
   restart() {
+    this.score = 0;
     this.status = Game.Status.idle;
     this.state = JSON.parse(JSON.stringify(this.initialState));
-    this.score = 0;
   }
 
   checkIsWin() {

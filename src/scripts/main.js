@@ -16,6 +16,7 @@ button.addEventListener('click', (e) => {
     messageStart.classList.add('hidden');
 
     game.start();
+    updateGameField();
   } else {
     button.classList.replace('restart', 'start');
     button.textContent = 'Start';
@@ -24,6 +25,8 @@ button.addEventListener('click', (e) => {
     messageLose.classList.add('hidden');
 
     game.restart();
+    updateGameField();
+    score.textContent = game.getScore();
   }
 });
 
@@ -41,6 +44,14 @@ document.addEventListener('keydown', (e) => {
     case 'ArrowDown':
       game.moveDown();
       break;
+  }
+
+  if (game.getStatus() === Game.Status.lose) {
+    messageLose.classList.remove('hidden');
+  }
+
+  if (game.getStatus() === Game.Status.win) {
+    messageWin.classList.remove('hidden');
   }
 
   updateGameField();
