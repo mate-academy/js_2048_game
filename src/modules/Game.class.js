@@ -1,4 +1,3 @@
-/* eslint-disable function-paren-newline */
 'use strict';
 
 class Game {
@@ -64,10 +63,9 @@ class Game {
   moveRight() {
     if (this.status === Game.Status.playing) {
       let isMovable = false;
+      const reversedSlide = (row) => this.slide(row.reverse()).reverse();
 
-      const updatedCells = this.state.map((row) =>
-        this.slide(row.reverse()).reverse(),
-      );
+      const updatedCells = this.state.map((row) => reversedSlide);
 
       this.state = updatedCells;
 
@@ -86,10 +84,9 @@ class Game {
   moveUp() {
     if (this.status === Game.Status.playing) {
       let isMovable = false;
+      const slide = (row) => this.slide(row);
 
-      const updatedCells = this.transposeArray(this.state).map((row) =>
-        this.slide(row),
-      );
+      const updatedCells = this.transposeArray(this.state).map((row) => slide);
 
       this.state = this.transposeArray(updatedCells);
 
@@ -104,9 +101,10 @@ class Game {
   moveDown() {
     if (this.status === Game.Status.playing) {
       let isMovable = false;
+      const reversedSlide = (row) => this.slide(row.reverse()).reverse();
 
-      const updatedCells = this.transposeArray(this.state).map((row) =>
-        this.slide(row.reverse()).reverse(),
+      const updatedCells = this.transposeArray(this.state).map(
+        (row) => reversedSlide,
       );
 
       this.state = this.transposeArray(updatedCells);
