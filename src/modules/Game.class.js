@@ -20,15 +20,34 @@ class Game {
     this.score = 0;
     this.state = initialState;
     this.initialState = JSON.parse(JSON.stringify(initialState));
+    this.moveLeft = this.wrapMove(this.moveLeft);
+    this.moveRight = this.wrapMove(this.moveRight);
+    this.moveUp = this.wrapMove(this.moveUp);
+    this.moveDown = this.wrapMove(this.moveDown);
+  }
+
+  wrapMove(move) {
+    return function () {
+      if (this.status !== 'playing') {
+        return;
+      }
+
+      const oldStateJson = JSON.stringify(this.state);
+
+      move.apply(this);
+
+      if (this.has2048()) {
+        return;
+      }
+
+      if (JSON.stringify(this.state) !== oldStateJson) {
+        this.addCellToState();
+      }
+      this.hasMove();
+    }.bind(this);
   }
 
   moveLeft() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    const oldStateJson = JSON.stringify(this.state);
-
     for (let y = 0; y < Game.GAME_SIZE; y++) {
       const newRow = [];
       let allowToAdd = true;
@@ -58,16 +77,9 @@ class Game {
       }
       this.state[y] = newRow;
     }
-
-    this.doAfterMove(oldStateJson);
   }
 
   moveRight() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    const oldStateJson = JSON.stringify(this.state);
     const maxIndex = Game.GAME_SIZE - 1;
 
     for (let y = maxIndex; y >= 0; y--) {
@@ -95,17 +107,9 @@ class Game {
       }
       this.state[y] = newRow;
     }
-
-    this.doAfterMove(oldStateJson);
   }
 
   moveUp() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    const oldStateJson = JSON.stringify(this.state);
-
     for (let x = 0; x < Game.GAME_SIZE; x++) {
       const newColumn = [];
       let allowToAdd = true;
@@ -134,16 +138,9 @@ class Game {
         this.state[y][x] = newColumn[y] ? newColumn[y] : 0;
       }
     }
-
-    this.doAfterMove(oldStateJson);
   }
 
   moveDown() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    const oldStateJson = JSON.stringify(this.state);
     const maxIndex = Game.GAME_SIZE - 1;
 
     for (let x = maxIndex; x >= 0; x--) {
@@ -176,20 +173,6 @@ class Game {
         this.state[y][x] = newColumn[index] ? newColumn[index] : 0;
       }
     }
-
-    this.doAfterMove(oldStateJson);
-  }
-
-  doAfterMove(oldStateJson) {
-    if (this.has2048()) {
-      return;
-    }
-
-    if (JSON.stringify(this.state) !== oldStateJson) {
-      this.addCellToState();
-    }
-
-    this.hasMove();
   }
 
   /**
