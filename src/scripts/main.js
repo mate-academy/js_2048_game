@@ -48,13 +48,13 @@ function startGame() {
   if (game.getStatus() === Game.STATUS.idle
   || game.getStatus() === Game.STATUS.lose
   || game.getStatus() === Game.STATUS.win) {
-    game.start(); // Почати нову гру
+    game.start();
     startButton.textContent = 'Restart';
     startButton.classList.remove('start');
     startButton.classList.add('restart');
   } else if (game.getStatus() === Game.STATUS.playing) {
-    game.restart(); // Перезапустити гру
-    game.start(); // Почати нову гру після перезапуску
+    game.restart();
+    game.start();
   }
   render();
 }
@@ -66,16 +66,16 @@ function handleKeydown(e) {
 
   switch (e.key) {
     case 'ArrowLeft':
-      game.moveLeft();
+      game.handleMove('left');
       break;
     case 'ArrowRight':
-      game.moveRight();
+      game.handleMove('right');
       break;
     case 'ArrowUp':
-      game.moveUp();
+      game.handleMove('up');
       break;
     case 'ArrowDown':
-      game.moveDown();
+      game.handleMove('down');
       break;
     default:
       return;

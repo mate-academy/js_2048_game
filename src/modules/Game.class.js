@@ -111,63 +111,68 @@ class Game {
     return false;
   }
 
-  moveLeft() {
+  handleMove(direction) {
     if (this.status !== Game.STATUS.playing) {
       return;
     }
 
-    const updatedState = this.state.map(row => this.applyMove(row));
+    let rotatedState;
+    let unrotatedState;
 
-    if (!this.isStateEqual(this.state, updatedState)) {
-      this.state = updatedState;
+    switch (direction) {
+      case 'left':
+        rotatedState = this.state;
+        unrotatedState = this.state.map((row) => this.applyMove(row));
+        break;
+
+      case 'right':
+        rotatedState = this.state.map((row) => [...row].reverse());
+
+        unrotatedState = rotatedState.map((row) =>
+          this.applyMove(row).reverse(),
+        );
+        break;
+
+      case 'up':
+        rotatedState = this.rotateRight(this.state);
+
+        unrotatedState = this.rotateLeft(
+          rotatedState.map((row) => this.applyMove(row)),
+        );
+        break;
+
+      case 'down':
+        rotatedState = this.rotateLeft(this.state);
+
+        unrotatedState = this.rotateRight(
+          rotatedState.map((row) => this.applyMove(row)),
+        );
+        break;
+
+      default:
+        return;
+    }
+
+    if (!this.isStateEqual(this.state, unrotatedState)) {
+      this.state = unrotatedState;
       this.addCells();
     }
+  }
+
+  moveLeft() {
+    this.handleMove('left');
   }
 
   moveRight() {
-    if (this.status !== Game.STATUS.playing) {
-      return;
-    }
-
-    const reversedState = this.state.map(row => [...row].reverse());
-    const updatedState = reversedState.map(row =>
-      this.applyMove(row).reverse(),
-    );
-
-    if (!this.isStateEqual(this.state, updatedState)) {
-      this.state = updatedState;
-      this.addCells();
-    }
+    this.handleMove('right');
   }
 
   moveUp() {
-    if (this.status !== Game.STATUS.playing) {
-      return;
-    }
-
-    const rotatedState = this.rotateRight(this.state);
-    const updatedState = rotatedState.map(row => this.applyMove(row));
-    const unrotatedState = this.rotateLeft(updatedState);
-
-    if (!this.isStateEqual(this.state, unrotatedState)) {
-      this.state = unrotatedState;
-      this.addCells();
-    }
+    this.handleMove('up');
   }
 
   moveDown() {
-    if (this.status !== Game.STATUS.playing) {
-      return;
-    }
-
-    const rotatedState = this.rotateLeft(this.state);
-    const updatedState = rotatedState.map(row => this.applyMove(row));
-    const unrotatedState = this.rotateRight(updatedState);
-
-    if (!this.isStateEqual(this.state, unrotatedState)) {
-      this.state = unrotatedState;
-      this.addCells();
-    }
+    this.handleMove('down');
   }
 
   applyMove(row) {
