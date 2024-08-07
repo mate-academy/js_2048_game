@@ -163,8 +163,6 @@ class Game {
     this.status = Game.Status.playing;
     this.putNewGameNumber();
     this.putNewGameNumber();
-
-    // return this.getState;
   }
 
   restart() {
@@ -189,11 +187,32 @@ class Game {
     return JSON.stringify(this.state) !== JSON.stringify(newState);
   }
 
-  checkStatusLose(state) {
-    if (
-      this.getEmptyCells().length === 0 &&
-      !this.checkPossibilityOfMerging(state)
-    ) {
+  checkPossibilityOfMoving() {
+    const lengthOfArray = this.state.length;
+
+    for (let i = 0; i < lengthOfArray; i++) {
+      for (let j = 0; j < lengthOfArray; j++) {
+        if (
+          j < lengthOfArray - 1 &&
+          this.state[i][j] === this.state[i][j + 1]
+        ) {
+          return true;
+        }
+
+        if (
+          i < lengthOfArray - 1 &&
+          this.state[i][j] === this.state[i + 1][j]
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  checkStatusLose() {
+    if (this.getEmptyCells().length === 0 && !this.checkPossibilityOfMoving()) {
       this.status = Game.Status.lose;
     }
   }
