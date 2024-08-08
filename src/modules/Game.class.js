@@ -90,8 +90,7 @@ class Game {
 
   start() {
     this.status = Game.Status.playing;
-    this.getRandomCell();
-    this.getRandomCell();
+    this.getRandomCell(2);
   }
 
   restart() {
@@ -100,22 +99,24 @@ class Game {
     this.score = 0;
   }
 
-  getRandomCell() {
+  getRandomCell(cellCount = 1) {
     const emptyCells = [];
 
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
-        if (this.state[r][c] === 0) {
-          emptyCells.push([r, c]);
+    for (let i = 0; i < cellCount; i++) {
+      for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+          if (this.state[r][c] === 0) {
+            emptyCells.push([r, c]);
+          }
         }
       }
-    }
 
-    if (emptyCells.length > 0) {
-      const [randomR, randomC] =
-        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      if (emptyCells.length > 0) {
+        const [randomR, randomC] =
+          emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-      this.state[randomR][randomC] = Math.random() < 0.9 ? 2 : 4;
+        this.state[randomR][randomC] = Math.random() < 0.9 ? 2 : 4;
+      }
     }
   }
   checkGameStatus() {
