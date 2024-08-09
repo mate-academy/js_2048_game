@@ -89,6 +89,7 @@ class Game {
     this.#getScore();
     this.#updateBoard(this.#board);
   }
+
   moveUp() {
     for (let grid = this.#board.length - 1; grid >= 1; grid--) {
       for (let cell = this.#board.length - 1; cell >= 0; cell--) {
