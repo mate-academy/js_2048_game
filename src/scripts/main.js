@@ -196,6 +196,7 @@ const grid = new Grid(gameField);
 
 button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
+    detectSwipe();
     button.classList.remove('start');
     button.classList.add('restart');
     button.textContent = 'RESTART';
@@ -281,6 +282,46 @@ async function handleInput(moveEvent) {
   }
 
   setupInputOnce();
+}
+
+function detectSwipe() {
+  let startX;
+  let startY;
+  let endX;
+  let endY;
+
+  gameField.addEventListener('touchstart', handleTouchStart, false);
+  gameField.addEventListener('touchend', handleTouchEnd, false);
+
+  function handleTouchStart(e) {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }
+
+  function handleTouchEnd(e) {
+    endX = e.changedTouches[0].clientX;
+    endY = e.changedTouches[0].clientY;
+
+    handleSwipe();
+  }
+
+  function handleSwipe() {
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX > 0) {
+        handleInput({ key: 'ArrowRight' });
+        handleInput({ key: 'ArrowLeft' });
+      }
+    } else {
+      if (deltaY > 0) {
+        handleInput({ key: 'ArrowDown' });
+      } else {
+        handleInput({ key: 'ArrowUp' });
+      }
+    }
+  }
 }
 
 async function moveUp() {
