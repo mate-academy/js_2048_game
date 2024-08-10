@@ -103,7 +103,7 @@ class Game {
         for (let t = 0; t < values.length - 1; t++) {
           if (values[t] === values[t + 1] && values[t] !== 0) {
             values[t] *= 2;
-            values[t + 1] = 0
+            values[t + 1] = 0;
             this.score += values[t];
             canMove = true;
           }
