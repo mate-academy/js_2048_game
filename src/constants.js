@@ -8,6 +8,13 @@ export const EMPTY_BOARD = [
   [0, 0, 0, 0],
 ];
 
+export const MERGE_DIRECTIONS = {
+  left: 'left',
+  right: 'right',
+  up: 'up',
+  down: 'down',
+};
+
 export const TYPES_MODE = {
   start: 'start',
   restart: 'restart',

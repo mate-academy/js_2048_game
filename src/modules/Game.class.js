@@ -5,7 +5,12 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
-import { EMPTY_BOARD, EMPTY_CELL, GAME_STATUSES } from '../constants.js';
+import {
+  EMPTY_BOARD,
+  EMPTY_CELL,
+  GAME_STATUSES,
+  MERGE_DIRECTIONS,
+} from '../constants.js';
 import TableColumn from '../scripts/TableColumn.js';
 import TableRow from '../scripts/TableRow.js';
 import {
@@ -50,39 +55,83 @@ class Game {
     this.#controller = null;
   }
 
+  #mergeLeft(grid, cell) {
+    if (this.#board[grid][cell - 1] === this.#board[grid][cell]) {
+      this.#board[grid][cell - 1] = this.#board[grid][cell - 1] * 2;
+      this.#board[grid][cell] = EMPTY_CELL;
+      this.#score += this.#board[grid][cell - 1];
+    }
+  }
+
+  #mergeRight(grid, cell) {
+    if (this.#board[grid][cell] === this.#board[grid][cell + 1]) {
+      this.#board[grid][cell + 1] = this.#board[grid][cell + 1] * 2;
+      this.#board[grid][cell] = EMPTY_CELL;
+      this.#score += this.#board[grid][cell + 1];
+    }
+  }
+
+  #mergeDown(grid, cell) {
+    if (this.#board[grid][cell] === this.#board[grid + 1][cell]) {
+      this.#board[grid + 1][cell] = this.#board[grid + 1][cell] * 2;
+      this.#board[grid][cell] = EMPTY_CELL;
+      this.#score += this.#board[grid + 1][cell];
+    }
+  }
+
+  #mergeUp(grid, cell) {
+    if (this.#board[grid][cell] === this.#board[grid - 1][cell]) {
+      this.#board[grid - 1][cell] = this.#board[grid - 1][cell] * 2;
+      this.#board[grid][cell] = EMPTY_CELL;
+      this.#score += this.#board[grid - 1][cell];
+    }
+  }
+
+  #mergeByCell(grid, cell, direction) {
+    if (direction === MERGE_DIRECTIONS.left) {
+      this.#mergeLeft(grid, cell);
+    }
+
+    if (direction === MERGE_DIRECTIONS.right) {
+      this.#mergeRight(grid, cell);
+    }
+  }
+
+  #mergeByGrid(grid, cell, direction) {
+    if (direction === MERGE_DIRECTIONS.down) {
+      this.#mergeDown(grid, cell);
+    }
+
+    if (direction === MERGE_DIRECTIONS.up) {
+      this.#mergeUp(grid, cell);
+    }
+  }
+
   moveLeft() {
     for (let grid = this.#board.length - 1; grid >= 0; grid--) {
       for (let cell = this.#board.length - 1; cell >= 0; cell--) {
-        if (this.#board[grid][cell - 1] === this.#board[grid][cell]) {
-          this.#board[grid][cell - 1] = this.#board[grid][cell - 1] * 2;
-          this.#board[grid][cell] = EMPTY_CELL;
-          this.#score += this.#board[grid][cell - 1];
-        }
-
         if (this.#board[grid][cell - 1] === EMPTY_CELL) {
           this.#board[grid][cell - 1] = this.#board[grid][cell];
           this.#board[grid][cell] = EMPTY_CELL;
         }
+
+        this.#mergeByCell(grid, cell, MERGE_DIRECTIONS.left);
       }
     }
-    this.#getScore();
 
+    this.#getScore();
     this.#updateBoard(this.#board);
   }
 
   moveRight() {
     for (let grid = 0; grid < this.#board.length; grid++) {
       for (let cell = 0; cell < this.#board.length; cell++) {
-        if (this.#board[grid][cell] === this.#board[grid][cell + 1]) {
-          this.#board[grid][cell + 1] = this.#board[grid][cell + 1] * 2;
-          this.#board[grid][cell] = EMPTY_CELL;
-          this.#score += this.#board[grid][cell + 1];
-        }
-
         if (this.#board[grid][cell + 1] === EMPTY_CELL) {
           this.#board[grid][cell + 1] = this.#board[grid][cell];
           this.#board[grid][cell] = EMPTY_CELL;
         }
+
+        this.#mergeByCell(grid, cell, MERGE_DIRECTIONS.right);
       }
     }
 
@@ -93,35 +142,28 @@ class Game {
   moveUp() {
     for (let grid = this.#board.length - 1; grid >= 1; grid--) {
       for (let cell = this.#board.length - 1; cell >= 0; cell--) {
-        if (this.#board[grid][cell] === this.#board[grid - 1][cell]) {
-          this.#board[grid - 1][cell] = this.#board[grid - 1][cell] * 2;
-          this.#board[grid][cell] = EMPTY_CELL;
-          this.#score += this.#board[grid - 1][cell];
-        }
-
         if (this.#board[grid - 1][cell] === EMPTY_CELL) {
           this.#board[grid - 1][cell] = this.#board[grid][cell];
           this.#board[grid][cell] = EMPTY_CELL;
         }
+
+        this.#mergeByGrid(grid, cell, MERGE_DIRECTIONS.up);
       }
     }
 
     this.#getScore();
     this.#updateBoard(this.#board);
   }
+
   moveDown() {
     for (let grid = 0; grid < this.#board.length - 1; grid++) {
       for (let cell = 0; cell < this.#board.length; cell++) {
-        if (this.#board[grid][cell] === this.#board[grid + 1][cell]) {
-          this.#board[grid + 1][cell] = this.#board[grid + 1][cell] * 2;
-          this.#board[grid][cell] = EMPTY_CELL;
-          this.#score += this.#board[grid + 1][cell];
-        }
-
         if (this.#board[grid + 1][cell] === EMPTY_CELL) {
           this.#board[grid + 1][cell] = this.#board[grid][cell];
           this.#board[grid][cell] = EMPTY_CELL;
         }
+
+        this.#mergeByGrid(grid, cell, MERGE_DIRECTIONS.down);
       }
     }
 

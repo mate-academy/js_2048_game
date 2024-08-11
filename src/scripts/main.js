@@ -6,7 +6,6 @@ import Game from '../modules/Game.class.js';
 import toggleGameMode from './toggleGameMode.js';
 
 const game = new Game();
-
 // Write your code here
 const button = document.querySelector('button');
 

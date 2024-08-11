@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { EMPTY_CELL, TARGET_SCORE } from './constants';
 
 export const generateRandomIndex = (maxNumber) => {
