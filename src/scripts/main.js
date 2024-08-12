@@ -171,10 +171,10 @@ game.moveDown = () => {
             state[0][j] === state[1][j] &&
             state[2][j] === state[3][j]
           ) {
-            state[2][j] = state[0][j] * 2;
-            state[3][j] = state[1][j] * 2;
-            state[0][j] = 0;
+            state[3][j] = state[2][j] * 2;
+            state[2][j] = state[1][j] * 2;
             state[1][j] = 0;
+            state[0][j] = 0;
             isSomethingChanged = true;
             jWasUsed.push(j);
             filledCells -= 2;
@@ -218,8 +218,8 @@ game.moveUp = () => {
             state[0][j] === state[1][j] &&
             state[2][j] === state[3][j]
           ) {
-            state[0][j] = state[2][j] * 2;
-            state[1][j] = state[3][j] * 2;
+            state[0][j] = state[1][j] * 2;
+            state[1][j] = state[2][j] * 2;
             state[2][j] = 0;
             state[3][j] = 0;
             isSomethingChanged = true;
@@ -265,8 +265,8 @@ game.moveLeft = () => {
             state[i][0] === state[i][1] &&
             state[i][2] === state[i][3]
           ) {
-            state[i][0] = state[i][2] * 2;
-            state[i][1] = state[i][3] * 2;
+            state[i][0] = state[i][1] * 2;
+            state[i][1] = state[i][2] * 2;
             state[i][2] = 0;
             state[i][3] = 0;
             isSomethingChanged = true;
@@ -312,10 +312,10 @@ game.moveRight = () => {
             state[i][0] === state[i][1] &&
             state[i][2] === state[i][3]
           ) {
-            state[i][2] = state[i][0] * 2;
-            state[i][3] = state[i][1] * 2;
-            state[i][0] = 0;
+            state[i][3] = state[i][2] * 2;
+            state[i][2] = state[i][1] * 2;
             state[i][1] = 0;
+            state[i][0] = 0;
             isSomethingChanged = true;
             iWasUsed.push(i);
             filledCells -= 2;
