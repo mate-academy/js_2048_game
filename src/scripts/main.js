@@ -1,17 +1,18 @@
 'use strict';
 
 // Uncomment the next lines to use your game instance in the browser
-const Game = require('../modules/Game.class');
-const game = new Game();
-
-let filledCells = 0;
-const score = document.querySelector('.game-score');
 const initialState = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ];
+
+const Game = require('../modules/Game.class');
+const game = new Game(initialState);
+
+let filledCells = 0;
+const score = document.querySelector('.game-score');
 
 let state = structuredClone(initialState);
 
@@ -32,20 +33,26 @@ button.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.keyCode === 37) {
-    game.moveLeft();
+  switch (e.keyCode) {
+    case 37:
+      game.moveLeft();
+      break;
+    case 38:
+      game.moveUp();
+      break;
+    case 39:
+      game.moveRight();
+      break;
+    case 40:
+      game.moveDown();
   }
 
-  if (e.keyCode === 38) {
-    game.moveUp();
+  if ([...cells].some((cell) => cell.textContent === '2048')) {
+    messageWin.className = 'message message-win';
   }
 
-  if (e.keyCode === 39) {
-    game.moveRight();
-  }
-
-  if (e.keyCode === 40) {
-    game.moveDown();
+  if (filledCells === cells.length && !canGameContinue()) {
+    messageLose.className = 'message message-lose';
   }
 });
 
@@ -191,14 +198,6 @@ game.moveDown = () => {
   if (isSomethingChanged) {
     addRandomNumInCells();
   }
-
-  if ([...cells].some((cell) => cell.textContent === '2048')) {
-    messageWin.className = 'message message-win';
-  }
-
-  if (filledCells === cells.length && !canGameContinue()) {
-    messageLose.className = 'message message-lose';
-  }
 };
 
 game.moveUp = () => {
@@ -245,14 +244,6 @@ game.moveUp = () => {
 
   if (isSomethingChanged) {
     addRandomNumInCells();
-  }
-
-  if ([...cells].some((cell) => cell.textContent === '2048')) {
-    messageWin.className = 'message message-win';
-  }
-
-  if (filledCells === cells.length && !canGameContinue()) {
-    messageLose.className = 'message message-lose';
   }
 };
 
@@ -301,14 +292,6 @@ game.moveLeft = () => {
   if (isSomethingChanged) {
     addRandomNumInCells();
   }
-
-  if ([...cells].some((cell) => cell.textContent === '2048')) {
-    messageWin.className = 'message message-win';
-  }
-
-  if (filledCells === cells.length && !canGameContinue()) {
-    messageLose.className = 'message message-lose';
-  }
 };
 
 game.moveRight = () => {
@@ -355,13 +338,5 @@ game.moveRight = () => {
 
   if (isSomethingChanged) {
     addRandomNumInCells();
-  }
-
-  if ([...cells].some((cell) => cell.textContent === '2048')) {
-    messageWin.className = 'message message-win';
-  }
-
-  if (filledCells === cells.length && !canGameContinue()) {
-    messageLose.className = 'message message-lose';
   }
 };
