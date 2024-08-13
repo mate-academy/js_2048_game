@@ -28,12 +28,16 @@ const MATRIX_MODIFIER_FUNC = {
   down: transposeArray,
 };
 
-const INITIAL_STATE = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
+const INITIAL_STATE = Array.from(
+  { length: BOARD_SIZE },
+  Array(BOARD_SIZE).fill(0),
+);
+//   [
+//   [0, 0, 0, 0],
+//   [0, 0, 0, 0],
+//   [0, 0, 0, 0],
+//   [0, 0, 0, 0],
+// ];
 
 class Game {
   static Status = {
