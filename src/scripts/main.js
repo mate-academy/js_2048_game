@@ -63,6 +63,7 @@ game.start = () => {
   button.className = 'button restart';
   button.textContent = 'Restart';
   addRandomNumInCells();
+  addRandomNumInCells();
 };
 
 game.restart = () => {
