@@ -11,11 +11,11 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #82ac92;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #191816;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
@@ -30,17 +30,17 @@ body {
   }
 
   &--8 {
-    background: #f2b179;
+    background: #577d62;
     color: #f9f6f2;
   }
 
   &--16 {
-    background: #f59563;
+    background: #204e31;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #071d0f;
     color: #f9f6f2;
   }
 
@@ -76,7 +76,7 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: rgb(92, 91, 91);
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -138,11 +138,11 @@ h1 {
 }
 
 .start {
-  background: #1dae28;
+  background: #103f0d;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: #e28635;
   }
 }
 
