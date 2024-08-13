@@ -21,6 +21,7 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
+    this.initialState = initialState;
     // eslint-disable-next-line no-console
     console.log(initialState);
   }
