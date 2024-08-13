@@ -260,87 +260,108 @@
 'use strict';
 
 const Game = require('../modules/Game.class');
-const fieldRow = [...document.querySelectorAll('.field-row')];
-const scoreCeil = document.querySelector('.game-score');
-const startBtn = document.querySelector('.start');
-const messageWin = document.querySelector('.message-win');
-const messageLose = document.querySelector('.message-lose');
-const messageStart = document.querySelector('.message-start');
+
 const game = new Game();
-const addField = () => {
-  if (game.getStatus() === 'win') {
-    messageWin.classList.remove('hidden');
-    document.removeEventListener('keydown', handleKeyDown);
-    game.gameStatus = 'playing';
 
+game.init();
+
+document.addEventListener('keydown', (e) => game.handleKeydown(e));
+
+const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
+const buttonStart = document.querySelector('.start');
+const scoreDisplay = document.querySelector('.game-score');
+
+game.render = function () {
+  const tbody = document.querySelector('tbody');
+
+  tbody.innerHTML = '';
+
+  this.state.forEach((row) => {
+    const tr = document.createElement('tr');
+
+    row.forEach((cell) => {
+      const td = document.createElement('td');
+
+      td.textContent = cell || '';
+      td.className = cell ? `field-cell field-cell--${cell}` : 'field-cell';
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  scoreDisplay.textContent = this.score;
+};
+
+function showMessage(messageElement) {
+  startMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
+  messageElement.classList.remove('hidden');
+}
+
+buttonStart.addEventListener('click', () => {
+  game.start = function () {
+    this.state = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.score = 0;
+    this.firstMoveMade = false;
+    this.gameOver = false;
+    scoreDisplay.textContent = this.score;
+    showMessage(startMessage);
+    buttonStart.textContent = 'Start';
+    this.init();
+  };
+  game.start();
+});
+
+game.checkWin = function () {
+  if (this.state.flat().includes(2048)) {
+    showMessage(winMessage);
+    this.gameOver = true;
+  }
+};
+
+game.checkGameOver = function () {
+  if (this.gameOver) {
     return;
   }
 
-  if (game.getStatus() === 'lose') {
-    messageLose.classList.remove('hidden');
-    document.removeEventListener('keydown', handleKeyDown);
-    game.gameStatus = 'playing';
-
-    return;
-  }
-
-  for (let i = 0; i < game.gameState.length; i++) {
-    const fieldCell = [...fieldRow[i].querySelectorAll('.field-cell')];
-
-    for (let j = 0; j < game.gameState[i].length; j++) {
-      const cell = fieldCell[j];
-      const cellValue = game.gameState[i][j];
-
-      if (cellValue === 0 && cell.textContent > 0) {
-        cell.classList.remove(`field-cell--${cell.textContent}`);
-        cell.textContent = '';
-      }
-
-      if (cellValue > 0) {
-        cell.classList.remove(`field-cell--${cell.textContent}`);
-        cell.classList.add(`field-cell--${cellValue}`);
-        cell.textContent = cellValue;
-      }
+  for (const row of this.state) {
+    if (row.includes(0)) {
+      return false;
     }
   }
-  scoreCeil.textContent = game.gameScore;
-};
-const handleKeyDown = (e) => {
-  switch (e.key) {
-    case 'ArrowLeft':
-      game.moveLeft();
-      break;
-    case 'ArrowRight':
-      game.moveRight();
-      break;
-    case 'ArrowUp':
-      game.moveUp();
-      break;
-    case 'ArrowDown':
-      game.moveDown();
-      break;
-    default:
-      return;
-  }
-  addField();
-};
-const handleStart = () => {
-  document.addEventListener('keydown', handleKeyDown);
-
-  if (game.getStatus() === 'playing') {
-    game.restart();
-    messageLose.classList.add('hidden');
-    messageWin.classList.add('hidden');
-  }
-
-  if (game.getStatus() === 'idle') {
-    game.start();
-    startBtn.classList.remove('start');
-    startBtn.classList.add('restart');
-    startBtn.textContent = 'Restart';
-    messageStart.classList.add('hidden');
-  }
-  addField();
+  this.gameOver = true;
+  showMessage(loseMessage);
 };
 
-startBtn.addEventListener('click', handleStart);
+game.handleKeydown = function (e) {
+  if (this.gameOver) {
+    return;
+  }
+
+  if (e.key === 'ArrowLeft') {
+    this.moveLeft();
+  } else if (e.key === 'ArrowRight') {
+    this.moveRight();
+  } else if (e.key === 'ArrowUp') {
+    this.moveUp();
+  } else if (e.key === 'ArrowDown') {
+    this.moveDown();
+  }
+
+  if (!this.firstMoveMade) {
+    this.firstMoveMade = true;
+    buttonStart.textContent = 'Restart';
+    startMessage.classList.add('hidden');
+  }
+
+  this.checkWin();
+  this.checkGameOver();
+};
