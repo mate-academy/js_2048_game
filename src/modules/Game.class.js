@@ -27,21 +27,10 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.state = initialState;
     this.score = 0;
     this.firstMoveMade = false;
     this.gameOver = false;
-    this.startMessage = document.querySelector('.message-start');
-    this.winMessage = document.querySelector('.message-win');
-    this.loseMessage = document.querySelector('.message-lose');
-    this.buttonStart = document.querySelector('.start');
-    this.scoreDisplay = document.querySelector('.game-score');
-    this.buttonStart.addEventListener('click', () => this.start());
   }
 
   init() {
@@ -97,29 +86,29 @@ class Game {
   handler() {
     document.addEventListener('keydown', (e) => this.handleKeydown(e));
   }
-  handleKeydown(e) {
-    if (this.gameOver) {
-      return;
-    }
+  // handleKeydown(e) {
+  //   if (this.gameOver) {
+  //     return;
+  //   }
 
-    if (e.key === 'ArrowLeft') {
-      this.moveLeft();
-    } else if (e.key === 'ArrowRight') {
-      this.moveRight();
-    } else if (e.key === 'ArrowUp') {
-      this.moveUp();
-    } else if (e.key === 'ArrowDown') {
-      this.moveDown();
-    }
+  //   if (e.key === 'ArrowLeft') {
+  //     this.moveLeft();
+  //   } else if (e.key === 'ArrowRight') {
+  //     this.moveRight();
+  //   } else if (e.key === 'ArrowUp') {
+  //     this.moveUp();
+  //   } else if (e.key === 'ArrowDown') {
+  //     this.moveDown();
+  //   }
 
-    if (!this.firstMoveMade) {
-      this.firstMoveMade = true;
-      this.buttonStart.textContent = 'Restart';
-      this.startMessage.classList.add('hidden');
-    }
-    this.checkWin();
-    this.checkGameOver();
-  }
+  //   if (!this.firstMoveMade) {
+  //     this.firstMoveMade = true;
+  //     this.buttonStart.textContent = 'Restart';
+  //     this.startMessage.classList.add('hidden');
+  //   }
+  //   this.checkWin();
+  //   this.checkGameOver();
+  // }
   generateNumber() {
     return Math.random() < 0.9 ? 2 : 4;
   }
@@ -192,7 +181,7 @@ class Game {
   }
   checkWin() {
     if (this.state.flat().includes(2048)) {
-      this.showMessage(this.winMessage);
+      // this.showMessage(this.winMessage);
       this.gameOver = true;
     }
   }
@@ -215,14 +204,8 @@ class Game {
         }
       }
     }
-    this.showMessage(this.loseMessage);
+    // this.showMessage(this.loseMessage);
     this.gameOver = true;
-  }
-  showMessage(messageElement) {
-    this.startMessage.classList.add('hidden');
-    this.winMessage.classList.add('hidden');
-    this.loseMessage.classList.add('hidden');
-    messageElement.classList.remove('hidden');
   }
   start() {
     this.state = [
@@ -241,25 +224,6 @@ class Game {
   }
   restart() {
     this.start();
-  }
-  render() {
-    const tbody = document.querySelector('tbody');
-
-    tbody.innerHTML = '';
-
-    this.state.forEach((row) => {
-      const tr = document.createElement('tr');
-
-      row.forEach((cell) => {
-        const td = document.createElement('td');
-
-        td.textContent = cell || '';
-        td.className = cell ? `field-cell field-cell--${cell}` : 'field-cell';
-        tr.appendChild(td);
-      });
-      tbody.appendChild(tr);
-    });
-    this.scoreDisplay.textContent = this.score;
   }
 }
 module.exports = Game;

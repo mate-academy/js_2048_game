@@ -260,7 +260,108 @@
 'use strict';
 
 const Game = require('../modules/Game.class');
+
 const game = new Game();
 
 game.init();
-game.handler();
+
+document.addEventListener('keydown', (e) => game.handleKeydown(e));
+
+const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
+const buttonStart = document.querySelector('.start');
+const scoreDisplay = document.querySelector('.game-score');
+
+game.render = function () {
+  const tbody = document.querySelector('tbody');
+
+  tbody.innerHTML = '';
+
+  this.state.forEach((row) => {
+    const tr = document.createElement('tr');
+
+    row.forEach((cell) => {
+      const td = document.createElement('td');
+
+      td.textContent = cell || '';
+      td.className = cell ? `field-cell field-cell--${cell}` : 'field-cell';
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  scoreDisplay.textContent = this.score;
+};
+
+function showMessage(messageElement) {
+  startMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
+  messageElement.classList.remove('hidden');
+}
+
+buttonStart.addEventListener('click', () => {
+  game.start = function () {
+    this.state = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.score = 0;
+    this.firstMoveMade = false;
+    this.gameOver = false;
+    scoreDisplay.textContent = this.score;
+    showMessage(startMessage);
+    buttonStart.textContent = 'Start';
+    this.init();
+  };
+  game.start();
+});
+
+game.checkWin = function () {
+  if (this.state.flat().includes(2048)) {
+    showMessage(winMessage);
+    this.gameOver = true;
+  }
+};
+
+game.checkGameOver = function () {
+  if (this.gameOver) {
+    return;
+  }
+
+  for (const row of this.state) {
+    if (row.includes(0)) {
+      return false;
+    }
+  }
+  this.gameOver = true;
+  showMessage(loseMessage);
+};
+
+game.handleKeydown = function (e) {
+  if (this.gameOver) {
+    return;
+  }
+
+  if (e.key === 'ArrowLeft') {
+    this.moveLeft();
+  } else if (e.key === 'ArrowRight') {
+    this.moveRight();
+  } else if (e.key === 'ArrowUp') {
+    this.moveUp();
+  } else if (e.key === 'ArrowDown') {
+    this.moveDown();
+  }
+
+  if (!this.firstMoveMade) {
+    this.firstMoveMade = true;
+    buttonStart.textContent = 'Restart';
+    startMessage.classList.add('hidden');
+  }
+
+  this.checkWin();
+  this.checkGameOver();
+};
