@@ -36,7 +36,6 @@ button.addEventListener('click', () => {
     messageWin.classList.add('hidden');
   }
 
-  manageGameField();
   manageGameScore();
 });
 
@@ -56,7 +55,6 @@ document.addEventListener('keyup', (e) => {
       break;
   }
 
-  manageGameField();
   manageGameScore();
   manageMessages();
 });

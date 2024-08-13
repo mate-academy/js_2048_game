@@ -1,7 +1,17 @@
 'use strict';
 
+export const BOARD_SIZE = 4;
+
+let isMovable = true;
+let hasEmptyCells = true;
+let isMergeable;
+
 function transposeArray(array) {
   return array[0].map((col, i) => array.map((row) => row[i]));
+}
+
+function filterZero(row) {
+  return row.filter((num) => num !== 0);
 }
 
 const ROW_MODIFIER_FUNC = {
@@ -40,11 +50,9 @@ class Game {
     this.score = 0;
   }
 
-  filterZero(row) {
-    return row.filter((num) => num !== 0);
-  }
   slide(row, direction) {
-    let updRow = this.filterZero(row);
+    let updRow = filterZero(row);
+    this.checkMergeability(updRow);
 
     for (let i = 0; i < updRow.length - 1; i++) {
       if (updRow[i] === updRow[i + 1]) {
@@ -52,10 +60,15 @@ class Game {
         updRow[i + 1] = 0;
         this.score += updRow[i];
       }
-    }
-    updRow = this.filterZero(updRow);
 
-    while (updRow.length < 4) {
+      if (updRow[i + 1] === 0) {
+        updRow[i + 1] = updRow[i];
+        updRow[i] = 0;
+      }
+    }
+    updRow = filterZero(updRow);
+
+    while (updRow.length < BOARD_SIZE) {
       updRow.push(0);
     }
 
@@ -103,8 +116,8 @@ class Game {
     const emptyCells = [];
 
     for (let i = 0; i < cellCount; i++) {
-      for (let r = 0; r < 4; r++) {
-        for (let c = 0; c < 4; c++) {
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
           if (this.state[r][c] === 0) {
             emptyCells.push([r, c]);
           }
@@ -119,27 +132,35 @@ class Game {
       }
     }
   }
-  checkGameStatus() {
-    let isMovable = false;
-    let hasEmptyCells = false;
 
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
+  checkMergeability(row) {
+    const mergeablesArray = [];
+
+    row.forEach((elm, i) => {
+      if (elm[i] === elm[i + 1]) {
+        mergeablesArray.push(true);
+      } else {
+        mergeablesArray.push(false);
+      }
+    });
+  }
+
+  checkEmptyCells() {
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      if (this.state[r].includes(0)) {
+        hasEmptyCells = true;
+      } else {
+        hasEmptyCells = false;
+      }
+    }
+  }
+  checkGameStatus() {
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      for (let c = 0; c < BOARD_SIZE; c++) {
         if (this.state[r][c] === 2048) {
           this.status = Game.Status.win;
 
           return;
-        }
-
-        if (this.state[r][c] === 0) {
-          hasEmptyCells = true;
-        }
-
-        if (
-          (r < 3 && this.state[r][c] === this.state[r + 1][c]) ||
-          (c < 3 && this.state[r][c] === this.state[r][c + 1])
-        ) {
-          isMovable = true;
         }
       }
     }
