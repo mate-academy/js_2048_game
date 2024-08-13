@@ -10,6 +10,18 @@ body {
   font-weight: 900;
 }
 
+@keyframes merge {
+  from {
+    // transform: scale(1);
+    background-color: #eee;
+  }
+  to {
+    // transform: scale(1);
+    background-color: #e5c958;
+  }
+}
+
+
 .field-cell {
   background: #82ac92;
   width: 75px;
@@ -20,6 +32,10 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    transform 0.3s;
 
   &--2 {
     background: #eee4da;
@@ -73,6 +89,16 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+}
+
+.field-cell.new {
+  animation: appear 0.3s ease-out;
+}
+
+.field-cell.merge {
+  animation:
+    merge 0.3s ease-out,
+    mergeReturn 0.3s ease-in 0.3s;
 }
 
 .game-field {

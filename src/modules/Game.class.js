@@ -1,4 +1,5 @@
 'use strict';
+
 /**
  * This class represents the game.
  * Now it has a basic structure, that is needed for testing.
@@ -27,49 +28,71 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
-    this.state = initialState;
-    this.score = 0;
-    this.firstMoveMade = false;
-    this.gameOver = false;
+    if (
+      initialState.length === 4 &&
+      initialState.every((row) => row.length === 4)
+    ) {
+      this.initialState = initialState;
+      this.restart();
+    } else {
+      throw new Error('Initial state is not valid!');
+    }
   }
 
-  init() {
-    this.pushGenerateNumber();
-    this.pushGenerateNumber();
-    this.render();
-  }
   moveLeft() {
-    this.state = this.state.map((arr) => this.merge(arr, 0));
-    this.pushGenerateNumber();
+    if (this.status === 'playing') {
+      const result = this.moveTiles(true, false);
+
+      if (this.isStateDifferent(result.state)) {
+        this.updateGame(result);
+      }
+    }
   }
+
   moveRight() {
-    this.state = this.state.map((arr) => this.merge(arr, 1));
-    this.pushGenerateNumber();
+    if (this.status === 'playing') {
+      const result = this.moveTiles(true, true);
+
+      if (this.isStateDifferent(result.state)) {
+        this.updateGame(result);
+      }
+    }
   }
+
   moveUp() {
-    this.state = this.rotateMatrix(this.state, 1);
-    this.state = this.state.map((arr) => this.merge(arr, 1));
-    this.state = this.rotateMatrix(this.state, 0);
-    this.pushGenerateNumber();
+    if (this.status === 'playing') {
+      const result = this.moveTiles(false, false);
+
+      if (this.isStateDifferent(result.state)) {
+        this.updateGame(result);
+      }
+    }
   }
+
   moveDown() {
-    this.state = this.rotateMatrix(this.state, 1);
-    this.state = this.state.map((arr) => this.merge(arr, 0));
-    this.state = this.rotateMatrix(this.state, 0);
-    this.pushGenerateNumber();
+    if (this.status === 'playing') {
+      const result = this.moveTiles(false, true);
+
+      if (this.isStateDifferent(result.state)) {
+        this.updateGame(result);
+      }
+    }
   }
+
   /**
    * @returns {number}
    */
   getScore() {
     return this.score;
   }
+
   /**
    * @returns {number[][]}
    */
   getState() {
     return this.state;
   }
+
   /**
    * Returns the current game status.
    *
@@ -81,149 +104,228 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
-    return 'idle';
-  }
-  handler() {
-    document.addEventListener('keydown', (e) => this.handleKeydown(e));
-  }
-  // handleKeydown(e) {
-  //   if (this.gameOver) {
-  //     return;
-  //   }
-
-  //   if (e.key === 'ArrowLeft') {
-  //     this.moveLeft();
-  //   } else if (e.key === 'ArrowRight') {
-  //     this.moveRight();
-  //   } else if (e.key === 'ArrowUp') {
-  //     this.moveUp();
-  //   } else if (e.key === 'ArrowDown') {
-  //     this.moveDown();
-  //   }
-
-  //   if (!this.firstMoveMade) {
-  //     this.firstMoveMade = true;
-  //     this.buttonStart.textContent = 'Restart';
-  //     this.startMessage.classList.add('hidden');
-  //   }
-  //   this.checkWin();
-  //   this.checkGameOver();
-  // }
-  generateNumber() {
-    return Math.random() < 0.9 ? 2 : 4;
-  }
-  pushGenerateNumber() {
-    const availableIndexes = [[], [], [], []];
-    // eslint-disable-next-line no-shadow
-
-    this.state.forEach((arr, i) => {
-      // eslint-disable-next-line no-shadow
-      arr.forEach((number, index) => {
-        if (!number) {
-          availableIndexes[i].push(index);
-        }
-      });
-    });
-
-    const availableArray = [];
-
-    availableIndexes.forEach((arr, index) => {
-      if (arr.length) {
-        availableArray.push(index);
-      }
-    });
-
-    if (availableArray.length === 0) {
-      return;
-    }
-
-    const array = this.getRandomElement(availableArray);
-    const number = this.getRandomElement(availableIndexes[array]);
-
-    this.state[array][number] = this.generateNumber();
-    this.render();
-  }
-  getRandomElement(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
+    return this.status;
   }
 
-  rotateMatrix(arr, clockwise) {
-    if (clockwise) {
-      return arr.map((_, colIndex) => {
-        return arr.map((row) => row[colIndex]).reverse();
-      });
-    } else {
-      return arr.map((_, colIndex) => {
-        return arr.map((row) => row[row.length - 1 - colIndex]);
-      });
-    }
-  }
-  merge(arr, direction) {
-    const input = direction ? arr.reverse() : arr;
-    const result = input
-      .filter((item) => item)
-      .reduce((acc, item, idx) => {
-        if (acc[idx - 1] === item) {
-          acc[acc.length - 1] += item;
-          this.score += acc[acc.length - 1];
-        } else {
-          acc.push(item);
-        }
-
-        return acc;
-      }, []);
-    const resLength = result.length;
-
-    result.length = arr.length;
-    result.fill(0, resLength, result.length);
-
-    return direction ? result.reverse() : result;
-  }
-  checkWin() {
-    if (this.state.flat().includes(2048)) {
-      // this.showMessage(this.winMessage);
-      this.gameOver = true;
-    }
-  }
-  checkGameOver() {
-    for (const row of this.state) {
-      if (row.includes(0)) {
-        return false;
-      }
-    }
-
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (
-          (i < this.state.length - 1 &&
-            this.state[i][j] === this.state[i + 1][j]) ||
-          (j < this.state[i].length - 1 &&
-            this.state[i][j] === this.state[i][j + 1])
-        ) {
-          return false;
-        }
-      }
-    }
-    // this.showMessage(this.loseMessage);
-    this.gameOver = true;
-  }
+  /**
+   * Starts the game.
+   */
   start() {
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    this.score = 0;
-    this.firstMoveMade = false;
-    this.gameOver = false;
-    this.scoreDisplay.textContent = this.score;
-    this.showMessage(this.startMessage);
-    this.buttonStart.textContent = 'Start';
-    this.init();
+    this.restart();
+    this.status = 'playing';
+
+    this.putNewNumber();
+    this.putNewNumber();
   }
+
+  /**
+   * Resets the game.
+   */
   restart() {
-    this.start();
+    this.state = this.cloneState(this.initialState);
+    this.score = 0;
+    this.status = 'idle';
+    this.firstMoveMade = false;
+  }
+
+  // Add your own methods here
+  cloneState(state) {
+    const newState = [];
+
+    for (let row = 0; row < state.length; row++) {
+      newState.push([...state[row]]);
+    }
+
+    return newState;
+  }
+
+  isStateDifferent(newState) {
+    for (let row = 0; row < this.state.length; row++) {
+      for (let column = 0; column < this.state[row].length; column++) {
+        if (this.state[row][column] !== newState[row][column]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  updateGame(result) {
+    this.state = result.state;
+    this.score += result.score;
+    this.firstMoveMade = true;
+    this.putNewNumber();
+
+    if (this.isGameOver()) {
+      this.status = 'lose';
+    } else if (this.isGameWon()) {
+      this.status = 'win';
+    }
+  }
+
+  getFirstMoveMade() {
+    return this.firstMoveMade;
+  }
+
+  getAvailableCell() {
+    const cell = [];
+
+    this.state.forEach((row, y) => {
+      row.forEach((number, x) => {
+        if (!number) {
+          cell.push({ x, y });
+        }
+      });
+    });
+
+    return cell;
+  }
+
+  getRandomElement(arr) {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+
+    return arr[randomIndex];
+  }
+
+  generateNumber() {
+    return Math.floor(Math.random() * 10) === 0 ? 4 : 2;
+  }
+
+  putNewNumber() {
+    const availableCell = this.getAvailableCell();
+    const randomCell = this.getRandomElement(availableCell);
+
+    this.state[randomCell.y][randomCell.x] = this.generateNumber();
+  }
+
+  isGameOver() {
+    if (this.getAvailableCell().length === 0) {
+      const directions = [
+        { horizontal: false, forward: false },
+        { horizontal: true, forward: true },
+        { horizontal: false, forward: true },
+        { horizontal: true, forward: false },
+      ];
+
+      return directions.every(({ horizontal, forward }) => {
+        const newState = this.moveTiles(horizontal, forward).state;
+
+        return this.isStateDifferent(newState);
+      });
+    }
+
+    return false;
+  }
+
+  isGameWon() {
+    return this.state.flat().includes(2048);
+  }
+
+  getCellCoords(horizontal, firstCoord, position) {
+    return horizontal
+      ? { row: firstCoord, column: position }
+      : { row: position, column: firstCoord };
+  }
+
+  moveTiles(horizontal, forward, addScore) {
+    const state = this.cloneState(this.state);
+    let score = 0;
+
+    const rowLength = state[0].length;
+    const columnLength = state.length;
+    let firstCoordLength;
+    let secondCoordLength;
+
+    if (horizontal) {
+      firstCoordLength = columnLength;
+      secondCoordLength = rowLength;
+    } else {
+      firstCoordLength = rowLength;
+      secondCoordLength = columnLength;
+    }
+
+    let initialSecondCoord;
+    let startOfStripe;
+    let endOfStirpe;
+    let step;
+
+    if (forward) {
+      initialSecondCoord = secondCoordLength - 2;
+      startOfStripe = -1;
+      endOfStirpe = secondCoordLength;
+      step = 1;
+    } else {
+      initialSecondCoord = 1;
+      startOfStripe = secondCoordLength;
+      endOfStirpe = -1;
+      step = -1;
+    }
+
+    for (let firstCoord = 0; firstCoord < firstCoordLength; firstCoord++) {
+      const mergedInStripe = Array(secondCoordLength).fill(false);
+
+      for (
+        let secondCoord = initialSecondCoord;
+        secondCoord !== startOfStripe;
+        secondCoord -= step
+      ) {
+        let merged = false;
+        let position = secondCoord;
+
+        let currentCellCoords = this.getCellCoords(
+          horizontal,
+          firstCoord,
+          position,
+        );
+        let nextCellCoords = this.getCellCoords(
+          horizontal,
+          firstCoord,
+          position + step,
+        );
+
+        while (
+          position + step !== endOfStirpe &&
+          (state[nextCellCoords.row][nextCellCoords.column] === 0 ||
+            (state[nextCellCoords.row][nextCellCoords.column] ===
+              state[currentCellCoords.row][currentCellCoords.column] &&
+              !mergedInStripe[position + step] &&
+              !merged))
+        ) {
+          if (state[nextCellCoords.row][nextCellCoords.column] > 0) {
+            merged = true;
+            score += state[nextCellCoords.row][nextCellCoords.column] * 2;
+          }
+
+          state[nextCellCoords.row][nextCellCoords.column] +=
+            state[currentCellCoords.row][currentCellCoords.column];
+          state[currentCellCoords.row][currentCellCoords.column] = 0;
+          position += step;
+
+          currentCellCoords = this.getCellCoords(
+            horizontal,
+            firstCoord,
+            position,
+          );
+
+          nextCellCoords = this.getCellCoords(
+            horizontal,
+            firstCoord,
+            position + step,
+          );
+        }
+
+        if (merged) {
+          mergedInStripe[position] = true;
+        }
+      }
+    }
+
+    return {
+      state: state,
+      score: score,
+    };
   }
 }
+
 module.exports = Game;
