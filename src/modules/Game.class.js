@@ -43,98 +43,106 @@ class Game {
   }
 
   moveLeft() {
-    const newState = [...this.state];
+    if (this.getStatus() === 'playing') {
+      const newState = [...this.state];
 
-    for (let i = 0; i < this.state.length; i++) {
-      newState[i] = this.move(newState[i]);
+      for (let i = 0; i < this.state.length; i++) {
+        newState[i] = this.move(newState[i]);
+      }
+
+      if (this.canMerge(newState)) {
+        this.state = [...newState];
+        this.isWin();
+        this.generateGameNumber();
+      }
+
+      this.isLose(newState);
     }
-
-    if (this.canMerge(newState)) {
-      this.state = [...newState];
-      this.isWin();
-      this.generateGameNumber();
-    }
-
-    this.isLose(newState);
   }
 
   moveRight() {
-    const newState = [...this.state];
+    if (this.getStatus() === 'playing') {
+      const newState = [...this.state];
 
-    for (let i = 0; i < this.state.length; i++) {
-      let row = [...newState[i]];
+      for (let i = 0; i < this.state.length; i++) {
+        let row = [...newState[i]];
 
-      row.reverse();
+        row.reverse();
 
-      row = this.move(row);
+        row = this.move(row);
 
-      row.reverse();
+        row.reverse();
 
-      newState[i] = row;
+        newState[i] = row;
+      }
+
+      if (this.canMerge(newState)) {
+        this.state = [...newState];
+        this.isWin();
+        this.generateGameNumber();
+      }
+
+      this.isLose(newState);
     }
-
-    if (this.canMerge(newState)) {
-      this.state = [...newState];
-      this.isWin();
-      this.generateGameNumber();
-    }
-
-    this.isLose(newState);
   }
 
   moveUp() {
-    const newState = [...Array(4)].map(() => Array(4).fill(0));
+    if (this.getStatus() === 'playing') {
+      const newState = [...Array(4)].map(() => Array(4).fill(0));
 
-    for (let i = 0; i < this.state.length; i++) {
-      let row = [
-        this.state[0][i],
-        this.state[1][i],
-        this.state[2][i],
-        this.state[3][i],
-      ];
+      for (let i = 0; i < this.state.length; i++) {
+        let row = [
+          this.state[0][i],
+          this.state[1][i],
+          this.state[2][i],
+          this.state[3][i],
+        ];
 
-      row = this.move(row);
+        row = this.move(row);
 
-      for (let j = 0; j < this.state.length; j++) {
-        newState[j][i] = row[j];
+        for (let j = 0; j < this.state.length; j++) {
+          newState[j][i] = row[j];
+        }
       }
-    }
 
-    if (this.canMerge(newState)) {
-      this.state = [...newState];
-      this.isWin();
-      this.generateGameNumber();
-    }
+      if (this.canMerge(newState)) {
+        this.state = [...newState];
+        this.isWin();
+        this.generateGameNumber();
+      }
 
-    this.isLose(newState);
+      this.isLose(newState);
+    }
   }
 
   moveDown() {
-    const newState = [...Array(4)].map(() => Array(4).fill(0));
+    if (this.getStatus() === 'playing') {
+      const newState = [...Array(4)].map(() => Array(4).fill(0));
 
-    for (let i = 0; i < this.state.length; i++) {
-      let row = [
-        this.state[0][i],
-        this.state[1][i],
-        this.state[2][i],
-        this.state[3][i],
-      ].reverse();
+      for (let i = 0; i < this.state.length; i++) {
+        let row = [
+          this.state[0][i],
+          this.state[1][i],
+          this.state[2][i],
+          this.state[3][i],
+        ].reverse();
 
-      row = this.move(row);
-      row = row.reverse();
+        row = this.move(row);
+        row = row.reverse();
 
-      for (let j = 0; j < this.state.length; j++) {
-        newState[j][i] = row[j];
+        for (let j = 0; j < this.state.length; j++) {
+          newState[j][i] = row[j];
+        }
       }
-    }
 
-    if (this.canMerge(newState)) {
-      this.state = [...newState];
-      this.isWin();
-      this.generateGameNumber();
-    }
+      if (this.canMerge(newState)) {
+        this.state = [...newState];
+        this.isWin();
+        this.generateGameNumber();
+      }
 
-    this.isLose(newState);
+      this.isLose(newState);
+    }
   }
 
   getScore() {
