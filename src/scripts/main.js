@@ -11,21 +11,18 @@ document.addEventListener('keydown', (e) => {
     switch (e.key) {
       case 'ArrowLeft':
         game.moveLeft();
-        updateUI();
         break;
       case 'ArrowRight':
         game.moveRight();
-        updateUI();
         break;
       case 'ArrowUp':
         game.moveUp();
-        updateUI();
         break;
       case 'ArrowDown':
         game.moveDown();
-        updateUI();
         break;
     }
+    updateUI();
   }
 });
 
