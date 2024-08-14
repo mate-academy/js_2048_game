@@ -56,8 +56,6 @@ class Game {
     }
 
     this.isLose(newState);
-
-    this.renderField();
   }
 
   moveRight() {
@@ -82,8 +80,6 @@ class Game {
     }
 
     this.isLose(newState);
-
-    this.renderField();
   }
 
   moveUp() {
@@ -111,8 +107,6 @@ class Game {
     }
 
     this.isLose(newState);
-
-    this.renderField();
   }
 
   moveDown() {
@@ -141,8 +135,6 @@ class Game {
     }
 
     this.isLose(newState);
-
-    this.renderField();
   }
 
   getScore() {
@@ -161,39 +153,12 @@ class Game {
     this.status = Game.GameStatus.playing;
     this.generateGameNumber();
     this.generateGameNumber();
-    this.renderField();
   }
 
   restart() {
     this.state = JSON.parse(JSON.stringify(this.initialState));
     this.status = Game.GameStatus.idle;
     this.score = 0;
-    this.renderField();
-  }
-
-  renderField() {
-    const table = document.querySelector('table');
-
-    for (const i of this.state) {
-      const newRow = table.insertRow();
-
-      newRow.className = 'field-row';
-
-      for (const j of i) {
-        const newCell = newRow.insertCell();
-
-        newCell.textContent = j || '';
-        newCell.classList.add('field-cell');
-
-        if (j) {
-          newCell.classList.add(`field-cell--${j}`);
-        }
-      }
-    }
-
-    for (let i = 0; i < this.state.length; i++) {
-      table.deleteRow(0);
-    }
   }
 
   move(row) {

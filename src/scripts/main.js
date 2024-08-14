@@ -12,10 +12,12 @@ const messageLose = document.querySelector('.message-lose');
 
 startButton.addEventListener('click', () => {
   if (startButton.textContent === 'Start') {
-    game.start();
     startButton.textContent = 'Restart';
     startButton.classList.replace('start', 'restart');
     startMessage.classList.add('hidden');
+
+    game.start();
+    renderGame();
   } else if (startButton.textContent === 'Restart') {
     startButton.textContent = 'Start';
     startButton.classList.replace('restart', 'start');
@@ -24,7 +26,7 @@ startButton.addEventListener('click', () => {
     messageLose.classList.add('hidden');
 
     game.restart();
-    game.renderField();
+    renderGame();
 
     gameScore.textContent = game.getScore();
   }
@@ -57,7 +59,25 @@ document.addEventListener('keydown', (e) => {
     messageWin.classList.remove('hidden');
   }
 
-  game.renderField();
+  renderGame();
 
   gameScore.textContent = game.getScore();
 });
+
+function renderGame() {
+  const rows = [...document.querySelectorAll('.field-row')];
+  const cells = rows.map((row) => [...row.children]);
+
+  const state = game.getState();
+
+  state.forEach((row, i) => {
+    row.forEach((cell, j) => {
+      const currentCell = cells[i][j];
+
+      currentCell.className = !cell
+        ? 'field-cell'
+        : `field-cell field-cell--${cell}`;
+      currentCell.innerHTML = !cell ? '' : cell;
+    });
+  });
+}
