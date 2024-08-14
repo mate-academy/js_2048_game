@@ -32,7 +32,7 @@ startButton.addEventListener('click', () => {
   }
 });
 
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keyup', (e) => {
   switch (e.key) {
     case 'ArrowUp':
     case 'w':

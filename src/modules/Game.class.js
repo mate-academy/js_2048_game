@@ -34,27 +34,109 @@ class Game {
     return this.status;
   }
 
+  setState() {
+    const cells = document.querySelectorAll('.field-cell');
+    const stateValues = this.state.flat();
+
+    if (cells.length === 0) {
+      return;
+    }
+
+    for (let i = 0; i < stateValues.length; i++) {
+      const currentCell = cells[i];
+      const currentValue = stateValues[i];
+
+      if (!currentCell) {
+        continue;
+      }
+
+      currentCell.className = 'field-cell';
+
+      if (currentValue > 0) {
+        currentCell.textContent = currentValue;
+        currentCell.classList.add(`field-cell--${currentValue}`);
+      } else {
+        currentCell.textContent = '';
+      }
+    }
+  }
+
+  addRandomNumber(max) {
+    return Math.floor(Math.random() * max);
+  }
+
+  getRandomCell() {
+    return Math.random() < 0.9 ? 2 : 4;
+  }
+
+  checkStatus() {
+    let movesAVLBL = false;
+    let canMerge = false;
+
+    const size = this.state.length;
+
+    for (let i = 0; i < size; i++) {
+      if (this.state[i].includes(2048)) {
+        this.status = Game.gameStatus.win;
+
+        return;
+      }
+    }
+
+    for (let i = 0; i < size; i++) {
+      for (let j = 0; j < size; j++) {
+        if (this.state[i][j] === 0) {
+          movesAVLBL = true;
+        }
+
+        if (j < size - 1 && this.state[i][j] === this.state[i][j + 1]) {
+          canMerge = true;
+        }
+
+        if (i < size - 1 && this.state[i][j] === this.state[i + 1][j]) {
+          canMerge = true;
+        }
+
+        if (movesAVLBL || canMerge) {
+          break;
+        }
+      }
+
+      if (movesAVLBL || canMerge) {
+        break;
+      }
+    }
+
+    if (!movesAVLBL && !canMerge) {
+      this.status = Game.gameStatus.lose;
+    }
+  }
+
   moveLeft() {
     if (this.getStatus() !== Game.gameStatus.playing) {
       return;
     }
 
     let movesAVLBL = false;
+
     const newState = this.state.map((row) => {
-      const filteredRow = row.filter((cell) => cell !== 0);
       const newRow = [];
+      let i = 0;
 
-      for (let i = 0; i < filteredRow.length; i++) {
-        if (filteredRow[i] === filteredRow[i + 1]) {
-          const mergedValue = filteredRow[i] * 2;
+      while (i < row.length) {
+        if (row[i] !== 0) {
+          if (row[i] === row[i + 1]) {
+            const mergedValue = row[i] * 2;
 
-          newRow.push(mergedValue);
-          this.score += mergedValue;
-          i++;
-          movesAVLBL = true;
-        } else {
-          newRow.push(filteredRow[i]);
+            newRow.push(mergedValue);
+            this.score += mergedValue;
+            i++;
+            movesAVLBL = true;
+          } else {
+            newRow.push(row[i]);
+          }
         }
+        i++;
       }
 
       while (newRow.length < row.length) {
@@ -84,21 +166,25 @@ class Game {
     }
 
     let movesAVLBL = false;
+
     const newState = this.state.map((row) => {
-      const filteredRow = row.filter((cell) => cell !== 0);
       const newRow = [];
+      let i = row.length - 1;
 
-      for (let i = filteredRow.length - 1; i >= 0; i--) {
-        if (filteredRow[i] === filteredRow[i - 1]) {
-          const mergedValue = filteredRow[i] * 2;
+      while (i >= 0) {
+        if (row[i] !== 0) {
+          if (row[i] === row[i - 1]) {
+            const mergedValue = row[i] * 2;
 
-          newRow.unshift(mergedValue);
-          this.score += mergedValue;
-          i--;
-          movesAVLBL = true;
-        } else {
-          newRow.unshift(filteredRow[i]);
+            newRow.unshift(mergedValue);
+            this.score += mergedValue;
+            i--;
+            movesAVLBL = true;
+          } else {
+            newRow.unshift(row[i]);
+          }
         }
+        i--;
       }
 
       while (newRow.length < row.length) {
@@ -266,101 +352,6 @@ class Game {
 
     newState[r][c] = this.getRandomCell();
     this.state = newState;
-  }
-
-  setState() {
-    const cells = document.querySelectorAll('.field-cell');
-    const stateValues = this.state.flat();
-
-    if (cells.length === 0) {
-      return;
-    }
-
-    for (let i = 0; i < stateValues.length; i++) {
-      const currentCell = cells[i];
-      const currentValue = stateValues[i];
-
-      if (!currentCell) {
-        continue;
-      }
-
-      currentCell.className = 'field-cell';
-
-      if (currentValue > 0) {
-        currentCell.textContent = currentValue;
-        currentCell.classList.add(`field-cell--${currentValue}`);
-      } else {
-        currentCell.textContent = '';
-      }
-    }
-  }
-
-  addRandomNumber(max) {
-    return Math.floor(Math.random() * max);
-  }
-
-  getRandomCell() {
-    return Math.random() < 0.9 ? 2 : 4;
-  }
-
-  checkStatus() {
-    let movesAVLBL = false;
-    let canMerge = false;
-
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (this.state[i][j] === 2048) {
-          this.status = Game.gameStatus.win;
-
-          return;
-        }
-      }
-    }
-
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length - 1; j++) {
-        if (this.state[i][j] === this.state[i][j + 1]) {
-          canMerge = true;
-          break;
-        }
-      }
-
-      if (canMerge) {
-        break;
-      }
-    }
-
-    if (!canMerge) {
-      for (let i = 0; i < this.state.length - 1; i++) {
-        for (let j = 0; j < this.state[i].length; j++) {
-          if (this.state[i][j] === this.state[i + 1][j]) {
-            canMerge = true;
-            break;
-          }
-        }
-
-        if (canMerge) {
-          break;
-        }
-      }
-    }
-
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (this.state[i][j] === 0) {
-          movesAVLBL = true;
-          break;
-        }
-      }
-
-      if (movesAVLBL) {
-        break;
-      }
-    }
-
-    if (!movesAVLBL && !canMerge) {
-      this.status = Game.gameStatus.lose;
-    }
   }
 }
 
