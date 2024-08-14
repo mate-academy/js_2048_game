@@ -25,7 +25,7 @@
     "@linthtml/linthtml": "^0.9.5",
     "@mate-academy/eslint-config": "latest",
     "@mate-academy/linthtml-config": "latest",
-    "@mate-academy/scripts": "^1.7.5",
+    "@mate-academy/scripts": "^1.8.6",
     "@mate-academy/stylelint-config": "latest",
     "@parcel/transformer-sass": "^2.12.0",
     "cypress": "^9.7.0",
