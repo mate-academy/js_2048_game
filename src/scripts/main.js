@@ -36,25 +36,27 @@ button.addEventListener('click', () => {
     messageWin.classList.add('hidden');
   }
 
+  manageGameField();
   manageGameScore();
+  manageMessages();
 });
 
 document.addEventListener('keyup', (e) => {
   switch (e.key) {
     case 'ArrowRight':
-      game.move('right');
+      game.moveRight();
       break;
     case 'ArrowLeft':
-      game.move('left');
+      game.moveLeft();
       break;
     case 'ArrowUp':
-      game.move('up');
+      game.moveUp();
       break;
     case 'ArrowDown':
-      game.move('down');
+      game.moveDown();
       break;
   }
-
+  manageGameField();
   manageGameScore();
   manageMessages();
 });

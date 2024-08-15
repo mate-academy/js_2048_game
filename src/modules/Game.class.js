@@ -2,42 +2,13 @@
 
 export const BOARD_SIZE = 4;
 
-let isMovable = true;
-let hasEmptyCells = true;
-let isMergeable;
-
-function transposeArray(array) {
-  return array[0].map((col, i) => array.map((row) => row[i]));
-}
-
 function filterZero(row) {
   return row.filter((num) => num !== 0);
 }
 
-const ROW_MODIFIER_FUNC = {
-  left: (row) => row,
-  right: (row) => row.reverse(),
-  up: (row) => row,
-  down: (row) => row.reverse(),
-};
-
-const MATRIX_MODIFIER_FUNC = {
-  left: (matrix) => matrix,
-  right: (matrix) => matrix,
-  up: transposeArray,
-  down: transposeArray,
-};
-
-const INITIAL_STATE = Array.from(
-  { length: BOARD_SIZE },
-  Array(BOARD_SIZE).fill(0),
-);
-//   [
-//   [0, 0, 0, 0],
-//   [0, 0, 0, 0],
-//   [0, 0, 0, 0],
-//   [0, 0, 0, 0],
-// ];
+const INITIAL_STATE = Array.from({ length: BOARD_SIZE }, () => {
+  return Array(BOARD_SIZE).fill(0);
+});
 
 class Game {
   static Status = {
@@ -54,20 +25,21 @@ class Game {
     this.score = 0;
   }
 
-  slide(row, direction) {
+  transposeArray() {
+    return this.state[0].map((col, i) => this.state.map((row) => row[i]));
+  }
+
+  mirrorArray() {
+    return this.state.map((row) => row.reverse());
+  }
+  slide(row) {
     let updRow = filterZero(row);
-    this.checkMergeability(updRow);
 
     for (let i = 0; i < updRow.length - 1; i++) {
       if (updRow[i] === updRow[i + 1]) {
         updRow[i] *= 2;
         updRow[i + 1] = 0;
         this.score += updRow[i];
-      }
-
-      if (updRow[i + 1] === 0) {
-        updRow[i + 1] = updRow[i];
-        updRow[i] = 0;
       }
     }
     updRow = filterZero(updRow);
@@ -76,23 +48,64 @@ class Game {
       updRow.push(0);
     }
 
-    return ROW_MODIFIER_FUNC[direction](updRow);
+    return updRow;
   }
 
-  move(direction) {
-    const rowMethod = ROW_MODIFIER_FUNC[direction];
-    const matrixMethod = MATRIX_MODIFIER_FUNC[direction];
+  slideLeft() {
+    let changed = false;
+    let updatedCells = [];
+    const oldCells = [];
 
     if (this.status === Game.Status.playing) {
-      const updatedCells = matrixMethod(this.state).map((row) => {
-        return this.slide(rowMethod(row), direction);
+      updatedCells = this.state.map((row) => {
+        oldCells.push(Array.from(row));
+
+        return this.slide(row);
       });
-
-      this.state = matrixMethod(updatedCells);
-
-      this.getRandomCell();
-      this.checkGameStatus();
+      changed = changed || updatedCells.join(',') !== oldCells.join(',');
     }
+
+    if (changed) {
+      this.getRandomCell(updatedCells);
+    }
+
+    return updatedCells;
+  }
+
+  moveLeft() {
+    this.state = this.slideLeft();
+    this.checkGameStatus();
+
+    return this.state;
+  }
+
+  moveRight() {
+    this.state = this.mirrorArray();
+    this.state = this.slideLeft();
+    this.state = this.mirrorArray();
+    this.checkGameStatus();
+
+    return this.state;
+  }
+
+  moveUp() {
+    this.state = this.transposeArray();
+    this.state = this.slideLeft();
+    this.state = this.transposeArray();
+    this.checkGameStatus();
+
+    return this.state;
+  }
+
+  moveDown() {
+    this.state = this.transposeArray();
+    this.state = this.mirrorArray();
+    this.state = this.slideLeft();
+    this.state = this.mirrorArray();
+    this.state = this.transposeArray();
+    this.checkGameStatus();
+
+    return this.state;
   }
 
   getScore() {
@@ -107,7 +120,7 @@ class Game {
 
   start() {
     this.status = Game.Status.playing;
-    this.getRandomCell(2);
+    this.getRandomCell(this.state, 2);
   }
 
   restart() {
@@ -116,13 +129,64 @@ class Game {
     this.score = 0;
   }
 
-  getRandomCell(cellCount = 1) {
+  checkGameStatus() {
+    this.state.forEach((number) => {
+      if (number === 2048) {
+        this.status = Game.Status.win;
+      }
+    });
+
+    // eslint-disable-next-line no-console
+    console.log(
+      'emptyCells:',
+      this.checkEmptyCells(),
+      'isMergeable:',
+      this.checkIsMergeable(),
+    );
+
+    if (!this.checkEmptyCells && !this.checkIsMergeable) {
+      this.status = Game.Status.lose;
+    }
+  }
+
+  checkEmptyCells() {
+    return this.state.some((group) => group.some((number) => number === 0));
+  }
+
+  checkIsMergeable() {
+    const tmpArray = this.state.map((row) => {
+      const tmpRow = filterZero(row);
+
+      while (tmpRow.length < BOARD_SIZE) {
+        tmpRow.push(0);
+      }
+
+      return tmpRow;
+    });
+
+    for (let r = 0; r < BOARD_SIZE - 1; r++) {
+      for (let c = 0; c < BOARD_SIZE - 1; c++) {
+        const elm = tmpArray[r][c];
+
+        if (
+          elm !== 0 &&
+          (elm === tmpArray[r + 1][c] || elm === tmpArray[r][c + 1])
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  getRandomCell(array, cellCount = 1) {
     const emptyCells = [];
 
     for (let i = 0; i < cellCount; i++) {
       for (let r = 0; r < BOARD_SIZE; r++) {
         for (let c = 0; c < BOARD_SIZE; c++) {
-          if (this.state[r][c] === 0) {
+          if (array[r][c] === 0) {
             emptyCells.push([r, c]);
           }
         }
@@ -132,45 +196,8 @@ class Game {
         const [randomR, randomC] =
           emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-        this.state[randomR][randomC] = Math.random() < 0.9 ? 2 : 4;
+        array[randomR][randomC] = Math.random() < 0.9 ? 2 : 4;
       }
-    }
-  }
-
-  checkMergeability(row) {
-    const mergeablesArray = [];
-
-    row.forEach((elm, i) => {
-      if (elm[i] === elm[i + 1]) {
-        mergeablesArray.push(true);
-      } else {
-        mergeablesArray.push(false);
-      }
-    });
-  }
-
-  checkEmptyCells() {
-    for (let r = 0; r < BOARD_SIZE; r++) {
-      if (this.state[r].includes(0)) {
-        hasEmptyCells = true;
-      } else {
-        hasEmptyCells = false;
-      }
-    }
-  }
-  checkGameStatus() {
-    for (let r = 0; r < BOARD_SIZE; r++) {
-      for (let c = 0; c < BOARD_SIZE; c++) {
-        if (this.state[r][c] === 2048) {
-          this.status = Game.Status.win;
-
-          return;
-        }
-      }
-    }
-
-    if (!isMovable && !hasEmptyCells) {
-      this.status = Game.Status.lose;
     }
   }
 }
