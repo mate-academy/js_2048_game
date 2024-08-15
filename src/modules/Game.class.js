@@ -28,6 +28,10 @@ class Game {
   }
 
   moveLeft() {
+    if (this.getStatus() !== Game.gameStatus.playing) {
+      return;
+    }
+
     let hasMoved = false;
 
     for (let i = 0; i < this.state.length; i++) {
@@ -56,12 +60,15 @@ class Game {
 
     if (hasMoved) {
       this.addCell();
-      this.setState();
       this.checkStatus();
     }
   }
 
   moveRight() {
+    if (this.getStatus() !== Game.gameStatus.playing) {
+      return;
+    }
+
     let hasMoved = false;
 
     for (let i = 0; i < this.state.length; i++) {
@@ -90,12 +97,15 @@ class Game {
 
     if (hasMoved) {
       this.addCell();
-      this.setState();
       this.checkStatus();
     }
   }
 
   moveUp() {
+    if (this.getStatus() !== Game.gameStatus.playing) {
+      return;
+    }
+
     let hasMoved = false;
 
     for (let col = 0; col < this.state.length; col++) {
@@ -132,12 +142,15 @@ class Game {
 
     if (hasMoved) {
       this.addCell();
-      this.setState();
       this.checkStatus();
     }
   }
 
   moveDown() {
+    if (this.getStatus() !== Game.gameStatus.playing) {
+      return;
+    }
+
     let hasMoved = false;
 
     for (let col = 0; col < this.state.length; col++) {
@@ -174,7 +187,6 @@ class Game {
 
     if (hasMoved) {
       this.addCell();
-      this.setState();
       this.checkStatus();
     }
   }
@@ -196,14 +208,12 @@ class Game {
     this.state = this.initialState.map((row) => [...row]);
     this.addCell();
     this.addCell();
-    this.setState();
   }
 
   restart() {
     this.status = Game.gameStatus.idle;
     this.score = 0;
     this.resetState();
-    this.setState();
   }
 
   getRandomValue() {
@@ -212,25 +222,6 @@ class Game {
 
   getRandomNumber(max) {
     return Math.floor(Math.random() * max);
-  }
-
-  setState() {
-    const cells = document.querySelectorAll('.field-cell');
-    const stateValues = this.state.flat();
-
-    for (let i = 0; i < stateValues.length; i++) {
-      const currentCell = cells[i];
-      const currentValue = stateValues[i];
-
-      currentCell.classList = ['field-cell'];
-
-      if (currentValue > 0) {
-        currentCell.textContent = currentValue;
-        currentCell.classList.add(`field-cell--${currentValue}`);
-      } else {
-        currentCell.textContent = '';
-      }
-    }
   }
 
   checkStatus() {
