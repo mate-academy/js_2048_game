@@ -164,6 +164,9 @@ class Game {
       return tmpRow;
     });
 
+    // eslint-disable-next-line no-console
+    console.dir(tmpArray);
+
     for (let r = 0; r < BOARD_SIZE - 1; r++) {
       for (let c = 0; c < BOARD_SIZE - 1; c++) {
         const elm = tmpArray[r][c];
@@ -173,11 +176,11 @@ class Game {
           (elm === tmpArray[r + 1][c] || elm === tmpArray[r][c + 1])
         ) {
           return true;
+        } else {
+          return false;
         }
       }
     }
-
-    return false;
   }
 
   getRandomCell(array, cellCount = 1) {
