@@ -13,7 +13,7 @@ const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 
-function runGame() {
+function manageGame() {
   manageGameField();
   manageGameScore();
   manageMessages();
@@ -42,13 +42,13 @@ button.addEventListener('click', () => {
     messageWin.classList.add('hidden');
   }
 
-  runGame();
+  manageGame();
 });
 
 document.addEventListener('keyup', (e) => {
   game.move(e.key);
 
-  runGame();
+  manageGame();
 });
 
 function manageGameField() {
@@ -89,4 +89,4 @@ function manageMessages() {
   }
 }
 
-runGame();
+manageGame();

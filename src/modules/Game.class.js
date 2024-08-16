@@ -33,16 +33,15 @@ class Game {
     return this.state.map((row) => row.reverse());
   }
   slide(row) {
-    let updRow = filterZero(row);
+    const updRow = filterZero(row);
 
     for (let i = 0; i < updRow.length - 1; i++) {
       if (updRow[i] === updRow[i + 1]) {
         updRow[i] *= 2;
-        updRow[i + 1] = 0;
+        updRow.splice(i + 1, 1);
         this.score += updRow[i];
       }
     }
-    updRow = filterZero(updRow);
 
     while (updRow.length < BOARD_SIZE) {
       updRow.push(0);
@@ -56,14 +55,12 @@ class Game {
     let updatedCells = [];
     const oldCells = [];
 
-    if (this.status === Game.Status.playing) {
-      updatedCells = this.state.map((row) => {
-        oldCells.push(Array.from(row));
+    updatedCells = this.state.map((row) => {
+      oldCells.push(Array.from(row));
 
-        return this.slide(row);
-      });
-      changed = changed || updatedCells.join(',') !== oldCells.join(',');
-    }
+      return this.slide(row);
+    });
+    changed = updatedCells.join(',') !== oldCells.join(',');
 
     if (changed) {
       this.getRandomCell(updatedCells);
@@ -73,6 +70,10 @@ class Game {
   }
 
   move(direction) {
+    if (this.status !== Game.Status.playing) {
+      return;
+    }
+
     switch (direction) {
       case 'ArrowRight':
         this.moveRight();
@@ -152,17 +153,7 @@ class Game {
       }
     });
 
-    // eslint-disable-next-line no-console
-    console.log(
-      'emptyCells:',
-      this.checkEmptyCells(),
-      'isMergeable:',
-      this.checkIsMergeable(),
-      'game.status:',
-      this.status,
-    );
-
-    if (!this.checkEmptyCells && !this.checkIsMergeable) {
+    if (!this.checkEmptyCells() && !this.checkIsMergeable()) {
       this.status = Game.Status.lose;
     }
   }
@@ -181,9 +172,6 @@ class Game {
 
       return tmpRow;
     });
-
-    // eslint-disable-next-line no-console
-    console.dir(tmpArray);
 
     for (let r = 0; r < BOARD_SIZE - 1; r++) {
       for (let c = 0; c < BOARD_SIZE - 1; c++) {
