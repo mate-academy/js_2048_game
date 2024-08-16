@@ -13,6 +13,12 @@ const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 
+function runGame() {
+  manageGameField();
+  manageGameScore();
+  manageMessages();
+}
+
 button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
     game.start();
@@ -36,29 +42,13 @@ button.addEventListener('click', () => {
     messageWin.classList.add('hidden');
   }
 
-  manageGameField();
-  manageGameScore();
-  manageMessages();
+  runGame();
 });
 
 document.addEventListener('keyup', (e) => {
-  switch (e.key) {
-    case 'ArrowRight':
-      game.moveRight();
-      break;
-    case 'ArrowLeft':
-      game.moveLeft();
-      break;
-    case 'ArrowUp':
-      game.moveUp();
-      break;
-    case 'ArrowDown':
-      game.moveDown();
-      break;
-  }
-  manageGameField();
-  manageGameScore();
-  manageMessages();
+  game.move(e.key);
+
+  runGame();
 });
 
 function manageGameField() {
@@ -99,6 +89,4 @@ function manageMessages() {
   }
 }
 
-manageGameField();
-manageGameScore();
-manageMessages();
+runGame();

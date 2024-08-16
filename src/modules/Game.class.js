@@ -72,9 +72,28 @@ class Game {
     return updatedCells;
   }
 
+  move(direction) {
+    switch (direction) {
+      case 'ArrowRight':
+        this.moveRight();
+        break;
+      case 'ArrowLeft':
+        this.moveLeft();
+        break;
+      case 'ArrowUp':
+        this.moveUp();
+        break;
+      case 'ArrowDown':
+        this.moveDown();
+        break;
+      default:
+        return;
+    }
+
+    this.checkGameStatus();
+  }
   moveLeft() {
     this.state = this.slideLeft();
-    this.checkGameStatus();
 
     return this.state;
   }
@@ -83,7 +102,6 @@ class Game {
     this.state = this.mirrorArray();
     this.state = this.slideLeft();
     this.state = this.mirrorArray();
-    this.checkGameStatus();
 
     return this.state;
   }
@@ -92,7 +110,6 @@ class Game {
     this.state = this.transposeArray();
     this.state = this.slideLeft();
     this.state = this.transposeArray();
-    this.checkGameStatus();
 
     return this.state;
   }
@@ -103,7 +120,6 @@ class Game {
     this.state = this.slideLeft();
     this.state = this.mirrorArray();
     this.state = this.transposeArray();
-    this.checkGameStatus();
 
     return this.state;
   }
@@ -130,8 +146,8 @@ class Game {
   }
 
   checkGameStatus() {
-    this.state.forEach((number) => {
-      if (number === 2048) {
+    this.state.forEach((group) => {
+      if (group.includes(2048)) {
         this.status = Game.Status.win;
       }
     });
@@ -142,6 +158,8 @@ class Game {
       this.checkEmptyCells(),
       'isMergeable:',
       this.checkIsMergeable(),
+      'game.status:',
+      this.status,
     );
 
     if (!this.checkEmptyCells && !this.checkIsMergeable) {
@@ -176,11 +194,11 @@ class Game {
           (elm === tmpArray[r + 1][c] || elm === tmpArray[r][c + 1])
         ) {
           return true;
-        } else {
-          return false;
         }
       }
     }
+
+    return false;
   }
 
   getRandomCell(array, cellCount = 1) {
