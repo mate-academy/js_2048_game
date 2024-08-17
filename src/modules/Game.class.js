@@ -3,27 +3,7 @@
 const { default: Cell } = require('./Cell.class');
 const { default: Tile } = require('./Tile.class');
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-
   constructor(initialState) {
     const cellElements = [...document.querySelectorAll('.field-cell')];
 
@@ -73,14 +53,17 @@ class Game {
   moveUp() {
     return this.slideTiles(this.cellsByColumn);
   }
+
   moveDown() {
     return this.slideTiles(
       this.cellsByColumn.map((column) => [...column].reverse()),
     );
   }
+
   moveLeft() {
     return this.slideTiles(this.cellsByRow);
   }
+
   moveRight() {
     return this.slideTiles(this.cellsByRow.map((row) => [...row].reverse()));
   }
@@ -166,7 +149,24 @@ class Game {
     this.updateScore();
   }
 
-  restart() {}
+  restart() {
+    this.cells.forEach((cell) => {
+      if (cell.tile) {
+        cell.tile.remove();
+        cell.tile = null;
+      }
+
+      if (cell.mergeTile) {
+        cell._mergeTile = null;
+      }
+    });
+
+    this.addRandomTile();
+    this.addRandomTile();
+
+    // update score
+    this.updateScore();
+  }
 }
 
 module.exports = Game;
