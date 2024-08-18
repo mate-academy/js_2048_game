@@ -1,4 +1,6 @@
-export default class Cell {
+'use strict';
+
+class Cell {
   constructor(cellElement, x, y) {
     this.cellElement = cellElement;
     this._x = x;
@@ -57,3 +59,4 @@ export default class Cell {
     this._mergeTile = null;
   }
 }
+module.exports = Cell;

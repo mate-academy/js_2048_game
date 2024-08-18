@@ -1,7 +1,7 @@
 'use strict';
 
-const { default: Cell } = require('./Cell.class');
-const { default: Tile } = require('./Tile.class');
+const Cell = require('../modules/Cell.class');
+const Tile = require('../modules/Tile.class');
 
 class Game {
   constructor(initialState) {

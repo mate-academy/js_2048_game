@@ -1,4 +1,6 @@
-export default class Tile {
+'use strict';
+
+class Tile {
   constructor(tileContainer, value = Math.random() > 0.1 ? 2 : 4) {
     this.tileElement = document.createElement('div');
     tileContainer.append(this.tileElement);
@@ -43,3 +45,4 @@ export default class Tile {
     });
   }
 }
+module.exports = Tile;

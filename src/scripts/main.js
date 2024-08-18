@@ -1,4 +1,4 @@
-'use strict';
+('use strict');
 
 const startButton = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
@@ -6,7 +6,6 @@ const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 
 const Game = require('../modules/Game.class');
-
 const game = new Game();
 
 function handleStart() {
