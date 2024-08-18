@@ -2,6 +2,9 @@
 
 const startButton = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
+
 const Game = require('../modules/Game.class');
 
 const game = new Game();
@@ -13,6 +16,7 @@ function handleStart() {
 
   if (buttonText === 'Restart') {
     game.restart();
+    messageLose.classList.add('hidden');
   } else {
     game.start();
     messageStart.style.display = 'none';
@@ -28,6 +32,10 @@ function setupInput() {
 
 async function handleInput(e) {
   let moved = false;
+
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
 
   switch (e.key) {
     case 'ArrowUp':
@@ -48,6 +56,12 @@ async function handleInput(e) {
     game.cells.forEach((cell) => cell.mergeTiles());
     game.addRandomTile();
     game.updateScore();
+  }
+
+  if (game.getStatus() === 'lose') {
+    messageLose.classList.remove('hidden');
+  } else if (game.getStatus() === 'win') {
+    messageWin.classList.remove('hidden');
   }
 
   setupInput();

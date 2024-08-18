@@ -8,6 +8,7 @@ class Game {
     const cellElements = [...document.querySelectorAll('.field-cell')];
 
     this.gameBoard = document.querySelector('.game-field');
+    this.gameStatus = 'idle';
 
     this.cells = cellElements.map((cellElement, index) => {
       return new Cell(cellElement, index % 4, Math.floor(index / 4));
@@ -68,6 +69,31 @@ class Game {
     return this.slideTiles(this.cellsByRow.map((row) => [...row].reverse()));
   }
 
+  canMove() {
+    return (
+      this.canMoveInDirection(this.cellsByColumn) ||
+      this.canMoveInDirection(
+        this.cellsByColumn.map((column) => [...column].reverse()),
+      ) ||
+      this.canMoveInDirection(this.cellsByRow) ||
+      this.canMoveInDirection(this.cellsByRow.map((row) => [...row].reverse()))
+    );
+  }
+
+  canMoveInDirection(cells) {
+    return cells.some((group) => {
+      return group.some((cell, index) => {
+        if (index === 0 || cell.tile == null) {
+          return false;
+        }
+
+        const moveToCell = group[index - 1];
+
+        return moveToCell.canAccept(cell.tile);
+      });
+    });
+  }
+
   slideTiles(cells) {
     return Promise.all(
       cells.map((group) => {
@@ -111,11 +137,16 @@ class Game {
 
     // Update your score display here, for example:
     document.querySelector('.game-score').textContent = currentScore;
+
+    if (currentScore >= 2048) {
+      this.gameStatus = 'win';
+    } else if (!this.canMove()) {
+      this.gameStatus = 'lose';
+    } else {
+      this.gameStatus = 'playing';
+    }
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
     return this.cells.reduce((total, cell) => {
       if (cell.tile) {
@@ -126,26 +157,16 @@ class Game {
     }, 0);
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {}
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  getStatus() {
+    return this.gameStatus;
+  }
 
   start() {
     this.addRandomTile();
     this.addRandomTile();
+    this.gameStatus = 'playing';
     this.updateScore();
   }
 
