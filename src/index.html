@@ -6,6 +6,11 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
+    <script
+      src="scripts/main.js"
+      defer
+      type="module"
+    ></script>
     <title>2048</title>
     <link
       rel="stylesheet"
@@ -21,7 +26,7 @@
             Score:
             <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button class="button start"></button>
         </div>
       </div>
 
@@ -65,6 +70,16 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <div class="buttons">
+      <div class="playButton"></div>
+      <div class="playButton move move-up">↑</div>
+      <div class="playButton"></div>
+      <div class="playButton move move-left">←</div>
+      <div class="playButton"></div>
+      <div class="playButton move move-right">→</div>
+      <div class="playButton"></div>
+      <div class="playButton move move-down">↓</div>
+      <div class="playButton"></div>
+    </div>
   </body>
 </html>
