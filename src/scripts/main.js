@@ -69,12 +69,6 @@ button.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (keyEvent) => {
-  keyEvent.preventDefault();
-
-  if (game.getStatus() !== Game.STATUSES.PLAYING) {
-    return;
-  }
-
   const moveActions = {
     ArrowUp: 'moveUp',
     ArrowDown: 'moveDown',
