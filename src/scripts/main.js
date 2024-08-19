@@ -31,14 +31,14 @@ function displayGameField(state, cellElements) {
 }
 
 function updateScore(score, elem) {
-  elem.textContent = score;
+  elem.innerHTML = score;
 }
 
 function showMessage() {
   const gameStatus = game.getStatus();
 
   for (const key in messages) {
-    if (messages.hasOwnProperty(key)) {
+    if (Object.hasOwnProperty.call(messages, key)) {
       const message = messages[key];
 
       if (message) {
@@ -49,9 +49,9 @@ function showMessage() {
 }
 
 button.addEventListener('click', () => {
-  const isStarting = button.textContent === 'Start';
+  const buttonText = button.textContent;
 
-  if (isStarting) {
+  if (buttonText === 'Start') {
     game.start();
     button.textContent = 'Restart';
     button.classList.replace('start', 'restart');
@@ -69,17 +69,23 @@ button.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (keyEvent) => {
+  keyEvent.preventDefault();
+
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
   const moveActions = {
-    ArrowUp: 'moveUp',
-    ArrowDown: 'moveDown',
-    ArrowLeft: 'moveLeft',
-    ArrowRight: 'moveRight',
+    ArrowUp: game.moveUp,
+    ArrowDown: game.moveDown,
+    ArrowLeft: game.moveLeft,
+    ArrowRight: game.moveRight,
   };
 
   const action = moveActions[keyEvent.key];
 
-  if (action && typeof game[action] === 'function') {
-    game[action]();
+  if (action) {
+    action.call(game);
   }
 
   const currentScore = game.getScore();
