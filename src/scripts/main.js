@@ -8,21 +8,21 @@ const startButton = document.getElementsByClassName('button start')[0];
 
 startButton.addEventListener('click', (e) => {
   game.start();
-});
 
-document.addEventListener('keydown', (e) => {
-  switch (e.code) {
-    case 'ArrowLeft':
-      game.moveLeft();
-      break;
-    case 'ArrowRight':
-      game.moveRight();
-      break;
-    case 'ArrowUp':
-      game.moveUp();
-      break;
-    case 'ArrowDown':
-      game.moveDown();
-      break;
-  }
+  document.addEventListener('keydown', (y) => {
+    switch (y.code) {
+      case 'ArrowLeft':
+        game.moveLeft();
+        break;
+      case 'ArrowRight':
+        game.moveRight();
+        break;
+      case 'ArrowUp':
+        game.moveUp();
+        break;
+      case 'ArrowDown':
+        game.moveDown();
+        break;
+    }
+  });
 });

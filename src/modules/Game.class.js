@@ -39,7 +39,7 @@ class Game {
     }
   }
 
-  setRandomField() {
+  setRandomField( seconsVal = 0) {
     if (this.emptyfields.length === 0) {
       return null;
     }
@@ -47,27 +47,68 @@ class Game {
     const randomIndex = Math.floor(Math.random() * this.emptyfields.length);
     const field = this.emptyfields[randomIndex];
 
-    this.initialState[field.row][field.col] = this.startValue;
+    this.initialState[field.row][field.col] = this.startValue += seconsVal;
 
     this.emptyfields.splice(randomIndex, 1);
 
     return field;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  createTeableArray() {
+    const tableArray = this.initialState.map((row) =>
+      row.map((cell) => ({
+        content: cell,
+        classes: cell > 0 ? [`field-cell--${cell}`] : [],
+      })));
+
+    return tableArray;
+  }
+
+  moveLeft() {
+    this.initialState.forEach((row, index) => {
+      const lal = this.shiftLeft(row);
+
+      this.initialState[index] = lal;
+    });
+
+    const tableArray = this.createTeableArray();
+
+    this.updateTable(tableArray);
+
+
+  }
+  shiftLeft(row) {
+    const filteredRow = row.filter(num => num !== 0);
+
+    while (filteredRow.length < row.length) {
+      filteredRow.push(0);
+    }
+
+    return filteredRow;
+  }
+  moveRight() {
+    this.initialState.forEach((row, index) => {
+      const lal = this.shiftLeft(row.reverse());
+
+      this.initialState[index] = lal.reverse();
+    });
+
+    const tableArray = this.createTeableArray();
+
+    this.updateTable(tableArray);
+   }
+  moveUp() { }
+  moveDown() { }
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() { }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() { }
 
   /**
    * Returns the current game status.
@@ -79,32 +120,33 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() { }
 
   start() {
     if (this.status === 'idle') {
       this.status = 'playing';
 
-      const tableArray = Array.from(this.rows).map((row) =>
-        Array.from(row.children).map((cell) => ({
-          content: cell.textContent.trim(),
-          classes: Array.from(cell.classList),
-        })));
+      const tableArray = this.createTeableArray();
+
 
       this.createPlate(tableArray);
-      this.createPlate(tableArray);
+      this.createPlate(tableArray, 2);
     }
   }
 
-  createPlate(tableArray) {
-    const newPlate = this.setRandomField();
+  createPlate(tableArray, secondWalue = 0) {
+    const newPlate = this.setRandomField(secondWalue);
+
 
     if (newPlate !== null) {
-      tableArray[newPlate.row][newPlate.col].content = this.startValue;
+      tableArray[newPlate.row][newPlate.col].content =
+        this.startValue;
 
       tableArray[newPlate.row][newPlate.col].classes.push(
         `field-cell--${tableArray[newPlate.row][newPlate.col].content}`,
       );
+
+
 
       this.updateTable(tableArray);
     }
@@ -115,13 +157,20 @@ class Game {
       Array.from(row.children).forEach((cell, colIndex) => {
         const cellData = tableArray[rowIndex][colIndex];
 
-        cell.textContent = cellData.content;
-        cell.className = 'field-cell';
-        cellData.classes.forEach((cls) => cell.classList.add(cls));
+
+        if (cellData.content !== 0) {
+          cell.textContent = cellData.content;
+
+          cell.classList.add(cellData.classes);
+        } else {
+          cell.textContent = '';
+          cell.classList = ['field-cell'];
+        }
+
       });
     });
   }
-  restart() {}
+  restart() { }
 
   // Add your own methods here
 }
