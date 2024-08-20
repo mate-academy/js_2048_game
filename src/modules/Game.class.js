@@ -26,8 +26,6 @@ class Game {
   static PLAYING = 'playing';
   static WIN = 'win';
   static LOSE = 'lose';
-  messegeWin = document.querySelector('.message-win');
-  messegeLose = document.querySelector('.message-lose');
 
   static getInitialStateDefault() {
     return [
@@ -55,14 +53,8 @@ class Game {
       rowCurrent = this.slide(rowCurrent);
 
       this.board[r] = rowCurrent;
-
-      for (let c = 0; c < Game.COLUMNS; c++) {
-        const tile = document.getElementById(r.toString() + '-' + c.toString());
-        const num = this.board[r][c];
-
-        this.updateCell(tile, num);
-      }
     }
+    
   }
 
   moveRight() {
@@ -74,15 +66,12 @@ class Game {
       rowCurrent = this.slide(rowCurrent);
 
       this.board[r] = rowCurrent.reverse();
-
-      for (let c = 0; c < Game.COLUMNS; c++) {
-        const tile = document.getElementById(r.toString() + '-' + c.toString());
-        const num = this.board[r][c];
-
-        this.updateCell(tile, num);
-      }
     }
+
+    this.checkLose();
+    this.checkWin();
   }
+
   moveUp() {
     for (let c = 0; c < Game.COLUMNS; c++) {
       let rowCurrent = [
@@ -96,11 +85,6 @@ class Game {
 
       for (let r = 0; r < Game.ROWS; r++) {
         this.board[r][c] = rowCurrent[r];
-
-        const tile = document.getElementById(r.toString() + '-' + c.toString());
-        const num = this.board[r][c];
-
-        this.updateCell(tile, num);
       }
     }
   }
@@ -120,11 +104,6 @@ class Game {
 
       for (let r = 0; r < Game.ROWS; r++) {
         this.board[r][c] = rowCurrent[r];
-
-        const tile = document.getElementById(r.toString() + '-' + c.toString());
-        const num = this.board[r][c];
-
-        this.updateCell(tile, num);
       }
     }
   }
@@ -161,9 +140,6 @@ class Game {
    * Starts the game.
    */
   start() {
-    this.setTheBoard();
-    this.setTwo();
-    this.setTwo();
     this.status = Game.PLAYING;
   }
 
@@ -174,46 +150,6 @@ class Game {
     this.score = 0;
     this.board = JSON.parse(JSON.stringify(this.setBoard));
     this.status = Game.IDLE;
-
-    const cells = document.querySelectorAll('.field-cell');
-
-    cells.forEach((cell) => {
-      cell.innerText = '';
-      cell.classList.value = '';
-      cell.classList.add('field-cell');
-    });
-    document.querySelector('.game-score').innerText = '0';
-
-    if (!this.messegeWin.classList.contains('hidden')) {
-      document.querySelector('.message-win').classList.add('hidden');
-    }
-
-    if (!this.messegeLose.classList.contains('hidden')) {
-      document.querySelector('.message-lose').classList.add('hidden');
-    }
-  }
-
-  setTheBoard() {
-    // debugger;
-    for (let r = 0; r < Game.ROWS; r++) {
-      for (let c = 0; c < Game.COLUMNS; c++) {
-        const value = this.setBoard[r][c];
-        const tile = document.getElementById(r.toString() + '-' + c.toString());
-
-        this.updateCell(tile, value);
-      }
-    }
-  }
-
-  updateCell(cell, value) {
-    cell.textContent = '';
-    cell.classList.value = '';
-    cell.classList.add('field-cell');
-
-    if (value > 0) {
-      cell.innerText = value.toString();
-      cell.classList.add('field-cell--' + value.toString());
-    }
   }
 
   setTwo() {
@@ -223,30 +159,26 @@ class Game {
     }
 
     let found = false;
+    let r = 0;
+    let c = 0;
+    let num = 0;
 
     while (!found) {
       // find random row and column to place a 2 and 4 in
 
-      const r = Math.floor(Math.random() * Game.ROWS);
-      const c = Math.floor(Math.random() * Game.COLUMNS);
+      r = Math.floor(Math.random() * Game.ROWS);
+      c = Math.floor(Math.random() * Game.COLUMNS);
 
       if (this.board[r][c] === 0) {
-        const num = Math.random() > 0.1 ? 2 : 4;
+        num = Math.random() > 0.1 ? 2 : 4;
 
         this.board[r][c] = num;
 
-        const tile = document.getElementById(r.toString() + '-' + c.toString());
-
-        tile.innerText = num.toString();
-
-        if (num === 2) {
-          tile.classList.add('field-cell--2');
-        } else {
-          tile.classList.add('field-cell--4');
-        }
         found = true;
       }
     }
+
+    return [r, c, num];
   }
 
   hasEmptyTile() {
@@ -295,7 +227,6 @@ class Game {
     for (let r = 0; r < Game.ROWS; r++) {
       for (let c = 0; c < Game.COLUMNS; c++) {
         if (this.board[r][c] === 2048) {
-          document.querySelector('.message-win').classList.remove('hidden');
           this.status = Game.WIN;
         }
       }
@@ -313,7 +244,6 @@ class Game {
     ];
 
     if (arrayOfConditions.indexOf(true) === -1) {
-      this.messegeLose.classList.remove('hidden');
       this.status = Game.LOSE;
     }
   }
@@ -377,7 +307,7 @@ class Game {
       ];
 
       const row1 = Array.from(row);
-      const row2 = this.canSlide([...row1].toReversed()).reverse();
+      const row2 = this.canSlide([...row1].reverse()).reverse();
 
       if (!this.isArrayTheSame(row1, row2)) {
         return true;
