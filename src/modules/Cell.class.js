@@ -2,7 +2,6 @@
 
 class Cell {
   constructor(cellElement, x, y) {
-    this.cellElement = cellElement;
     this._x = x;
     this._y = y;
   }
@@ -50,11 +49,16 @@ class Cell {
     );
   }
 
-  mergeTiles() {
+  mergeTiles(updateScoreCallback) {
     if (this.tile == null || this._mergeTile == null) {
       return;
     }
     this.tile.value = this.tile.value + this._mergeTile.value;
+
+    if (updateScoreCallback) {
+      updateScoreCallback(this.tile.value);
+    }
+
     this._mergeTile.remove();
     this._mergeTile = null;
   }

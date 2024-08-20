@@ -10,22 +10,16 @@ body {
   font-weight: 900;
 }
 
-.tile {
-  box-sizing: border-box;
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.field-cell {
+  background: #d6cdc4;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  top: calc(var(--y) * (75px + 10px) + 10px);
-  left: calc(var(--x) * (75px + 10px) + 10px);
-  font-weight: bold;
-  background-color: #eee4da;
   color: #776e65;
-  transition: 100ms ease-in-out;
-  animation: show 200ms ease-in-out;
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: center;
+  user-select: none;
 
   &--2 {
     background: #eee4da;
@@ -81,23 +75,10 @@ body {
   }
 }
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
-}
-
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
-  position: relative;
 }
 
 .game-header {

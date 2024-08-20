@@ -4,23 +4,48 @@ const startButton = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
+const gameScore = document.querySelector('.game-score');
 
 const Game = require('../modules/Game.class');
 const game = new Game();
 
+function updateField() {
+  const field = game.getState();
+  const fieldRows = document.querySelectorAll('.field-row');
+
+  fieldRows.forEach((row, rowIndex) => {
+    const cells = row.querySelectorAll('.field-cell');
+    cells.forEach((cell, cellIndex) => {
+      const value = field[rowIndex][cellIndex];
+      cell.setAttribute('class', 'field-cell');
+      cell.textContent = '';
+
+      if (value !== 0) {
+        cell.classList.add(`field-cell--${value}`);
+        cell.textContent = value;
+      }
+    });
+  });
+
+  gameScore.textContent = game.getScore();
+
+  //TODO : need to update game Message
+}
+
 function handleStart() {
   setupInput();
 
-  const buttonText = startButton.textContent;
-
-  if (buttonText === 'Restart') {
-    game.restart();
-    messageLose.classList.add('hidden');
-  } else {
+  if (game.gameStatus === Game.gameStatus.idle) {
     game.start();
-    messageStart.style.display = 'none';
     startButton.textContent = 'Restart';
+    startButton.classList.replace('start', 'restart');
+  } else {
+    game.restart();
+    startButton.textContent = 'Start';
+    startButton.classList.replace('restart', 'start');
   }
+
+  updateField();
 }
 
 startButton.addEventListener('click', handleStart);
@@ -32,7 +57,7 @@ function setupInput() {
 async function handleInput(e) {
   let moved = false;
 
-  if (game.getStatus() !== 'playing') {
+  if (game.getStatus() !== Game.gameStatus.playing) {
     return;
   }
 
@@ -51,17 +76,17 @@ async function handleInput(e) {
       break;
   }
 
-  if (moved) {
-    game.cells.forEach((cell) => cell.mergeTiles());
-    game.addRandomTile();
-    game.updateScore();
-  }
-
-  if (game.getStatus() === 'lose') {
-    messageLose.classList.remove('hidden');
-  } else if (game.getStatus() === 'win') {
-    messageWin.classList.remove('hidden');
-  }
+  // if (moved) {
+  //   game.cells.forEach((cell) => cell.mergeTiles());
+  //   game.addRandomTile();
+  //   game.updateScore();
+  // }
+  //
+  // if (game.getStatus() === 'lose') {
+  //   messageLose.classList.remove('hidden');
+  // } else if (game.getStatus() === 'win') {
+  //   messageWin.classList.remove('hidden');
+  // }
 
   setupInput();
 }
