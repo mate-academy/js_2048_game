@@ -30,6 +30,8 @@ class Game {
   }
 
   setEmptyfields() {
+    this.emptyfields = [];
+
     for (let row = 0; row < this.initialState.length; row++) {
       for (let col = 0; col < this.initialState[row].length; col++) {
         if (this.initialState[row][col] === 0) {
@@ -39,7 +41,7 @@ class Game {
     }
   }
 
-  setRandomField( seconsVal = 0) {
+  setRandomField( secondVal = 0) {
     if (this.emptyfields.length === 0) {
       return null;
     }
@@ -47,7 +49,7 @@ class Game {
     const randomIndex = Math.floor(Math.random() * this.emptyfields.length);
     const field = this.emptyfields[randomIndex];
 
-    this.initialState[field.row][field.col] = this.startValue += seconsVal;
+    this.initialState[field.row][field.col] = this.startValue + secondVal;
 
     this.emptyfields.splice(randomIndex, 1);
 
@@ -64,6 +66,9 @@ class Game {
     return tableArray;
   }
 
+  transpose(matrix) {
+    return matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex]));
+  }
   moveLeft() {
     this.initialState.forEach((row, index) => {
       const lal = this.shiftLeft(row);
@@ -73,10 +78,9 @@ class Game {
 
     const tableArray = this.createTeableArray();
 
-    this.updateTable(tableArray);
-
-
+    this.createPlate(tableArray);
   }
+
   shiftLeft(row) {
     const filteredRow = row.filter(num => num !== 0);
 
@@ -95,10 +99,39 @@ class Game {
 
     const tableArray = this.createTeableArray();
 
-    this.updateTable(tableArray);
-   }
-  moveUp() { }
-  moveDown() { }
+    this.createPlate(tableArray);
+  }
+  moveUp() {
+    this.initialState = this.transpose(this.initialState);
+
+    this.initialState.forEach((row, index) => {
+      const lal = this.shiftLeft(row);
+
+      this.initialState[index] = lal;
+    });
+
+    this.initialState = this.transpose(this.initialState);
+
+    const tableArray = this.createTeableArray();
+
+    this.createPlate(tableArray);
+  }
+
+  moveDown() {
+    this.initialState = this.transpose(this.initialState);
+
+    this.initialState.forEach((row, index) => {
+      const lal = this.shiftLeft(row.reverse());
+
+      this.initialState[index] = lal.reverse();
+    });
+
+    this.initialState = this.transpose(this.initialState);
+
+    const tableArray = this.createTeableArray();
+
+    this.createPlate(tableArray);
+  }
 
   /**
    * @returns {number}
@@ -135,18 +168,19 @@ class Game {
   }
 
   createPlate(tableArray, secondWalue = 0) {
+    this.updateTable(tableArray);
+
     const newPlate = this.setRandomField(secondWalue);
 
 
     if (newPlate !== null) {
       tableArray[newPlate.row][newPlate.col].content =
-        this.startValue;
+        this.startValue + secondWalue;
+
 
       tableArray[newPlate.row][newPlate.col].classes.push(
         `field-cell--${tableArray[newPlate.row][newPlate.col].content}`,
       );
-
-
 
       this.updateTable(tableArray);
     }
@@ -160,7 +194,7 @@ class Game {
 
         if (cellData.content !== 0) {
           cell.textContent = cellData.content;
-
+          cell.classList = ['field-cell'];
           cell.classList.add(cellData.classes);
         } else {
           cell.textContent = '';
@@ -169,10 +203,11 @@ class Game {
 
       });
     });
+    this.setEmptyfields();
+
   }
   restart() { }
 
-  // Add your own methods here
 }
 
 module.exports = Game;
