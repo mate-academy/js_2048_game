@@ -39,11 +39,6 @@ class Game {
     return board;
   }
 
-  // createEmptyBoard() {
-  //   return Array.from({ length: this.boardSize }, () =>
-  //     Array(this.boardSize).fill(0));
-  // }
-
   moveLeft() {
     if (this.status !== 'playing') {
       return;
@@ -134,10 +129,10 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.status = 'idle'; // Возвращаем статус в начальное состояние
+    this.status = 'idle';
     this.board = this.createEmptyBoard();
     this.score = 0;
-    this.start(); // Перезапуск игры
+    this.start();
   }
 
   // Add your own methods here

@@ -1,6 +1,5 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const game = new Game();
 
@@ -49,10 +48,9 @@ function startGame() {
 
 function restartGame() {
   game.restart();
-  updateUI(); // Обновление интерфейса после рестарта
+  updateUI();
 }
 
-// Обработка нажатий клавиш
 document.addEventListener('keydown', (e) => {
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
     switch (e.key) {
@@ -73,8 +71,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Начало или перезапуск игры
 startButton.addEventListener('click', startGame);
 
-// Если кнопка уже использовалась для старта, то нажатие должно вызывать restart
 startButton.addEventListener('click', restartGame);
