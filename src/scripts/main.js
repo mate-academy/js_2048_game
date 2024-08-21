@@ -41,7 +41,16 @@ function updateCells() {
 
   Array.from(fieldRows).forEach((row, rowIndex) => {
     for (let colIndex = 0; colIndex < 4; colIndex++) {
-      row.children[colIndex].textContent = state[rowIndex][colIndex] || '';
+      const currentNumber = +state[rowIndex][colIndex];
+      const currentElement = row.children[colIndex];
+
+      currentElement.textContent = currentNumber || '';
+      currentElement.classList = '';
+      currentElement.classList.add('field-cell');
+
+      if (currentNumber) {
+        currentElement.classList.add(`field-cell--${currentNumber}`);
+      }
     }
   });
 }
