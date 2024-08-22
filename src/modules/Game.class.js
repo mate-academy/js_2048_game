@@ -41,9 +41,6 @@ class Game {
     this.board = JSON.parse(JSON.stringify(initialState));
     this.score = 0;
     this.status = Game.IDLE;
-
-    // eslint-disable-next-line no-console
-    console.log('board', this.board);
   }
 
   moveLeft() {
