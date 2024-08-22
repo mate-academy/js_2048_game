@@ -2,13 +2,7 @@
 
 // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
-// const game = new Game();
-const game = new Game([
-  [128, 128, 0, 8],
-  [16, 8, 16, 32],
-  [8, 16, 32, 64],
-  [16, 32, 0, 128],
-]);
+const game = new Game();
 
 // const gameField = document.querySelector('.game-field');
 const button = document.querySelector('.button');
@@ -56,36 +50,23 @@ button.onclick = function () {
 // event lisener
 
 document.addEventListener('keyup', (e) => {
-  if (game.status === 'playing') {
-    switch (e.code) {
-      case 'ArrowLeft':
-        if (game.canMoveLeft()) {
-          // eslint-disable-next-line no-console
-          console.log(game.status);
-          moveLeft();
-          // eslint-disable-next-line no-console
-          console.log(game.status);
-        }
-        break;
+  switch (e.code) {
+    case 'ArrowLeft':
+      moveLeft();
+      break;
 
-      case 'ArrowRight':
-        if (game.canMoveRight()) {
-          moveRight();
-        }
-        break;
+    case 'ArrowRight':
+      moveRight();
 
-      case 'ArrowUp':
-        if (game.canMoveUp()) {
-          moveUp();
-        }
-        break;
+      break;
 
-      case 'ArrowDown':
-        if (game.canMoveDown()) {
-          moveDown();
-        }
-        break;
-    }
+    case 'ArrowUp':
+      moveUp();
+      break;
+
+    case 'ArrowDown':
+      moveDown();
+      break;
   }
 
   document.querySelector('.game-score').innerText = game.getScore();
@@ -107,7 +88,6 @@ function start() {
   setTheBoard();
 
   setTile();
-  setTile();
 }
 
 function updateCell(cell, value) {
@@ -122,83 +102,80 @@ function updateCell(cell, value) {
 }
 
 function setTile() {
-  if (game.hasEmptyTile()) {
-    const arr = game.setTwo();
-    const r = arr[0];
-    const c = arr[1];
-    const num = arr[2];
-    const tile = document.getElementById(r.toString() + '-' + c.toString());
+  for (let r = 0; r < Game.ROWS; r++) {
+    for (let c = 0; c < Game.COLUMNS; c++) {
+      const value = game.board[r][c];
+      const tile = document.getElementById(r.toString() + '-' + c.toString());
 
-    tile.innerText = num.toString();
-
-    if (num === 2) {
-      tile.classList.add('field-cell--2');
-    } else {
-      tile.classList.add('field-cell--4');
+      updateCell(tile, value);
     }
   }
 }
 
 function moveLeft() {
-  game.moveLeft();
-  setTile();
-  win();
-  lose();
+  if (game.moveLeft()) {
+    setTile();
+    win();
+    lose();
 
-  for (let r = 0; r < Game.ROWS; r++) {
-    for (let c = 0; c < Game.COLUMNS; c++) {
-      const value = game.board[r][c];
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
+    for (let r = 0; r < Game.ROWS; r++) {
+      for (let c = 0; c < Game.COLUMNS; c++) {
+        const value = game.board[r][c];
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
 
-      updateCell(tile, value);
+        updateCell(tile, value);
+      }
     }
   }
 }
 
 function moveRight() {
-  game.moveRight();
-  setTile();
-  win();
-  lose();
+  if (game.moveRight()) {
+    setTile();
+    win();
+    lose();
 
-  for (let r = 0; r < Game.ROWS; r++) {
-    for (let c = 0; c < Game.COLUMNS; c++) {
-      const value = game.board[r][c];
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
+    for (let r = 0; r < Game.ROWS; r++) {
+      for (let c = 0; c < Game.COLUMNS; c++) {
+        const value = game.board[r][c];
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
 
-      updateCell(tile, value);
+        updateCell(tile, value);
+      }
     }
   }
 }
 
 function moveUp() {
-  game.moveUp();
-  setTile();
-  win();
-  lose();
+  if (game.moveUp()) {
+    setTile();
+    win();
+    lose();
 
-  for (let r = 0; r < Game.ROWS; r++) {
-    for (let c = 0; c < Game.COLUMNS; c++) {
-      const value = game.board[r][c];
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
+    for (let r = 0; r < Game.ROWS; r++) {
+      for (let c = 0; c < Game.COLUMNS; c++) {
+        const value = game.board[r][c];
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
 
-      updateCell(tile, value);
+        updateCell(tile, value);
+      }
     }
   }
 }
 
 function moveDown() {
-  game.moveDown();
-  setTile();
-  win();
-  lose();
+  if (game.moveDown()) {
+    setTile();
+    win();
+    lose();
 
-  for (let r = 0; r < Game.ROWS; r++) {
-    for (let c = 0; c < Game.COLUMNS; c++) {
-      const value = game.board[r][c];
-      const tile = document.getElementById(r.toString() + '-' + c.toString());
+    for (let r = 0; r < Game.ROWS; r++) {
+      for (let c = 0; c < Game.COLUMNS; c++) {
+        const value = game.board[r][c];
+        const tile = document.getElementById(r.toString() + '-' + c.toString());
 
-      updateCell(tile, value);
+        updateCell(tile, value);
+      }
     }
   }
 }

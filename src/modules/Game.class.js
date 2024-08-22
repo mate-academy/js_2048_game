@@ -47,65 +47,101 @@ class Game {
   }
 
   moveLeft() {
-    for (let r = 0; r < Game.ROWS; r++) {
-      let rowCurrent = this.board[r];
+    if (this.canMoveLeft() && this.status === Game.PLAYING) {
+      for (let r = 0; r < Game.ROWS; r++) {
+        let rowCurrent = this.board[r];
 
-      rowCurrent = this.slide(rowCurrent);
+        rowCurrent = this.slide(rowCurrent);
 
-      this.board[r] = rowCurrent;
+        this.board[r] = rowCurrent;
+      }
+
+      this.setTwo();
+      this.checkLose();
+      this.checkWin();
+
+      return true;
     }
-    
+
+    return false;
   }
 
   moveRight() {
-    for (let r = 0; r < Game.ROWS; r++) {
-      let rowCurrent = this.board[r];
+    if (this.canMoveRight() && this.status === Game.PLAYING) {
+      for (let r = 0; r < Game.ROWS; r++) {
+        let rowCurrent = this.board[r];
 
-      rowCurrent.reverse();
+        rowCurrent.reverse();
 
-      rowCurrent = this.slide(rowCurrent);
+        rowCurrent = this.slide(rowCurrent);
 
-      this.board[r] = rowCurrent.reverse();
+        this.board[r] = rowCurrent.reverse();
+      }
+
+      this.setTwo();
+      this.checkLose();
+      this.checkWin();
+
+      return true;
     }
 
-    this.checkLose();
-    this.checkWin();
+    return false;
   }
 
   moveUp() {
-    for (let c = 0; c < Game.COLUMNS; c++) {
-      let rowCurrent = [
-        this.board[0][c],
-        this.board[1][c],
-        this.board[2][c],
-        this.board[3][c],
-      ];
+    if (this.canMoveUp() && this.status === Game.PLAYING) {
+      for (let c = 0; c < Game.COLUMNS; c++) {
+        let rowCurrent = [
+          this.board[0][c],
+          this.board[1][c],
+          this.board[2][c],
+          this.board[3][c],
+        ];
 
-      rowCurrent = this.slide(rowCurrent);
+        rowCurrent = this.slide(rowCurrent);
 
-      for (let r = 0; r < Game.ROWS; r++) {
-        this.board[r][c] = rowCurrent[r];
+        for (let r = 0; r < Game.ROWS; r++) {
+          this.board[r][c] = rowCurrent[r];
+        }
       }
+
+      this.setTwo();
+      this.checkLose();
+      this.checkWin();
+
+      return true;
     }
+
+    return false;
   }
 
   moveDown() {
-    for (let c = 0; c < Game.COLUMNS; c++) {
-      let rowCurrent = [
-        this.board[0][c],
-        this.board[1][c],
-        this.board[2][c],
-        this.board[3][c],
-      ];
+    if (this.canMoveDown() && this.status === Game.PLAYING) {
+      for (let c = 0; c < Game.COLUMNS; c++) {
+        let rowCurrent = [
+          this.board[0][c],
+          this.board[1][c],
+          this.board[2][c],
+          this.board[3][c],
+        ];
 
-      rowCurrent.reverse();
-      rowCurrent = this.slide(rowCurrent);
-      rowCurrent.reverse();
+        rowCurrent.reverse();
+        rowCurrent = this.slide(rowCurrent);
+        rowCurrent.reverse();
 
-      for (let r = 0; r < Game.ROWS; r++) {
-        this.board[r][c] = rowCurrent[r];
+        for (let r = 0; r < Game.ROWS; r++) {
+          this.board[r][c] = rowCurrent[r];
+        }
       }
+
+      this.setTwo();
+      this.checkLose();
+      this.checkWin();
+
+      return true;
     }
+
+    return false;
   }
 
   /**
@@ -140,6 +176,8 @@ class Game {
    * Starts the game.
    */
   start() {
+    this.setTwo();
+    this.setTwo();
     this.status = Game.PLAYING;
   }
 
@@ -177,8 +215,6 @@ class Game {
         found = true;
       }
     }
-
-    return [r, c, num];
   }
 
   hasEmptyTile() {
