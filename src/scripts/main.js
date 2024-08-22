@@ -1,6 +1,6 @@
 'use strict';
 
-const Game = require('./modules/Game.class.js');
+const Game = require('../modules/Game.class');
 
 const playBtn = document.querySelector('.button');
 const msgStart = document.querySelector('.message-start');
