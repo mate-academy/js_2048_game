@@ -3,8 +3,6 @@
 // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const game = new Game();
-
-// const gameField = document.querySelector('.game-field');
 const button = document.querySelector('.button');
 const messegeStart = document.querySelector('.message-start');
 const messegeWin = document.querySelector('.message-win');
