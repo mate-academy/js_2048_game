@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+/* eslint-disable function-paren-newline */
 'use strict';
 
 class Game {
@@ -30,11 +30,12 @@ class Game {
 
   stateChanged(prevState) {
     return this.initialState.some((row, i) =>
-      row.some((cell, j) => cell !== prevState[i][j]));
+      row.some((cell, j) => cell !== prevState[i][j]),
+    );
   }
 
   moveLeft() {
-    const prevState = this.initialState.map(row => [...row]);
+    const prevState = this.initialState.map((row) => [...row]);
 
     this.initialState.forEach((row, index) => {
       this.initialState[index] = this.merge(row);
@@ -46,7 +47,7 @@ class Game {
   }
 
   moveRight() {
-    const prevState = this.initialState.map(row => [...row]);
+    const prevState = this.initialState.map((row) => [...row]);
 
     this.initialState.forEach((row, index) => {
       const lal = this.merge(row.reverse());
@@ -55,12 +56,11 @@ class Game {
     });
 
     if (this.stateChanged(prevState)) {
-
       this.createPlate();
     }
   }
   moveUp() {
-    const prevState = this.initialState.map(row => [...row]);
+    const prevState = this.initialState.map((row) => [...row]);
 
     this.initialState = this.transpose(this.initialState);
 
@@ -73,13 +73,12 @@ class Game {
     this.initialState = this.transpose(this.initialState);
 
     if (this.stateChanged(prevState)) {
-
       this.createPlate();
     }
   }
 
   moveDown() {
-    const prevState = this.initialState.map(row => [...row]);
+    const prevState = this.initialState.map((row) => [...row]);
 
     this.initialState = this.transpose(this.initialState);
 
@@ -93,7 +92,6 @@ class Game {
 
     if (this.stateChanged(prevState)) {
       this.createPlate();
-
     }
   }
 
@@ -107,7 +105,7 @@ class Game {
   /**
    * @returns {number[][]}
    */
-  getState() { }
+  getState() {}
 
   /**
    * Returns the current game status.
@@ -119,7 +117,7 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() { }
+  getStatus() {}
 
   start() {
     if (this.status === 'idle') {
@@ -162,17 +160,18 @@ class Game {
       row.map((cell) => ({
         content: cell,
         classes: cell > 0 ? [`field-cell--${cell}`] : [],
-      })));
+      })),
+    );
 
     return tableArray;
   }
 
   transpose(matrix) {
-    return matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex]));
+    return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
   }
 
   merge(row) {
-    const rowForMerge = row.filter(x => x !== 0);
+    const rowForMerge = row.filter((x) => x !== 0);
 
     for (let i = 0; i < rowForMerge.length - 1; i++) {
       if (rowForMerge[i] === rowForMerge[i + 1]) {
@@ -183,7 +182,7 @@ class Game {
       }
     }
 
-    const mergedRow = rowForMerge.filter(x => x !== 0);
+    const mergedRow = rowForMerge.filter((x) => x !== 0);
 
     while (mergedRow.length < row.length) {
       mergedRow.push(0);
@@ -193,13 +192,11 @@ class Game {
   }
 
   createPlate() {
-
     const tableArray = this.createTeableArray();
 
     this.updateTable(tableArray);
 
     const newPlate = this.setRandomField();
-
 
     if (newPlate !== null) {
       tableArray[newPlate.row][newPlate.col].content =
@@ -214,11 +211,9 @@ class Game {
   }
 
   updateTable(tableArray) {
-
     this.rows.forEach((row, rowIndex) => {
       Array.from(row.children).forEach((cell, colIndex) => {
         const cellData = tableArray[rowIndex][colIndex];
-
 
         if (cellData.content !== 0) {
           cell.textContent = cellData.content;
@@ -228,12 +223,10 @@ class Game {
           cell.textContent = '';
           cell.classList = ['field-cell'];
         }
-
       });
     });
 
     this.setEmptyfields();
-
   }
 
   restart() {
@@ -251,6 +244,7 @@ class Game {
     const tableArray = this.createTeableArray();
 
     this.updateTable(tableArray);
+    this.score = 0;
   }
 }
 

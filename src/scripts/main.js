@@ -50,5 +50,4 @@ restart.addEventListener('click', () => {
   startButton.style.display = '';
   restart.style.display = 'none';
   score.innerText = game.getScore();
-
 });
