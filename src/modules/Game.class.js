@@ -28,6 +28,38 @@ class Game {
     this.setEmptyfields();
   }
 
+  isWin() {
+    return this.initialState.some((row) => row.some((col) => col === 2048));
+  }
+
+  isGameOver() {
+    if (this.emptyfields.length > 0) {
+      return false;
+    }
+
+    for (let row = 0; row < this.initialState.length; row++) {
+      for (let col = 0; col < this.initialState[row].length; col++) {
+        const current = this.initialState[row][col];
+
+        if (
+          col < this.initialState[row].length - 1 &&
+          current === this.initialState[row][col + 1]
+        ) {
+          return false;
+        }
+
+        if (
+          row < this.initialState.length - 1 &&
+          current === this.initialState[row + 1][col]
+        ) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   stateChanged(prevState) {
     return this.initialState.some((row, i) =>
       row.some((cell, j) => cell !== prevState[i][j]),
@@ -35,33 +67,19 @@ class Game {
   }
 
   moveLeft() {
-    const prevState = this.initialState.map((row) => [...row]);
-
     this.initialState.forEach((row, index) => {
       this.initialState[index] = this.merge(row);
     });
-
-    if (this.stateChanged(prevState)) {
-      this.createPlate();
-    }
   }
 
   moveRight() {
-    const prevState = this.initialState.map((row) => [...row]);
-
     this.initialState.forEach((row, index) => {
       const lal = this.merge(row.reverse());
 
       this.initialState[index] = lal.reverse();
     });
-
-    if (this.stateChanged(prevState)) {
-      this.createPlate();
-    }
   }
   moveUp() {
-    const prevState = this.initialState.map((row) => [...row]);
-
     this.initialState = this.transpose(this.initialState);
 
     this.initialState.forEach((row, index) => {
@@ -71,15 +89,9 @@ class Game {
     });
 
     this.initialState = this.transpose(this.initialState);
-
-    if (this.stateChanged(prevState)) {
-      this.createPlate();
-    }
   }
 
   moveDown() {
-    const prevState = this.initialState.map((row) => [...row]);
-
     this.initialState = this.transpose(this.initialState);
 
     this.initialState.forEach((row, index) => {
@@ -89,10 +101,6 @@ class Game {
     });
 
     this.initialState = this.transpose(this.initialState);
-
-    if (this.stateChanged(prevState)) {
-      this.createPlate();
-    }
   }
 
   /**
@@ -124,7 +132,7 @@ class Game {
       this.status = 'playing';
 
       this.createPlate();
-      this.createPlate(2);
+      this.createPlate();
     }
   }
 
@@ -184,11 +192,7 @@ class Game {
 
     const mergedRow = rowForMerge.filter((x) => x !== 0);
 
-    while (mergedRow.length < row.length) {
-      mergedRow.push(0);
-    }
-
-    return mergedRow;
+    return [...mergedRow, ...Array(4 - mergedRow.length).fill(0)];
   }
 
   createPlate() {
