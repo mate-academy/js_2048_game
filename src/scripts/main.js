@@ -25,7 +25,7 @@ controls.appendChild(restart);
 
 startButton.addEventListener('click', () => {
   game.start();
-  game.score = 'playing';
+  game.status = 'playing';
 
   document.addEventListener('keydown', handleKeyPress);
   checkGameStatus();
@@ -57,7 +57,7 @@ function handleKeyPress(e) {
     game.createPlate();
   }
 
-  score.innerText = game.getScore();
+  score.textContent = game.getScore();
 
   checkGameStatus();
 }
