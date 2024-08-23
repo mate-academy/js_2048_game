@@ -22,6 +22,13 @@ class Game {
     this.state = initialState.map((row) => [...row]);
   }
 
+  isStateChanged(originalState) {
+    if (this.hasStateChanged(originalState, this.state)) {
+      this.addRandomTile();
+      this.updateStatusOfTheGame(this.state);
+    }
+  }
+
   addRandomTile() {
     const emptyCells = [];
 
@@ -42,16 +49,16 @@ class Game {
   }
 
   slideAndMerge(row) {
-    const nonEmptyValues = row.filter((value) => value !== 0);
+    const cellsWithValues = row.filter((value) => value !== 0);
     const mergedRow = [];
 
-    for (let i = 0; i < nonEmptyValues.length; i++) {
-      if (nonEmptyValues[i] === nonEmptyValues[i + 1]) {
-        mergedRow.push(nonEmptyValues[i] * 2);
-        this.score += nonEmptyValues[i] * 2;
+    for (let i = 0; i < cellsWithValues.length; i++) {
+      if (cellsWithValues[i] === cellsWithValues[i + 1]) {
+        mergedRow.push(cellsWithValues[i] * 2);
+        this.score += cellsWithValues[i] * 2;
         i++;
       } else {
-        mergedRow.push(nonEmptyValues[i]);
+        mergedRow.push(cellsWithValues[i]);
       }
     }
 
@@ -86,10 +93,7 @@ class Game {
       }
     }
 
-    if (this.hasStateChanged(originalState, this.state)) {
-      this.addRandomTile();
-      this.updateStatusOfTheGame(this.state);
-    }
+    this.isStateChanged(originalState);
   }
 
   moveDown() {
@@ -108,10 +112,7 @@ class Game {
       }
     }
 
-    if (this.hasStateChanged(originalState, this.state)) {
-      this.addRandomTile();
-      this.updateStatusOfTheGame(this.state);
-    }
+    this.isStateChanged(originalState);
   }
 
   moveLeft() {
@@ -125,10 +126,7 @@ class Game {
       this.state[row] = this.slideAndMerge(this.state[row]);
     }
 
-    if (this.hasStateChanged(originalState, this.state)) {
-      this.addRandomTile();
-      this.updateStatusOfTheGame(this.state);
-    }
+    this.isStateChanged(originalState);
   }
 
   moveRight() {
@@ -142,10 +140,7 @@ class Game {
       this.state[row] = this.slideAndMerge(this.state[row].reverse()).reverse();
     }
 
-    if (this.hasStateChanged(originalState, this.state)) {
-      this.addRandomTile();
-      this.updateStatusOfTheGame(this.state);
-    }
+    this.isStateChanged(originalState);
   }
 
   updateStatusOfTheGame(state) {

@@ -9,7 +9,7 @@ const gameScore = document.querySelector('.game-score');
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-function updateField() {
+function updateCellField() {
   const field = game.getState();
   const fieldRows = document.querySelectorAll('.field-row');
 
@@ -46,7 +46,7 @@ function handleStart() {
     startButton.classList.replace('restart', 'start');
   }
 
-  updateField();
+  updateCellField();
 }
 
 startButton.addEventListener('click', handleStart);
@@ -76,7 +76,7 @@ function handleInput(e) {
   }
 
   setupInput();
-  updateField();
+  updateCellField();
   updateMessageText();
 }
 
