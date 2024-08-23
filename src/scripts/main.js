@@ -25,6 +25,7 @@ controls.appendChild(restart);
 
 startButton.addEventListener('click', () => {
   game.start();
+  game.score = 'playing';
 
   document.addEventListener('keydown', handleKeyPress);
   checkGameStatus();
@@ -62,16 +63,17 @@ function handleKeyPress(e) {
 }
 
 function checkGameStatus() {
-  // Проверка на победу
   if (game.isWin()) {
+    game.status = 'win';
     winMessage.classList.remove('hidden');
     document.removeEventListener('keydown', handleKeyPress);
 
     return;
   }
 
-  // Проверка на поражение
   if (game.isGameOver()) {
+    game.status = 'lose';
+
     loseMessage.classList.remove('hidden');
     document.removeEventListener('keydown', handleKeyPress);
   }
@@ -79,14 +81,11 @@ function checkGameStatus() {
 
 restart.addEventListener('click', () => {
   game.restart();
+  game.status = 'idle';
   startButton.style.display = '';
   restart.style.display = 'none';
   score.innerText = game.getScore();
 
-  // Сбрасываем сообщения о победе и поражении при перезапуске
   winMessage.classList.add('hidden');
   loseMessage.classList.add('hidden');
-
-  // Повторная активация слушателя клавиш после перезапуска
-  startButton.click();
 });
