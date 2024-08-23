@@ -1,8 +1,5 @@
 'use strict';
 
-// const Cell = require('../modules/Cell.class');
-// const Tile = require('../modules/Tile.class');
-
 class Game {
   static gameStatus = {
     idle: 'idle',
@@ -20,42 +17,9 @@ class Game {
     ],
   ) {
     this.initialState = initialState;
-    // const cellElements = [...document.querySelectorAll('.field-cell')];
     this.score = 0;
-    //this.gameBoard = document.querySelector('.game-field');
     this.gameStatus = Game.gameStatus.idle;
     this.state = initialState.map((row) => [...row]);
-
-    // this.cells = cellElements.map((cellElement, index) => {
-    //   return new Cell(cellElement, index % 4, Math.floor(index / 4));
-    // });
-  }
-
-  // get cellsByColumn() {
-  //   return this.cells.reduce((cellGrid, cell) => {
-  //     cellGrid[cell.x] = cellGrid[cell.x] || [];
-  //     cellGrid[cell.x][cell.y] = cell;
-  //
-  //     return cellGrid;
-  //   }, []);
-  // }
-  //
-  // get cellsByRow() {
-  //   return this.cells.reduce((cellGrid, cell) => {
-  //     cellGrid[cell.y] = cellGrid[cell.y] || [];
-  //     cellGrid[cell.y][cell.x] = cell;
-  //
-  //     return cellGrid;
-  //   }, []);
-  // }
-
-  // get emptyCells() {
-  //   return this.cells.filter((cell) => cell.tile == null);
-  // }
-  //
-
-  randomEmptyCell(emptyCells) {
-    return Math.floor(Math.random() * emptyCells.length);
   }
 
   addRandomTile() {
@@ -77,115 +41,132 @@ class Game {
     }
   }
 
-  // moveUp() {
-  //   return this.slideTiles(this.cellsByColumn);
-  // }
+  slideAndMerge(row) {
+    const nonEmptyValues = row.filter((value) => value !== 0);
+    const mergedRow = [];
 
-  // moveDown() {
-  //   return this.slideTiles(
-  //     this.cellsByColumn.map((column) => [...column].reverse()),
-  //   );
-  // }
-  //
-  // moveLeft() {
-  //   return this.slideTiles(this.cellsByRow);
-  // }
-  //
-  // moveRight() {
-  //   return this.slideTiles(this.cellsByRow.map((row) => [...row].reverse()));
-  // }
-  //
-  // canMove() {
-  //   return (
-  //     this.canMoveInDirection(this.cellsByColumn) ||
-  //     this.canMoveInDirection(
-  //       this.cellsByColumn.map((column) => [...column].reverse()),
-  //     ) ||
-  //     this.canMoveInDirection(this.cellsByRow) ||
-  //     this.canMoveInDirection(this.cellsByRow.map((row) => [...row].reverse()))
-  //   );
-  // }
-  //
-  // canMoveInDirection(cells) {
-  //   return cells.some((group) => {
-  //     return group.some((cell, index) => {
-  //       if (index === 0 || cell.tile == null) {
-  //         return false;
-  //       }
-  //
-  //       const moveToCell = group[index - 1];
-  //
-  //       return moveToCell.canAccept(cell.tile);
-  //     });
-  //   });
-  // }
+    for (let i = 0; i < nonEmptyValues.length; i++) {
+      if (nonEmptyValues[i] === nonEmptyValues[i + 1]) {
+        mergedRow.push(nonEmptyValues[i] * 2);
+        this.score += nonEmptyValues[i] * 2;
+        i++;
+      } else {
+        mergedRow.push(nonEmptyValues[i]);
+      }
+    }
 
-  //TODO need to remake it
+    return mergedRow.concat(Array(4 - mergedRow.length).fill(0));
+  }
 
-  // slideTiles(cells) {
-  //   return Promise.all(
-  //     cells.map((group) => {
-  //       const promises = [];
-  //
-  //       for (let i = 1; i < group.length; i++) {
-  //         const cell = group[i];
-  //
-  //         if (cell.tile == null) {
-  //           continue;
-  //         }
-  //
-  //         let lastValidCell;
-  //
-  //         for (let j = i - 1; j >= 0; j--) {
-  //           const moveToCell = group[j];
-  //
-  //           if (!moveToCell.canAccept(cell.tile)) {
-  //             break;
-  //           }
-  //           lastValidCell = moveToCell;
-  //         }
-  //
-  //         if (lastValidCell != null) {
-  //           promises.push(cell.tile.waitForTransition());
-  //
-  //           if (lastValidCell.tile != null) {
-  //             lastValidCell.mergeTile = cell.tile;
-  //           } else {
-  //             lastValidCell.tile = cell.tile;
-  //           }
-  //           // Use the score callback to update the score when merging tiles
-  //           lastValidCell.mergeTiles(this.updateScore.bind(this));
-  //
-  //           cell.tile = null;
-  //         }
-  //       }
-  //     }),
-  //   );
-  // }
+  hasStateChanged(originalState, newState) {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (originalState[row][col] !== newState[row][col]) {
+          return true;
+        }
+      }
+    }
 
-  // updateScore(value = 0) {
-  //   this.score += value;
-  //
-  //   // Update your score display here, for example:
-  //   document.querySelector('.game-score').textContent = `${this.score}`;
-  //
-  //   if (this.score >= 2048) {
-  //     this.gameStatus = 'win';
-  //   } else if (!this.canMove()) {
-  //     this.gameStatus = 'lose';
-  //   } else {
-  //     this.gameStatus = 'playing';
-  //   }
-  // }
+    return false;
+  }
+
+  moveUp() {
+    if (this.gameStatus !== Game.gameStatus.playing) {
+      return;
+    }
+
+    const originalState = this.state.map((row) => [...row]);
+
+    for (let col = 0; col < 4; col++) {
+      const column = this.state.map((row) => row[col]);
+      const newColumn = this.slideAndMerge(column);
+
+      for (let row = 0; row < 4; row++) {
+        this.state[row][col] = newColumn[row];
+      }
+    }
+
+    if (this.hasStateChanged(originalState, this.state)) {
+      this.addRandomTile();
+      this.updateStatusOfTheGame(this.state);
+    }
+  }
+
+  moveDown() {
+    if (this.gameStatus !== Game.gameStatus.playing) {
+      return;
+    }
+
+    const originalState = this.state.map((row) => [...row]);
+
+    for (let col = 0; col < 4; col++) {
+      const column = this.state.map((row) => row[col]).reverse();
+      const newColumn = this.slideAndMerge(column).reverse();
+
+      for (let row = 0; row < 4; row++) {
+        this.state[row][col] = newColumn[row];
+      }
+    }
+
+    if (this.hasStateChanged(originalState, this.state)) {
+      this.addRandomTile();
+      this.updateStatusOfTheGame(this.state);
+    }
+  }
+
+  moveLeft() {
+    if (this.gameStatus !== Game.gameStatus.playing) {
+      return;
+    }
+
+    const originalState = this.state.map((row) => [...row]);
+
+    for (let row = 0; row < 4; row++) {
+      this.state[row] = this.slideAndMerge(this.state[row]);
+    }
+
+    if (this.hasStateChanged(originalState, this.state)) {
+      this.addRandomTile();
+      this.updateStatusOfTheGame(this.state);
+    }
+  }
+
+  moveRight() {
+    if (this.gameStatus !== Game.gameStatus.playing) {
+      return;
+    }
+
+    const originalState = this.state.map((row) => [...row]);
+
+    for (let row = 0; row < 4; row++) {
+      this.state[row] = this.slideAndMerge(this.state[row].reverse()).reverse();
+    }
+
+    if (this.hasStateChanged(originalState, this.state)) {
+      this.addRandomTile();
+      this.updateStatusOfTheGame(this.state);
+    }
+  }
+
+  updateStatusOfTheGame(state) {
+    let has2048 = false;
+
+    state.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell === 2048) {
+          has2048 = true;
+        }
+      });
+    });
+
+    if (has2048) {
+      this.gameStatus = Game.gameStatus.win;
+    } else if (!this.canMove()) {
+      this.gameStatus = Game.gameStatus.lose;
+    }
+  }
 
   getScore() {
-    // return this.cells.reduce((total, cell) => {
-    //   if (cell.tile) {
-    //     return total + cell.tile;
-    //   }
-    //
-    //   return total;
-    // }, 0);
     return this.score;
   }
 
@@ -207,27 +188,31 @@ class Game {
 
   restart() {
     this.score = 0;
-    this.state = this.initialState;
     this.gameStatus = Game.gameStatus.idle;
+    this.state = this.initialState.map((row) => [...row]);
   }
 
-  // restart() {
-  //   this.cells.forEach((cell) => {
-  //     if (cell.tile) {
-  //       cell.tile.remove();
-  //       cell.tile = null;
-  //     }
-  //
-  //     if (cell.mergeTile) {
-  //       cell._mergeTile = null;
-  //     }
-  //   });
-  //
-  //   this.addRandomTile();
-  //   this.addRandomTile();
-  //   // update score
-  //   this.updateScore();
-  // }
+  canMove() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        const currentCell = this.state[row][col];
+
+        if (this.state[row][col] === 0) {
+          return true;
+        }
+
+        if (col < 3 && currentCell === this.state[row][col + 1]) {
+          return true;
+        }
+
+        if (row < 3 && currentCell === this.state[row + 1][col]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }
 
 module.exports = Game;

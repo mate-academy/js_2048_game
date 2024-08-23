@@ -1,4 +1,4 @@
-('use strict');
+'use strict';
 
 const startButton = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
@@ -15,8 +15,10 @@ function updateField() {
 
   fieldRows.forEach((row, rowIndex) => {
     const cells = row.querySelectorAll('.field-cell');
+
     cells.forEach((cell, cellIndex) => {
       const value = field[rowIndex][cellIndex];
+
       cell.setAttribute('class', 'field-cell');
       cell.textContent = '';
 
@@ -28,8 +30,7 @@ function updateField() {
   });
 
   gameScore.textContent = game.getScore();
-
-  //TODO : need to update game Message
+  updateMessageText();
 }
 
 function handleStart() {
@@ -54,39 +55,39 @@ function setupInput() {
   window.addEventListener('keydown', handleInput, { once: true });
 }
 
-async function handleInput(e) {
-  let moved = false;
-
+function handleInput(e) {
   if (game.getStatus() !== Game.gameStatus.playing) {
     return;
   }
 
   switch (e.key) {
     case 'ArrowUp':
-      moved = await game.moveUp();
+      game.moveUp();
       break;
     case 'ArrowDown':
-      moved = await game.moveDown();
+      game.moveDown();
       break;
     case 'ArrowLeft':
-      moved = await game.moveLeft();
+      game.moveLeft();
       break;
     case 'ArrowRight':
-      moved = await game.moveRight();
+      game.moveRight();
       break;
   }
 
-  // if (moved) {
-  //   game.cells.forEach((cell) => cell.mergeTiles());
-  //   game.addRandomTile();
-  //   game.updateScore();
-  // }
-  //
-  // if (game.getStatus() === 'lose') {
-  //   messageLose.classList.remove('hidden');
-  // } else if (game.getStatus() === 'win') {
-  //   messageWin.classList.remove('hidden');
-  // }
-
   setupInput();
+  updateField();
+  updateMessageText();
+}
+
+function updateMessageText() {
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  messageStart.classList.add('hidden');
+
+  if (game.gameStatus === Game.gameStatus.win) {
+    messageWin.classList.remove('hidden');
+  } else if (game.gameStatus === Game.gameStatus.lose) {
+    messageLose.classList.remove('hidden');
+  }
 }
