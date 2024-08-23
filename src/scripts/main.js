@@ -56,6 +56,7 @@ function workingWithHTMLFile() {
   document.querySelector('.button').addEventListener('click', () => {
     if (game.getStatus() === 'playing') {
       game.restart();
+      document.querySelector('.message-container').classList.add('hidden');
     } else {
       game.start();
     }
