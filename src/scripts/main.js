@@ -7,23 +7,24 @@ const Game = require('../modules/Game.class');
 const game = new Game();
 
 // Write your code here
+// console.log(game.getState());
+// game.moveLeft();
+// console.log(game.getState());
 
 document.addEventListener('keydown', (event) => {
-  if (game.status === 'playing') {
-    switch (event.key) {
-      case 'ArrowLeft':
-        game.moveLeft();
-        break;
-      case 'ArrowRight':
-        game.moveRight();
-        break;
-      case 'ArrowUp':
-        game.moveUp();
-        break;
-      case 'ArrowDown':
-        game.moveDown();
-        break;
-    }
+  switch (event.key) {
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      break;
   }
 
   workingWithHTMLFile();
@@ -54,14 +55,18 @@ function workingWithHTMLFile() {
 
   // початок/перезапуск гри
   document.querySelector('.button').addEventListener('click', () => {
-    if (game.getStatus() === 'playing') {
+    if (game.status === 'playing') {
       game.restart();
-      document.querySelector('.message-container').classList.add('hidden');
     } else {
       game.start();
     }
 
+    // console.log(status);
+
     document.querySelector('.message-start').classList.add('hidden');
+    document.querySelector('.message-win').classList.add('hidden');
+    document.querySelector('.message-lose').classList.add('hidden');
+
     document.querySelector('.button').classList.remove('start');
     document.querySelector('.button').classList.add('restart'); // заміняємо клас для button
     document.querySelector('.button').textContent = 'Restart'; // заміняємо текст button

@@ -6,7 +6,15 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
-  constructor(initialState) {
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.state = initialState;
     this.board = initialState || this._generateEmptyBoard();
     this.score = 0;
     this.status = 'idle'; // 'idle', 'playing', 'win', 'lose'
@@ -30,6 +38,10 @@ class Game {
 
   // основний метод для переміщення
   moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     let moved = false;
 
     for (let i = 0; i < 4; i++) {
@@ -128,15 +140,10 @@ class Game {
 
   // початок гри
   start() {
-    if (
-      this.status === 'idle' ||
-      this.status === 'lose' ||
-      this.status === 'win'
-    ) {
-      this._addRandomTile(); // добавляє одну дощечку на екран
-      this._addRandomTile();
-      this.status = 'playing';
-    }
+    this.score = 0;
+    this.status = 'playing';
+    this._addRandomTile(); // добавляє одну дощечку на екран
+    this._addRandomTile();
   }
 
   // перезапуск гри
@@ -144,7 +151,8 @@ class Game {
     this.board = this._generateEmptyBoard();
     this.score = 0;
     this.status = 'idle';
-    this.start();
+
+    // this.start();
   }
 
   // Add your own methods here
