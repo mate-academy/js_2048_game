@@ -27,15 +27,13 @@ class Game {
   }
 
   moveLeft() {
-    const gameField = document.querySelector('.game-field');
-    const tbody = document.querySelector('tbody');
-    const trows = [...tbody.children];
-
-    gameField.addEventListener('keydown', (e) => {
-      if (e.target === 'ArrowLeft') {
-
-      }
-    })
+    // const gameField = document.querySelector('.game-field');
+    // const tbody = document.querySelector('tbody');
+    // const trows = [...tbody.children];
+    // gameField.addEventListener('keydown', (e) => {
+    //   if (e.target === 'ArrowLeft') {
+    //   }
+    // });
   }
   moveRight() {}
   moveUp() {}
@@ -84,7 +82,7 @@ class Game {
 
       let sum = 0;
 
-      for (const num in set){
+      for (const num in set) {
         sum += set[num];
       }
 
@@ -112,15 +110,17 @@ class Game {
         const randomRowChildren = [...randomRow.children];
         let randomCell = randomRowChildren[randomIndex()];
 
-        while (selectedRows.has(randomCell && selectedRows.has(randomRow))) {
+        while (selectedRows.has(randomCell)) {
           randomCell = randomRowChildren[randomIndex()];
         }
 
         selectedRows.add(randomCell);
         selectedRows.add(randomRow);
 
-        randomCell.textContent = cellValue();
-        randomCell.classList.add(`field-cell--${cellValue()}`);
+        const randomValue = cellValue();
+
+        randomCell.textContent = randomValue;
+        randomCell.classList.add(`field-cell--${randomValue}`);
       }
 
       messageStart.style.display = 'none';
