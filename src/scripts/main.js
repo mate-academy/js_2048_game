@@ -33,6 +33,8 @@ button.addEventListener('click', () => {
   }
 
   updateGameField(gameCells);
+  updateScore(gameScore);
+  updateStatus();
 
   document.addEventListener('keydown', handleKey);
 });
