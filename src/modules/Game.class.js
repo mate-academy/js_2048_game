@@ -33,11 +33,35 @@ class Game {
   ) {
     this.status = Game.GAME_STATUS.IDLE;
     this.score = 0;
-    this.initialState = initialState;
-    this.state = initialState.map((row) => [...row]);
+    this.initialState = initialState.map((row) => [...row]);
+    this.state = this.initialState.map((row) => [...row]);
+  }
+
+  /**
+   * Starts the game.
+   */
+  start() {
+    this.status = Game.GAME_STATUS.PLAYING;
+    this.addNewCell();
+    this.addNewCell();
+  }
+
+  /**
+   * Resets the game.
+   */
+  restart() {
+    this.state = this.initialState.map((row) => [...row]);
+    this.status = Game.GAME_STATUS.IDLE;
+    this.score = 0;
   }
 
   moveLeft() {
+    if (this.status !== Game.GAME_STATUS.PLAYING) {
+      return;
+    }
+
+    const previousState = this.state.map((row) => [...row]);
+
     for (let rowIndex = 0; rowIndex < Game.ROW_LENGTH; rowIndex++) {
       let row = this.state[rowIndex].filter((cell) => cell !== 0);
 
@@ -66,11 +90,20 @@ class Game {
       this.state[rowIndex] = row;
     }
 
-    this.addNewCell();
+    if (!this.statesAreEqual(previousState, this.state)) {
+      this.addNewCell();
+    }
+
     this.checkWinLose();
   }
 
   moveRight() {
+    if (this.status !== Game.GAME_STATUS.PLAYING) {
+      return;
+    }
+
+    const previousState = this.state.map((row) => [...row]);
+
     for (let rowIndex = 0; rowIndex < Game.ROW_LENGTH; rowIndex++) {
       let row = this.state[rowIndex].filter((cell) => cell !== 0);
 
@@ -99,11 +132,20 @@ class Game {
       this.state[rowIndex] = row;
     }
 
-    this.addNewCell();
+    if (!this.statesAreEqual(previousState, this.state)) {
+      this.addNewCell();
+    }
+
     this.checkWinLose();
   }
 
   moveUp() {
+    if (this.status !== Game.GAME_STATUS.PLAYING) {
+      return;
+    }
+
+    const previousState = this.state.map((row) => [...row]);
+
     for (let colIndex = 0; colIndex < Game.COL_LENGTH; colIndex++) {
       let column = [];
 
@@ -136,11 +178,20 @@ class Game {
       }
     }
 
-    this.addNewCell();
+    if (!this.statesAreEqual(previousState, this.state)) {
+      this.addNewCell();
+    }
+
     this.checkWinLose();
   }
 
   moveDown() {
+    if (this.status !== Game.GAME_STATUS.PLAYING) {
+      return;
+    }
+
+    const previousState = this.state.map((row) => [...row]);
+
     for (let colIndex = 0; colIndex < Game.COL_LENGTH; colIndex++) {
       let column = [];
 
@@ -173,8 +224,15 @@ class Game {
       }
     }
 
-    this.addNewCell();
+    if (!this.statesAreEqual(previousState, this.state)) {
+      this.addNewCell();
+    }
+
     this.checkWinLose();
+  }
+
+  statesAreEqual(state1, state2) {
+    return state1.flat().join() === state2.flat().join();
   }
 
   /**
@@ -205,24 +263,6 @@ class Game {
     return this.status;
   }
 
-  /**
-   * Starts the game.
-   */
-  start() {
-    this.status = Game.GAME_STATUS.PLAYING;
-    this.addNewCell();
-    this.addNewCell();
-  }
-
-  /**
-   * Resets the game.
-   */
-  restart() {
-    this.state = this.initialState.map((row) => [...row]);
-    this.status = Game.GAME_STATUS.IDLE;
-    this.score = 0;
-  }
-
   addNewCell() {
     const emptyCells = [];
 
@@ -251,12 +291,14 @@ class Game {
     for (let rowIndex = 0; rowIndex < Game.ROW_LENGTH; rowIndex++) {
       for (let colIndex = 0; colIndex < Game.COL_LENGTH; colIndex++) {
         if (
+          colIndex < Game.COL_LENGTH - 1 &&
           this.state[rowIndex][colIndex] === this.state[rowIndex][colIndex + 1]
         ) {
           return true;
         }
 
         if (
+          rowIndex < Game.ROW_LENGTH - 1 &&
           this.state[rowIndex][colIndex] === this.state[rowIndex + 1][colIndex]
         ) {
           return true;
