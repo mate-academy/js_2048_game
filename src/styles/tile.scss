@@ -1,0 +1,100 @@
+.game-container {
+  position: relative;
+}
+
+.tile-container {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+}
+
+.tile-cell {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75px;
+  width: 75px;
+  border-radius: 5px;
+  opacity: 1;
+
+  transition: top 0.1s ease-in-out, left 0.1s ease-in-out, opacity 0.1s ease-in-out;
+
+  @for $i from 0 through 3 {
+    @for $j from 0 through 3 {
+      &--#{$i}--#{$j} {
+        top: calc(10px + ($i * 84.5px));
+        left: calc(10px + ($j * 84.5px));
+      }
+    };
+  };
+
+  &--hide {
+    opacity: 0;
+  }
+
+  &--2 {
+    background: #eee4da;
+  }
+
+  &--4 {
+    background: #ede0c8;
+  }
+
+  &--8 {
+    background: #f2b179;
+    color: #f9f6f2;
+  }
+
+  &--16 {
+    background: #f59563;
+    color: #f9f6f2;
+  }
+
+  &--32 {
+    background: #f67c5f;
+    color: #f9f6f2;
+  }
+
+  &--64 {
+    background: #f65e3b;
+    color: #f9f6f2;
+  }
+
+  &--128 {
+    background: #edcf72;
+    color: #f9f6f2;
+  }
+
+  &--256 {
+    background: #edcc61;
+    color: #f9f6f2;
+  }
+
+  &--512 {
+    background: #edc850;
+    color: #f9f6f2;
+  }
+
+  &--1024 {
+    background: #edc53f;
+    color: #f9f6f2;
+  }
+
+  &--2048 {
+    background: #edc22e;
+    color: #f9f6f2;
+  }
+}
+
+.tile-content {
+  font-size: 18px;
+  line-height: 23px;
+}

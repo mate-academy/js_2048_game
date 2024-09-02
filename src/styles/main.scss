@@ -1,3 +1,5 @@
+@import './tile';
+
 body {
   margin: 0;
   display: flex;
@@ -20,59 +22,6 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
 }
 
 .game-field {
@@ -135,6 +84,11 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+
+  &:focus {
+    border: 0;
+    outline: 0;
+  }
 }
 
 .start {
