@@ -26,17 +26,49 @@ class Game {
     // console.log(initialState);
   }
 
-  moveLeft() {
-    // const gameField = document.querySelector('.game-field');
-    // const tbody = document.querySelector('tbody');
-    // const trows = [...tbody.children];
-    // gameField.addEventListener('keydown', (e) => {
-    //   if (e.target === 'ArrowLeft') {
-    //   }
-    // });
-  }
+  moveLeft() {}
   moveRight() {}
-  moveUp() {}
+  moveUp() {
+    const tbody = document.querySelector('tbody');
+    const trows = [...tbody.children];
+    const newObj = {};
+    const newTag = document.createElement('td');
+
+    newTag.classList.add('field-cell');
+
+    trows.forEach((row) => {
+      [...row.children].forEach((cell, i) => {
+        if (cell.textContent !== '') {
+          const index = i;
+          const value = parseInt(cell.textContent);
+
+          if (!newObj[index]) {
+            newObj[index] = value;
+          } else if (newObj[index] && newObj[index] === value) {
+            newObj[index] += value;
+          }
+
+          cell.replaceWith(newTag);
+        }
+      });
+    });
+
+    for (const index in newObj) {
+      const childIndex = parseInt(index) + 1;
+
+      for (const row of trows) {
+        const rowCell = row.querySelector(`*:nth-child(${childIndex})`);
+
+        if (rowCell.textContent === '') {
+          rowCell.textContent = newObj[index];
+          rowCell.classList.add(`field-cell--${newObj[index]}`);
+
+          break;
+        }
+      }
+    }
+  }
+
   moveDown() {}
 
   /**
