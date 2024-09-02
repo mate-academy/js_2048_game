@@ -31,46 +31,57 @@ class Game {
   moveUp() {
     const tbody = document.querySelector('tbody');
     const trows = [...tbody.children];
-    const newObj = {};
-    const newTag = document.createElement('td');
-
-    newTag.classList.add('field-cell');
+    const objArr = [];
 
     trows.forEach((row) => {
       [...row.children].forEach((cell, i) => {
-        if (cell.textContent !== '') {
-          const index = i;
-          const value = parseInt(cell.textContent);
+        const value = parseInt(cell.textContent);
 
-          if (!newObj[index]) {
-            newObj[index] = value;
-          } else if (newObj[index] && newObj[index] === value) {
-            newObj[index] += value;
+        if (value) {
+          const exist = objArr.find((obj) => obj[i] === value);
+
+          if (exist) {
+            exist[i] += value;
+          } else {
+            objArr.push({ [i]: value });
           }
 
+          const newTag = document.createElement('td');
+
+          newTag.classList.add('field-cell');
           cell.replaceWith(newTag);
         }
       });
     });
 
-    for (const index in newObj) {
-      const childIndex = parseInt(index) + 1;
+    objArr.forEach((obj) => {
+      for (const [index, value] of Object.entries(obj)) {
+        for (const row of trows) {
+          const childIndex = parseInt(index) + 1;
+          const rowCell = row.querySelector(`*:nth-child(${childIndex})`);
 
-      for (const row of trows) {
-        const rowCell = row.querySelector(`*:nth-child(${childIndex})`);
-
-        if (rowCell.textContent === '') {
-          rowCell.textContent = newObj[index];
-          rowCell.classList.add(`field-cell--${newObj[index]}`);
-
-          break;
+          if (!rowCell.textContent) {
+            rowCell.textContent = value;
+            rowCell.classList.add(`field-cell--${value}`);
+            break;
+          }
         }
       }
-    }
+    });
+
+    const start = document.querySelector('.start');
+
+    start.classList.add('restart');
+
+    start.textContent = 'Restart';
+
+    //score
+    //random new slots
+    //check if there is free space if not game over
+    //check th score if 2048 win
   }
 
   moveDown() {}
-
   /**
    * @returns {number}
    */
@@ -161,7 +172,22 @@ class Game {
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    // const restart = document.querySelector('.restart');
+    // const tbody = document.querySelector('tbody');
+    // const trows = [...tbody.children];
+
+    // restart.addEventListener('click', () => {
+    //   trows.forEach((row) => {
+    //     [...row.children].forEach((td) => {
+    //       const newTag = document.createElement('td');
+
+    //       newTag.classList.add('field-cell');
+    //       td.replaceWith(newTag);
+    //     });
+    //   });
+    // });
+  }
 
   // Add your own methods here
 }
