@@ -2,12 +2,6 @@
 
 const Game = require('../modules/Game.class');
 
-// const initialState = [
-//   [8, 0, 0, 0],
-//   [0, 16, 0, 0],
-//   [0, 0, 32, 0],
-//   [0, 0, 0, 64],
-// ];
 const game = new Game();
 
 const startButton = document.querySelector('.button');
@@ -50,6 +44,8 @@ function resetControls() {
 }
 
 function control(e) {
+  const beforeState = game.getState().map((row) => [...row]);
+
   switch (e.key) {
     case 'ArrowUp':
       game.moveUp();
@@ -68,8 +64,10 @@ function control(e) {
       break;
   }
 
-  game.fillOutRandomCell(game.generateNumber());
-  renderGameField();
+  if (beforeState.toString() !== game.getState().toString()) {
+    game.fillOutRandomCell(game.generateNumber());
+    renderGameField();
+  }
 }
 
 function renderGameField() {
