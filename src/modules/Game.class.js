@@ -21,9 +21,39 @@ class Game {
    * initial state.
    */
 
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.initialState = initialState;
+    this.state = initialState.map((row) => [...row]);
+    this.score = 0;
+    this.status = 'idle';
+  }
+
+  /**
+   * Starts the game.
+   */
+  start() {
+    this.score = 0;
+    this.status = 'playing';
+
+    this.fillOutRandomCell(this.generateNumber());
+    this.fillOutRandomCell(this.generateNumber());
+  }
+
+  /**
+   * Resets the game.
+   */
+  restart() {
+    this.state = this.initialState.map((row) => [...row]);
+    // this.start();
+    this.score = 0;
+    this.status = 'idle';
   }
 
   filterZero(row) {
@@ -51,54 +81,62 @@ class Game {
   }
 
   moveLeft() {
-    for (let r = 0; r < 4; r++) {
-      let row = this.state[r];
+    if (this.status === 'playing') {
+      for (let r = 0; r < 4; r++) {
+        let row = this.state[r];
 
-      row = this.slide(row);
-      this.state[r] = row;
+        row = this.slide(row);
+        this.state[r] = row;
+      }
     }
   }
 
   moveRight() {
-    for (let r = 0; r < 4; r++) {
-      let row = this.state[r];
+    if (this.status === 'playing') {
+      for (let r = 0; r < 4; r++) {
+        let row = this.state[r];
 
-      row.reverse();
-      row = this.slide(row);
-      row.reverse();
-      this.state[r] = row;
+        row.reverse();
+        row = this.slide(row);
+        row.reverse();
+        this.state[r] = row;
+      }
     }
   }
 
   moveUp() {
-    for (let c = 0; c < 4; c++) {
-      let tempRow = [];
+    if (this.status === 'playing') {
+      for (let c = 0; c < 4; c++) {
+        let tempRow = [];
 
-      for (let i = 0; i < 4; i++) {
-        tempRow.push(this.state[i][c]);
-      }
+        for (let i = 0; i < 4; i++) {
+          tempRow.push(this.state[i][c]);
+        }
 
-      tempRow = this.slide(tempRow);
+        tempRow = this.slide(tempRow);
 
-      for (let j = 0; j < 4; j++) {
-        this.state[j][c] = tempRow[j];
+        for (let j = 0; j < 4; j++) {
+          this.state[j][c] = tempRow[j];
+        }
       }
     }
   }
 
   moveDown() {
-    for (let c = 0; c < 4; c++) {
-      let tempRow = [];
+    if (this.status === 'playing') {
+      for (let c = 0; c < 4; c++) {
+        let tempRow = [];
 
-      for (let i = 0; i < 4; i++) {
-        tempRow.push(this.state[i][c]);
-      }
-      tempRow.reverse();
-      tempRow = this.slide(tempRow);
-      tempRow.reverse();
+        for (let i = 0; i < 4; i++) {
+          tempRow.push(this.state[i][c]);
+        }
+        tempRow.reverse();
+        tempRow = this.slide(tempRow);
+        tempRow.reverse();
 
-      for (let j = 0; j < 4; j++) {
-        this.state[j][c] = tempRow[j];
+        for (let j = 0; j < 4; j++) {
+          this.state[j][c] = tempRow[j];
+        }
       }
     }
   }
@@ -129,40 +167,6 @@ class Game {
    */
   getStatus() {
     return this.status;
-  }
-
-  /**
-   * Starts the game.
-   */
-  start() {
-    this.score = 0;
-
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    this.status = 'playing';
-
-    const number1 = this.generateNumber();
-    const number2 = this.generateNumber();
-
-    const cell1 = this.getCellValue();
-    let cell2 = this.getCellValue();
-
-    while (cell2 === cell1) {
-      cell2 = this.getCellValue();
-    }
-    this.state[Math.floor(cell1 / 4)][cell1 % 4] = number1;
-    this.state[Math.floor(cell2 / 4)][cell2 % 4] = number2;
-  }
-
-  /**
-   * Resets the game.
-   */
-  restart() {
-    this.start();
   }
 
   // Add your own methods here

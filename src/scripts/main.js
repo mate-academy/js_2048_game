@@ -1,10 +1,19 @@
 'use strict';
 
 const Game = require('../modules/Game.class');
+
+// const initialState = [
+//   [8, 0, 0, 0],
+//   [0, 16, 0, 0],
+//   [0, 0, 32, 0],
+//   [0, 0, 0, 64],
+// ];
 const game = new Game();
 
 const startButton = document.querySelector('.button');
 const gameField = document.querySelector('.game-field');
+
+renderGameField();
 
 startButton.addEventListener('click', (e) => {
   if (e.target.classList.contains('start')) {
@@ -19,17 +28,25 @@ startButton.addEventListener('click', (e) => {
 function resetControls() {
   document.querySelector('.game-score').innerHTML = 0;
 
-  const button = document.querySelector('.button');
+  switch (game.getStatus()) {
+    case 'idle':
+      startButton.classList.remove('restart');
+      startButton.classList.add('start');
+      startButton.innerHTML = 'Start';
+      document.removeEventListener('keydown', control);
+      break;
 
-  button.classList.remove('start');
-  button.classList.add('restart');
-  button.innerHTML = 'Restart';
+    case 'playing':
+      startButton.classList.remove('start');
+      startButton.classList.add('restart');
+      startButton.innerHTML = 'Restart';
+      document.addEventListener('keydown', control);
+      break;
+  }
 
   document
     .querySelectorAll('.message')
     .forEach((e) => e.classList.add('hidden'));
-
-  document.addEventListener('keydown', control);
 }
 
 function control(e) {
