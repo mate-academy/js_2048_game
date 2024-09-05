@@ -23,7 +23,6 @@ class Game {
   constructor(initialState) {
     // eslint-disable-next-line no-console
     this.initialState = initialState;
-    this.isStart = true;
     // console.log(initialState);
   }
 
@@ -130,14 +129,10 @@ class Game {
 
       messageStart.style.display = 'none';
 
-      this.isStart = true;
-
-      if (this.isStart) {
-        this.switchButton();
-        this.restart();
-      }
+      this.switchButton();
+      this.restart();
     });
-  }
+  };
   /**
    * Resets the game.
    */
@@ -156,13 +151,8 @@ class Game {
             td.replaceWith(newTag);
           });
         });
-
-        this.isStart = false;
-
-        if (!this.isStart) {
-          this.switchButton();
-          this.start();
-        }
+        this.switchButton();
+        this.start();
       });
     }
   }
@@ -225,7 +215,7 @@ class Game {
       const randomRowChildren = [...randomRow.children];
       let randomCell = randomRowChildren[randomIndex()];
 
-      while (randomCell.textContent !== null) {
+      while (randomCell.textContent) {
         randomCell = randomRowChildren[randomIndex()];
       }
 
