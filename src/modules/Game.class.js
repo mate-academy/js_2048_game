@@ -23,6 +23,7 @@ class Game {
   constructor(initialState) {
     // eslint-disable-next-line no-console
     this.initialState = initialState;
+    this.isStart = true;
     // console.log(initialState);
   }
 
@@ -33,14 +34,34 @@ class Game {
     const trows = [...tbody.children];
     const objArr = [];
 
-    trows.forEach((row) => {
+    trows.forEach((row, index) => {
+      const canMerge = (colIndex, startRow, endRow, content) => {
+        for (let j = startRow + 1; j < endRow; j++) {
+          const cellValue = parseInt(trows[j].children[colIndex].textContent);
+
+          if (cellValue !== 0 && cellValue !== content) {
+            return false;
+          }
+        }
+
+        return true;
+      };
+
       [...row.children].forEach((cell, i) => {
         const value = parseInt(cell.textContent);
 
         if (value) {
           const exist = objArr.find((obj) => obj[i] === value);
 
-          if (exist) {
+          if (
+            exist &&
+            canMerge(
+              i,
+              index,
+              trows.findIndex((r) => r === row),
+              value,
+            )
+          ) {
             exist[i] += value;
           } else {
             objArr.push({ [i]: value });
@@ -68,17 +89,10 @@ class Game {
         }
       }
     });
-
-    const start = document.querySelector('.start');
-
-    start.classList.add('restart');
-
-    start.textContent = 'Restart';
-
-    //score
-    //random new slots
-    //check if there is free space if not game over
-    //check th score if 2048 win
+    // score
+    // random new slots
+    // check if there is free space if not game over
+    // check th score if 2048 win
   }
 
   moveDown() {}
@@ -109,87 +123,119 @@ class Game {
    */
   start() {
     const start = document.querySelector('.start');
-    const tbody = document.querySelector('tbody');
-    const trows = [...tbody.children];
     const messageStart = document.querySelector('.message-start');
-    const randomIndex = () => {
-      const randomNumber = Math.floor(Math.random() * 3);
-
-      return randomNumber;
-    };
-    const cellValue = () => {
-      const set = {
-        2: 0.9,
-        4: 0.1,
-      };
-
-      let sum = 0;
-
-      for (const num in set) {
-        sum += set[num];
-      }
-
-      function pickRandom() {
-        let pick = Math.random() * sum;
-
-        for (const j in set) {
-          pick -= set[j];
-
-          if (pick <= 0) {
-            return j;
-          }
-        }
-      }
-
-      return pickRandom();
-    };
 
     start.addEventListener('click', () => {
-      const selectedRows = new Set();
-      const numberOfTiles = 2;
-
-      for (let i = 0; i < numberOfTiles; i++) {
-        const randomRow = trows[randomIndex()];
-        const randomRowChildren = [...randomRow.children];
-        let randomCell = randomRowChildren[randomIndex()];
-
-        while (selectedRows.has(randomCell)) {
-          randomCell = randomRowChildren[randomIndex()];
-        }
-
-        selectedRows.add(randomCell);
-        selectedRows.add(randomRow);
-
-        const randomValue = cellValue();
-
-        randomCell.textContent = randomValue;
-        randomCell.classList.add(`field-cell--${randomValue}`);
-      }
+      this.addTiles();
 
       messageStart.style.display = 'none';
+
+      this.isStart = true;
+
+      if (this.isStart) {
+        this.switchButton();
+        this.restart();
+      }
     });
   }
   /**
    * Resets the game.
    */
   restart() {
-    // const restart = document.querySelector('.restart');
-    // const tbody = document.querySelector('tbody');
-    // const trows = [...tbody.children];
+    const restart = document.querySelector('.restart');
+    const tbody = document.querySelector('tbody');
+    const trows = [...tbody.children];
 
-    // restart.addEventListener('click', () => {
-    //   trows.forEach((row) => {
-    //     [...row.children].forEach((td) => {
-    //       const newTag = document.createElement('td');
+    if (restart) {
+      restart.addEventListener('click', () => {
+        trows.forEach((row) => {
+          [...row.children].forEach((td) => {
+            const newTag = document.createElement('td');
 
-    //       newTag.classList.add('field-cell');
-    //       td.replaceWith(newTag);
-    //     });
-    //   });
-    // });
+            newTag.classList.add('field-cell');
+            td.replaceWith(newTag);
+          });
+        });
+
+        this.isStart = false;
+
+        if (!this.isStart) {
+          this.switchButton();
+          this.start();
+        }
+      });
+    }
   }
 
   // Add your own methods here
-}
 
+  switchButton() {
+    const btn = document.querySelector('.button');
+
+    if (btn.classList.contains('restart')) {
+      btn.classList.remove('restart');
+      btn.classList.add('start');
+      btn.textContent = 'Start';
+    } else {
+      btn.classList.remove('start');
+      btn.classList.add('restart');
+      btn.textContent = 'Restart';
+    }
+  }
+
+  generateTiles() {
+    const set = {
+      2: 0.9,
+      4: 0.1,
+    };
+
+    let sum = 0;
+
+    for (const num in set) {
+      sum += set[num];
+    }
+
+    function pickRandom() {
+      let pick = Math.random() * sum;
+
+      for (const j in set) {
+        pick -= set[j];
+
+        if (pick <= 0) {
+          return j;
+        }
+      }
+    }
+
+    return pickRandom();
+  }
+
+  addTiles() {
+    const tbody = document.querySelector('tbody');
+    const trows = [...tbody.children];
+    const randomIndex = () => {
+      const randomNumber = Math.floor(Math.random() * 3);
+
+      return randomNumber;
+    };
+    const numberOfTiles = 2;
+
+    for (let i = 0; i < numberOfTiles; i++) {
+      const randomRow = trows[randomIndex()];
+      const randomRowChildren = [...randomRow.children];
+      let randomCell = randomRowChildren[randomIndex()];
+
+      while (randomCell.textContent !== null) {
+        randomCell = randomRowChildren[randomIndex()];
+      }
+
+      const randomValue = this.generateTiles();
+
+      randomCell.textContent = randomValue;
+      randomCell.classList.add(`field-cell--${randomValue}`);
+    }
+  }
+}
 module.exports = Game;
+
+// if (cellValue !== content || cellValue !== null)
