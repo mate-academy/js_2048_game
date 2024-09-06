@@ -6,9 +6,8 @@ const game = new Game();
 
 // Write your code here
 
-game.start();
-
 const body = document.querySelector('body');
+const button = document.querySelector('.button');
 
 body.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowUp') {
@@ -19,5 +18,13 @@ body.addEventListener('keydown', (e) => {
     game.moveLeft();
   } else if (e.key === 'ArrowRight') {
     game.moveRight();
+  }
+});
+
+button.addEventListener('click', () => {
+  if (button.classList.contains('start')) {
+    game.start();
+  } else if (button.classList.contains('restart')) {
+    game.restart();
   }
 });

@@ -88,8 +88,9 @@ class Game {
         }
       }
     });
+
+    this.addTiles();
     // score
-    // random new slots
     // check if there is free space if not game over
     // check th score if 2048 win
   }
@@ -121,54 +122,44 @@ class Game {
    * Starts the game.
    */
   start() {
-    const start = document.querySelector('.start');
     const messageStart = document.querySelector('.message-start');
 
-    start.addEventListener('click', () => {
-      this.addTiles();
+    this.addTiles();
 
-      messageStart.style.display = 'none';
+    messageStart.style.display = 'none';
 
-      this.switchButton();
-      this.restart();
-    });
-  };
+    this.switchButton();
+  }
   /**
    * Resets the game.
    */
   restart() {
-    const restart = document.querySelector('.restart');
     const tbody = document.querySelector('tbody');
     const trows = [...tbody.children];
 
-    if (restart) {
-      restart.addEventListener('click', () => {
-        trows.forEach((row) => {
-          [...row.children].forEach((td) => {
-            const newTag = document.createElement('td');
+    trows.forEach((row) => {
+      [...row.children].forEach((td) => {
+        const newTag = document.createElement('td');
 
-            newTag.classList.add('field-cell');
-            td.replaceWith(newTag);
-          });
-        });
-        this.switchButton();
-        this.start();
+        newTag.classList.add('field-cell');
+        td.replaceWith(newTag);
       });
-    }
+    });
+
+    this.switchButton();
   }
 
   // Add your own methods here
 
   switchButton() {
     const btn = document.querySelector('.button');
+    const hasRestart = btn.classList.contains('restart');
 
-    if (btn.classList.contains('restart')) {
-      btn.classList.remove('restart');
-      btn.classList.add('start');
+    if (hasRestart) {
+      btn.classList.replace('restart', 'start');
       btn.textContent = 'Start';
     } else {
-      btn.classList.remove('start');
-      btn.classList.add('restart');
+      btn.classList.replace('start', 'restart');
       btn.textContent = 'Restart';
     }
   }
