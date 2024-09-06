@@ -4,11 +4,11 @@ const buttonStart = document.querySelector('.button.start');
 
 const messageStart = document.querySelector('.message-start');
 
-const cells = Array.from(document.querySelectorAll('.field-cell'));
+const cells = [...document.querySelectorAll('.field-cell')];
 
-const cellsArr = Array.from(document.querySelectorAll('.field-row')).map(
-  (row) => Array.from(row.children)
-);
+const rowsArray = [...document.querySelectorAll('.field-row')].map((row) => [
+  ...row.children,
+]);
 
 function startGame() {
   buttonStart.textContent = 'Restart';
@@ -22,22 +22,27 @@ function startGame() {
   cellAppear();
 }
 
-function clearField() {
-  cells.forEach((cell) => {
-    cell.className = 'field-cell';
-    cell.textContent = '';
-  });
-}
-
 function cellAppear() {
   const emptyCells = cells.filter((cell) => cell.classList.length === 1);
 
   const index = getRandomIntInclusive(0, emptyCells.length - 1);
-
   const cellValue = getNewValue();
 
   emptyCells[index].classList.add(`field-cell--${cellValue}`);
+  emptyCells[index].dataset.value = cellValue;
   emptyCells[index].textContent = cellValue;
+}
+
+function cleanCell(cell) {
+  cell.className = 'field-cell';
+  cell.dataset.value = '0';
+  cell.textContent = '';
+}
+
+function clearField() {
+  cells.forEach((cell) => {
+    cleanCell(cell);
+  });
 }
 
 function getRandomIntInclusive(minimum, maximum) {
@@ -50,33 +55,63 @@ function getRandomIntInclusive(minimum, maximum) {
 function getNewValue() {
   const random = Math.random();
 
-  if (random >= 0.9) {
-    return '4';
+  return random >= 0.9 ? '4' : '2';
+}
+
+function compressRow(cellsInRow) {
+  const updatedRow = [];
+
+  for (let i = 0; i < cellsInRow.length; i++) {
+    if (cellsInRow[i].dataset.value !== '0') {
+      const currentValue = Number(cellsInRow[i].dataset.value);
+
+      if (
+        i < cellsInRow.length - 1 &&
+        cellsInRow[i].dataset.value === cellsInRow[i + 1].dataset.value
+      ) {
+        updatedRow.push(currentValue * 2);
+        cellsInRow[i + 1].dataset.value = '0';
+        i++;
+      } else {
+        updatedRow.push(currentValue);
+      }
+    }
   }
 
-  return '2';
+  return updatedRow;
 }
 
-function swap(arr, from, to) {
-  const tmpTextContent = arr[from].textContent;
-  const tmpClassName = arr[from].className;
+function shiftLeft(cellsInRow) {
+  const newElements = compressRow(cellsInRow);
 
-  arr[from].textContent = arr[to].textContent;
-  arr[from].className = arr[to].className;
+  for (let i = 0; i < cellsInRow.length; i++) {
+    const newValue = newElements[i];
 
-  arr[to].textContent = tmpTextContent;
-  arr[to].className = tmpClassName;
+    if (newValue) {
+      cellsInRow[i].className = `field-cell field-cell--${newValue}`;
+      cellsInRow[i].dataset.value = newValue;
+      cellsInRow[i].textContent = newValue;
+    } else {
+      cleanCell(cellsInRow[i]);
+    }
+  }
 }
 
-function move(rowCells) {
-  for (let i = 0; i < rowCells.length; i++) {
-    if (rowCells[i].textContent === '') {
-      for (let j = i; j < rowCells.length; j++) {
-        if (rowCells[j].textContent !== '') {
-          swap(rowCells, i, j);
-          break;
-        }
-      }
+function shiftRight(cellsInRow) {
+  const newElements = compressRow(cellsInRow);
+
+  let j = newElements.length - 1;
+
+  for (let i = cellsInRow.length - 1; i >= 0; i--) {
+    if (j >= 0) {
+      const newValue = newElements[j];
+
+      cellsInRow[i].className = `field-cell field-cell--${newValue}`;
+      cellsInRow[i].dataset.value = newValue;
+      cellsInRow[i].textContent = newValue;
+      j--;
+    } else {
+      cleanCell(cellsInRow[i]);
     }
   }
 }
@@ -94,13 +129,13 @@ document.addEventListener('keydown', (e) => {
       break;
 
     case 'ArrowRight':
-      cellsArr.forEach((part) => move([...part].reverse()));
+      rowsArray.forEach((part) => shiftRight(part));
       cellAppear();
 
       break;
 
     case 'ArrowLeft':
-      cellsArr.forEach((part) => move(part));
+      rowsArray.forEach((part) => shiftLeft(part));
       cellAppear();
       break;
 
