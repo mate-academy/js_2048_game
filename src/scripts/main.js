@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cell.className = 'field-cell';
 
       if (grid[row][col] !== 0) {
-        cell.classList.add('n' + grid[row][col]);
+        cell.classList.add('field-cell--' + grid[row][col]);
       }
     });
     scoreDisplay.textContent = score;
