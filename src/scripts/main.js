@@ -2,6 +2,10 @@
 
 const gameTable = document.querySelector('.game-field');
 
+/* змінна для перевірки кінця гри,
+якщо гра програна, керування в обробнику подій блокується */
+let isGameOver = false;
+
 class Game {
   constructor(initialState) {
     this.initialState = [
@@ -304,11 +308,13 @@ startBtn.addEventListener('click', () => {
   startBtn.innerText = 'Restart';
   game.score = 0;
   game.updateScore();
-});
 
-/* змінна для перевірки кінця гри,
-якщо гра програна, керування в обробнику подій блокується */
-let isGameOver = false;
+  // перезапуск гри якщо гравець програв
+  if (isGameOver) {
+    document.querySelector('.message-lose').classList.add('hidden');
+    isGameOver = false;
+  }
+});
 
 document.addEventListener('keydown', (e) => {
   /* додаємо керування стрілками на клавіатурі.
