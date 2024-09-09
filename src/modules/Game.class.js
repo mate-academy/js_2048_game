@@ -23,6 +23,7 @@ class Game {
   constructor(initialState) {
     // eslint-disable-next-line no-console
     this.initialState = initialState;
+    this.startActive = false;
     // console.log(initialState);
   }
 
@@ -33,65 +34,67 @@ class Game {
     const trows = [...tbody.children];
     const objArr = [];
 
-    trows.forEach((row, index) => {
-      const canMerge = (colIndex, startRow, endRow, content) => {
-        for (let j = startRow + 1; j < endRow; j++) {
-          const cellValue = parseInt(trows[j].children[colIndex].textContent);
+    if (this.startActive) {
+      trows.forEach((row, index) => {
+        const canMerge = (colIndex, startRow, endRow, content) => {
+          for (let j = startRow + 1; j < endRow; j++) {
+            const cellValue = parseInt(trows[j].children[colIndex].textContent);
 
-          if (cellValue !== 0 && cellValue !== content) {
-            return false;
-          }
-        }
-
-        return true;
-      };
-
-      [...row.children].forEach((cell, i) => {
-        const value = parseInt(cell.textContent);
-
-        if (value) {
-          const exist = objArr.find((obj) => obj[i] === value);
-
-          if (
-            exist &&
-            canMerge(
-              i,
-              index,
-              trows.findIndex((r) => r === row),
-              value,
-            )
-          ) {
-            exist[i] += value;
-          } else {
-            objArr.push({ [i]: value });
+            if (cellValue !== 0 && cellValue !== content) {
+              return false;
+            }
           }
 
-          const newTag = document.createElement('td');
+          return true;
+        };
 
-          newTag.classList.add('field-cell');
-          cell.replaceWith(newTag);
+        [...row.children].forEach((cell, i) => {
+          const value = parseInt(cell.textContent);
+
+          if (value) {
+            const exist = objArr.find((obj) => obj[i] === value);
+
+            if (
+              exist &&
+              canMerge(
+                i,
+                index,
+                trows.findIndex((r) => r === row),
+                value,
+              )
+            ) {
+              exist[i] += value;
+            } else {
+              objArr.push({ [i]: value });
+            }
+
+            const newTag = document.createElement('td');
+
+            newTag.classList.add('field-cell');
+            cell.replaceWith(newTag);
+          }
+        });
+      });
+
+      objArr.forEach((obj) => {
+        for (const [index, value] of Object.entries(obj)) {
+          for (const row of trows) {
+            const childIndex = parseInt(index) + 1;
+            const rowCell = row.querySelector(`*:nth-child(${childIndex})`);
+
+            if (!rowCell.textContent) {
+              rowCell.textContent = value;
+              rowCell.classList.add(`field-cell--${value}`);
+              break;
+            }
+          }
         }
       });
-    });
 
-    objArr.forEach((obj) => {
-      for (const [index, value] of Object.entries(obj)) {
-        for (const row of trows) {
-          const childIndex = parseInt(index) + 1;
-          const rowCell = row.querySelector(`*:nth-child(${childIndex})`);
+      this.addTiles();
+    }
 
-          if (!rowCell.textContent) {
-            rowCell.textContent = value;
-            rowCell.classList.add(`field-cell--${value}`);
-            break;
-          }
-        }
-      }
-    });
-
-    this.addTiles();
     // score
-    // check if there is free space if not game over
     // check th score if 2048 win
   }
 
@@ -126,9 +129,11 @@ class Game {
 
     this.addTiles();
 
-    messageStart.style.display = 'none';
+    messageStart.classList.add('hidden');
 
     this.switchButton();
+
+    this.startActive = true;
   }
   /**
    * Resets the game.
@@ -202,12 +207,41 @@ class Game {
     const numberOfTiles = 2;
 
     for (let i = 0; i < numberOfTiles; i++) {
-      const randomRow = trows[randomIndex()];
+      let randomRow = trows[randomIndex()];
       const randomRowChildren = [...randomRow.children];
-      let randomCell = randomRowChildren[randomIndex()];
+      const hasEmptyCell = randomRowChildren.map((cell, index) => {
+        const arr = [];
 
-      while (randomCell.textContent) {
-        randomCell = randomRowChildren[randomIndex()];
+        if (!cell.textContent) {
+          arr.push(index);
+        }
+
+        return arr;
+      });
+      let randomCell;
+      const rowsTotal = 4;
+      let step = 0;
+
+      for (let j = 1; j <= rowsTotal; j++) {
+        if (step === rowsTotal) {
+          const messageLose = document.querySelector('.message-lose');
+
+          messageLose.classList.remove('hidden');
+        }
+
+        if (hasEmptyCell.length > 0) {
+          const foundIndex = Math.floor(Math.random * hasEmptyCell.length);
+          const cellToFill = hasEmptyCell[foundIndex];
+
+          randomCell = randomRowChildren[cellToFill];
+
+          break;
+        }
+
+        if (hasEmptyCell.length === 0) {
+          randomRow = trows[randomIndex()];
+          step++;
+        }
       }
 
       const randomValue = this.generateTiles();
@@ -218,5 +252,3 @@ class Game {
   }
 }
 module.exports = Game;
-
-// if (cellValue !== content || cellValue !== null)
