@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: transform 300ms ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -73,6 +74,10 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+}
+
+.slide-in-down {
+  transform: scale(0.7);
 }
 
 .game-field {

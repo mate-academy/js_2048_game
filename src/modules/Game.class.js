@@ -1,28 +1,15 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
+const gameTable = document.querySelector('.game-field');
+
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
   }
 
   moveLeft() {}
@@ -52,17 +39,37 @@ class Game {
    */
   getStatus() {}
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  start() {
+    this.state = JSON.parse(JSON.stringify(this.initialState));
+    this.updateHtml();
 
-  /**
-   * Resets the game.
-   */
+    for (let i = 0; i < 2; i++) {
+      let row, col;
+
+      do {
+        row = Math.floor(Math.random() * 4);
+        col = Math.floor(Math.random() * 4);
+      } while (this.state[row][col] !== 0);
+
+      this.state[row][col] = Math.random() < 0.1 ? 4 : 2;
+
+      const cell = gameTable.rows[row].cells[col];
+
+      cell.textContent = this.state[row][col];
+    }
+  }
+
   restart() {}
 
-  // Add your own methods here
+  updateHTML() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        const cell = gameTable.rows[row].cells[col];
+
+        cell.textContent = this.state[row][col] || '';
+      }
+    }
+  }
 }
 
-module.exports = Game;
+// module.exports = Game;
