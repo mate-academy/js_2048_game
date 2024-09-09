@@ -209,39 +209,19 @@ class Game {
     for (let i = 0; i < numberOfTiles; i++) {
       let randomRow = trows[randomIndex()];
       const randomRowChildren = [...randomRow.children];
-      const hasEmptyCell = randomRowChildren.map((cell, index) => {
-        const arr = [];
-
-        if (!cell.textContent) {
-          arr.push(index);
-        }
-
-        return arr;
-      });
+      const hasEmptyCell = randomRowChildren.some((cell) => !cell.textContent);
       let randomCell;
-      const rowsTotal = 4;
-      let step = 0;
 
-      for (let j = 1; j <= rowsTotal; j++) {
-        if (step === rowsTotal) {
-          const messageLose = document.querySelector('.message-lose');
+      // while (!hasEmptyCell) {
+      //   randomRow = trows[randomIndex()];
+      // }
 
-          messageLose.classList.remove('hidden');
-        }
-
-        if (hasEmptyCell.length > 0) {
-          const foundIndex = Math.floor(Math.random * hasEmptyCell.length);
-          const cellToFill = hasEmptyCell[foundIndex];
-
-          randomCell = randomRowChildren[cellToFill];
-
-          break;
-        }
-
-        if (hasEmptyCell.length === 0) {
-          randomRow = trows[randomIndex()];
-          step++;
-        }
+      if (hasEmptyCell) {
+        do {
+          randomCell = randomRowChildren[randomIndex()];
+        } while (randomCell.textContent);
+      } else {
+        randomRow = trows[randomIndex()];
       }
 
       const randomValue = this.generateTiles();
@@ -252,3 +232,25 @@ class Game {
   }
 }
 module.exports = Game;
+
+// for (let j = 1; j <= rowsTotal; j++) {
+//   if (step === rowsTotal) {
+//     const messageLose = document.querySelector('.message-lose');
+
+//     messageLose.classList.remove('hidden');
+//   }
+
+//   if (hasEmptyCell.length > 0) {
+//     const foundIndex = Math.floor(Math.random * hasEmptyCell.length);
+//     const cellToFill = hasEmptyCell[foundIndex];
+
+//     randomCell = randomRowChildren[cellToFill];
+
+//     break;
+//   }
+
+//   if (hasEmptyCell.length === 0) {
+//     randomRow = trows[randomIndex()];
+//     step++;
+//   }
+// }

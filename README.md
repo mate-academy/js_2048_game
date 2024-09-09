@@ -53,7 +53,7 @@ Hints:
     document.addEventListener('keydown', event => console.log(event.key));
     ```
 - Adding animation to the game is optional. It is a bit tricky, but you can try it if you want. Probably, you will need to extend the Game class with additional methods and create a separate board storage with Tile entities to operate their corresponding DOM elements' positions.
-
+- [DEMO LINK](https://VikaChereushenko.github.io/js_2048_game/)
 You can change the HTML/CSS layout if you need it.
 
 ![Preview](./src/images/reference.png)
@@ -61,7 +61,7 @@ You can change the HTML/CSS layout if you need it.
 ## Deploy and Pull Request
 
 1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://VikaChereushenko.github.io/js_2048_game/)
+
 2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
     - Run `npm run test` command to test your code;
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
