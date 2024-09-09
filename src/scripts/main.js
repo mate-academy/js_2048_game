@@ -15,10 +15,7 @@ let gameBoard = [
   [0, 0, 0, 0],
 ];
 
-let score = gameBoard.reduce((acc, row) => {
-  return acc + row.reduce((rowSum, cell) => rowSum + cell, 0);
-}, 0);
-
+let score = 0;
 let gameStarted = false;
 let gameWon = false;
 
@@ -242,19 +239,31 @@ const render = () => {
 };
 
 startButton.addEventListener('click', () => {
-  gameStarted = true;
+  if (!gameStarted) {
+    // Начало игры
+    gameStarted = true;
+    startButton.textContent = 'Restart';
+    startButton.classList.add('restart');
+    startButton.classList.remove('start');
+    generateRandomTile();
+    generateRandomTile();
+  } else {
+    gameStarted = false;
+    startButton.textContent = 'Start';
+    startButton.classList.remove('restart');
+    startButton.classList.add('start');
 
-  gameBoard = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
-  score = 0;
-  loseMessage.classList.add('hidden');
-  startButton.classList.add('restart');
-  startButton.textContent = 'Restart';
-  generateRandomTile();
-  generateRandomTile();
+    gameBoard = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    score = 0;
+    gameWon = false;
+    winMessage.classList.add('hidden');
+    loseMessage.classList.add('hidden');
+  }
+
   render();
 });
