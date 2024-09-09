@@ -1,47 +1,54 @@
 'use strict';
 
-const buttonStart = document.querySelector('.button.start');
+'use strict';
 
-const messageStart = document.querySelector('.message-start');
-
-const cells = [...document.querySelectorAll('.field-cell')];
-
-const rowsArray = [...document.querySelectorAll('.field-row')].map((row) => [
+const startButton = document.querySelector('.button.start');
+const startMessage = document.querySelector('.message-start');
+const allCells = [...document.querySelectorAll('.field-cell')];
+const gridRows = [...document.querySelectorAll('.field-row')].map((row) => [
   ...row.children,
 ]);
 
 function startGame() {
-  buttonStart.textContent = 'Restart';
-  buttonStart.classList.remove('start');
-  buttonStart.classList.add('restart');
+  startButton.textContent = 'Restart';
+  startButton.classList.remove('start');
+  startButton.classList.add('restart');
 
-  messageStart.classList.add('hidden');
+  startMessage.classList.add('hidden');
 
   clearField();
-  cellAppear();
-  cellAppear();
+  spawnNewCell();
+  spawnNewCell();
 }
 
-function cellAppear() {
-  const emptyCells = cells.filter((cell) => cell.classList.length === 1);
+function spawnNewCell() {
+  const emptyCells = allCells.filter((cell) => cell.classList.length === 1);
+
+  if (emptyCells.length === 0) {
+    return;
+  }
 
   const index = getRandomIntInclusive(0, emptyCells.length - 1);
   const cellValue = getNewValue();
 
-  emptyCells[index].classList.add(`field-cell--${cellValue}`);
-  emptyCells[index].dataset.value = cellValue;
-  emptyCells[index].textContent = cellValue;
+  updateCell(emptyCells[index], cellValue);
 }
 
-function cleanCell(cell) {
+function updateCell(cell, value) {
+  cell.className = `field-cell field-cell--${value}`;
+  cell.dataset.value = value;
+  cell.textContent = value;
+}
+
+function resetCell(cell) {
   cell.className = 'field-cell';
   cell.dataset.value = '0';
   cell.textContent = '';
 }
 
 function clearField() {
-  cells.forEach((cell) => {
-    cleanCell(cell);
+  allCells.forEach((cell) => {
+    resetCell(cell);
   });
 }
 
@@ -58,85 +65,103 @@ function getNewValue() {
   return random >= 0.9 ? '4' : '2';
 }
 
-function compressRow(cellsInRow) {
-  const updatedRow = [];
+function transpose(grid) {
+  return grid[0].map((_, colIndex) => grid.map((row) => row[colIndex]));
+}
 
-  for (let i = 0; i < cellsInRow.length; i++) {
-    if (cellsInRow[i].dataset.value !== '0') {
-      const currentValue = Number(cellsInRow[i].dataset.value);
+function mergeRow(row) {
+  const nonZeroRow = row.filter((cell) => cell.dataset.value !== '0');
+  const mergedRow = [];
 
-      if (
-        i < cellsInRow.length - 1 &&
-        cellsInRow[i].dataset.value === cellsInRow[i + 1].dataset.value
-      ) {
-        updatedRow.push(currentValue * 2);
-        cellsInRow[i + 1].dataset.value = '0';
-        i++;
-      } else {
-        updatedRow.push(currentValue);
-      }
+  for (let i = 0; i < nonZeroRow.length; i++) {
+    const currentValue = Number(nonZeroRow[i].dataset.value);
+
+    if (
+      i < nonZeroRow.length - 1 &&
+      nonZeroRow[i].dataset.value === nonZeroRow[i + 1].dataset.value
+    ) {
+      mergedRow.push(currentValue * 2);
+      nonZeroRow[i + 1].dataset.value = '0';
+      i++;
+    } else {
+      mergedRow.push(currentValue);
     }
   }
 
-  return updatedRow;
+  return mergedRow;
 }
 
-function shiftLeft(cellsInRow) {
-  const newElements = compressRow(cellsInRow);
+function moveRowLeft(cellsInRow) {
+  const mergedRow = mergeRow(cellsInRow);
 
   for (let i = 0; i < cellsInRow.length; i++) {
-    const newValue = newElements[i];
+    const newValue = mergedRow[i];
 
     if (newValue) {
-      cellsInRow[i].className = `field-cell field-cell--${newValue}`;
-      cellsInRow[i].dataset.value = newValue;
-      cellsInRow[i].textContent = newValue;
+      updateCell(cellsInRow[i], newValue);
     } else {
-      cleanCell(cellsInRow[i]);
+      resetCell(cellsInRow[i]);
     }
   }
 }
 
-function shiftRight(cellsInRow) {
-  const newElements = compressRow(cellsInRow);
+function moveRowRight(cellsInRow) {
+  const mergedRow = mergeRow(cellsInRow);
 
-  let j = newElements.length - 1;
+  let j = mergedRow.length - 1;
 
   for (let i = cellsInRow.length - 1; i >= 0; i--) {
     if (j >= 0) {
-      const newValue = newElements[j];
+      const newValue = mergedRow[j];
 
-      cellsInRow[i].className = `field-cell field-cell--${newValue}`;
-      cellsInRow[i].dataset.value = newValue;
-      cellsInRow[i].textContent = newValue;
+      updateCell(cellsInRow[i], newValue);
       j--;
     } else {
-      cleanCell(cellsInRow[i]);
+      resetCell(cellsInRow[i]);
     }
   }
 }
 
-buttonStart.onclick = () => {
+function shiftUp(grid) {
+  const transposedGrid = transpose(grid);
+
+  transposedGrid.forEach((row) => moveRowLeft(row));
+
+  return transpose(transposedGrid);
+}
+
+function shiftDown(grid) {
+  const transposedGrid = transpose(grid);
+
+  transposedGrid.forEach((row) => moveRowRight(row));
+
+  return transpose(transposedGrid);
+}
+
+startButton.onclick = () => {
   startGame();
 };
 
 document.addEventListener('keydown', (e) => {
   switch (e.key) {
     case 'ArrowUp':
+      shiftUp(gridRows);
+      spawnNewCell();
       break;
 
     case 'ArrowDown':
+      shiftDown(gridRows);
+      spawnNewCell();
       break;
 
     case 'ArrowRight':
-      rowsArray.forEach((part) => shiftRight(part));
-      cellAppear();
-
+      gridRows.forEach((row) => moveRowRight(row));
+      spawnNewCell();
       break;
 
     case 'ArrowLeft':
-      rowsArray.forEach((part) => shiftLeft(part));
-      cellAppear();
+      gridRows.forEach((row) => moveRowLeft(row));
+      spawnNewCell();
       break;
 
     default:
