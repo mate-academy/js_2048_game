@@ -201,6 +201,36 @@ function handleKeyPress(ev) {
   render();
 }
 
+startButton.addEventListener('click', () => {
+  if (!gameStarted) {
+    // Начало игры
+    gameStarted = true;
+    startButton.textContent = 'Restart';
+    startButton.classList.add('restart');
+    startButton.classList.remove('start');
+    generateRandomTile();
+    generateRandomTile();
+  } else {
+    gameStarted = false;
+    startButton.textContent = 'Start';
+    startButton.classList.remove('restart');
+    startButton.classList.add('start');
+
+    gameBoard = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    score = 0;
+    gameWon = false;
+    winMessage.classList.add('hidden');
+    loseMessage.classList.add('hidden');
+  }
+
+  render();
+});
+
 const render = () => {
   scoreDisplay.innerHTML = `<span class="game-score">${score}</span>`;
   tableBody.innerHTML = '';
@@ -237,33 +267,3 @@ const render = () => {
     messageContainer.removeChild(startMessage);
   }
 };
-
-startButton.addEventListener('click', () => {
-  if (!gameStarted) {
-    // Начало игры
-    gameStarted = true;
-    startButton.textContent = 'Restart';
-    startButton.classList.add('restart');
-    startButton.classList.remove('start');
-    generateRandomTile();
-    generateRandomTile();
-  } else {
-    gameStarted = false;
-    startButton.textContent = 'Start';
-    startButton.classList.remove('restart');
-    startButton.classList.add('start');
-
-    gameBoard = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    score = 0;
-    gameWon = false;
-    winMessage.classList.add('hidden');
-    loseMessage.classList.add('hidden');
-  }
-
-  render();
-});
