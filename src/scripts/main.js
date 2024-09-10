@@ -285,7 +285,3 @@ function removeAttrs() {
     merged.removeAttribute('data-merged');
   }
 }
-
-function slowMove(cell) {
-  console.log(cell);
-}
