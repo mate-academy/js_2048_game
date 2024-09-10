@@ -18,10 +18,15 @@ class Game {
   }
 
   moveLeft() {
-    // ітеруємо по всіх рядках зліва направо
+    /* перед кожним рухом робим копію попереднього стану, щоб
+    в методі compareStates() порівнювати їх і не додавати нову плитку
+    якщо рух в даному напрямку неможливий */
+    const previousState = JSON.parse(JSON.stringify(this.state));
+
     for (let row = 0; row < 4; row++) {
       let col = 0;
 
+      // ітеруємо по всіх рядках зліва направо
       for (let i = 1; i < 4; i++) {
         // якщо зустрічаєм непусту клітинку
         if (this.state[row][i] !== 0) {
@@ -50,8 +55,11 @@ class Game {
         }
       }
     }
-    this.addRandomTile();
     this.updateHTML();
+
+    if (!this.compareStates(previousState, this.state)) {
+      this.addRandomTile();
+    }
     this.updateScore();
 
     // перевірка на перемогу чи поразку в кінці кожного ходу
@@ -66,6 +74,8 @@ class Game {
   }
 
   moveRight() {
+    const previousState = JSON.parse(JSON.stringify(this.state));
+
     for (let row = 0; row < 4; row++) {
       let col = 3;
 
@@ -90,8 +100,11 @@ class Game {
         }
       }
     }
-    this.addRandomTile();
     this.updateHTML();
+
+    if (!this.compareStates(previousState, this.state)) {
+      this.addRandomTile();
+    }
     this.updateScore();
 
     switch (this.getStatus()) {
@@ -105,6 +118,8 @@ class Game {
   }
 
   moveUp() {
+    const previousState = JSON.parse(JSON.stringify(this.state));
+
     for (let col = 0; col < 4; col++) {
       let row = 0;
 
@@ -129,8 +144,11 @@ class Game {
         }
       }
     }
-    this.addRandomTile();
     this.updateHTML();
+
+    if (!this.compareStates(previousState, this.state)) {
+      this.addRandomTile();
+    }
     this.updateScore();
 
     switch (this.getStatus()) {
@@ -144,6 +162,8 @@ class Game {
   }
 
   moveDown() {
+    const previousState = JSON.parse(JSON.stringify(this.state));
+
     for (let col = 0; col < 4; col++) {
       let row = 3;
 
@@ -167,8 +187,11 @@ class Game {
         }
       }
     }
-    this.addRandomTile();
     this.updateHTML();
+
+    if (!this.compareStates(previousState, this.state)) {
+      this.addRandomTile();
+    }
     this.updateScore();
 
     switch (this.getStatus()) {
@@ -179,6 +202,18 @@ class Game {
         document.querySelector('.message-win').classList.remove('hidden');
         break;
     }
+  }
+
+  compareStates(state1, state2) {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (state1[row][col] !== state2[row][col]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   getStatus() {
@@ -202,15 +237,11 @@ class Game {
      сусідні плитки з однаковими числами, то є можливий хід */
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
-        if (this.state[row][col] === 0) {
-          return true;
-        }
-
-        if (col < 3 && this.state[row][col] === this.state[row][col + 1]) {
-          return true;
-        }
-
-        if (row < 3 && this.state[row][col] === this.state[row + 1][col]) {
+        if (
+          this.state[row][col] === 0 ||
+          (col < 3 && this.state[row][col] === this.state[row][col + 1]) ||
+          (row < 3 && this.state[row][col] === this.state[row + 1][col])
+        ) {
           return true;
         }
       }

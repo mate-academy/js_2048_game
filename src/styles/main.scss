@@ -74,10 +74,11 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
-}
 
-.slide-in-down {
-  transform: scale(0.7);
+  &--4096 {
+    background: #ed842e;
+    color: #f9f6f2;
+  }
 }
 
 .game-field {
@@ -193,4 +194,14 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+// анімація появи нової плитки
+.slide-in-down {
+  transform: scale(0.7);
+}
+
+// рух в різні сторони (75 - розмір плитки)
+.move-left {
+  transform: translateX(-75px);
 }
