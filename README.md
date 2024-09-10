@@ -20,15 +20,18 @@ Follow the steps below to install and run the project locally.
    cd js_2048_game
 
 3. Install all dependencies:
-
    ```bash
    npm i
 
-or if you use yarn
+4. or if you use yarn
 
    ```bash
    yarn i
 
-4. Start the project
+5. Start the project
    ```bash
    npm start
+
+
+## JS Game
+[Click to enjoy](https://denys209818.github.io/js_2048_game/)
