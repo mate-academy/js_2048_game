@@ -21,8 +21,15 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    if (!initialState) {
+      this.initialState = [];
+
+      for (let i = 0; i < 4; i++) {
+        this.initialState.push([0, 0, 0, 0]);
+      }
+    } else {
+      this.initialState = initialState;
+    }
   }
 
   moveLeft() {}

@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 body {
   margin: 0;
   display: flex;
@@ -20,6 +22,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: background 0.3s ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -72,6 +75,23 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+  }
+
+  // @for $i from 1 through 11 {
+  //   $variable: math.pow(2, $i);
+
+  //   &--#{$variable} {
+  //     opacity: 1;
+  //   }
+  // }
+}
+
+.field-moving {
+  transition: right 0.2s ease-in-out;
+
+  &--left {
+    right: 100%;
+    background: #d6cdc4;
   }
 }
 
@@ -151,6 +171,11 @@ h1 {
 
   &:hover {
     background: #f87474;
+  }
+
+  &:focus {
+    outline: 0;
+    border: 0;
   }
 }
 
