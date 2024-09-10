@@ -26,6 +26,7 @@ Follow the steps below to install and run the project locally.
 
 or if you use yarn
 
+   ```bash
    yarn i
 
 4. Start the project
