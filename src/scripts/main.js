@@ -369,3 +369,37 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+// додавання сенсорного керування
+let startX, startY;
+
+document.addEventListener('touchstart', (e) => {
+  // зберігаємо координати початку дотику
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+});
+
+document.addEventListener('touchend', (e) => {
+  // Обчислюємо різницю координат для визначення напрямку свайпу
+  const endX = e.changedTouches[0].clientX;
+  const endY = e.changedTouches[0].clientY;
+  const deltaX = endX - startX;
+  const deltaY = endY - startY;
+
+  // визначаємо напрямок свайпу
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    // горизонтальний свайп
+    if (deltaX > 0) {
+      game.moveRight();
+    } else {
+      game.moveLeft();
+    }
+  } else {
+    // вертикальний свайп
+    if (deltaY > 0) {
+      game.moveDown();
+    } else {
+      game.moveUp();
+    }
+  }
+});
