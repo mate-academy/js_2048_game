@@ -380,7 +380,7 @@ document.addEventListener('touchstart', (e) => {
 });
 
 document.addEventListener('touchend', (e) => {
-  // Обчислюємо різницю координат для визначення напрямку свайпу
+  // oбчислюємо різницю координат для визначення напрямку свайпу
   const endX = e.changedTouches[0].clientX;
   const endY = e.changedTouches[0].clientY;
   const deltaX = endX - startX;

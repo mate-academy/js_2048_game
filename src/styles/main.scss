@@ -3,7 +3,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
   background: #fbf8ef;
   font-family: sans-serif;
   font-size: 24px;
@@ -85,6 +84,8 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  // запобігання прокрутці сторінки при свайпах
+  touch-action: none;
 }
 
 .game-header {
@@ -182,10 +183,6 @@ h1 {
   width: 350px;
 }
 
-.message-start {
-  margin-bottom: 30px;
-}
-
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
@@ -205,3 +202,6 @@ h1 {
   transform: scale(0.7);
 }
 
+.bottom-empty-space {
+  height: 30px;
+}
