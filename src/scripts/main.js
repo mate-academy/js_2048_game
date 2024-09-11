@@ -1,170 +1,80 @@
 'use strict';
 
-'use strict';
+const { STATUS_WIN, STATUS_LOSE } = require('../modules/constants');
 
-const startButton = document.querySelector('.button.start');
-const startMessage = document.querySelector('.message-start');
-const allCells = [...document.querySelectorAll('.field-cell')];
-const gridRows = [...document.querySelectorAll('.field-row')].map((row) => [
-  ...row.children,
-]);
+const Game = require('../modules/Game.class');
 
-function startGame() {
-  startButton.textContent = 'Restart';
-  startButton.classList.remove('start');
-  startButton.classList.add('restart');
+const game = new Game();
 
-  startMessage.classList.add('hidden');
+function updateDom(newState, newScore, newStatus) {
+  newState.forEach((row, rowIndex) => {
+    row.forEach((cellValue, colIndex) => {
+      const cell = document.getElementById(`cell-${rowIndex}-${colIndex}`);
 
-  clearField();
-  spawnNewCell();
-  spawnNewCell();
-}
+      if (cellValue) {
+        cell.textContent = cellValue;
+        cell.className = `field-cell field-cell--${cellValue}`;
+      } else {
+        cell.textContent = '';
+        cell.className = `field-cell`;
+      }
+    });
 
-function spawnNewCell() {
-  const emptyCells = allCells.filter((cell) => cell.classList.length === 1);
+    if (newStatus === STATUS_WIN) {
+      const winMessage = document.querySelector('.message-win');
 
-  if (emptyCells.length === 0) {
-    return;
-  }
+      winMessage.classList.remove('hidden');
+    }
 
-  const index = getRandomIntInclusive(0, emptyCells.length - 1);
-  const cellValue = getNewValue();
+    if (newStatus === STATUS_LOSE) {
+      const loseMessage = document.querySelector('.message-lose');
 
-  updateCell(emptyCells[index], cellValue);
-}
-
-function updateCell(cell, value) {
-  cell.className = `field-cell field-cell--${value}`;
-  cell.dataset.value = value;
-  cell.textContent = value;
-}
-
-function resetCell(cell) {
-  cell.className = 'field-cell';
-  cell.dataset.value = '0';
-  cell.textContent = '';
-}
-
-function clearField() {
-  allCells.forEach((cell) => {
-    resetCell(cell);
+      loseMessage.classList.remove('hidden');
+    }
   });
+
+  const gameScore = document.querySelector('.game-score');
+
+  gameScore.textContent = String(newScore);
 }
 
-function getRandomIntInclusive(minimum, maximum) {
-  const min = Math.ceil(minimum);
-  const max = Math.floor(maximum);
+document.addEventListener('DOMContentLoaded', () => {
+  const startButton = document.querySelector('.button.start');
+  const startMessage = document.querySelector('.message-start');
 
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
+  startButton.addEventListener('click', () => {
+    game.start();
+    updateDom(game.getState(), game.getScore());
 
-function getNewValue() {
-  const random = Math.random();
+    startButton.textContent = 'Restart';
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
 
-  return random >= 0.9 ? '4' : '2';
-}
+    startMessage.classList.add('hidden');
+  });
 
-function transpose(grid) {
-  return grid[0].map((_, colIndex) => grid.map((row) => row[colIndex]));
-}
+  document.addEventListener('keydown', (e) => {
+    switch (e.key) {
+      case 'ArrowUp':
+        game.moveUp();
+        break;
 
-function mergeRow(row) {
-  const nonZeroRow = row.filter((cell) => cell.dataset.value !== '0');
-  const mergedRow = [];
+      case 'ArrowDown':
+        game.moveDown();
+        break;
 
-  for (let i = 0; i < nonZeroRow.length; i++) {
-    const currentValue = Number(nonZeroRow[i].dataset.value);
+      case 'ArrowRight':
+        game.moveRight();
+        break;
 
-    if (
-      i < nonZeroRow.length - 1 &&
-      nonZeroRow[i].dataset.value === nonZeroRow[i + 1].dataset.value
-    ) {
-      mergedRow.push(currentValue * 2);
-      nonZeroRow[i + 1].dataset.value = '0';
-      i++;
-    } else {
-      mergedRow.push(currentValue);
+      case 'ArrowLeft':
+        game.moveLeft();
+        break;
+
+      default:
+        break;
     }
-  }
 
-  return mergedRow;
-}
-
-function moveRowLeft(cellsInRow) {
-  const mergedRow = mergeRow(cellsInRow);
-
-  for (let i = 0; i < cellsInRow.length; i++) {
-    const newValue = mergedRow[i];
-
-    if (newValue) {
-      updateCell(cellsInRow[i], newValue);
-    } else {
-      resetCell(cellsInRow[i]);
-    }
-  }
-}
-
-function moveRowRight(cellsInRow) {
-  const mergedRow = mergeRow(cellsInRow);
-
-  let j = mergedRow.length - 1;
-
-  for (let i = cellsInRow.length - 1; i >= 0; i--) {
-    if (j >= 0) {
-      const newValue = mergedRow[j];
-
-      updateCell(cellsInRow[i], newValue);
-      j--;
-    } else {
-      resetCell(cellsInRow[i]);
-    }
-  }
-}
-
-function shiftUp(grid) {
-  const transposedGrid = transpose(grid);
-
-  transposedGrid.forEach((row) => moveRowLeft(row));
-
-  return transpose(transposedGrid);
-}
-
-function shiftDown(grid) {
-  const transposedGrid = transpose(grid);
-
-  transposedGrid.forEach((row) => moveRowRight(row));
-
-  return transpose(transposedGrid);
-}
-
-startButton.onclick = () => {
-  startGame();
-};
-
-document.addEventListener('keydown', (e) => {
-  switch (e.key) {
-    case 'ArrowUp':
-      shiftUp(gridRows);
-      spawnNewCell();
-      break;
-
-    case 'ArrowDown':
-      shiftDown(gridRows);
-      spawnNewCell();
-      break;
-
-    case 'ArrowRight':
-      gridRows.forEach((row) => moveRowRight(row));
-      spawnNewCell();
-      break;
-
-    case 'ArrowLeft':
-      gridRows.forEach((row) => moveRowLeft(row));
-      spawnNewCell();
-      break;
-
-    default:
-      break;
-  }
+    updateDom(game.getState(), game.getScore(), game.getStatus());
+  });
 });
