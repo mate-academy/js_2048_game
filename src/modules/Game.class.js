@@ -23,7 +23,10 @@ class Game {
   constructor(initialState) {
     // eslint-disable-next-line no-console
     this.initialState = initialState;
+    this.messageStart = document.querySelector('.message-start');
+    this.messageLose = document.querySelector('.message-lose');
     this.startActive = false;
+    this.score = 0;
     // console.log(initialState);
   }
 
@@ -33,14 +36,17 @@ class Game {
     const tbody = document.querySelector('tbody');
     const trows = [...tbody.children];
     const objArr = [];
+    let rowStartIndex;
 
     if (this.startActive) {
       trows.forEach((row, index) => {
         const canMerge = (colIndex, startRow, endRow, content) => {
           for (let j = startRow + 1; j < endRow; j++) {
-            const cellValue = parseInt(trows[j].children[colIndex].textContent);
+            const cellValue = parseInt(
+              [...trows[j].children][colIndex].textContent,
+            );
 
-            if (cellValue !== 0 && cellValue !== content) {
+            if (cellValue !== '' && parseInt(cellValue) === content) {
               return false;
             }
           }
@@ -54,18 +60,13 @@ class Game {
           if (value) {
             const exist = objArr.find((obj) => obj[i] === value);
 
-            if (
-              exist &&
-              canMerge(
-                i,
-                index,
-                trows.findIndex((r) => r === row),
-                value,
-              )
-            ) {
+            if (exist && canMerge(i, rowStartIndex, index, value)) {
               exist[i] += value;
+              this.score += exist[i];
             } else {
               objArr.push({ [i]: value });
+
+              rowStartIndex = index;
             }
 
             const newTag = document.createElement('td');
@@ -92,6 +93,7 @@ class Game {
       });
 
       this.addTiles();
+      this.getScore();
     }
 
     // score
@@ -102,7 +104,13 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    const score = document.querySelector('.game-score');
+
+    score.textContent = this.score;
+
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
@@ -125,15 +133,13 @@ class Game {
    * Starts the game.
    */
   start() {
-    const messageStart = document.querySelector('.message-start');
-
-    this.addTiles();
-
-    messageStart.classList.add('hidden');
+    this.messageStart.classList.add('hidden');
 
     this.switchButton();
 
     this.startActive = true;
+
+    this.addTiles();
   }
   /**
    * Resets the game.
@@ -141,6 +147,9 @@ class Game {
   restart() {
     const tbody = document.querySelector('tbody');
     const trows = [...tbody.children];
+
+    this.messageStart.classList.remove('hidden');
+    this.messageLose.classList.add('hidden');
 
     trows.forEach((row) => {
       [...row.children].forEach((td) => {
@@ -199,58 +208,38 @@ class Game {
   addTiles() {
     const tbody = document.querySelector('tbody');
     const trows = [...tbody.children];
-    const randomIndex = () => {
-      const randomNumber = Math.floor(Math.random() * 3);
-
-      return randomNumber;
-    };
     const numberOfTiles = 2;
+    const emptyCells = [];
+
+    trows.forEach((row) => {
+      const cells = [...row.children];
+
+      cells.forEach((cell) => {
+        if (!cell.textContent) {
+          emptyCells.push(cell);
+        }
+      });
+    });
+
+    if (emptyCells.length < numberOfTiles) {
+      const messageLose = document.querySelector('.message-lose');
+
+      messageLose.classList.remove('hidden');
+
+      return;
+    }
 
     for (let i = 0; i < numberOfTiles; i++) {
-      let randomRow = trows[randomIndex()];
-      const randomRowChildren = [...randomRow.children];
-      const hasEmptyCell = randomRowChildren.some((cell) => !cell.textContent);
-      let randomCell;
-
-      // while (!hasEmptyCell) {
-      //   randomRow = trows[randomIndex()];
-      // }
-
-      if (hasEmptyCell) {
-        do {
-          randomCell = randomRowChildren[randomIndex()];
-        } while (randomCell.textContent);
-      } else {
-        randomRow = trows[randomIndex()];
-      }
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+      const selectedCell = emptyCells[randomIndex];
 
       const randomValue = this.generateTiles();
 
-      randomCell.textContent = randomValue;
-      randomCell.classList.add(`field-cell--${randomValue}`);
+      selectedCell.textContent = randomValue;
+      selectedCell.classList.add(`field-cell--${randomValue}`);
+
+      emptyCells.splice(randomIndex, 1);
     }
   }
 }
 module.exports = Game;
-
-// for (let j = 1; j <= rowsTotal; j++) {
-//   if (step === rowsTotal) {
-//     const messageLose = document.querySelector('.message-lose');
-
-//     messageLose.classList.remove('hidden');
-//   }
-
-//   if (hasEmptyCell.length > 0) {
-//     const foundIndex = Math.floor(Math.random * hasEmptyCell.length);
-//     const cellToFill = hasEmptyCell[foundIndex];
-
-//     randomCell = randomRowChildren[cellToFill];
-
-//     break;
-//   }
-
-//   if (hasEmptyCell.length === 0) {
-//     randomRow = trows[randomIndex()];
-//     step++;
-//   }
-// }
