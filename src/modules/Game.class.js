@@ -111,45 +111,36 @@ class Game {
   }
 
   move(direction) {
-    let transposed = false;
-    let reversed = false;
-
     switch (direction) {
       case 'up':
         this.state = this.transpose(this.state);
-        transposed = true;
+        this.state = this.state.map((row) => this.mergeRow(row));
+        this.state = this.transpose(this.state);
         break;
 
       case 'down':
-        this.state = this.transpose(this.state).map((row) => row.reverse());
-        transposed = true;
-        reversed = true;
+        this.state = this.transpose(this.state);
+        this.state = this.state.map((row) => row.reverse());
+        this.state = this.state.map((row) => this.mergeRow(row));
+        this.state = this.state.map((row) => row.reverse());
+        this.state = this.transpose(this.state);
         break;
 
       case 'right':
         this.state = this.state.map((row) => row.reverse());
-        reversed = true;
+        this.state = this.state.map((row) => this.mergeRow(row));
+        this.state = this.state.map((row) => row.reverse());
+        break;
+
+      case 'left':
+        this.state = this.state.map((row) => this.mergeRow(row));
         break;
     }
 
-    if (!this.canMove(this.state)) {
-      if (transposed) {
-        this.state = this.transpose(this.state);
-      }
-
+    if (!this.canMove()) {
       this.status = STATUS_LOSE;
 
       return;
-    }
-
-    this.state = this.state.map((row) => this.mergeRow(row));
-
-    if (transposed) {
-      this.state = this.transpose(this.state);
-    }
-
-    if (reversed) {
-      this.state = this.state.map((row) => row.reverse());
     }
 
     this.addRandomTile();
@@ -201,15 +192,15 @@ class Game {
   }
 
   start() {
-    this.state = this.createEmptyBoard();
     this.status = STATUS_PLAYING;
+    this.state = this.createEmptyBoard();
+    this.score = 0;
     this.addRandomTile();
     this.addRandomTile();
   }
 
   restart() {
     this.start();
-    this.score = 0;
   }
 }
 
