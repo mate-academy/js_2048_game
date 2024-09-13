@@ -8,13 +8,15 @@ class Game {
     lose: 'lose',
   };
 
-  constructor(
-    initialState = Array.from({ length: 4 }, () => Array(4).fill(0)),
-  ) {
+  constructor(initialState = this.generateDefaultState()) {
     this.initialState = initialState;
     this.state = initialState.map((row) => [...row]);
     this.status = Game.gameStatuses.idle;
     this.score = 0;
+  }
+
+  generateDefaultState() {
+    return Array.from({ length: 4 }, () => Array(4).fill(0));
   }
 
   moveLeft() {
@@ -39,8 +41,16 @@ class Game {
       // eslint-disable-next-line prettier/prettier
       this.applyMove(row).reverse());
 
+    if (!this.isStateDifferent(this.state, updatedState)) {
+      return;
+    }
+
     this.updateGameState(updatedState);
     this.completeMoveTasks();
+  }
+
+  isStateDifferent(stateA, stateB) {
+    return JSON.stringify(stateA) !== JSON.stringify(stateB);
   }
 
   moveUp() {
