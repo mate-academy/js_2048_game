@@ -12,19 +12,29 @@ class Game {
    * @param {number[][]} initialState
    */
 
-  constructor(initialState = this.createEmptyBoard()) {
-    this.state = initialState;
+  constructor(initialState = null) {
+    this.initialState = initialState || this.createEmptyBoard();
+    this.state = this.initialState;
     this.score = 0;
     this.status = STATUS_IDLE;
   }
 
   createEmptyBoard() {
-    return [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    return Array.from({ length: 4 }, () => Array(4).fill(0));
+  }
+
+  start() {
+    this.state = this.initialState.map((row) => [...row]);
+    this.status = STATUS_PLAYING;
+    this.score = 0;
+    this.addRandomTile();
+    this.addRandomTile();
+  }
+
+  restart() {
+    this.state = this.initialState.map((row) => [...row]);
+    this.status = STATUS_IDLE;
+    this.score = 0;
   }
 
   addRandomTile() {
@@ -81,29 +91,30 @@ class Game {
   }
 
   canMove() {
+    let canMove = false;
+
     for (let r = 0; r < this.state.length; r++) {
       for (let c = 0; c < this.state[r].length; c++) {
         if (this.state[r][c] === 0) {
-          return true;
+          canMove = true;
         }
 
         if (
-          c < this.state[r].length - 1 &&
-          this.state[r][c] === this.state[r][c + 1]
+          (c < this.state[r].length - 1 &&
+            this.state[r][c] === this.state[r][c + 1]) ||
+          (r < this.state.length - 1 &&
+            this.state[r][c] === this.state[r + 1][c])
         ) {
-          return true;
-        }
-
-        if (
-          r < this.state.length - 1 &&
-          this.state[r][c] === this.state[r + 1][c]
-        ) {
-          return true;
+          canMove = true;
         }
       }
     }
 
-    return false;
+    if (!canMove) {
+      this.status = STATUS_LOSE;
+    }
+
+    return canMove;
   }
 
   transpose(grid) {
@@ -111,11 +122,18 @@ class Game {
   }
 
   move(direction) {
+    if (this.status !== STATUS_PLAYING) {
+      return;
+    }
+
+    const prevState = this.state.map((row) => [...row]);
+
     switch (direction) {
       case 'up':
         this.state = this.transpose(this.state);
         this.state = this.state.map((row) => this.mergeRow(row));
         this.state = this.transpose(this.state);
+
         break;
 
       case 'down':
@@ -124,26 +142,29 @@ class Game {
         this.state = this.state.map((row) => this.mergeRow(row));
         this.state = this.state.map((row) => row.reverse());
         this.state = this.transpose(this.state);
+
         break;
 
       case 'right':
         this.state = this.state.map((row) => row.reverse());
         this.state = this.state.map((row) => this.mergeRow(row));
         this.state = this.state.map((row) => row.reverse());
+
         break;
 
       case 'left':
         this.state = this.state.map((row) => this.mergeRow(row));
+
         break;
+    }
+
+    if (JSON.stringify(prevState) !== JSON.stringify(this.state)) {
+      this.addRandomTile();
     }
 
     if (!this.canMove()) {
       this.status = STATUS_LOSE;
-
-      return;
     }
-
-    this.addRandomTile();
   }
 
   moveLeft() {
@@ -189,18 +210,6 @@ class Game {
    */
   getStatus() {
     return this.status;
-  }
-
-  start() {
-    this.status = STATUS_PLAYING;
-    this.state = this.createEmptyBoard();
-    this.score = 0;
-    this.addRandomTile();
-    this.addRandomTile();
-  }
-
-  restart() {
-    this.start();
   }
 }
 
