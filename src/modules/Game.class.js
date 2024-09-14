@@ -8,10 +8,6 @@ const {
 } = require('./constants');
 
 class Game {
-  /**
-   * @param {number[][]} initialState
-   */
-
   constructor(initialState = null) {
     this.initialState = initialState || this.createEmptyBoard();
     this.state = this.initialState;
@@ -35,6 +31,18 @@ class Game {
     this.state = this.initialState.map((row) => [...row]);
     this.status = STATUS_IDLE;
     this.score = 0;
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  getState() {
+    return this.state;
+  }
+
+  getStatus() {
+    return this.status;
   }
 
   addRandomTile() {
@@ -86,11 +94,7 @@ class Game {
       }
     }
 
-    while (mergedRow.length < row.length) {
-      mergedRow.push(0);
-    }
-
-    return mergedRow;
+    return [...mergedRow, ...Array(row.length - mergedRow.length).fill(0)];
   }
 
   canMove() {
@@ -124,48 +128,57 @@ class Game {
     return grid[0].map((_, index) => grid.map((row) => row[index]));
   }
 
+  reverseRows(grid) {
+    return grid.map((row) => row.reverse());
+  }
+
+  handleMovement(transpose, reverse) {
+    let newState = this.state.map((row) => [...row]);
+
+    if (transpose) {
+      newState = this.transpose(newState);
+    }
+
+    if (reverse) {
+      newState = this.reverseRows(newState);
+    }
+
+    newState = newState.map((row) => this.mergeRow(row));
+
+    if (reverse) {
+      newState = this.reverseRows(newState);
+    }
+
+    if (transpose) {
+      newState = this.transpose(newState);
+    }
+
+    return newState;
+  }
+
   move(direction) {
     if (this.status !== STATUS_PLAYING) {
       return;
     }
 
-    const prevState = this.state.map((row) => [...row]);
-    let newState = prevState.map((row) => [...row]);
+    const prevState = JSON.stringify(this.state);
 
     switch (direction) {
       case 'up':
-        newState = this.transpose(newState);
-        newState = newState.map((row) => this.mergeRow(row));
-        newState = this.transpose(newState);
-        this.state = newState;
-
+        this.state = this.handleMovement(true, false);
         break;
-
       case 'down':
-        newState = this.transpose(newState);
-        newState = newState.map((row) => row.reverse());
-        newState = newState.map((row) => this.mergeRow(row));
-        newState = newState.map((row) => row.reverse());
-        newState = this.transpose(newState);
-        this.state = newState;
-
+        this.state = this.handleMovement(true, true);
         break;
-
-      case 'right':
-        newState = newState.map((row) => row.reverse());
-        newState = newState.map((row) => this.mergeRow(row));
-        newState = newState.map((row) => row.reverse());
-        this.state = newState;
-
-        break;
-
       case 'left':
-        newState = newState.map((row) => this.mergeRow(row));
-        this.state = newState;
+        this.state = this.handleMovement(false, false);
+        break;
+      case 'right':
+        this.state = this.handleMovement(false, true);
         break;
     }
 
-    if (JSON.stringify(prevState) !== JSON.stringify(this.state)) {
+    if (prevState !== JSON.stringify(this.state)) {
       this.addRandomTile();
     }
 
@@ -175,48 +188,19 @@ class Game {
   }
 
   moveLeft() {
-    if (this.status === STATUS_PLAYING) {
-      this.move('left');
-    }
+    this.move('left');
   }
 
   moveRight() {
-    if (this.status === STATUS_PLAYING) {
-      this.move('right');
-    }
+    this.move('right');
   }
 
   moveUp() {
-    if (this.status === STATUS_PLAYING) {
-      this.move('up');
-    }
+    this.move('up');
   }
 
   moveDown() {
-    if (this.status === STATUS_PLAYING) {
-      this.move('down');
-    }
-  }
-
-  /**
-   * @returns {number}
-   */
-  getScore() {
-    return this.score;
-  }
-
-  /**
-   * @returns {number[][]}
-   */
-  getState() {
-    return this.state;
-  }
-
-  /**
-   * @returns {string}
-   */
-  getStatus() {
-    return this.status;
+    this.move('down');
   }
 }
 
