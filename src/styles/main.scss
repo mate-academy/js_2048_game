@@ -8,6 +8,7 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  transition: all 0.5s;
 }
 
 .field-cell {
@@ -148,6 +149,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  border: none;
 
   &:hover {
     background: #f87474;
