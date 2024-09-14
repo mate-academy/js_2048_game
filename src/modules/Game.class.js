@@ -36,37 +36,54 @@ class Game {
     const tbody = document.querySelector('tbody');
     const trows = [...tbody.children];
     const objArr = [];
-    let rowStartIndex;
 
     if (this.startActive) {
       trows.forEach((row, index) => {
-        const canMerge = (colIndex, startRow, endRow, content) => {
-          for (let j = startRow + 1; j < endRow; j++) {
-            const cellValue = parseInt(
-              [...trows[j].children][colIndex].textContent,
-            );
-
-            if (cellValue !== '' && parseInt(cellValue) === content) {
-              return false;
-            }
-          }
-
-          return true;
-        };
 
         [...row.children].forEach((cell, i) => {
+          const saveData = {};
           const value = parseInt(cell.textContent);
 
           if (value) {
-            const exist = objArr.find((obj) => obj[i] === value);
+            const exist = objArr.find(
+              (obj) => obj.cellIndex === i && obj.cellContent === value,
+            );
 
-            if (exist && canMerge(i, rowStartIndex, index, value)) {
-              exist[i] += value;
-              this.score += exist[i];
+            if (exist) {
+              const canMerge = (colIndex, startRow, endRow, content) => {
+                for (let j = startRow + 1; j < endRow; j++) {
+                  const prevent = objArr.some(
+                    (obj) =>
+                      obj.rowIndex === j &&
+                      obj.cellIndex === colIndex &&
+                      obj.cellContent !== content,
+                  );
+
+                  if (prevent) {
+                    return false;
+                  }
+                }
+
+                return true;
+              };
+
+              const merge = canMerge(i, exist.rowIndex, index, value);
+
+              if (merge) {
+                exist.cellContent += value;
+              } else {
+                saveData.rowIndex = index;
+                saveData.cellIndex = i;
+                saveData.cellContent = value;
+
+                objArr.push(saveData);
+              }
             } else {
-              objArr.push({ [i]: value });
+              saveData.rowIndex = index;
+              saveData.cellIndex = i;
+              saveData.cellContent = value;
 
-              rowStartIndex = index;
+              objArr.push(saveData);
             }
 
             const newTag = document.createElement('td');
@@ -77,24 +94,51 @@ class Game {
         });
       });
 
-      objArr.forEach((obj) => {
-        for (const [index, value] of Object.entries(obj)) {
-          for (const row of trows) {
-            const childIndex = parseInt(index) + 1;
-            const rowCell = row.querySelector(`*:nth-child(${childIndex})`);
+          // [{
+          //   rowIndex: 0,
+          //   cellIndex: 0,
+          //   cellContent: 2,
+          // },
+          // {
+          //   rowIndex: 3,
+          //   cellIndex: 2,
+          //   cellContent: 2,
+          // },
+          // {
+          //   rowIndex: 2,
+          //   cellIndex: 0,
+          //   cellContent: 4,
+          // },
+          // {
+          //   rowIndex: 3,
+          //   cellIndex: 0,
+          //   cellContent: 2,
+          // },
+          // ]
 
-            if (!rowCell.textContent) {
-              rowCell.textContent = value;
-              rowCell.classList.add(`field-cell--${value}`);
-              break;
+          // const
+
+
+      objArr.forEach((obj) => {
+        for (const [key, value] of Object.entries(obj)) {
+          if (key === 'cellIndex') {
+            for (const row of trows) {
+              const childIndex = parseInt(value) + 1;
+              const rowCell = row.querySelector(`*:nth-child(${childIndex})`);
+
+              if (!rowCell.textContent) {
+                rowCell.textContent = obj.cellContent;
+                rowCell.classList.add(`field-cell--${obj.cellContent}`);
+                break;
+              }
             }
           }
         }
       });
-
-      this.addTiles();
-      this.getScore();
     }
+
+    this.addTiles(1);
+    this.getScore();
 
     // score
     // check th score if 2048 win
@@ -139,7 +183,7 @@ class Game {
 
     this.startActive = true;
 
-    this.addTiles();
+    this.addTiles(2);
   }
   /**
    * Resets the game.
@@ -205,10 +249,10 @@ class Game {
     return pickRandom();
   }
 
-  addTiles() {
+  addTiles(num) {
     const tbody = document.querySelector('tbody');
     const trows = [...tbody.children];
-    const numberOfTiles = 2;
+    const numberOfTiles = num;
     const emptyCells = [];
 
     trows.forEach((row) => {
@@ -243,3 +287,25 @@ class Game {
   }
 }
 module.exports = Game;
+
+
+
+//
+
+// if (value) {
+//   const exist = objArr.find((obj) => obj[i] === value);
+
+//   if (exist) {
+//     canMerge(i, rowStartIndex, index, value);
+
+//     if (canMerge) {
+//       exist[i] += value;
+//       this.score += exist[i];
+//     }
+//   } else {
+//     objArr.push({ [i]: value });
+
+//     rowStartIndex = index;
+//   }
+// }
+
