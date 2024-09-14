@@ -10,6 +10,15 @@ body {
   font-weight: 900;
 }
 
+@keyframes reveal {
+  0% {
+    scale: 0.7;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -72,6 +81,20 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+  }
+
+  &--2,
+  &--4,
+  &--8,
+  &--16,
+  &--32,
+  &--64,
+  &--128,
+  &--256,
+  &--512,
+  &--1024,
+  &--2048 {
+    animation: reveal 0.2s ease-in-out;
   }
 }
 
