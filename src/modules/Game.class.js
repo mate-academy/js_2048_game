@@ -57,7 +57,10 @@ class Game {
 
     const newTileValue = Math.random() < 0.9 ? 2 : 4;
 
-    this.state[row][col] = newTileValue;
+    const newState = this.state.map((r) => [...r]);
+
+    newState[row][col] = newTileValue;
+    this.state = newState;
   }
 
   mergeRow(row) {
@@ -127,34 +130,38 @@ class Game {
     }
 
     const prevState = this.state.map((row) => [...row]);
+    let newState = prevState.map((row) => [...row]);
 
     switch (direction) {
       case 'up':
-        this.state = this.transpose(this.state);
-        this.state = this.state.map((row) => this.mergeRow(row));
-        this.state = this.transpose(this.state);
+        newState = this.transpose(newState);
+        newState = newState.map((row) => this.mergeRow(row));
+        newState = this.transpose(newState);
+        this.state = newState;
 
         break;
 
       case 'down':
-        this.state = this.transpose(this.state);
-        this.state = this.state.map((row) => row.reverse());
-        this.state = this.state.map((row) => this.mergeRow(row));
-        this.state = this.state.map((row) => row.reverse());
-        this.state = this.transpose(this.state);
+        newState = this.transpose(newState);
+        newState = newState.map((row) => row.reverse());
+        newState = newState.map((row) => this.mergeRow(row));
+        newState = newState.map((row) => row.reverse());
+        newState = this.transpose(newState);
+        this.state = newState;
 
         break;
 
       case 'right':
-        this.state = this.state.map((row) => row.reverse());
-        this.state = this.state.map((row) => this.mergeRow(row));
-        this.state = this.state.map((row) => row.reverse());
+        newState = newState.map((row) => row.reverse());
+        newState = newState.map((row) => this.mergeRow(row));
+        newState = newState.map((row) => row.reverse());
+        this.state = newState;
 
         break;
 
       case 'left':
-        this.state = this.state.map((row) => this.mergeRow(row));
-
+        newState = newState.map((row) => this.mergeRow(row));
+        this.state = newState;
         break;
     }
 
