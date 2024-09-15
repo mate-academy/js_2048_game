@@ -179,7 +179,7 @@ function moveUp() {
           merged[newY - 1] = true; // Mark this cell as merged
           hasChanged = true;
 
-          // Animate the move with merging (both cells move to the same position)
+          // Animate the move with merging (cells move to the same position)
           const cellElement = rows[y].cells[x].firstChild;
           if (cellElement) {
             cellElement.classList.add(`move-up--${moveDistance + 1}`);
