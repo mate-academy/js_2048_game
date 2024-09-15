@@ -24,9 +24,14 @@ class Game {
     // eslint-disable-next-line no-console
     console.log(initialState);
 
-    this.initialState = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+    this.initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
 
-    this.startButton = document.querySelector('.button') 
+    this.startButton = document.querySelector('.button');
     this.board = [];
   }
 
@@ -71,25 +76,28 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.start()
+    this.start();
   }
 
-  addRandomCell () {
-    let emptyCell = [];
-    for (let i = 0; i < this.board.length; i++){
+  addRandomCell() {
+    const emptyCell = [];
+
+    for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board.length; j++) {
         if (!this.board[i][j]) {
-          emptyCell.push({x: i, y: j,})
+          emptyCell.push({ x: i, y: j });
         }
       }
     }
 
     if (emptyCell.length > 0) {
-      let randomIndex = Math.floor(Math.random() * emptyCell.length);
+      const randomIndex = Math.floor(Math.random() * emptyCell.length);
       const randomEmptyCell = emptyCell[randomIndex];
-      this.board[randomEmptyCell.x][randomEmptyCell.y] = Math.random() < 0.9 ? 2: 4;
+
+      this.board[randomEmptyCell.x][randomEmptyCell.y] =
+        Math.random() < 0.9 ? 2 : 4;
     }
-    console.log(this.board)
+    console.log(this.board);
   }
 }
 
