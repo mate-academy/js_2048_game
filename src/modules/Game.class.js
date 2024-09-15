@@ -97,7 +97,7 @@ class Game {
       this.board[randomEmptyCell.x][randomEmptyCell.y] =
         Math.random() < 0.9 ? 2 : 4;
     }
-    console.log(this.board);
+    // console.log(this.board);
   }
 }
 
