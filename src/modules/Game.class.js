@@ -23,6 +23,11 @@ class Game {
   constructor(initialState) {
     // eslint-disable-next-line no-console
     console.log(initialState);
+
+    this.initialState = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+
+    this.startButton = document.querySelector('.button') 
+    this.board = [];
   }
 
   moveLeft() {}
@@ -55,14 +60,37 @@ class Game {
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.startButton.textContent = 'Restart';
+    this.board = JSON.parse(JSON.stringify(this.initialState));
+    this.addRandomCell();
+    this.addRandomCell();
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.start()
+  }
 
-  // Add your own methods here
+  addRandomCell () {
+    let emptyCell = [];
+    for (let i = 0; i < this.board.length; i++){
+      for (let j = 0; j < this.board.length; j++) {
+        if (!this.board[i][j]) {
+          emptyCell.push({x: i, y: j,})
+        }
+      }
+    }
+
+    if (emptyCell.length > 0) {
+      let randomIndex = Math.floor(Math.random() * emptyCell.length);
+      const randomEmptyCell = emptyCell[randomIndex];
+      this.board[randomEmptyCell.x][randomEmptyCell.y] = Math.random() < 0.9 ? 2: 4;
+    }
+    console.log(this.board)
+  }
 }
 
 module.exports = Game;
