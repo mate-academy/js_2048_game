@@ -1,5 +1,5 @@
 "use strict";
-document.addEventListener("keydown", (event) => move(event.key));
+document.addEventListener("keydown", (KeyEvent) => move(KeyEvent.key));
 
 const rows = document.querySelectorAll("tr");
 
@@ -15,9 +15,9 @@ const board = [
   [0, 0, 0, 0],
 ];
 
-const message_start = document.querySelector(".message-start");
-const message_lose = document.querySelector(".message-lose");
-const message_win = document.querySelector(".message-win");
+const messageStart = document.querySelector(".message-start");
+const messageLose = document.querySelector(".message-lose");
+const messageWin = document.querySelector(".message-win");
 
 button.addEventListener("click", () => {
   if (button.classList.contains("start")) {
@@ -32,7 +32,7 @@ function start() {
   button.classList.add("restart");
   button.classList.remove("start");
 
-  message_start.classList.add("hidden");
+  messageStart.classList.add("hidden");
 
   newCell();
   newCell();
@@ -45,9 +45,9 @@ function restart() {
   button.classList.add("start");
   button.classList.remove("restart");
 
-  message_win.classList.add("hidden");
-  message_lose.classList.add("hidden");
-  message_start.classList.remove("hidden");
+  messageWin.classList.add("hidden");
+  messageLose.classList.add("hidden");
+  messageStart.classList.remove("hidden");
 
   for (let y = 0; y < 4; y++) {
     for (let x = 0; x < 4; x++) {
@@ -60,9 +60,9 @@ function restart() {
 function move(key) {
   let canMove = false;
   if (
-    message_start.classList.contains("hidden") &&
-    message_win.classList.contains("hidden") &&
-    message_lose.classList.contains("hidden")
+    messageStart.classList.contains("hidden") &&
+    messageWin.classList.contains("hidden") &&
+    messageLose.classList.contains("hidden")
   ) {
     if (key === "ArrowUp") {
       canMove = moveUp();
@@ -79,7 +79,7 @@ function move(key) {
         newCell();
         drawBoard();
         if (board.find((row) => row.find((el) => el === 2048))) {
-          message_win.classList.remove("hidden");
+          messageWin.classList.remove("hidden");
         }
       }, 300);
     }
@@ -122,7 +122,7 @@ function newCell() {
   board[emptyCells[val].y][emptyCells[val].x] = Math.random() < 0.9 ? 2 : 4;
 
   if (checkIfLose()) {
-    message_lose.classList.remove("hidden");
+    messageLose.classList.remove("hidden");
   }
 }
 
@@ -145,17 +145,20 @@ function drawBoard() {
 }
 
 function moveUp() {
-  const originalBoard = board.map((row) => row.slice()); // Create a copy of the original board
-  let hasChanged = false; // Track if the board state has changed
+  // Create a copy of the original board
+  let hasChanged = false;
+  // Track if the board state has changed
 
   for (let x = 0; x < 4; x++) {
-    let merged = [false, false, false, false]; // Array to track if a cell has already merged in this move
+    let merged = [false, false, false, false];
+    // Array to track if a cell has already merged in this move
 
     for (let y = 1; y < 4; y++) {
       if (board[y][x] !== 0) {
         // Check if the cell is not empty
         let newY = y;
-        let moveDistance = 0; // Variable to track the distance the cell will move
+        let moveDistance = 0;
+        // Variable to track the distance the cell will move
 
         // Move the cell up as far as possible
         while (newY > 0 && board[newY - 1][x] === 0) {
@@ -179,7 +182,8 @@ function moveUp() {
           // Animate the move with merging (both cells move to the same position)
           const cellElement = rows[y].cells[x].firstChild;
           if (cellElement) {
-            cellElement.classList.add(`move-up--${moveDistance + 1}`); // Add a class for animation
+            cellElement.classList.add(`move-up--${moveDistance + 1}`);
+            // Add a class for animation
           }
         } else if (newY !== y) {
           // If the cell moved but did not merge
@@ -190,7 +194,8 @@ function moveUp() {
           // Animate the move without merging
           const cellElement = rows[y].cells[x].firstChild;
           if (cellElement) {
-            cellElement.classList.add(`move-up--${moveDistance}`); // Add a class for the move animation
+            cellElement.classList.add(`move-up--${moveDistance}`);
+            // Add a class for the move animation
           }
         }
       }
@@ -201,7 +206,6 @@ function moveUp() {
 }
 
 function moveDown() {
-  const originalBoard = board.map((row) => row.slice());
   let hasChanged = false;
 
   for (let x = 0; x < 4; x++) {
@@ -250,7 +254,6 @@ function moveDown() {
 }
 
 function moveLeft() {
-  const originalBoard = board.map((row) => row.slice());
   let hasChanged = false;
 
   for (let y = 0; y < 4; y++) {
@@ -299,7 +302,6 @@ function moveLeft() {
 }
 
 function moveRight() {
-  const originalBoard = board.map((row) => row.slice());
   let hasChanged = false;
 
   for (let y = 0; y < 4; y++) {
