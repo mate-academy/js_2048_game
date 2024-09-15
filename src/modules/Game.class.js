@@ -39,7 +39,6 @@ class Game {
 
     if (this.startActive) {
       trows.forEach((row, index) => {
-
         [...row.children].forEach((cell, i) => {
           const saveData = {};
           const value = parseInt(cell.textContent);
@@ -50,7 +49,7 @@ class Game {
             );
 
             if (exist) {
-              const canMerge = (colIndex, startRow, endRow, content) => {
+              const checkMerge = (colIndex, startRow, endRow, content) => {
                 for (let j = startRow + 1; j < endRow; j++) {
                   const prevent = objArr.some(
                     (obj) =>
@@ -67,10 +66,11 @@ class Game {
                 return true;
               };
 
-              const merge = canMerge(i, exist.rowIndex, index, value);
+              const canMerge = checkMerge(i, exist.rowIndex, index, value);
 
-              if (merge) {
+              if (canMerge) {
                 exist.cellContent += value;
+                this.score += exist.cellContent;
               } else {
                 saveData.rowIndex = index;
                 saveData.cellIndex = i;
@@ -94,31 +94,6 @@ class Game {
         });
       });
 
-          // [{
-          //   rowIndex: 0,
-          //   cellIndex: 0,
-          //   cellContent: 2,
-          // },
-          // {
-          //   rowIndex: 3,
-          //   cellIndex: 2,
-          //   cellContent: 2,
-          // },
-          // {
-          //   rowIndex: 2,
-          //   cellIndex: 0,
-          //   cellContent: 4,
-          // },
-          // {
-          //   rowIndex: 3,
-          //   cellIndex: 0,
-          //   cellContent: 2,
-          // },
-          // ]
-
-          // const
-
-
       objArr.forEach((obj) => {
         for (const [key, value] of Object.entries(obj)) {
           if (key === 'cellIndex') {
@@ -139,19 +114,108 @@ class Game {
 
     this.addTiles(1);
     this.getScore();
-
-    // score
-    // check th score if 2048 win
   }
 
-  moveDown() {}
+  moveDown() {
+    const tbody = document.querySelector('tbody');
+    const trows = [...tbody.children];
+    const objArr = [];
+
+    if (this.startActive) {
+      trows.reverse().forEach((row, index) => {
+        [...row.children].forEach((cell, i) => {
+          const saveData = {};
+          const value = parseInt(cell.textContent);
+
+          if (value) {
+            const exist = objArr.find(
+              (obj) => obj.cellIndex === i && obj.cellContent === value,
+            );
+
+            if (exist) {
+              const checkMerge = (colIndex, startRow, endRow, content) => {
+                for (let j = startRow + 1; j < endRow; j++) {
+                  const prevent = objArr.some(
+                    (obj) =>
+                      obj.rowIndex === j &&
+                      obj.cellIndex === colIndex &&
+                      obj.cellContent !== content,
+                  );
+
+                  if (prevent) {
+                    return false;
+                  }
+                }
+
+                return true;
+              };
+
+              const canMerge = checkMerge(i, exist.rowIndex, index, value);
+
+              if (canMerge) {
+                exist.cellContent += value;
+                this.score += exist.cellContent;
+              } else {
+                saveData.rowIndex = index;
+                saveData.cellIndex = i;
+                saveData.cellContent = value;
+
+                objArr.push(saveData);
+              }
+            } else {
+              saveData.rowIndex = index;
+              saveData.cellIndex = i;
+              saveData.cellContent = value;
+
+              objArr.push(saveData);
+            }
+
+            const newTag = document.createElement('td');
+
+            newTag.classList.add('field-cell');
+            cell.replaceWith(newTag);
+          }
+        });
+      });
+
+      objArr.forEach((obj) => {
+        for (const [key, value] of Object.entries(obj)) {
+          if (key === 'cellIndex') {
+            for (const row of trows.reverse()) {
+              const childIndex = parseInt(value) + 1;
+              const rowCell = row.querySelector(`*:nth-child(${childIndex})`);
+
+              if (!rowCell.textContent) {
+                rowCell.textContent = obj.cellContent;
+                rowCell.classList.add(`field-cell--${obj.cellContent}`);
+                break;
+              }
+            }
+          }
+        }
+      });
+    }
+
+    this.addTiles(1);
+    this.getScore();
+  }
   /**
    * @returns {number}
    */
   getScore() {
     const score = document.querySelector('.game-score');
 
+    if (!this.startActive) {
+      this.score = 0;
+    }
+
     score.textContent = this.score;
+
+    if (this.score === 2048) {
+      const messageWin = document.querySelector('.message-win');
+
+      messageWin.classList.remove('hidden');
+    }
 
     return this.score;
   }
@@ -204,7 +268,9 @@ class Game {
       });
     });
 
+    this.startActive = false;
     this.switchButton();
+    this.getScore();
   }
 
   // Add your own methods here
@@ -288,8 +354,6 @@ class Game {
 }
 module.exports = Game;
 
-
-
 //
 
 // if (value) {
@@ -308,4 +372,3 @@ module.exports = Game;
 //     rowStartIndex = index;
 //   }
 // }
-
