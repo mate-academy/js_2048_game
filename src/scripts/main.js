@@ -30,18 +30,23 @@ start.addEventListener('click', () => {
 document.addEventListener('keyup', (keyEvent) => {
   keyEvent.preventDefault();
 
+  const arrowUp = 'ArrowUp';
+  const arrowDown = 'ArrowDown';
+  const arrowRight = 'ArrowRight';
+  const arrowLeft = 'ArrowLeft';
+
   switch (keyEvent.key) {
-    case 'ArrowUp':
+    case arrowUp:
       game.moveUp();
       break;
-    case 'ArrowDown':
+    case arrowDown:
       game.moveDown();
       break;
-    case 'ArrowRight':
+    case arrowRight:
       game.moveRight();
       break;
-    case 'ArrowLeft':
-      game.moveLeft();
+    case arrowLeft:
+      game.moveLeft(); // Don't forget to add moveLeft function call
       break;
   }
 
