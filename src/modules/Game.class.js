@@ -208,7 +208,7 @@ class Game {
 
             if (cellElement) {
               cellElement.classList.add(`move-down--${moveDistance}`);
-            } */
+            }  */
           }
         }
       }
