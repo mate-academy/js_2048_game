@@ -4,6 +4,7 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
+      [0, 0, 0, 0],
     ];
     this.score = 0;
     this.gameStatus = 'ready'; // 'playing', 'win', 'lose'
@@ -63,9 +64,8 @@ class Game {
   move(transformRow) {
     let hasChanged = false;
     for (let i = 0; i < 4; i++) {
-      const rowCopy = transformRow(this.board[i].slice());
-      const [newRow, changed] = this.combineRow(rowCopy);
-
+      const rowCopy = transformRow(this.board[i].slice());  // Unikamy przypisania do parametru
+      const [newRow, changed] = this.combineRow(rowCopy);   // Przypisujemy zmiennej zamiast parametru
       if (changed) {
         hasChanged = true;
         this.board[i] = transformRow(newRow).slice();
@@ -144,6 +144,7 @@ class Game {
   }
 }
 
+// DOM Interactions
 const game = new Game();
 const button = document.querySelector(".button");
 const scoreElement = document.querySelector(".game-score");
