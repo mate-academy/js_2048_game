@@ -4,10 +4,9 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0],
     ];
     this.score = 0;
-    this.status = 'ready'; // 'playing', 'win', 'lose'
+    this.gameStatus = 'ready'; // 'playing', 'win', 'lose'
   }
 
   getState() {
@@ -19,11 +18,11 @@ class Game {
   }
 
   getStatus() {
-    return this.status;
+    return this.gameStatus;
   }
 
   start() {
-    this.status = 'playing';
+    this.gameStatus = 'playing';
     this.newCell();
     this.newCell();
   }
@@ -36,7 +35,7 @@ class Game {
       [0, 0, 0, 0],
     ];
     this.score = 0;
-    this.status = 'ready';
+    this.gameStatus = 'ready';
   }
 
   moveLeft() {
@@ -63,12 +62,13 @@ class Game {
 
   move(transformRow) {
     let hasChanged = false;
-    for (let y = 0; y < 4; y++) {
-      let row = transformRow(this.board[y].slice());
-      const [newRow, changed] = this.combineRow(row);
+    for (let i = 0; i < 4; i++) {
+      const rowCopy = transformRow(this.board[i].slice());
+      const [newRow, changed] = this.combineRow(rowCopy);
+
       if (changed) {
         hasChanged = true;
-        this.board[y] = transformRow(newRow).slice();
+        this.board[i] = transformRow(newRow).slice();
       }
     }
     if (hasChanged) {
@@ -102,9 +102,9 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 4; x++) {
-        newBoard[x][y] = this.board[y][x];
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        newBoard[col][row] = this.board[row][col];
       }
     }
     this.board = newBoard;
@@ -112,39 +112,38 @@ class Game {
 
   newCell() {
     const emptyCells = [];
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 4; x++) {
-        if (this.board[y][x] === 0) {
-          emptyCells.push({ y, x });
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 0) {
+          emptyCells.push({ row, col });
         }
       }
     }
     if (emptyCells.length === 0) return;
-    const { y, x } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    this.board[y][x] = Math.random() < 0.9 ? 2 : 4;
+    const { row, col } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
   }
 
   checkGameState() {
     if (this.board.find((row) => row.find((el) => el === 2048))) {
-      this.status = 'win';
+      this.gameStatus = 'win';
     } else if (this.checkIfLose()) {
-      this.status = 'lose';
+      this.gameStatus = 'lose';
     }
   }
 
   checkIfLose() {
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 4; x++) {
-        if (this.board[y][x] === 0) return false;
-        if (x < 3 && this.board[y][x] === this.board[y][x + 1]) return false;
-        if (y < 3 && this.board[y][x] === this.board[y + 1][x]) return false;
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 0) return false;
+        if (col < 3 && this.board[row][col] === this.board[row][col + 1]) return false;
+        if (row < 3 && this.board[row][col] === this.board[row + 1][col]) return false;
       }
     }
     return true;
   }
 }
 
-// DOM Interactions
 const game = new Game();
 const button = document.querySelector(".button");
 const scoreElement = document.querySelector(".game-score");
@@ -196,13 +195,13 @@ document.addEventListener("keydown", (eventKey) => {
 function drawBoard() {
   scoreElement.innerHTML = game.getScore();
   const board = game.getState();
-  for (let y = 0; y < 4; y++) {
-    for (let x = 0; x < 4; x++) {
-      const cell = rows[y].cells[x];
-      if (board[y][x] === 0) {
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      const cell = rows[row].cells[col];
+      if (board[row][col] === 0) {
         cell.innerHTML = "";
       } else {
-        cell.innerHTML = `<div class="field-cell-num field-cell--${board[y][x]}">${board[y][x]}</div>`;
+        cell.innerHTML = `<div class="field-cell-num field-cell--${board[row][col]}">${board[row][col]}</div>`;
       }
     }
   }
