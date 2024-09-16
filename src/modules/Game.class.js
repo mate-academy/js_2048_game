@@ -316,7 +316,7 @@ class Game {
 
               if (cellElement) {
               cellElement.classList.add(`move-right--${moveDistance + 1}`);
-            } */
+            }  */
           } else if (newX !== x) {
             this.board[y][newX] = this.board[y][x];
             this.board[y][x] = 0;
