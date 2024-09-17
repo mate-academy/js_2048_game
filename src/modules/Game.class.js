@@ -1,7 +1,5 @@
 'use strict';
 
-// const rows = document.querySelectorAll('tr');
-
 class Game {
   static defaultInitialState = [
     [0, 0, 0, 0],
@@ -96,68 +94,79 @@ class Game {
     return true;
   }
 
-  moveUp() {
+  move(direction) {
     if (this.status !== 'playing') {
-      return;
+      return false;
     }
 
-    // Track if the board state has changed
     let hasChanged = false;
+    const merged = Array.from({ length: 4 }, () => [
+      false,
+      false,
+      false,
+      false,
+    ]);
 
-    for (let x = 0; x < 4; x++) {
-      // Array to track if a cell has already merged in this move
-      const merged = [false, false, false, false];
+    // Helper function to traverse the board based on direction
+    const traverse = (callback, reverse = false) => {
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          const y = reverse ? 3 - i : i;
+          const x = reverse ? 3 - j : j;
 
-      for (let y = 1; y < 4; y++) {
-        // Check if the cell is not empty
-        if (this.board[y][x] !== 0) {
-          let newY = y;
-          // Variable to track the distance the cell will move
-          // let moveDistance = 0;
-
-          // Move the cell up as far as possible
-          while (newY > 0 && this.board[newY - 1][x] === 0) {
-            newY--;
-            // moveDistance++; // Increment move distance
-          }
-
-          // Check if we can merge the cell with the one above
-          if (
-            newY > 0 &&
-            this.board[newY - 1][x] === this.board[y][x] &&
-            !merged[newY - 1]
-          ) {
-            // Merge the cells by doubling the value
-            this.board[newY - 1][x] *= 2;
-            this.score += this.board[newY - 1][x]; // Increase the score
-            this.board[y][x] = 0; // Clear the original cell
-            merged[newY - 1] = true; // Mark this cell as merged
-            hasChanged = true;
-
-            // Animate the move with merging (cells move to the same position)
-            /* const cellElement = rows[y].cells[x].firstChild;
-
-            if (cellElement) {
-              // Add a class for animation
-              cellElement.classList.add(`move-up--${moveDistance + 1}`);
-            } */
-          } else if (newY !== y) {
-            // If the cell moved but did not merge
-            // Move the cell to its new position
-            this.board[newY][x] = this.board[y][x];
-            this.board[y][x] = 0; // Clear the original position
-            hasChanged = true;
-
-            // Animate the move without merging
-            /* const cellElement = rows[y].cells[x].firstChild;
-
-            if (cellElement) {
-              cellElement.classList.add(`move-up--${moveDistance}`);
-              // Add a class for the move animation
-            } */
-          }
+          callback(y, x);
         }
       }
+    };
+
+    const moveCell = (startY, startX, nextY, nextX) => {
+      if (this.board[startY][startX] !== 0) {
+        let newY = startY;
+        let newX = startX;
+
+        // Move the cell as far as possible in the current direction
+        while (
+          newY + nextY >= 0 &&
+          newY + nextY < 4 &&
+          newX + nextX >= 0 &&
+          newX + nextX < 4 &&
+          this.board[newY + nextY][newX + nextX] === 0
+        ) {
+          newY += nextY;
+          newX += nextX;
+        }
+
+        // Merge if possible
+        if (
+          newY + nextY >= 0 &&
+          newY + nextY < 4 &&
+          newX + nextX >= 0 &&
+          newX + nextX < 4 &&
+          this.board[newY + nextY][newX + nextX] ===
+            this.board[startY][startX] &&
+          !merged[newY + nextY][newX + nextX]
+        ) {
+          this.board[newY + nextY][newX + nextX] *= 2;
+          this.score += this.board[newY + nextY][newX + nextX];
+          this.board[startY][startX] = 0;
+          merged[newY + nextY][newX + nextX] = true;
+          hasChanged = true;
+        } else if (newY !== startY || newX !== startX) {
+          this.board[newY][newX] = this.board[startY][startX];
+          this.board[startY][startX] = 0;
+          hasChanged = true;
+        }
+      }
+    };
+
+    if (direction === 'up') {
+      traverse((y, x) => moveCell(y, x, -1, 0));
+    } else if (direction === 'down') {
+      traverse((y, x) => moveCell(3 - y, x, 1, 0));
+    } else if (direction === 'left') {
+      traverse((y, x) => moveCell(y, x, 0, -1));
+    } else if (direction === 'right') {
+      traverse((y, x) => moveCell(y, 3 - x, 0, 1));
     }
 
     if (hasChanged) {
@@ -166,183 +175,22 @@ class Game {
     }
 
     return hasChanged;
+  }
+
+  moveUp() {
+    return this.move('up');
   }
 
   moveDown() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let hasChanged = false;
-
-    for (let x = 0; x < 4; x++) {
-      const merged = [false, false, false, false];
-
-      for (let y = 2; y >= 0; y--) {
-        if (this.board[y][x] !== 0) {
-          let newY = y;
-          // let moveDistance = 0;
-
-          while (newY < 3 && this.board[newY + 1][x] === 0) {
-            newY++;
-            // moveDistance++;
-          }
-
-          if (
-            newY < 3 &&
-            this.board[newY + 1][x] === this.board[y][x] &&
-            !merged[newY + 1]
-          ) {
-            this.board[newY + 1][x] *= 2;
-            this.score += this.board[newY + 1][x];
-            this.board[y][x] = 0;
-            merged[newY + 1] = true;
-            hasChanged = true;
-
-            /* const cellElement = rows[y].cells[x].firstChild;
-
-            if (cellElement) {
-              cellElement.classList.add(`move-down--${moveDistance + 1}`);
-            } */
-          } else if (newY !== y) {
-            this.board[newY][x] = this.board[y][x];
-            this.board[y][x] = 0;
-            hasChanged = true;
-
-            /* const cellElement = rows[y].cells[x].firstChild;
-
-            if (cellElement) {
-              cellElement.classList.add(`move-down--${moveDistance}`);
-            }  */
-          }
-        }
-      }
-    }
-
-    if (hasChanged) {
-      this.newCell();
-      this.checkGameState();
-    }
-
-    return hasChanged;
+    return this.move('down');
   }
 
   moveLeft() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let hasChanged = false;
-
-    for (let y = 0; y < 4; y++) {
-      const merged = [false, false, false, false];
-
-      for (let x = 1; x < 4; x++) {
-        if (this.board[y][x] !== 0) {
-          let newX = x;
-          // let moveDistance = 0;
-
-          while (newX > 0 && this.board[y][newX - 1] === 0) {
-            newX--;
-            // moveDistance++;
-          }
-
-          if (
-            newX > 0 &&
-            this.board[y][newX - 1] === this.board[y][x] &&
-            !merged[newX - 1]
-          ) {
-            this.board[y][newX - 1] *= 2;
-            this.score += this.board[y][newX - 1];
-            this.board[y][x] = 0;
-            merged[newX - 1] = true;
-            hasChanged = true;
-
-            /* const cellElement = rows[y].cells[x].firstChild;
-
-            if (cellElement) {
-              cellElement.classList.add(`move-left--${moveDistance + 1}`);
-            } */
-          } else if (newX !== x) {
-            this.board[y][newX] = this.board[y][x];
-            this.board[y][x] = 0;
-            hasChanged = true;
-
-            /* const cellElement = rows[y].cells[x].firstChild;
-
-            if (cellElement) {
-              cellElement.classList.add(`move-left--${moveDistance}`);
-            } */
-          }
-        }
-      }
-    }
-
-    if (hasChanged) {
-      this.newCell();
-      this.checkGameState();
-    }
-
-    return hasChanged;
+    return this.move('left');
   }
 
   moveRight() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let hasChanged = false;
-
-    for (let y = 0; y < 4; y++) {
-      const merged = [false, false, false, false];
-
-      for (let x = 2; x >= 0; x--) {
-        if (this.board[y][x] !== 0) {
-          let newX = x;
-          // let moveDistance = 0;
-
-          while (newX < 3 && this.board[y][newX + 1] === 0) {
-            newX++;
-            // moveDistance++;
-          }
-
-          if (
-            newX < 3 &&
-            this.board[y][newX + 1] === this.board[y][x] &&
-            !merged[newX + 1]
-          ) {
-            this.board[y][newX + 1] *= 2;
-            this.score += this.board[y][newX + 1];
-            this.board[y][x] = 0;
-            merged[newX + 1] = true;
-            hasChanged = true;
-
-            /* const cellElement = rows[y].cells[x].firstChild;
-
-              if (cellElement) {
-              cellElement.classList.add(`move-right--${moveDistance + 1}`);
-            }  */
-          } else if (newX !== x) {
-            this.board[y][newX] = this.board[y][x];
-            this.board[y][x] = 0;
-            hasChanged = true;
-
-            /* const cellElement = rows[y].cells[x].firstChild;
-
-            if (cellElement) {
-              cellElement.classList.add(`move-right--${moveDistance}`);
-            } */
-          }
-        }
-      }
-    }
-
-    if (hasChanged) {
-      this.newCell();
-      this.checkGameState();
-    }
-
-    return hasChanged;
+    return this.move('right');
   }
 }
 
