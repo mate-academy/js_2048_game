@@ -6,6 +6,11 @@ const game = new Game();
 
 // Write your code here
 
+const MOVE_LEFT = 'ArrowLeft';
+const MOVE_RIGHT = 'ArrowRight';
+const MOVE_UP = 'ArrowUp';
+const MOVE_DOWN = 'ArrowDown';
+
 const buttonStart = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
@@ -48,16 +53,16 @@ function arrowMove(action) {
     let canMove = false;
 
     switch (action.key) {
-      case 'ArrowLeft':
+      case MOVE_LEFT:
         canMove = game.moveLeft();
         break;
-      case 'ArrowRight':
+      case MOVE_RIGHT:
         canMove = game.moveRight();
         break;
-      case 'ArrowUp':
+      case MOVE_UP:
         canMove = game.moveUp();
         break;
-      case 'ArrowDown':
+      case MOVE_DOWN:
         canMove = game.moveDown();
         break;
       default:
