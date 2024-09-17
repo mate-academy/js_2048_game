@@ -3,18 +3,25 @@
 // const rows = document.querySelectorAll('tr');
 
 class Game {
-  constructor(
-    initialState = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ],
-  ) {
+  static defaultInitialState = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
+  static GameStatus = {
+    idle: 'idle',
+    playing: 'playing',
+    win: 'win',
+    lose: 'lose',
+  };
+
+  constructor(initialState = Game.defaultInitialState) {
     this.board = initialState.map((row) => [...row]);
     this.score = 0;
-    this.status = 'idle';
-    this.initialState = initialState;
+    this.status = Game.GameStatus.idle;
+    this.initialState = initialState.map((row) => [...row]);
   }
 
   getState() {
@@ -30,13 +37,13 @@ class Game {
   }
 
   start() {
-    this.status = 'playing';
+    this.status = Game.GameStatus.playing;
     this.newCell();
     this.newCell();
   }
 
   restart() {
-    this.status = 'idle';
+    this.status = Game.GameStatus.idle;
     this.score = 0;
 
     this.board = this.initialState.map((row) => [...row]);
@@ -63,32 +70,30 @@ class Game {
 
   checkGameState() {
     if (this.board.find((row) => row.find((el) => el === 2048))) {
-      this.status = 'win';
+      this.status = Game.GameStatus.win;
     } else if (this.checkIfLose()) {
-      this.status = 'lose';
+      this.status = Game.GameStatus.lose;
     }
   }
 
   checkIfLose() {
-    let lose = true;
-
     if (this.board.find((row) => row.includes(0))) {
-      lose = false;
+      return false;
     }
 
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 4; x++) {
         if (y < 3 && this.board[y][x] === this.board[y + 1][x]) {
-          lose = false;
+          return false;
         }
 
         if (x < 3 && this.board[y][x] === this.board[y][x + 1]) {
-          lose = false;
+          return false;
         }
       }
     }
 
-    return lose;
+    return true;
   }
 
   moveUp() {

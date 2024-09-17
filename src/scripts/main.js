@@ -13,8 +13,8 @@ const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 
 button.addEventListener('click', () => {
-  if (game.getStatus() === 'idle') {
-    button.innerHTML = 'Restart';
+  if (game.getStatus() === Game.GameStatus.idle) {
+    button.textContent = 'Restart';
     button.classList.add('restart');
     button.classList.remove('start');
 
@@ -22,7 +22,7 @@ button.addEventListener('click', () => {
 
     game.start();
   } else {
-    button.innerHTML = 'Start';
+    button.textContent = 'Start';
     button.classList.add('start');
     button.classList.remove('restart');
 
@@ -64,19 +64,29 @@ document.addEventListener('keydown', (eventKey) => {
 });
 
 function drawBoard() {
-  score.innerHTML = game.getScore();
+  score.textContent = game.getScore();
 
   const board = game.getState();
 
   for (let y = 0; y < 4; y++) {
     for (let x = 0; x < 4; x++) {
+      const cell = rows[y].cells[x];
+
       if (board[y][x] === 0) {
-        rows[y].cells[x].innerHTML = '';
+        if (cell.firstChild) {
+          cell.removeChild(cell.firstChild);
+        }
       } else {
-        rows[y].cells[x].innerHTML =
-          `<div class="field-cell-num field-cell--${board[y][x]}">
-            ${board[y][x]}
-          </div>`;
+        if (!cell.firstChild || cell.firstChild.textContent !== board[y][x]) {
+          cell.innerHTML = '';
+
+          const div = document.createElement('div');
+
+          div.className = `field-cell-num field-cell--${board[y][x]}`;
+          div.textContent = board[y][x];
+
+          cell.appendChild(div);
+        }
       }
     }
   }
@@ -85,9 +95,9 @@ function drawBoard() {
 function updateMessage() {
   const gameStatus = game.getStatus();
 
-  if (gameStatus === 'win') {
+  if (gameStatus === Game.GameStatus.win) {
     messageWin.classList.remove('hidden');
-  } else if (gameStatus === 'lose') {
+  } else if (gameStatus === Game.GameStatus.lose) {
     messageLose.classList.remove('hidden');
   }
 }
