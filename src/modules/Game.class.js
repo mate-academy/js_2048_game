@@ -136,7 +136,7 @@ class Game {
           newX += nextX;
         }
 
-        // Merge if possible
+        //  Merge if possible
         if (
           newY + nextY >= 0 &&
           newY + nextY < 4 &&
