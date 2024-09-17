@@ -1,0 +1,44 @@
+.message {
+  margin: 0;
+  box-sizing: border-box;
+  background: $message-bg-color;
+  color: $message-text-color;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 20px;
+  grid-column: span 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border: 1px solid $title-text-color;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: 0.5s;
+
+  &-start {
+    background-color: $start-color;
+    color: #fff;
+  }
+}
+
+.hidden {
+  opacity: 0;
+  height: 0%;
+}
+
+.message-win {
+  background: $message-text-color;
+  color: $message-bg-color;
+}
+
+.message-container {
+  display: grid;
+  grid-template-columns: repeat(4, $cell-size);
+  grid-template-rows: repeat(1, $cell-size);
+  gap: 1vmin;
+  box-sizing: border-box;
+  margin-top: 1vmin;
+  position: relative;
+}
