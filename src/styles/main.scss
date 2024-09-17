@@ -148,6 +148,10 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  overflow: hidden;
+  text-overflow: none;
+  white-space: nowrap;
+  font-size: 14px;
 
   &:hover {
     background: #f87474;
