@@ -9,6 +9,14 @@ const game = new Game();
 const body = document.querySelector('body');
 const button = document.querySelector('.button');
 
+button.addEventListener('click', () => {
+  if (button.classList.contains('start')) {
+    game.start();
+  } else if (button.classList.contains('restart')) {
+    game.restart();
+  }
+});
+
 body.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowUp') {
     game.moveUp();
@@ -18,13 +26,5 @@ body.addEventListener('keydown', (e) => {
     game.moveLeft();
   } else if (e.key === 'ArrowRight') {
     game.moveRight();
-  }
-});
-
-button.addEventListener('click', () => {
-  if (button.classList.contains('start')) {
-    game.start();
-  } else if (button.classList.contains('restart')) {
-    game.restart();
   }
 });
