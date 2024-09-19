@@ -36,6 +36,8 @@ class Game {
   }
 
   moveLeft() {
+    const initBoard = JSON.stringify(this.board);
+    
     for (let i = 0; i < this.board.length; i++) {
       let index = 0;
 
@@ -46,8 +48,14 @@ class Game {
         }
       }
     }
+    if (JSON.stringify(this.board) !== initBoard) {
+      this.addRandomCell();
+    }
+    this.displayBoard();
   }
   moveRight() {
+    const initBoard = JSON.stringify(this.board);
+
     for (let i = 0; i < this.board.length; i++) {
       let index = this.board.length - 1;
 
@@ -58,8 +66,14 @@ class Game {
         }
       }
     }
+    if (JSON.stringify(this.board) !== initBoard) {
+      this.addRandomCell();
+    }
+    this.displayBoard();
   }
   moveUp() {
+    const initBoard = JSON.stringify(this.board);
+
     for (let i = 0; i < this.board.length; i++) {
       let index = 0;
 
@@ -70,8 +84,14 @@ class Game {
         }
       }
     }
+    if (JSON.stringify(this.board) !== initBoard) {
+      this.addRandomCell();
+    }
+    this.displayBoard();
   }
   moveDown() {
+    const initBoard = JSON.stringify(this.board);
+
     for (let i = 0; i < this.board.length; i++) {
       let index = this.board.length - 1;
 
@@ -82,6 +102,10 @@ class Game {
         }
       }
     }
+    if (JSON.stringify(this.board) !== initBoard) {
+      this.addRandomCell();
+    }
+    this.displayBoard();
   }
 
   moveAllLeftRight() {
@@ -95,6 +119,10 @@ class Game {
         }
       }
     }
+    if (JSON.stringify(this.board) !== initBoard) {
+      this.addRandomCell();
+    }
+    this.displayBoard();
   }
 
   /**
