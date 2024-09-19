@@ -37,13 +37,13 @@ class Game {
 
   moveLeft() {
     const initBoard = JSON.stringify(this.board);
-    
+
     for (let i = 0; i < this.board.length; i++) {
       let index = 0;
 
       for (let j = 0; j < this.board.length; j++){
         if (this.board[i][j] !== 0){
-          [this.board[i][j], this.board[i][index]] = [this.board[i][index], this.board[i][j]];
+          [this.board[i][index], this.board[i][j]] = [this.board[i][j], this.board[i][index]];
           index++;
         }
       }
@@ -59,9 +59,9 @@ class Game {
     for (let i = 0; i < this.board.length; i++) {
       let index = this.board.length - 1;
 
-      for (let j = this.board.length; j > 0; j--) {
+      for (let j = this.board.length - 1; j >= 0; j--) {
         if (this.board[i][j] !== 0) {
-          [this.board[i][j], this.board[i][index]] = [this.board[i][index], this.board[i][j]];
+          [this.board[i][index], this.board[i][j]] = [this.board[i][j], this.board[i][index]];
           index--;
         }
       }
@@ -79,7 +79,7 @@ class Game {
 
       for (let j = 0; j < this.board.length; j++){
         if (this.board[j][i] !== 0){
-          [this.board[j][i], this.board[index][i]] = [this.board[index][i], this.board[j][i]];
+          [this.board[index][i], this.board[j][i]] = [this.board[j][i], this.board[index][i]];
           index++;
         }
       }
@@ -95,10 +95,11 @@ class Game {
     for (let i = 0; i < this.board.length; i++) {
       let index = this.board.length - 1;
 
-      for (let j = this.board.length; j > 0; j--){
+      for (let j = this.board.length - 1; j >= 0; j--){
         if (this.board[j][i] !== 0){
-          [this.board[j][i], this.board[index][i]] = [this.board[index][i], this.board[j][i]];
+          [this.board[index][i], this.board[j][i]] = [this.board[j][i], this.board[index][i]];
           index--;
+          isCellMove = true;
         }
       }
     }
@@ -158,17 +159,8 @@ class Game {
     this.board = JSON.parse(JSON.stringify(this.initialState));
     this.addRandomCell();
     this.addRandomCell();
-    this.cell1 = document.querySelector('#cell1');
 
-    const rowArray = [2,0,0,8];
-    for (let i = 0; i < rowArray.length; i++) {
-      const el = rowArray[i];
-      console.log(el, i)
-      if (el > 0) {
-        this.cell = document.querySelector(`#cell${i}`);
-        this.cell.textContent = rowArray[i];
-      }
-    }
+    this.displayBoard();
   }
 
   /**
@@ -176,6 +168,7 @@ class Game {
    */
   
   restart() {
+    this.clearBoard();
     this.start();
   }
 
@@ -198,6 +191,29 @@ class Game {
         Math.random() < 0.9 ? 2 : 4;
     }
     console.log(this.board);
+  }
+
+  displayBoard() {
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board.length; j++) {
+        const el = this.board[i][j];
+        this.cell = document.querySelector(`#cell${i}${j}`);
+        if (el > 0) {
+          this.cell.textContent = this.board[i][j];
+        } else {
+          this.cell.textContent = '';
+        }
+      }
+    }
+  }
+
+  clearBoard () {
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board.length; j++) {
+        this.cell = document.querySelector(`#cell${i}${j}`);
+        this.cell.textContent = '';
+      }
+    }
   }
 }
 
