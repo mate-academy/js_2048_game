@@ -130,17 +130,8 @@ class Game {
     this.board = JSON.parse(JSON.stringify(this.initialState));
     this.addRandomCell();
     this.addRandomCell();
-    this.cell1 = document.querySelector('#cell1');
 
-    const rowArray = [2,0,0,8];
-    for (let i = 0; i < rowArray.length; i++) {
-      const el = rowArray[i];
-      console.log(el, i)
-      if (el > 0) {
-        this.cell = document.querySelector(`#cell${i}`);
-        this.cell.textContent = rowArray[i];
-      }
-    }
+    this.displayBoard();
   }
 
   /**
@@ -148,6 +139,7 @@ class Game {
    */
   
   restart() {
+    this.clearBoard();
     this.start();
   }
 
@@ -170,6 +162,28 @@ class Game {
         Math.random() < 0.9 ? 2 : 4;
     }
     console.log(this.board);
+  }
+
+  displayBoard() {
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board.length; j++) {
+        const el = this.board[i][j];
+        console.log(el, i, this.board)
+        if (el > 0) {
+          this.cell = document.querySelector(`#cell${i}${j}`);
+          this.cell.textContent = this.board[i][j];
+        }
+      }
+    }
+  }
+
+  clearBoard () {
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board.length; j++) {
+        this.cell = document.querySelector(`#cell${i}${j}`);
+        this.cell.textContent = '';
+      }
+    }
   }
 }
 

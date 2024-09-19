@@ -14,3 +14,24 @@ startButton.onclick = () => {
     game.restart();
   }
 };
+
+document/addEventListener('keydown', (event) => {
+  switch(event.key){
+    case "ArrowUp":
+      console.log('Up');
+      game.moveUp;
+    break;
+    case "ArrowDown":
+      console.log('Down');
+      game.moveDown;
+    break;
+    case "ArrowRight":
+      console.log('Right');
+      game.moveRight;
+    break;
+    case "ArrowLeft":
+      console.log('Left');
+      game.moveLeft;
+    break;
+  }
+});
