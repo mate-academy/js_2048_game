@@ -35,10 +35,67 @@ class Game {
     this.board = [];
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    for (let i = 0; i < this.board.length; i++) {
+      let index = 0;
+
+      for (let j = 0; j < this.board.length; j++){
+        if (this.board[i][j] !== 0){
+          [this.board[i][j], this.board[i][index]] = [this.board[i][index], this.board[i][j]];
+          index++;
+        }
+      }
+    }
+  }
+  moveRight() {
+    for (let i = 0; i < this.board.length; i++) {
+      let index = this.board.length - 1;
+
+      for (let j = this.board.length; j > 0; j--) {
+        if (this.board[i][j] !== 0) {
+          [this.board[i][j], this.board[i][index]] = [this.board[i][index], this.board[i][j]];
+          index--;
+        }
+      }
+    }
+  }
+  moveUp() {
+    for (let i = 0; i < this.board.length; i++) {
+      let index = 0;
+
+      for (let j = 0; j < this.board.length; j++){
+        if (this.board[j][i] !== 0){
+          [this.board[j][i], this.board[index][i]] = [this.board[index][i], this.board[j][i]];
+          index++;
+        }
+      }
+    }
+  }
+  moveDown() {
+    for (let i = 0; i < this.board.length; i++) {
+      let index = this.board.length - 1;
+
+      for (let j = this.board.length; j > 0; j--){
+        if (this.board[j][i] !== 0){
+          [this.board[j][i], this.board[index][i]] = [this.board[index][i], this.board[j][i]];
+          index--;
+        }
+      }
+    }
+  }
+
+  moveAllLeftRight() {
+    for (let i = 0; i < this.board.length; i++) {
+      let index = 0;
+
+      for (let j = 0; j < this.board.length; j++){
+        if (this.board[i][j] !== 0){
+          [this.board[i][j], this.board[i][index]] = [this.board[i][index], this.board[i][j]];
+          index++;
+        }
+      }
+    }
+  }
 
   /**
    * @returns {number}
@@ -48,7 +105,10 @@ class Game {
   /**
    * @returns {number[][]}
    */
-  getState() {}
+
+  getState() {
+    return this.board;
+  }
 
   /**
    * Returns the current game status.
@@ -70,11 +130,23 @@ class Game {
     this.board = JSON.parse(JSON.stringify(this.initialState));
     this.addRandomCell();
     this.addRandomCell();
+    this.cell1 = document.querySelector('#cell1');
+
+    const rowArray = [2,0,0,8];
+    for (let i = 0; i < rowArray.length; i++) {
+      const el = rowArray[i];
+      console.log(el, i)
+      if (el > 0) {
+        this.cell = document.querySelector(`#cell${i}`);
+        this.cell.textContent = rowArray[i];
+      }
+    }
   }
 
   /**
    * Resets the game.
    */
+  
   restart() {
     this.start();
   }
@@ -97,7 +169,7 @@ class Game {
       this.board[randomEmptyCell.x][randomEmptyCell.y] =
         Math.random() < 0.9 ? 2 : 4;
     }
-    // console.log(this.board);
+    console.log(this.board);
   }
 }
 
