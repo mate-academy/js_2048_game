@@ -41,7 +41,7 @@ class Game {
 
       for (let j = 0; j < this.board.length; j++){
         if (this.board[i][j] !== 0){
-          [this.board[i][j], this.board[i][index]] = [this.board[i][index], this.board[i][j]];
+          [this.board[i][index], this.board[i][j]] = [this.board[i][j], this.board[i][index]];
           index++;
         }
       }
@@ -54,7 +54,7 @@ class Game {
 
       for (let j = this.board.length - 1; j >= 0; j--) {
         if (this.board[i][j] !== 0) {
-          [this.board[i][j], this.board[i][index]] = [this.board[i][index], this.board[i][j]];
+          [this.board[i][index], this.board[i][j]] = [this.board[i][j], this.board[i][index]];
           index--;
         }
       }
@@ -67,7 +67,7 @@ class Game {
 
       for (let j = 0; j < this.board.length; j++){
         if (this.board[j][i] !== 0){
-          [this.board[j][i], this.board[index][i]] = [this.board[index][i], this.board[j][i]];
+          [this.board[index][i], this.board[j][i]] = [this.board[j][i], this.board[index][i]];
           index++;
         }
       }
@@ -80,7 +80,7 @@ class Game {
 
       for (let j = this.board.length - 1; j >= 0; j--){
         if (this.board[j][i] !== 0){
-          [this.board[j][i], this.board[index][i]] = [this.board[index][i], this.board[j][i]];
+          [this.board[index][i], this.board[j][i]] = [this.board[j][i], this.board[index][i]];
           index--;
         }
       }
@@ -159,9 +159,11 @@ class Game {
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board.length; j++) {
         const el = this.board[i][j];
+        this.cell = document.querySelector(`#cell${i}${j}`);
         if (el > 0) {
-          this.cell = document.querySelector(`#cell${i}${j}`);
           this.cell.textContent = this.board[i][j];
+        } else {
+          this.cell.textContent = '';
         }
       }
     }
