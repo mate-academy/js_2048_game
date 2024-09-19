@@ -19,19 +19,19 @@ document/addEventListener('keydown', (event) => {
   switch(event.key){
     case "ArrowUp":
       console.log('Up');
-      game.moveUp;
+      game.moveUp();
     break;
     case "ArrowDown":
       console.log('Down');
-      game.moveDown;
+      game.moveDown();
     break;
     case "ArrowRight":
       console.log('Right');
-      game.moveRight;
+      game.moveRight();
     break;
     case "ArrowLeft":
       console.log('Left');
-      game.moveLeft;
+      game.moveLeft();
     break;
   }
 });
