@@ -46,6 +46,7 @@ class Game {
         }
       }
     }
+    this.addRandomCell();
     this.displayBoard();
   }
   moveRight() {
@@ -59,6 +60,7 @@ class Game {
         }
       }
     }
+    this.addRandomCell();
     this.displayBoard();
   }
   moveUp() {
@@ -72,9 +74,11 @@ class Game {
         }
       }
     }
+    this.addRandomCell();
     this.displayBoard();
   }
   moveDown() {
+    let isCellMove = false;
     for (let i = 0; i < this.board.length; i++) {
       let index = this.board.length - 1;
 
@@ -82,8 +86,12 @@ class Game {
         if (this.board[j][i] !== 0){
           [this.board[index][i], this.board[j][i]] = [this.board[j][i], this.board[index][i]];
           index--;
+          isCellMove = true;
         }
       }
+    }
+    if (isCellMove) {
+      this.addRandomCell();
     }
     this.displayBoard();
   }
