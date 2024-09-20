@@ -48,11 +48,13 @@ class Game {
         }
       }
     }
+    this.cellLeftMerge();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell();
     }
     this.displayBoard();
   }
+
   moveRight() {
     const initBoard = JSON.stringify(this.board);
 
@@ -66,11 +68,13 @@ class Game {
         }
       }
     }
+    this.cellRightMerge();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell();
     }
     this.displayBoard();
   }
+
   moveUp() {
     const initBoard = JSON.stringify(this.board);
 
@@ -84,11 +88,13 @@ class Game {
         }
       }
     }
+    this.cellUpMerge();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell();
     }
     this.displayBoard();
   }
+
   moveDown() {
     const initBoard = JSON.stringify(this.board);
 
@@ -99,31 +105,58 @@ class Game {
         if (this.board[j][i] !== 0){
           [this.board[index][i], this.board[j][i]] = [this.board[j][i], this.board[index][i]];
           index--;
-          isCellMove = true;
         }
       }
     }
+    this.cellDownMerge ();
     if (JSON.stringify(this.board) !== initBoard) {
-      this.addRandomCell();
+      this.addRandomCell ();
     }
-    this.displayBoard();
+    this.displayBoard ();
   }
 
-  moveAllLeftRight() {
+  cellLeftMerge () {
     for (let i = 0; i < this.board.length; i++) {
-      let index = 0;
-
       for (let j = 0; j < this.board.length; j++){
-        if (this.board[i][j] !== 0){
-          [this.board[i][j], this.board[i][index]] = [this.board[i][index], this.board[i][j]];
-          index++;
+        if (this.board[i][j] !== 0 && this.board[i][j] === this.board[i][j + 1]){
+          this.board[i][j] *= 2;
+          this.board[i][j + 1] = 0;
         }
       }
     }
-    if (JSON.stringify(this.board) !== initBoard) {
-      this.addRandomCell();
+  }
+
+  cellRightMerge () {
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = this.board.length - 1; j >= 0; j--){
+        if (this.board[i][j] !== 0 && this.board[i][j] === this.board[i][j - 1]){
+          this.board[i][j] *= 2;
+          this.board[i][j - 1] = 0;
+        }
+      }
     }
-    this.displayBoard();
+  }
+
+  cellUpMerge () {
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board.length; j++){
+        if (this.board[j][i] !== 0 && this.board[j][i] === this.board[j + 1][i]){
+          this.board[j][i] *= 2;
+          this.board[j + 1][i] = 0;
+        }
+      }
+    }
+  }
+
+  cellDownMerge () {
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = this.board.length - 1; j >= 0; j--){
+        if (this.board[j][i] !== 0 && this.board[j][i] === this.board[j - 1][i]){
+          this.board[j][i] *= 2;
+          this.board[j - 1][i] = 0;
+        }
+      }
+    }
   }
 
   /**
