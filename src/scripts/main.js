@@ -8,6 +8,7 @@ const score = document.querySelector('.game-score');
 const startButton = document.querySelector('.start');
 const restartButton = document.querySelector('.restart');
 
+// Додаємо обробники подій
 attachEventListeners();
 
 document.addEventListener('keydown', (e) => {
@@ -40,7 +41,7 @@ function updateGameUI() {
   const currentScore = game.getScore();
   const gameStatus = game.getStatus();
 
-  // Update the table cells to reflect the game board
+  // Оновлення клітинок гри
   const cells = document.querySelectorAll('.field-cell');
 
   cells.forEach((cell, index) => {
@@ -52,7 +53,6 @@ function updateGameUI() {
     cell.className = `field-cell ${value ? 'field-cell--' + value : 'field-cell--empty'}`;
   });
 
-  // Update score
   score.textContent = currentScore;
 
   const winMessage = document.querySelector('.message-win');
@@ -70,21 +70,21 @@ function updateGameUI() {
   } else {
     winMessage.classList.add('hidden');
     loseMessage.classList.add('hidden');
+    startMessage.classList.add('hidden');
   }
 }
 
 function startGame() {
   game.restart();
+  startButton.textContent = 'Restart';
   startButton.classList.remove('start');
   startButton.classList.add('restart');
-  startButton.textContent = 'Restart';
   document.querySelector('.message-start').classList.add('hidden');
   updateGameUI();
 }
 
 function restartGame() {
   game.restart();
-  restartButton.textContent = 'Restart';
   updateGameUI();
 }
 

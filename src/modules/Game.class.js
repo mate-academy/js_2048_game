@@ -11,6 +11,7 @@ class Game {
     this.score = 0;
     this.gameOver = false;
     this.won = false;
+    this.idle = true;
     this.start();
   }
 
@@ -27,6 +28,10 @@ class Game {
   }
 
   getStatus() {
+    if (this.idle) {
+      return 'idle';
+    }
+
     if (this.won) {
       return 'Won';
     }
@@ -41,6 +46,7 @@ class Game {
   start() {
     this.addRandomTile();
     this.addRandomTile();
+    this.idle = false;
   }
 
   restart() {
@@ -48,6 +54,7 @@ class Game {
     this.score = 0;
     this.gameOver = false;
     this.won = false;
+    this.idle = false;
     this.start();
   }
 
@@ -112,6 +119,14 @@ class Game {
     this.rotateBoard();
     this.moveRight();
     this.rotateBoard(true);
+  }
+
+  pause() {
+    this.idle = true;
+  }
+
+  resume() {
+    this.idle = false;
   }
 
   rotateBoard(clockwise = false) {

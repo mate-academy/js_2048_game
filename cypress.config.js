@@ -2,7 +2,7 @@ const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
   e2e: {
-    baseUrl: 'http://localhost:3000',
+    baseUrl: 'https://Stepan31.github.io/js_2048_game/',
     supportFile: false,
     specPattern: 'cypress/integration/**/*.spec.{js,ts,jsx,tsx}',
   },
