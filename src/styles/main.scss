@@ -10,19 +10,77 @@ body {
   font-weight: 900;
 }
 
+.move {
+  &-up {
+    &--1 {
+      transform: translateY(-85px);
+    }
+    &--2 {
+      transform: translateY(-170px);
+    }
+    &--3 {
+      transform: translateY(-255px);
+    }
+  }
+
+  &-down {
+    &--1 {
+      transform: translateY(85px);
+    }
+    &--2 {
+      transform: translateY(170px);
+    }
+    &--3 {
+      transform: translateY(255px);
+    }
+  }
+
+  &-left {
+    &--1 {
+      transform: translateX(-85px);
+    }
+    &--2 {
+      transform: translateX(-170px);
+    }
+    &--3 {
+      transform: translateX(-255px);
+    }
+  }
+
+  &-right {
+    &--1 {
+      transform: translateX(85px);
+    }
+    &--2 {
+      transform: translateX(170px);
+    }
+    &--3 {
+      transform: translateX(255px);
+    }
+  }
+}
+
 .field-cell {
   background: #d6cdc4;
+  padding: 0;
   width: 75px;
   height: 75px;
   border-radius: 5px;
   color: #776e65;
-  box-sizing: border-box;
+  box-sizing: content-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
-  transition:
-    0.5s ease,
-    transform 0.4s ease;
+
+  &-num {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease;
+  }
 
   &--2 {
     background: #eee4da;
@@ -137,7 +195,7 @@ h1 {
   width: 75px;
   height: 75px;
 
-  transition: 0.25s ease background;
+  transition: 0.2s ease background;
 }
 
 .start {
@@ -187,17 +245,4 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
-}
-
-.field-cell--merged {
-  animation: merge-animation 2.2s ease;
-}
-
-@keyframes merge-animation {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1);
-  }
 }

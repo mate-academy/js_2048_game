@@ -6,21 +6,29 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
-  constructor(initialState = this.createEmptyBoard()) {
-    this.state = initialState;
-    this.score = 0;
-    this.gameOver = false;
-    this.won = false;
-    this.idle = true;
-    this.start();
-  }
+  static defaultInitialState = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
 
-  createEmptyBoard() {
-    return Array.from({ length: 4 }, () => Array(4).fill(null));
+  static GameStatus = {
+    idle: 'idle',
+    playing: 'playing',
+    win: 'win',
+    lose: 'lose',
+  };
+
+  constructor(initialState = Game.defaultInitialState) {
+    this.board = initialState.map((row) => [...row]);
+    this.score = 0;
+    this.status = Game.GameStatus.idle;
+    this.initialState = initialState.map((row) => [...row]);
   }
 
   getState() {
-    return this.state;
+    return this.board;
   }
 
   getScore() {
@@ -28,182 +36,163 @@ class Game {
   }
 
   getStatus() {
-    if (this.idle) {
-      return 'idle';
-    }
-
-    if (this.won) {
-      return 'Won';
-    }
-
-    if (this.gameOver) {
-      return 'Game Over';
-    }
-
-    return 'Playing';
+    return this.status;
   }
 
   start() {
-    this.addRandomTile();
-    this.addRandomTile();
-    this.idle = false;
+    this.status = Game.GameStatus.playing;
+    this.newCell();
+    this.newCell();
   }
 
   restart() {
-    this.state = this.createEmptyBoard();
+    this.status = Game.GameStatus.idle;
     this.score = 0;
-    this.gameOver = false;
-    this.won = false;
-    this.idle = false;
-    this.start();
+
+    this.board = this.initialState.map((row) => [...row]);
   }
 
-  addRandomTile() {
+  newCell() {
     const emptyCells = [];
 
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 4; j++) {
-        if (!this.state[i][j]) {
-          emptyCells.push([i, j]);
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 4; x++) {
+        if (!this.board[y][x]) {
+          emptyCells.push({ y: y, x: x });
         }
       }
     }
 
-    if (emptyCells.length === 0) {
-      return;
-    }
+    if (emptyCells.length > 0) {
+      const val = Math.floor(Math.random() * emptyCells.length);
 
-    const [row, col] =
-      emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-    this.state[row][col] = Math.random() < 0.9 ? 2 : 4;
-  }
-
-  moveLeft() {
-    let moved = false;
-
-    for (let row = 0; row < 4; row++) {
-      const newRow = this.compressRow(this.state[row]);
-
-      moved = moved || newRow.moved;
-      this.state[row] = newRow.row;
-    }
-
-    if (moved) {
-      this.afterMove();
+      this.board[emptyCells[val].y][emptyCells[val].x] =
+        Math.random() < 0.9 ? 2 : 4;
     }
   }
 
-  moveRight() {
-    let moved = false;
+  checkGameState() {
+    if (this.board.find((row) => row.find((el) => el === 2048))) {
+      this.status = Game.GameStatus.win;
+    } else if (this.checkIfLose()) {
+      this.status = Game.GameStatus.lose;
+    }
+  }
 
-    for (let row = 0; row < 4; row++) {
-      const newRow = this.compressRow(this.state[row].slice().reverse());
-
-      moved = moved || newRow.moved;
-      this.state[row] = newRow.row.reverse();
+  checkIfLose() {
+    if (this.board.find((row) => row.includes(0))) {
+      return false;
     }
 
-    if (moved) {
-      this.afterMove();
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 4; x++) {
+        if (y < 3 && this.board[y][x] === this.board[y + 1][x]) {
+          return false;
+        }
+
+        if (x < 3 && this.board[y][x] === this.board[y][x + 1]) {
+          return false;
+        }
+      }
     }
+
+    return true;
+  }
+
+  move(direction) {
+    if (this.status !== 'playing') {
+      return false;
+    }
+
+    let hasChanged = false;
+    const merged = Array.from({ length: 4 }, () => [
+      false,
+      false,
+      false,
+      false,
+    ]);
+
+    const traverse = (callback, reverse = false) => {
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          const y = reverse ? 3 - i : i;
+          const x = reverse ? 3 - j : j;
+
+          callback(y, x);
+        }
+      }
+    };
+
+    const moveCell = (startY, startX, nextY, nextX) => {
+      if (this.board[startY][startX] !== 0) {
+        let newY = startY;
+        let newX = startX;
+
+        while (
+          newY + nextY >= 0 &&
+          newY + nextY < 4 &&
+          newX + nextX >= 0 &&
+          newX + nextX < 4 &&
+          this.board[newY + nextY][newX + nextX] === 0
+        ) {
+          newY += nextY;
+          newX += nextX;
+        }
+
+        if (
+          newY + nextY >= 0 &&
+          newY + nextY < 4 &&
+          newX + nextX >= 0 &&
+          newX + nextX < 4 &&
+          this.board[newY + nextY][newX + nextX] ===
+            this.board[startY][startX] &&
+          !merged[newY + nextY][newX + nextX]
+        ) {
+          this.board[newY + nextY][newX + nextX] *= 2;
+          this.score += this.board[newY + nextY][newX + nextX];
+          this.board[startY][startX] = 0;
+          merged[newY + nextY][newX + nextX] = true;
+          hasChanged = true;
+        } else if (newY !== startY || newX !== startX) {
+          this.board[newY][newX] = this.board[startY][startX];
+          this.board[startY][startX] = 0;
+          hasChanged = true;
+        }
+      }
+    };
+
+    if (direction === 'up') {
+      traverse((y, x) => moveCell(y, x, -1, 0));
+    } else if (direction === 'down') {
+      traverse((y, x) => moveCell(3 - y, x, 1, 0));
+    } else if (direction === 'left') {
+      traverse((y, x) => moveCell(y, x, 0, -1));
+    } else if (direction === 'right') {
+      traverse((y, x) => moveCell(y, 3 - x, 0, 1));
+    }
+
+    if (hasChanged) {
+      this.newCell();
+      this.checkGameState();
+    }
+
+    return hasChanged;
   }
 
   moveUp() {
-    this.rotateBoard();
-    this.moveLeft();
-    this.rotateBoard(true);
+    return this.move('up');
   }
 
   moveDown() {
-    this.rotateBoard();
-    this.moveRight();
-    this.rotateBoard(true);
+    return this.move('down');
   }
 
-  pause() {
-    this.idle = true;
+  moveLeft() {
+    return this.move('left');
   }
 
-  resume() {
-    this.idle = false;
-  }
-
-  rotateBoard(clockwise = false) {
-    const N = this.state.length;
-    const newBoard = Array.from({ length: N }, () => Array(N).fill(0));
-
-    for (let row = 0; row < N; row++) {
-      for (let col = 0; col < N; col++) {
-        if (clockwise) {
-          // Повертаємо на 90 градусів за годинниковою стрілкою
-          newBoard[col][N - 1 - row] = this.state[row][col];
-        } else {
-          // Повертаємо на 90 градусів проти годинникової стрілки
-          newBoard[N - 1 - col][row] = this.state[row][col];
-        }
-      }
-    }
-
-    this.state = newBoard;
-  }
-
-  compressRow(row) {
-    let newRow = row.filter((x) => x !== null);
-    let moved = false;
-
-    for (let i = 0; i < newRow.length - 1; i++) {
-      if (newRow[i] === newRow[i + 1]) {
-        newRow[i] *= 2;
-        this.score += newRow[i];
-        newRow[i + 1] = null;
-        i++;
-        moved = true;
-
-        if (newRow[i] === 2048) {
-          this.won = true;
-        }
-      }
-    }
-
-    newRow = newRow.filter((x) => x !== null);
-
-    while (newRow.length < 4) {
-      newRow.push(null);
-    }
-
-    return {
-      row: newRow,
-      moved: moved || row.some((val, idx) => newRow[idx] !== val),
-    };
-  }
-
-  afterMove() {
-    this.addRandomTile();
-
-    if (!this.canMove()) {
-      this.gameOver = true;
-    }
-  }
-
-  canMove() {
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        if (!this.state[row][col]) {
-          return true;
-        }
-
-        if (col < 3 && this.state[row][col] === this.state[row][col + 1]) {
-          return true;
-        }
-
-        if (row < 3 && this.state[row][col] === this.state[row + 1][col]) {
-          return true;
-        }
-      }
-    }
-
-    return false;
+  moveRight() {
+    return this.move('right');
   }
 }
 
