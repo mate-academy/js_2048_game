@@ -370,20 +370,9 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    let state = this.initialState;
-    const gameStatus = this.getStatus();
-
-    if (gameStatus === 'play') {
-      const tbody = document.querySelector('tbody');
-      const trows = [...tbody.children];
-      const rows = [];
-
-      trows.forEach((row) => {
-        rows.push([...row.children]);
-      });
-
-      state = rows;
-    }
+    const tbody = document.querySelector('tbody');
+    const trows = [...tbody.children];
+    const state = trows.map((row) => [...row.children]);
 
     return state;
   }
