@@ -1,10 +1,5 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
   /**
    * Creates a new game instance.
@@ -35,7 +30,35 @@ class Game {
     this.board = [];
   }
 
-  moveLeft() {
+  moveLeft () {
+    this.cellLeftMerge();
+    this.moveCellLeft ();
+    this.cellLeftMerge();
+    this.moveCellLeft ();
+  }
+
+  moveRight () {
+    this.cellRightMerge();
+    this.moveCellRight ();
+    this.cellRightMerge();
+    this.moveCellRight ();
+  }
+
+  moveUp () {
+    this.cellUpMerge();
+    this.moveCellUp ();
+    this.cellUpMerge();
+    this.moveCellUp ();
+  }
+
+  moveDown () {
+    this.cellDownMerge();
+    this.moveCellDown ();
+    this.cellDownMerge();
+    this.moveCellDown ();
+  }
+
+  moveCellLeft() {
     const initBoard = JSON.stringify(this.board);
 
     for (let i = 0; i < this.board.length; i++) {
@@ -48,14 +71,13 @@ class Game {
         }
       }
     }
-    this.cellLeftMerge();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell();
     }
     this.displayBoard();
   }
 
-  moveRight() {
+  moveCellRight() {
     const initBoard = JSON.stringify(this.board);
 
     for (let i = 0; i < this.board.length; i++) {
@@ -68,14 +90,13 @@ class Game {
         }
       }
     }
-    this.cellRightMerge();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell();
     }
     this.displayBoard();
   }
 
-  moveUp() {
+  moveCellUp() {
     const initBoard = JSON.stringify(this.board);
 
     for (let i = 0; i < this.board.length; i++) {
@@ -88,14 +109,13 @@ class Game {
         }
       }
     }
-    this.cellUpMerge();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell();
     }
     this.displayBoard();
   }
 
-  moveDown() {
+  moveCellDown() {
     const initBoard = JSON.stringify(this.board);
 
     for (let i = 0; i < this.board.length; i++) {
@@ -108,7 +128,6 @@ class Game {
         }
       }
     }
-    this.cellDownMerge ();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
@@ -117,7 +136,7 @@ class Game {
 
   cellLeftMerge () {
     for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board.length; j++){
+      for (let j = 0; j < this.board.length - 1; j++){
         if (this.board[i][j] !== 0 && this.board[i][j] === this.board[i][j + 1]){
           this.board[i][j] *= 2;
           this.board[i][j + 1] = 0;
@@ -128,7 +147,7 @@ class Game {
 
   cellRightMerge () {
     for (let i = 0; i < this.board.length; i++) {
-      for (let j = this.board.length - 1; j >= 0; j--){
+      for (let j = this.board.length - 1; j > 0; j--){
         if (this.board[i][j] !== 0 && this.board[i][j] === this.board[i][j - 1]){
           this.board[i][j] *= 2;
           this.board[i][j - 1] = 0;
@@ -139,7 +158,7 @@ class Game {
 
   cellUpMerge () {
     for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board.length; j++){
+      for (let j = 0; j < this.board.length - 1; j++){
         if (this.board[j][i] !== 0 && this.board[j][i] === this.board[j + 1][i]){
           this.board[j][i] *= 2;
           this.board[j + 1][i] = 0;
@@ -150,7 +169,7 @@ class Game {
 
   cellDownMerge () {
     for (let i = 0; i < this.board.length; i++) {
-      for (let j = this.board.length - 1; j >= 0; j--){
+      for (let j = this.board.length - 1; j > 0; j--){
         if (this.board[j][i] !== 0 && this.board[j][i] === this.board[j - 1][i]){
           this.board[j][i] *= 2;
           this.board[j - 1][i] = 0;
@@ -184,9 +203,6 @@ class Game {
    */
   getStatus() {}
 
-  /**
-   * Starts the game.
-   */
   start() {
     this.startButton.textContent = 'Restart';
     this.board = JSON.parse(JSON.stringify(this.initialState));
@@ -195,10 +211,6 @@ class Game {
 
     this.displayBoard();
   }
-
-  /**
-   * Resets the game.
-   */
   
   restart() {
     this.clearBoard();
@@ -223,7 +235,6 @@ class Game {
       this.board[randomEmptyCell.x][randomEmptyCell.y] =
         Math.random() < 0.9 ? 2 : 4;
     }
-    console.log(this.board);
   }
 
   displayBoard() {
