@@ -71,8 +71,6 @@ window.addEventListener('keydown', (_event) => {
   }
 });
 
-// #region functions
-
 function gameToHTML() {
   game.cells.forEach((row, rowIndex) =>
     row.forEach((num, numIndex) => {
@@ -84,51 +82,15 @@ function gameToHTML() {
         cells[neededIndex].innerHTML = num;
       }
 
-      addColorForCell(cells[neededIndex]);
+      cells[neededIndex].classList.add(
+        `field-cell--${cells[neededIndex].innerHTML}`,
+      );
+
+      if (cells[neededIndex].innerHTML === '') {
+        cells[neededIndex].className = 'field-cell';
+      }
     }),
   );
 
   score.innerHTML = game.score;
 }
-
-function addColorForCell(element) {
-  element.className = 'field-cell';
-
-  switch (element.innerHTML) {
-    case '2':
-      element.classList.add('field-cell--2');
-      break;
-    case '4':
-      element.classList.add('field-cell--4');
-      break;
-    case '8':
-      element.classList.add('field-cell--8');
-      break;
-    case '16':
-      element.classList.add('field-cell--16');
-      break;
-    case '32':
-      element.classList.add('field-cell--32');
-      break;
-    case '64':
-      element.classList.add('field-cell--64');
-      break;
-    case '128':
-      element.classList.add('field-cell--128');
-      break;
-    case '256':
-      element.classList.add('field-cell--256');
-      break;
-    case '512':
-      element.classList.add('field-cell--512');
-      break;
-    case '1024':
-      element.classList.add('field-cell--1024');
-      break;
-    case '2048':
-      element.classList.add('field-cell--2048');
-      break;
-  }
-}
-
-// #endregion
