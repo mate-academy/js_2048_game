@@ -59,19 +59,29 @@ class Game {
   }
 
   addRandomTile() {
-    let row, col;
+    const emptyCells = [];
 
-    do {
-      row = Math.floor(Math.random() * 4);
-      col = Math.floor(Math.random() * 4);
-    } while (this.grid[row][col] !== 0);
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.grid[row][col] === 0) {
+          emptyCells.push({ row, col });
+        }
+      }
+    }
+
+    if (emptyCells.length === 0) {
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+    const { row: randomRow, col: randomCol } = emptyCells[randomIndex];
 
     const randomValue = Math.random();
 
     if (randomValue < 0.9) {
-      this.grid[row][col] = 2;
+      this.grid[randomRow][randomCol] = 2;
     } else {
-      this.grid[row][col] = 4;
+      this.grid[randomRow][randomCol] = 4;
     }
   }
 
@@ -268,6 +278,10 @@ class Game {
   }
 
   checkLose() {
+    if (this.status === Game.gameStatus.lose) {
+      return true;
+    }
+
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.grid[row][col] === 0) {
