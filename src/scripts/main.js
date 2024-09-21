@@ -82,12 +82,11 @@ function gameToHTML() {
         cells[neededIndex].innerHTML = num;
       }
 
-      cells[neededIndex].classList.add(
-        `field-cell--${cells[neededIndex].innerHTML}`,
-      );
-
       if (cells[neededIndex].innerHTML === '') {
         cells[neededIndex].className = 'field-cell';
+      } else {
+        cells[neededIndex].className =
+          `field-cell field-cell--${cells[neededIndex].innerHTML}`;
       }
     }),
   );
