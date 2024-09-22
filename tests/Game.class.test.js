@@ -180,6 +180,8 @@ describe('Game', () => {
 
       const state = game2048.getState();
 
+      // console.log("State after moveLeft:", state);
+
       expect(state[0][0]).not.toBe(0);
       expect(state[1][0]).not.toBe(0);
       expect(state[2][0]).not.toBe(0);
@@ -831,7 +833,7 @@ describe('Game', () => {
       expect(game2048.getStatus()).toBe('win');
     });
 
-    it('should be a "lose" when no more moves are possible', () => {
+    it('should be a "lose" when no more moves are possible', async () => {
       const game2048 = new Game([
         [128, 128, 0, 8],
         [16, 8, 16, 32],
