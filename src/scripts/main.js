@@ -14,7 +14,7 @@ const Game = require('../modules/Game.class');
 const game = new Game();
 
 function addCellClass() {
-  allCells.forEach((cell) => {
+  allCells.forEach(cell => {
     cell.className = 'field-cell';
 
     if (cell.innerHTML) {
@@ -63,17 +63,22 @@ function render() {
 
 function startGame() {
   game.start();
+
   startButton.classList.add('hidden');
   restartButton.classList.remove('hidden');
+
   render();
+
   document.addEventListener('keydown', handleKeyPress);
 }
 
 function restartGame() {
   game.restart();
-  render();
+
   startButton.classList.remove('hidden');
   restartButton.classList.add('hidden');
+
+  render();
 
   document.removeEventListener('keydown', handleKeyPress);
 }
@@ -111,5 +116,3 @@ function handleKeyPress(e) {
     }
   }
 }
-
-// tests:

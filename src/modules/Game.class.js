@@ -1,18 +1,17 @@
 'use strict';
 
 class Game {
-  constructor(initialState) {
-    this.initialState = initialState || [
+  constructor(
+    initialState = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-    ];
-
-    this.gameBoard = [...this.initialState];
-
+    ],
+  ) {
+    this.initialState = initialState;
+    this.gameBoard = [...initialState];
     this.status = 'idle';
-
     this.score = 0;
   }
 
@@ -72,6 +71,10 @@ class Game {
   }
 
   move(direction) {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     switch (direction) {
       case 'left':
         this.moveLeft();
@@ -121,6 +124,8 @@ class Game {
       this.gameBoard[row] = newRow;
     }
 
+    this.generateTile();
+
     return moved;
   }
   moveRight() {
@@ -140,6 +145,8 @@ class Game {
       this.gameBoard[row] = newRow;
     }
 
+    this.generateTile();
+
     return moved;
   }
   moveUp() {
@@ -153,6 +160,8 @@ class Game {
 
     this.gameBoard = this.transposeState(this.gameBoard);
 
+    this.generateTile();
+
     return moved;
   }
   moveDown() {
@@ -165,6 +174,8 @@ class Game {
     const moved = this.moveRight();
 
     this.gameBoard = this.transposeState(this.gameBoard);
+
+    this.generateTile();
 
     return moved;
   }
