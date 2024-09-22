@@ -9,8 +9,9 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
-    this.initialState = initialState;
-    this.gameBoard = [...initialState];
+    this.initialState = initialState.map((row) => [...row]);
+    Object.freeze(this.initialState);
+    this.gameBoard = this.initialState.map((row) => [...row]);
     this.status = 'idle';
     this.score = 0;
   }
@@ -37,7 +38,15 @@ class Game {
     return this.gameBoard;
   }
 
+  isGameBoardFull() {
+    return this.gameBoard.flat().every((n) => n !== 0);
+  }
+
   generateTile(times = 1) {
+    if (this.isGameBoardFull()) {
+      return;
+    }
+
     for (let n = 0; n < times; n++) {
       let newTilePosition;
 
