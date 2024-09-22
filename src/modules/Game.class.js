@@ -33,8 +33,6 @@ class Game {
   moveLeft () {
     const initBoard = JSON.stringify(this.board);
     this.moveCellLeft ();
-    // this.cellLeftMerge ();
-    // this.moveCellLeft ();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
@@ -43,8 +41,6 @@ class Game {
 
   moveRight () {
     const initBoard = JSON.stringify(this.board);
-    this.moveCellRight ();
-    this.cellRightMerge (); 
     this.moveCellRight ();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
@@ -55,8 +51,6 @@ class Game {
   moveUp () {
     const initBoard = JSON.stringify(this.board);
     this.moveCellUp ();
-    this.cellUpMerge ();
-    this.moveCellUp ();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
@@ -66,80 +60,74 @@ class Game {
   moveDown () {
     const initBoard = JSON.stringify(this.board);
     this.moveCellDown ();
-    this.cellDownMerge ();
-    this.moveCellDown ();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
     this.displayBoard();
   }
 
-  moveCellLeft() {
+  moveCellLeft () {
     for (let i = 0; i < this.board.length; i++) {
       let index = 0;
 
-      for (let j = 1; j < this.board.length; j++){
+      for (let j = 0; j < this.board.length; j++) {
+        if (this.board[i][j] !== 0) {
+          if (index !== j) {
+            // this.movementHistory.push({
+            //   fromX: i,
+            //   fromY: j,
+            //   toX: i,
+            //   toY: index,
+            // });
+            this.board[i][index] = this.board[i][j];
+            this.board[i][j] = 0;
+          }
 
-        if (this.board[i][index] === 0 && this.board[i][j] !== 0){
-          [this.board[i][index], this.board[i][j]] = [this.board[i][j], this.board[i][index]];
-        }
-
-        if (this.board[i][index] !== 0 && this.board[i][index] === this.board[i][j]){
-          this.board[i][index] *= 2;
-          this.board[i][j] = 0;
+          if (index > 0 && this.board[i][index] === this.board[i][index - 1]) {
+            this.board[i][index - 1] *= 2;
+            this.board[i][index] = 0;
+            // this.movementHistory.push({
+            //   fromX: i,
+            //   fromY: index,
+            //   toX: i,
+            //   toY: index - 1,
+            // });
+            index--;
+          }
           index++;
         }
-
       }
     }
   }
 
-
-  // moveCellLeft() {
-  //   for (let i = 0; i < this.board.length; i++) {
-  //     let index = 0; // Индекс для перемещения элементов влево
-  
-  //     for (let j = 0; j < this.board.length; j++) {
-  //       if (this.board[i][j] !== 0) {
-  //         // Если текущая ячейка не пустая
-  //         if (index !== j) {
-  //           this.board[i][index] = this.board[i][j]; // Перемещаем элемент
-  //           this.board[i][j] = 0; // Очищаем старую позицию
-  //         }
-  //         index++;
-  //       }
-  //     }
-  
-  //     // После перемещения всех элементов проверяем слияния
-  //     for (let j = 0; j < this.board.length - 1; j++) {
-  //       if (this.board[i][j] !== 0 && this.board[i][j] === this.board[i][j + 1]) {
-  //         this.board[i][j] *= 2; // Удваиваем значение
-  //         this.board[i][j + 1] = 0; // Очищаем ячейку справа
-  //       }
-  //     }
-  
-  //     // Повторно сдвигаем элементы влево после слияний
-  //     index = 0;
-  //     for (let j = 0; j < this.board.length; j++) {
-  //       if (this.board[i][j] !== 0) {
-  //         if (index !== j) {
-  //           this.board[i][index] = this.board[i][j];
-  //           this.board[i][j] = 0;
-  //         }
-  //         index++;
-  //       }
-  //     }
-  //   }
-  // }
-
-
   moveCellRight() {
     for (let i = 0; i < this.board.length; i++) {
       let index = this.board.length - 1;
-
+  
       for (let j = this.board.length - 1; j >= 0; j--) {
         if (this.board[i][j] !== 0) {
-          [this.board[i][index], this.board[i][j]] = [this.board[i][j], this.board[i][index]];
+          if (index !== j) {
+            // this.movementHistory.push({
+            //   fromX: i,
+            //   fromY: j,
+            //   toX: i,
+            //   toY: index,
+            // });
+            this.board[i][index] = this.board[i][j];
+            this.board[i][j] = 0;
+          }
+  
+          if (index < this.board.length - 1 && this.board[i][index] === this.board[i][index + 1]) {
+            this.board[i][index + 1] *= 2;
+            this.board[i][index] = 0;
+            // this.movementHistory.push({
+            //   fromX: i,
+            //   fromY: index,
+            //   toX: i,
+            //   toY: index + 1,
+            // });
+            index++;
+          }
           index--;
         }
       }
@@ -147,12 +135,33 @@ class Game {
   }
 
   moveCellUp() {
-    for (let i = 0; i < this.board.length; i++) {
+    for (let j = 0; j < this.board.length; j++) {
       let index = 0;
 
-      for (let j = 0; j < this.board.length; j++){
-        if (this.board[j][i] !== 0){
-          [this.board[index][i], this.board[j][i]] = [this.board[j][i], this.board[index][i]];
+      for (let i = 0; i < this.board.length; i++) {
+        if (this.board[i][j] !== 0) {
+          if (index !== i) {
+            // this.movementHistory.push({
+            //   fromX: i,
+            //   fromY: j,
+            //   toX: index,
+            //   toY: j,
+            // });
+            this.board[index][j] = this.board[i][j];
+            this.board[i][j] = 0;
+          }
+  
+          if (index > 0 && this.board[index][j] === this.board[index - 1][j]) {
+            this.board[index - 1][j] *= 2;
+            this.board[index][j] = 0;
+            // this.movementHistory.push({
+            //   fromX: index,
+            //   fromY: j,
+            //   toX: index - 1,
+            //   toY: j,
+            // });
+            index--;
+          }
           index++;
         }
       }
@@ -160,57 +169,34 @@ class Game {
   }
 
   moveCellDown() {
-    for (let i = 0; i < this.board.length; i++) {
+    for (let j = 0; j < this.board.length; j++) {
       let index = this.board.length - 1;
-
-      for (let j = this.board.length - 1; j >= 0; j--){
-        if (this.board[j][i] !== 0){
-          [this.board[index][i], this.board[j][i]] = [this.board[j][i], this.board[index][i]];
+  
+      for (let i = this.board.length - 1; i >= 0; i--) {
+        if (this.board[i][j] !== 0) {
+          if (index !== i) {
+            // this.movementHistory.push({
+            //   fromX: i,
+            //   fromY: j,
+            //   toX: index,
+            //   toY: j,
+            // });
+            this.board[index][j] = this.board[i][j];
+            this.board[i][j] = 0;
+          }
+  
+          if (index < this.board.length - 1 && this.board[index][j] === this.board[index + 1][j]) {
+            this.board[index + 1][j] *= 2;
+            this.board[index][j] = 0;
+            // this.movementHistory.push({
+            //   fromX: index,
+            //   fromY: j,
+            //   toX: index + 1,
+            //   toY: j,
+            // });
+            index++;
+          }
           index--;
-        }
-      }
-    }
-  }
-
-  // cellLeftMerge () {
-  //   for (let i = 0; i < this.board.length; i++) {
-  //     for (let j = 0; j < this.board.length - 1; j++){
-  //       if (this.board[i][j] !== 0 && this.board[i][j] === this.board[i][j + 1]){
-  //         this.board[i][j] *= 2;
-  //         this.board[i][j + 1] = 0;
-  //       }
-  //     }
-  //   }
-  // }
-
-  cellRightMerge () {
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = this.board.length - 1; j > 0; j--){
-        if (this.board[i][j] !== 0 && this.board[i][j] === this.board[i][j - 1]){
-          this.board[i][j] *= 2;
-          this.board[i][j - 1] = 0;
-        }
-      }
-    }
-  }
-
-  cellUpMerge () {
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board.length - 1; j++){
-        if (this.board[j][i] !== 0 && this.board[j][i] === this.board[j + 1][i]){
-          this.board[j][i] *= 2;
-          this.board[j + 1][i] = 0;
-        }
-      }
-    }
-  }
-
-  cellDownMerge () {
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = this.board.length - 1; j > 0; j--){
-        if (this.board[j][i] !== 0 && this.board[j][i] === this.board[j - 1][i]){
-          this.board[j][i] *= 2;
-          this.board[j - 1][i] = 0;
         }
       }
     }
