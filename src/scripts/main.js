@@ -14,7 +14,7 @@ const Game = require('../modules/Game.class');
 const game = new Game();
 
 function addCellClass() {
-  allCells.forEach(cell => {
+  allCells.forEach((cell) => {
     cell.className = 'field-cell';
 
     if (cell.innerHTML) {
