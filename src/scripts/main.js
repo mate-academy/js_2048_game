@@ -205,6 +205,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  const buttonUp = document.querySelector('.control__button--up');
+  const buttonDown = document.querySelector('.control__button--down');
+  const buttonLeft = document.querySelector('.control__button--left');
+  const buttonRight = document.querySelector('.control__button--right');
+
+  buttonUp.addEventListener('click', () => {
+    const ev = new KeyboardEvent('keydown', { key: 'ArrowUp' });
+
+    handleInput(ev);
+    setupInputOnce();
+  });
+
+  buttonDown.addEventListener('click', () => {
+    const ev = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+
+    handleInput(ev);
+    setupInputOnce();
+  });
+
+  buttonLeft.addEventListener('click', () => {
+    const ev = new KeyboardEvent('keydown', { key: 'ArrowLeft' });
+
+    handleInput(ev);
+    setupInputOnce();
+  });
+
+  buttonRight.addEventListener('click', () => {
+    const ev = new KeyboardEvent('keydown', { key: 'ArrowRight' });
+
+    handleInput(ev);
+    setupInputOnce();
+  });
+
   function setupInputOnce() {
     window.addEventListener('keydown', handleInput, { once: true });
   }
