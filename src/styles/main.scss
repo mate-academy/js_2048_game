@@ -34,6 +34,7 @@
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  transition: background 0.3s, color 0.3s;
 
   &--dark-theme {
     background: var(--background-dark);
@@ -78,13 +79,21 @@ h1 {
   border-radius: var(--brd-radius);
   overflow: hidden;
   background: var(--bg-switcher);
+  cursor: pointer;
+  transition: background 0.3s;
+
+  @media (any-hover: hover){
+    &:hover{
+      background: var(--bg-info);
+    }
+  }
 
   &__light {
     position: absolute;
     width: 50%;
     top: 0;
     right: 0;
-    transition: right 0.3s;
+    transition: right 0.5s;
 
     &.active {
       right: 100%;
@@ -96,7 +105,7 @@ h1 {
     width: 50%;
     top: 0;
     left: 0;
-    transition: left 0.3s;
+    transition: left 0.5s;
 
     &.active {
       left: 100%;
@@ -133,8 +142,9 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
+  outline: none;
 
-  transition: 0.25s ease background;
+  transition: background 0.3s;
 }
 
 .start {
@@ -163,6 +173,7 @@ h1 {
   grid-template-rows: repeat(4, 1fr);
   border: var(--cell-gap) solid var(--bg-game-field-light);
   border-radius: var(--brd-radius);
+  transition: background 0.3s, border-color 0.3s;
 
   &.dark-theme {
     background: var(--value);

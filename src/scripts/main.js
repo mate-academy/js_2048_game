@@ -177,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
       e.target.textContent = 'Start';
       messageWin.classList.add('hidden');
       messageLose.classList.add('hidden');
+      messageStart.classList.remove('hidden');
     }
     setupInputOnce();
   });
