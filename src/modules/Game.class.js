@@ -47,6 +47,8 @@ class Game {
       return;
     }
 
+    // console.log('done');
+
     for (let n = 0; n < times; n++) {
       let newTilePosition;
 
@@ -117,7 +119,7 @@ class Game {
     return result;
   }
 
-  moveLeft() {
+  moveLeft(withGeneration = true) {
     if (this.status !== 'playing') {
       return;
     }
@@ -133,11 +135,13 @@ class Game {
       this.gameBoard[row] = newRow;
     }
 
-    this.generateTile();
+    if (withGeneration && moved) {
+      this.generateTile();
+    }
 
     return moved;
   }
-  moveRight() {
+  moveRight(withGeneration = true) {
     if (this.status !== 'playing') {
       return;
     }
@@ -154,7 +158,9 @@ class Game {
       this.gameBoard[row] = newRow;
     }
 
-    this.generateTile();
+    if (withGeneration && moved) {
+      this.generateTile();
+    }
 
     return moved;
   }
@@ -165,11 +171,13 @@ class Game {
 
     this.gameBoard = this.transposeState(this.gameBoard);
 
-    const moved = this.moveLeft();
+    const moved = this.moveLeft(false);
 
     this.gameBoard = this.transposeState(this.gameBoard);
 
-    this.generateTile();
+    if (moved) {
+      this.generateTile();
+    }
 
     return moved;
   }
@@ -180,11 +188,13 @@ class Game {
 
     this.gameBoard = this.transposeState(this.gameBoard);
 
-    const moved = this.moveRight();
+    const moved = this.moveRight(false);
 
     this.gameBoard = this.transposeState(this.gameBoard);
 
-    this.generateTile();
+    if (moved) {
+      this.generateTile();
+    }
 
     return moved;
   }

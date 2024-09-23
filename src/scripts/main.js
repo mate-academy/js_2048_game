@@ -88,26 +88,23 @@ restartButton.addEventListener('click', restartGame);
 
 function handleKeyPress(e) {
   if (game.getStatus() === 'playing') {
-    let direction;
-
     switch (e.key) {
       case 'ArrowLeft':
-        direction = 'left';
+        game.moveLeft();
         break;
       case 'ArrowRight':
-        direction = 'right';
+        game.moveRight();
         break;
       case 'ArrowUp':
-        direction = 'up';
+        game.moveUp();
         break;
       case 'ArrowDown':
-        direction = 'down';
+        game.moveDown();
         break;
       default:
         return;
     }
 
-    game.move(direction);
     game.checkForLose();
     render();
 
