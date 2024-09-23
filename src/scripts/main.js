@@ -86,8 +86,12 @@ function restartGame() {
 startButton.addEventListener('click', startGame);
 restartButton.addEventListener('click', restartGame);
 
+let isKeyPressed = false;
+
 function handleKeyPress(e) {
-  if (game.getStatus() === 'playing') {
+  if (game.getStatus() === 'playing' && !isKeyPressed) {
+    isKeyPressed = true;
+
     switch (e.key) {
       case 'ArrowLeft':
         game.moveLeft();
@@ -102,6 +106,8 @@ function handleKeyPress(e) {
         game.moveDown();
         break;
       default:
+        isKeyPressed = false;
+
         return;
     }
 
@@ -114,3 +120,10 @@ function handleKeyPress(e) {
     }
   }
 }
+
+function handleKeyUp() {
+  isKeyPressed = false;
+}
+
+document.addEventListener('keydown', handleKeyPress);
+document.addEventListener('keyup', handleKeyUp);

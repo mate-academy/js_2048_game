@@ -9,9 +9,9 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
-    this.initialState = initialState.map(row => [...row]);
+    this.initialState = initialState.map((row) => [...row]);
     Object.freeze(this.initialState);
-    this.gameBoard = this.initialState.map(row => [...row]);
+    this.gameBoard = this.initialState.map((row) => [...row]);
     this.status = 'idle';
     this.score = 0;
   }
@@ -22,7 +22,7 @@ class Game {
   }
 
   restart() {
-    this.gameBoard = this.initialState.map(row => [...row]);
+    this.gameBoard = this.initialState.map((row) => [...row]);
     this.status = 'idle';
     this.score = 0;
   }
@@ -39,7 +39,7 @@ class Game {
   }
 
   isGameBoardFull() {
-    return this.gameBoard.flat().every(n => n !== 0);
+    return this.gameBoard.flat().every((n) => n !== 0);
   }
 
   generateTile(times = 1) {
@@ -202,7 +202,7 @@ class Game {
   }
 
   shiftAndMerge(row) {
-    const shifted = row.filter(val => val !== 0);
+    const shifted = row.filter((val) => val !== 0);
 
     for (let i = 0; i < shifted.length - 1; i++) {
       if (shifted[i] === shifted[i + 1]) {
