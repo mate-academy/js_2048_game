@@ -47,8 +47,6 @@ class Game {
       return;
     }
 
-    // console.log('done');
-
     for (let n = 0; n < times; n++) {
       let newTilePosition;
 
@@ -62,6 +60,9 @@ class Game {
       const addedNumber = Math.random() < 0.9 ? 2 : 4;
 
       this.gameBoard[newTilePosition[0]][newTilePosition[1]] = addedNumber;
+
+      this.checkForWin();
+      this.checkForLose();
     }
   }
 
@@ -164,6 +165,7 @@ class Game {
 
     return moved;
   }
+
   moveUp() {
     if (this.status !== 'playing') {
       return;

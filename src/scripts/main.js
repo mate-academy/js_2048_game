@@ -105,6 +105,7 @@ function handleKeyPress(e) {
         return;
     }
 
+    game.checkForWin();
     game.checkForLose();
     render();
 
