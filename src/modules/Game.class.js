@@ -503,12 +503,6 @@ class Game {
       });
     });
 
-    if (emptyCells.length < numberOfTiles) {
-      this.messageLose.classList.remove('hidden');
-
-      return;
-    }
-
     for (let i = 0; i < numberOfTiles; i++) {
       const randomIndex = Math.floor(Math.random() * emptyCells.length);
       const selectedCell = emptyCells[randomIndex];
@@ -520,6 +514,16 @@ class Game {
 
       emptyCells.splice(randomIndex, 1);
     }
+  }
+
+  hasEmptyCell() {
+    for (const row of this.initialState) {
+      if (row.some((cell) => cell === 0)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
 module.exports = Game;
