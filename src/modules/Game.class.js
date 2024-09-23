@@ -5,6 +5,7 @@ const {
   STATUS_PLAYING,
   STATUS_WIN,
   STATUS_LOSE,
+  Direction,
 } = require('./constants');
 
 class Game {
@@ -48,30 +49,27 @@ class Game {
   addRandomTile() {
     const emptyCells = [];
 
-    for (let r = 0; r < this.state.length; r++) {
-      for (let c = 0; c < this.state[r].length; c++) {
-        if (this.state[r][c] === 0) {
-          emptyCells.push({ r, c });
+    this.state.forEach((r, rowIndex) => {
+      r.forEach((c, colIndex) => {
+        if (c === 0) {
+          emptyCells.push({ row: rowIndex, col: colIndex });
         }
-      }
-    }
+      });
+    });
 
     if (emptyCells.length === 0) {
       return;
     }
 
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    const { r: row, c: col } = emptyCells[randomIndex];
+    const { row, col } = emptyCells[randomIndex];
 
     const newTileValue = Math.random() < 0.9 ? 2 : 4;
 
-    const newState = this.state.map((r) => [...r]);
-
-    newState[row][col] = newTileValue;
-    this.state = newState;
+    this.state[row][col] = newTileValue;
   }
 
-  mergeRow(row) {
+  slideLeft(row) {
     const nonZeroRow = row.filter((cell) => cell !== 0);
     const mergedRow = [];
 
@@ -143,7 +141,7 @@ class Game {
       newState = this.reverseRows(newState);
     }
 
-    newState = newState.map((row) => this.mergeRow(row));
+    newState = newState.map((row) => this.slideLeft(row));
 
     if (reverse) {
       newState = this.reverseRows(newState);
@@ -164,16 +162,16 @@ class Game {
     const prevState = JSON.stringify(this.state);
 
     switch (direction) {
-      case 'up':
+      case Direction.UP:
         this.state = this.handleMovement(true, false);
         break;
-      case 'down':
+      case Direction.DOWN:
         this.state = this.handleMovement(true, true);
         break;
-      case 'left':
+      case Direction.LEFT:
         this.state = this.handleMovement(false, false);
         break;
-      case 'right':
+      case Direction.RIGHT:
         this.state = this.handleMovement(false, true);
         break;
     }
@@ -188,19 +186,19 @@ class Game {
   }
 
   moveLeft() {
-    this.move('left');
+    this.move(Direction.LEFT);
   }
 
   moveRight() {
-    this.move('right');
+    this.move(Direction.RIGHT);
   }
 
   moveUp() {
-    this.move('up');
+    this.move(Direction.UP);
   }
 
   moveDown() {
-    this.move('down');
+    this.move(Direction.DOWN);
   }
 }
 

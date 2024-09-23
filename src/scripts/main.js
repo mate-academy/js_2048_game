@@ -1,6 +1,10 @@
 'use strict';
 
-const { STATUS_WIN, STATUS_LOSE } = require('../modules/constants');
+const {
+  STATUS_WIN,
+  STATUS_LOSE,
+  STATUS_PLAYING,
+} = require('../modules/constants');
 
 const Game = require('../modules/Game.class');
 
@@ -19,6 +23,14 @@ function updateDom(newState, newScore, newStatus) {
         cell.className = `field-cell`;
       }
     });
+
+    if (newStatus === STATUS_PLAYING) {
+      const winMessage = document.querySelector('.message-win');
+      const loseMessage = document.querySelector('.message-lose');
+
+      winMessage.classList.add('hidden');
+      loseMessage.classList.add('hidden');
+    }
 
     if (newStatus === STATUS_WIN) {
       const winMessage = document.querySelector('.message-win');
@@ -44,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   startButton.addEventListener('click', () => {
     game.start();
-    updateDom(game.getState(), game.getScore());
+    updateDom(game.getState(), game.getScore(), game.getStatus());
 
     startButton.textContent = 'Restart';
     startButton.classList.remove('start');
