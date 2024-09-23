@@ -18,13 +18,31 @@ button.addEventListener('click', () => {
 });
 
 body.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowUp') {
-    game.moveUp();
-  } else if (e.key === 'ArrowDown') {
-    game.moveDown();
-  } else if (e.key === 'ArrowLeft') {
-    game.moveLeft();
-  } else if (e.key === 'ArrowRight') {
-    game.moveRight();
+  game.getState();
+
+  const copyOfState = JSON.stringify(game.initialState);
+
+  switch (e.key) {
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
   }
+
+  game.getState();
+
+  const actualState = JSON.stringify(game.initialState);
+
+  if (copyOfState !== actualState) {
+    game.addTiles(1);
+  }
+  game.getScore();
 });

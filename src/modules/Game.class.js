@@ -52,7 +52,6 @@ class Game {
 
           return true;
         };
-        let mergeTry = 0;
 
         [...row.children].forEach((cell, i) => {
           const saveData = {};
@@ -63,16 +62,17 @@ class Game {
               (obj) =>
                 obj.cellContent === value &&
                 checkMerge(obj.cellIndex, i, value) === true &&
-                mergeTry < 1,
+                obj.mergeTry < 1,
             );
 
             if (exist) {
               exist.cellContent += value;
+              exist.mergeTry++;
               this.score += exist.cellContent;
-              mergeTry++;
             } else {
               saveData.cellIndex = i;
               saveData.cellContent = value;
+              saveData.mergeTry = 0;
 
               objArr.push(saveData);
             }
@@ -103,9 +103,6 @@ class Game {
           });
         }
       });
-
-      this.addTiles(1);
-      this.getScore();
     }
   }
 
@@ -130,7 +127,6 @@ class Game {
 
           return true;
         };
-        let mergeTry = 0;
 
         [...row.children].reverse().forEach((cell, i) => {
           const saveData = {};
@@ -141,16 +137,17 @@ class Game {
               (obj) =>
                 obj.cellContent === value &&
                 checkMerge(obj.cellIndex, i, value) === true &&
-                mergeTry < 1,
+                obj.mergeTry < 1,
             );
 
             if (exist) {
               exist.cellContent += value;
+              exist.mergeTry++;
               this.score += exist.cellContent;
-              mergeTry++;
             } else {
               saveData.cellIndex = i;
               saveData.cellContent = value;
+              saveData.mergeTry = 0;
 
               objArr.push(saveData);
             }
@@ -180,9 +177,6 @@ class Game {
           });
         }
       });
-
-      this.addTiles(1);
-      this.getScore();
     }
   }
 
@@ -263,9 +257,6 @@ class Game {
           }
         }
       });
-
-      this.addTiles(1);
-      this.getScore();
     }
   }
 
@@ -346,9 +337,6 @@ class Game {
           }
         }
       });
-
-      this.addTiles(1);
-      this.getScore();
     }
   }
   /**
@@ -372,9 +360,21 @@ class Game {
   getState() {
     const tbody = document.querySelector('tbody');
     const trows = [...tbody.children];
-    const state = trows.map((row) => [...row.children]);
 
-    return state;
+    this.initialState = trows.map((row) => {
+      const rowChildren = [...row.children];
+      const numbersArr = rowChildren.map((cell) => {
+        let cellContent = parseInt(cell.textContent);
+
+        if (!cellContent) {
+          cellContent = 0;
+        }
+
+        return cellContent;
+      });
+
+      return numbersArr;
+    });
   }
 
   /**
