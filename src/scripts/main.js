@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const scoreElement = document.querySelector('.game-score');
   const gameField = document.querySelector('.game-field');
   const themeSwitcher = document.querySelector('.theme-switcher');
+  const buttonUp = document.querySelector('.control__button--up');
+  const buttonDown = document.querySelector('.control__button--down');
+  const buttonLeft = document.querySelector('.control__button--left');
+  const buttonRight = document.querySelector('.control__button--right');
 
   const fieldSize = 4;
   const cellsCount = fieldSize * fieldSize;
@@ -205,38 +209,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  const buttonUp = document.querySelector('.control__button--up');
-  const buttonDown = document.querySelector('.control__button--down');
-  const buttonLeft = document.querySelector('.control__button--left');
-  const buttonRight = document.querySelector('.control__button--right');
+  function handleTouchButton(button, key) {
+    button.addEventListener('click', () => {
+      const ev = new KeyboardEvent('keydown', { key });
 
-  buttonUp.addEventListener('click', () => {
-    const ev = new KeyboardEvent('keydown', { key: 'ArrowUp' });
+      handleInput(ev);
+      setupInputOnce();
+    });
+  }
 
-    handleInput(ev);
-    setupInputOnce();
-  });
-
-  buttonDown.addEventListener('click', () => {
-    const ev = new KeyboardEvent('keydown', { key: 'ArrowDown' });
-
-    handleInput(ev);
-    setupInputOnce();
-  });
-
-  buttonLeft.addEventListener('click', () => {
-    const ev = new KeyboardEvent('keydown', { key: 'ArrowLeft' });
-
-    handleInput(ev);
-    setupInputOnce();
-  });
-
-  buttonRight.addEventListener('click', () => {
-    const ev = new KeyboardEvent('keydown', { key: 'ArrowRight' });
-
-    handleInput(ev);
-    setupInputOnce();
-  });
+  handleTouchButton(buttonUp, 'ArrowUp');
+  handleTouchButton(buttonDown, 'ArrowDown');
+  handleTouchButton(buttonLeft, 'ArrowLeft');
+  handleTouchButton(buttonRight, 'ArrowRight');
 
   function setupInputOnce() {
     window.addEventListener('keydown', handleInput, { once: true });
@@ -250,27 +235,24 @@ document.addEventListener('DOMContentLoaded', () => {
         case 'ArrowUp':
           game.moveUp();
           await slideTiles(cellsGroupedByColumn);
-          setupInputOnce();
           break;
         case 'ArrowDown':
           game.moveDown();
           await slideTiles(cellsGroupedByReversedColumn);
-          setupInputOnce();
           break;
         case 'ArrowLeft':
           game.moveLeft();
           await slideTiles(cellsGroupedByRow);
-          setupInputOnce();
           break;
         case 'ArrowRight':
           game.moveRight();
           await slideTiles(cellsGroupedByReversedRow);
-          setupInputOnce();
           break;
 
         default:
           return setupInputOnce();
       }
+      setupInputOnce();
 
       gameButton.classList.remove('start');
       gameButton.classList.add('restart');
