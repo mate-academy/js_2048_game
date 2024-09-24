@@ -27,27 +27,66 @@ playButton.addEventListener('click', (e) => {
         case 'ArrowUp':
           game.moveUp();
 
-          tableFormatting();
           break;
         case 'ArrowDown':
           game.moveDown();
 
-          tableFormatting();
           break;
         case 'ArrowLeft':
           game.moveLeft();
 
-          tableFormatting();
           break;
         case 'ArrowRight':
           game.moveRight();
 
-          tableFormatting();
           break;
         default:
           break;
       }
+
+      tableFormatting();
     });
+
+    let startX = 0;
+    let startY = 0;
+    const threshold = 100;
+
+    document.addEventListener(
+      'touchstart',
+      function (ev) {
+        startX = ev.touches[0].clientX;
+        startY = ev.touches[0].clientY;
+      },
+      false,
+    );
+
+    document.addEventListener(
+      'touchend',
+      (ev) => {
+        const endX = ev.changedTouches[0].clientX;
+        const endY = ev.changedTouches[0].clientY;
+
+        const diffX = endX - startX;
+        const diffY = endY - startY;
+
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+          if (diffX > threshold) {
+            game.moveRight();
+          } else if (diffX < -threshold) {
+            game.moveLeft();
+          }
+        } else {
+          if (diffY > threshold) {
+            game.moveDown();
+          } else if (diffY < -threshold) {
+            game.moveUp();
+          }
+        }
+
+        tableFormatting();
+      },
+      false,
+    );
 
     return;
   }

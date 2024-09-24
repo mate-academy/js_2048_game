@@ -60,11 +60,7 @@ class Game {
         this.status = 'win';
       }
 
-      if (this.differenceArrays(currentState, this.getState())) {
-        this.checkLeft = true;
-      } else {
-        this.checkLeft = false;
-      }
+      this.checkLeft = this.differenceArrays(currentState, this.getState());
 
       if (this.checkLeft) {
         this.addRandomTile(this.board);
@@ -104,11 +100,7 @@ class Game {
         this.status = 'win';
       }
 
-      if (this.differenceArrays(currentState, this.getState())) {
-        this.checkRight = true;
-      } else {
-        this.checkRight = false;
-      }
+      this.checkRight = this.differenceArrays(currentState, this.getState());
 
       if (this.checkRight) {
         this.addRandomTile(this.board);
@@ -132,11 +124,7 @@ class Game {
         this.status = 'win';
       }
 
-      if (this.differenceArrays(currentState, this.getState())) {
-        this.checkUp = true;
-      } else {
-        this.checkUp = false;
-      }
+      this.checkUp = this.differenceArrays(currentState, this.getState());
 
       if (this.checkLose() && !this.checkWin()) {
         this.status = 'lose';
@@ -155,12 +143,7 @@ class Game {
       if (this.checkWin()) {
         this.status = 'win';
       }
-
-      if (this.differenceArrays(currentState, this.getState())) {
-        this.checkDown = true;
-      } else {
-        this.checkDown = false;
-      }
+      this.checkDown = this.differenceArrays(currentState, this.getState());
 
       if (this.checkLose() && !this.checkWin()) {
         this.status = 'lose';
