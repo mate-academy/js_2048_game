@@ -42,7 +42,7 @@ class Game {
     this.updateUI();
     this.listenForKeyPresses();
     this.updateButtonToRestart();
-    this.hideStartMessage();
+    this.hideMessages();
   }
 
   restart() {
@@ -51,7 +51,7 @@ class Game {
     this.score = 0;
     this.updateUI();
     this.updateButtonToStart();
-    this.displayStartMessage();
+    this.hideMessages();
   }
 
   moveLeft() {
@@ -230,9 +230,11 @@ class Game {
     if (this.checkWin()) {
       this.status = 'win';
       this.displayMessage('win');
+      this.updateButtonToStart();
     } else if (this.checkLose()) {
       this.status = 'lose';
       this.displayMessage('lose');
+      this.updateButtonToStart();
     }
   }
 
@@ -340,29 +342,32 @@ class Game {
     }
   }
 
-  hideStartMessage() {
-    const startMessage = document.querySelector('.message-start');
-
-    if (startMessage) {
-      startMessage.classList.add('hidden');
-    }
-  }
-
-  displayStartMessage() {
-    const startMessage = document.querySelector('.message-start');
-
-    if (startMessage) {
-      startMessage.classList.remove('hidden');
-    }
-  }
-
   displayMessage(type) {
-    const messageElement = document.querySelector(
-      type === 'win' ? '.message-win' : '.message-lose',
-    );
+    const messageElementWin = document.querySelector('.message-win');
+    const messageElementLose = document.querySelector('.message-lose');
 
-    if (messageElement) {
-      messageElement.classList.remove('hidden');
+    if (type === 'win' && messageElementWin) {
+      messageElementWin.classList.remove('hidden');
+    } else if (type === 'lose' && messageElementLose) {
+      messageElementLose.classList.remove('hidden');
+    }
+  }
+
+  hideMessages() {
+    const messageElementWin = document.querySelector('.message-win');
+    const messageElementLose = document.querySelector('.message-lose');
+    const messageElementStart = document.querySelector('.message-start');
+
+    if (messageElementWin) {
+      messageElementWin.classList.add('hidden');
+    }
+
+    if (messageElementLose) {
+      messageElementLose.classList.add('hidden');
+    }
+
+    if (messageElementStart) {
+      messageElementStart.classList.add('hidden');
     }
   }
 }
