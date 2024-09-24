@@ -43,7 +43,9 @@ body.addEventListener('keydown', (e) => {
 
   if (copyOfState !== actualState) {
     game.addTiles(1);
-  } else if (copyOfState === actualState && !game.hasEmptyCell()) {
+  }
+
+  if (!game.hasEmptyCell()) {
     game.messageLose.classList.remove('hidden');
   }
 

@@ -28,7 +28,6 @@ class Game {
     this.messageWin = document.querySelector('.message-win');
     this.startActive = false;
     this.score = 0;
-    // console.log(initialState);
   }
 
   moveLeft() {
