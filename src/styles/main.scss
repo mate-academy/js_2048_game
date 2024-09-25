@@ -11,7 +11,8 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
+  // background: #d6cdc4;
+  background: #734a12;
   width: 75px;
   height: 75px;
   border-radius: 5px;
@@ -23,6 +24,7 @@ body {
 
   &--2 {
     background: #eee4da;
+    box-shadow: 0px 0px 10px 4px #9ddcb5;;
   }
 
   &--4 {
@@ -76,7 +78,9 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  // background: #bbada0;
+  background: #543a16;
+  box-shadow: 9px 8px 5px -2px #543a16;;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -91,7 +95,7 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background: #543a16;
   color: #f9f6f2;
   width: 75px;
   height: 75px;
@@ -109,11 +113,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #734a12;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #ffffff;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -148,6 +152,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  box-shadow: 0px 0px 10px 4px #f1b2b2;
 
   &:hover {
     background: #f87474;
@@ -178,6 +183,10 @@ h1 {
 
 .message-win {
   background: #edc22e;
+  color: #f9f6f2;
+}
+.message-rule {
+  background: #9ddcb5;
   color: #f9f6f2;
 }
 
