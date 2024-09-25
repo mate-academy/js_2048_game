@@ -96,12 +96,10 @@ class Game {
   }
 
   canMove() {
-    let canMove = false;
-
     for (let r = 0; r < this.state.length; r++) {
       for (let c = 0; c < this.state[r].length; c++) {
         if (this.state[r][c] === 0) {
-          canMove = true;
+          return true;
         }
 
         if (
@@ -110,16 +108,12 @@ class Game {
           (r < this.state.length - 1 &&
             this.state[r][c] === this.state[r + 1][c])
         ) {
-          canMove = true;
+          return true;
         }
       }
     }
 
-    if (!canMove) {
-      this.status = STATUS_LOSE;
-    }
-
-    return canMove;
+    return false;
   }
 
   transpose(grid) {
