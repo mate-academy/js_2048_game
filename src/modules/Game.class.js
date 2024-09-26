@@ -86,17 +86,17 @@ class Game {
   
           if (index > 0 && this.board[i][index] === this.board[i][index - 1]) {
             let mergeValue = this.board[i][index] * 2;
-  
-            const historyEl = this.moveHistory;
-  
-            if (historyEl.length > 0 && historyEl[historyEl.length - 1].fromX === i && historyEl[historyEl.length - 1].toY === index) {
-              historyEl[historyEl.length - 1].toY = index - 1;
+            const lastMove = this.moveHistory[this.moveHistory.length - 1];
+
+            if (lastMove && lastMove.newCoords.X === i && lastMove.newCoords.Y === index) {
+              lastMove.merge = true;
+              lastMove.newCoords.Y = index - 1;
             } else {
               this.moveHistory.push({
-                value: cellValue,
+                value: mergeValue,
                 oldCoords: {
                   X: i,
-                  Y: j,
+                  Y: index,
                 },
                 newCoords: {
                   X: i,
@@ -105,21 +105,19 @@ class Game {
                 merge: true,
               });
             }
-  
             this.board[i][index - 1] = mergeValue;
             this.board[i][index] = 0;
             index--;
           }
-  
           index++;
         }
       }
     }
   }
-
+  
   moveCellRight() {
     for (let i = 0; i < this.board.length; i++) {
-      let index = this.board.length - 1;
+      let index = this.board.length - 1;  
   
       for (let j = this.board.length - 1; j >= 0; j--) {
         if (this.board[i][j] !== 0) {
@@ -145,16 +143,16 @@ class Game {
           if (index < this.board.length - 1 && this.board[i][index] === this.board[i][index + 1]) {
             let mergeValue = this.board[i][index] * 2;
   
-            const historyEl = this.moveHistory;
-  
-            if (historyEl.length > 0 && historyEl[historyEl.length - 1].fromX === i && historyEl[historyEl.length - 1].toY === index) {
-              historyEl[historyEl.length - 1].toY = index + 1;
+            const lastMove = this.moveHistory[this.moveHistory.length - 1];
+            if (lastMove && lastMove.newCoords.X === i && lastMove.newCoords.Y === index) {
+              lastMove.merge = true;
+              lastMove.newCoords.Y = index + 1;
             } else {
               this.moveHistory.push({
-                value: cellValue,
+                value: mergeValue,
                 oldCoords: {
                   X: i,
-                  Y: j,
+                  Y: index,
                 },
                 newCoords: {
                   X: i,
@@ -168,13 +166,12 @@ class Game {
             this.board[i][index] = 0;
             index++;
           }
-  
           index--;
         }
       }
     }
   }
-
+  
   moveCellUp() {
     for (let j = 0; j < this.board.length; j++) {
       let index = 0;
@@ -195,23 +192,22 @@ class Game {
                 Y: j,
               },
             });
-  
             this.board[index][j] = cellValue;
             this.board[i][j] = 0;
           }
   
           if (index > 0 && this.board[index][j] === this.board[index - 1][j]) {
             let mergeValue = this.board[index][j] * 2;
-  
-            const historyEl = this.moveHistory;
-  
-            if (historyEl.length > 0 && historyEl[historyEl.length - 1].fromX === i && historyEl[historyEl.length - 1].toX === index) {
-              historyEl[historyEl.length - 1].toX = index - 1;
+            const lastMove = this.moveHistory[this.moveHistory.length - 1];
+
+            if (lastMove && lastMove.newCoords.X === index && lastMove.newCoords.Y === j) {
+              lastMove.merge = true;
+              lastMove.newCoords.X = index - 1;
             } else {
               this.moveHistory.push({
-                value: cellValue,
+                value: mergeValue,
                 oldCoords: {
-                  X: i,
+                  X: index,
                   Y: j,
                 },
                 newCoords: {
@@ -221,12 +217,10 @@ class Game {
                 merge: true,
               });
             }
-  
             this.board[index - 1][j] = mergeValue;
             this.board[index][j] = 0;
             index--;
           }
-  
           index++;
         }
       }
@@ -253,18 +247,17 @@ class Game {
                 Y: j,
               },
             });
-  
             this.board[index][j] = cellValue;
             this.board[i][j] = 0;
           }
   
           if (index < this.board.length - 1 && this.board[index][j] === this.board[index + 1][j]) {
             let mergeValue = this.board[index][j] * 2;
-  
-            const historyEl = this.moveHistory;
-  
-            if (historyEl.length > 0 && historyEl[historyEl.length - 1].fromX === i && historyEl[historyEl.length - 1].toX === index) {
-              historyEl[historyEl.length - 1].toX = index + 1;
+            const lastMove = this.moveHistory[this.moveHistory.length - 1];
+
+            if (lastMove && lastMove.newCoords.X === index && lastMove.newCoords.Y === j) {
+              lastMove.merge = true;
+              lastMove.newCoords.X = index + 1;
             } else {
               this.moveHistory.push({
                 value: cellValue,
@@ -279,12 +272,10 @@ class Game {
                 merge: true,
               });
             }
-  
             this.board[index + 1][j] = mergeValue;
             this.board[index][j] = 0;
             index++; 
           }
-  
           index--;
         }
       }
