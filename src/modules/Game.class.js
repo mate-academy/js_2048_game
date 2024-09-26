@@ -312,12 +312,13 @@ class Game {
     this.board = JSON.parse(JSON.stringify(this.initialState));
     this.addRandomCell();
     this.addRandomCell();
-
+    
     this.displayBoard();
   }
   
   restart() {
     this.clearBoard();
+    this.moveHistory = [];
     this.start();
   }
 
