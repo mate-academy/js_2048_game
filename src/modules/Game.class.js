@@ -1,24 +1,8 @@
 'use strict';
 
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
 
+  constructor() {
     this.initialState = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -28,72 +12,105 @@ class Game {
 
     this.startButton = document.querySelector('.button');
     this.board = [];
+    this.moveHistory = [];
   }
 
-  moveLeft () {
+  moveLeft() {
+    this.moveHistory = [];
     const initBoard = JSON.stringify(this.board);
     this.moveCellLeft ();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
     this.displayBoard();
+    console.log(this.moveHistory);
   }
 
-  moveRight () {
+  moveRight() {
+    this.moveHistory = [];
     const initBoard = JSON.stringify(this.board);
     this.moveCellRight ();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
     this.displayBoard();
+    console.log(this.moveHistory);
   }
 
-  moveUp () {
+  moveUp() {
+    this.moveHistory = [];
     const initBoard = JSON.stringify(this.board);
     this.moveCellUp ();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
     this.displayBoard();
+    console.log(this.moveHistory);
   }
 
-  moveDown () {
+  moveDown() {
+    this.moveHistory = [];
     const initBoard = JSON.stringify(this.board);
     this.moveCellDown ();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
     this.displayBoard();
+    console.log(this.moveHistory);
   }
 
-  moveCellLeft () {
+  moveCellLeft() {
     for (let i = 0; i < this.board.length; i++) {
       let index = 0;
-
+  
       for (let j = 0; j < this.board.length; j++) {
         if (this.board[i][j] !== 0) {
+          let cellValue = this.board[i][j];
+  
           if (index !== j) {
-            // this.movementHistory.push({
-            //   fromX: i,
-            //   fromY: j,
-            //   toX: i,
-            //   toY: index,
-            // });
-            this.board[i][index] = this.board[i][j];
+            this.moveHistory.push({
+              value: cellValue,
+              oldCoords: {
+                X: i,
+                Y: j,
+              },
+              newCoords: {
+                X: i,
+                Y: index,
+              },
+            });
+  
+            this.board[i][index] = cellValue;
             this.board[i][j] = 0;
           }
-
+  
           if (index > 0 && this.board[i][index] === this.board[i][index - 1]) {
-            this.board[i][index - 1] *= 2;
+            let mergeValue = this.board[i][index] * 2;
+  
+            const historyEl = this.moveHistory;
+  
+            if (historyEl.length > 0 && historyEl[historyEl.length - 1].fromX === i && historyEl[historyEl.length - 1].toY === index) {
+              historyEl[historyEl.length - 1].toY = index - 1;
+            } else {
+              this.moveHistory.push({
+                value: cellValue,
+                oldCoords: {
+                  X: i,
+                  Y: j,
+                },
+                newCoords: {
+                  X: i,
+                  Y: index - 1,
+                },
+                merge: true,
+              });
+            }
+  
+            this.board[i][index - 1] = mergeValue;
             this.board[i][index] = 0;
-            // this.movementHistory.push({
-            //   fromX: i,
-            //   fromY: index,
-            //   toX: i,
-            //   toY: index - 1,
-            // });
             index--;
           }
+  
           index++;
         }
       }
@@ -106,28 +123,52 @@ class Game {
   
       for (let j = this.board.length - 1; j >= 0; j--) {
         if (this.board[i][j] !== 0) {
+          let cellValue = this.board[i][j];
+  
           if (index !== j) {
-            // this.movementHistory.push({
-            //   fromX: i,
-            //   fromY: j,
-            //   toX: i,
-            //   toY: index,
-            // });
-            this.board[i][index] = this.board[i][j];
+            this.moveHistory.push({
+              value: cellValue,
+              oldCoords: {
+                X: i,
+                Y: j,
+              },
+              newCoords: {
+                X: i,
+                Y: index,
+              },
+            });
+  
+            this.board[i][index] = cellValue;
             this.board[i][j] = 0;
           }
   
           if (index < this.board.length - 1 && this.board[i][index] === this.board[i][index + 1]) {
-            this.board[i][index + 1] *= 2;
+            let mergeValue = this.board[i][index] * 2;
+  
+            const historyEl = this.moveHistory;
+  
+            if (historyEl.length > 0 && historyEl[historyEl.length - 1].fromX === i && historyEl[historyEl.length - 1].toY === index) {
+              historyEl[historyEl.length - 1].toY = index + 1;
+            } else {
+              this.moveHistory.push({
+                value: cellValue,
+                oldCoords: {
+                  X: i,
+                  Y: j,
+                },
+                newCoords: {
+                  X: i,
+                  Y: index + 1,
+                },
+                merge: true,
+              });
+            }
+  
+            this.board[i][index + 1] = mergeValue;
             this.board[i][index] = 0;
-            // this.movementHistory.push({
-            //   fromX: i,
-            //   fromY: index,
-            //   toX: i,
-            //   toY: index + 1,
-            // });
             index++;
           }
+  
           index--;
         }
       }
@@ -137,31 +178,55 @@ class Game {
   moveCellUp() {
     for (let j = 0; j < this.board.length; j++) {
       let index = 0;
-
+  
       for (let i = 0; i < this.board.length; i++) {
         if (this.board[i][j] !== 0) {
+          let cellValue = this.board[i][j];
+  
           if (index !== i) {
-            // this.movementHistory.push({
-            //   fromX: i,
-            //   fromY: j,
-            //   toX: index,
-            //   toY: j,
-            // });
-            this.board[index][j] = this.board[i][j];
+            this.moveHistory.push({
+              value: cellValue,
+              oldCoords: {
+                X: i,
+                Y: j,
+              },
+              newCoords: {
+                X: index,
+                Y: j,
+              },
+            });
+  
+            this.board[index][j] = cellValue;
             this.board[i][j] = 0;
           }
   
           if (index > 0 && this.board[index][j] === this.board[index - 1][j]) {
-            this.board[index - 1][j] *= 2;
+            let mergeValue = this.board[index][j] * 2;
+  
+            const historyEl = this.moveHistory;
+  
+            if (historyEl.length > 0 && historyEl[historyEl.length - 1].fromX === i && historyEl[historyEl.length - 1].toX === index) {
+              historyEl[historyEl.length - 1].toX = index - 1;
+            } else {
+              this.moveHistory.push({
+                value: cellValue,
+                oldCoords: {
+                  X: i,
+                  Y: j,
+                },
+                newCoords: {
+                  X: index - 1,
+                  Y: j,
+                },
+                merge: true,
+              });
+            }
+  
+            this.board[index - 1][j] = mergeValue;
             this.board[index][j] = 0;
-            // this.movementHistory.push({
-            //   fromX: index,
-            //   fromY: j,
-            //   toX: index - 1,
-            //   toY: j,
-            // });
             index--;
           }
+  
           index++;
         }
       }
@@ -174,28 +239,52 @@ class Game {
   
       for (let i = this.board.length - 1; i >= 0; i--) {
         if (this.board[i][j] !== 0) {
+          let cellValue = this.board[i][j];
+  
           if (index !== i) {
-            // this.movementHistory.push({
-            //   fromX: i,
-            //   fromY: j,
-            //   toX: index,
-            //   toY: j,
-            // });
-            this.board[index][j] = this.board[i][j];
+            this.moveHistory.push({
+              value: cellValue,
+              oldCoords: {
+                X: i,
+                Y: j,
+              },
+              newCoords: {
+                X: index,
+                Y: j,
+              },
+            });
+  
+            this.board[index][j] = cellValue;
             this.board[i][j] = 0;
           }
   
           if (index < this.board.length - 1 && this.board[index][j] === this.board[index + 1][j]) {
-            this.board[index + 1][j] *= 2;
+            let mergeValue = this.board[index][j] * 2;
+  
+            const historyEl = this.moveHistory;
+  
+            if (historyEl.length > 0 && historyEl[historyEl.length - 1].fromX === i && historyEl[historyEl.length - 1].toX === index) {
+              historyEl[historyEl.length - 1].toX = index + 1;
+            } else {
+              this.moveHistory.push({
+                value: cellValue,
+                oldCoords: {
+                  X: i,
+                  Y: j,
+                },
+                newCoords: {
+                  X: index + 1,
+                  Y: j,
+                },
+                merge: true,
+              });
+            }
+  
+            this.board[index + 1][j] = mergeValue;
             this.board[index][j] = 0;
-            // this.movementHistory.push({
-            //   fromX: index,
-            //   fromY: j,
-            //   toX: index + 1,
-            //   toY: j,
-            // });
-            index++;
+            index++; 
           }
+  
           index--;
         }
       }
@@ -258,9 +347,18 @@ class Game {
 
       this.board[randomEmptyCell.x][randomEmptyCell.y] =
         Math.random() < 0.9 ? 2 : 4;
+
+      this.moveHistory.push({
+        value: this.board[randomEmptyCell.x][randomEmptyCell.y],
+        newCoords: {
+          X: randomEmptyCell.x,
+          Y: randomEmptyCell.y,
+        },
+        newCell: true,
+      });
     }
   }
-
+  
   displayBoard() {
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board.length; j++) {
@@ -268,14 +366,22 @@ class Game {
         this.cell = document.querySelector(`#cell${i}${j}`);
         if (el > 0) {
           this.cell.textContent = this.board[i][j];
+          this.cell.className = `field-cell field-cell--${this.board[i][j]}`
         } else {
           this.cell.textContent = '';
+          this.cell.className = `field-cell`;
         }
       }
     }
+
+    const newCell = this.moveHistory.filter((el) => el.newCell === true);
+    for(let el of newCell) {
+      const newRandomCell = document.querySelector(`#cell${el.newCoords.X}${el.newCoords.Y}`)
+      newRandomCell.className = `field-cell field-cell--${el.value}`
+    }
   }
 
-  clearBoard () {
+  clearBoard() {
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board.length; j++) {
         this.cell = document.querySelector(`#cell${i}${j}`);
