@@ -354,7 +354,7 @@ class Game {
   }
   
   displayGame() {
-    displayBoard();
+    this.displayBoard();
     this.scoreboard.textContent = this.getScore();
   }
 
@@ -372,11 +372,11 @@ class Game {
         }
       }
     }
+    const newCells = this.moveHistory.filter((el) => el.newCell === true);
 
-    const newCell = this.moveHistory.filter((el) => el.newCell === true);
-    for(let el of newCell) {
-      const newRandomCell = document.querySelector(`#cell${el.newCoords.X}${el.newCoords.Y}`)
-      newRandomCell.className = `field-cell field-cell--${el.value}`
+    for(let el of newCells) {
+      const newCell = document.querySelector(`#cell${el.newCoords.X}${el.newCoords.Y}`)
+      newCell.className = `field-cell field-cell--${el.value}`
     }
   }
 
@@ -391,3 +391,17 @@ class Game {
 }
 
 module.exports = Game;
+
+
+
+// function moveCell(cell, dx, dy) {
+//   const pseudoElement = cell.querySelector('::before');
+
+//   pseudoElement.style.transform = `translate(${dx}px, ${dy}px)`;
+
+//   // Очікуємо завершення анімації
+//   setTimeout(() => {
+//     cell.style.transform = `translate(${dx}px, ${dy}px)`;
+//     pseudoElement.style.transform = 'none';
+//   }, 300);
+// }

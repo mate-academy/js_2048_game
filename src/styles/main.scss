@@ -12,67 +12,92 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  --cell-background: #d6cdc4;
+  --cell-size: 75px;
+  --cell-color: #776e65;
+
+  background: var(--cell-background);
+  width: var(--cell-size);
+  height: var(--cell-size);
   border-radius: 5px;
-  color: #776e65;
+  color: var(--cell-color);
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  position: relative;
+  transition: opacity 0.3s ease;
 
   &--2 {
-    background: #eee4da;
+    --cell-background: #eee4da;
   }
 
   &--4 {
-    background: #ede0c8;
+    --cell-background: #ede0c8;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    --cell-background: #f2b179;
+    --cell-color: #f9f6f2;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    --cell-background: #f59563;
+    --cell-color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    --cell-background: #f67c5f;
+    --cell-color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    --cell-background: #f65e3b;
+    --cell-color: #f9f6f2;
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    --cell-background: #edcf72;
+    --cell-color: #f9f6f2;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    --cell-background: #edcc61;
+    --cell-color: #f9f6f2;
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    --cell-background: #edc850;
+    --cell-color: #f9f6f2;
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    --cell-background: #edc53f;
+    --cell-color: #f9f6f2;
   }
 
   &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    --cell-background: #edc22e;
+    --cell-color: #f9f6f2;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    border-radius: 5px;
+    box-sizing: border-box;
+    vertical-align: center;
+    user-select: none;
+    text-align: center;
+    background: var(--cell-background);
+    color: var(--cell-color);
+    width: var(--cell-size);
+    height: var(--cell-size);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    top: 0;
+    left: 0;
+
   }
 }
 
