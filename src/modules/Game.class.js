@@ -11,6 +11,7 @@ class Game {
     ];
 
     this.startButton = document.querySelector('.button');
+    this.scoreboard = document.querySelector('.game-score');
     this.board = [];
     this.moveHistory = [];
   }
@@ -22,8 +23,7 @@ class Game {
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
-    this.displayBoard();
-    console.log(this.moveHistory);
+    this.displayGame();
   }
 
   moveRight() {
@@ -33,8 +33,7 @@ class Game {
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
-    this.displayBoard();
-    console.log(this.moveHistory);
+    this.displayGame();
   }
 
   moveUp() {
@@ -44,8 +43,7 @@ class Game {
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
-    this.displayBoard();
-    console.log(this.moveHistory);
+    this.displayGame();
   }
 
   moveDown() {
@@ -55,8 +53,7 @@ class Game {
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
-    this.displayBoard();
-    console.log(this.moveHistory);
+    this.displayGame();
   }
 
   moveCellLeft() {
@@ -282,10 +279,15 @@ class Game {
     }
   }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    let score = 0; 
+
+    for(let el of this.board) {
+      score += el.reduce((acc, curVal) => acc + curVal, 0)
+    }
+
+    return score
+  }
 
   /**
    * @returns {number[][]}
@@ -351,6 +353,11 @@ class Game {
     }
   }
   
+  displayGame() {
+    displayBoard();
+    this.scoreboard.textContent = this.getScore();
+  }
+
   displayBoard() {
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board.length; j++) {
