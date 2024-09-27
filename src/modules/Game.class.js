@@ -1,10 +1,5 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
   static STATUS = {
     idle: 'idle',
@@ -65,7 +60,7 @@ class Game {
       this.state = newState;
       this.addNumbers();
       this.setState();
-      this.checkStatsu();
+      this.checkStatus();
     }
 
     return moveAbility;
@@ -110,7 +105,7 @@ class Game {
       this.state = newState;
       this.addNumbers();
       this.setState();
-      this.checkStatsu();
+      this.checkStatus();
     }
 
     return moveAbility;
@@ -164,7 +159,7 @@ class Game {
       this.state = newState;
       this.addNumbers();
       this.setState();
-      this.checkStatsu();
+      this.checkStatus();
     }
 
     return moveAbility;
@@ -218,7 +213,7 @@ class Game {
       this.state = newState;
       this.addNumbers();
       this.setState();
-      this.checkStatsu();
+      this.checkStatus();
     }
 
     return moveAbility;
@@ -236,9 +231,6 @@ class Game {
     return this.status;
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
     this.status = Game.STATUS.playing;
     this.state = this.initialState.map((row) => [...row]);
@@ -248,9 +240,6 @@ class Game {
     this.setState();
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     this.score = 0;
     this.status = Game.STATUS.idle;
@@ -259,7 +248,6 @@ class Game {
     this.setState();
   }
 
-  // Add your own methods here
   getRandomNumber() {
     return Math.random() < 0.9 ? 2 : 4;
   }
@@ -312,7 +300,7 @@ class Game {
     }
   }
 
-  checkStatsu() {
+  checkStatus() {
     let moveAbility = false;
     let mergeAbility = false;
 
