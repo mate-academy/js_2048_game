@@ -45,17 +45,22 @@ function onKeyDown(keyEvent) {
 
   let numbersMove = false;
 
+  const ARROW_UP = 'ArrowUp';
+  const ARROW_DOWN = 'ArrowDown';
+  const ARROW_RIGHT = 'ArrowRight';
+  const ARROW_LEFT = 'ArrowLeft';
+
   switch (keyEvent.key) {
-    case 'ArrowUp':
+    case ARROW_UP:
       numbersMove = game.moveUp();
       break;
-    case 'ArrowDown':
+    case ARROW_DOWN:
       numbersMove = game.moveDown();
       break;
-    case 'ArrowRight':
+    case ARROW_RIGHT:
       numbersMove = game.moveRight();
       break;
-    case 'ArrowLeft':
+    case ARROW_LEFT:
       numbersMove = game.moveLeft();
       break;
   }
