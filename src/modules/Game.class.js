@@ -129,6 +129,22 @@ class Game {
     }
   }
 
+  checkLose() {
+    for (let x = 0; x < SIZE - 1; x++) {
+      for (let y = 0; y < SIZE - 1; y++) {
+        if (this.state[x][y] === this.state[x + 1][y]) {
+          return;
+        }
+
+        if (this.state[x][y] === this.state[x][y + 1]) {
+          return;
+        }
+      }
+    }
+
+    this.status = Game.gameStatus.lose;
+  }
+
   updateBorder() {
     const gameField = document.querySelector('.game-field');
 
@@ -149,11 +165,7 @@ class Game {
       });
     });
 
-    const emptyCells = getEmptyCells(this.state);
-
-    if (!emptyCells.length) {
-      this.status = Game.gameStatus.lose;
-    }
+    this.checkLose();
   }
 }
 
