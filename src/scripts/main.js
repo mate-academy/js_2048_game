@@ -1,6 +1,7 @@
 'use strict';
 
 import Game from '../modules/Game.class';
+
 const game = new Game();
 
 const startButton = document.querySelector('.button.start');
@@ -25,8 +26,10 @@ function updateGameField() {
 
   cells.forEach((cell, index) => {
     const value = state[Math.floor(index / 4)][index % 4];
+
     cell.textContent = value !== 0 ? value : '';
     cell.className = 'field-cell';
+
     if (value) {
       cell.classList.add(`field-cell--${value}`);
     }
@@ -38,6 +41,7 @@ function updateGameField() {
 
 function updateMessage() {
   const status = game.getStatus();
+
   messageLose.classList.toggle('hidden', status !== 'lose');
   messageWin.classList.toggle('hidden', status !== 'win');
 }
@@ -51,7 +55,9 @@ function updateButtonLabel() {
 }
 
 document.addEventListener('keydown', (event) => {
-  if (game.getStatus() !== 'playing') return;
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
 
   switch (event.key) {
     case 'ArrowLeft':
