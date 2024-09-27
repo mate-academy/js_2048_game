@@ -130,19 +130,27 @@ class Game {
   }
 
   checkLose() {
-    for (let x = 0; x < SIZE - 1; x++) {
-      for (let y = 0; y < SIZE - 1; y++) {
-        if (this.state[x][y] === this.state[x + 1][y]) {
-          return;
-        }
+    const emptyCells = getEmptyCells(this.state);
 
-        if (this.state[x][y] === this.state[x][y + 1]) {
-          return;
+    if (!emptyCells.length) {
+      for (let x = 0; x < SIZE; x++) {
+        for (let y = 0; y < SIZE - 1; y++) {
+          if (this.state[x][y] === this.state[x][y + 1]) {
+            return;
+          }
         }
       }
-    }
 
-    this.status = Game.gameStatus.lose;
+      for (let y = 0; y < SIZE; y++) {
+        for (let x = 0; x < SIZE - 1; x++) {
+          if (this.state[x][y] === this.state[x + 1][y]) {
+            return;
+          }
+        }
+      }
+
+      this.status = Game.gameStatus.lose;
+    }
   }
 
   updateBorder() {

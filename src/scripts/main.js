@@ -50,11 +50,11 @@ document.addEventListener('keydown', (keyEvent) => {
   game.fillFreeCell();
   game.updateBorder();
 
-  if (game.getStatus() === Game.gameStatus.win) {
-    winMessage.classList.remove('hidden');
-  }
-
   if (game.getStatus() === Game.gameStatus.lose) {
     loseMessage.classList.remove('hidden');
+  }
+
+  if (game.getStatus() === Game.gameStatus.win) {
+    winMessage.classList.remove('hidden');
   }
 });
