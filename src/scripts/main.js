@@ -1,5 +1,6 @@
 'use strict';
 import Tile from '../modules/Tile.js';
+
 const Game = require('../modules/Game.class');
 
 const startBtn = document.querySelector('.start');
@@ -13,7 +14,6 @@ function updateScore() {
 }
 
 function updateStatus() {
-  console.log(game.getStatus());
   const [messageLose, messageWin, messageStart] = messages;
   const gameStatus = game.getStatus();
   const hiddenClass = 'hidden';
@@ -42,28 +42,31 @@ function setupSwipeInput() {
 
   document.addEventListener(
     'touchstart',
-    (event) => {
+    (e) => {
+      // e.preventDefault();
+
       if (swiping) {
         return;
       }
 
       swiping = true;
 
-      let startX = event.touches[0].clientX;
-      let startY = event.touches[0].clientY;
+      const startX = e.touches[0].clientX;
+      const startY = e.touches[0].clientY;
       let endSwipe = false;
 
       document.addEventListener(
         'touchend',
-        (event) => {
+        (ev) => {
+          ev.preventDefault();
           if (endSwipe) {
             return;
           }
 
           endSwipe = true;
 
-          const endX = event.changedTouches[0].clientX;
-          const endY = event.changedTouches[0].clientY;
+          const endX = ev.changedTouches[0].clientX;
+          const endY = ev.changedTouches[0].clientY;
 
           const deltaX = endX - startX;
           const deltaY = endY - startY;
@@ -77,8 +80,10 @@ function setupSwipeInput() {
             swiping = false;
             endSwipe = false;
             setupSwipeInput();
+
             return;
           }
+
           // Визначення напрямку свайпа
           if (absDeltaX > threshold) {
             if (deltaX > 0) {
@@ -114,6 +119,7 @@ async function swipeInput(e) {
     case 'ArrowUp':
       if (!canMoveUp()) {
         setupInput();
+
         return;
       }
       await game.moveUp();
@@ -121,6 +127,7 @@ async function swipeInput(e) {
     case 'ArrowDown':
       if (!canMoveDown()) {
         setupInput();
+
         return;
       }
       await game.moveDown();
@@ -128,6 +135,7 @@ async function swipeInput(e) {
     case 'ArrowLeft':
       if (!canMoveLeft()) {
         setupInput();
+
         return;
       }
       await game.moveLeft();
@@ -135,12 +143,14 @@ async function swipeInput(e) {
     case 'ArrowRight':
       if (!canMoveRight()) {
         setupInput();
+
         return;
       }
       await game.moveRight();
       break;
     default:
       setupSwipeInput();
+
       return;
   }
 
@@ -149,10 +159,12 @@ async function swipeInput(e) {
   if (game.checkForWin()) {
     game.setStatus(Game.Statuses.WIN);
     updateStatus();
+
     return;
   }
 
   const newTile = new Tile(gameBoard);
+
   game.randomEmptyCell().tile = newTile;
 
   if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()) {
@@ -160,6 +172,7 @@ async function swipeInput(e) {
       game.setStatus(Game.Statuses.LOSE);
       updateStatus();
     });
+
     return;
   }
 
@@ -181,6 +194,7 @@ async function handleInput(e) {
     case 'ArrowUp':
       if (!canMoveUp()) {
         setupInput();
+
         return;
       }
       await game.moveUp();
@@ -188,6 +202,7 @@ async function handleInput(e) {
     case 'ArrowDown':
       if (!canMoveDown()) {
         setupInput();
+
         return;
       }
       await game.moveDown();
@@ -195,6 +210,7 @@ async function handleInput(e) {
     case 'ArrowLeft':
       if (!canMoveLeft()) {
         setupInput();
+
         return;
       }
       await game.moveLeft();
@@ -202,12 +218,14 @@ async function handleInput(e) {
     case 'ArrowRight':
       if (!canMoveRight()) {
         setupInput();
+
         return;
       }
       await game.moveRight();
       break;
     default:
       setupInput();
+
       return;
   }
 
@@ -216,10 +234,12 @@ async function handleInput(e) {
   if (game.checkForWin()) {
     game.setStatus(Game.Statuses.WIN);
     updateStatus();
+
     return;
   }
 
   const newTile = new Tile(gameBoard);
+
   game.randomEmptyCell().tile = newTile;
 
   if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()) {
@@ -227,6 +247,7 @@ async function handleInput(e) {
       game.setStatus(Game.Statuses.LOSE);
       updateStatus();
     });
+
     return;
   }
 
@@ -273,9 +294,16 @@ function canMoveRight() {
 function canMove(cells) {
   return cells.some((group) => {
     return group.some((cell, index) => {
-      if (index === 0) return false;
-      if (cell.tile == null) return false;
+      if (index === 0) {
+        return false;
+      }
+
+      if (cell.tile == null) {
+        return false;
+      }
+
       const moveToCell = group[index - 1];
+
       return moveToCell.canAccept(cell.tile);
     });
   });

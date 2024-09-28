@@ -1,6 +1,3 @@
-
-
-
 // Переміщуємо плитки вправо - працюючий код
 for (let row = 0; row < this.gridSize; row++) {
   for (let col = this.gridSize - 2; col >= 0; col--) {
