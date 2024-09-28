@@ -81,24 +81,24 @@ body {
     --cell-color: #f9f6f2;
   }
 
-  &::before {
-    content: '';
-    position: absolute;
-    border-radius: 5px;
-    box-sizing: border-box;
-    vertical-align: center;
-    user-select: none;
-    text-align: center;
-    background: var(--cell-background);
-    color: var(--cell-color);
-    width: var(--cell-size);
-    height: var(--cell-size);
-    opacity: 0;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    top: 0;
-    left: 0;
+}
 
-  }
+.moving-cell {
+  position: absolute;
+  border-radius: 5px;
+  box-sizing: border-box;
+  vertical-align: center;
+  user-select: none;
+  text-align: center;
+  // background: var(--cell-background);
+  background-color: #179921;
+  color: var(--cell-color);
+  width: var(--cell-size);
+  height: var(--cell-size);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  top: 0;
+  left: 0;
 }
 
 .game-field {

@@ -311,6 +311,7 @@ class Game {
 
   start() {
     this.startButton.textContent = 'Restart';
+    this.startButton.className = 'button restart';
     this.board = JSON.parse(JSON.stringify(this.initialState));
     this.addRandomCell();
     this.addRandomCell();
@@ -363,28 +364,34 @@ class Game {
     // Если клетка есть в стеке но нет на доске прописать что она появиться через время общей анимации
     // Если клетка есть на доске но нет в стеке поставить анимацию с псевдоелементом и убрать клетку
     // Если клетки нет на доске и в стеке то трогать ничего не нужно.
-
-
     for(const cellMove of this.cellHistory) {
       const newCell = document.querySelector(`#cell${cellMove.newCoords.X}${cellMove.newCoords.Y}`);
       
       if(cellMove.newCell) {
         newCell.textContent = cellMove.value;
 
+        // Сделать анимацию появления
       } else {
-        console.log(cellMove);
         const oldCell = document.querySelector(`#cell${cellMove.oldCoords.X}${cellMove.oldCoords.Y}`);
-        const pseudoElement = oldCell.querySelector('::before');
-        
-        pseudoElement.style.transform = `translate(50px, 50px)`;
-        setTimeout(() => {
-          cell.style.transform = `translate(${dx}px, ${dy}px)`;
-          pseudoElement.style.transform = 'none';
-        }, 300);
-      }
-    }  
-           
+        const movingBlock = document.createElement('div');
+        movingBlock.className = `moving-cell field-cell--${cellMove.value}`;
 
+        if (pseudoElement) {
+          pseudoElement.style.transform = `translate(${cell.offsetLeft}px, ${cell.offsetTop}px)`;
+          pseudoElement.style.opacity = '1';
+
+          setTimeout(() => {
+            pseudoElement.style.transform = `translate(${dx}px, ${dy}px)`;
+            pseudoElement.style.transform = 'none';
+          }, 300);
+
+          setTimeout(() => {
+            oldCell.classList.remove('animate-before');
+          }, 1000);
+        }
+      }  
+           
+    }
     // this.cell.className = `field-cell field-cell--${this.board[i][j]}`
     // this.cell.textContent = '';
     // this.cell.className = `field-cell`;
@@ -397,25 +404,25 @@ class Game {
     }
   }
 
-  animationMoveCell(cell, dx, dy) {
-    const pseudoElement = cell.querySelector('::before');
+  // animationMoveCell(cell, dx, dy) {
+  //   const pseudoElement = cell.querySelector('::before');
   
-    pseudoElement.style.transform = `translate(${dx}px, ${dy}px)`;
+  //   pseudoElement.style.transform = `translate(${dx}px, ${dy}px)`;
   
-    setTimeout(() => {
-      cell.style.transform = `translate(${dx}px, ${dy}px)`;
-      pseudoElement.style.transform = 'none';
-    }, 300);
-  }
+  //   setTimeout(() => {
+  //     cell.style.transform = `translate(${dx}px, ${dy}px)`;
+  //     pseudoElement.style.transform = 'none';
+  //   }, 300);
+  // }
 
-  clearBoard() {
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board.length; j++) {
-        this.cell = document.querySelector(`#cell${i}${j}`);
-        this.cell.textContent = '';
-      }
-    }
-  }
+  // clearBoard() {
+  //   for (let i = 0; i < this.board.length; i++) {
+  //     for (let j = 0; j < this.board.length; j++) {
+  //       this.cell = document.querySelector(`#cell${i}${j}`);
+  //       this.cell.textContent = '';
+  //     }
+  //   }
+  // }
 }
 
 module.exports = Game;
