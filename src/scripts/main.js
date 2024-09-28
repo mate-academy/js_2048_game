@@ -43,7 +43,7 @@ function setupSwipeInput() {
   document.addEventListener(
     'touchstart',
     (e) => {
-      // e.preventDefault();
+      e.preventDefault();
 
       if (swiping) {
         return;
@@ -59,6 +59,7 @@ function setupSwipeInput() {
         'touchend',
         (ev) => {
           ev.preventDefault();
+
           if (endSwipe) {
             return;
           }
@@ -177,7 +178,7 @@ async function swipeInput(e) {
   }
 
   updateScore();
-  // updateStatus();
+  updateStatus();
   setupSwipeInput();
 }
 
@@ -252,7 +253,7 @@ async function handleInput(e) {
   }
 
   updateScore();
-  // updateStatus();
+  updateStatus();
   setupInput();
 }
 
@@ -262,12 +263,14 @@ startBtn.addEventListener('click', () => {
     startBtn.classList.add('restart');
     startBtn.textContent = 'Restart';
     game.start();
+    updateStatus();
     game.randomEmptyCell().tile = new Tile(gameBoard);
     game.randomEmptyCell().tile = new Tile(gameBoard);
     setupInput();
     setupSwipeInput();
   } else if (startBtn.classList.contains('restart')) {
     game.restart();
+    updateStatus();
     game.randomEmptyCell().tile = new Tile(gameBoard);
     game.randomEmptyCell().tile = new Tile(gameBoard);
     setupInput();
