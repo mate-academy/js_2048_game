@@ -105,7 +105,7 @@ class Game {
     this.transpose();
 
     const changed = this.moveLeft();
-
+    
     this.transpose();
 
     return changed;
