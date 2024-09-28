@@ -47,7 +47,6 @@ class Game {
   }
 
   checkAbleToMove(cells) {
-    // let changed = false;
     const newCells = cells.flat();
     const oldCells = this.state.flat();
 
