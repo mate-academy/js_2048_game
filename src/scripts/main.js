@@ -33,19 +33,27 @@ document.addEventListener('keydown', (keyEvent) => {
     return;
   }
 
+  let canMove = false;
+
   switch (keyEvent.key) {
     case 'ArrowLeft':
-      game.moveLeft();
+      canMove = game.moveLeft();
       break;
     case 'ArrowRight':
-      game.moveRight();
+      canMove = game.moveRight();
       break;
     case 'ArrowUp':
-      game.moveUp();
+      canMove = game.moveUp();
       break;
     case 'ArrowDown':
-      game.moveDown();
+      canMove = game.moveDown();
       break;
+    default:
+      return;
+  }
+
+  if (!canMove) {
+    return;
   }
   score.textContent = game.getScore();
   game.fillFreeCell();

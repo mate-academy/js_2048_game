@@ -46,11 +46,30 @@ class Game {
     return row.filter((cell) => cell !== 0);
   }
 
+  checkAbleToMove(cells) {
+    // let changed = false;
+    const newCells = cells.flat();
+    const oldCells = this.state.flat();
+
+    for (let i = 0; i < newCells.length; i++) {
+      if (newCells[i] !== oldCells[i]) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   moveLeft() {
     const filledCells = this.state.map((row) => this.filledFilter(row));
 
     this.slideLeft(filledCells);
+
+    const changed = this.checkAbleToMove(filledCells);
+
     this.state = filledCells;
+
+    return changed;
   }
 
   moveRight() {
@@ -59,7 +78,13 @@ class Game {
     });
 
     this.slideLeft(filledCells);
-    this.state = filledCells.map((row) => row.reverse());
+
+    const changed = this.checkAbleToMove(filledCells);
+    const newCells = filledCells.map((row) => row.reverse());
+
+    this.state = newCells;
+
+    return changed;
   }
 
   swap(x, y) {
@@ -79,14 +104,22 @@ class Game {
 
   moveUp() {
     this.transpose();
-    this.moveLeft();
+
+    const changed = this.moveLeft();
+
     this.transpose();
+
+    return changed;
   }
 
   moveDown() {
     this.transpose();
-    this.moveRight();
+
+    const changed = this.moveRight();
+
     this.transpose();
+
+    return changed;
   }
 
   getScore() {
@@ -104,6 +137,7 @@ class Game {
   start() {
     this.status = Game.gameStatus.playing;
     this.fillFreeCell();
+    this.fillFreeCell();
     this.updateBorder();
   }
 
@@ -116,16 +150,16 @@ class Game {
 
   fillFreeCell() {
     const emptyCells = getEmptyCells(this.state);
-    let count = Math.min(2, emptyCells.length);
+    // let count = Math.min(2, emptyCells.length);
 
-    while (count > 0) {
+    if (emptyCells.length > 0) {
       const index = Math.floor(Math.random() * emptyCells.length);
       const [row, coll] = emptyCells[index];
 
       this.state[row][coll] = getRandomTwoOrFour();
-      emptyCells.splice(index, 1);
+      // emptyCells.splice(index, 1);
 
-      count -= 1;
+      // count -= 1;
     }
   }
 
