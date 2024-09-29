@@ -12,6 +12,7 @@ class Game {
     this.initialState = initialState;
     this.gameStatus = 'idle';
     this.score = 0;
+    this.isGridFull = [];
   }
 
   moveLeft(rows) {
@@ -98,6 +99,16 @@ class Game {
         // eslint-disable-next-line no-console
       );
 
+      const checkIfGridFull = [];
+
+      gridAfterMove.forEach((rowsOfGrid) => {
+        for (let i = 0; i < rowsOfGrid.length; i++) {
+          if (rowsOfGrid[i] !== rowsOfGrid[i + 1]) {
+            checkIfGridFull.push(true);
+          }
+        }
+      });
+
       const gridChanged = !gridBeforeMove.every(
         (row, rowIndex) =>
           row.every(
@@ -110,8 +121,10 @@ class Game {
         return this.findEmptyCells(rows);
       }
 
-      if (nonEmptyCells.length === 16) {
-        this.isGridFull(true);
+      if (checkIfGridFull.length === 16) {
+        this.isGridFull.push(true);
+
+        this.gridFull();
       }
     }
   }
@@ -201,6 +214,16 @@ class Game {
         // eslint-disable-next-line no-console
       );
 
+      const checkIfGridFull = [];
+
+      gridAfterMove.forEach((rowsOfGrid) => {
+        for (let i = 0; i < rowsOfGrid.length; i++) {
+          if (rowsOfGrid[i] !== rowsOfGrid[i + 1]) {
+            checkIfGridFull.push(true);
+          }
+        }
+      });
+
       const gridChanged = !gridBeforeMove.every(
         (row, rowIndex) =>
           row.every(
@@ -213,8 +236,10 @@ class Game {
         return this.findEmptyCells(rows);
       }
 
-      if (nonEmptyCells.length === 16) {
-        this.isGridFull(true);
+      if (checkIfGridFull.length === 16) {
+        this.isGridFull.push(true);
+
+        this.gridFull();
       }
     }
   }
@@ -301,6 +326,16 @@ class Game {
         // eslint-disable-next-line no-console
       );
 
+      const checkIfGridFull = [];
+
+      gridAfterMove.forEach((rowsOfGrid) => {
+        for (let i = 0; i < rowsOfGrid.length; i++) {
+          if (rowsOfGrid[i] !== rowsOfGrid[i + 1]) {
+            checkIfGridFull.push(true);
+          }
+        }
+      });
+
       const gridChanged = !gridBeforeMove.every(
         (row, rowIndex) =>
           row.every(
@@ -313,8 +348,10 @@ class Game {
         return this.findEmptyCells(rows);
       }
 
-      if (nonEmptyCells.length === 16) {
-        this.isGridFull(true);
+      if (checkIfGridFull.length === 16) {
+        this.isGridFull.push(true);
+
+        this.gridFull();
       }
     }
   }
@@ -401,6 +438,16 @@ class Game {
         // eslint-disable-next-line no-console
       );
 
+      const checkIfGridFull = [];
+
+      gridAfterMove.forEach((rowsOfGrid) => {
+        for (let i = 0; i < rowsOfGrid.length; i++) {
+          if (rowsOfGrid[i] !== rowsOfGrid[i + 1]) {
+            checkIfGridFull.push(true);
+          }
+        }
+      });
+
       const gridChanged = !gridBeforeMove.every(
         (row, rowIndex) =>
           row.every(
@@ -413,8 +460,10 @@ class Game {
         return this.findEmptyCells(rows);
       }
 
-      if (nonEmptyCells.length === 16) {
-        this.isGridFull(true);
+      if (checkIfGridFull.length === 16) {
+        this.isGridFull.push(true);
+
+        this.gridFull();
       }
     }
   }
@@ -473,6 +522,8 @@ class Game {
     this.score = 0;
 
     this.removeCell(rows);
+
+    this.isGridFull = [];
   }
 
   getRandomIndex() {
@@ -618,8 +669,8 @@ class Game {
     return this.createCellIfGameStarted(arrayOfEmptyRows, arrayOfEmptyCells);
   }
 
-  isGridFull(isGridFull) {
-    if (isGridFull) {
+  gridFull() {
+    if (this.isGridFull.length === 4) {
       this.gameStatus = 'lose';
     }
   }
