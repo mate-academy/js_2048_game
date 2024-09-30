@@ -23,7 +23,9 @@ class Game {
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
+    // this.upDateBoard();
     this.displayGame();
+    console.log(this.board);
   }
 
   moveRight() {
@@ -34,6 +36,8 @@ class Game {
       this.addRandomCell ();
     }
     this.displayGame();
+    // this.upDateBoard();
+    console.log(this.board);
   }
 
   moveUp() {
@@ -44,6 +48,8 @@ class Game {
       this.addRandomCell ();
     }
     this.displayGame();
+    // this.upDateBoard();
+    console.log(this.board);
   }
 
   moveDown() {
@@ -54,57 +60,61 @@ class Game {
       this.addRandomCell ();
     }
     this.displayGame();
+    // this.upDateBoard();
+    console.log(this.board);
   }
 
   moveCellLeft() {
-    for (let i = 0; i < this.board.length; i++) {
+    for (let y = 0; y < this.board.length; y++) {
       let index = 0;
   
-      for (let j = 0; j < this.board.length; j++) {
-        if (this.board[i][j] !== 0) {
-          let cellValue = this.board[i][j];
+      for (let x = 0; x < this.board.length; x++) {
+        if (this.board[y][x] !== 0) {
+          let cellValue = this.board[y][x];
   
-          if (index !== j) {
+          if (index !== x) {
             this.cellHistory.push({
               value: cellValue,
               oldCoords: {
-                X: i,
-                Y: j,
+                X: x,
+                Y: y,
               },
               newCoords: {
-                X: i,
-                Y: index,
+                X: index,
+                Y: y,
               },
               move: true,
             });
   
-            this.board[i][index] = cellValue;
-            this.board[i][j] = 0;
+            this.board[y][index] = cellValue;
+            this.board[y][x] = 0;
           }
   
-          if (index > 0 && this.board[i][index] === this.board[i][index - 1]) {
-            let mergeValue = this.board[i][index] * 2;
+          if (index > 0 && this.board[y][index] === this.board[y][index - 1]) {
+            let mergeValue = this.board[y][index] * 2;
             const lastMove = this.cellHistory[this.cellHistory.length - 1];
-
-            if (lastMove && lastMove.newCoords.X === i && lastMove.newCoords.Y === index) {
+  
+            if (lastMove && lastMove.newCoords.Y === y && lastMove.newCoords.X === index) {
               lastMove.merge = true;
-              lastMove.newCoords.Y = index - 1;
+              lastMove.newCoords.X = index - 1;
+              lastMove.problem = true; 
             } else {
               this.cellHistory.push({
                 value: mergeValue,
                 oldCoords: {
-                  X: i,
-                  Y: index,
+                  Y: y,
+                  X: index,
                 },
                 newCoords: {
-                  X: i,
-                  Y: index - 1,
+                  Y: y,
+                  X: index - 1,
                 },
                 merge: true,
               });
             }
-            this.board[i][index - 1] = mergeValue;
-            this.board[i][index] = 0;
+  
+            this.board[y][index - 1] = mergeValue;
+            this.board[y][index] = 0;
             index--;
           }
           index++;
@@ -114,55 +124,55 @@ class Game {
   }
   
   moveCellRight() {
-    for (let i = 0; i < this.board.length; i++) {
+    for (let y = 0; y < this.board.length; y++) {
       let index = this.board.length - 1;  
   
-      for (let j = this.board.length - 1; j >= 0; j--) {
-        if (this.board[i][j] !== 0) {
-          let cellValue = this.board[i][j];
+      for (let x = this.board.length - 1; x >= 0; x--) {
+        if (this.board[y][x] !== 0) {
+          let cellValue = this.board[y][x];
   
-          if (index !== j) {
+          if (index !== x) {
             this.cellHistory.push({
               value: cellValue,
               oldCoords: {
-                X: i,
-                Y: j,
+                Y: y,
+                X: x,
               },
               newCoords: {
-                X: i,
-                Y: index,
+                Y: y,
+                X: index,
               },
               move: true,
             });
   
-            this.board[i][index] = cellValue;
-            this.board[i][j] = 0;
+            this.board[y][index] = cellValue;
+            this.board[y][x] = 0;
           }
   
-          if (index < this.board.length - 1 && this.board[i][index] === this.board[i][index + 1]) {
-            let mergeValue = this.board[i][index] * 2;
+          if (index < this.board.length - 1 && this.board[y][index] === this.board[y][index + 1]) {
+            let mergeValue = this.board[y][index] * 2;
   
             const lastMove = this.cellHistory[this.cellHistory.length - 1];
-            if (lastMove && lastMove.newCoords.X === i && lastMove.newCoords.Y === index) {
+            if (lastMove && lastMove.newCoords.Y === y && lastMove.newCoords.X === index) {
               lastMove.merge = true;
-              lastMove.newCoords.Y = index + 1;
+              lastMove.newCoords.X = index + 1;
             } else {
               this.cellHistory.push({
                 value: mergeValue,
                 oldCoords: {
-                  X: i,
-                  Y: index,
+                  Y: y,
+                  X: index,
                 },
                 newCoords: {
-                  X: i,
-                  Y: index + 1,
+                  Y: y,
+                  X: index + 1,
                 },
                 merge: true,
               });
             }
   
-            this.board[i][index + 1] = mergeValue;
-            this.board[i][index] = 0;
+            this.board[y][index + 1] = mergeValue;
+            this.board[y][index] = 0;
             index++;
           }
           index--;
@@ -172,53 +182,53 @@ class Game {
   }
   
   moveCellUp() {
-    for (let j = 0; j < this.board.length; j++) {
+    for (let x = 0; x < this.board.length; x++) {
       let index = 0;
   
-      for (let i = 0; i < this.board.length; i++) {
-        if (this.board[i][j] !== 0) {
-          let cellValue = this.board[i][j];
+      for (let y = 0; y < this.board.length; y++) {
+        if (this.board[y][x] !== 0) {
+          let cellValue = this.board[y][x];
   
-          if (index !== i) {
+          if (index !== y) {
             this.cellHistory.push({
               value: cellValue,
               oldCoords: {
-                X: i,
-                Y: j,
+                Y: y,
+                X: x,
               },
               newCoords: {
-                X: index,
-                Y: j,
+                Y: index,
+                X: x,
               },
               move: true,
             });
-            this.board[index][j] = cellValue;
-            this.board[i][j] = 0;
+            this.board[index][x] = cellValue;
+            this.board[y][x] = 0;
           }
   
-          if (index > 0 && this.board[index][j] === this.board[index - 1][j]) {
-            let mergeValue = this.board[index][j] * 2;
+          if (index > 0 && this.board[index][x] === this.board[index - 1][x]) {
+            let mergeValue = this.board[index][x] * 2;
             const lastMove = this.cellHistory[this.cellHistory.length - 1];
 
-            if (lastMove && lastMove.newCoords.X === index && lastMove.newCoords.Y === j) {
+            if (lastMove && lastMove.newCoords.Y === index && lastMove.newCoords.X === x) {
               lastMove.merge = true;
-              lastMove.newCoords.X = index - 1;
+              lastMove.newCoords.Y = index - 1;
             } else {
               this.cellHistory.push({
                 value: mergeValue,
                 oldCoords: {
-                  X: index,
-                  Y: j,
+                  Y: index,
+                  X: x,
                 },
                 newCoords: {
-                  X: index - 1,
-                  Y: j,
+                  Y: index - 1,
+                  X: x,
                 },
                 merge: true,
               });
             }
-            this.board[index - 1][j] = mergeValue;
-            this.board[index][j] = 0;
+            this.board[index - 1][x] = mergeValue;
+            this.board[index][x] = 0;
             index--;
           }
           index++;
@@ -228,53 +238,53 @@ class Game {
   }
 
   moveCellDown() {
-    for (let j = 0; j < this.board.length; j++) {
+    for (let x = 0; x < this.board.length; x++) {
       let index = this.board.length - 1;
   
-      for (let i = this.board.length - 1; i >= 0; i--) {
-        if (this.board[i][j] !== 0) {
-          let cellValue = this.board[i][j];
+      for (let y = this.board.length - 1; y >= 0; y--) {
+        if (this.board[y][x] !== 0) {
+          let cellValue = this.board[y][x];
   
-          if (index !== i) {
+          if (index !== y) {
             this.cellHistory.push({
               value: cellValue,
               oldCoords: {
-                X: i,
-                Y: j,
+                Y: y,
+                X: x,
               },
               newCoords: {
-                X: index,
-                Y: j,
+                Y: index,
+                X: x,
               },
               move: true,
             });
-            this.board[index][j] = cellValue;
-            this.board[i][j] = 0;
+            this.board[index][x] = cellValue;
+            this.board[y][x] = 0;
           }
   
-          if (index < this.board.length - 1 && this.board[index][j] === this.board[index + 1][j]) {
-            let mergeValue = this.board[index][j] * 2;
+          if (index < this.board.length - 1 && this.board[index][x] === this.board[index + 1][x]) {
+            let mergeValue = this.board[index][x] * 2;
             const lastMove = this.cellHistory[this.cellHistory.length - 1];
 
-            if (lastMove && lastMove.newCoords.X === index && lastMove.newCoords.Y === j) {
+            if (lastMove && lastMove.newCoords.Y === index && lastMove.newCoords.X === x) {
               lastMove.merge = true;
-              lastMove.newCoords.X = index + 1;
+              lastMove.newCoords.Y = index + 1;
             } else {
               this.cellHistory.push({
                 value: cellValue,
                 oldCoords: {
-                  X: i,
-                  Y: j,
+                  Y: y,
+                  X: x,
                 },
                 newCoords: {
-                  X: index + 1,
-                  Y: j,
+                  Y: index + 1,
+                  X: x,
                 },
                 merge: true,
               });
             }
-            this.board[index + 1][j] = mergeValue;
-            this.board[index][j] = 0;
+            this.board[index + 1][x] = mergeValue;
+            this.board[index][x] = 0;
             index++; 
           }
           index--;
@@ -317,6 +327,7 @@ class Game {
     this.addRandomCell();
     
     this.displayBoard();
+    console.log(this.board);
   }
   
   restart() {
@@ -328,10 +339,10 @@ class Game {
   addRandomCell() {
     const emptyCell = [];
 
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board.length; j++) {
-        if (!this.board[i][j]) {
-          emptyCell.push({ x: i, y: j });
+    for (let x = 0; x < this.board.length; x++) {
+      for (let y = 0; y < this.board.length; y++) {
+        if (!this.board[x][y]) {
+          emptyCell.push({ x: x, y: y });
         }
       }
     }
@@ -360,69 +371,101 @@ class Game {
   }
 
   displayBoard() {
-    // Если клетка есть на доске и в стеке ее трогать не нужно
-    // Если клетка есть в стеке но нет на доске прописать что она появиться через время общей анимации
-    // Если клетка есть на доске но нет в стеке поставить анимацию с псевдоелементом и убрать клетку
-    // Если клетки нет на доске и в стеке то трогать ничего не нужно.
+
     for(const cellMove of this.cellHistory) {
       const newCell = document.querySelector(`#cell${cellMove.newCoords.X}${cellMove.newCoords.Y}`);
       
       if(cellMove.newCell) {
         newCell.textContent = cellMove.value;
+        newCell.classList.add(`field-cell--${cellMove.value}`)
+        
+        const keyFrames = [
+          {transform: "scale(1)"},
+          {transform: "scale(1.56)"},
+          {transform: "scale(1)"},
+        ];
 
-        // Сделать анимацию появления
+        const newspaperTiming = {
+          duration: 400,
+          iterations: 1,
+          easing: 'ease-in-out',
+        };
+
+        newCell.animate(keyFrames, newspaperTiming);
       } else {
+        const animationDuration = 200;
         const oldCell = document.querySelector(`#cell${cellMove.oldCoords.X}${cellMove.oldCoords.Y}`);
         const movingBlock = document.createElement('div');
-        movingBlock.className = `moving-cell field-cell--${cellMove.value}`;
+        movingBlock.className = `moving-block field-cell--${cellMove.value}`;
+        movingBlock.textContent = cellMove.value;
 
-        if (pseudoElement) {
-          pseudoElement.style.transform = `translate(${cell.offsetLeft}px, ${cell.offsetTop}px)`;
-          pseudoElement.style.opacity = '1';
+        const startTranstateY = 85 * cellMove.oldCoords.Y;
+        const startTranstateX = 85 * cellMove.oldCoords.X;
+        
+        const endTranslateY = 85 * cellMove.newCoords.Y;
+        const endTranslateX = 85 * cellMove.newCoords.X;
 
-          setTimeout(() => {
-            pseudoElement.style.transform = `translate(${dx}px, ${dy}px)`;
-            pseudoElement.style.transform = 'none';
-          }, 300);
+        console.log('start', cellMove.oldCoords.Y, cellMove.oldCoords.X,'end', cellMove.newCoords.Y, cellMove.newCoords.X, 'value', cellMove.value, this.cellHistory)
+        
+        oldCell.appendChild(movingBlock);
 
-          setTimeout(() => {
-            oldCell.classList.remove('animate-before');
-          }, 1000);
+        const keyFrames = [
+          {transform: `translate(${startTranstateX}px,${startTranstateY}px)`},
+          {transform: `translate(${endTranslateX}px,${endTranslateY}px)`},
+        ]
+        
+        const timing = {
+          duration: animationDuration,
+          iterations: 1,
+          easing: 'ease-in-out',
         }
-      }  
-           
+
+        const reversOldCell = document.querySelector(`#cell${cellMove.oldCoords.Y}${cellMove.oldCoords.X}`);
+        
+        reversOldCell.className = 'field-cell';
+        reversOldCell.textContent = '';
+        
+        movingBlock.animate(keyFrames, timing)
+        
+        const reversNewCell = document.querySelector(`#cell${cellMove.newCoords.Y}${cellMove.newCoords.X}`);
+        setTimeout(() => {
+          reversNewCell.textContent = cellMove.value;
+          reversNewCell.classList.add(`field-cell--${cellMove.value}`);
+          movingBlock.remove();
+        }, animationDuration - 5);
+      }
     }
-    // this.cell.className = `field-cell field-cell--${this.board[i][j]}`
-    // this.cell.textContent = '';
-    // this.cell.className = `field-cell`;
+    // const newCells = this.cellHistory.filter((el) => el.newCell === true);
 
-    const newCells = this.cellHistory.filter((el) => el.newCell === true);
+    // for(let el of newCells) {
+    //   const newCell = document.querySelector(`#cell${el.newCoords.X}${el.newCoords.Y}`)
+    //   newCell.className = `field-cell field-cell--${el.value}`
+    // }
+  }
 
-    for(let el of newCells) {
-      const newCell = document.querySelector(`#cell${el.newCoords.X}${el.newCoords.Y}`)
-      newCell.className = `field-cell field-cell--${el.value}`
+  upDateBoard() {
+    this.clearBoard();
+    for (let y = 0; y < this.board.length; y++) {
+      for (let x = 0; x < this.board.length; x++) {
+        if(this.board[y][x] !== 0){
+          const cell = document.querySelector(`#cell${y}${x}`);
+          cell.textContent = this.board[y][x];
+          cell.className = `field-cell field-cell--${this.board[y][x].value}`;
+        }
+      }
     }
   }
 
-  // animationMoveCell(cell, dx, dy) {
-  //   const pseudoElement = cell.querySelector('::before');
-  
-  //   pseudoElement.style.transform = `translate(${dx}px, ${dy}px)`;
-  
-  //   setTimeout(() => {
-  //     cell.style.transform = `translate(${dx}px, ${dy}px)`;
-  //     pseudoElement.style.transform = 'none';
-  //   }, 300);
-  // }
+  clearBoard() {
+    for (let y = 0; y < this.board.length; y++) {
+      for (let x = 0; x < this.board.length; x++) {
+        const cell = document.querySelector(`#cell${y}${x}`);
+        cell.textContent = '';
+        cell.className = 'field-cell';
+      }
+    }
+  }
 
-  // clearBoard() {
-  //   for (let i = 0; i < this.board.length; i++) {
-  //     for (let j = 0; j < this.board.length; j++) {
-  //       this.cell = document.querySelector(`#cell${i}${j}`);
-  //       this.cell.textContent = '';
-  //     }
-  //   }
-  // }
 }
 
 module.exports = Game;

@@ -6,6 +6,8 @@ const Game = require('../modules/Game.class');
 const game = new Game();
 
 const startButton = document.querySelector('.button');
+const animationButton = document.querySelector('h1');
+
 
 startButton.onclick = () => {
   if (startButton.textContent === 'Start') {
@@ -13,6 +15,10 @@ startButton.onclick = () => {
   } else {
     game.restart();
   }
+};
+
+animationButton.onclick = () => {
+  game.animation();
 };
 
 document/addEventListener('keydown', (event) => {
