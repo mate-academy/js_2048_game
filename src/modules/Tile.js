@@ -21,8 +21,8 @@ export default class Tile {
 
     const { background, textColor } = getColors(v);
 
-    this.#tileElement.style.setProperty('--backgroundColor', background);
-    this.#tileElement.style.setProperty('--textColor', textColor);
+    this.#tileElement.style.setProperty('--background-color', background);
+    this.#tileElement.style.setProperty('--text-color', textColor);
   }
 
   set x(value) {

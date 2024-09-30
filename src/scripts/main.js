@@ -4,7 +4,7 @@ import Tile from '../modules/Tile.js';
 const Game = require('../modules/Game.class');
 
 const startBtn = document.querySelector('.start');
-const gameBoard = document.getElementById('game-board');
+const gameBoard = document.querySelector('.game-board');
 const gameScore = document.querySelector('.game-score');
 const messages = document.querySelector('.message-container').children;
 const game = new Game(gameBoard);
