@@ -1,13 +1,13 @@
-import { Game2048 } from './Game2048.js';
+import { Game2048 } from "./Game2048.js";
 
 const game = new Game2048();
 
-const start = document.querySelector('.start');
-const fieldHtml = document.querySelectorAll('.field-row');
-const gameScore = document.querySelector('.game-score');
-const startMessage = document.querySelector('.message-start');
-const loseMessage = document.querySelector('.hidden');
-const winner = document.querySelector('.message-win');
+const start = document.querySelector(".start");
+const fieldHtml = document.querySelectorAll(".field-row");
+const gameScore = document.querySelector(".game-score");
+const startMessage = document.querySelector(".message-start");
+const loseMessage = document.querySelector(".hidden");
+const winner = document.querySelector(".message-win");
 
 const size = game.size;
 let score = game.score;
@@ -18,16 +18,16 @@ function addLayoutOnHtml() {
   for (let row = 0; row < size; row++) {
     for (let cell = 0; cell < size; cell++) {
       if (gameField[row][cell] === 2048) {
-        winner.classList.remove('hidden');
+        winner.classList.remove("hidden");
       }
 
       const setFieldHtml = fieldHtml[row].children[cell];
-      const currentValue = setFieldHtml.textContent
-        = gameField[row][cell] || '';
+      const currentValue = (setFieldHtml.textContent =
+        gameField[row][cell] || "");
 
       setFieldHtml.className = currentValue
         ? `field-cell field-cell--${currentValue}`
-        : 'field-cell';
+        : "field-cell";
     }
   }
 
@@ -38,9 +38,11 @@ function addRandomNumber() {
   const row = Math.floor(Math.random() * size);
   const cell = Math.floor(Math.random() * size);
 
-  (gameField[row][cell] === 0)
-    ? gameField[row][cell] = Math.random() < 0.1 ? 4 : 2
-    : addRandomNumber();
+  if (gameField[row][cell] === 0) {
+    gameField[row][cell] = Math.random() < 0.1 ? 4 : 2;
+  } else {
+    addRandomNumber();
+  }
 }
 
 function checkGameOver() {
@@ -48,8 +50,7 @@ function checkGameOver() {
   let hasMoveUD = false;
   let comeIn = false;
 
-  const result = gameField.every((row, index) =>
-    gameField.every((cell, ind) => row[ind] > 0));
+  const result = gameField.every((r) => gameField.every((_, i) => r[i] > 0));
 
   if (result) {
     comeIn = true;
@@ -78,12 +79,12 @@ function checkGameOver() {
   }
 
   if (!hasMoveRL && !hasMoveUD && comeIn) {
-    loseMessage.classList.remove('hidden');
+    loseMessage.classList.remove("hidden");
   }
 }
 
 function transpose(arr) {
-  return arr.map((_, index) => arr.map(row => row[index]));
+  return arr.map((_, index) => arr.map((row) => row[index]));
 }
 
 function uniteCells(row) {
@@ -120,8 +121,10 @@ function clickArrowLeft() {
 
     gameField[row] = removeZero;
 
-    if (move.moved
-      || JSON.stringify(copyGameField) !== JSON.stringify(move.row)) {
+    if (
+      move.moved ||
+      JSON.stringify(copyGameField) !== JSON.stringify(move.row)
+    ) {
       hasMoved = true;
     }
   }
@@ -144,8 +147,10 @@ function clickArrowRight() {
 
     gameField[row] = newRow.row.reverse();
 
-    if (newRow.moved
-      || JSON.stringify(copyOfGameField) !== JSON.stringify(newRow.row)) {
+    if (
+      newRow.moved ||
+      JSON.stringify(copyOfGameField) !== JSON.stringify(newRow.row)
+    ) {
       hasMoved = true;
     }
   }
@@ -170,8 +175,10 @@ function clickArrowUp() {
 
     gameField[row] = newRow.row;
 
-    if (newRow.moved
-      || JSON.stringify(copyOfGameField) !== JSON.stringify(newRow.row)) {
+    if (
+      newRow.moved ||
+      JSON.stringify(copyOfGameField) !== JSON.stringify(newRow.row)
+    ) {
       hasMoved = true;
     }
   }
@@ -198,8 +205,10 @@ function clickArrowDown() {
 
     gameField[row] = newRow.row.reverse();
 
-    if (newRow.moved
-      || JSON.stringify(copyOfField) !== JSON.stringify(newRow.row)) {
+    if (
+      newRow.moved ||
+      JSON.stringify(copyOfField) !== JSON.stringify(newRow.row)
+    ) {
       hasMoved = true;
     }
   }
@@ -215,16 +224,16 @@ function clickArrowDown() {
 
 function handleArrows(e) {
   switch (e.key) {
-    case 'ArrowLeft':
+    case "ArrowLeft":
       clickArrowLeft();
       break;
-    case 'ArrowRight':
+    case "ArrowRight":
       clickArrowRight();
       break;
-    case 'ArrowUp':
+    case "ArrowUp":
       clickArrowUp();
       break;
-    case 'ArrowDown':
+    case "ArrowDown":
       clickArrowDown();
       break;
     default:
@@ -232,17 +241,17 @@ function handleArrows(e) {
   }
 }
 
-start.addEventListener('click', () => {
-  document.addEventListener('keydown', handleArrows);
+start.addEventListener("click", () => {
+  document.addEventListener("keydown", handleArrows);
   startMessage.hidden = true;
 
-  if (start.innerText === 'Start') {
-    start.innerText = 'Restart';
-    start.classList.replace('start', 'restart');
+  if (start.innerText === "Start") {
+    start.innerText = "Restart";
+    start.classList.replace("start", "restart");
   } else {
-    loseMessage.classList.add('hidden');
+    loseMessage.classList.add("hidden");
 
-    gameField = gameField = [
+    gameField = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
