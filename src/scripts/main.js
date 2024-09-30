@@ -116,8 +116,14 @@ async function swipeInput(e) {
     return;
   }
 
-  switch (e.key) {
-    case 'ArrowUp':
+  const directionSwipe = e.key;
+  const swipeUp = 'ArrowUp';
+  const swipeDown = 'ArrowDown';
+  const swipeRight = 'ArrowRight';
+  const swipeLeft = 'ArrowLeft';
+
+  switch (directionSwipe) {
+    case swipeUp:
       if (!canMoveUp()) {
         setupInput();
 
@@ -125,7 +131,7 @@ async function swipeInput(e) {
       }
       await game.moveUp();
       break;
-    case 'ArrowDown':
+    case swipeDown:
       if (!canMoveDown()) {
         setupInput();
 
@@ -133,7 +139,7 @@ async function swipeInput(e) {
       }
       await game.moveDown();
       break;
-    case 'ArrowLeft':
+    case swipeLeft:
       if (!canMoveLeft()) {
         setupInput();
 
@@ -141,7 +147,7 @@ async function swipeInput(e) {
       }
       await game.moveLeft();
       break;
-    case 'ArrowRight':
+    case swipeRight:
       if (!canMoveRight()) {
         setupInput();
 
