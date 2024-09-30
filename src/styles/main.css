@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -10,75 +16,51 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-size), var(--cell-size));
+  grid-template-rows: repeat(var(--grid-size), var(--cell-size));
+  background-color: #bbada0;
+  gap: var(--cell-gap);
   border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
+  padding: var(--cell-gap);
+  position: relative;
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
+.cell {
+  background-color: #d6cdc4;
+  border-radius: 1vmin;
+}
+
+.tile {
+  --x: 0;
+  --y: 0;
+  --cell-size: 75px;
+  --cell-gap: 10px;
+  --background-color: #d6cdc4;
+  --text-color: #776e65;
+
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--cell-size);
+  height: var(--cell-size);
   border-radius: 5px;
+  top: calc(var(--y) * (var(--cell-size) + var(--cell-gap)) + var(--cell-gap));
+  left: calc(var(--x) * (var(--cell-size) + var(--cell-gap)) + var(--cell-gap));
+  font-weight: bold;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  animation: show 200ms ease-in-out;
+  transition: 100ms ease-in-out;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
 }
 
 .game-header {
@@ -140,18 +122,18 @@ h1 {
 .start {
   background: #1dae28;
   font-size: 20px;
+}
 
-  &:hover {
-    background: #179921;
-  }
+.start:hover {
+  background: #179921;
 }
 
 .restart {
   background: #f1b2b2;
+}
 
-  &:hover {
-    background: #f87474;
-  }
+.restart:hover {
+  background: #f87474;
 }
 
 .message {
