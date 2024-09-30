@@ -276,6 +276,7 @@ startBtn.addEventListener('click', () => {
     setupSwipeInput();
   } else if (startBtn.classList.contains('restart')) {
     game.restart();
+    gameScore.innerHTML = 0;
     updateStatus();
     game.randomEmptyCell().tile = new Tile(gameBoard);
     game.randomEmptyCell().tile = new Tile(gameBoard);
