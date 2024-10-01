@@ -83,6 +83,32 @@ function createCell(indexes) {
   });
 }
 
+const observer = new MutationObserver(() => {
+  const arrayOfRows = Array.from(rows);
+
+  const grid = arrayOfRows.map(
+    (row) =>
+      Array.from(row.querySelectorAll('td')).map(
+        (cell) => cell.textContent.trim(),
+        // eslint-disable-next-line no-console
+      ),
+    // eslint-disable-next-line no-console
+  );
+
+  game.isMovePossible(grid);
+
+  const gameStatus = game.gameStatus;
+
+  if (gameStatus === 'lose') {
+    loseMessage.classList.remove('hidden');
+  }
+});
+
+observer.observe(tbody, {
+  childList: true,
+  subtree: true,
+});
+
 document.addEventListener('keydown', (evnt) => {
   evnt.preventDefault();
 
@@ -90,51 +116,29 @@ document.addEventListener('keydown', (evnt) => {
     switch (evnt.key) {
       case 'ArrowLeft':
         createCellIfGameStarted(game.moveLeft(rows));
-
-        score.textContent = game.getScore();
-
-        if (game.getStatus() === 'win') {
-          winMessage.classList.remove('hidden');
-        }
-
         break;
 
       case 'ArrowRight':
         createCellIfGameStarted(game.moveRight(rows));
-
-        score.textContent = game.getScore();
-
-        if (game.getStatus() === 'win') {
-          winMessage.classList.remove('hidden');
-        }
-
         break;
 
       case 'ArrowUp':
         createCellIfGameStarted(game.moveUp(rows));
-
-        score.textContent = game.getScore();
-
-        if (game.getStatus() === 'win') {
-          winMessage.classList.remove('hidden');
-        }
-
         break;
 
       case 'ArrowDown':
         createCellIfGameStarted(game.moveDown(rows));
-
-        score.textContent = game.getScore();
-
-        if (game.getStatus() === 'win') {
-          winMessage.classList.remove('hidden');
-        }
-
         break;
 
       default:
         break;
     }
+  }
+
+  score.textContent = game.getScore();
+
+  if (game.getStatus() === 'win') {
+    winMessage.classList.remove('hidden');
   }
 });
 
@@ -155,11 +159,5 @@ function createCellIfGameStarted(index) {
         }
       });
     });
-  }
-
-  const gameStatus = game.gameStatus;
-
-  if (gameStatus === 'lose') {
-    loseMessage.classList.remove('hidden');
   }
 }
