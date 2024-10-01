@@ -8,6 +8,16 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  overflow: hidden;
+}
+
+@keyframes add-anm {
+  from {
+    transform: scale(1.2);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 .field-cell {
@@ -23,55 +33,77 @@ body {
 
   &--2 {
     background: #eee4da;
+    animation-name: add-anm;
+    animation-duration: 0.5s;
   }
 
   &--4 {
     background: #ede0c8;
+    animation-name: add-anm;
+    animation-duration: 0.5s;
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
+    animation-name: add-anm;
+    animation-duration: 0.5s;
   }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+    animation-name: add-anm;
+    animation-duration: 0.5s;
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+    animation-name: add-anm;
+    animation-duration: 0.5s;
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+    animation-name: add-anm;
+    animation-duration: 0.3s;
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    animation-name: add-anm;
+    animation-duration: 0.5s;
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    animation-name: add-anm;
+    animation-duration: 0.5s;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    animation-name: add-anm;
+    animation-duration: 0.5s;
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+    animation-name: add-anm;
+    animation-duration: 0.5s;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    animation-name: add-anm;
+    animation-duration: 0.5s;
   }
 }
 
