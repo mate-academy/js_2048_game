@@ -12,6 +12,13 @@ const winMessage = document.querySelector('.message.message-win');
 const loseMessage = document.querySelector('.message.message-lose');
 const startMessage = document.querySelector('.message.message-start');
 
+const KEY = {
+  UP: 'ArrowUp',
+  DOWN: 'ArrowDown',
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+};
+
 function updateUI() {
   while (gameBoard.firstChild) {
     gameBoard.removeChild(gameBoard.firstChild);
@@ -69,19 +76,19 @@ function updateUI() {
 // handle move
 function handleMove(evnt) {
   switch (evnt.key) {
-    case 'ArrowUp':
+    case KEY.UP:
       game.moveUp();
       break;
 
-    case 'ArrowDown':
+    case KEY.DOWN:
       game.moveDown();
       break;
 
-    case 'ArrowLeft':
+    case KEY.LEFT:
       game.moveLeft();
       break;
 
-    case 'ArrowRight':
+    case KEY.RIGHT:
       game.moveRight();
       break;
   }
