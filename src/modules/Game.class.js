@@ -145,14 +145,7 @@ class Game {
   }
 
   restart() {
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    this.score = 0;
-    this.status = 'idle';
+    this.start();
   }
 }
 
