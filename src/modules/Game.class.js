@@ -1,7 +1,7 @@
 'use strict';
 
 class Game {
-  constructor(initialState) {
+  constructor() {
     this.board = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -108,17 +108,40 @@ class Game {
     return row;
   }
 
+  isChanged(previousState) {
+    const currentState = this.getState();
+
+    for (let r = 0; r < currentState.length; r++) {
+      for (let c = 0; c < currentState[r].length; c++) {
+        if (currentState[r][c] !== previousState[r][c]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   moveLeft() {
+    const previousState = this.getState().map((row) => [...row]);
+
     for (let r = 0; r < this.rows; r++) {
       let row = this.board[r];
 
       row = this.slide(row);
       this.board[r] = row;
     }
+
+    if (!this.isChanged(previousState)) {
+      return;
+    }
+
     this.setRandomNum();
   }
 
   moveRight() {
+    const previousState = this.getState().map((row) => [...row]);
+
     for (let r = 0; r < this.rows; r++) {
       let row = this.board[r];
 
@@ -127,10 +150,17 @@ class Game {
       row.reverse();
       this.board[r] = row;
     }
+
+    if (!this.isChanged(previousState)) {
+      return;
+    }
+
     this.setRandomNum();
   }
 
   moveUp() {
+    const previousState = this.getState().map((row) => [...row]);
+
     for (let c = 0; c < this.columns; c++) {
       let row = [
         this.board[0][c],
@@ -144,11 +174,17 @@ class Game {
       this.board[1][c] = row[1];
       this.board[2][c] = row[2];
       this.board[3][c] = row[3];
+    }
+
+    if (!this.isChanged(previousState)) {
+      return;
     }
     this.setRandomNum();
   }
 
   moveDown() {
+    const previousState = this.getState().map((row) => [...row]);
+
     for (let c = 0; c < this.columns; c++) {
       let row = [
         this.board[0][c],
@@ -164,6 +200,10 @@ class Game {
       this.board[1][c] = row[1];
       this.board[2][c] = row[2];
       this.board[3][c] = row[3];
+    }
+
+    if (!this.isChanged(previousState)) {
+      return;
     }
     this.setRandomNum();
   }
