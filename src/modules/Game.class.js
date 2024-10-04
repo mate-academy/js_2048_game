@@ -21,6 +21,19 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
+
+  constructor(initialState) {
+    this.state = initialState || [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    this.score = 0;
+    this.status = 'idle';
+  }
+
   getEmptyCells() {
     const emptyCells = [];
 
@@ -82,21 +95,9 @@ class Game {
     return false;
   }
 
-  constructor(initialState) {
-    this.state = initialState || [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-
-    this.score = 0;
-    this.status = 'idle';
-    // eslint-disable-next-line no-console
-    console.log(initialState);
-  }
-
   moveLeft() {
+    const previousState = JSON.stringify(this.state);
+
     for (let row = 0; row < this.state.length; row++) {
       const currentRow = this.state[row];
 
@@ -118,10 +119,16 @@ class Game {
       this.state[row] = filteredRow;
     }
 
-    this.addRandomNumber();
+    const newState = JSON.stringify(this.state);
+
+    if (previousState !== newState) {
+      this.addRandomNumber();
+    }
   }
 
   moveRight() {
+    const previousState = JSON.stringify(this.state);
+
     for (let row = 0; row < this.state.length; row++) {
       const currentRow = this.state[row];
 
@@ -143,10 +150,16 @@ class Game {
       this.state[row] = filteredRow;
     }
 
-    this.addRandomNumber();
+    const newState = JSON.stringify(this.state);
+
+    if (previousState !== newState) {
+      this.addRandomNumber();
+    }
   };
 
   moveUp() {
+    const previousState = JSON.stringify(this.state);
+
     for (let coll = 0; coll < this.state[0].length; coll++) {
       const currentColl = [];
 
@@ -173,10 +186,17 @@ class Game {
         this.state[row][coll] = filteredColl[row];
       }
     }
-    this.addRandomNumber();
+
+    const newState = JSON.stringify(this.state);
+
+    if (previousState !== newState) {
+      this.addRandomNumber();
+    }
   }
 
   moveDown() {
+    const previousState = JSON.stringify(this.state);
+
     for (let coll = 0; coll < this.state[0].length; coll++) {
       const currentColl = [];
 
@@ -203,7 +223,12 @@ class Game {
         this.state[row][coll] = filteredColl[row];
       }
     }
-    this.addRandomNumber();
+
+    const newState = JSON.stringify(this.state);
+
+    if (previousState !== newState) {
+      this.addRandomNumber();
+    }
   }
 
   /**

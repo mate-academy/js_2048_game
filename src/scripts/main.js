@@ -84,7 +84,9 @@ startButton.addEventListener('click', () => {
 document.addEventListener('keydown', (e) => {
   e.preventDefault();
 
-  if (game.status === GameStatus.WIN || game.status === GameStatus.LOSE) {
+  if (game.status === GameStatus.IDLE
+    || game.status === GameStatus.WIN
+    || game.status === GameStatus.LOSE) {
     return;
   }
 
