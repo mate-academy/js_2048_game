@@ -14,6 +14,7 @@ class Game {
     this.scoreboard = document.querySelector('.game-score');
     this.board = [];
     this.cellHistory = [];
+    this.status = 'idle';
   }
 
   moveLeft() {
@@ -23,8 +24,8 @@ class Game {
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
-    // this.upDateBoard();
-    this.displayGame();
+    this.nonAnimateUpdateBoard();
+    // this.displayAnimateBoard();
     console.log(this.board);
   }
 
@@ -35,8 +36,8 @@ class Game {
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
-    this.displayGame();
-    // this.upDateBoard();
+    // this.displayAnimateBoard();
+    this.nonAnimateUpdateBoard();
     console.log(this.board);
   }
 
@@ -46,9 +47,11 @@ class Game {
     this.moveCellUp ();
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
+    } else if(this.getEmptyCell == []) {
+      this.setStatus('lose')
     }
-    this.displayGame();
-    // this.upDateBoard();
+    // this.displayAnimateBoard();
+    this.nonAnimateUpdateBoard();
     console.log(this.board);
   }
 
@@ -59,8 +62,8 @@ class Game {
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
-    this.displayGame();
-    // this.upDateBoard();
+    // this.displayAnimateBoard();
+    this.nonAnimateUpdateBoard();
     console.log(this.board);
   }
 
@@ -303,30 +306,42 @@ class Game {
     return score
   }
 
+  setStatus(status) {
+    switch(status) {
+      case 'playing':
+        this.status = 'playing';
+        break;
+      case 'idle':
+        this.status = 'idle';
+        break;
+      case 'win':
+        this.status = 'win';
+        break;
+      case 'lose':
+        this.status = 'lose';
+        break;
+      default: return;
+    }
+  }
+
   getState() {
     return this.board;
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   start() {
     this.startButton.textContent = 'Restart';
     this.startButton.className = 'button restart';
+    this.setStatus('playing')
     this.board = JSON.parse(JSON.stringify(this.initialState));
     this.addRandomCell();
     this.addRandomCell();
     
-    this.displayBoard();
+    // this.displayAnimateBoard();
+    this.nonAnimateUpdateBoard();
     console.log(this.board);
   }
   
@@ -334,9 +349,10 @@ class Game {
     this.clearBoard();
     this.cellHistory = [];
     this.start();
+    
   }
 
-  addRandomCell() {
+  getEmptyCell() {
     const emptyCell = [];
 
     for (let x = 0; x < this.board.length; x++) {
@@ -346,6 +362,12 @@ class Game {
         }
       }
     }
+
+    return emptyCell;
+  }
+
+  addRandomCell() {
+    const emptyCell = this.getEmptyCell();
 
     if (emptyCell.length > 0) {
       const randomIndex = Math.floor(Math.random() * emptyCell.length);
@@ -362,6 +384,8 @@ class Game {
         },
         newCell: true,
       });
+    } else {
+      this.setStatus('lose');
     }
   }
   
@@ -370,7 +394,7 @@ class Game {
     this.scoreboard.textContent = this.getScore();
   }
 
-  displayBoard() {
+  displayAnimateBoard() {
 
     for(const cellMove of this.cellHistory) {
       const newCell = document.querySelector(`#cell${cellMove.newCoords.X}${cellMove.newCoords.Y}`);
@@ -432,7 +456,7 @@ class Game {
           reversNewCell.textContent = cellMove.value;
           reversNewCell.classList.add(`field-cell--${cellMove.value}`);
           movingBlock.remove();
-        }, animationDuration - 5);
+        }, animationDuration);
       }
     }
     // const newCells = this.cellHistory.filter((el) => el.newCell === true);
@@ -443,14 +467,14 @@ class Game {
     // }
   }
 
-  upDateBoard() {
+  nonAnimateUpdateBoard() {
     this.clearBoard();
     for (let y = 0; y < this.board.length; y++) {
       for (let x = 0; x < this.board.length; x++) {
         if(this.board[y][x] !== 0){
           const cell = document.querySelector(`#cell${y}${x}`);
           cell.textContent = this.board[y][x];
-          cell.className = `field-cell field-cell--${this.board[y][x].value}`;
+          cell.className = `field-cell field-cell--${this.board[y][x]}`;
         }
       }
     }
