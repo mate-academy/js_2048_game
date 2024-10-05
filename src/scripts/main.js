@@ -1,51 +1,44 @@
 'use strict';
 
-// write code
 const Game = require('../modules/Game.class');
 const game = new Game();
 
 const gameField = document.querySelector('.game-field');
-const scoreDisplay = document.querySelector('.game-score');
+const gameScore = document.querySelector('.game-score');
 const startButton = document.querySelector('.start');
-
+const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
-const messageStart = document.querySelector('.message-start');
 
-function render() {
+function updateUI() {
+  const state = game.getState();
+
   gameField.innerHTML = '';
 
-  game.getState().forEach((row) => {
-    const rowElement = document.createElement('tr');
+  state.forEach((row) => {
+    const fieldRow = document.createElement('tr');
 
-    row.forEach((cellValue) => {
-      const cell = document.createElement('td');
+    row.forEach((cell) => {
+      const fieldCell = document.createElement('td');
 
-      cell.className = `field-cell field-cell--${cellValue || '0'}`;
-      cell.textContent = cellValue || '';
-      rowElement.appendChild(cell);
+      fieldCell.classList.add('field-cell');
+
+      if (cell > 0) {
+        fieldCell.classList.add(`field-cell--${cell}`);
+        fieldCell.textContent = cell;
+      }
+      fieldRow.appendChild(fieldCell);
     });
-    gameField.appendChild(rowElement);
+    gameField.appendChild(fieldRow);
   });
-  scoreDisplay.textContent = game.getScore();
+  gameScore.textContent = game.getScore();
+  updateMessages();
+}
 
-  if (game.getStatus() === 'win') {
-    messageWin.classList.remove('hidden');
-  } else {
-    messageWin.classList.add('hidden');
-  }
-
-  if (game.getStatus() === 'lose') {
-    messageLose.classList.remove('hidden');
-  } else {
-    messageLose.classList.add('hidden');
-  }
-
-  if (game.getStatus() === 'idle') {
-    messageStart.classList.remove('hidden');
-  } else {
-    messageStart.classList.add('hidden');
-  }
+function updateMessages() {
+  messageStart.classList.toggle('hidden', game.getStatus() !== 'idle');
+  messageWin.classList.toggle('hidden', game.getStatus() !== 'win');
+  messageLose.classList.toggle('hidden', game.getStatus() !== 'lose');
 }
 
 function handleKeydown(e) {
@@ -62,20 +55,16 @@ function handleKeydown(e) {
     case 'ArrowDown':
       game.moveDown();
       break;
+    default:
+      return;
   }
-  render();
+  updateUI();
 }
 
 startButton.addEventListener('click', () => {
-  if (game.getStatus() === 'idle') {
-    game.start();
-    startButton.textContent = 'Restart';
-    render();
-  } else {
-    game.restart();
-    startButton.textContent = 'Restart';
-    render();
-  }
+  game.start();
+  updateUI();
+  startButton.textContent = 'Restart';
 });
 
 document.addEventListener('keydown', handleKeydown);
