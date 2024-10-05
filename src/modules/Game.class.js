@@ -17,55 +17,32 @@ class Game {
     this.status = 'idle';
   }
 
-  moveLeft() {
+  move(direction) {
+    console.log(direction);
     this.cellHistory = [];
     const initBoard = JSON.stringify(this.board);
-    this.moveCellLeft ();
+    switch(direction) {
+      case 'left':
+        this.moveCellLeft ();
+        break;
+      case 'right':
+        this.moveCellRight ();
+        break;
+      case 'up':
+        this.moveCellUp ();
+        break;
+      case 'down':
+        this.moveCellDown ();
+        break;
+    }
     if (JSON.stringify(this.board) !== initBoard) {
       this.addRandomCell ();
     }
-    this.nonAnimateUpdateBoard();
-    // this.displayAnimateBoard();
+    this.displayGame()
     console.log(this.board);
   }
 
-  moveRight() {
-    this.cellHistory = [];
-    const initBoard = JSON.stringify(this.board);
-    this.moveCellRight ();
-    if (JSON.stringify(this.board) !== initBoard) {
-      this.addRandomCell ();
-    }
-    // this.displayAnimateBoard();
-    this.nonAnimateUpdateBoard();
-    console.log(this.board);
-  }
-
-  moveUp() {
-    this.cellHistory = [];
-    const initBoard = JSON.stringify(this.board);
-    this.moveCellUp ();
-    if (JSON.stringify(this.board) !== initBoard) {
-      this.addRandomCell ();
-    } else if(this.getEmptyCell == []) {
-      this.setStatus('lose')
-    }
-    // this.displayAnimateBoard();
-    this.nonAnimateUpdateBoard();
-    console.log(this.board);
-  }
-
-  moveDown() {
-    this.cellHistory = [];
-    const initBoard = JSON.stringify(this.board);
-    this.moveCellDown ();
-    if (JSON.stringify(this.board) !== initBoard) {
-      this.addRandomCell ();
-    }
-    // this.displayAnimateBoard();
-    this.nonAnimateUpdateBoard();
-    console.log(this.board);
-  }
+  //#region Move Cells
 
   moveCellLeft() {
     for (let y = 0; y < this.board.length; y++) {
@@ -296,6 +273,8 @@ class Game {
     }
   }
 
+  //#endregion
+
   getScore() {
     let score = 0; 
 
@@ -340,8 +319,7 @@ class Game {
     this.addRandomCell();
     this.addRandomCell();
     
-    // this.displayAnimateBoard();
-    this.nonAnimateUpdateBoard();
+    this.displayGame();
     console.log(this.board);
   }
   
@@ -390,13 +368,15 @@ class Game {
   }
   
   displayGame() {
-    this.displayBoard();
+    this.displayAnimateBoard();
+    // this.nonAnimateUpdateBoard();
     this.scoreboard.textContent = this.getScore();
   }
 
   displayAnimateBoard() {
 
     for(const cellMove of this.cellHistory) {
+      const newCellonTheBoard = this.board[cellMove.newCoords.Y][cellMove.newCoords.X];
       const newCell = document.querySelector(`#cell${cellMove.newCoords.X}${cellMove.newCoords.Y}`);
       
       if(cellMove.newCell) {
@@ -417,12 +397,13 @@ class Game {
 
         newCell.animate(keyFrames, newspaperTiming);
       } else {
-        const animationDuration = 200;
+        const animationDuration = 2000;
         const oldCell = document.querySelector(`#cell${cellMove.oldCoords.X}${cellMove.oldCoords.Y}`);
         const movingBlock = document.createElement('div');
+        oldCell.appendChild(movingBlock);
         movingBlock.className = `moving-block field-cell--${cellMove.value}`;
         movingBlock.textContent = cellMove.value;
-
+        
         const startTranstateY = 85 * cellMove.oldCoords.Y;
         const startTranstateX = 85 * cellMove.oldCoords.X;
         
@@ -431,7 +412,6 @@ class Game {
 
         console.log('start', cellMove.oldCoords.Y, cellMove.oldCoords.X,'end', cellMove.newCoords.Y, cellMove.newCoords.X, 'value', cellMove.value, this.cellHistory)
         
-        oldCell.appendChild(movingBlock);
 
         const keyFrames = [
           {transform: `translate(${startTranstateX}px,${startTranstateY}px)`},
@@ -453,18 +433,15 @@ class Game {
         
         const reversNewCell = document.querySelector(`#cell${cellMove.newCoords.Y}${cellMove.newCoords.X}`);
         setTimeout(() => {
-          reversNewCell.textContent = cellMove.value;
-          reversNewCell.classList.add(`field-cell--${cellMove.value}`);
+          if(newCellonTheBoard === 2048) {
+            this.setStatus('win');
+          }
+          reversNewCell.textContent = newCellonTheBoard;
+          reversNewCell.classList.add(`field-cell--${newCellonTheBoard}`);
           movingBlock.remove();
         }, animationDuration);
       }
     }
-    // const newCells = this.cellHistory.filter((el) => el.newCell === true);
-
-    // for(let el of newCells) {
-    //   const newCell = document.querySelector(`#cell${el.newCoords.X}${el.newCoords.Y}`)
-    //   newCell.className = `field-cell field-cell--${el.value}`
-    // }
   }
 
   nonAnimateUpdateBoard() {
