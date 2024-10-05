@@ -8,7 +8,6 @@ const game = new Game();
 const startButton = document.querySelector('.button');
 const animationButton = document.querySelector('h1');
 
-
 startButton.onclick = () => {
   if (startButton.textContent === 'Start') {
     game.start();
@@ -21,19 +20,19 @@ animationButton.onclick = () => {
   game.animation();
 };
 
-document/addEventListener('keydown', (event) => {
-  switch(event.key){
-    case "ArrowUp":
+addEventListener('keydown', (events) => {
+  switch (events.key) {
+    case 'ArrowUp':
       game.move('up');
-    break;
-    case "ArrowDown":
+      break;
+    case 'ArrowDown':
       game.move('down');
-    break;
-    case "ArrowRight":
+      break;
+    case 'ArrowRight':
       game.move('right');
-    break;
-    case "ArrowLeft":
+      break;
+    case 'ArrowLeft':
       game.move('left');
-    break;
+      break;
   }
 });

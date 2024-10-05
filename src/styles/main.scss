@@ -25,7 +25,6 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
-  // position: relative;
   transition: opacity 0.3s ease;
 
   &--2 {
@@ -80,27 +79,25 @@ body {
     --cell-background: #edc22e;
     --cell-color: #f9f6f2;
   }
-
 }
 
-tbody{
+tbody {
   position: relative;
 }
 
-
 .new-cell-animation {
-  animation: fadeIn 0.3s ease;
+  animation: fade-in 0.3s ease;
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
   from {
-      opacity: 0;
-      transform: scale(0.5);
-    }
+    opacity: 0;
+    transform: scale(0.5);
+  }
   to {
     opacity: 1;
-      transform: scale(1);
-    }
+    transform: scale(1);
+  }
 }
 
 .game-field {
@@ -161,10 +158,10 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-  
+
   transition: 0.25s ease background;
-  
-  &:focus-visible{
+
+  &:focus-visible {
     outline: none;
   }
 }
@@ -172,7 +169,7 @@ h1 {
 .start {
   background: #1dae28;
   font-size: 20px;
-  
+
   &:hover {
     background: #179921;
   }
@@ -180,7 +177,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
-  
+
   &:hover {
     background: #f87474;
   }
@@ -235,24 +232,22 @@ h1 {
 //     z-index: 1;
 //   }
 
-
-  .moving-block {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    border-radius: 5px;
-    box-sizing: border-box;
-    vertical-align: center;
-    user-select: none;
-    text-align: center;
-    background: var(--cell-background);
-    color: var(--cell-color);
-    width: var(--cell-size);
-    height: var(--cell-size);
-    transition: transform 0.3s ease;
-    box-sizing: border-box;
-    z-index: 1;
-    top: 0;
-    left: 0;
-  }
+.moving-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  border-radius: 5px;
+  vertical-align: center;
+  user-select: none;
+  text-align: center;
+  background: var(--cell-background);
+  color: var(--cell-color);
+  width: var(--cell-size);
+  height: var(--cell-size);
+  transition: transform 0.3s ease;
+  box-sizing: border-box;
+  z-index: 1;
+  top: 0;
+  left: 0;
+}
