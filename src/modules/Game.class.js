@@ -14,6 +14,7 @@ class Game {
     this.scoreboard = document.querySelector('.game-score');
     this.board = [];
     this.cellHistory = [];
+    this.status = 'idle';
   }
 
   moveLeft() {
@@ -317,7 +318,28 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
+
+  setStatus(status) {
+    switch (status) {
+      case 'idle':
+        this.status = 'idle';
+        break;
+      case 'playing':
+        this.status = 'playing';
+        break;
+      case 'win':
+        this.status = 'win';
+        break;
+      case 'lose':
+        this.status = 'lose';
+        break;
+      default:
+      return;
+    }
+  }
 
   start() {
     this.startButton.textContent = 'Restart';
