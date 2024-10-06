@@ -23,13 +23,13 @@ class Game {
    */
 
   constructor(initialState) {
-    this.state = initialState || [
+    this.initialState = initialState || [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
-
+    this.state = JSON.parse(JSON.stringify(this.initialState));
     this.score = 0;
     this.status = 'idle';
   }
@@ -96,6 +96,10 @@ class Game {
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const previousState = JSON.stringify(this.state);
 
     for (let row = 0; row < this.state.length; row++) {
@@ -127,6 +131,10 @@ class Game {
   }
 
   moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const previousState = JSON.stringify(this.state);
 
     for (let row = 0; row < this.state.length; row++) {
@@ -158,6 +166,10 @@ class Game {
   };
 
   moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const previousState = JSON.stringify(this.state);
 
     for (let coll = 0; coll < this.state[0].length; coll++) {
@@ -195,6 +207,10 @@ class Game {
   }
 
   moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const previousState = JSON.stringify(this.state);
 
     for (let coll = 0; coll < this.state[0].length; coll++) {
@@ -271,18 +287,15 @@ class Game {
 
       return this.status;
     }
+
+    return this.status;
   }
 
   /**
    * Starts the game.
    */
   start() {
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.state = JSON.parse(JSON.stringify(this.initialState));
     this.score = 0;
     this.status = 'playing';
 
@@ -294,12 +307,7 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.state = JSON.parse(JSON.stringify(this.initialState));
     this.score = 0;
     this.status = 'idle';
   }
