@@ -1,115 +1,107 @@
 class Game {
   constructor(initialState) {
-    this.state = initialState || [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.state = initialState || this.createInitialState();
     this.score = 0;
     this.status = 'idle';
+    this.start();
+  }
+
+  createInitialState() {
+    return Array.from({ length: 4 }, () => Array(4).fill(0));
   }
 
   generateRandomTile() {
     const emptyCells = [];
 
-    this.state.forEach((currentRow, rowIndex) => {
-      currentRow.forEach((cell, colIndex) => {
+    this.state.forEach((currentRow, r) => {
+      currentRow.forEach((cell, c) => {
         if (cell === 0) {
-          emptyCells.push([rowIndex, colIndex]);
+          emptyCells.push([r, c]);
         }
       });
     });
 
     if (emptyCells.length === 0) {
-      return;
+      return this.updateStatus();
     }
 
-    const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    const [row, col] = emptyCells[randomIndex];
+    const [row, col] =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
     this.state[row][col] = Math.random() < 0.9 ? 2 : 4;
   }
 
   updateStatus() {
-    if (this.state.flat().includes(2048)) {
-      this.status = 'win';
-    } else if (!this.canMove()) {
-      this.status = 'lose';
-    }
+    this.status = this.state.flat().includes(2048)
+      ? 'win'
+      : this.canMove()
+        ? 'playing'
+        : 'lose';
   }
 
   canMove() {
-    return this.state.some((row, rowIndex) =>
-      row.some((cell, colIndex) => {
-        if (cell === 0) {
-          return true;
-        }
-
-        if (
-          colIndex < 3 &&
-          this.state[rowIndex][colIndex] === this.state[rowIndex][colIndex + 1]
-        ) {
-          return true;
-        }
-
-        if (
-          rowIndex < 3 &&
-          this.state[rowIndex][colIndex] === this.state[rowIndex + 1][colIndex]
-        ) {
-          return true;
-        }
-
-        return false;
-        // eslint-disable-next-line
-      }));
+    return this.state.some(
+      (currentRow, r) =>
+        currentRow.some(
+          (cell, c) =>
+            cell === 0 ||
+            (c < 3 && cell === currentRow[c + 1]) ||
+            (r < 3 && cell === this.state[r + 1][c]),
+        ),
+      // eslint-disable-next-line function-paren-newline
+    );
   }
 
-  moveLeft() {
-    let moved = false;
+  move(direction) {
+    const moveRow = (row) => {
+      const newRow = row.filter(Boolean);
+      const mergedRow = [];
 
-    this.state = this.state.map((row) => {
-      const newRow = row.filter((val) => val);
-
-      while (newRow.length < 4) {
-        newRow.push(0);
-      }
-
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < newRow.length; i++) {
         if (newRow[i] === newRow[i + 1]) {
-          newRow[i] *= 2;
-          this.score += newRow[i];
-          newRow.splice(i + 1, 1);
-          newRow.push(0);
-          moved = true;
+          mergedRow.push(newRow[i] * 2);
+          this.score += newRow[i] * 2;
+          i++;
+        } else {
+          mergedRow.push(newRow[i]);
         }
       }
 
-      return newRow;
-    });
+      return [...mergedRow, ...Array(4 - mergedRow.length).fill(0)];
+    };
 
-    if (moved) {
+    const moveOperations = {
+      left: () => {
+        this.state = this.state.map(moveRow);
+      },
+      right: () => {
+        this.state = this.state
+          .map((row) => moveRow(row.reverse()))
+          .map((row) => row.reverse());
+      },
+      up: () => {
+        this.transpose();
+        this.state = this.state.map(moveRow);
+        this.transpose();
+      },
+      down: () => {
+        this.transpose();
+
+        this.state = this.state
+          .map((row) => moveRow(row.reverse()))
+          .map((row) => row.reverse());
+        this.transpose();
+      },
+    };
+
+    const previousState = JSON.stringify(this.state);
+
+    moveOperations[direction]();
+
+    if (previousState !== JSON.stringify(this.state)) {
       this.generateRandomTile();
+      this.updateStatus();
     }
-    this.updateStatus();
-  }
-
-  moveRight() {
-    this.state = this.state.map((row) => row.reverse());
-    this.moveLeft();
-    this.state = this.state.map((row) => row.reverse());
-  }
-
-  moveUp() {
-    this.transpose();
-    this.moveLeft();
-    this.transpose();
-  }
-
-  moveDown() {
-    this.transpose();
-    this.moveRight();
-    this.transpose();
   }
 
   transpose() {
@@ -117,6 +109,18 @@ class Game {
       (_, colIndex) => this.state.map((row) => row[colIndex]),
       // eslint-disable-next-line function-paren-newline
     );
+  }
+
+  start() {
+    this.score = 0;
+    this.state = this.createInitialState();
+    this.status = 'playing';
+    this.generateRandomTile();
+    this.generateRandomTile();
+  }
+
+  restart() {
+    this.start();
   }
 
   getState() {
@@ -130,23 +134,6 @@ class Game {
   getStatus() {
     return this.status;
   }
-
-  start() {
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    this.score = 0;
-    this.status = 'playing';
-    this.generateRandomTile();
-    this.generateRandomTile();
-  }
-
-  restart() {
-    this.start();
-  }
 }
 
-module.exports = Game;
+export default Game;

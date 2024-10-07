@@ -17,19 +17,19 @@ function updateUI() {
   state.flat().forEach((value, index) => {
     const cell = cells[index];
 
-    cell.textContent = value === 0 ? '' : value;
-    cell.className = `field-cell field-cell--${value}`;
+    cell.textContent = value === 0 ? '' : value; // Показуємо плитку, якщо не 0
+    cell.className = `field-cell field-cell--${value}`; // Додаємо відповідний клас для стилів
   });
 
-  scoreElement.textContent = game.getScore();
+  scoreElement.textContent = game.getScore(); // Оновлюємо рахунок
 
   const gameStatus = game.getStatus();
 
   if (gameStatus === 'win') {
-    winMessage.classList.remove('hidden');
+    winMessage.classList.remove('hidden'); // Виграли
     loseMessage.classList.add('hidden');
   } else if (gameStatus === 'lose') {
-    loseMessage.classList.remove('hidden');
+    loseMessage.classList.remove('hidden'); // Програли
     winMessage.classList.add('hidden');
   } else {
     winMessage.classList.add('hidden');
@@ -55,17 +55,17 @@ document.addEventListener('keydown', (e) => {
 
   switch (e.key) {
     case 'ArrowLeft':
-      game.moveLeft();
+      game.move('left');
       break;
     case 'ArrowRight':
-      game.moveRight();
+      game.move('right');
       break;
     case 'ArrowUp':
-      game.moveUp();
+      game.move('up');
       break;
     case 'ArrowDown':
-      game.moveDown();
+      game.move('down');
       break;
   }
-  updateUI();
+  updateUI(); // Оновлюємо UI після кожного ходу
 });
