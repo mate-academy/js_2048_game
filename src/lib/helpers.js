@@ -122,7 +122,9 @@ export const horizontalShift = ({ field, rtl = false } = {}) => {
     const secondStageFilteredRow = filterZeros(mergedCellsRow);
     const modifiedRow = addLackingZeros(secondStageFilteredRow);
 
-    wasChanged = row.some((el, idx) => el !== modifiedRow[idx]);
+    wasChanged = !wasChanged
+      ? row.some((el, idx) => el !== modifiedRow[idx])
+      : wasChanged;
 
     field[i] = rtl ? modifiedRow.reverse() : modifiedRow;
   }
