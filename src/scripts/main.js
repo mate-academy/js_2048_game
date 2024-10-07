@@ -38,22 +38,15 @@ startButton.addEventListener('click', () => {
 });
 
 document.addEventListener('keyup', (e) => {
-  switch (e.key) {
-    case 'ArrowRight':
-      game.moveRight();
-      break;
+  const moves = {
+    ArrowRight: game.moveRight,
+    ArrowLeft: game.moveLeft,
+    ArrowUp: game.moveUp,
+    ArrowDown: game.moveDown,
+  };
 
-    case 'ArrowLeft':
-      game.moveLeft();
-      break;
-
-    case 'ArrowUp':
-      game.moveUp();
-      break;
-
-    case 'ArrowDown':
-      game.moveDown();
-      break;
+  if (moves[e.key]) {
+    moves[e.key].call(game);
   }
 
   updateGameField();

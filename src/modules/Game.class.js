@@ -49,9 +49,9 @@ class Game {
         const cellValue = this.state[row][col];
 
         if (cellValue === 2048) {
-          this.status = Game.gameStatus.win;
-
-          return;
+          if (this.status !== Game.gameStatus.win) {
+            this.status = Game.gameStatus.win;
+          }
         }
 
         if (cellValue === 0) {
@@ -64,128 +64,94 @@ class Game {
         ) {
           canMove = true;
         }
-
-        if (hasEmptyCells || canMove) {
-          return;
-        }
       }
     }
 
-    this.status = Game.gameStatus.lose;
+    if (!hasEmptyCells && !canMove) {
+      this.status = Game.gameStatus.lose;
+    }
   }
 
   moveLeft() {
-    if (this.status === Game.gameStatus.playing) {
-      for (let row = 0; row < 4; row++) {
-        let newRow = this.state[row].filter((val) => val !== 0);
+    const previousState = this.state.map((row) => row.slice());
 
-        for (let col = 0; col < newRow.length - 1; col++) {
-          if (newRow[col] === newRow[col + 1]) {
-            newRow[col] *= 2;
-            this.score += newRow[col];
-            newRow[col + 1] = 0;
-          }
-        }
-        newRow = newRow.filter((val) => val !== 0);
+    for (let row = 0; row < 4; row++) {
+      const newRow = this.state[row].filter((val) => val !== 0);
+      const mergedRow = [];
 
-        while (newRow.length < 4) {
-          newRow.push(0);
+      for (let i = 0; i < newRow.length; i++) {
+        if (newRow[i] === newRow[i + 1]) {
+          mergedRow.push(newRow[i] * 2);
+          this.score += newRow[i] * 2;
+          i++;
+        } else {
+          mergedRow.push(newRow[i]);
         }
-        this.state[row] = newRow;
       }
-      this.getRandomCell();
-      this.checkStatus();
+
+      this.state[row] = mergedRow.concat(Array(4 - mergedRow.length).fill(0));
     }
+
+    this.checkForChanges(previousState);
+    this.checkStatus();
   }
 
   moveRight() {
-    if (this.status === Game.gameStatus.playing) {
-      for (let row = 0; row < 4; row++) {
-        let newRow = this.state[row].filter((val) => val !== 0);
+    const previousState = this.state.map((row) => row.slice());
 
-        for (let col = newRow.length - 1; col > 0; col--) {
-          if (newRow[col] === newRow[col - 1]) {
-            newRow[col] *= 2;
-            this.score += newRow[col];
-            newRow[col - 1] = 0;
-          }
-        }
-        newRow = newRow.filter((val) => val !== 0);
+    for (let row = 0; row < 4; row++) {
+      const newRow = this.state[row].filter((val) => val !== 0).reverse();
+      const mergedRow = [];
 
-        while (newRow.length < 4) {
-          newRow.unshift(0);
+      for (let i = 0; i < newRow.length; i++) {
+        if (newRow[i] === newRow[i + 1]) {
+          mergedRow.push(newRow[i] * 2);
+          this.score += newRow[i] * 2;
+          i++;
+        } else {
+          mergedRow.push(newRow[i]);
         }
-        this.state[row] = newRow;
       }
 
-      this.getRandomCell();
-      this.checkStatus();
+      this.state[row] = Array(4 - mergedRow.length)
+        .fill(0)
+        .concat(mergedRow.reverse());
     }
+
+    this.checkForChanges(previousState);
+    this.checkStatus();
   }
+
   moveUp() {
-    if (this.status === Game.gameStatus.playing) {
-      for (let col = 0; col < 4; col++) {
-        let newCol = [];
-
-        for (let row = 0; row < 4; row++) {
-          if (this.state[row][col] !== 0) {
-            newCol.push(this.state[row][col]);
-          }
-        }
-
-        for (let row = 0; row < newCol.length - 1; row++) {
-          if (newCol[row] === newCol[row + 1]) {
-            newCol[row] *= 2;
-            this.score += newCol[row];
-            newCol[row + 1] = 0;
-          }
-        }
-        newCol = newCol.filter((val) => val !== 0);
-
-        while (newCol.length < 4) {
-          newCol.push(0);
-        }
-
-        for (let row = 0; row < 4; row++) {
-          this.state[row][col] = newCol[row];
-        }
-      }
-
-      this.getRandomCell();
-      this.checkStatus();
-    }
+    this.state = this.transpose(this.state);
+    this.moveLeft();
+    this.state = this.transpose(this.state);
   }
 
   moveDown() {
-    if (this.status === Game.gameStatus.playing) {
-      for (let col = 0; col < 4; col++) {
-        let newCol = [];
+    this.state = this.transpose(this.state);
+    this.moveRight();
+    this.state = this.transpose(this.state);
+  }
 
-        for (let row = 0; row < 4; row++) {
-          if (this.state[row][col] !== 0) {
-            newCol.push(this.state[row][col]);
-          }
-        }
+  transpose(state) {
+    const result = [];
 
-        for (let row = newCol.length - 1; row > 0; row--) {
-          if (newCol[row] === newCol[row - 1]) {
-            newCol[row] *= 2;
-            this.score += newCol[row];
-            newCol[row - 1] = 0;
-          }
-        }
-        newCol = newCol.filter((val) => val !== 0);
+    for (let col = 0; col < 4; col++) {
+      result[col] = [];
 
-        while (newCol.length < 4) {
-          newCol.unshift(0);
-        }
-
-        for (let row = 0; row < 4; row++) {
-          this.state[row][col] = newCol[row];
-        }
+      for (let row = 0; row < 4; row++) {
+        result[col].push(state[row][col]);
       }
+    }
+
+    return result;
+  }
+
+  checkForChanges(previousState) {
+    if (this.state.toString() !== previousState.toString()) {
       this.getRandomCell();
-      this.checkStatus();
+      this.status = Game.gameStatus.playing;
     }
   }
 
@@ -204,12 +170,12 @@ class Game {
   start() {
     this.status = Game.gameStatus.playing;
     this.getRandomCell();
-    this.getRandomCell();
   }
 
   restart() {
     this.state = this.initialState.map((row) => [...row]);
     this.score = 0;
+    this.status = Game.gameStatus.idle;
   }
 }
 
