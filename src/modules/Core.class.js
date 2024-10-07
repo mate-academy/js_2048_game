@@ -258,7 +258,12 @@ class Core {
   _shiftLeft() {
     const field = this._getField();
 
-    const { field: newField, score, isWinner } = horizontalShift({ field });
+    const {
+      field: newField,
+      score,
+      isWinner,
+      wasChanged,
+    } = horizontalShift({ field });
 
     this.#updateScore(score);
     this.#updateField(newField);
@@ -266,6 +271,8 @@ class Core {
     if (isWinner) {
       this.#winTheGame();
     }
+
+    return { wasChanged };
   }
 
   _shiftRight() {
@@ -275,6 +282,7 @@ class Core {
       field: newField,
       score,
       isWinner,
+      wasChanged,
     } = horizontalShift({ field, rtl: true });
 
     this.#updateScore(score);
@@ -283,12 +291,19 @@ class Core {
     if (isWinner) {
       this.#winTheGame();
     }
+
+    return { wasChanged };
   }
 
   _shiftTop() {
     const field = this._getField();
 
-    const { field: newField, score, isWinner } = verticalShift({ field });
+    const {
+      field: newField,
+      score,
+      isWinner,
+      wasChanged,
+    } = verticalShift({ field });
 
     this.#updateScore(score);
     this.#updateField(newField);
@@ -296,6 +311,8 @@ class Core {
     if (isWinner) {
       this.#winTheGame();
     }
+
+    return { wasChanged };
   }
 
   _shiftBottom() {
@@ -305,6 +322,7 @@ class Core {
       field: newField,
       score,
       isWinner,
+      wasChanged,
     } = verticalShift({ field, rtl: true });
 
     this.#updateScore(score);
@@ -313,6 +331,8 @@ class Core {
     if (isWinner) {
       this.#winTheGame();
     }
+
+    return { wasChanged };
   }
 }
 

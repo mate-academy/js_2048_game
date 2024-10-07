@@ -91,9 +91,11 @@ class Game extends Core {
       return;
     }
 
-    this._shiftLeft();
+    const { wasChanged } = this._shiftLeft();
 
-    this._createNewCell();
+    if (wasChanged) {
+      this._createNewCell();
+    }
 
     this._rerender();
   }
@@ -105,9 +107,11 @@ class Game extends Core {
       return;
     }
 
-    this._shiftRight();
+    const { wasChanged } = this._shiftRight();
 
-    this._createNewCell();
+    if (wasChanged) {
+      this._createNewCell();
+    }
 
     this._rerender();
   }
@@ -119,9 +123,11 @@ class Game extends Core {
       return;
     }
 
-    this._shiftTop();
+    const { wasChanged } = this._shiftTop();
 
-    this._createNewCell();
+    if (wasChanged) {
+      this._createNewCell();
+    }
 
     this._rerender();
   }
@@ -133,9 +139,11 @@ class Game extends Core {
       return;
     }
 
-    this._shiftBottom();
+    const { wasChanged } = this._shiftBottom();
 
-    this._createNewCell();
+    if (wasChanged) {
+      this._createNewCell();
+    }
 
     this._rerender();
   }
