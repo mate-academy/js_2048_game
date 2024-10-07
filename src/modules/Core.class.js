@@ -230,6 +230,14 @@ class Core {
     });
 
     scoreField.textContent = score;
+
+    const hasEmptyCells = this.#checkIfHasEmptyCells();
+    const hasAvailablePairs = this.#checkIfHasAvailablePares();
+
+    if (!hasEmptyCells && !hasAvailablePairs) {
+      this._setStatusLose();
+      this._showLoseMessage();
+    }
   }
 
   _createNewCell() {
@@ -242,15 +250,6 @@ class Core {
       field[cellPosY][cellPosX] = generateCellValue();
 
       this.#updateField(field);
-
-      return;
-    }
-
-    const hasAvailablePairs = this.#checkIfHasAvailablePares();
-
-    if (!hasAvailablePairs) {
-      this._setStatusLose();
-      this._showLoseMessage();
     }
   }
 
