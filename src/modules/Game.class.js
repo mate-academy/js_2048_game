@@ -423,7 +423,7 @@ class Game {
 
         newCell.animate(keyFrames, newspaperTiming);
       } else {
-        const animationDuration = 2000;
+        const animationDuration = 200;
         const oldCell = document.querySelector(
           `#cell${cellMove.oldCoords.X}${cellMove.oldCoords.Y}`,
         );
@@ -436,31 +436,38 @@ class Game {
         const startTranstateY = 85 * cellMove.oldCoords.Y;
         const startTranstateX = 85 * cellMove.oldCoords.X;
 
+        movingBlock.style.transform = `translate(${startTranstateX}px,${startTranstateY}px)`;
+
         const endTranslateY = 85 * cellMove.newCoords.Y;
         const endTranslateX = 85 * cellMove.newCoords.X;
 
-        // console.log(
-        //   'start',
-        //   cellMove.oldCoords.Y,
-        //   cellMove.oldCoords.X,
-        //   'end',
-        //   cellMove.newCoords.Y,
-        //   cellMove.newCoords.X,
-        //   'value',
-        //   cellMove.value,
-        //   this.cellHistory,
-        // );
+        let startTime = null
+        
+        function frameAnimationCallBack(timestamp) {
+          if (!startTime) startTime = timestamp;
+          
+          const elapsed = timestamp - startTime;
+          const progress = Math.min(elapsed / animationDuration, 1);
+          const currentPositionY = startTranstateY + ((endTranslateY - startTranstateY) * progress);
+          const currentPositionX = startTranstateX + ((endTranslateX - startTranstateX) * progress);
+          
+          console.log(1)
 
-        const keyFrames = [
-          { transform: `translate(${startTranstateX}px,${startTranstateY}px)` },
-          { transform: `translate(${endTranslateX}px,${endTranslateY}px)` },
-        ];
+          movingBlock.style.transform = `translate(${currentPositionX}px,${currentPositionY}px)`;
+          
+          if (progress < 1) {
+            requestAnimationFrame(frameAnimationCallBack);
+          } else {
+            if (newCellonTheBoard === 2048) {
+              this.setStatus('win');
+            }
+            reversNewCell.textContent = newCellonTheBoard;
+            reversNewCell.classList.add(`field-cell--${newCellonTheBoard}`);
+            movingBlock.remove();
+          }
+        }
 
-        const timing = {
-          duration: animationDuration,
-          iterations: 1,
-          easing: 'ease-in-out',
-        };
+        requestAnimationFrame(frameAnimationCallBack);
 
         const reversOldCell = document.querySelector(
           `#cell${cellMove.oldCoords.Y}${cellMove.oldCoords.X}`,
@@ -469,20 +476,11 @@ class Game {
         reversOldCell.className = 'field-cell';
         reversOldCell.textContent = '';
 
-        movingBlock.animate(keyFrames, timing);
 
         const reversNewCell = document.querySelector(
           `#cell${cellMove.newCoords.Y}${cellMove.newCoords.X}`,
         );
 
-        setTimeout(() => {
-          if (newCellonTheBoard === 2048) {
-            this.setStatus('win');
-          }
-          reversNewCell.textContent = newCellonTheBoard;
-          reversNewCell.classList.add(`field-cell--${newCellonTheBoard}`);
-          movingBlock.remove();
-        }, animationDuration);
       }
     }
   }
