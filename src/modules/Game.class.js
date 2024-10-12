@@ -27,8 +27,47 @@ class Game {
     this.moves = 0;
   }
 
-  moveLeft() {}
-  moveRight() {}
+  moveLeft() {
+    for (let i = 0; i < this.grid.length; i++) {
+      let newRow = [];
+      this.grid[i].forEach((cell) => {
+        if (cell) {
+          newRow.push(cell);
+        }
+      });
+
+      newRow = this.mergeCells(newRow);
+
+      while (newRow.length < 4) {
+        newRow.push(0);
+      }
+
+      this.grid[i] = newRow;
+    }
+
+    this.getRandomCell();
+  }
+
+  moveRight() {
+    for (let i = 0; i < this.grid.length; i++) {
+      let newRow = [];
+      this.grid[i].forEach((cell) => {
+        if (cell) {
+          newRow.push(cell);
+        }
+      });
+
+      newRow = this.mergeCells(newRow);
+
+      while (newRow.length < 4) {
+        newRow.unshift(0);
+      }
+
+      this.grid[i] = newRow;
+    }
+
+    this.getRandomCell();
+  }
   moveUp() {}
   moveDown() {}
 
@@ -66,6 +105,7 @@ class Game {
    */
   restart() {
     this.status = Game.STATUS.idle;
+
     this.grid = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -85,6 +125,7 @@ class Game {
 
       if (this.isEmpty(this.grid[x][y])) {
         this.grid[x][y] = value;
+
         return [x, y, value];
       }
     }
@@ -92,6 +133,21 @@ class Game {
 
   isEmpty(cell) {
     return cell === 0;
+  }
+
+  mergeCells(row) {
+    const newRow = [];
+    let i = 0;
+    while(i < row.length) {
+      if(row[i] !== 0 && row[i] === row[i+1]) {
+        newRow.push(row[i] * 2);
+        i += 2;
+      } else {
+        newRow.push(row[i]);
+        i++
+      }
+    }
+    return newRow;
   }
 }
 

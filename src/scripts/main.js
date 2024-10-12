@@ -10,9 +10,9 @@ const fieldRows = field.rows;
 const fieldCells = [...fieldRows].map((row) => row.cells);
 
 function emptyField() {
-  for(const row of fieldCells) {
-    [...row].forEach(cell => {
-      if(cell.classList.length === 2) {
+  for (const row of fieldCells) {
+    [...row].forEach((cell) => {
+      if (cell.classList.length === 2) {
         cell.classList.remove(cell.classList[1]);
         cell.textContent = '';
       }
@@ -20,16 +20,35 @@ function emptyField() {
   }
 }
 
-function addNewCell(arr) {
-  fieldCells[arr[0]][arr[1]].classList.add(`field-cell--${arr[2]}`);
-  fieldCells[arr[0]][arr[1]].textContent = `${arr[2]}`;
+function updateCell(arr, add) {
+  const cell = fieldCells[arr[0]][arr[1]];
+  const classes = cell.classList;
+  if (add) {
+    if (classes[1]) {
+      cell.classList.remove(classes[1]);
+    }
+
+    cell.classList.add(`field-cell--${arr[2]}`);
+    cell.textContent = `${arr[2]}`;
+  } else {
+    cell.classList.remove(classes[1]);
+    cell.textContent = '';
+  }
+}
+
+function move(grid) {
+  for (let x = 0; x < grid.length; x++) {
+    for (let y = 0; y < grid[x].length; y++) {
+      updateCell([x, y, grid[x][y]], grid[x][y] !== 0);
+    }
+  }
 }
 
 button.addEventListener('click', (e) => {
   if ([...e.target.classList].includes('start')) {
     game.start();
-    addNewCell(game.getRandomCell());
-    addNewCell(game.getRandomCell());
+    updateCell(game.getRandomCell(), true);
+    updateCell(game.getRandomCell(), true);
 
     button.classList.remove('start');
     button.classList.add('restart');
@@ -41,5 +60,26 @@ button.addEventListener('click', (e) => {
     button.classList.remove('restart');
     button.classList.add('start');
     button.textContent = 'Start';
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  switch (e.code) {
+    case 'ArrowLeft':
+      game.moveLeft();
+      move(game.grid);
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      move(game.grid);
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      move(game.grid);
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      move(game.grid);
+      break;
   }
 });
