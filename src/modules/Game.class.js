@@ -27,76 +27,66 @@ class Game {
   constructor(initialState = Game.INITIAL_STATE) {
     this.grid = initialState;
     this.status = Game.STATUS.idle;
+    this.state = this.grid;
     this.score = 0;
     this.moves = 0;
   }
 
   moveLeft() {
-    let newGrid = this.move('left');
+    const newGrid = this.move('left');
 
     if (newGrid) {
-      this.grid = newGrid;
+      this.state = newGrid;
 
       this.getRandomCell();
     }
   }
 
   moveRight() {
-    let newGrid = this.move('right');
+    const newGrid = this.move('right');
 
     if (newGrid) {
-      this.grid = newGrid;
+      this.state = newGrid;
       this.getRandomCell();
     }
   }
 
   moveUp() {
-    let columns = this.getGridData();
-    let newColumns = this.move('up', columns);
+    const columns = this.getGridData();
+    const newColumns = this.move('up', columns);
 
     if (newColumns) {
-      this.grid = this.getGridData(newColumns);
+      this.state = this.getGridData(newColumns);
       this.getRandomCell();
     }
   }
 
   moveDown() {
-    let columns = this.getGridData();
-    let newColumns = this.move('down', columns);
+    const columns = this.getGridData();
+    const newColumns = this.move('down', columns);
 
     if (newColumns) {
-      this.grid = this.getGridData(newColumns);
+      this.state = this.getGridData(newColumns);
       this.getRandomCell();
     }
   }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getState() {
+    return this.state;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Starts the game.
-   */
   start() {
     this.status = Game.STATUS.playing;
+    this.getRandomCell();
+    this.getRandomCell();
   }
 
   /**
@@ -104,8 +94,9 @@ class Game {
    */
   restart() {
     this.status = Game.STATUS.idle;
+    this.score = 0;
 
-    this.grid = [
+    this.state = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -114,25 +105,28 @@ class Game {
   }
 
   // Add your own methods here
-  move(direction, grid = this.grid) {
-    let newGrid = [];
+  lose() {
+    this.status = Game.STATUS.lose;
+  }
+
+  win() {
+    this.status = Game.STATUS.win;
+  }
+
+  move(direction, grid = this.state) {
+    const newGrid = [];
+
     for (let i = 0; i < grid.length; i++) {
-      let newRow = [];
+      let newRow = grid[i].filter((cell) => cell);
 
-      grid[i].forEach((cell) => {
-        if (cell) {
-          newRow.push(cell);
-        }
-      });
-
-      newRow = this.mergeCells(newRow);
+      if (newRow.length > 1) {
+        newRow = this.mergeCells(newRow);
+      }
 
       while (newRow.length < 4) {
         if (direction === 'left' || direction === 'up') {
           newRow.push(0);
-        }
-
-        if (direction === 'right' || direction === 'down') {
+        } else {
           newRow.unshift(0);
         }
       }
@@ -140,10 +134,26 @@ class Game {
       newGrid.push(newRow);
     }
 
-    for (let i = 0; i < grid.length; i++) {
-      for (let j = 0; j < newGrid.length; j++) {
-        if (grid[i][j] !== newGrid[i][j]) {
-          return newGrid;
+    if (!this.hasAvailableMoves(newGrid)) {
+      this.lose();
+    }
+
+    return JSON.stringify(grid) !== JSON.stringify(newGrid) ? newGrid : false;
+  }
+
+  hasAvailableMoves(grid) {
+    for (let x = 0; x < grid.length; x++) {
+      for (let y = 0; y < grid[x].length; y++) {
+        if (grid[x][y] === 0) {
+          return true;
+        }
+
+        if (x < grid.length - 1 && grid[x][y] === grid[x + 1][y]) {
+          return true;
+        }
+
+        if (y < grid[x].length - 1 && grid[x][y] === grid[x][y + 1]) {
+          return true;
         }
       }
     }
@@ -153,22 +163,22 @@ class Game {
 
   getRandomCell() {
     while (true) {
-      const totalCells = this.grid.length * this.grid[0].length;
+      const totalCells = this.state.length * this.state[0].length;
       const randomIndex = Math.floor(Math.random() * totalCells);
-      const x = Math.floor(randomIndex / this.grid[0].length);
-      const y = randomIndex % this.grid[0].length;
-      const value = Math.random() > 0.5 ? 2 : 4;
+      const x = Math.floor(randomIndex / this.state[0].length);
+      const y = randomIndex % this.state[0].length;
+      const value = Math.random() > 0.1 ? 2 : 4;
 
-      if (this.isEmpty(this.grid[x][y])) {
-        this.grid[x][y] = value;
+      if (this.isEmpty(this.state[x][y])) {
+        this.state[x][y] = value;
 
         return [x, y, value];
       }
     }
   }
 
-  getGridData(grid = this.grid) {
-    let data = [];
+  getGridData(grid = this.state) {
+    const data = [];
 
     for (let i = 0; i < grid.length; i++) {
       data.push(grid.map((row) => row[i]));
@@ -187,7 +197,14 @@ class Game {
 
     while (i < row.length) {
       if (row[i] !== 0 && row[i] === row[i + 1]) {
-        newRow.push(row[i] * 2);
+        const sum = row[i] * 2;
+
+        this.score += sum;
+        newRow.push(sum);
+
+        if (sum === 2048) {
+          this.win();
+        }
         i += 2;
       } else {
         newRow.push(row[i]);
