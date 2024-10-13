@@ -71,11 +71,12 @@ element.restart.addEventListener('click', () => {
   element.restart.classList.add('hidden');
   element.start.classList.remove('hidden');
   element.start.classList.remove('hidden');
+  element.messageStart.classList.remove('hidden');
 
   document.querySelector('.message-lose').className =
     'message message-lose hidden';
 
-  element.win.className = 'message message-win hidden';
+  element.messageWin.className = 'message message-win hidden';
 
   displayBoard();
 });

@@ -44,7 +44,6 @@ class Game {
     this.initialState = initialState;
     this.state = initialState;
     this.currentStatus = this.status.idle;
-    this.cells = [...document.querySelectorAll('.field-cell')];
     this.lastRandomZeroIndex = 0;
     this.score = 0;
 
