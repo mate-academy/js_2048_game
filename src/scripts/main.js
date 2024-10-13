@@ -5,14 +5,23 @@ const Game = require('../modules/Game.class');
 const game = new Game();
 
 // Write your code here
+
+const element = {
+  start: document.querySelector('.start'),
+  restart: document.querySelector('.restart'),
+  messageWin: document.querySelector('.message-win'),
+  messageLose: document.querySelector('.message-lose'),
+  messageStart: document.querySelector('.message-start'),
+  cells: [...document.querySelectorAll('.field-cell')],
+  score: document.querySelector('.game-score'),
+};
+
 const displayBoard = () => {
   game.state.forEach((row, rowIndex) => {
     const cellIndexCoefficient = rowIndex * 4;
 
     row.forEach((cell, cellIndex) => {
-      const cellElement = [...document.querySelectorAll('.field-cell')][
-        cellIndex + cellIndexCoefficient
-      ];
+      const cellElement = element.cells[cellIndex + cellIndexCoefficient];
       const value = cell !== 0 ? cell : '';
       const cellClassName =
         cell === 0 ? 'field-cell' : `field-cell field-cell--${cell}`;
@@ -22,16 +31,18 @@ const displayBoard = () => {
     });
   });
 
-  document.querySelector('.game-score').textContent = game.score;
+  element.score.textContent = game.score;
+
+  if (game.currentStatus === game.status.playing) {
+    element.messageStart.classList.add('hidden');
+  }
 
   if (game.currentStatus === game.status.win) {
-    document.querySelector('.message-start').classList.add('hidden');
-    document.querySelector('.message-win').classList.remove('hidden');
+    element.messageWin.classList.remove('hidden');
   }
 
   if (game.currentStatus === game.status.lose) {
-    document.querySelector('.message-start').classList.add('hidden');
-    document.querySelector('.message-lose').classList.remove('hidden');
+    element.messageLose.classList.remove('hidden');
   }
 };
 
@@ -48,24 +59,23 @@ const updateStatus = () => {
   }
 };
 
-document.querySelector('.start').addEventListener('click', () => {
+element.start.addEventListener('click', () => {
   game.start();
-  document.querySelector('.start').classList.add('hidden');
-  document.querySelector('.restart').classList.remove('hidden');
+  element.start.classList.add('hidden');
+  element.restart.classList.remove('hidden');
   displayBoard();
 });
 
-document.querySelector('.restart').addEventListener('click', () => {
+element.restart.addEventListener('click', () => {
   game.restart();
-  document.querySelector('.restart').classList.add('hidden');
-  document.querySelector('.start').classList.remove('hidden');
-  document.querySelector('.message-start').classList.remove('hidden');
+  element.restart.classList.add('hidden');
+  element.start.classList.remove('hidden');
+  element.start.classList.remove('hidden');
 
   document.querySelector('.message-lose').className =
     'message message-lose hidden';
 
-  document.querySelector('.message-win').className =
-    'message message-win hidden';
+  element.win.className = 'message message-win hidden';
 
   displayBoard();
 });

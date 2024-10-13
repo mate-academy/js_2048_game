@@ -83,10 +83,8 @@ body {
 
 .game-header {
   display: flex;
-  flex-direction: column;
   width: 100%;
   justify-content: space-between;
-  gap: 10px;
   margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
@@ -95,7 +93,7 @@ body {
 h1 {
   background: #edc22e;
   color: #f9f6f2;
-  width: 100%;
+  width: 75px;
   height: 75px;
   font-size: 24px;
   border-radius: 5px;
@@ -118,13 +116,11 @@ h1 {
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
-  margin: 0;
+  margin: 0 8px 0 0;
 }
 
 .controls {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
 }
 
 .button {
