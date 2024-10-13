@@ -23,6 +23,7 @@ function emptyField() {
 function updateCell(arr, add) {
   const cell = fieldCells[arr[0]][arr[1]];
   const classes = cell.classList;
+
   if (add) {
     if (classes[1]) {
       cell.classList.remove(classes[1]);
@@ -81,5 +82,38 @@ document.addEventListener('keydown', (e) => {
       game.moveDown();
       move(game.grid);
       break;
+  }
+});
+
+let startX;
+let startY;
+
+document.addEventListener('touchstart', (e) => {
+  startX = e.touches[0].pageX;
+  startY = e.touches[0].pageY;
+});
+
+document.addEventListener('touchend', (e) => {
+  const endX = e.changedTouches[0].pageX;
+  const endY = e.changedTouches[0].pageY;
+  const deltaX = endX - startX;
+  const deltaY = endY - startY;
+
+  if(Math.abs(deltaX) > Math.abs(deltaY)) {
+    if(deltaX > 0) {
+      game.moveRight();
+      move(game.grid);
+    } else {
+      game.moveLeft();
+      move(game.grid);
+    }
+  } else {
+    if(deltaY > 0) {
+      game.moveDown();
+      move(game.grid);
+    } else {
+      game.moveUp();
+      move(game.grid);
+    }
   }
 });

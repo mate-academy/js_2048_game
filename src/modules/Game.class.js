@@ -6,19 +6,23 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
-  static STATUS = {
-    idle: 'idle',
-    playing: 'playing',
-    win: 'win',
-    lose: 'lose',
-  };
+  static get STATUS() {
+    return {
+      idle: 'idle',
+      playing: 'playing',
+      win: 'win',
+      lose: 'lose',
+    };
+  }
 
-  static INITIAL_STATE = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  static get INITIAL_STATE() {
+    return [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+  }
 
   constructor(initialState = Game.INITIAL_STATE) {
     this.grid = initialState;
@@ -28,48 +32,43 @@ class Game {
   }
 
   moveLeft() {
-    for (let i = 0; i < this.grid.length; i++) {
-      let newRow = [];
-      this.grid[i].forEach((cell) => {
-        if (cell) {
-          newRow.push(cell);
-        }
-      });
+    let newGrid = this.move('left');
 
-      newRow = this.mergeCells(newRow);
+    if (newGrid) {
+      this.grid = newGrid;
 
-      while (newRow.length < 4) {
-        newRow.push(0);
-      }
-
-      this.grid[i] = newRow;
+      this.getRandomCell();
     }
-
-    this.getRandomCell();
   }
 
   moveRight() {
-    for (let i = 0; i < this.grid.length; i++) {
-      let newRow = [];
-      this.grid[i].forEach((cell) => {
-        if (cell) {
-          newRow.push(cell);
-        }
-      });
+    let newGrid = this.move('right');
 
-      newRow = this.mergeCells(newRow);
-
-      while (newRow.length < 4) {
-        newRow.unshift(0);
-      }
-
-      this.grid[i] = newRow;
+    if (newGrid) {
+      this.grid = newGrid;
+      this.getRandomCell();
     }
-
-    this.getRandomCell();
   }
-  moveUp() {}
-  moveDown() {}
+
+  moveUp() {
+    let columns = this.getGridData();
+    let newColumns = this.move('up', columns);
+
+    if (newColumns) {
+      this.grid = this.getGridData(newColumns);
+      this.getRandomCell();
+    }
+  }
+
+  moveDown() {
+    let columns = this.getGridData();
+    let newColumns = this.move('down', columns);
+
+    if (newColumns) {
+      this.grid = this.getGridData(newColumns);
+      this.getRandomCell();
+    }
+  }
 
   /**
    * @returns {number}
@@ -115,6 +114,43 @@ class Game {
   }
 
   // Add your own methods here
+  move(direction, grid = this.grid) {
+    let newGrid = [];
+    for (let i = 0; i < grid.length; i++) {
+      let newRow = [];
+
+      grid[i].forEach((cell) => {
+        if (cell) {
+          newRow.push(cell);
+        }
+      });
+
+      newRow = this.mergeCells(newRow);
+
+      while (newRow.length < 4) {
+        if (direction === 'left' || direction === 'up') {
+          newRow.push(0);
+        }
+
+        if (direction === 'right' || direction === 'down') {
+          newRow.unshift(0);
+        }
+      }
+
+      newGrid.push(newRow);
+    }
+
+    for (let i = 0; i < grid.length; i++) {
+      for (let j = 0; j < newGrid.length; j++) {
+        if (grid[i][j] !== newGrid[i][j]) {
+          return newGrid;
+        }
+      }
+    }
+
+    return false;
+  }
+
   getRandomCell() {
     while (true) {
       const totalCells = this.grid.length * this.grid[0].length;
@@ -131,6 +167,16 @@ class Game {
     }
   }
 
+  getGridData(grid = this.grid) {
+    let data = [];
+
+    for (let i = 0; i < grid.length; i++) {
+      data.push(grid.map((row) => row[i]));
+    }
+
+    return data;
+  }
+
   isEmpty(cell) {
     return cell === 0;
   }
@@ -138,15 +184,17 @@ class Game {
   mergeCells(row) {
     const newRow = [];
     let i = 0;
-    while(i < row.length) {
-      if(row[i] !== 0 && row[i] === row[i+1]) {
+
+    while (i < row.length) {
+      if (row[i] !== 0 && row[i] === row[i + 1]) {
         newRow.push(row[i] * 2);
         i += 2;
       } else {
         newRow.push(row[i]);
-        i++
+        i++;
       }
     }
+
     return newRow;
   }
 }
