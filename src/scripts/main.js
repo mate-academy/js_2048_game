@@ -5,7 +5,6 @@ const Game = require('../modules/Game.class');
 const game = new Game();
 
 // Write your code here
-
 const element = {
   start: document.querySelector('.start'),
   restart: document.querySelector('.restart'),
