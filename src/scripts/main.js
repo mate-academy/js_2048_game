@@ -12,9 +12,13 @@ let score = 0;
 let gameStarted = false;
 
 function createEmptyGrid() {
-  grid = Array(4)
-    .fill(null)
-    .map(() => Array(4).fill(0));
+  grid = [];
+
+  for (let i = 0; i < 4; i++) {
+    const row = Array(4).fill(0);
+
+    grid.push(row);
+  }
 }
 
 function addRandomTile() {
@@ -156,6 +160,11 @@ function transpose(matrix) {
 }
 
 function handleKeyPress(ev) {
+  const validKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+
+  // Перевірка, чи натиснута клавіша є стрілкою
+  if (!validKeys.includes(ev.key)) return;
+
   switch (ev.key) {
     case 'ArrowLeft':
       moveLeft();
@@ -170,6 +179,7 @@ function handleKeyPress(ev) {
       moveDown();
       break;
   }
+
   addRandomTile();
   updateGameField();
   scoreElement.textContent = score;
