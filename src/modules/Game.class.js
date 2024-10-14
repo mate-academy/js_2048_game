@@ -25,9 +25,9 @@ class Game {
   }
 
   constructor(initialState = Game.INITIAL_STATE) {
-    this.grid = initialState;
     this.status = Game.STATUS.idle;
-    this.state = this.grid;
+    this.initialState = initialState;
+    this.state = this.initialState.map((row) => row.slice());
     this.score = 0;
     this.moves = 0;
   }
@@ -39,6 +39,10 @@ class Game {
       this.state = newGrid;
 
       this.getRandomCell();
+
+      if (!this.hasAvailableMoves(newGrid)) {
+        this.lose();
+      }
     }
   }
 
@@ -48,6 +52,10 @@ class Game {
     if (newGrid) {
       this.state = newGrid;
       this.getRandomCell();
+
+      if (!this.hasAvailableMoves(newGrid)) {
+        this.lose();
+      }
     }
   }
 
@@ -58,6 +66,10 @@ class Game {
     if (newColumns) {
       this.state = this.getGridData(newColumns);
       this.getRandomCell();
+
+      if (!this.hasAvailableMoves(newColumns)) {
+        this.lose();
+      }
     }
   }
 
@@ -68,6 +80,10 @@ class Game {
     if (newColumns) {
       this.state = this.getGridData(newColumns);
       this.getRandomCell();
+
+      if (!this.hasAvailableMoves(newColumns)) {
+        this.lose();
+      }
     }
   }
 
@@ -95,13 +111,7 @@ class Game {
   restart() {
     this.status = Game.STATUS.idle;
     this.score = 0;
-
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.state = this.initialState.map((row) => row.slice());
   }
 
   // Add your own methods here
@@ -114,13 +124,17 @@ class Game {
   }
 
   move(direction, grid = this.state) {
+    if (this.status !== 'playing') {
+      return false;
+    }
+
     const newGrid = [];
 
     for (let i = 0; i < grid.length; i++) {
       let newRow = grid[i].filter((cell) => cell);
 
       if (newRow.length > 1) {
-        newRow = this.mergeCells(newRow);
+        newRow = this.mergeCells(newRow, direction);
       }
 
       while (newRow.length < 4) {
@@ -132,10 +146,6 @@ class Game {
       }
 
       newGrid.push(newRow);
-    }
-
-    if (!this.hasAvailableMoves(newGrid)) {
-      this.lose();
     }
 
     return JSON.stringify(grid) !== JSON.stringify(newGrid) ? newGrid : false;
@@ -191,13 +201,18 @@ class Game {
     return cell === 0;
   }
 
-  mergeCells(row) {
+  mergeCells(row, direction) {
+    let currentRow = row;
     const newRow = [];
     let i = 0;
 
-    while (i < row.length) {
-      if (row[i] !== 0 && row[i] === row[i + 1]) {
-        const sum = row[i] * 2;
+    if (direction === 'right' || direction === 'down') {
+      currentRow = [...currentRow].reverse();
+    }
+
+    while (i < currentRow.length) {
+      if (currentRow[i] !== 0 && currentRow[i] === currentRow[i + 1]) {
+        const sum = currentRow[i] * 2;
 
         this.score += sum;
         newRow.push(sum);
@@ -207,9 +222,13 @@ class Game {
         }
         i += 2;
       } else {
-        newRow.push(row[i]);
+        newRow.push(currentRow[i]);
         i++;
       }
+    }
+
+    if (direction === 'right' || direction === 'down') {
+      return newRow.reverse();
     }
 
     return newRow;

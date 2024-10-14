@@ -52,11 +52,11 @@ function move(grid) {
 }
 
 function checkStatus() {
-  if (game.getStatus() === 'win') {
+  if (game.status === 'win') {
     messageWin.classList.remove('hidden');
   }
 
-  if (game.getStatus() === 'lose') {
+  if (game.status === 'lose') {
     messageLose.classList.remove('hidden');
   }
 }
@@ -65,6 +65,7 @@ button.addEventListener('click', (e) => {
   if ([...e.target.classList].includes('start')) {
     game.start();
     move(game.state);
+
     messageStart.classList.add('hidden');
 
     button.classList.remove('start');
@@ -73,10 +74,11 @@ button.addEventListener('click', (e) => {
   } else {
     game.restart();
     score.textContent = 0;
+    emptyField();
+
     messageLose.classList.add('hidden');
     messageWin.classList.add('hidden');
     messageStart.classList.remove('hidden');
-    emptyField();
 
     button.classList.remove('restart');
     button.classList.add('start');
@@ -85,52 +87,24 @@ button.addEventListener('click', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
-  switch (e.code) {
-    case 'ArrowLeft':
-      game.moveLeft();
-      move(game.state);
-      break;
-    case 'ArrowRight':
-      game.moveRight();
-      move(game.state);
-      break;
-    case 'ArrowUp':
-      game.moveUp();
-      move(game.state);
-      break;
-    case 'ArrowDown':
-      game.moveDown();
-      move(game.state);
-      break;
-  }
-});
-
-document.addEventListener('touchstart', (e0) => {
-  const startX = e0.touches[0].pageX;
-  const startY = e0.touches[0].pageY;
-
-  document.addEventListener('touchend', (e) => {
-    const endX = e.changedTouches[0].pageX;
-    const endY = e.changedTouches[0].pageY;
-    const deltaX = endX - startX;
-    const deltaY = endY - startY;
-
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      if (deltaX > 0) {
-        game.moveRight();
-        move(game.state);
-      } else {
+  if (game.status === 'playing') {
+    switch (e.code) {
+      case 'ArrowLeft':
         game.moveLeft();
         move(game.state);
-      }
-    } else {
-      if (deltaY > 0) {
-        game.moveDown();
+        break;
+      case 'ArrowRight':
+        game.moveRight();
         move(game.state);
-      } else {
+        break;
+      case 'ArrowUp':
         game.moveUp();
         move(game.state);
-      }
+        break;
+      case 'ArrowDown':
+        game.moveDown();
+        move(game.state);
+        break;
     }
-  });
+  }
 });
