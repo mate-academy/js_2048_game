@@ -108,3 +108,51 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+field.addEventListener('touchstart', handleTouchStart, { passive: true });
+field.addEventListener('touchmove', handleTouchMove, { passive: true });
+field.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+let touchStartX, touchStartY, swipeDirection;
+
+function handleTouchStart(e) {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}
+
+function handleTouchMove(e) {
+  const currentX = e.touches[0].clientX;
+  const currentY = e.touches[0].clientY;
+
+  const swipeX = currentX - touchStartX;
+  const swipeY = currentY - touchStartY;
+
+  if (Math.abs(swipeX) > Math.abs(swipeY)) {
+    swipeDirection = swipeX > 0 ? 'right' : 'left';
+  } else {
+    swipeDirection = swipeY > 0 ? 'down' : 'up';
+  }
+}
+
+function handleTouchEnd(e) {
+  if (game.status === 'playing') {
+    switch (swipeDirection) {
+      case 'left':
+        game.moveLeft();
+        move(game.state);
+        break;
+      case 'right':
+        game.moveRight();
+        move(game.state);
+        break;
+      case 'up':
+        game.moveUp();
+        move(game.state);
+        break;
+      case 'down':
+        game.moveDown();
+        move(game.state);
+        break;
+    }
+  }
+}
