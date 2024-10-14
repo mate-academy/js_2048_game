@@ -4,79 +4,71 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #252526;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  overflow: hidden;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #595959;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #fff;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #0c47677e;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #235a68;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #315b52;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: #566e3d;
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    background: #888945;
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    background: #a19749;
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    background: #dc9f36;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: #ed9c2b;
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    background: #fe9920;
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    background: #fc8921;
   }
 
   &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    background: #fa7921;
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: #404040;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -91,8 +83,8 @@ body {
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: #fa7921;
+  color: #fff;
   width: 75px;
   height: 75px;
   font-size: 24px;
@@ -109,11 +101,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #404040;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #fff;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -127,7 +119,7 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: #fff;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
@@ -138,27 +130,27 @@ h1 {
 }
 
 .start {
-  background: #1dae28;
+  background: #56b43d;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: #438a2f;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #9113008b;
 
   &:hover {
-    background: #f87474;
+    background: #911400;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #404040;
+  color: #fff;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
@@ -177,8 +169,8 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: #fa7921;
+  color: #fff;
 }
 
 .message-container {
