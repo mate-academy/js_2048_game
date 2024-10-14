@@ -1,24 +1,24 @@
-const Game = require('../modules/Game.class');
+// const Game = require('../modules/Game.class');
 
 // eslint-disable-next-line no-unused-expressions
 ('use strict');
 
 // Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../modules/Game.class');
+const game = new Game();
 
 // Write your code here
 document.addEventListener('DOMContentLoaded', () => {
-  const game = new Game();
+  'use strict';
 
   const startButton = document.getElementById('start-button');
   const scoreElement = document.getElementById('score');
   const statusElement = document.getElementById('status');
   const gameBoard = document.getElementById('game-board');
+  const cells = gameBoard.getElementsByClassName('field-cell');
 
   function updateUI() {
     const state = game.getState();
-    const cells = gameBoard.getElementsByClassName('field-cell');
 
     for (let i = 0; i < cells.length; i++) {
       const cell = cells[i];
@@ -44,11 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
       game.start();
     }
     updateUI();
-    startButton.textContent = 'Restart';
+
+    startButton.textContent =
+      game.getStatus() === 'playing' ? 'Restart' : 'Start';
   });
 
   // eslint-disable-next-line no-shadow
-  document.addEventListener('keydown', (event) => {
+  gameBoard.addEventListener('keydown', (event) => {
     let moved = false;
 
     switch (event.key) {
