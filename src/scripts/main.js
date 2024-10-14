@@ -115,6 +115,8 @@ function showLoseMessage() {
 }
 
 function moveLeft() {
+  let moved = false;
+
   for (let i = 0; i < 4; i++) {
     const filteredRow = grid[i].filter((value) => value !== 0);
     const newRow = [];
@@ -124,6 +126,7 @@ function moveLeft() {
         newRow.push(filteredRow[j] * 2);
         score += filteredRow[j] * 2;
         j++;
+        moved = true;
       } else {
         newRow.push(filteredRow[j]);
       }
@@ -133,26 +136,44 @@ function moveLeft() {
       newRow.push(0);
     }
 
+    if (grid[i].toString() !== newRow.toString()) {
+      moved = true;
+    }
+
     grid[i] = newRow;
   }
+
+  return moved;
 }
 
 function moveRight() {
   grid.forEach((row) => row.reverse());
-  moveLeft();
+
+  const moved = moveLeft();
+
   grid.forEach((row) => row.reverse());
+
+  return moved;
 }
 
 function moveUp() {
   grid = transpose(grid);
-  moveLeft();
+
+  const moved = moveLeft();
+
   grid = transpose(grid);
+
+  return moved;
 }
 
 function moveDown() {
   grid = transpose(grid);
-  moveRight();
+
+  const moved = moveRight();
+
   grid = transpose(grid);
+
+  return moved;
 }
 
 function transpose(matrix) {
@@ -162,30 +183,35 @@ function transpose(matrix) {
 function handleKeyPress(ev) {
   const validKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
 
-  // Перевірка, чи натиснута клавіша є стрілкою
-  if (!validKeys.includes(ev.key)) return;
+  if (!validKeys.includes(ev.key)) {
+    return;
+  }
+
+  let moved = false;
 
   switch (ev.key) {
     case 'ArrowLeft':
-      moveLeft();
+      moved = moveLeft();
       break;
     case 'ArrowRight':
-      moveRight();
+      moved = moveRight();
       break;
     case 'ArrowUp':
-      moveUp();
+      moved = moveUp();
       break;
     case 'ArrowDown':
-      moveDown();
+      moved = moveDown();
       break;
   }
 
-  addRandomTile();
-  updateGameField();
-  scoreElement.textContent = score;
+  if (moved) {
+    addRandomTile();
+    updateGameField();
+    scoreElement.textContent = score;
 
-  if (checkWinCondition() || checkLoseCondition()) {
-    return 0;
+    if (checkWinCondition() || checkLoseCondition()) {
+      return 0;
+    }
   }
 }
 
