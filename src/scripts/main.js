@@ -11,8 +11,8 @@ const changeStartButton = (button) => {
 };
 
 const hideMessageContainer = () => {
-  const messageContainer = document.querySelector('.message-start');
-  messageContainer.classList.add('hidden');
+  const messageContainer = [...document.querySelectorAll('.message')];
+  messageContainer.forEach((message) => message.classList.add('hidden'));
 };
 
 const initializeGame = () => {
@@ -27,6 +27,13 @@ const initializeGame = () => {
         hideMessageContainer();
       } else if (game.getStatus() === 'playing') {
         game.restart();
+
+        game.start();
+      } else if (game.getStatus() === 'lose') {
+        game.restart();
+
+        game.start();
+        hideMessageContainer();
       }
     });
   }

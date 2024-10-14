@@ -423,7 +423,7 @@ class Game {
     this.status = 'idle';
     this.currentState = this.initialState.map((row) => [...row]);
     this.updateTheBoard();
-    // this.resetTheField();
+    // this.updateTheScore();
   }
 
   /**
