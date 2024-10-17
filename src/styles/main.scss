@@ -21,6 +21,11 @@ body {
   vertical-align: center;
   user-select: none;
 
+  position: relative;
+  transition:
+    transform 0.2s ease-in-out,
+    background-color 0.2s ease-in-out;
+
   &--2 {
     background: #eee4da;
   }
@@ -72,6 +77,25 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+  }
+}
+
+.field-cell.new-cell {
+  animation: pop-in 0.5s ease-in-out;
+}
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0.8);
+    background-color: #ffe600;
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -148,6 +172,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  font-size: 15px;
 
   &:hover {
     background: #f87474;
@@ -164,6 +189,10 @@ h1 {
   border-radius: 5px;
   font-size: 20px;
 }
+
+// .message-start {
+//   background: #1dae28;
+// }
 
 .hidden {
   display: none;
