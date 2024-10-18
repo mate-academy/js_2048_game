@@ -10,12 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const startButton = document.querySelector('.start');
   const gameRows = document.querySelectorAll('.field-row');
 
-  function resultMessage(element) {
-    element.classList.remove('hidden');
-    startButton.classList.remove('hidden', 'start');
-    startButton.classList.add('restart');
-    startButton.innerText = 'Restart';
-  }
+
 
   function removeModificators(item) {
     const classes = item.className.split(' ');
@@ -31,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (result === 'win' || result === 'lose') {
       const message = document.querySelector(`.message-${result}`);
 
-      resultMessage(message);
+      message.classList.remove('hidden');
     }
   }
 
@@ -60,9 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageStart = document.querySelector('.message-start');
 
     game.start();
-    startButton.classList.add('hidden');
     messageStart.classList.add('hidden');
-
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+    startButton.innerText = 'Restart';
     if (game.getStatus() === 'win' || game.getStatus() === 'lose') {
       game.restart();
       location.reload();
