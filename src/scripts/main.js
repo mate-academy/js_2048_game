@@ -18,6 +18,7 @@ function emptyField() {
     [...row].forEach((cell) => {
       if (cell.classList.length === 2) {
         cell.classList.remove(cell.classList[1]);
+        cell.classList.remove(cell.classList[1]);
         cell.textContent = '';
       }
     });
@@ -27,17 +28,36 @@ function emptyField() {
 function updateCell(arr, add) {
   const cell = fieldCells[arr[0]][arr[1]];
   const classes = cell.classList;
+  const index = [...classes].findIndex(
+    (element) => element.startsWith('field-cell--'),
+    0,
+  );
+
+  if (index !== -1) {
+    cell.classList.remove(classes[index]);
+  }
+
+  if ([...classes].includes('new')) {
+    cell.classList.remove('new');
+  }
 
   if (add) {
-    if (classes[1]) {
-      cell.classList.remove(classes[1]);
+    if (
+      game.animation.newCell.length === 0 ||
+      arr.every((e, i) => e === game.animation.newCell[i])
+    ) {
+      cell.classList.add('new');
     }
 
     cell.classList.add(`field-cell--${arr[2]}`);
     cell.textContent = `${arr[2]}`;
   } else {
-    cell.classList.remove(classes[1]);
+    cell.classList.remove(classes[index]);
     cell.textContent = '';
+  }
+
+  if (game.animation.mergeCell.includes(arr)) {
+    cell.classList.add('merge');
   }
 }
 

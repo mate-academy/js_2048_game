@@ -30,6 +30,10 @@ class Game {
     this.state = this.initialState.map((row) => row.slice());
     this.score = 0;
     this.moves = 0;
+
+    this.animation = {
+      newCell: [],
+    };
   }
 
   moveLeft() {
@@ -38,7 +42,7 @@ class Game {
     if (newGrid) {
       this.state = newGrid;
 
-      this.getRandomCell();
+      this.animation.newCell = this.getRandomCell();
 
       if (!this.hasAvailableMoves(newGrid)) {
         this.lose();
@@ -51,7 +55,7 @@ class Game {
 
     if (newGrid) {
       this.state = newGrid;
-      this.getRandomCell();
+      this.animation.newCell = this.getRandomCell();
 
       if (!this.hasAvailableMoves(newGrid)) {
         this.lose();
@@ -65,7 +69,7 @@ class Game {
 
     if (newColumns) {
       this.state = this.getGridData(newColumns);
-      this.getRandomCell();
+      this.animation.newCell = this.getRandomCell();
 
       if (!this.hasAvailableMoves(newColumns)) {
         this.lose();
@@ -79,7 +83,7 @@ class Game {
 
     if (newColumns) {
       this.state = this.getGridData(newColumns);
-      this.getRandomCell();
+      this.animation.newCell = this.getRandomCell();
 
       if (!this.hasAvailableMoves(newColumns)) {
         this.lose();
@@ -215,6 +219,7 @@ class Game {
         const sum = currentRow[i] * 2;
 
         this.score += sum;
+
         newRow.push(sum);
 
         if (sum === 2048) {
