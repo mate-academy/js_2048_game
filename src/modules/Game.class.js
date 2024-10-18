@@ -1,4 +1,10 @@
 'use strict';
+import {
+  DIRECTION_LEFT,
+  DIRECTION_RIGHT,
+  DIRECTION_UP,
+  DIRECTION_DOWN,
+} from '../utils/variables';
 
 /**
  * This class represents the game.
@@ -75,7 +81,7 @@ class Game {
       return;
     }
 
-    const moved = this.move('left');
+    const moved = this.move(DIRECTION_LEFT);
 
     if (moved) {
       this.addRandomTile();
@@ -88,7 +94,7 @@ class Game {
       return;
     }
 
-    const moved = this.move('right');
+    const moved = this.move(DIRECTION_RIGHT);
 
     if (moved) {
       this.addRandomTile();
@@ -101,7 +107,7 @@ class Game {
       return;
     }
 
-    const moved = this.move('up');
+    const moved = this.move(DIRECTION_UP);
 
     if (moved) {
       this.addRandomTile();
@@ -114,7 +120,7 @@ class Game {
       return;
     }
 
-    const moved = this.move('down');
+    const moved = this.move(DIRECTION_DOWN);
 
     if (moved) {
       this.addRandomTile();
@@ -170,21 +176,21 @@ class Game {
     };
 
     switch (direction) {
-      case 'left':
+      case DIRECTION_LEFT:
         this.state = moveStateLeft(this.state);
         break;
 
-      case 'right':
+      case DIRECTION_RIGHT:
         this.state = moveStateRight(this.state);
         break;
 
-      case 'up':
+      case DIRECTION_UP:
         this.state = this.transposeState(
           moveStateLeft(this.transposeState(this.state)),
         );
         break;
 
-      case 'down':
+      case DIRECTION_DOWN:
         this.state = this.transposeState(
           moveStateRight(this.transposeState(this.state)),
         );
