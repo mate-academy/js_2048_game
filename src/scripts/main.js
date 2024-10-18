@@ -10,8 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const startButton = document.querySelector('.start');
   const gameRows = document.querySelectorAll('.field-row');
 
-
-
   function removeModificators(item) {
     const classes = item.className.split(' ');
 
@@ -54,15 +52,16 @@ document.addEventListener('DOMContentLoaded', () => {
   startButton.addEventListener('click', () => {
     const messageStart = document.querySelector('.message-start');
 
-    game.start();
+    if (game.getStatus() === 'idle') {
+      game.start();
+    } else {
+      game.restart();
+      location.reload();
+    }
     messageStart.classList.add('hidden');
     startButton.classList.remove('start');
     startButton.classList.add('restart');
     startButton.innerText = 'Restart';
-    if (game.getStatus() === 'win' || game.getStatus() === 'lose') {
-      game.restart();
-      location.reload();
-    }
     replaceItems();
   });
 
