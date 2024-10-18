@@ -185,3 +185,33 @@ h1 {
   width: 100%;
   height: 150px;
 }
+
+@keyframes crack {
+  0% {
+    transform: translate(0, 0) rotate(0);
+  }
+  10% {
+    transform: translate(-1px, -1px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(1px, 1px) rotate(1deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(0.5deg);
+  }
+  50% {
+    transform: translate(-0.5px, -0.5px) rotate(0);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  80% {
+    transform: scale(1.05);
+  }
+  90% {
+    transform: scale(0.97);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
