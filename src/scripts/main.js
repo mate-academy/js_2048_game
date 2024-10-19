@@ -1,6 +1,5 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const game = new Game();
 
@@ -34,11 +33,13 @@ button.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
+  const eventKey = e.key;
+
   if (game.status !== 'playing') {
     return;
   }
 
-  switch (e.key) {
+  switch (eventKey) {
     case 'ArrowUp':
       game.moveUp();
       break;
