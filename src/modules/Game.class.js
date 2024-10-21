@@ -20,47 +20,270 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(initialState = null) {
+    this.board = initialState || this.generateEmptyBoard();
+    this.size = 4;
+    this.score = 0;
+    this.status = 'idle';
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  generateEmptyBoard() {
+    return Array.from({length: 4}, () => Array(4).fill(0));
+  }
+
+  addRandomTile() {
+    const emptyCells = [];
+    for(let i = 0; i < 4; i++){
+      for(let j = 0; j < 4; j++){
+        if(this.board[i][j] === 0){
+          emptyCells.push([i, j]);
+        }
+      }
+    }
+    if(emptyCells.length > 0){
+      const [x, y] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      this.board[x][y] = Math.random() < 0.9 ? 2 : 4;
+    }
+  }
+
+  moveLeft() {
+    if(this.status !== 'playing'){
+      return;
+    }
+
+    let moved = false;
+
+    for(let row = 0; row < 4; row++){
+      let newRow = this.board[row].filter(cell => cell !== 0);
+
+      for(let i = 0; i < newRow.length - 1; i++){
+        if(newRow[i] === newRow[i + 1]){
+          newRow[i] *= 2;
+          this.score += newRow[i];
+          newRow.splice(i + 1, 1);
+          newRow.push(0);
+        }
+      }
+
+      while(newRow.length < 4){
+        newRow.push(0);
+      }
+      if (JSON.stringify(newRow) !== JSON.stringify(this.board[row])) {
+        moved = true;
+      }
+      this.board[row] = newRow;
+    }
+
+    if(moved){
+      this.addRandomTile();
+    }
+    this.checkGameOver();
+  }
+
+  moveRight() {
+    if(this.status !== 'playing'){
+      return;
+    }
+
+    let moved = false;
+
+    for(let row = 0; row < 4; row++){
+      let newRow = this.board[row].filter(cell => cell !== 0);
+
+      for(let i = newRow.length - 1; i > 0; i--){
+        if(newRow[i] === newRow[i - 1]){
+          newRow[i] *= 2;
+          this.score += newRow[i];
+          newRow.splice(i - 1, 1);
+          newRow.unshift(0);
+        }
+      }
+
+      while(newRow.length < 4){
+        newRow.unshift(0);
+      }
+      if (JSON.stringify(newRow) !== JSON.stringify(this.board[row])) {
+        moved = true;
+      }
+      this.board[row] = newRow;
+    }
+
+    if(moved){
+      this.addRandomTile();
+    }
+    this.checkGameOver();
+  }
+
+  moveUp() {
+    if(this.status !== 'playing'){
+      return;
+    }
+
+    let moved = false;
+    const previousBoard = JSON.parse(JSON.stringify(this.board));
+
+    for(let col = 0; col < 4; col++){
+      let newCol = [];
+
+      for(let row = 0; row < 4; row++){
+        if(this.board[row][col] !== 0){
+          newCol.push(this.board[row][col]);
+        }
+      }
+
+      for(let i = 0; i < newCol.length - 1; i++){
+        if(newCol[i] === newCol[i + 1]){
+          newCol[i] *= 2;
+          this.score += newCol[i];
+          newCol.splice(i + 1, 1);
+        }
+      }
+
+      while(newCol.length < 4){
+        newCol.push(0);
+      }
+
+      if (JSON.stringify(this.board) !== JSON.stringify(previousBoard)) {
+        moved = true;
+      }
+
+      for(let row = 0; row < 4; row++){
+        this.board[row][col] = newCol[row];
+      }
+    }
+    if(moved){
+      this.addRandomTile();
+    }
+    this.checkGameOver();
+  }
+
+  moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    let moved = false;
+
+    for (let col = 0; col < 4; col++) {
+      let newCol = [];
+      for (let row = 0; row < 4; row++) {
+        if (this.board[row][col] !== 0) {
+          newCol.push(this.board[row][col]);
+        }
+      }
+
+      for (let i = newCol.length - 1; i > 0; i--) {
+        if (newCol[i] === newCol[i - 1]) {
+          newCol[i] *= 2;
+          this.score += newCol[i];
+          newCol.splice(i - 1, 1);
+          newCol.unshift(0);
+        }
+      }
+
+      while (newCol.length < 4) {
+        newCol.unshift(0);
+      }
+
+      for (let row = 0; row < 4; row++) {
+        if (this.board[row][col] !== newCol[row]) {
+          moved = true;
+        }
+        this.board[row][col] = newCol[row];
+      }
+    }
+
+
+    if (moved) {
+      this.addRandomTile();
+    }
+    this.checkGameOver();
+  }
+
+
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.board;
+  }
 
   /**
    * Returns the current game status.
    *
    * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
    *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
+   * idle - the game has not started yet (the initial state);
+   * playing - the game is in progress;
+   * win - the game is won;
+   * lose - the game is lost
    */
-  getStatus() {}
+
+  checkGameOver(){
+    if(this.isWin()){
+      this.status = 'win';
+    } else if (this.isLose()){
+      this.status = 'lose';
+    }
+  }
+
+  isWin(){
+    for(let i of this.board){
+      if(i.includes(2048)){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  isLose(){
+    for(let row = 0; row < 4; row++){
+      for(let col = 0; col < 4; col++){
+        if(this.board[row][col] === 0){
+          return false;
+        }
+        if (col < 3 && this.board[row][col] === this.board[row][col + 1]) {
+          return false;
+        }
+        if (row < 3 && this.board[row][col] === this.board[row + 1][col]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    if(this.status === 'idle'){
+      this.status = 'playing';
+      this.addRandomTile();
+      this.addRandomTile();
+    }
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+      this.score = 0;
+      this.status = 'idle';
+      this.board = this.generateEmptyBoard();
+  }
 
   // Add your own methods here
 }
