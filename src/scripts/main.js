@@ -1,6 +1,7 @@
 'use strict';
 
 const Game = require('../modules/Game.class');
+
 const game = new Game();
 
 const button = document.querySelector('button');
@@ -54,10 +55,6 @@ function updateCell(arr, add) {
   } else {
     cell.classList.remove(classes[index]);
     cell.textContent = '';
-  }
-
-  if (game.animation.mergeCell.includes(arr)) {
-    cell.classList.add('merge');
   }
 }
 
