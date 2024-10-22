@@ -1,24 +1,18 @@
 'use strict';
 
 class Game {
-  constructor(initialState = this.generateEmptyBoard()) {
-    this.initialState = initialState;
-    this.state = this.copyState(this.initialState);
-    this.board = this.state;
-    this.score = 0;
+  constructor(t = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]) {
+    this.initialState = t;
+    this.copeInitialState = t.map((row) => [...row]);
+    this.board = this.copyState(this.copeInitialState);
     this.status = 'idle';
+    this.score = 0;
     this.firstMove = true;
     this.moved = false;
   }
 
   copyState(state) {
     return state.map((row) => [...row]);
-  }
-
-  generateEmptyBoard() {
-    return Array(4)
-      .fill()
-      .map(() => Array(4).fill(0));
   }
 
   getState() {
@@ -96,19 +90,25 @@ class Game {
       this.status = 'playing';
       this.addRandomCell();
       this.addRandomCell();
-
-      const startMessage = document.querySelector('.message-start');
-
-      if (startMessage) {
-        startMessage.classList.add('hidden');
-      }
     }
   }
 
   restart() {
-    this.board = this.initialState;
-    this.score = 0;
-    this.status = 'idle';
+      this.board = this.copyState(this.copeInitialState);
+      this.score = 0;
+      this.status = 'idle';
+      this.firstMove = true;
+
+      const startButton = document.querySelector('.button.start');
+      if (startButton) {
+        startButton.textContent = 'Start';
+        startButton.classList.remove('restart');
+      }
+
+      const startMessage = document.querySelector('.message-start');
+      if (startMessage) {
+        startMessage.classList.remove('hidden');
+      }
   }
 
   addRandomCell() {
@@ -159,15 +159,18 @@ class Game {
   handleFirstMove() {
     if (this.firstMove) {
       this.firstMove = false;
-
       const startButton = document.querySelector('.button.start');
-
       if (startButton) {
         startButton.textContent = 'Restart';
         startButton.classList.add('restart');
       }
+      const startMessage = document.querySelector('.message-start');
+      if (startMessage) {
+        startMessage.classList.add('hidden');
+      }
     }
   }
+
 
   checkGameOver() {
     if (!this.hasAvailableMoves()) {
