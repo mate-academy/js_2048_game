@@ -283,7 +283,11 @@ class Game {
    * Starts the game.
    */
   start() {
-    if (this.status === 'idle' || this.status === 'lose' || this.status === 'win') {
+    if (
+      this.status === 'idle' ||
+      this.status === 'lose' ||
+      this.status === 'win'
+    ) {
       this.status = 'playing';
       this.addRandomTile();
       this.addRandomTile();

@@ -8,7 +8,11 @@ const score = document.querySelector('.game-score');
 const notification = document.querySelector('.message-container');
 
 startButton.addEventListener('click', () => {
-  if (game.getStatus() === 'playing' || game.getStatus() === 'win' || game.getStatus() === 'lose') {
+  if (
+    game.getStatus() === 'playing' ||
+    game.getStatus() === 'win' ||
+    game.getStatus() === 'lose'
+  ) {
     game.restart();
     notification.querySelector('.message-win').classList.add('hidden');
     notification.querySelector('.message-lose').classList.add('hidden');
