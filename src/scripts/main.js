@@ -3,7 +3,7 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-const startButton = document.querySelector('.start');
+const startButton = document.querySelector('.button');
 const score = document.querySelector('.game-score');
 const notification = document.querySelector('.message-container');
 
@@ -19,7 +19,9 @@ startButton.addEventListener('click', () => {
   } else if (game.getStatus() === 'idle') {
     game.start();
     notification.querySelector('.message-start').classList.add('hidden');
-    startButton.textContent = 'restart';
+    startButton.textContent = 'Restart';
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
   }
   updateUI();
 });
