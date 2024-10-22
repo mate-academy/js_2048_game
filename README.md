@@ -1,69 +1,50 @@
-# 2048 game
+2048 Game
+=========
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+This project is a browser-based implementation of the popular 2048 puzzle game. The objective of the game is to combine tiles with the same numbers to create a tile with the number 2048.
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+Features
+--------
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
-  - constructor with `initialState` parameter (value is optional, defaults to the empty board)
-  - `getState()`
-  - `getScore()`
-  - `getStatus()`
-  - `moveLeft()`
-  - `moveRight()`
-  - `moveUp()`
-  - `moveDown()`
-  - `start()`
-  - `restart()`
+-   **Real-time Score Tracking**: The score updates dynamically as tiles merge.
+-   **Keyboard Controls**: Move tiles using the arrow keys (left, right, up, and down).
+-   **Winning and Losing States**: A message appears when you win or lose the game.
+-   **Restart Button**: Allows restarting the game at any time.
+-   **Modular Game Logic**: The game state, scoring, and tile movement are handled in a structured and modular way.
 
-3) Reference.
+Technologies Used
+-----------------
 
-That's it!
+-   **JavaScript (ES6+)**: Game logic, state management, and event handling.
+-   **HTML5**: Basic game structure and layout.
+-   **CSS3**: Styling for game board, tiles, and messages.
 
-Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) `Restart` button should reset the game to the initial state.
-12) Increase score with each move. The score should be increased by the sum of all merged cells.
-13) The game consists of 2 main parts:
-  - game logic written in `src/modules/Game.class.js` module that exports `Game` class
-  - game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
+How to Play
+-----------
 
-Hints:
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
-- Use `keydown` event and `event.key` property to handle arrow buttons presses
-    ```js
-    document.addEventListener('keydown', event => console.log(event.key));
-    ```
-- Adding animation to the game is optional. It is a bit tricky, but you can try it if you want. Probably, you will need to extend the Game class with additional methods and create a separate board storage with Tile entities to operate their corresponding DOM elements' positions.
+-   Press "Start" to begin the game.
+-   Use the **arrow keys** to move the tiles in the desired direction:
+    -   **Up**: Moves all tiles up.
+    -   **Down**: Moves all tiles down.
+    -   **Left**: Moves all tiles left.
+    -   **Right**: Moves all tiles right.
+-   Tiles with the same number will merge to form a new tile with double the value.
+-   The goal is to create a tile with the value **2048**.
+-   You win the game when you reach 2048. If no valid moves are left, you lose.
 
-You can change the HTML/CSS layout if you need it.
+Game Design
+-----------
 
-![Preview](./src/images/reference.png)
+The game board consists of a 4x4 grid. Each move slides all tiles in the chosen direction, and a new tile (2 or 4) randomly appears on the board. The challenge is to strategically combine the tiles while managing space on the grid.
 
-## Deploy and Pull Request
+Future Enhancements
+-------------------
 
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://mareksax.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+-   **Local Storage**: Save the game state between sessions.
+-   **Undo Feature**: Add the ability to undo the last move.
+-   **Mobile Support**: Improve touch-screen controls for mobile devices.
 
+Acknowledgments
+---------------
+
+-   The original 2048 game was created by Gabriele Cirulli. This project is an adaptation of the idea, created as a coding exercise to demonstrate the use of JavaScript for dynamic applications.
