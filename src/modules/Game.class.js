@@ -17,42 +17,53 @@ class Game {
   }
 
   move(direction) {
-    console.log(direction);
-    this.cellHistory = [];
+    if (this.getStatus() === 'playing') {
+      this.cellHistory = [];
 
-    const initBoard = JSON.stringify(this.board);
+      const initBoard = JSON.stringify(this.board);
 
-    switch (direction) {
-      case 'left':
-        this.moveCellLeft();
-        break;
-      case 'right':
-        this.moveCellRight();
-        break;
-      case 'up':
-        this.moveCellUp();
-        break;
-      case 'down':
-        this.moveCellDown();
-        break;
+      switch (direction) {
+        case 'left':
+          this.moveLeft(this.board);
+          break;
+        case 'right':
+          this.moveRight(this.board);
+          break;
+        case 'up':
+          this.moveUp(this.board);
+          break;
+        case 'down':
+          this.moveDown(this.board);
+          break;
+      }
+
+      if (JSON.stringify(this.board) !== initBoard) {
+        this.addRandomCell();
+        this.displayGame();
+      } else {
+        const checkboard = JSON.parse(JSON.stringify(this.board));
+
+        this.moveLeft(checkboard);
+        this.moveRight(checkboard);
+        this.moveUp(checkboard);
+        this.moveDown(checkboard);
+
+        if (JSON.stringify(checkboard) === initBoard) {
+          this.setStatus('lose');
+        }
+      }
     }
-
-    if (JSON.stringify(this.board) !== initBoard) {
-      this.addRandomCell();
-    }
-    this.displayGame();
-    console.log(this.board);
   }
 
   // #region Move Cells
 
-  moveCellLeft() {
-    for (let y = 0; y < this.board.length; y++) {
+  moveLeft(board) {
+    for (let y = 0; y < board.length; y++) {
       let index = 0;
 
-      for (let x = 0; x < this.board.length; x++) {
-        if (this.board[y][x] !== 0) {
-          const cellValue = this.board[y][x];
+      for (let x = 0; x < board.length; x++) {
+        if (board[y][x] !== 0) {
+          const cellValue = board[y][x];
 
           if (index !== x) {
             this.cellHistory.push({
@@ -68,12 +79,12 @@ class Game {
               move: true,
             });
 
-            this.board[y][index] = cellValue;
-            this.board[y][x] = 0;
+            board[y][index] = cellValue;
+            board[y][x] = 0;
           }
 
-          if (index > 0 && this.board[y][index] === this.board[y][index - 1]) {
-            const mergeValue = this.board[y][index] * 2;
+          if (index > 0 && board[y][index] === board[y][index - 1]) {
+            const mergeValue = board[y][index] * 2;
             const lastMove = this.cellHistory[this.cellHistory.length - 1];
 
             if (
@@ -99,23 +110,25 @@ class Game {
               });
             }
 
-            this.board[y][index - 1] = mergeValue;
-            this.board[y][index] = 0;
+            board[y][index - 1] = mergeValue;
+            board[y][index] = 0;
             index--;
           }
           index++;
         }
       }
     }
+
+    return board;
   }
 
-  moveCellRight() {
-    for (let y = 0; y < this.board.length; y++) {
-      let index = this.board.length - 1;
+  moveRight(board) {
+    for (let y = 0; y < board.length; y++) {
+      let index = board.length - 1;
 
-      for (let x = this.board.length - 1; x >= 0; x--) {
-        if (this.board[y][x] !== 0) {
-          const cellValue = this.board[y][x];
+      for (let x = board.length - 1; x >= 0; x--) {
+        if (board[y][x] !== 0) {
+          const cellValue = board[y][x];
 
           if (index !== x) {
             this.cellHistory.push({
@@ -131,15 +144,15 @@ class Game {
               move: true,
             });
 
-            this.board[y][index] = cellValue;
-            this.board[y][x] = 0;
+            board[y][index] = cellValue;
+            board[y][x] = 0;
           }
 
           if (
-            index < this.board.length - 1 &&
-            this.board[y][index] === this.board[y][index + 1]
+            index < board.length - 1 &&
+            board[y][index] === board[y][index + 1]
           ) {
-            const mergeValue = this.board[y][index] * 2;
+            const mergeValue = board[y][index] * 2;
 
             const lastMove = this.cellHistory[this.cellHistory.length - 1];
 
@@ -165,23 +178,25 @@ class Game {
               });
             }
 
-            this.board[y][index + 1] = mergeValue;
-            this.board[y][index] = 0;
+            board[y][index + 1] = mergeValue;
+            board[y][index] = 0;
             index++;
           }
           index--;
         }
       }
     }
+
+    return board;
   }
 
-  moveCellUp() {
-    for (let x = 0; x < this.board.length; x++) {
+  moveUp(board) {
+    for (let x = 0; x < board.length; x++) {
       let index = 0;
 
-      for (let y = 0; y < this.board.length; y++) {
-        if (this.board[y][x] !== 0) {
-          const cellValue = this.board[y][x];
+      for (let y = 0; y < board.length; y++) {
+        if (board[y][x] !== 0) {
+          const cellValue = board[y][x];
 
           if (index !== y) {
             this.cellHistory.push({
@@ -196,12 +211,12 @@ class Game {
               },
               move: true,
             });
-            this.board[index][x] = cellValue;
-            this.board[y][x] = 0;
+            board[index][x] = cellValue;
+            board[y][x] = 0;
           }
 
-          if (index > 0 && this.board[index][x] === this.board[index - 1][x]) {
-            const mergeValue = this.board[index][x] * 2;
+          if (index > 0 && board[index][x] === board[index - 1][x]) {
+            const mergeValue = board[index][x] * 2;
             const lastMove = this.cellHistory[this.cellHistory.length - 1];
 
             if (
@@ -225,23 +240,25 @@ class Game {
                 merge: true,
               });
             }
-            this.board[index - 1][x] = mergeValue;
-            this.board[index][x] = 0;
+            board[index - 1][x] = mergeValue;
+            board[index][x] = 0;
             index--;
           }
           index++;
         }
       }
     }
+
+    return board;
   }
 
-  moveCellDown() {
-    for (let x = 0; x < this.board.length; x++) {
-      let index = this.board.length - 1;
+  moveDown(board) {
+    for (let x = 0; x < board.length; x++) {
+      let index = board.length - 1;
 
-      for (let y = this.board.length - 1; y >= 0; y--) {
-        if (this.board[y][x] !== 0) {
-          const cellValue = this.board[y][x];
+      for (let y = board.length - 1; y >= 0; y--) {
+        if (board[y][x] !== 0) {
+          const cellValue = board[y][x];
 
           if (index !== y) {
             this.cellHistory.push({
@@ -256,15 +273,15 @@ class Game {
               },
               move: true,
             });
-            this.board[index][x] = cellValue;
-            this.board[y][x] = 0;
+            board[index][x] = cellValue;
+            board[y][x] = 0;
           }
 
           if (
-            index < this.board.length - 1 &&
-            this.board[index][x] === this.board[index + 1][x]
+            index < board.length - 1 &&
+            board[index][x] === board[index + 1][x]
           ) {
-            const mergeValue = this.board[index][x] * 2;
+            const mergeValue = board[index][x] * 2;
             const lastMove = this.cellHistory[this.cellHistory.length - 1];
 
             if (
@@ -288,14 +305,16 @@ class Game {
                 merge: true,
               });
             }
-            this.board[index + 1][x] = mergeValue;
-            this.board[index][x] = 0;
+            board[index + 1][x] = mergeValue;
+            board[index][x] = 0;
             index++;
           }
           index--;
         }
       }
     }
+
+    return board;
   }
 
   // #endregion
@@ -314,15 +333,19 @@ class Game {
     switch (stat) {
       case 'playing':
         this.status = 'playing';
+        this.setMessage();
         break;
       case 'idle':
         this.status = 'idle';
+        this.setMessage('start');
         break;
       case 'win':
         this.status = 'win';
+        this.setMessage('win');
         break;
       case 'lose':
         this.status = 'lose';
+        this.setMessage('lose');
         break;
       default:
     }
@@ -343,15 +366,39 @@ class Game {
     this.board = JSON.parse(JSON.stringify(this.initialState));
     this.addRandomCell();
     this.addRandomCell();
-
     this.displayGame();
-    console.log(this.board);
+  }
+
+  setMessage(message) {
+    const win = document.querySelector('.message-win');
+    const lose = document.querySelector('.message-lose');
+    const start = document.querySelector('.message-start');
+
+    lose.className = 'message message-lose hidden';
+    start.className = 'message message-start hidden';
+    win.className = 'message message-win hidden';
+
+    switch (message) {
+      case 'win':
+        win.className = 'message message-win';
+        break;
+      case 'lose':
+        lose.className = 'message message-lose';
+        break;
+      case 'start':
+        start.className = 'message message-start';
+        break;
+      default:
+    }
   }
 
   restart() {
     this.clearBoard();
     this.cellHistory = [];
-    this.start();
+    this.setStatus('idle');
+    this.startButton.textContent = 'Start';
+    this.startButton.className = 'button start';
+    this.scoreboard.textContent = 0;
   }
 
   getEmptyCell() {
@@ -386,20 +433,17 @@ class Game {
         },
         newCell: true,
       });
-    } else {
-      this.setStatus('lose');
     }
   }
 
   displayGame() {
     this.displayAnimateBoard();
-    // this.nonAnimateUpdateBoard();
     this.scoreboard.textContent = this.getScore();
   }
 
   displayAnimateBoard() {
     for (const cellMove of this.cellHistory) {
-      const perentElement = document.querySelector('.move-zone')
+      const perentElement = document.querySelector('.move-zone');
 
       if (cellMove.newCell) {
         const newBlock = document.createElement('div');
@@ -425,35 +469,27 @@ class Game {
         };
 
         newBlock.animate(keyFrames, newspaperTiming);
-
       } else {
+        if (this.getStatus() === 'playing') {
+          const movingBlock = document.getElementById(
+            `cell${cellMove.oldCoords.Y}${cellMove.oldCoords.X}`,
+          );
 
-        console.log(cellMove.oldCoords.X)
-        console.log(cellMove.oldCoords.Y)
-        const movingBlock = document.getElementById(`cell${cellMove.oldCoords.Y}${cellMove.oldCoords.X}`);
+          const nextBlockPosition = `cell${cellMove.newCoords.Y}${cellMove.newCoords.X}`;
 
-        const nextBlockPosition = `cell${cellMove.newCoords.Y}${cellMove.newCoords.X}`
-        if(document.querySelector('#'+nextBlockPosition)) {
-          // setTimeout(() => {document.querySelector('#'+nextBlockPosition).remove()}, 30);
-          document.querySelector('#'+nextBlockPosition).remove()
+          if (document.querySelector('#' + nextBlockPosition)) {
+            document.querySelector('#' + nextBlockPosition).remove();
+          }
+          movingBlock.id = nextBlockPosition;
+
+          movingBlock.className = `moving-block field-cell--${this.board[cellMove.newCoords.Y][cellMove.newCoords.X]}`;
+
+          movingBlock.textContent =
+            this.board[cellMove.newCoords.Y][cellMove.newCoords.X];
+
+          movingBlock.style.setProperty('--y', cellMove.newCoords.Y);
+          movingBlock.style.setProperty('--x', cellMove.newCoords.X);
         }
-        movingBlock.id = nextBlockPosition;
-
-        movingBlock.className = `moving-block field-cell--${this.board[cellMove.newCoords.Y][cellMove.newCoords.X]}`;
-        movingBlock.textContent = this.board[cellMove.newCoords.Y][cellMove.newCoords.X];
-
-        movingBlock.style.setProperty('--y', cellMove.newCoords.Y);
-        movingBlock.style.setProperty('--x', cellMove.newCoords.X);
-
-        const styles = getComputedStyle(movingBlock);
-
-        const yValue = styles.getPropertyValue('--y');
-        const xValue = styles.getPropertyValue('--x');
-        console.log('Значение --y:', yValue);
-        console.log('Значение --x:', xValue);
-
-        console.log(cellMove.newCoords);
-
       }
     }
   }
@@ -474,18 +510,9 @@ class Game {
   }
 
   clearBoard() {
-    // for (let y = 0; y < this.board.length; y++) {
-    //   for (let x = 0; x < this.board.length; x++) {
-    //     const cell = document.querySelector(`#cell${y}${x}`);
-
-    //     cell.textContent = '';
-    //     cell.className = 'field-cell';
-
-    //   }
-    // }
     const childrenToRemove = document.querySelectorAll('.moving-block');
 
-    childrenToRemove.forEach(child => {
+    childrenToRemove.forEach((child) => {
       child.remove();
     });
   }

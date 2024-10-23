@@ -36,7 +36,7 @@ Okay, okay. Also, we have some rules:
 7) When 2048 value is displayed in any cell, win message should be shown.
 8) The `game over` message should be shown if there are no more available moves.
 9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
+10) Change the `Start` button to `Restart` after click on `Start` button.
 11) `Restart` button should reset the game to the initial state.
 12) Increase score with each move. The score should be increased by the sum of all merged cells.
 13) The game consists of 2 main parts:
