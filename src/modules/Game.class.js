@@ -1,68 +1,123 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.score = 0;
+    this.status = 'idle';
+    this.initialState = initialState;
+    this.state = this.state.map((row) => [...row]);
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  move(direction) {
+    if (this.status !== 'playing') {
+      return;
+    }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+    // const prevBoard = this.state.map((row) => [...row]);
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+    if (direction === 'left') {
+      this.state = this.state.map((row) => this.mergeRow(row));
+    }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+    // if (this.state !== prevBoard) {
+    //   this.addRandomBlock();
+    // }
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  mergeRow(row) {
+    const numbers = row.filter((value) => value !== 0);
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    for (let i = 0; i < numbers.length - 1; i++) {
+      if (numbers[i] === numbers[i + 1]) {
+        numbers[i] *= 2;
+        this.score += numbers[i];
+        numbers.splice(i + 1, 1);
 
-  // Add your own methods here
+        if (numbers[i] === 2048) {
+          this.status = 'win';
+        }
+      }
+    }
+
+    while (numbers.length < 4) {
+      numbers.push(0);
+    }
+
+    return numbers;
+  }
+
+  moveLeft() {
+    this.move('left');
+  }
+  moveRight() {
+    this.move('right');
+  }
+  moveUp() {
+    this.move('up');
+  }
+  moveDown() {
+    this.move('down');
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  getState() {
+    return this.state;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
+  start() {
+    if (this.status === 'idle') {
+      this.status = 'playing';
+      this.addRandomBlock();
+      this.addRandomBlock();
+    }
+  }
+
+  restart() {
+    this.score = 0;
+    this.status = 'idle';
+
+    this.state = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+  }
+
+  addRandomBlock() {
+    const emptyBlocks = [];
+
+    for (let r = 0; r < 4; r++) {
+      for (let bl = 0; bl < 4; bl++) {
+        if (this.state[r][bl] === 0) {
+          emptyBlocks.push([r, bl]);
+        }
+      }
+    }
+
+    if (emptyBlocks.length === 0) {
+      return;
+    }
+
+    const [row, block] =
+      emptyBlocks[Math.floor(Math.random() * emptyBlocks.length)];
+
+    this.state[row][block] = Math.random() < 0.9 ? 2 : 4;
+  }
 }
 
 module.exports = Game;
