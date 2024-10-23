@@ -17,7 +17,10 @@
       <div class="game-header">
         <h1>2048</h1>
         <div class="controls">
-          <p class="info">
+          <p
+            class="info"
+            id="score"
+          >
             Score:
             <span class="game-score">0</span>
           </p>
@@ -25,34 +28,37 @@
         </div>
       </div>
 
-      <table class="game-field">
+      <table
+        id="game-board"
+        class="game-field game-board"
+      >
         <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+          <tr class="row">
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
           </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+          <tr class="row">
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
           </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+          <tr class="row">
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
           </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+          <tr class="row">
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
           </tr>
         </tbody>
       </table>
@@ -65,6 +71,9 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
