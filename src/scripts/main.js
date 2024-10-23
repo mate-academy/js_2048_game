@@ -1,11 +1,14 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
+const ARROW_LEFT = 'ArrowLeft';
+const ARROW_RIGHT = 'ArrowRight';
+const ARROW_UP = 'ArrowUp';
+const ARROW_DOWN = 'ArrowDown';
+
 const Game = require('../modules/Game.class');
 const game = new Game();
 
 const startBtn = document.querySelector('.button.start');
-// game.start();
 
 document.addEventListener('keydown', () => {
   if (game.getStatus() !== 'playing') {
@@ -15,23 +18,27 @@ document.addEventListener('keydown', () => {
   let moveMade = false;
 
   switch (event.key) {
-    case 'ArrowLeft':
+    case ARROW_LEFT:
       game.moveLeft();
       moveMade = true;
       break;
-    case 'ArrowRight':
+
+    case ARROW_RIGHT:
       game.moveRight();
       moveMade = true;
       break;
-    case 'ArrowUp':
+
+    case ARROW_UP:
       game.moveUp();
       moveMade = true;
       break;
-    case 'ArrowDown':
+
+    case ARROW_DOWN:
       game.moveDown();
       moveMade = true;
       break;
   }
+
 
   if (moveMade) {
     update();
