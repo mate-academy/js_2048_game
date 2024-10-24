@@ -8,6 +8,13 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+
+  transition: all 1s;
+}
+
+.body--playing-mode {
+  background: rgb(50, 50, 50);
+  overflow: hidden;
 }
 
 .field-cell {
@@ -20,6 +27,8 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+
+  transition: all 0.3s;
 
   &--2 {
     background: #eee4da;
@@ -174,6 +183,20 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
+  background: #fbf8ef;
+}
+
+.outer-container {
+  width: 400px;
+  padding-top: 20px;
+  background: #fbf8ef;
+  border-radius: 5px;
+
+  transition: all 1s;
+}
+
+.outer-container--playing-mode {
+  box-shadow: 10px 10px 15px rgba(214, 205, 196, 0.5);
 }
 
 .message-win {
