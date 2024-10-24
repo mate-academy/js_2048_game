@@ -42,14 +42,16 @@ class Game {
         this.displayGame();
       } else {
         const checkboard = JSON.parse(JSON.stringify(this.board));
+        const emptyCell = this.getEmptyCell();
 
         this.moveLeft(checkboard);
         this.moveRight(checkboard);
         this.moveUp(checkboard);
         this.moveDown(checkboard);
-
-        if (JSON.stringify(checkboard) === initBoard) {
-          this.setStatus('lose');
+        if(!emptyCell.length) {
+          if (JSON.stringify(checkboard) === initBoard) {
+            this.setStatus('lose');
+          }
         }
       }
     }
