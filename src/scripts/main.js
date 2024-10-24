@@ -4,12 +4,28 @@ const Game = require('../modules/Game.class');
 const game = new Game();
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelector('.button.start').addEventListener('click', () => {
+  const startMessage = document.querySelector('.message-start');
+  const startButton = document.querySelector('.button.start');
+
+  startButton.addEventListener('click', () => {
     if (game.getStatus() === 'playing') {
       game.restart();
+      startButton.textContent = 'Start';
+      startButton.classList.remove('restart');
+
+      if (startMessage) {
+        startMessage.classList.remove('hidden');
+      }
     } else {
       game.start();
+      startButton.textContent = 'Restart';
+      startButton.classList.add('restart');
+
+      if (startMessage) {
+        startMessage.classList.add('hidden');
+      }
     }
+
     updateUI();
   });
 

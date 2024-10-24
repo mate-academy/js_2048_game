@@ -1,16 +1,22 @@
 'use strict';
 
 class Game {
-  constructor(t = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]) {
+  constructor(
+    t = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
     this.initialState = t;
     this.copeInitialState = t.map((row) => [...row]);
     this.board = this.copyState(this.copeInitialState);
     this.status = 'idle';
     this.score = 0;
-    this.firstMove = true;
     this.moved = false;
   }
-
+  
   copyState(state) {
     return state.map((row) => [...row]);
   }
@@ -31,7 +37,6 @@ class Game {
     if (this.status !== 'playing') {
       return;
     }
-    this.handleFirstMove();
 
     const newBoard = this.board.map((row) => this.processRow(row));
 
@@ -42,7 +47,6 @@ class Game {
     if (this.status !== 'playing') {
       return;
     }
-    this.handleFirstMove();
 
     const newBoard = this.board.map((row) => this.processRowRight(row));
 
@@ -53,7 +57,6 @@ class Game {
     if (this.status !== 'playing') {
       return;
     }
-    this.handleFirstMove();
 
     const transposedBoard = this.transpose(this.board);
     const newBoard = transposedBoard.map((row) => this.processRow(row));
@@ -65,7 +68,6 @@ class Game {
     if (this.status !== 'playing') {
       return;
     }
-    this.handleFirstMove();
 
     const transposedBoard = this.transpose(this.board);
     const newBoard = transposedBoard.map((row) => this.processRowRight(row));
@@ -94,21 +96,10 @@ class Game {
   }
 
   restart() {
-      this.board = this.copyState(this.copeInitialState);
-      this.score = 0;
-      this.status = 'idle';
-      this.firstMove = true;
-
-      const startButton = document.querySelector('.button.start');
-      if (startButton) {
-        startButton.textContent = 'Start';
-        startButton.classList.remove('restart');
-      }
-
-      const startMessage = document.querySelector('.message-start');
-      if (startMessage) {
-        startMessage.classList.remove('hidden');
-      }
+    this.board = this.copyState(this.copeInitialState);
+    this.score = 0;
+    this.status = 'idle';
+    this.firstMove = true;
   }
 
   addRandomCell() {
@@ -155,22 +146,6 @@ class Game {
 
     return processedRow.reverse();
   }
-
-  handleFirstMove() {
-    if (this.firstMove) {
-      this.firstMove = false;
-      const startButton = document.querySelector('.button.start');
-      if (startButton) {
-        startButton.textContent = 'Restart';
-        startButton.classList.add('restart');
-      }
-      const startMessage = document.querySelector('.message-start');
-      if (startMessage) {
-        startMessage.classList.add('hidden');
-      }
-    }
-  }
-
 
   checkGameOver() {
     if (!this.hasAvailableMoves()) {
