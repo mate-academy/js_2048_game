@@ -1,68 +1,233 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(
+    t = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.initialState = t;
+    this.copeInitialState = t.map((row) => [...row]);
+    this.board = this.copyState(this.copeInitialState);
+    this.status = 'idle';
+    this.score = 0;
+    this.moved = false;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  copyState(state) {
+    return state.map((row) => [...row]);
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getState() {
+    return this.board;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    const newBoard = this.board.map((row) => this.processRow(row));
 
-  // Add your own methods here
+    this.handleMove(newBoard);
+  }
+
+  moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const newBoard = this.board.map((row) => this.processRowRight(row));
+
+    this.handleMove(newBoard);
+  }
+
+  moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const transposedBoard = this.transpose(this.board);
+    const newBoard = transposedBoard.map((row) => this.processRow(row));
+
+    this.handleMove(this.transpose(newBoard));
+  }
+
+  moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const transposedBoard = this.transpose(this.board);
+    const newBoard = transposedBoard.map((row) => this.processRowRight(row));
+
+    this.handleMove(this.transpose(newBoard));
+  }
+
+  handleMove(newBoard) {
+    if (this.isBoardChanged(this.board, newBoard)) {
+      this.board = newBoard;
+      this.addRandomCell();
+      this.checkWin();
+      this.checkGameOver();
+      this.moved = true;
+    } else {
+      this.moved = false;
+    }
+  }
+
+  start() {
+    if (this.status === 'idle') {
+      this.status = 'playing';
+      this.addRandomCell();
+      this.addRandomCell();
+    }
+  }
+
+  restart() {
+    this.board = this.copyState(this.copeInitialState);
+    this.score = 0;
+    this.status = 'idle';
+    this.moved = false;
+
+    const messageLose = document.querySelector('.message-lose');
+    if (messageLose) {
+      messageLose.classList.add('hidden');
+    }
+  }
+
+  addRandomCell() {
+    const emptyCells = [];
+
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 0) {
+          emptyCells.push({ row, col });
+        }
+      }
+    }
+
+    if (emptyCells.length > 0) {
+      const { row, col } =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+      this.board[row][col] = Math.random() < 0.1 ? 4 : 2;
+      this.animateCell(row, col);
+    }
+  }
+
+  processRow(row) {
+    const filteredRow = row.filter((cell) => cell !== 0);
+
+    for (let i = 0; i < filteredRow.length - 1; i++) {
+      if (filteredRow[i] === filteredRow[i + 1]) {
+        filteredRow[i] *= 2;
+        this.score += filteredRow[i];
+        filteredRow.splice(i + 1, 1);
+      }
+    }
+
+    while (filteredRow.length < 4) {
+      filteredRow.push(0);
+    }
+
+    return filteredRow;
+  }
+
+  processRowRight(row) {
+    const reversedRow = [...row].reverse();
+    const processedRow = this.processRow(reversedRow);
+
+    return processedRow.reverse();
+  }
+
+  checkGameOver() {
+    if (!this.hasAvailableMoves()) {
+      this.status = 'lose';
+
+      const messageLose = document.querySelector('.message-lose');
+
+      if (messageLose) {
+        messageLose.classList.remove('hidden');
+      }
+    }
+  }
+
+  checkWin() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 2048) {
+          this.status = 'win';
+
+          const messageWin = document.querySelector('.message-win');
+
+          if (messageWin) {
+            messageWin.classList.remove('hidden');
+          }
+
+          return;
+        }
+      }
+    }
+  }
+
+  hasAvailableMoves() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 0) {
+          return true;
+        }
+
+        if (col < 3 && this.board[row][col] === this.board[row][col + 1]) {
+          return true;
+        }
+
+        if (row < 3 && this.board[row][col] === this.board[row + 1][col]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  isBoardChanged(oldBoard, newBoard) {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (oldBoard[row][col] !== newBoard[row][col]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  transpose(board) {
+    return board[0].map((_, colIndex) => board.map((row) => row[colIndex]));
+  }
+
+  animateCell(row, col) {
+    const cell = document.querySelector(
+      `.field-row:nth-child(${row + 1}) .field-cell:nth-child(${col + 1})`,
+    );
+
+    if (cell) {
+      cell.classList.add('new-cell');
+      setTimeout(() => cell.classList.remove('new-cell'), 500);
+    }
+  }
 }
 
 module.exports = Game;
