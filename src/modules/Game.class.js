@@ -1,24 +1,4 @@
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
-
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
   constructor(
     initialState = [
       [0, 0, 0, 0],
@@ -27,12 +7,10 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
+    this.initialState = initialState.map((row) => [...row]);
     this.state = initialState;
     this.score = 0;
     this.status = 'idle';
-    this.moved = false;
-    this.gameScore = document.querySelector('.game-score');
-    this.squares = [...document.querySelectorAll('.field-cell')];
     this.messages = [...document.querySelectorAll('.message')];
   }
 
@@ -40,8 +18,6 @@ class Game {
     if (this.status !== 'playing') {
       return;
     }
-
-    this.moved = false;
 
     for (let i = 0; i < this.state.length; i++) {
       let row = this.state[i];
@@ -74,12 +50,11 @@ class Game {
       this.addRandomTile();
     }
   }
+
   moveRight() {
     if (this.status !== 'playing') {
       return;
     }
-
-    this.moved = false;
 
     for (let i = 0; i < this.state.length; i++) {
       let row = this.state[i];
@@ -120,8 +95,6 @@ class Game {
     if (this.status !== 'playing') {
       return;
     }
-
-    this.moved = false;
 
     for (let col = 0; col < 4; col++) {
       let column = [];
@@ -165,8 +138,6 @@ class Game {
       return;
     }
 
-    this.moved = false;
-
     for (let col = 0; col < 4; col++) {
       let column = [];
 
@@ -204,11 +175,9 @@ class Game {
     }
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
-    // Оновлюємо DOM тільки якщо gameScore присутній
+    this.gameScore = document.querySelector('.game-score');
+
     if (this.gameScore) {
       this.gameScore.innerHTML = this.score;
     }
@@ -216,23 +185,10 @@ class Game {
     return this.score;
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.state;
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     if (this.status === 'idle') {
       return 'idle';
@@ -271,9 +227,6 @@ class Game {
     return 'playing';
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
     if (this.status === 'idle') {
       for (let i = 0; i < this.messages.length; i++) {
@@ -292,21 +245,10 @@ class Game {
     }
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-
+    this.state = this.initialState;
     this.score = 0;
     this.status = 'idle';
-    this.addRandomTile();
-    this.addRandomTile();
     this.getScore();
     this.updateDOM();
     this.updateButton();
@@ -332,6 +274,8 @@ class Game {
   }
 
   updateDOM() {
+    this.squares = [...document.querySelectorAll('.field-cell')];
+
     for (let i = 0; i < this.state.length; i++) {
       for (let j = 0; j < this.state[i].length; j++) {
         const index = i * 4 + j;
