@@ -6,20 +6,6 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
   constructor(
     initialState = [
       [0, 0, 0, 0],
@@ -43,7 +29,6 @@ class Game {
       for (let col = 0; col < 4; col++) {
         const index = row * 4 + col;
         const cell = cells[index];
-
         const value = this.board[row][col];
 
         cell.classList = 'field-cell';
@@ -125,18 +110,16 @@ class Game {
           this.score += row[j];
         }
       }
-
       row = this.filterZero(row);
 
       while (row.length < 4) {
         row.push(0);
       }
-
       this.board[i] = row;
     }
-
     this.renderBoard();
     this.spawnNumber();
+    this.checkGameStatus();
   }
 
   moveRight() {
@@ -161,6 +144,7 @@ class Game {
     }
     this.renderBoard();
     this.spawnNumber();
+    this.checkGameStatus();
   }
 
   moveUp() {
@@ -170,7 +154,6 @@ class Game {
       for (let row = 0; row < 4; row++) {
         column.push(this.board[row][col]);
       }
-
       column = this.filterZero(column);
 
       for (let i = 0; i < column.length - 1; i++) {
@@ -180,7 +163,6 @@ class Game {
           this.score += column[i];
         }
       }
-
       column = this.filterZero(column);
 
       while (column.length < 4) {
@@ -191,9 +173,9 @@ class Game {
         this.board[row][col] = column[row];
       }
     }
-
     this.renderBoard();
     this.spawnNumber();
+    this.checkGameStatus();
   }
 
   moveDown() {
@@ -203,9 +185,7 @@ class Game {
       for (let row = 0; row < 4; row++) {
         column.push(this.board[row][col]);
       }
-
       column = this.filterZero(column);
-
       column.reverse();
 
       for (let i = 0; i < column.length - 1; i++) {
@@ -215,20 +195,17 @@ class Game {
           this.score += column[i];
         }
       }
-
       column = this.filterZero(column);
 
       while (column.length < 4) {
         column.push(0);
       }
-
       column.reverse();
 
       for (let row = 0; row < 4; row++) {
         this.board[row][col] = column[row];
       }
     }
-
     this.renderBoard();
 
     const nextBoard = JSON.stringify(this.getState());
@@ -236,32 +213,17 @@ class Game {
     if (this.currentBoard !== nextBoard) {
       this.spawnNumber();
     }
+    this.checkGameStatus();
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
     return this.score;
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.board;
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     const messageContainer = document.querySelector('.message-container');
     const visibleMessage = messageContainer.querySelector('p:not(.hidden)');
@@ -282,9 +244,21 @@ class Game {
     }
   }
 
-  /**
-   * Starts the game.
-   */
+  checkGameStatus() {
+    const curStatus = this.isGameOver();
+
+    if (curStatus === 'win' || curStatus === 'lose') {
+      this.showMessage(curStatus);
+    }
+  }
+
+  showMessage(type) {
+    const message = document.querySelector(`.message.message-${type}`);
+
+    message.classList.remove('hidden');
+    document.removeEventListener('keydown', this.boundKeyDown);
+  }
+
   start() {
     const cells = document.querySelectorAll('.game-field td');
     const cellIndexes = Array.from({ length: cells.length }, (_, i) => i);
@@ -304,14 +278,10 @@ class Game {
     const footerMessage = document.querySelector('.message.message-start');
 
     footerMessage.classList.add('hidden');
-
     this.boundKeyDown = this.keyDown.bind(this);
     document.addEventListener('keydown', this.boundKeyDown);
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     const cells = document.querySelectorAll('.game-field td');
 
@@ -349,6 +319,7 @@ class Game {
         this.moveRight();
         break;
     }
+    this.checkGameStatus();
   }
 }
 
