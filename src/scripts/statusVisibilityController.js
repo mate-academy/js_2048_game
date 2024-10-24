@@ -13,17 +13,15 @@ const playingClassForContainer = 'outer-container--playing-mode';
 const playingClassForBody = 'body--playing-mode';
 
 const makeMessageVisible = (classToAppear) => {
+  const messageElementToAppear = document.querySelector(classToAppear);
+
   messageClassOptions.forEach((item) => {
-    const element = document.querySelector(item);
+    const messageElement = document.querySelector(item);
 
-    if (!element.classList.contains('hidden')) {
-      element.classList.add('hidden');
-    }
-
-    if (item === classToAppear && element.classList.contains('hidden')) {
-      element.classList.remove('hidden');
-    }
+    messageElement.classList.add('hidden');
   });
+
+  messageElementToAppear.classList.remove('hidden');
 };
 
 const switchButtons = (classToAppear) => {

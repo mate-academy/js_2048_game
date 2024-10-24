@@ -176,10 +176,10 @@ const handleStartEvent = () => {
 const handleRestartEvent = () => {
   removeMoveEventListeners();
   addMoveEventListeners();
+  statusVisibilityController.makeMessageVisible('.message-restart');
   game.restart();
   renderBoard();
   statusVisibilityController.focusField();
-  statusVisibilityController.makeMessageVisible('.restart');
 };
 
 const addMoveEventListeners = () => {
