@@ -8,8 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const startButton = document.querySelector('.button.start');
 
   startButton.addEventListener('click', () => {
-    if (game.getStatus() === 'playing') {
+    if (game.getStatus() === 'playing' || game.getStatus() === 'lose') {
       game.restart();
+
       startButton.textContent = 'Start';
       startButton.classList.remove('restart');
 
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else {
       game.start();
+
       startButton.textContent = 'Restart';
       startButton.classList.add('restart');
 

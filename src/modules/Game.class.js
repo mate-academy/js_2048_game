@@ -16,7 +16,7 @@ class Game {
     this.score = 0;
     this.moved = false;
   }
-  
+
   copyState(state) {
     return state.map((row) => [...row]);
   }
@@ -99,7 +99,12 @@ class Game {
     this.board = this.copyState(this.copeInitialState);
     this.score = 0;
     this.status = 'idle';
-    this.firstMove = true;
+    this.moved = false;
+
+    const messageLose = document.querySelector('.message-lose');
+    if (messageLose) {
+      messageLose.classList.add('hidden');
+    }
   }
 
   addRandomCell() {
