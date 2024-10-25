@@ -155,6 +155,7 @@ class Game {
   start() {
     if (this.status === 'idle') {
       this.status = 'playing';
+
       this.addRandomBlock();
       this.addRandomBlock();
     }
