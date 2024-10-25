@@ -97,7 +97,21 @@ class Game {
     return 'lose';
   }
 
+  boardsAreEqual(board1, board2) {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (board1[i][j] !== board2[i][j]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   moveLeft() {
+    const prevBoard = JSON.parse(JSON.stringify(this.board));
+
     for (let i = 0; i < 4; i++) {
       let row = this.board[i];
 
@@ -118,11 +132,16 @@ class Game {
       this.board[i] = row;
     }
     this.renderBoard();
-    this.spawnNumber();
+
+    if (!this.boardsAreEqual(prevBoard, this.board)) {
+      this.spawnNumber();
+    }
     this.checkGameStatus();
   }
 
   moveRight() {
+    const prevBoard = JSON.parse(JSON.stringify(this.board));
+
     for (let i = 0; i < 4; i++) {
       let row = this.board[i].reverse();
 
@@ -143,11 +162,16 @@ class Game {
       this.board[i] = row.reverse();
     }
     this.renderBoard();
-    this.spawnNumber();
+
+    if (!this.boardsAreEqual(prevBoard, this.board)) {
+      this.spawnNumber();
+    }
     this.checkGameStatus();
   }
 
   moveUp() {
+    const prevBoard = JSON.parse(JSON.stringify(this.board));
+
     for (let col = 0; col < 4; col++) {
       let column = [];
 
@@ -174,11 +198,16 @@ class Game {
       }
     }
     this.renderBoard();
-    this.spawnNumber();
+
+    if (!this.boardsAreEqual(prevBoard, this.board)) {
+      this.spawnNumber();
+    }
     this.checkGameStatus();
   }
 
   moveDown() {
+    const prevBoard = JSON.parse(JSON.stringify(this.board));
+
     for (let col = 0; col < 4; col++) {
       let column = [];
 
@@ -208,9 +237,7 @@ class Game {
     }
     this.renderBoard();
 
-    const nextBoard = JSON.stringify(this.getState());
-
-    if (this.currentBoard !== nextBoard) {
+    if (!this.boardsAreEqual(prevBoard, this.board)) {
       this.spawnNumber();
     }
     this.checkGameStatus();
