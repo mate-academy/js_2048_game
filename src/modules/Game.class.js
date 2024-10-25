@@ -12,7 +12,19 @@ class Game {
     this.score = 0;
     this.status = 'idle';
     this.initialState = initialState;
-    this.state = this.state.map((row) => [...row]);
+    this.state = initialState.map((row) => [...row]);
+  }
+
+  areArraysEqual(arr1, arr2) {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (arr1[i][j] !== arr2[i][j]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   move(direction) {
@@ -20,15 +32,54 @@ class Game {
       return;
     }
 
-    // const prevBoard = this.state.map((row) => [...row]);
+    const prevBoard = this.state.map((row) => [...row]);
 
     if (direction === 'left') {
       this.state = this.state.map((row) => this.mergeRow(row));
+    } else if (direction === 'right') {
+      let cS = this.state;
+
+      //  cS - currentState
+      cS = this.state.map((row) => this.mergeRow([...row].reverse()).reverse());
+
+      this.state = cS;
+    } else if (direction === 'up') {
+      for (let col = 0; col < 4; col++) {
+        const column = [];
+
+        for (let row = 0; row < 4; row++) {
+          column.push(this.state[row][col]);
+        }
+
+        const mergedColumn = this.mergeRow(column);
+
+        for (let row = 0; row < 4; row++) {
+          this.state[row][col] = mergedColumn[row];
+        }
+      }
+    } else if (direction === 'down') {
+      for (let col = 0; col < 4; col++) {
+        const column = [];
+
+        for (let row = 3; row >= 0; row--) {
+          column.push(this.state[row][col]);
+        }
+
+        const mergedColumn = this.mergeRow(column);
+
+        for (let row = 3; row >= 0; row--) {
+          this.state[row][col] = mergedColumn[3 - row];
+        }
+      }
     }
 
-    // if (this.state !== prevBoard) {
-    //   this.addRandomBlock();
-    // }
+    if (!this.areArraysEqual(this.state, prevBoard)) {
+      this.addRandomBlock();
+
+      if (!this.canMove()) {
+        this.status = 'lose';
+      }
+    }
   }
 
   mergeRow(row) {
@@ -51,6 +102,29 @@ class Game {
     }
 
     return numbers;
+  }
+
+  canMove() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state[i][j] === 0) {
+          return true;
+        }
+      }
+    }
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (
+          this.state[i][j] === this.state[i][j + 1] ||
+          this.state[j][i] === this.state[j + 1][i]
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   moveLeft() {
@@ -90,12 +164,9 @@ class Game {
     this.score = 0;
     this.status = 'idle';
 
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.state = this.initialState.map((row) => [...row]);
+
+    this.start();
   }
 
   addRandomBlock() {
