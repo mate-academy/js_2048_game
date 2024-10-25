@@ -302,9 +302,9 @@ class Game {
       this.board[rowIndex][colIndex] = 2;
     });
 
-    const footerMessage = document.querySelector('.message.message-start');
+    const footerMessage = document.querySelectorAll('.message');
 
-    footerMessage.classList.add('hidden');
+    footerMessage.forEach((element) => element.classList.add('hidden'));
     this.boundKeyDown = this.keyDown.bind(this);
     document.addEventListener('keydown', this.boundKeyDown);
   }
@@ -323,9 +323,11 @@ class Game {
       }
     }
 
-    const footerMessage = document.querySelector('.message.message-start');
+    const loseMessage = document.querySelector('.message.message-lose');
+    const startMessage = document.querySelector('.message.message-start');
 
-    footerMessage.classList.remove('hidden');
+    loseMessage.classList.add('hidden');
+    startMessage.classList.remove('hidden');
     document.removeEventListener('keydown', this.boundKeyDown);
   }
 
