@@ -165,8 +165,6 @@ class Game {
     this.status = 'idle';
 
     this.state = this.initialState.map((row) => [...row]);
-
-    this.start();
   }
 
   addRandomBlock() {

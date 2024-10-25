@@ -1,7 +1,7 @@
 'use strict';
 
-// import Game from '../modules/Game.class';
-const Game = require('../modules/Game.class');
+import Game from '../modules/Game.class';
+
 const game = new Game();
 
 const startButton = document.querySelector('.button.start');
@@ -46,6 +46,12 @@ function updateUi() {
     startButton.textContent = 'Restart';
     startButton.classList.remove('start');
     startButton.classList.add('restart');
+  }
+
+  if (game.getStatus() === 'win') {
+    document.querySelector('.message-win').classList.remove('hidden');
+  } else if (game.getStatus() === 'lose') {
+    document.querySelector('.message-lose').classList.remove('hidden');
   }
 }
 
