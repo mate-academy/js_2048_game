@@ -12,14 +12,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function control(e) {
-    if (e.key === 'ArrowLeft') {
-      keyLeft();
-    } else if (e.key === 'ArrowRight') {
-      keyRight();
-    } else if (e.key === 'ArrowUp') {
-      keyUp();
-    } else if (e.key === 'ArrowDown') {
-      keyDown();
+
+    switch (e.key) {
+      case 'ArrowLeft':
+        keyLeft();
+      break;
+      case 'ArrowRight':
+        keyRight();
+      break;
+      case 'ArrowUp':
+        keyUp();
+      break;
+      case 'ArrowDown':
+        keyDown();
+      break;
     }
   }
 
@@ -27,29 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function keyLeft() {
     game.moveLeft();
-    game.getScore();
-    game.updateDOM();
-    game.getStatus();
   }
 
   function keyRight() {
     game.moveRight();
-    game.getScore();
-    game.updateDOM();
-    game.getStatus();
   }
 
   function keyUp() {
     game.moveUp();
-    game.getScore();
-    game.updateDOM();
-    game.getStatus();
   }
 
   function keyDown() {
     game.moveDown();
-    game.getScore();
-    game.updateDOM();
-    game.getStatus();
   }
 });
