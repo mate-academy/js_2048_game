@@ -11,11 +11,12 @@ body {
 }
 
 .field-cell {
+  position: relative;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: black;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
@@ -23,10 +24,12 @@ body {
 
   &--2 {
     background: #eee4da;
+    color: #776e65;
   }
 
   &--4 {
     background: #ede0c8;
+    color: #776e65;
   }
 
   &--8 {
@@ -148,6 +151,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  font-weight: 700;
 
   &:hover {
     background: #f87474;

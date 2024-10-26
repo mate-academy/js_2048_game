@@ -1,7 +1,48 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../modules/Game.class');
 
-// Write your code here
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.querySelector('button');
+
+  const game = new Game();
+
+  btn.addEventListener('click', () => {
+    game.start();
+  });
+
+  function control(e) {
+    switch (e.key) {
+      case 'ArrowLeft':
+        keyLeft();
+        break;
+      case 'ArrowRight':
+        keyRight();
+        break;
+      case 'ArrowUp':
+        keyUp();
+        break;
+      case 'ArrowDown':
+        keyDown();
+        break;
+    }
+  }
+
+  document.addEventListener('keydown', control);
+
+  function keyLeft() {
+    game.moveLeft();
+  }
+
+  function keyRight() {
+    game.moveRight();
+  }
+
+  function keyUp() {
+    game.moveUp();
+  }
+
+  function keyDown() {
+    game.moveDown();
+  }
+});
