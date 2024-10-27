@@ -3,6 +3,11 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
+const ARROW_RIGHT = 'ArrowRight';
+const ARROW_LEFT = 'ArrowLeft';
+const ARROW_UP = 'ArrowUp';
+const ARROW_DOWN = 'ArrowDown';
+
 const startRestartButton = document.getElementById('start-button');
 
 const messageStart = document.querySelector('.message-start');
@@ -40,16 +45,16 @@ startRestartButton.addEventListener('click', () => {
 
 document.addEventListener('keydown', (evnt) => {
   switch (evnt.key) {
-    case 'ArrowLeft':
+    case ARROW_LEFT:
       game.moveLeft();
       break;
-    case 'ArrowRight':
+    case ARROW_RIGHT:
       game.moveRight();
       break;
-    case 'ArrowUp':
+    case ARROW_UP:
       game.moveUp();
       break;
-    case 'ArrowDown':
+    case ARROW_DOWN:
       game.moveDown();
       break;
   }
