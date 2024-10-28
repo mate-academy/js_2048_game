@@ -43,7 +43,7 @@ const handleArrowPress = (e) => {
       game.moveRight();
       break;
     default:
-      break;
+      return;
   }
 
   updateCells();
