@@ -5,6 +5,12 @@ const Game = require('../modules/Game.class');
 const game = new Game();
 
 // Write your code here
+const startButton = document.querySelector('.button.start');
+const scoreDisplay = document.querySelector('.game-score');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
+const startMessage = document.querySelector('.message-start');
+
 document.addEventListener('keydown', (e) => {
   if (game.getStatus() === 'playing') {
     switch (e.key) {
@@ -27,7 +33,6 @@ document.addEventListener('keydown', (e) => {
 
 function updateUI() {
   const gameBoard = game.getState();
-  const scoreDisplay = document.querySelector('.game-score');
 
   scoreDisplay.textContent = game.getScore();
 
@@ -41,31 +46,35 @@ function updateUI() {
 
       cell.className = 'field-cell';
 
+      cell.textContent = value > 0 ? value : '';
+
       if (value > 0) {
         cell.classList.add(`field-cell--${value}`);
-        cell.textContent = value;
-      } else {
-        cell.textContent = '';
       }
       cellIndex++;
     }
   }
 
-  const winMessage = document.querySelector('.message-win');
-  const loseMessage = document.querySelector('.message-lose');
-
   if (game.getStatus() === 'win') {
     winMessage.classList.remove('hidden');
+    loseMessage.classList.add('hidden');
+    startButton.textContent = 'Restart';
   } else if (game.getStatus() === 'lose') {
     loseMessage.classList.remove('hidden');
+    winMessage.classList.add('hidden');
+    startButton.textContent = 'Restart';
   }
 }
 
-document.querySelector('.button.start').addEventListener('click', () => {
-  if (game.getStatus() === 'idle' || game.getStatus() !== 'playing') {
-    game.restart();
-    updateUI();
-    document.querySelector('.message-start').classList.add('hidden');
-    document.querySelector('.button.start').classList.add('restart');
-  }
+startButton.addEventListener('click', () => {
+  game.restart();
+  updateUI();
+
+  startMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
+  startButton.textContent = 'Restart';
+  startButton.style.fontSize = '16px';
+
+  startButton.blur();
 });
