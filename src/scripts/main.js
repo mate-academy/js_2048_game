@@ -75,6 +75,8 @@ startButton.addEventListener('click', () => {
   loseMessage.classList.add('hidden');
   startButton.textContent = 'Restart';
   startButton.style.fontSize = '16px';
+  startButton.classList.remove('start');
+  startButton.classList.add('restart');
 
   startButton.blur();
 });
