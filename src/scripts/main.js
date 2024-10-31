@@ -3,6 +3,11 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
+const KEY_UP = 'ArrowUp';
+const KEY_RIGHT = 'ArrowRight';
+const KEY_DOWN = 'ArrowDown';
+const KEY_LEFT = 'ArrowLeft';
+
 function refreshTable(state) {
   const fieldRows = document.querySelectorAll('.field-row');
 
@@ -77,21 +82,22 @@ button.addEventListener('click', () => {
 
 document.addEventListener('keydown', (e) => {
   switch (e.key) {
-    case 'ArrowUp':
+    case KEY_UP:
       e.preventDefault();
       game.moveUp();
       break;
-    case 'ArrowRight':
+    case KEY_RIGHT:
       e.preventDefault();
       game.moveRight();
       break;
-    case 'ArrowDown':
+    case KEY_DOWN:
       e.preventDefault();
       game.moveDown();
       break;
-    case 'ArrowLeft':
+    case KEY_LEFT:
       e.preventDefault();
       game.moveLeft();
+      break;
   }
 
   refresh();
