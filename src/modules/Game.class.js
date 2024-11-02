@@ -22,47 +22,160 @@ class Game {
    */
   constructor(initialState) {
     // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.isStart = true;
+    this.isChanged = false;
+    this.actualScore = 0;
+    this.message = [];
+    this.busyIndex = [];
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft(rows, score) {
+    this.rows = rows;
+    this.isChanged = false;
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+    rows.forEach((row) => {
+      const oldCells = [...row.children];
+      const prevTextCells = oldCells.map((elem) => elem.textContent);
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+      const notEmptyCells = oldCells
+        .map((cell) => +cell.textContent)
+        .filter((value) => value > 0);
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+      oldCells.forEach((cell, index) => {
+        const value = notEmptyCells[index] || '';
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+        cell.textContent = value;
+        cell.className = 'field-cell';
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+        if (value > 0) {
+          cell.classList.add(`field-cell--${value}`);
+        }
+      });
 
-  // Add your own methods here
+      for (let i = 0; i < oldCells.length - 1; i++) {
+        const valueOne = +oldCells[i].textContent || 0;
+        const valueTwo = +oldCells[i + 1].textContent || 0;
+
+        if (valueOne > 0 && valueOne === valueTwo) {
+          score.textContent = this.getScore(valueOne, valueTwo);
+          this.isWinner(valueOne, valueTwo);
+
+          oldCells[i].textContent = valueOne * 2;
+          oldCells[i].classList.add(`field-cell--${valueOne * 2}`);
+
+          oldCells[i + 1].textContent = '';
+          oldCells[i + 1].className = 'field-cell';
+          this.isChanged = true;
+        }
+      }
+
+      oldCells.forEach((cell, i) => {
+        if (cell.textContent !== prevTextCells[i]) {
+          this.isChanged = true;
+        }
+      });
+    });
+
+    if (this.isChanged) {
+      this.getRandIndex(this.rows);
+    }
+  }
+
+  moveRight(rows, score) {
+    this.rows = rows;
+    this.isChanged = false;
+
+    rows.forEach((row) => {
+      const oldCells = [...row.children];
+
+      const prevTextCells = oldCells.map((elem) => elem.textContent);
+
+      const notEmptyCells = oldCells
+        .map((cell) => +cell.textContent)
+        .filter((value) => value > 0)
+        .reverse();
+
+      for (let i = oldCells.length - 1; i >= 0; i--) {
+        const value = notEmptyCells[oldCells.length - i - 1] || '';
+
+        oldCells[i].textContent = value;
+        oldCells[i].className = 'field-cell';
+
+        if (value > 0) {
+          oldCells[i].classList.add(`field-cell--${value}`);
+        }
+      }
+
+      oldCells.forEach((cell, i) => {
+        if (cell.textContent !== prevTextCells[i]) {
+          this.isChanged = true;
+        }
+      });
+
+      for (let i = oldCells.length - 1; i > 0; i--) {
+        const valueOne = +oldCells[i].textContent || 0;
+        const valueTwo = +oldCells[i - 1].textContent || 0;
+
+        if (valueOne > 0 && valueOne === valueTwo) {
+          score.textContent = this.getScore(valueOne, valueTwo);
+          this.isWinner(valueOne, valueTwo);
+
+          oldCells[i].textContent = valueOne * 2;
+          oldCells[i].classList.add(`field-cell--${valueOne * 2}`);
+
+          oldCells[i - 1].textContent = '';
+          oldCells[i - 1].className = 'field-cell';
+          this.isChanged = true;
+        }
+      }
+    });
+
+    if (this.isChanged) {
+      this.getRandIndex(this.rows);
+    }
+  }
+
+  getRandIndex(rows) {
+    this.busyIndex = [];
+
+    const allCells = [];
+
+    rows.forEach((row) => {
+      const cells = [...row.children];
+
+      cells.forEach((cell) => {
+        allCells.push(cell);
+      });
+
+      if (allCells.length === 16) {
+        allCells.map((cell) => {
+          const value = +cell.textContent || 0;
+
+          if (value > 0) {
+            this.busyIndex.push(allCells.indexOf(cell));
+          }
+        });
+      }
+    });
+
+    let randIndex = Math.floor(Math.random() * 16);
+    const randValue = Math.random() < 0.9 ? 2 : 4;
+
+    while (this.busyIndex.includes(randIndex)) {
+      randIndex = Math.floor(Math.random() * 16);
+    }
+    this.cells[randIndex].textContent = randValue;
+
+    this.cells[randIndex].classList.add(
+      'field-cell',
+      `field-cell--${randValue}`,
+    );
+    this.busyIndex.push(randIndex);
+
+    if (this.busyIndex.length === 16 && !this.hasMove()) {
+      this.getStatus('lose');
+    }
+  }
 }
 
 module.exports = Game;
