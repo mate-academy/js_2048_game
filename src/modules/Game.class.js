@@ -1,4 +1,5 @@
 'use strict';
+import { getRandomNumber } from '../helpers/getRandomNumber.js';
 
 class Game {
   /**
@@ -34,7 +35,7 @@ class Game {
   }
 
   static GRID_SIZE = 4;
-  static WIN_NUMBER = 128;
+  static WIN_NUMBER = 2048;
   static STATUS_IDLE = 'idle';
   static STATUS_PLAYING = 'playing';
   static STATUS_WIN = 'win';
@@ -263,7 +264,3 @@ class Game {
 }
 
 module.exports = Game;
-
-function getRandomNumber(min, max) {
-  return Math.floor(min + Math.random() * (max + 1 - min));
-}
