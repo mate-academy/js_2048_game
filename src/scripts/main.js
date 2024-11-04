@@ -1,8 +1,6 @@
-'use strict';
+import { Game } from '../modules/Game.class';
 
-const Game = require('../modules/Game.class');
 const game = new Game();
-
 const button = document.querySelector('.button');
 const score = document.querySelector('.game-score');
 const [...cells] = document.querySelectorAll('.field-cell');

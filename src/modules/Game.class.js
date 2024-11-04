@@ -1,7 +1,6 @@
-'use strict';
 import { getRandomNumber } from '../helpers/getRandomNumber.js';
 
-class Game {
+export class Game {
   /**
    * Creates a new game instance.
    *
@@ -262,5 +261,3 @@ class Game {
     return isChanged;
   }
 }
-
-module.exports = Game;
