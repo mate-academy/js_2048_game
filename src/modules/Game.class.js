@@ -17,7 +17,7 @@ class Game {
     this.score = 0;
     this.status = 'idle';
     this.previousState = JSON.parse(JSON.stringify(this.board));
-    this.isNewTileGenerated = false;
+    // this.isNewTileGenerated = false;
   }
 
   moveLeft() {
@@ -159,6 +159,36 @@ class Game {
     if (this.board.some((row) => row.includes(2048))) {
       this.status = 'win';
     }
+  }
+
+  isGameOver() {
+    if (this.board.some((row) => row.includes(0))) {
+      return false;
+    }
+
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        const current = this.board[row][col];
+
+        if (col < 3 && current === this.board[row][col + 1]) {
+          return false;
+        }
+
+        if (row < 3 && current === this.board[row + 1][col]) {
+          return false;
+        }
+
+        if (row < 3 && current === this.board[row + 1][col]) {
+          return false;
+        }
+
+        if (row > 0 && current === this.board[row - 1][col]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   start() {

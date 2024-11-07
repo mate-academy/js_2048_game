@@ -5,22 +5,30 @@ import Game from '../modules/Game.class.js';
 
 const game = new Game();
 const button = document.querySelector('.button');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
+const messageStart = document.querySelector('.message-start');
 
 button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
     game.start();
     renderBoard(game);
+    updateMessage();
+    button.classList.remove('start');
+    button.classList.add('restart');
+    button.textContent = 'Restart';
   } else {
     game.restart();
     renderBoard(game);
     button.classList.remove('restart');
     button.classList.add('start');
     button.textContent = 'Start';
+    updateMessage('start');
   }
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.defaultPrevented) {
+  if (e.defaultPrevented || game.getStatus() !== 'playing') {
     return;
   }
 
@@ -51,6 +59,24 @@ document.addEventListener('keydown', (e) => {
       button.classList.add('restart');
       button.textContent = 'Restart';
     }
+
+    if (game.isWinner()) {
+      updateMessage('win');
+      button.classList.remove('restart');
+      button.classList.add('start');
+      button.textContent = 'Start';
+
+      return;
+    }
+
+    if (game.isGameOver()) {
+      updateMessage('lose');
+      button.classList.remove('restart');
+      button.classList.add('start');
+      button.textContent = 'Start';
+
+      return;
+    }
   }
 
   e.preventDefault();
@@ -80,4 +106,18 @@ function renderBoard(game) {
 
   scoreElement.innerHTML = '';
   scoreElement.textContent = score;
+}
+
+function updateMessage(type) {
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  messageStart.classList.add('hidden');
+
+  if (type === 'win') {
+    messageWin.classList.remove('hidden');
+  } else if (type === 'lose') {
+    messageLose.classList.remove('hidden');
+  } else if (type === 'start') {
+    messageStart.classList.remove('hidden');
+  }
 }
