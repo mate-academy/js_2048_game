@@ -53,8 +53,14 @@ class Game {
     let nonZeroElements = arr.filter((num) => num !== 0);
 
     for (let i = 1; i < nonZeroElements.length; i++) {
+
       if (nonZeroElements[i] === nonZeroElements[i - 1]) {
         nonZeroElements[i - 1] *= 2;
+
+        if (nonZeroElements[i - 1] === 2048) {
+          this.gameWin();
+        }
+
         nonZeroElements[i] = 0;
         this.getScore(nonZeroElements[i - 1]);
         i--;
@@ -72,8 +78,14 @@ class Game {
     let nonZeroElements = arr.filter((num) => num !== 0);
 
     for (let i = 1; i < nonZeroElements.length; i++) {
+
       if (nonZeroElements[i] === nonZeroElements[i - 1]) {
         nonZeroElements[i - 1] *= 2;
+
+        if (nonZeroElements[i - 1] === 2048) {
+          this.gameWin();
+        }
+
         nonZeroElements[i] = 0;
         this.getScore(nonZeroElements[i - 1]);
         i--;
@@ -149,6 +161,7 @@ class Game {
       const columnNodes = [[], [], [], []];
 
       rows.forEach((row) => {
+
         for (let i = 0; i < 4; i++) {
           const cells = row.querySelector(`td:nth-child(${i + 1})`);
 
@@ -166,8 +179,11 @@ class Game {
 
         result.forEach((value, index) => {
           columnElement[index].textContent = value === 0 ? '' : value;
+
         });
+
       });
+
       this.addCell();
     }
   }
@@ -182,6 +198,7 @@ class Game {
       const columnNodes = [[], [], [], []];
 
       rows.forEach((row) => {
+
         for (let i = 0; i < 4; i++) {
           const cells = row.querySelector(`td:nth-child(${i + 1})`);
 
@@ -243,9 +260,12 @@ class Game {
     const startButton = document.querySelector('.start');
 
     startButton.addEventListener('click', () => {
+
       startButton.textContent = 'restart';
+
       startButton.classList.remove('start');
       startButton.classList.add('restart');
+
       this.moveLeft();
       this.moveRight();
       this.moveUp();
@@ -274,8 +294,10 @@ class Game {
       scorecount.textContent = 0;
 
       const messageGameOver = document.querySelector('.message-lose');
+      const messageGameWin = document.querySelector('.message-win');
 
       messageGameOver.classList.add('hidden');
+      messageGameWin.classList.add('hidden');
     });
   }
 
@@ -319,18 +341,22 @@ class Game {
     return true;
   }
 
+  gameWin () {
+    let winMessage = document.querySelector('.message-win');
+
+    winMessage.classList.remove('hidden');
+
+    window.removeEventListener('keydown', this.boundMoveUpListener);
+    window.removeEventListener('keydown', this.boundMoveDownListener);
+    window.removeEventListener('keydown', this.boundMoveLeftListener);
+    window.removeEventListener('keydown', this.boundMoveRightListener);
+  }
   gameOver() {
     if (this.checkBeforeGameOver()) {
       let overMessage = document.querySelector('.message-lose');
 
-      if (!overMessage) {
-        overMessage = document.createElement('div');
-        overMessage.classList.add('message', 'message-lose');
-        document.body.appendChild(overMessage);
-      }
       overMessage.classList.remove('hidden');
-      overMessage.textContent = 'Game Over';
-      document.body.appendChild(overMessage);
+
       window.removeEventListener('keydown', this.boundMoveUpListener);
       window.removeEventListener('keydown', this.boundMoveDownListener);
       window.removeEventListener('keydown', this.boundMoveLeftListener);

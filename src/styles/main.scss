@@ -165,9 +165,7 @@ h1 {
   font-size: 20px;
 }
 
-.hidden {
-  display: none;
-}
+
 
 .container {
   display: flex;
@@ -181,7 +179,22 @@ h1 {
   color: #f9f6f2;
 }
 
+.message-lose {
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  color: #f9f6f2;
+  background-color: #f59563;
+  height: 100px;
+  width: 350px;
+  position: absolute;
+}
+
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.hidden {
+  display: none;
 }
