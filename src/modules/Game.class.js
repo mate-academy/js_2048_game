@@ -13,6 +13,22 @@ export class Game {
     this.score = 0;
   }
 
+  saveBoardState() {
+    return structuredClone(this.board);
+  }
+
+  hasBoardChanged(oldBoard, newBoard) {
+    for (let i = 0; i < oldBoard.length; i++) {
+      for (let j = 0; j < oldBoard[i].length; j++) {
+        if (oldBoard[i][j] !== newBoard[i][j]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   initializeGame(message = '') {
     this.board = this.createEmptyBoard();
     this.score = 0;
@@ -90,6 +106,7 @@ export class Game {
 
   moveLeft() {
     const { board } = this;
+    const oldBoard = this.saveBoardState();
     const newBoard = Array.from({ length: 4 }, () => Array(4).fill(0));
     let score = 0;
 
@@ -117,7 +134,9 @@ export class Game {
 
     this.board = newBoard;
 
-    this.addRandomTitle();
+    if (this.hasBoardChanged(oldBoard, this.board)) {
+      this.addRandomTitle();
+    }
 
     this.updateBoardDisplay();
     this.updateScoreDisplay();
