@@ -18,9 +18,14 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle; /* змінено на 'middle' замість 'center' */
   user-select: none;
+  position: relative; /* забезпечує правильне відображення фону */
 
+/* Це для порожніх клітинок */
+.field-cell:empty {
+  background: #d6cdc4; /* фон клітинки */
+}
   &--2 {
     background: #eee4da;
   }
@@ -142,17 +147,18 @@ h1 {
   font-size: 20px;
 
   &:hover {
-    background: #10b96a;;
+    background: #10b96a;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #eb5b7d;
 
   &:hover {
-    background: #f87474;
+    background: #d45271;;
   }
 }
+
 
 .message {
   box-sizing: border-box;
