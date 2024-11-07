@@ -1,6 +1,13 @@
 'use strict';
 
-export class Game {
+class Game {
+  static gameStatuses = {
+    idle: 'idle',
+    playing: 'playing',
+    lose: 'lose',
+    win: 'win',
+  };
+
   constructor(
     initialState = [
       [0, 0, 0, 0],
@@ -11,14 +18,36 @@ export class Game {
   ) {
     this.board = initialState || this.createEmptyBoard();
     this.score = 0;
+    this.status = Game.gameStatuses.idle;
+  }
+
+  saveBoardState() {
+    return JSON.parse(JSON.stringify(this.board));
+  }
+
+  hasBoardChanged(oldBoard, newBoard) {
+    for (let i = 0; i < oldBoard.length; i++) {
+      for (let j = 0; j < oldBoard[i].length; j++) {
+        if (oldBoard[i][j] !== newBoard[i][j]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  addCells(count = 1) {
+    for (let i = 0; i < count; i++) {
+      this.addRandomTitle();
+    }
   }
 
   initializeGame(message = '') {
     this.board = this.createEmptyBoard();
     this.score = 0;
 
-    this.addRandomTitle();
-    this.addRandomTitle();
+    this.addCells(2);
 
     this.updateScoreDisplay();
     this.showMessage(message);
@@ -27,7 +56,9 @@ export class Game {
   updateScoreDisplay() {
     const scoreElement = document.querySelector('.game-score');
 
-    scoreElement.textContent = this.score;
+    if (scoreElement) {
+      scoreElement.textContent = this.score;
+    }
   }
 
   createEmptyBoard() {
@@ -75,21 +106,11 @@ export class Game {
     this.board[randomRow][randomCol] = Math.random() < 0.9 ? 2 : 4;
 
     this.updateBoardDisplay();
-
-    const newTile = document.querySelector(`
-      .field-row:nth-child(${randomRow + 1})
-      .field-cell:nth-child(${randomCol + 1})
-    `);
-
-    newTile.classList.add('tile-new');
-
-    setTimeout(() => {
-      newTile.classList.remove('tile-new');
-    }, 300);
   }
 
   moveLeft() {
     const { board } = this;
+    const oldBoard = this.saveBoardState();
     const newBoard = Array.from({ length: 4 }, () => Array(4).fill(0));
     let score = 0;
 
@@ -117,7 +138,9 @@ export class Game {
 
     this.board = newBoard;
 
-    this.addRandomTitle();
+    if (this.hasBoardChanged(oldBoard, this.board)) {
+      this.addRandomTitle();
+    }
 
     this.updateBoardDisplay();
     this.updateScoreDisplay();
@@ -127,6 +150,7 @@ export class Game {
 
   moveRight() {
     const { board } = this;
+    const oldBoard = this.saveBoardState();
     const newBoard = Array.from({ length: 4 }, () => Array(4).fill(0));
     let score = 0;
 
@@ -152,7 +176,10 @@ export class Game {
     this.score += score;
     this.board = newBoard;
 
-    this.addRandomTitle();
+    if (this.hasBoardChanged(oldBoard, this.board)) {
+      this.addRandomTitle();
+    }
+
     this.updateScoreDisplay();
 
     return this.score;
@@ -160,6 +187,7 @@ export class Game {
 
   moveUp() {
     const { board } = this;
+    const oldBoard = this.saveBoardState();
     const newBoard = Array.from({ length: 4 }, () => Array(4).fill(0));
     let score = 0;
 
@@ -185,7 +213,10 @@ export class Game {
     this.score += score;
     this.board = newBoard;
 
-    this.addRandomTitle();
+    if (this.hasBoardChanged(oldBoard, this.board)) {
+      this.addRandomTitle();
+    }
+
     this.updateScoreDisplay();
 
     return this.score;
@@ -193,6 +224,7 @@ export class Game {
 
   moveDown() {
     const { board } = this;
+    const oldBoard = this.saveBoardState();
     const newBoard = Array.from({ length: 4 }, () => Array(4).fill(0));
     let score = 0;
 
@@ -218,7 +250,10 @@ export class Game {
     this.score += score;
     this.board = newBoard;
 
-    this.addRandomTitle();
+    if (this.hasBoardChanged(oldBoard, this.board)) {
+      this.addRandomTitle();
+    }
+
     this.updateScoreDisplay();
 
     return this.score;
@@ -228,7 +263,7 @@ export class Game {
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         if (this.board[i][j] === 2048) {
-          this.showMessage('win');
+          this.showMessage(Game.gameStatuses.win);
 
           return true;
         }
@@ -258,7 +293,7 @@ export class Game {
       }
     }
 
-    this.showMessage('lose');
+    this.showMessage(Game.gameStatuses.lose);
 
     return true;
   }
@@ -273,32 +308,36 @@ export class Game {
 
   getStatus() {
     if (this.checkWin()) {
-      return 'win';
+      return Game.gameStatuses.win;
     } else if (this.checkLose()) {
-      return 'lose';
+      return Game.gameStatuses.lose;
     } else {
-      return 'playing';
+      return this.status;
     }
   }
 
   start() {
+    this.status = Game.gameStatuses.playing;
     this.initializeGame('start');
   }
 
-  restartGame() {
-    this.initializeGame();
+  restart() {
+    this.status = Game.gameStatuses.idle;
+    this.initializeGame('Game restarted');
   }
 
   showMessage(message) {
     const messageContainer = document.querySelector('.message-container');
 
-    messageContainer.querySelector('.message-start').classList.add('hidden');
-    messageContainer.querySelector('.message-lose').classList.add('hidden');
-    messageContainer.querySelector('.message-win').classList.add('hidden');
+    if (messageContainer) {
+      messageContainer.querySelector('.message-start').classList.add('hidden');
+      messageContainer.querySelector('.message-lose').classList.add('hidden');
+      messageContainer.querySelector('.message-win').classList.add('hidden');
+    }
 
-    if (message === 'win') {
+    if (message === Game.gameStatuses.win) {
       messageContainer.querySelector('.message-win').classList.remove('hidden');
-    } else if (message === 'lose') {
+    } else if (message === Game.gameStatuses.lose) {
       messageContainer
         .querySelector('.message-lose')
         .classList.remove('hidden');

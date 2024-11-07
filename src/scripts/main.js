@@ -33,7 +33,7 @@ function clearGameField() {
 }
 
 restartButton.addEventListener('click', () => {
-  game.restartGame();
+  game.restart();
   initializeGame();
   document.addEventListener('keydown', handleKeyPress);
 });
