@@ -4,12 +4,19 @@
 import Game from '../modules/Game.class.js';
 
 const game = new Game();
+const button = document.querySelector('.button');
 
-const startButton = document.querySelector('.start');
-
-startButton.addEventListener('click', (e) => {
-  game.start();
-  renderBoard(game);
+button.addEventListener('click', () => {
+  if (button.classList.contains('start')) {
+    game.start();
+    renderBoard(game);
+  } else {
+    game.restart();
+    renderBoard(game);
+    button.classList.remove('restart');
+    button.classList.add('start');
+    button.textContent = 'Start';
+  }
 });
 
 document.addEventListener('keydown', (e) => {
@@ -17,29 +24,33 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
+  let moved = false;
+
   switch (e.key) {
     case 'ArrowLeft':
-      game.moveLeft();
-      renderBoard(game);
+      moved = game.moveLeft();
       break;
-
     case 'ArrowRight':
-      game.moveRight();
-      renderBoard(game);
+      moved = game.moveRight();
       break;
-
     case 'ArrowUp':
-      game.moveUp();
-      renderBoard(game);
+      moved = game.moveUp();
       break;
-
     case 'ArrowDown':
-      game.moveDown();
-      renderBoard(game);
+      moved = game.moveDown();
       break;
-
     default:
       return;
+  }
+
+  if (moved) {
+    renderBoard(game);
+
+    if (button.classList.contains('start')) {
+      button.classList.remove('start');
+      button.classList.add('restart');
+      button.textContent = 'Restart';
+    }
   }
 
   e.preventDefault();
@@ -70,5 +81,3 @@ function renderBoard(game) {
   scoreElement.innerHTML = '';
   scoreElement.textContent = score;
 }
-
-

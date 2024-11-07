@@ -54,42 +54,18 @@ class Game {
     if (moved) {
       this.generateTile();
     }
+
+    return moved;
   }
 
   moveRight() {
-    let moved = false;
+    this.board = this.board.map((row) => row.reverse());
 
-    for (let row = 0; row < 4; row++) {
-      let newRow = this.board[row].filter((value) => value !== 0);
+    const moved = this.moveLeft();
 
-      for (let col = newRow.length - 1; col > 0; col--) {
-        if (newRow[col] === newRow[col - 1]) {
-          newRow[col] *= 2;
-          this.score += newRow[col];
-          newRow[col - 1] = 0;
-          moved = true;
-        }
-      }
+    this.board = this.board.map((row) => row.reverse());
 
-      newRow = newRow.filter((value) => value !== 0);
-
-      while (newRow.length < 4) {
-        newRow.unshift(0);
-      }
-
-      if (
-        !moved &&
-        !this.board[row].every((value, index) => value === newRow[index])
-      ) {
-        moved = true;
-      }
-
-      this.board[row] = newRow;
-    }
-
-    if (moved) {
-      this.generateTile();
-    }
+    return moved;
   }
 
   moveUp() {
@@ -130,15 +106,21 @@ class Game {
     if (moved) {
       this.generateTile();
     }
+
+    return moved;
   }
 
   moveDown() {
-    this.reverseColumns();
-    this.moveUp();
-    this.reverseColumns();
+    this.#reverseColumns();
+
+    const moved = this.moveUp();
+
+    this.#reverseColumns();
+
+    return moved;
   }
 
-  reverseColumns() {
+  #reverseColumns() {
     for (let col = 0; col < 4; col++) {
       for (let row = 0; row < 2; row++) {
         const temp = this.board[row][col];
@@ -169,8 +151,15 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
+  isWinner() {
+    if (this.board.some((row) => row.includes(2048))) {
+      this.status = 'win';
+    }
+  }
 
   start() {
     this.board = [
