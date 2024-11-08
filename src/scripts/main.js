@@ -112,6 +112,9 @@ const restart = () => {
   game.status = 'idle';
   game.restart();
   boardState = game.getState();
+  gameScore = 0;
+  gameScoreText.textContent = '0';
+
   renderDom();
 
   buttonStart.textContent = 'Start';

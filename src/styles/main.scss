@@ -163,6 +163,7 @@ h1 {
 }
 
 .start {
+  transition: all 0.2s ease-in-out;
   background: #1dae28;
   font-size: 20px;
 
@@ -207,6 +208,23 @@ h1 {
 }
 
 .message-container {
+  transition: all 0.5s ease-in-out;
   width: 100%;
   height: 150px;
+}
+
+.message-start {
+  animation: start 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes start {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-10px);
+  }
+  100% {
+    transform: translateX(10px);
+  }
 }
