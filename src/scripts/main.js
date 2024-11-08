@@ -79,10 +79,16 @@ function startGame() {
   if (game.getStatus() === 'idle') {
     const initialState = game.start();
 
+    startButton.innerText = 'Restart';
+
     updateBoard(initialState);
 
     messageStart.classList.add('hidden');
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
+  }
+
+  if (game.getStatus() === 'playing') {
+    restartGame();
   }
 }
