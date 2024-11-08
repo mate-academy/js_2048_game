@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all 0.2s ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -73,6 +74,30 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+}
+
+.field-cell-moving-left {
+  transition: all 0.1s linear;
+
+  transform: translateX(-15%) scale(1.1);
+}
+
+.field-cell-moving-right {
+  transition: all 0.1s linear;
+
+  transform: translateX(15%) scale(1.1);
+}
+
+.field-cell-moving-down {
+  transition: all 0.1s linear;
+
+  transform: translateY(15%) scale(1.1);
+}
+
+.field-cell-moving-up {
+  transition: all 0.1s linear;
+
+  transform: translateY(-15%) scale(1.1);
 }
 
 .game-field {

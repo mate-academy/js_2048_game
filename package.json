@@ -19,13 +19,14 @@
     "test": "npm run lint && npm run test:only"
   },
   "dependencies": {
-    "@mate-academy/jest-mochawesome-reporter": "^1.0.0"
+    "@mate-academy/jest-mochawesome-reporter": "^1.0.0",
+    "hammerjs": "^2.0.8"
   },
   "devDependencies": {
     "@linthtml/linthtml": "^0.9.5",
     "@mate-academy/eslint-config": "latest",
     "@mate-academy/linthtml-config": "latest",
-    "@mate-academy/scripts": "^1.7.5",
+    "@mate-academy/scripts": "^1.9.3",
     "@mate-academy/stylelint-config": "latest",
     "@parcel/transformer-sass": "^2.12.0",
     "cypress": "^9.7.0",
