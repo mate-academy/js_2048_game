@@ -20,24 +20,6 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    const cell = document.querySelectorAll('.field-cell');
-
-    const firstNumber = Math.floor(Math.random() * 16);
-    let secondNumber;
-
-    do {
-      secondNumber = Math.floor(Math.random() * 16);
-    } while (secondNumber === firstNumber);
-
-    this.createRandomNumbers(cell[firstNumber]);
-    this.createRandomNumbers(cell[secondNumber]);
-    this.boundMoveLeftListener = this.moveLeftEventListener.bind(this);
-    this.boundMoveRightListener = this.moveRightEventListener.bind(this);
-    this.boundMoveUpListener = this.moveUpEventListener.bind(this);
-    this.boundMoveDownListener = this.moveDownEventListener.bind(this);
-  }
 
   createRandomNumbers(cell) {
     const randomNumber = Math.floor(Math.random() * 11);
@@ -53,7 +35,6 @@ class Game {
     let nonZeroElements = arr.filter((num) => num !== 0);
 
     for (let i = 1; i < nonZeroElements.length; i++) {
-
       if (nonZeroElements[i] === nonZeroElements[i - 1]) {
         nonZeroElements[i - 1] *= 2;
 
@@ -78,7 +59,6 @@ class Game {
     let nonZeroElements = arr.filter((num) => num !== 0);
 
     for (let i = 1; i < nonZeroElements.length; i++) {
-
       if (nonZeroElements[i] === nonZeroElements[i - 1]) {
         nonZeroElements[i - 1] *= 2;
 
@@ -161,7 +141,6 @@ class Game {
       const columnNodes = [[], [], [], []];
 
       rows.forEach((row) => {
-
         for (let i = 0; i < 4; i++) {
           const cells = row.querySelector(`td:nth-child(${i + 1})`);
 
@@ -179,9 +158,7 @@ class Game {
 
         result.forEach((value, index) => {
           columnElement[index].textContent = value === 0 ? '' : value;
-
         });
-
       });
 
       this.addCell();
@@ -198,7 +175,6 @@ class Game {
       const columnNodes = [[], [], [], []];
 
       rows.forEach((row) => {
-
         for (let i = 0; i < 4; i++) {
           const cells = row.querySelector(`td:nth-child(${i + 1})`);
 
@@ -258,13 +234,31 @@ class Game {
    */
   start() {
     const startButton = document.querySelector('.start');
+    const startMessage = document.querySelector('.message-start');
 
     startButton.addEventListener('click', () => {
-
       startButton.textContent = 'restart';
 
       startButton.classList.remove('start');
       startButton.classList.add('restart');
+
+      startMessage.classList.add('hidden');
+
+      const cell = document.querySelectorAll('.field-cell');
+
+      const firstNumber = Math.floor(Math.random() * 16);
+      let secondNumber;
+
+      do {
+        secondNumber = Math.floor(Math.random() * 16);
+      } while (secondNumber === firstNumber);
+
+      this.createRandomNumbers(cell[firstNumber]);
+      this.createRandomNumbers(cell[secondNumber]);
+      this.boundMoveLeftListener = this.moveLeftEventListener.bind(this);
+      this.boundMoveRightListener = this.moveRightEventListener.bind(this);
+      this.boundMoveUpListener = this.moveUpEventListener.bind(this);
+      this.boundMoveDownListener = this.moveDownEventListener.bind(this);
 
       this.moveLeft();
       this.moveRight();
@@ -341,8 +335,8 @@ class Game {
     return true;
   }
 
-  gameWin () {
-    let winMessage = document.querySelector('.message-win');
+  gameWin() {
+    const winMessage = document.querySelector('.message-win');
 
     winMessage.classList.remove('hidden');
 
@@ -353,7 +347,7 @@ class Game {
   }
   gameOver() {
     if (this.checkBeforeGameOver()) {
-      let overMessage = document.querySelector('.message-lose');
+      const overMessage = document.querySelector('.message-lose');
 
       overMessage.classList.remove('hidden');
 
