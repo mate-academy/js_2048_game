@@ -8,6 +8,7 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  transition: all 0.3s ease;
 }
 
 .field-cell {
@@ -20,6 +21,10 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+
+  &--0 {
+    background: #d6cdc4;
+  }
 
   &--2 {
     background: #eee4da;
