@@ -110,7 +110,6 @@ class Game {
 
   moveLeft() {
     const { board } = this;
-    const oldBoard = this.saveBoardState();
     const newBoard = Array.from({ length: 4 }, () => Array(4).fill(0));
     let score = 0;
 
@@ -137,20 +136,10 @@ class Game {
     this.score += score;
 
     this.board = newBoard;
-
-    if (this.hasBoardChanged(oldBoard, this.board)) {
-      this.addRandomTitle();
-    }
-
-    this.updateBoardDisplay();
-    this.updateScoreDisplay();
-
-    return this.score;
   }
 
   moveRight() {
     const { board } = this;
-    const oldBoard = this.saveBoardState();
     const newBoard = Array.from({ length: 4 }, () => Array(4).fill(0));
     let score = 0;
 
@@ -175,19 +164,10 @@ class Game {
 
     this.score += score;
     this.board = newBoard;
-
-    if (this.hasBoardChanged(oldBoard, this.board)) {
-      this.addRandomTitle();
-    }
-
-    this.updateScoreDisplay();
-
-    return this.score;
   }
 
   moveUp() {
     const { board } = this;
-    const oldBoard = this.saveBoardState();
     const newBoard = Array.from({ length: 4 }, () => Array(4).fill(0));
     let score = 0;
 
@@ -212,19 +192,10 @@ class Game {
 
     this.score += score;
     this.board = newBoard;
-
-    if (this.hasBoardChanged(oldBoard, this.board)) {
-      this.addRandomTitle();
-    }
-
-    this.updateScoreDisplay();
-
-    return this.score;
   }
 
   moveDown() {
     const { board } = this;
-    const oldBoard = this.saveBoardState();
     const newBoard = Array.from({ length: 4 }, () => Array(4).fill(0));
     let score = 0;
 
@@ -249,14 +220,6 @@ class Game {
 
     this.score += score;
     this.board = newBoard;
-
-    if (this.hasBoardChanged(oldBoard, this.board)) {
-      this.addRandomTitle();
-    }
-
-    this.updateScoreDisplay();
-
-    return this.score;
   }
 
   checkWin() {

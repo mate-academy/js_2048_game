@@ -72,7 +72,15 @@ function handleKeyPress(e) {
   const action = moveActions[e.key];
 
   if (action) {
+    const oldBoard = game.saveBoardState();
+
     action();
+
+    if (game.hasBoardChanged(oldBoard, game.board)) {
+      game.addRandomTitle();
+    }
+
+    game.updateScoreDisplay();
     checkGameStatusAfterMove();
   }
 }
