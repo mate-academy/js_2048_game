@@ -53,7 +53,10 @@ function updateGameField(board) {
 function checkGameStatus() {
   const gameStatus = game.getStatus();
 
-  if (gameStatus === 'win' || gameStatus === 'lose') {
+  if (
+    gameStatus === Game.gameStatuses.win ||
+    gameStatus === Game.gameStatuses.lose
+  ) {
     document.removeEventListener('keydown', handleKeyPress);
   }
 }
@@ -76,9 +79,9 @@ function handleKeyPress(e) {
 
 function checkGameStatusAfterMove() {
   if (game.checkWin()) {
-    checkGameStatus('win');
+    checkGameStatus(Game.gameStatuses.win);
   } else if (game.checkLose()) {
-    checkGameStatus('lose');
+    checkGameStatus(Game.gameStatuses.lose);
   }
 
   refreshTable(game.board);
