@@ -49,14 +49,13 @@ class Game {
       for (let col = 0; col < this.board[row].length; col++) {
         const cell = cells[cellIndex++];
         const value = this.board[row][col];
+        const previousValue = cell.textContent;
+
+        cell.classList.remove(`field-cell--${previousValue}`);
 
         if (value === 0) {
-          const previousValue = cell.textContent;
-
-          cell.classList.remove(`field-cell--${previousValue}`);
           cell.textContent = '';
         } else {
-          cell.classList.remove(`field-cell--${value / 2}`);
           cell.classList.add(`field-cell--${value}`);
           cell.textContent = value; // оновлюємо текст
         }
@@ -165,37 +164,52 @@ class Game {
     let moved = false;
 
     for (let row = 0; row < this.board.length; row++) {
-      const currentRow = this.board[row];
-      const newRow = currentRow.filter((val) => val !== 0);
-      const canMerge = new Array(newRow.length).fill(true);
-      // [true, true, і тд]
+      const currentRow = this.board[row].filter((val) => val !== 0);
+      // Відфільтровуємо нулі для зміщення плиток вліво
+      const mergedRow = [];
 
-      const mergedThisMove = this.mergeTitles(newRow, canMerge);
-      // виконується злиття клітинок та передається масив в
-      // якому є індекси злитих клітинок
+      let skip = false;
 
-      if (
-        mergedThisMove.length > 0 ||
-        newRow.length !== currentRow.filter((val) => val !== 0).length
-      ) {
-        moved = true;
+      for (let i = 0; i < currentRow.length; i++) {
+        if (skip) {
+          skip = false;
+          continue;
+        }
+
+        // Якщо плитки однакові, зливаємо їх
+        if (currentRow[i] === currentRow[i + 1]) {
+          mergedRow.push(currentRow[i] * 2);
+          this.getScore(true, currentRow[i] * 2); // Оновлюємо рахунок за злиття
+          skip = true;
+          moved = true;
+        } else {
+          mergedRow.push(currentRow[i]);
+        }
       }
 
-      while (newRow.length < currentRow.length) {
-        newRow.push(0);
+      // Заповнюємо ряд до повної довжини, додаючи нулі
+      while (mergedRow.length < this.board[row].length) {
+        mergedRow.push(0);
       }
 
-      this.board[row] = newRow;
-
-      // Оновлюємо рахунок, передаючи індекси злитих плиток
-      for (let i = 0; i < mergedThisMove.length; i++) {
-        this.getScore(moved, this.board[mergedThisMove[i]]);
+      // Перевіряємо, чи відбулася зміна в ряду
+      if (!moved) {
+        for (let i = 0; i < this.board[row].length; i++) {
+          if (this.board[row][i] !== mergedRow[i]) {
+            moved = true;
+            break;
+          }
+        }
       }
+
+      this.board[row] = mergedRow; // Оновлюємо ряд
     }
 
     if (moved) {
       this.addRandomCellAfterMoving();
     }
+
+    this.updateBoard();
 
     return moved;
   }
@@ -203,34 +217,52 @@ class Game {
   moveRight() {
     let moved = false;
 
-    for (let row = this.board.length - 1; row >= 0; row--) {
-      const currentRow = this.board[row];
-      const newRow = currentRow.filter((val) => val !== 0);
-      const canMerge = new Array(newRow.length).fill(true);
+    for (let row = 0; row < this.board.length; row++) {
+      // Фільтруємо нулі й залишаємо лише ненульові значення
+      const currentRow = this.board[row].filter((val) => val !== 0);
 
-      const mergedThisMove = this.mergeTitles(newRow, canMerge);
+      const mergedRow = [];
+      let skip = false;
 
-      if (
-        mergedThisMove.length > 0 ||
-        newRow.length !== currentRow.filter((val) => val !== 0).length
-      ) {
-        moved = true;
+      // Зливаємо плитки, якщо вони однакові
+      for (let i = 0; i < currentRow.length; i++) {
+        if (skip) {
+          skip = false;
+          continue;
+        }
+
+        if (currentRow[i] === currentRow[i + 1]) {
+          mergedRow.push(currentRow[i] * 2); // Зливаємо плитки
+          this.getScore(true, currentRow[i] * 2); // Оновлюємо рахунок
+          skip = true; // Пропускаємо наступну плитку
+          moved = true;
+        } else {
+          mergedRow.push(currentRow[i]);
+        }
       }
 
-      while (newRow.length < currentRow.length) {
-        newRow.unshift(0);
+      // Додаємо нулі на початок для вирівнювання ряду вправо
+      while (mergedRow.length < this.board[row].length) {
+        mergedRow.unshift(0);
       }
 
-      this.board[row] = newRow;
-
-      for (let i = 0; i < mergedThisMove.length; i++) {
-        this.getScore(moved, this.board[mergedThisMove[i]]);
+      // Перевіряємо, чи відбулись зміни в ряду
+      for (let i = 0; i < this.board[row].length; i++) {
+        if (this.board[row][i] !== mergedRow[i]) {
+          moved = true;
+          break;
+        }
       }
+
+      // Оновлюємо ряд у дошці без додаткового реверсу
+      this.board[row] = mergedRow;
     }
 
     if (moved) {
       this.addRandomCellAfterMoving();
     }
+
+    this.updateBoard();
 
     return moved;
   }
@@ -266,6 +298,7 @@ class Game {
     if (moved) {
       this.addRandomCellAfterMoving();
     }
+    this.updateBoard();
 
     return moved;
   }
@@ -301,6 +334,7 @@ class Game {
     if (moved) {
       this.addRandomCellAfterMoving();
     }
+    this.updateBoard();
 
     return moved;
   }
