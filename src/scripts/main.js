@@ -164,7 +164,7 @@ const resetGame = () => {
 
   const button = document.querySelector('button');
 
-  button.textContent = 'Reset';
+  button.textContent = 'Restart';
   button.classList.remove('start');
   button.classList.add('restart');
 
