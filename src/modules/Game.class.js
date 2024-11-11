@@ -277,7 +277,7 @@ class Game {
     const startMessage = document.querySelector('.message-start');
 
     if (startButton) {
-      startButton.textContent = 'restart';
+      startButton.textContent = 'Restart';
       startButton.classList.remove('start');
       startButton.classList.add('restart');
     } else {
