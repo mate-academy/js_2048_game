@@ -7,10 +7,11 @@
  */
 const IDLE = 'idle';
 const PLAYING = 'playing';
-const WIN = 'win';
-const LOSE = 'lose';
 
-class Game {
+export const WIN = 'win';
+export const LOSE = 'lose';
+
+export class Game {
   /**
    * Creates a new game instance.
    *
@@ -25,7 +26,7 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
+  constructor(initialState, winCallback, loseCallback) {
     this.board = initialState || [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -37,6 +38,36 @@ class Game {
 
     this.status = IDLE;
     this.isStarted = false;
+    this.winCallback = winCallback;
+    this.loseCallback = loseCallback;
+  }
+
+  moveTile(fromCell, toCell) {
+    // Отримуємо координати клітинок
+    const fromCellRect = fromCell.getBoundingClientRect();
+    const toCellRect = toCell.getBoundingClientRect();
+
+    // Вираховуємо зміщення
+    const xOffset = toCellRect.left - fromCellRect.left;
+    const yOffset = toCellRect.top - fromCellRect.top;
+
+    // Встановлюємо зміщення через CSS перемінні
+    fromCell.style.setProperty('--x-offset', `${xOffset}px`);
+    fromCell.style.setProperty('--y-offset', `${yOffset}px`);
+
+    // Додаємо клас для запуску анімації
+    fromCell.classList.add('moving');
+
+    // Затримка для застосування анімації збільшення
+    setTimeout(() => {
+      // Додаємо клас 'merged' для анімації збільшення
+      toCell.classList.add('merged');
+
+      // Затримка для видалення класу 'merged' після завершення анімації
+      setTimeout(() => {
+        toCell.classList.remove('merged');
+      }, 300); // Час анімації (300ms)
+    }, 120); // Затримка до початку анімації
   }
 
   updateBoard() {
@@ -207,9 +238,9 @@ class Game {
 
     if (moved) {
       this.addRandomCellAfterMoving();
+      this.updateBoard();
+      this.getStatus();
     }
-
-    this.updateBoard();
 
     return moved;
   }
@@ -260,9 +291,9 @@ class Game {
 
     if (moved) {
       this.addRandomCellAfterMoving();
+      this.updateBoard();
+      this.getStatus();
     }
-
-    this.updateBoard();
 
     return moved;
   }
@@ -297,8 +328,9 @@ class Game {
 
     if (moved) {
       this.addRandomCellAfterMoving();
+      this.updateBoard();
+      this.getStatus();
     }
-    this.updateBoard();
 
     return moved;
   }
@@ -333,17 +365,13 @@ class Game {
 
     if (moved) {
       this.addRandomCellAfterMoving();
+      this.updateBoard();
+      this.getStatus();
     }
-    this.updateBoard();
 
     return moved;
   }
 
-  getScore(moved, value) {
-    if (moved && value > 0) {
-      this.score += value; // додаємо значення плитки до рахунку
-    }
-  }
   /**
    * @returns {number[][]}
    */
@@ -366,6 +394,7 @@ class Game {
     } else {
       let hasEmptyCell = false;
       let has2048Cell = false;
+      let canMove = false; // Змінна для перевірки наявності можливих ходів
 
       for (let row = 0; row < this.board.length; row++) {
         for (let col = 0; col < this.board[row].length; col++) {
@@ -376,15 +405,32 @@ class Game {
           if (this.board[row][col] === 2048) {
             has2048Cell = true;
           }
+
+          // Перевірка на можливість злиття
+          if (
+            row < this.board.length - 1 &&
+            this.board[row][col] === this.board[row + 1][col]
+          ) {
+            canMove = true; // Якщо клітинки злиті по вертикалі
+          }
+
+          if (
+            col < this.board[row].length - 1 &&
+            this.board[row][col] === this.board[row][col + 1]
+          ) {
+            canMove = true; // Якщо клітинки злиті по горизонталі
+          }
         }
       }
 
       if (has2048Cell) {
         this.status = WIN;
-      } else if (hasEmptyCell) {
+        this.winCallback();
+      } else if (hasEmptyCell || canMove) {
         this.status = PLAYING;
       } else {
         this.status = LOSE;
+        this.loseCallback();
       }
     }
 
@@ -407,5 +453,3 @@ class Game {
 
   // Add your own methods here
 }
-
-module.exports = Game;

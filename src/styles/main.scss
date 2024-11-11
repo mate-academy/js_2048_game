@@ -31,51 +31,51 @@ body {
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #e1d5c7;
   }
 
   &--8 {
-    background: #f2b179;
+    background: #5cb3bb;
     color: #f9f6f2;
   }
 
   &--16 {
-    background: #f59563;
+    background: #469299;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #349569;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
+    background: #30ac64;
     color: #f9f6f2;
   }
 
   &--128 {
-    background: #edcf72;
+    background: #26b84d;
     color: #f9f6f2;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: #0b7476;
+    color: #fbfbfb;
   }
 
   &--512 {
-    background: #edc850;
+    background: #5b8fd9;
     color: #f9f6f2;
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #3b75c6;
     color: #f9f6f2;
   }
 
   &--2048 {
-    background: #edc22e;
+    background: #3b49c6;
     color: #f9f6f2;
   }
 }
@@ -107,6 +107,21 @@ h1 {
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+}
+
+.best {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #d6cdc4;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  color: #776e65;
+  box-sizing: border-box;
+  font-size: 16px;
+  margin: 0 8px 0 0;
 }
 
 .info {
@@ -155,7 +170,7 @@ h1 {
   background: #eb5b7d;
 
   &:hover {
-    background: #d45271;;
+    background: #d45271;
   }
 }
 
@@ -183,11 +198,63 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
+  background: #2669b5;
   color: #f9f6f2;
+}
+
+.message-lose {
+  width: 100%;
+  box-sizing: border-box;
+  height: 50px !important;
+  padding: 10px;
+  background: #bf687c;
+  color: #f9f6f2;
+  text-align: center;
+  border-radius: 5px;
+  font-size: 20px;
 }
 
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.field-cell {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  position: relative;
+}
+
+.moving {
+  animation: moveTile 0.5s forwards;
+}
+
+@keyframes moveTile {
+  from {
+    transform: translate(var(--x-offset), var(--y-offset));
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+
+.field-cell--merged {
+  animation: mergeTile 0.2s ease;
+}
+
+@keyframes mergeTile {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
 }
