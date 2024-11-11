@@ -1,7 +1,97 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../modules/Game.class');
 
-// Write your code here
+const game = new Game();
+
+const button = document.querySelector('button');
+const messages = document.querySelectorAll('.message');
+const startMessage = document.querySelector('.message-start');
+
+const gameScore = document.querySelector('.game-score');
+const bestScore = document.querySelector('.best .game-score');
+
+const highScore = parseInt(localStorage.getItem('highScore')) || 0;
+
+bestScore.textContent = highScore;
+
+button.addEventListener('click', () => {
+  const isStartButton = button.classList.contains('start');
+
+  button.textContent = isStartButton ? 'Restart' : 'Start';
+
+  if (isStartButton) {
+    game.start();
+    button.classList.replace('start', 'restart');
+  } else {
+    game.restart();
+    handleScoreChange(0);
+    button.classList.replace('restart', 'start');
+
+    messages.forEach((message) => {
+      if (!message.classList.contains('hiiden')) {
+        message.classList.add('hidden');
+      }
+    });
+  }
+
+  startMessage.classList.toggle('hidden');
+});
+
+function setupInput() {
+  document.addEventListener('keydown', handleInput, { once: true });
+}
+
+async function handleInput(e) {
+  switch (e.key) {
+    case 'ArrowLeft':
+      await game.moveLeft();
+      break;
+    case 'ArrowRight':
+      await game.moveRight();
+      break;
+    case 'ArrowUp':
+      await game.moveUp();
+      break;
+    case 'ArrowDown':
+      await game.moveDown();
+      break;
+    default:
+      setupInput();
+
+      return;
+  }
+
+  game.cellState.flat().forEach((cell) => {
+    cell.mergeTiles();
+  });
+
+  handleStatusChange(game.getStatus());
+  handleScoreChange(game.getScore());
+
+  if (!game.isWinner() || !game.noMovesPossible()) {
+    setupInput();
+  }
+}
+
+setupInput();
+
+function handleStatusChange(gameStatus) {
+  messages.forEach((message) => {
+    if (message.classList.contains(`message-${gameStatus}`)) {
+      message.classList.remove('hidden');
+    }
+  });
+}
+
+function handleScoreChange(currentScore) {
+  gameScore.textContent = currentScore;
+
+  if (currentScore > highScore) {
+    // eslint-disable-next-line no-shadow
+    const highScore = currentScore;
+
+    bestScore.textContent = highScore;
+    localStorage.setItem('highScore', highScore);
+  }
+}
