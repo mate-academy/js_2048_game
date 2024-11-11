@@ -7,9 +7,14 @@
 import Game from '../modules/Game.class.js';
 
 const game = new Game();
+let isGameStarted = false;
 
 // eslint-disable-next-line no-shadow
 document.addEventListener('keydown', (event) => {
+  if (!isGameStarted) {
+    return;
+  }
+
   // eslint-disable-next-line no-shadow
   const status = game.getStatus();
 
@@ -82,6 +87,7 @@ function updateUI() {
 document.querySelector('.button.start').addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
+    isGameStarted = true;
   } else {
     game.restart();
   }
