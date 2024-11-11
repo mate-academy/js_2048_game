@@ -32,6 +32,8 @@ startButton.addEventListener('click', () => {
     startButton.classList = 'button start';
     startButton.innerHTML = 'Start';
     startMessage.classList.remove('hidden');
+    loseMessage.classList.add('hidden');
+    winMessage.classList.add('hidden');
   }
 });
 
