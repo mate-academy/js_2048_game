@@ -2,6 +2,7 @@
 'use strict';
 
 import Game from '../modules/Game.class.js';
+addFavicon('/images/favicon.png');
 
 const game = new Game();
 const button = document.querySelector('.button');
@@ -71,9 +72,9 @@ document.addEventListener('keydown', (e) => {
 
     if (game.isGameOver()) {
       updateMessage('lose');
-      button.classList.remove('restart');
-      button.classList.add('start');
-      button.textContent = 'Start';
+      // button.classList.remove('restart');
+      // button.classList.add('start');
+      // button.textContent = 'Start';
 
       return;
     }
@@ -120,4 +121,19 @@ function updateMessage(type) {
   } else if (type === 'start') {
     messageStart.classList.remove('hidden');
   }
+}
+
+function addFavicon(url) {
+  const link = document.createElement('link');
+  link.rel = 'icon';
+  link.href = url;
+  link.setAttribute('type', 'image/png');
+
+  // Remove any existing favicons
+  const existingFavicon = document.querySelector("link[rel='icon']");
+  if (existingFavicon) {
+    document.head.removeChild(existingFavicon);
+  }
+
+  document.head.appendChild(link);
 }
