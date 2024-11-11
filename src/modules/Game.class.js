@@ -26,9 +26,25 @@ class Game {
 
     if (randomNumber <= 1) {
       cell.textContent = '4';
+      cell.className = `field-cell cell-${cell.textContent}`;
     } else {
       cell.textContent = '2';
+      cell.className = `field-cell cell-${cell.textContent}`;
     }
+  }
+
+  initiateGame() {
+    const cell = document.querySelectorAll('.field-cell');
+
+    const firstNumber = Math.floor(Math.random() * 16);
+    let secondNumber;
+
+    do {
+      secondNumber = Math.floor(Math.random() * 16);
+    } while (secondNumber === firstNumber);
+
+    this.createRandomNumbers(cell[firstNumber]);
+    this.createRandomNumbers(cell[secondNumber]);
   }
 
   moveZerosToEnd(arr) {
@@ -79,6 +95,15 @@ class Game {
     return [...Array(zeroCount).fill(0), ...nonZeroElements];
   }
 
+  getScore(points) {
+    const scorecount = document.querySelector('.game-score');
+
+    let score = +scorecount.textContent;
+
+    score += points;
+    scorecount.textContent = score;
+  }
+
   moveLeftEventListener(e) {
     if (e.key === 'ArrowLeft') {
       const rows = document.querySelectorAll('.field-row');
@@ -94,7 +119,13 @@ class Game {
         result.forEach((value, index) => {
           const cell = cells[index];
 
-          cell.textContent = value === 0 ? '' : value;
+          if (value === 0) {
+            cell.textContent = '';
+            cell.className = 'field-cell';
+          } else {
+            cell.textContent = value;
+            cell.className = `field-cell cell-${value}`;
+          }
 
           rowElement.appendChild(cell);
         });
@@ -123,7 +154,14 @@ class Game {
         result.forEach((value, index) => {
           const cell = cells[index];
 
-          cell.textContent = value === 0 ? '' : value;
+          if (value === 0) {
+            cell.textContent = '';
+            cell.className = 'field-cell';
+          } else {
+            cell.textContent = value;
+            cell.className = `field-cell cell-${value}`;
+          }
+
           rowElement.appendChild(cell);
         });
       });
@@ -131,6 +169,7 @@ class Game {
       this.addCell();
     }
   }
+
   moveRight() {
     window.addEventListener('keydown', this.boundMoveRightListener);
   }
@@ -157,7 +196,13 @@ class Game {
         const result = this.moveZerosToEnd(cellValues);
 
         result.forEach((value, index) => {
-          columnElement[index].textContent = value === 0 ? '' : value;
+          if (value === 0) {
+            columnElement[index].textContent = '';
+            columnElement[index].className = 'field-cell';
+          } else {
+            columnElement[index].textContent = value;
+            columnElement[index].className = `field-cell cell-${value}`;
+          }
         });
       });
 
@@ -191,7 +236,13 @@ class Game {
         const result = this.moveZerosToStart(cellValues);
 
         result.forEach((value, index) => {
-          columnElement[index].textContent = value === 0 ? '' : value;
+          if (value === 0) {
+            columnElement[index].textContent = '';
+            columnElement[index].className = 'field-cell';
+          } else {
+            columnElement[index].textContent = value;
+            columnElement[index].className = `field-cell cell-${value}`;
+          }
         });
       });
       this.addCell();
@@ -205,18 +256,6 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore(number) {
-    const scorecount = document.querySelector('.game-score');
-    const score = parseInt(scorecount.textContent) || 0;
-
-    scorecount.textContent = score + number;
-  }
-
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
-
   /**
    * Returns the current game status.
    *
@@ -232,40 +271,46 @@ class Game {
   /**
    * Starts the game.
    */
-  start() {
+
+  startFunction() {
     const startButton = document.querySelector('.start');
     const startMessage = document.querySelector('.message-start');
 
-    startButton.addEventListener('click', () => {
+    if (startButton) {
       startButton.textContent = 'restart';
-
       startButton.classList.remove('start');
       startButton.classList.add('restart');
+    } else {
+      return;
+    }
 
+    if (startMessage) {
       startMessage.classList.add('hidden');
+    } else {
+      return;
+    }
 
-      const cell = document.querySelectorAll('.field-cell');
+    this.boundMoveLeftListener = this.moveLeftEventListener.bind(this);
+    this.boundMoveRightListener = this.moveRightEventListener.bind(this);
+    this.boundMoveUpListener = this.moveUpEventListener.bind(this);
+    this.boundMoveDownListener = this.moveDownEventListener.bind(this);
 
-      const firstNumber = Math.floor(Math.random() * 16);
-      let secondNumber;
+    this.moveLeft();
+    this.moveRight();
+    this.moveUp();
+    this.moveDown();
+    this.restart();
+    this.initiateGame();
+  }
 
-      do {
-        secondNumber = Math.floor(Math.random() * 16);
-      } while (secondNumber === firstNumber);
+  start() {
+    const startButton = document.querySelector('.start');
 
-      this.createRandomNumbers(cell[firstNumber]);
-      this.createRandomNumbers(cell[secondNumber]);
-      this.boundMoveLeftListener = this.moveLeftEventListener.bind(this);
-      this.boundMoveRightListener = this.moveRightEventListener.bind(this);
-      this.boundMoveUpListener = this.moveUpEventListener.bind(this);
-      this.boundMoveDownListener = this.moveDownEventListener.bind(this);
-
-      this.moveLeft();
-      this.moveRight();
-      this.moveUp();
-      this.moveDown();
-      this.restart();
-    });
+    if (!startButton) {
+      startButton.removeEventListener('click', this.startFunction.bind(this));
+    } else {
+      startButton.addEventListener('click', this.startFunction.bind(this));
+    }
   }
 
   /**
@@ -274,24 +319,37 @@ class Game {
   restart() {
     const restartButton = document.querySelector('.restart');
 
+    if (!restartButton) {
+      return;
+    }
+
     restartButton.addEventListener('click', () => {
+      const scorecount = document.querySelector('.game-score');
       const cells = document.querySelectorAll('.field-cell');
 
-      cells.forEach((cell) => {
-        cell.textContent = '';
-      });
-      this.addCell();
-      this.addCell();
+      const cellsArray = [...cells].map(
+        (cell) => parseInt(cell.textContent) || 0,
+      );
+      const nonEmptyCells = cellsArray.filter((content) => content !== 0);
 
-      const scorecount = document.querySelector('.game-score');
+      if (nonEmptyCells.length === 2 && scorecount.textContent === '0') {
+      } else {
+        cells.forEach((cell) => {
+          cell.textContent = '';
+          cell.className = 'field-cell';
+        });
 
-      scorecount.textContent = 0;
+        this.addCell();
+        this.addCell();
 
-      const messageGameOver = document.querySelector('.message-lose');
-      const messageGameWin = document.querySelector('.message-win');
+        scorecount.textContent = 0;
 
-      messageGameOver.classList.add('hidden');
-      messageGameWin.classList.add('hidden');
+        const messageGameOver = document.querySelector('.message-lose');
+        const messageGameWin = document.querySelector('.message-win');
+
+        messageGameOver.classList.add('hidden');
+        messageGameWin.classList.add('hidden');
+      }
     });
   }
 
