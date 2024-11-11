@@ -119,7 +119,6 @@ class Game {
         (cell) => parseInt(cell.textContent) || 0,
       );
 
-
       rows.forEach((rowElement) => {
         const cells = [...rowElement.querySelectorAll('td')];
         const cellValues = cells.map((cell) => parseInt(cell.textContent) || 0);
@@ -148,6 +147,7 @@ class Game {
       );
 
       if (this.areArraysEqual(previousState, newState)) {
+        this.gameOver();
       } else {
         this.addCell();
       }
@@ -193,6 +193,7 @@ class Game {
       );
 
       if (this.areArraysEqual(previousState, newState)) {
+        this.gameOver();
       } else {
         this.addCell();
       }
@@ -243,6 +244,7 @@ class Game {
       );
 
       if (this.areArraysEqual(previousState, newState)) {
+        this.gameOver();
       } else {
         this.addCell();
       }
@@ -293,6 +295,7 @@ class Game {
       );
 
       if (this.areArraysEqual(previousState, newState)) {
+        this.gameOver();
       } else {
         this.addCell();
       }
@@ -472,12 +475,6 @@ class Game {
     const emptyCells = [...gameCells].filter(
       (cell) => cell.textContent.length === 0,
     );
-
-    if (emptyCells.length === 0) {
-      this.gameOver();
-
-      return;
-    }
 
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
 
