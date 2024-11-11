@@ -27,7 +27,13 @@ const randomizer = () => {
   const randomCell = emptyCells[randomIndex];
   const random = Math.random();
 
-  randomCell.textContent = random < 0.9 ? '2' : '4';
+  if (random < 0.9) {
+    randomCell.textContent = '2';
+    randomCell.classList.add(`field-cell--2`);
+  } else {
+    randomCell.textContent = '4';
+    randomCell.classList.add(`field-cell--4`);
+  }
 };
 
 // Find all empty cells in the grid
