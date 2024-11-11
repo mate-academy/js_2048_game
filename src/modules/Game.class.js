@@ -5,6 +5,7 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
+
 class Game {
   /**
    * Creates a new game instance.
@@ -20,6 +21,13 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
+  areArraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+
+    return arr1.every((value, index) => value === arr2[index]);
+  }
 
   createRandomNumbers(cell) {
     const randomNumber = Math.floor(Math.random() * 11);
@@ -107,6 +115,10 @@ class Game {
   moveLeftEventListener(e) {
     if (e.key === 'ArrowLeft') {
       const rows = document.querySelectorAll('.field-row');
+      const previousState = [...document.querySelectorAll('.field-cell')].map(
+        (cell) => parseInt(cell.textContent) || 0,
+      );
+
 
       rows.forEach((rowElement) => {
         const cells = [...rowElement.querySelectorAll('td')];
@@ -131,7 +143,14 @@ class Game {
         });
       });
 
-      this.addCell();
+      const newState = [...document.querySelectorAll('.field-cell')].map(
+        (cell) => parseInt(cell.textContent) || 0,
+      );
+
+      if (this.areArraysEqual(previousState, newState)) {
+      } else {
+        this.addCell();
+      }
     }
   }
 
@@ -142,6 +161,9 @@ class Game {
   moveRightEventListener(e) {
     if (e.key === 'ArrowRight') {
       const rows = document.querySelectorAll('.field-row');
+      const previousState = [...document.querySelectorAll('.field-cell')].map(
+        (cell) => parseInt(cell.textContent) || 0,
+      );
 
       rows.forEach((rowElement) => {
         const cells = [...rowElement.querySelectorAll('td')];
@@ -166,7 +188,14 @@ class Game {
         });
       });
 
-      this.addCell();
+      const newState = [...document.querySelectorAll('.field-cell')].map(
+        (cell) => parseInt(cell.textContent) || 0,
+      );
+
+      if (this.areArraysEqual(previousState, newState)) {
+      } else {
+        this.addCell();
+      }
     }
   }
 
@@ -178,6 +207,9 @@ class Game {
     if (e.key === 'ArrowUp') {
       const rows = document.querySelectorAll('.field-row');
       const columnNodes = [[], [], [], []];
+      const previousState = [...document.querySelectorAll('.field-cell')].map(
+        (cell) => parseInt(cell.textContent) || 0,
+      );
 
       rows.forEach((row) => {
         for (let i = 0; i < 4; i++) {
@@ -206,7 +238,14 @@ class Game {
         });
       });
 
-      this.addCell();
+      const newState = [...document.querySelectorAll('.field-cell')].map(
+        (cell) => parseInt(cell.textContent) || 0,
+      );
+
+      if (this.areArraysEqual(previousState, newState)) {
+      } else {
+        this.addCell();
+      }
     }
   }
 
@@ -218,6 +257,9 @@ class Game {
     if (e.key === 'ArrowDown') {
       const rows = document.querySelectorAll('.field-row');
       const columnNodes = [[], [], [], []];
+      const previousState = [...document.querySelectorAll('.field-cell')].map(
+        (cell) => parseInt(cell.textContent) || 0,
+      );
 
       rows.forEach((row) => {
         for (let i = 0; i < 4; i++) {
@@ -245,7 +287,15 @@ class Game {
           }
         });
       });
-      this.addCell();
+
+      const newState = [...document.querySelectorAll('.field-cell')].map(
+        (cell) => parseInt(cell.textContent) || 0,
+      );
+
+      if (this.areArraysEqual(previousState, newState)) {
+      } else {
+        this.addCell();
+      }
     }
   }
 
@@ -419,22 +469,19 @@ class Game {
   addCell() {
     const gameCells = document.querySelectorAll('.field-cell');
 
-    const result = [...gameCells].filter((cell, index) => {
-      if (cell.textContent.length === 0) {
-        return index;
-      } else {
-      }
-    });
+    const emptyCells = [...gameCells].filter(
+      (cell) => cell.textContent.length === 0,
+    );
 
-    if (result.length === 0) {
+    if (emptyCells.length === 0) {
       this.gameOver();
 
       return;
     }
 
-    const randomCell = Math.floor(Math.random() * result.length);
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
 
-    this.createRandomNumbers(result[randomCell]);
+    this.createRandomNumbers(emptyCells[randomIndex]);
   }
 }
 
