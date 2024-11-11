@@ -1,6 +1,5 @@
 'use strict';
 
-// Ініціалізація гри
 import { WIN, LOSE, Game } from '../modules/Game.class';
 
 const game = new Game(null, showWinMessage, showLoseMessage);
@@ -36,11 +35,10 @@ function saveScore(sscore) {
 
   if (!currentRecord || sscore > currentRecord) {
     localStorage.setItem('highScore', sscore);
-    displayRecord(); // Оновлюємо рекорд на екрані
+    displayRecord();
   }
 }
 
-// Функція для відображення рекорду
 function displayRecord() {
   const highScore = localStorage.getItem('highScore') || 0;
 
@@ -49,16 +47,14 @@ function displayRecord() {
 
 displayRecord();
 
-// Оновлення рекорду, коли він збільшується
 game.getScore = function (moved, value) {
   if (moved && value > 0) {
-    this.score += value; // Додаємо до поточного рахунку
-    updateScore(this.score); // Оновлюємо відображення рахунку
-    saveScore(this.score); // Перевіряємо, чи це новий рекорд, і зберігаємо його
+    this.score += value;
+    updateScore(this.score);
+    saveScore(this.score);
   }
 };
 
-// Обробка натискання на кнопку старту
 startButton.addEventListener('click', () => {
   startButton.textContent = 'Restart';
   startButton.classList.remove('start');
@@ -73,10 +69,10 @@ startButton.addEventListener('click', () => {
   }
 
   game.start();
-  displayRecord(); // Відображаємо рекорд при старті гри
+  hideMessage();
+  displayRecord();
 });
 
-// Обробка натискання клавіш
 document.addEventListener('keydown', (e) => {
   switch (e.key) {
     case 'ArrowLeft':

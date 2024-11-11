@@ -188,15 +188,17 @@ h1 {
 }
 
 .message-lose {
+  padding-top: 5px;
   width: 100%;
   box-sizing: border-box;
-  height: 50px !important;
-  padding: 10px;
+  height: 60px !important;
+  padding-top: 12px;
   background: #bf687c;
   color: #f9f6f2;
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+  margin-top: 35px;
 }
 
 .message-container {
@@ -233,4 +235,5 @@ h1 {
 
 .field-cell--merged {
   animation: merge-tile 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.4s ease;
 }
