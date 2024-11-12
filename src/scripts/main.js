@@ -8,22 +8,28 @@ const startButton = document.querySelector('.start');
 const cells = document.querySelectorAll('.field-cell');
 const score = document.querySelector('.game-score');
 const recordElement = document.querySelector('.best__score');
-const messageContainer = document.querySelector('.message-container');
+const messageStart = document.querySelector('.message-start');
+const messageWin = document.querySelector('.message-win');
+const messageLose = document.querySelector('.message-lose');
 
 function showWinMessage() {
-  messageContainer.classList.remove('hidden');
-  messageContainer.classList.add('message-win');
-  messageContainer.textContent = 'You Win!';
+  messageWin.classList.remove('hidden');
 }
 
 function showLoseMessage() {
-  messageContainer.classList.remove('hidden');
-  messageContainer.classList.add('message-lose');
-  messageContainer.textContent = 'You Lose!';
+  messageLose.classList.remove('hidden');
 }
 
-function hideMessage() {
-  messageContainer.classList.add('hidden');
+function hideMessageStart() {
+  messageStart.classList.add('hidden');
+}
+
+function hideMessageLose() {
+  messageLose.classList.add('hidden');
+}
+
+function hideMessageWin() {
+  messageWin.classList.add('hidden');
 }
 
 function updateScore(value) {
@@ -66,11 +72,14 @@ startButton.addEventListener('click', () => {
   });
 
   if (game.status === WIN || game.status === LOSE) {
-    hideMessage();
+    hideMessageWin();
+    hideMessageLose();
   }
 
   game.start();
-  hideMessage();
+  hideMessageStart();
+  hideMessageLose();
+  hideMessageWin();
   displayRecord();
 });
 
