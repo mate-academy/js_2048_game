@@ -59,6 +59,7 @@ startButton.addEventListener('click', () => {
   startButton.textContent = 'Restart';
   startButton.classList.remove('start');
   startButton.classList.add('restart');
+  score.textContent = '0';
 
   cells.forEach((cell) => {
     cell.classList.remove('hidden');
