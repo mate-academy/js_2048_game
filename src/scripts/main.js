@@ -1,6 +1,5 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const game = new Game();
 
@@ -14,16 +13,16 @@ document.addEventListener('keydown', (e) => {
   e.preventDefault();
 
   switch (e.code) {
-    case 'ArrowLeft': // Left arrow
+    case 'ArrowLeft':
       game.moveLeft();
       break;
-    case 'ArrowUp': // Up arrow
+    case 'ArrowUp':
       game.moveUp();
       break;
-    case 'ArrowRight': // Right arrow
+    case 'ArrowRight':
       game.moveRight();
       break;
-    case 'ArrowDown': // Down arrow
+    case 'ArrowDown':
       game.moveDown();
       break;
     default:
