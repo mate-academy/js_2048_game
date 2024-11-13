@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 'use strict';
 
 const Game = require('../modules/Game.class');
@@ -87,8 +88,8 @@ function handleStatusChange(gameStatus) {
 function handleScoreChange(currentScore) {
   gameScore.textContent = currentScore;
 
+  // Перевірка та оновлення найвищого рахунку
   if (currentScore > highScore) {
-    // eslint-disable-next-line no-shadow
     const highScore = currentScore;
 
     bestScore.textContent = highScore;

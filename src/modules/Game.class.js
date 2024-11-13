@@ -22,6 +22,8 @@ class Game {
    */
   constructor(initialState) {
     // eslint-disable-next-line no-console
+    console.log(initialState);
+
     if (initialState) {
       this.initialState = initialState;
       this.board = JSON.parse(JSON.stringify(initialState));
@@ -38,16 +40,6 @@ class Game {
     this.mergedTilesValues = [];
 
     this.cellState = this.createCellState(initialState);
-    this.highScore = localStorage.getItem('highScore') || 0;
-  }
-
-  updateHighScore() {
-    const score = this.getScore();
-
-    if (score > this.highScore) {
-      this.highScore = score;
-      localStorage.setItem('highScore', this.highScore);
-    }
   }
 
   moveLeft() {
@@ -65,7 +57,6 @@ class Game {
       }
     });
   }
-
   moveRight() {
     if (!this.gameIsStarted || !this.canMoveRight()) {
       return;
@@ -87,7 +78,6 @@ class Game {
       }
     });
   }
-
   moveUp() {
     if (!this.gameIsStarted || !this.canMoveUp()) {
       return;
@@ -107,7 +97,6 @@ class Game {
       }
     });
   }
-
   moveDown() {
     if (!this.gameIsStarted || !this.canMoveDown()) {
       return;
@@ -163,14 +152,10 @@ class Game {
    */
   getStatus() {
     if (this.isWinner()) {
-      this.updateHighScore();
-
       return 'win';
     }
 
     if (this.gameIsStarted && this.noMovesPossible) {
-      this.updateHighScore();
-
       return 'lose';
     }
 
@@ -373,19 +358,6 @@ class Game {
   }
 
   get cellsByColumn() {
-    const board = this.cellState;
-    const newBoard = [];
-
-    for (let y = 0; y < board.length; y++) {
-      const column = board.map((row) => row[y]);
-
-      newBoard.push(column);
-    }
-
-    return newBoard;
-  }
-
-  get tableByColumn() {
     const board = this.cellState;
     const newBoard = [];
 
