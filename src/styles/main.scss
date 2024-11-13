@@ -11,14 +11,16 @@ body {
 }
 
 .field-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
+  width: 100px;
+  height: 100px;
+  border: 5px solid #bbada0;
+  border-radius: 8px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
   user-select: none;
 
   &--2 {
@@ -76,8 +78,12 @@ body {
 }
 
 .game-field {
+  width: 400px;
+  height: 400px;
+  display: flex;
+  flex-wrap: wrap;
   background: #bbada0;
-  border-spacing: 10px;
+  border: 5px solid #bbada0;
   border-radius: 5px;
 }
 
