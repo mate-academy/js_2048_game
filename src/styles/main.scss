@@ -1,4 +1,7 @@
 body {
+  --cell-gap: 10px;
+  --cell-size: 75px;
+
   margin: 0;
   display: flex;
   align-items: center;
@@ -6,46 +9,70 @@ body {
   min-height: 100vh;
   background: #fbf8ef;
   font-family: sans-serif;
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 900;
 }
 
+.game-cell {
+  --coord-y: 0;
+  --coord-x: 0;
+
+  position: absolute;
+  line-height: 75px;
+  transition:
+    top 120ms,
+    left 120ms;
+  top: calc(
+    var(--cell-gap) + (var(--cell-gap) + var(--cell-size)) * var(--coord-y)
+  );
+  left: calc(
+    var(--cell-gap) + (var(--cell-gap) + var(--cell-size)) * var(--coord-x)
+  );
+}
+
+@keyframes show {
+  1% {
+    opacity: 0.3;
+    transform: scale(0);
+  }
+}
+
 .field-cell {
-  background: #d6cdc4;
+  background: #c9beb2;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  border-radius: 8px;
+  color: #5f4f3c;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #eac8a4;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #deb66a;
   }
 
   &--8 {
-    background: #f2b179;
+    background: #ef9647;
     color: #f9f6f2;
   }
 
   &--16 {
-    background: #f59563;
+    background: #f47d3d;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #ec6442;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
+    background: #e44d2b;
     color: #f9f6f2;
   }
 
@@ -76,9 +103,10 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: #9c8f84;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 8px;
+  position: relative;
 }
 
 .game-header {
@@ -95,8 +123,8 @@ h1 {
   color: #f9f6f2;
   width: 75px;
   height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
+  font-size: 22px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,10 +137,10 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #c3bab2;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
+  border-radius: 8px;
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
@@ -125,7 +153,7 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;
@@ -139,7 +167,7 @@ h1 {
 
 .start {
   background: #1dae28;
-  font-size: 20px;
+  font-size: 18px;
 
   &:hover {
     background: #179921;
@@ -161,7 +189,7 @@ h1 {
   color: #776e65;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 20px;
 }
 
