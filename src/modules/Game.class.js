@@ -20,6 +20,13 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
+
+  static STATUS = {
+    playing: 'playing',
+    win: 'win',
+    lose: 'lose',
+  };
+
   constructor(
     initialState = [
       [0, 0, 0, 0],

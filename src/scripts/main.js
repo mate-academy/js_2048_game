@@ -3,6 +3,10 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
+const startMessage = document.querySelector('.message-start');
+const loseMessage = document.querySelector('.message-lose');
+const winMessage = document.querySelector('.message-win');
+
 function updateTable(state) {
   const fieldRows = document.querySelectorAll('.field-row');
 
@@ -38,21 +42,24 @@ function updateButton(firstMoveMade) {
   }
 }
 
-function updateMessage(gameStatus) {
-  const messageClasses = {
-    idle: 'message-start',
-    win: 'message-win',
-    lose: 'message-lose',
-  };
-
-  document.querySelectorAll('.message').forEach((message) => {
-    message.classList.add('hidden');
-  });
-
-  const messageClass = messageClasses[gameStatus];
-
-  if (messageClass) {
-    document.querySelector(`.${messageClass}`).classList.remove('hidden');
+function updateMessage() {
+  switch (game.getStatus()) {
+    case Game.STATUS.idle:
+      startMessage.classList.remove('hidden');
+      winMessage.classList.add('hidden');
+      loseMessage.classList.add('hidden');
+      break;
+    case Game.STATUS.playing:
+      startMessage.classList.add('hidden');
+      break;
+    case Game.STATUS.win:
+      winMessage.classList.remove('hidden');
+      break;
+    case Game.STATUS.lose:
+      loseMessage.classList.remove('hidden');
+      break;
+    default:
+      break;
   }
 }
 
