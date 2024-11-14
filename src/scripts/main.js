@@ -81,7 +81,13 @@ function updateUI() {
 
   const startButton = document.querySelector('.button.start');
 
-  startButton.textContent = status === 'idle' ? 'Start' : 'Restart';
+  if (status === 'idle') {
+    startButton.textContent = 'Start';
+    startButton.classList.remove('restart');
+  } else {
+    startButton.textContent = 'Restart';
+    startButton.classList.add('restart');
+  }
 }
 
 document.querySelector('.button.start').addEventListener('click', () => {
