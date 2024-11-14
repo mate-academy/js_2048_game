@@ -1,98 +1,101 @@
-/* eslint-disable no-shadow */
 'use strict';
 
 const Game = require('../modules/Game.class');
-
 const game = new Game();
 
-const button = document.querySelector('button');
-const messages = document.querySelectorAll('.message');
+const startButton = document.querySelector('.start');
 const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
+const gameField = document.querySelector('.game-field');
+const scoreDisplay = document.querySelector('.game-score');
 
-const gameScore = document.querySelector('.game-score');
-const bestScore = document.querySelector('.best .game-score');
-
-const highScore = parseInt(localStorage.getItem('highScore')) || 0;
-
-bestScore.textContent = highScore;
-
-button.addEventListener('click', () => {
-  const isStartButton = button.classList.contains('start');
-
-  button.textContent = isStartButton ? 'Restart' : 'Start';
-
-  if (isStartButton) {
+startButton.addEventListener('click', () => {
+  if (startButton.textContent === 'Start') {
     game.start();
-    button.classList.replace('start', 'restart');
-  } else {
+    startMessage.classList.add('hidden');
+    startButton.classList.remove('start');
+    startButton.textContent = 'Restart';
+    startButton.classList.add('restart');
+  } else if (startButton.textContent === 'Restart') {
     game.restart();
-    handleScoreChange(0);
-    button.classList.replace('restart', 'start');
-
-    messages.forEach((message) => {
-      if (!message.classList.contains('hiiden')) {
-        message.classList.add('hidden');
-      }
-    });
+    winMessage.classList.add('hidden');
+    loseMessage.classList.add('hidden');
+    startButton.textContent = 'Start';
+    startButton.classList.add('start');
+    startButton.classList.remove('restart');
+    startMessage.classList.remove('hidden');
   }
-
-  startMessage.classList.toggle('hidden');
+  updateGameField();
+  updateScoreDisplay();
 });
 
-function setupInput() {
-  document.addEventListener('keydown', handleInput, { once: true });
+function updateScoreDisplay() {
+  scoreDisplay.textContent = game.getScore();
 }
 
-async function handleInput(e) {
-  switch (e.key) {
-    case 'ArrowLeft':
-      await game.moveLeft();
-      break;
-    case 'ArrowRight':
-      await game.moveRight();
-      break;
-    case 'ArrowUp':
-      await game.moveUp();
-      break;
-    case 'ArrowDown':
-      await game.moveDown();
-      break;
-    default:
-      setupInput();
-
-      return;
+function updateGameMessage() {
+  if (game.getStatus() === game.gameStatus.win) {
+    winMessage.classList.remove('hidden');
   }
 
-  game.cellState.flat().forEach((cell) => {
-    cell.mergeTiles();
-  });
-
-  handleStatusChange(game.getStatus());
-  handleScoreChange(game.getScore());
-
-  if (!game.isWinner() || !game.noMovesPossible()) {
-    setupInput();
+  if (game.getStatus() === game.gameStatus.lose) {
+    loseMessage.classList.remove('hidden');
   }
 }
 
-setupInput();
+function updateGameField() {
+  gameField.innerHTML = '';
 
-function handleStatusChange(gameStatus) {
-  messages.forEach((message) => {
-    if (message.classList.contains(`message-${gameStatus}`)) {
-      message.classList.remove('hidden');
+  const state = game.getState();
+
+  for (let row = 0; row < state.length; row++) {
+    const tableRow = document.createElement('tr');
+
+    for (let column = 0; column < state[row].length; column++) {
+      const tableCell = document.createElement('td');
+      const cellValue = state[row][column];
+
+      tableCell.textContent = cellValue !== 0 ? cellValue : '';
+      tableCell.classList.add('field-cell');
+
+      if (cellValue !== 0) {
+        tableCell.classList.add(`field-cell--${cellValue}`);
+      }
+      tableRow.appendChild(tableCell);
     }
-  });
-}
-
-function handleScoreChange(currentScore) {
-  gameScore.textContent = currentScore;
-
-  // Перевірка та оновлення найвищого рахунку
-  if (currentScore > highScore) {
-    const highScore = currentScore;
-
-    bestScore.textContent = highScore;
-    localStorage.setItem('highScore', highScore);
+    gameField.appendChild(tableRow);
   }
 }
+
+function handleKeyPress() {
+  document.addEventListener('keydown', handleKeyInput);
+}
+
+function handleKeyInput(e) {
+  switch (e.key) {
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+
+    default:
+      break;
+  }
+  updateGameField();
+  updateScoreDisplay();
+  updateGameMessage();
+}
+
+handleKeyPress();
