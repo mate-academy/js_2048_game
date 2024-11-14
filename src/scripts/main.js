@@ -91,11 +91,15 @@ function updateUI() {
 }
 
 document.querySelector('.button.start').addEventListener('click', () => {
+  // eslint-disable-next-line no-console
+  console.log('Game started:', game.getStatus());
+
   if (game.getStatus() === 'idle') {
     game.start();
     isGameStarted = true;
   } else {
     game.restart();
+    isGameStarted = true;
   }
   updateUI();
 });
