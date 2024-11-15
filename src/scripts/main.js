@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable no-console */
 'use strict';
 
 const Game = require('../modules/Game.class');
@@ -9,7 +7,6 @@ const startButton = document.querySelector('.start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
-
 
 const fields = document.querySelectorAll('.field-cell');
 
@@ -55,12 +52,10 @@ function keypressHandler(e) {
 }
 
 function updateBoard(initialState) {
-
   const gameValues = initialState.flat();
 
-
   fields.forEach((field, index) => {
-    field.textContent = gameValues[index] || "";
+    field.textContent = gameValues[index] || '';
   });
 
   const score = game.getScore();
@@ -68,7 +63,6 @@ function updateBoard(initialState) {
   gameScore.textContent = score;
 
   const statuss = game.getStatus();
-
 
   if (statuss === 'win') {
     messageWin.classList.remove('hidden');
@@ -84,15 +78,16 @@ function restartGame() {
   startButton.classList.add('start');
   startButton.classList.remove('restart');
   startButton.textContent = 'Start';
+
   const initialState = game.restart();
 
   updateBoard(initialState);
 }
 
 function startGame() {
-  const gameStatus = game.getStatus();
   if (game.getStatus() === 'idle') {
     const initialState = game.start();
+
     startButton.textContent = 'Restart';
     startButton.classList.add('restart');
     startButton.classList.remove('start');
@@ -102,11 +97,11 @@ function startGame() {
     messageStart.classList.add('hidden');
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
-    return
+
+    return;
   }
 
   if (game.getStatus() === 'playing') {
     restartGame();
-    return
   }
 }

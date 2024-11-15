@@ -139,9 +139,7 @@ class Game {
     this.score = 0;
     this.state = 'playing';
 
-
     return this.initialState;
-
   }
 
   /**
