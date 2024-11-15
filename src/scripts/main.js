@@ -1,18 +1,19 @@
+/* eslint-disable max-len */
 /* eslint-disable no-console */
 'use strict';
 
 const Game = require('../modules/Game.class');
 const game = new Game();
-const entireGame = document.getElementsByTagName('body')[0];
 const gameScore = document.querySelector('.game-score');
 const startButton = document.querySelector('.start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
 
+
 const fields = document.querySelectorAll('.field-cell');
 
-entireGame.addEventListener('keydown', keypressHandler);
+document.addEventListener('keydown', keypressHandler);
 startButton.addEventListener('click', startGame);
 
 function keypressHandler(e) {
@@ -42,25 +43,36 @@ function keypressHandler(e) {
     }
   } else if (game.getStatus() === 'win') {
     messageWin.classList.remove('hidden');
+    startButton.classList.add('start');
+    startButton.classList.remove('restart');
+    startButton.textContent = 'Start';
   } else if (game.getStatus() === 'lose') {
     messageLose.classList.remove('hidden');
+    startButton.classList.add('start');
+    startButton.classList.remove('restart');
+    startButton.textContent = 'Start';
   }
 }
 
 function updateBoard(initialState) {
+
   const gameValues = initialState.flat();
 
-  fields.forEach((field, index) => {
-    const value = gameValues[index] || 0;
 
-    field.innerHTML = value === 0 ? '' : value;
+  fields.forEach((field, index) => {
+    field.textContent = gameValues[index] || "";
   });
 
-  gameScore.innerText = game.getScore();
+  const score = game.getScore();
 
-  if (game.getStatus() === 'win') {
+  gameScore.textContent = score;
+
+  const statuss = game.getStatus();
+
+
+  if (statuss === 'win') {
     messageWin.classList.remove('hidden');
-  } else if (game.getStatus() === 'lost') {
+  } else if (statuss === 'lose') {
     messageLose.classList.remove('hidden');
   }
 }
@@ -69,26 +81,32 @@ function restartGame() {
   messageStart.classList.remove('hidden');
   messageWin.classList.add('hidden');
   messageLose.classList.add('hidden');
-
+  startButton.classList.add('start');
+  startButton.classList.remove('restart');
+  startButton.textContent = 'Start';
   const initialState = game.restart();
 
   updateBoard(initialState);
 }
 
 function startGame() {
+  const gameStatus = game.getStatus();
   if (game.getStatus() === 'idle') {
     const initialState = game.start();
-
-    startButton.innerText = 'Restart';
+    startButton.textContent = 'Restart';
+    startButton.classList.add('restart');
+    startButton.classList.remove('start');
 
     updateBoard(initialState);
 
     messageStart.classList.add('hidden');
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
+    return
   }
 
   if (game.getStatus() === 'playing') {
     restartGame();
+    return
   }
 }
