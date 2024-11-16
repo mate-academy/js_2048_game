@@ -49,6 +49,8 @@ buttonStart.addEventListener('click', () => {
     buttonStart.classList.add('start');
     buttonStart.textContent = 'Start';
     messageStart.classList.remove('hidden');
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
     game.restart();
   }
   updatedTable();

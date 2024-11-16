@@ -208,23 +208,32 @@ class Game {
   }
 
   hasMove() {
-    for (let row = 0; row < 3; row++) {
-      for (let col = 0; col < 3; col++) {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
         const current = this.state[row][col];
-        const right = this.state[row][col + 1];
-        const down = this.state[row + 1][col];
 
-        if (current === right) {
+        if (current === 0) {
           return true;
         }
 
-        if (current === down) {
+        if ((row < 3 ? this.state[row + 1][col] : 0) === current) {
           return true;
         }
 
-        if (down === 0 || right === 0) {
+        if ((col < 3 ? this.state[row][col + 1] : 0) === current) {
           return true;
         }
+        // if (current === right) {
+        //   return true;
+        // }
+
+        // if (current === down) {
+        //   return true;
+        // }
+
+        // if (down === 0 || right === 0) {
+        //   return true;
+        // }
       }
     }
 
