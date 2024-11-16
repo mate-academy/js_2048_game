@@ -78,6 +78,7 @@ class Game {
     this.addRandomSell();
   }
 
+  // Add your own methods here
   /**
    * Resets the game.
    */
