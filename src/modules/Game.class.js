@@ -184,18 +184,22 @@ class Game {
 
     const oldBoard = JSON.stringify(this.board);
 
-    for (let colIndex = 0; colIndex < 4; colIndex++) {
-      const column = this.board.map((row) => row[colIndex]);
+    // Transpose columns into rows for processing
+    const transposed = this.board[0].map((_, colIndex) =>
+      // eslint-disable-next-line prettier/prettier
+      this.board.map((row) => row[colIndex]));
 
-      const transformed =
+    const transformed = transposed.map(
+      (column) =>
         direction === 'up'
-          ? this.mergeAndSlide(column)
-          : this.mergeAndSlide(column.reverse()).reverse();
+          ? this.mergeAndSlide(column) // Slide up
+          : this.mergeAndSlide(column.reverse()).reverse(), // Slide down
+    );
 
-      this.board.forEach((row, rowIndex) => {
-        row[colIndex] = transformed[rowIndex];
-      });
-    }
+    // Re-assign transformed columns back to rows
+    this.board = transformed[0].map((_, colIndex) =>
+      // eslint-disable-next-line prettier/prettier
+      transformed.map((row) => row[colIndex]));
 
     if (JSON.stringify(this.board) !== oldBoard) {
       this.spawnTile();
@@ -207,16 +211,20 @@ class Game {
     const nonZero = row.filter((v) => v !== 0);
     const merged = [];
 
-    for (let i = 0; i < nonZero.length; i++) {
+    let i = 0;
+
+    while (i < nonZero.length) {
       if (nonZero[i] === nonZero[i + 1]) {
-        merged.push(nonZero[i] * 2);
-        this.score += nonZero[i] * 2;
-        i++;
+        merged.push(nonZero[i] * 2); // Merge tiles
+        this.score += nonZero[i] * 2; // Update score
+        i += 2; // Skip next tile
       } else {
         merged.push(nonZero[i]);
+        i++;
       }
     }
 
+    // Fill the rest with zeros to maintain 4 cells
     return merged.concat(Array(4 - merged.length).fill(0));
   }
 
