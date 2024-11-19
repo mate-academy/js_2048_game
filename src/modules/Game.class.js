@@ -186,6 +186,7 @@ export default class Game {
   }
 
   restart() {
+    this.status = Game.Status.PLAYING;
     this.state = this.state.map((row) => row.map(() => 0));
     this.score = 0;
     this.start();
@@ -196,17 +197,15 @@ export default class Game {
       for (let c = 0; c < Game.Config.COLUMNS; c++) {
         const current = this.state[r][c];
 
-        // Перевірка на порожні клітинки
         if (current === 0) {
           return true;
         }
 
-        // Перевірка на можливість злиття по горизонталі
-        if (c < 3 && current === this.state[r][c + 1]) {
+        if (c < Game.Config.COLUMNS && current === this.state[r][c + 1]) {
           return true;
         }
 
-        if (r < Game.Config.ROWs - 1 && current === this.state[r + 1][c]) {
+        if (r < Game.Config.ROWS - 1 && current === this.state[r + 1][c]) {
           return true;
         }
       }

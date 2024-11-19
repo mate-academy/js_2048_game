@@ -9,12 +9,6 @@ const initialState = [
   [0, 0, 0, 0],
 ];
 
-// const initialState = [
-//   [2, 16, 32, 2],
-//   [4, 8, 2, 4],
-//   [2, 16, 4, 2],
-//   [4, 8, 32, 2],
-// ];
 const initialScore = 0;
 
 const game = new Game(initialState);
@@ -27,6 +21,7 @@ const scoreElement = document.querySelector('.game-score');
 function showMessage(currentStatus) {
   if (currentStatus === Game.Status.PLAYING) {
     document.querySelector('.message-start').classList.add('hidden');
+    document.querySelector('.message-lose').classList.add('hidden');
   } else if (currentStatus === Game.Status.LOSE) {
     document.querySelector('.message-lose').classList.remove('hidden');
   } else if (currentStatus === Game.Status.WIN) {
@@ -40,7 +35,6 @@ buttonStartGame.addEventListener('click', () => {
     buttonStartGame.classList.add('button', 'restart');
     buttonStartGame.innerText = 'Restart';
     game.start();
-    showMessage(game.status);
     game.renderBoard(game.state);
   } else if (
     game.status === Game.Status.PLAYING ||
@@ -48,6 +42,7 @@ buttonStartGame.addEventListener('click', () => {
   ) {
     game.restart();
     scoreElement.innerText = initialScore;
+    showMessage(game.status);
     game.renderBoard(game.state);
   }
 });
