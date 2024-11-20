@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
   startButton.addEventListener('click', () => {
     if (game.getStatus() === 'idle') {
       startButton.textContent = 'Restart';
+      startButton.classList.remove('start');
+      startButton.classList.add('restart');
       game.start();
     } else {
       game.restart();

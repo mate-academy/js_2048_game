@@ -85,7 +85,7 @@ class Game {
    * Starts the game.
    */
   start() {
-    if (this.status === 'idle') {
+    if (this.status !== 'playing') {
       this.status = 'playing';
     }
 
