@@ -46,6 +46,8 @@ class Game {
     }
   }
 
+  static WIN_COUNT = 2048;
+
   moveLeft() {
     if (this.status === 'playing') {
       const result = this.moveTiles(true, false);
