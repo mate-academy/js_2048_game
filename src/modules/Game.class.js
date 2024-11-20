@@ -21,12 +21,6 @@ class Game {
    * initial state.
    */
 
-  static STATUS = {
-    playing: 'playing',
-    win: 'win',
-    lose: 'lose',
-  };
-
   constructor(
     initialState = [
       [0, 0, 0, 0],
@@ -45,8 +39,6 @@ class Game {
       throw new Error('Initial state is not valid!');
     }
   }
-
-  static WIN_COUNT = 2048;
 
   moveLeft() {
     if (this.status === 'playing') {
