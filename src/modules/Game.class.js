@@ -110,10 +110,15 @@ class Game {
       return;
     }
 
+    const oldBoard = JSON.stringify(this.board);
+
     this.board = this.board.map(transformFunc);
     this.mergeTiles(transformFunc);
-    this.spawnTile();
-    this.checkGameState();
+
+    if (JSON.stringify(this.board) !== oldBoard) {
+      this.spawnTile();
+      this.checkGameState();
+    }
   }
 
   mergeTiles(transformFunc) {
