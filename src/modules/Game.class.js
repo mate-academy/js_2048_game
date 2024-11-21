@@ -2,10 +2,9 @@
 
 class Game {
   constructor(initialState = null) {
-    // Якщо початковий стан не передано, створюємо порожню дошку
     this.board = initialState || this.createEmptyBoard();
     this.score = 0;
-    this.status = 'playing'; // Статус гри: playing, win, lose
+    this.status = 'playing';
   }
 
   createEmptyBoard() {
@@ -27,7 +26,6 @@ class Game {
   }
 
   getStatus() {
-    // Перевірка на перемогу (2048)
     for (const row of this.board) {
       for (const tile of row) {
         if (tile === 2048) {
@@ -38,14 +36,12 @@ class Game {
       }
     }
 
-    // Перевірка на програш (немає доступних ходів)
     if (!this.hasAvailableMoves()) {
       this.status = 'lose';
 
       return 'lose';
     }
 
-    // Гра ще триває
     return 'playing';
   }
 
@@ -95,9 +91,9 @@ class Game {
     }
 
     if (moved) {
-      this.addRandomTile(); // Додаємо нову плитку
+      this.addRandomTile();
     }
-    this.updateUI(); // Оновлюємо інтерфейс після руху
+    this.updateUI();
   }
 
   moveRight() {
@@ -105,13 +101,13 @@ class Game {
 
     for (let i = 0; i < 4; i++) {
       const row = this.board[i];
-      const reversedRow = [...row].reverse(); // Перевертаємо рядок
-      const newRow = this.mergeRow(reversedRow); // Мерджимо рядок
+      const reversedRow = [...row].reverse();
+      const newRow = this.mergeRow(reversedRow);
 
       if (newRow.some((tile, index) => tile !== reversedRow[index])) {
         moved = true;
       }
-      this.board[i] = newRow.reverse(); // Перевертаємо рядок назад
+      this.board[i] = newRow.reverse();
     }
 
     if (moved) {
@@ -146,12 +142,11 @@ class Game {
     let moved = false;
 
     for (let j = 0; j < 4; j++) {
-      // Перевертаємо стовпець
       const column = this.board.map((row) => row[j]).reverse();
       const newColumn = this.mergeRow(column);
 
       for (let i = 0; i < 4; i++) {
-        this.board[i][j] = newColumn[3 - i]; // Перевертаємо стовпець назад
+        this.board[i][j] = newColumn[3 - i];
       }
 
       if (newColumn.some((tile, index) => tile !== column[index])) {
@@ -166,19 +161,16 @@ class Game {
   }
 
   mergeRow(row) {
-    // Видаляємо всі нулі
     const newRow = row.filter((tile) => tile !== 0);
 
-    // Об'єднуємо плитки з однаковими значеннями
     for (let i = 0; i < newRow.length - 1; i++) {
       if (newRow[i] === newRow[i + 1]) {
-        newRow[i] *= 2; // Подвоюємо плитку
-        this.score += newRow[i]; // Додаємо до рахунку
-        newRow.splice(i + 1, 1); // Видаляємо плитку після об'єднання
+        newRow[i] *= 2;
+        this.score += newRow[i];
+        newRow.splice(i + 1, 1);
       }
     }
 
-    // Додаємо нулі в кінець
     while (newRow.length < 4) {
       newRow.push(0);
     }
@@ -187,16 +179,16 @@ class Game {
   }
 
   start() {
-    this.board = this.createEmptyBoard(); // Створюємо нову дошку
+    this.board = this.createEmptyBoard();
     this.score = 0;
     this.status = 'playing';
-    this.addRandomTile(); // Додаємо першу плитку
-    this.addRandomTile(); // Додаємо ще одну плитку
-    this.updateUI(); // Оновлюємо інтерфейс
+    this.addRandomTile();
+    this.addRandomTile();
+    this.updateUI();
   }
 
   restart() {
-    this.start(); // Викликаємо start() для перезапуску гри
+    this.start();
   }
 
   addRandomTile() {
@@ -212,13 +204,28 @@ class Game {
 
     if (emptyCells.length === 0) {
       return;
-    } // Якщо немає порожніх клітинок, нічого не робимо
+    }
 
     const randomCell =
       emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    const randomValue = Math.random() < 0.1 ? 4 : 2; // 10% шанс на плитку з 4
+    const randomValue = Math.random() < 0.1 ? 4 : 2;
 
     this.board[randomCell[0]][randomCell[1]] = randomValue;
+
+    // #region animation
+    // Trigger 'appear' animation
+    const [row, col] =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+    const cellElement = document.querySelector(
+      `.game-field tr:nth-child(${row + 1}) td:nth-child(${col + 1})`,
+    );
+
+    cellElement.classList.add('appear');
+
+    // remove class after animation
+    setTimeout(() => cellElement.classList.remove('appear'), 300);
+    // #endregion
   }
 
   updateUI() {
@@ -227,10 +234,8 @@ class Game {
     const winMessage = document.querySelector('.message-win');
     const loseMessage = document.querySelector('.message-lose');
 
-    // Приховуємо повідомлення про старт
     startMessage.classList.add('hidden');
 
-    // Показуємо повідомлення про перемогу або програш
     if (gameStatus === 'win') {
       winMessage.classList.remove('hidden');
       loseMessage.classList.add('hidden');
@@ -242,21 +247,17 @@ class Game {
       loseMessage.classList.add('hidden');
     }
 
-    // Оновлення рахунку на інтерфейсі
     document.querySelector('.game-score').textContent = this.score;
 
-    // Оновлення класів для клітинок
-    // Отримуємо всі клітинки
     const cells = document.querySelectorAll('.field-cell');
 
-    let cellIndex = 0; // Лічильник для перебору клітинок
+    let cellIndex = 0;
 
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        const tileValue = this.board[i][j]; // Значення плитки на дошці
-        const cell = cells[cellIndex]; // Одержуємо поточну клітинку
+        const tileValue = this.board[i][j];
+        const cell = cells[cellIndex];
 
-        // Спочатку видаляємо всі старі класи
         cell.classList.remove(
           'field-cell--2',
           'field-cell--4',
@@ -271,15 +272,14 @@ class Game {
           'field-cell--2048',
         );
 
-        // Якщо плитка не порожня, додаємо клас для цього значення
         if (tileValue !== 0) {
           cell.classList.add(`field-cell--${tileValue}`);
-          cell.textContent = tileValue; // Встановлюємо текст плитки
+          cell.textContent = tileValue;
         } else {
-          cell.textContent = ''; // Якщо плитка порожня, очищаємо текст
+          cell.textContent = '';
         }
 
-        cellIndex++; // Переходимо до наступної клітинки
+        cellIndex++;
       }
     }
   }
@@ -288,6 +288,12 @@ class Game {
     const scoreElement = document.querySelector('.score');
 
     scoreElement.textContent = this.score;
+
+    // Add score update animation
+    scoreElement.classList.add('updated');
+
+    // Remove class after animation
+    setTimeout(() => scoreElement.classList.remove('updated'), 300);
   }
 
   checkGameStatus() {
