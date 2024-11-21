@@ -4,7 +4,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #7b68ee;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
@@ -22,61 +22,63 @@ body {
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #b0c4de;
+    color: #000;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #b0e0e6;
+    color: #000;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #7fffd4;
+    color: #000;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: #add8e6;
+    color: #000;
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    background: #40e0d0;
+    color: #000;
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    background: #87ceeb;
+    color: #000;
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    background: #48d1cc;
+    color: #000;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: #87cefa;
+    color: #000;
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    background: #00ced1;
+    color: #000;
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    background: #00bfff;
+    color: #000;
   }
 
   &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    background: #4682b4;
+    color: #000;
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: #00f;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -147,7 +149,7 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #f4a460;
 
   &:hover {
     background: #f87474;
