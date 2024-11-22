@@ -37,6 +37,7 @@ class Game {
     ],
   ) {
     this.initialState = initialState;
+
     // eslint-disable-next-line no-console
     console.log(this.initialState);
   }
@@ -49,8 +50,12 @@ class Game {
       // 2. Об'єднуємо однакові числа
       for (let i = 0; i < numbers.length - 1; i++) {
         if (numbers[i] === numbers[i + 1]) {
-          numbers[i] *= numbers[i]; // Об'єднуємо
-          numbers[i + 1] = 0; // Очищуємо наступну клітинку
+          if (numbers[i] < 256) {
+            numbers[i] *= 2; // Об'єднуємо числа
+          } else {
+            numbers[i] += numbers[i]; // Інша логіка для чисел > 256
+          }
+          numbers[i + 1] = 0;
         }
       }
 
@@ -76,7 +81,11 @@ class Game {
 
       for (let i = numbers.length - 1; i > 0; i--) {
         if (numbers[i] === numbers[i - 1]) {
-          numbers[i] *= numbers[i];
+          if (numbers[i] < 256) {
+            numbers[i] *= 2; // Об'єднуємо числа
+          } else {
+            numbers[i] += numbers[i]; // Інша логіка для чисел > 256
+          }
           numbers[i - 1] = 0;
         }
       }
@@ -104,8 +113,12 @@ class Game {
       // Об'єднуємо однакові числа
       for (let i = 0; i < column.length - 1; i++) {
         if (column[i] === column[i + 1]) {
-          column[i] *= column[i]; // Об'єднуємо числа
-          column[i + 1] = 0; // Очищуємо наступну клітинку
+          if (column[i] < 256) {
+            column[i] *= 2; // Об'єднуємо числа
+          } else {
+            column[i] += column[i]; // Інша логіка для чисел > 256
+          }
+          column[i + 1] = 0;
         }
       }
 
@@ -144,8 +157,12 @@ class Game {
       // TODO: поточне число в окрему змінну
       for (let i = column.length - 1; i > 0; i--) {
         if (column[i] === column[i - 1]) {
-          column[i] *= column[i]; // Об'єднуємо числа
-          column[i - 1] = 0; // Очищуємо об'єднану клітинку
+          if (column[i] < 256) {
+            column[i] *= 2; // Об'єднуємо числа
+          } else {
+            column[i] += column[i]; // Інша логіка для чисел > 256
+          }
+          column[i - 1] = 0;
         }
       }
 
@@ -194,7 +211,25 @@ class Game {
   getStatus() {
     // повертає видозмінений масив
     // eslint-disable-next-line no-console
-    console.log(this.initialState);
+    const isWin = this.initialState.some((row) => row.includes(2048));
+
+    if (isWin) {
+      const createDivWin = document.createElement('div');
+
+      createDivWin.classList.add('message-win');
+      createDivWin.textContent = 'You winner';
+      document.body.append(createDivWin);
+    }
+
+    const isLose = this.checkLose();
+
+    if (isLose === 'Lose') {
+      const createDivLose = document.createElement('div');
+
+      createDivLose.classList.add('message');
+      createDivLose.textContent = 'You lose';
+      document.body.append(createDivLose);
+    }
   }
 
   /**
@@ -203,6 +238,33 @@ class Game {
   start() {
     this.state = [...this.initialState]; // Скидаємо поле до початкового стану
     this.addRandomNumber(); // Додаємо два числа 2 на випадкові позиції
+  }
+
+  checkLose() {
+    if (this.initialState.every((row) => row.every((cell) => cell !== 0))) {
+      // Перевіряємо можливість ходу
+      for (let i = 0; i < this.initialState.length; i++) {
+        for (let j = 0; j < this.initialState[i].length; j++) {
+          const cell = this.initialState[i][j];
+          // Перевірка сусідніх клітинок
+
+          if (
+            (i > 0 && this.initialState[i - 1][j] === cell) || // Верхня
+            (i < this.initialState.length - 1 &&
+              this.initialState[i + 1][j] === cell) || // Нижня
+            (j > 0 && this.initialState[i][j - 1] === cell) || // Ліва
+            (j < this.initialState[i].length - 1 &&
+              this.initialState[i][j + 1] === cell) // Права
+          ) {
+            return 'Continue'; // Є можливий хід
+          }
+        }
+      }
+
+      return 'Lose';
+    }
+
+    return 'Continue'; // Є порожні клітинки
   }
 
   // Метод для додавання випадкових двійок на поле
@@ -249,10 +311,24 @@ class Game {
       emptyCells.splice(randomIndex, 1);
     }
   }
+
+  resetArrayToZero(arr) {
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < arr[i].length; j++) {
+        arr[i][j] = 0;
+      }
+    }
+  }
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.resetArrayToZero(this.initialState);
+
+    this.state = [...this.initialState];
+
+    this.addRandomNumber();
+  }
 
   // Add your own methods here
 }

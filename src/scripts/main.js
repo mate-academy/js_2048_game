@@ -8,16 +8,25 @@ const getButtonStart = document.querySelector('button');
 const getCell = document.querySelectorAll('.field-cell');
 // eslint-disable-next-line no-unused-vars
 const getTBody = document.querySelectorAll('tbody td');
+let click = 0;
 
 // Додаємо обробку натискання на кнопку "Start"
 // eslint-disable-next-line no-shadow
 getButtonStart.addEventListener('click', function (event) {
   if (event.target.tagName === 'BUTTON') {
-    getButtonStart.classList.remove('start');
-    getButtonStart.classList.add('restart');
-    getButtonStart.textContent = 'Restart';
-    game.start(); // Починаємо гру
-    renderField(game.state); // Відображаємо початковий стан поля
+    // getButtonStart.classList.remove('start');
+    // getButtonStart.textContent = 'Restart';
+    click++;
+
+    getButtonStart.classList.add('start');
+
+    if (click === 1) {
+      game.start(); // Start the game
+      renderField(game.state); // Display the initial game state
+    } else if (click > 1) {
+      game.restart();
+      renderField(game.state);
+    }
   }
 });
 
@@ -25,7 +34,20 @@ getButtonStart.addEventListener('click', function (event) {
 function renderField(state) {
   getCell.forEach((cell) => {
     cell.textContent = ''; // Очищаємо поле
-    cell.classList.remove('field-cell--2', 'field-cell--4'); // Очищаємо класи
+
+    cell.classList.remove(
+      'field-cell--2',
+      'field-cell--4',
+      'field-cell--8',
+      'field-cell--16',
+      'field-cell--32',
+      'field-cell--64',
+      'field-cell--128',
+      'field-cell--256',
+      'field-cell--512',
+      'field-cell--1024',
+      'field-cell--2048',
+    ); // Очищаємо класи
   });
 
   // Перебираємо масив і відображаємо значення в клітинках
@@ -44,6 +66,17 @@ function renderField(state) {
 // Логіка для руху
 document.addEventListener('keydown', function (e) {
   if (e) {
+    if (
+      e.key === 'ArrowRight' ||
+      e.key === 'ArrowLeft' ||
+      e.key === 'ArrowUp' ||
+      e.key === 'ArrowDown'
+    ) {
+      getButtonStart.classList.remove('start');
+      getButtonStart.classList.add('restart');
+      getButtonStart.textContent = 'Restart';
+    }
+
     if (e.key === 'ArrowRight') {
       // eslint-disable-next-line no-console
       console.log('Right');
@@ -73,3 +106,5 @@ document.addEventListener('keydown', function (e) {
     }
   }
 });
+
+game.getStatus();
