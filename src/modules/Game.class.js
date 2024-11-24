@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 'use strict';
 
 /**
@@ -21,31 +22,40 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    this.board =
-      initialState ||
-      Array(4)
+    this.initialState = initialState
+      ? JSON.parse(JSON.stringify(initialState))
+      : Array(4)
         .fill(null)
         .map(() => Array(4).fill(0));
+
+    this.board = JSON.parse(JSON.stringify(this.initialState));
+    this.score = 0;
+    this.status = 'idle';
 
     if (!initialState) {
       this.addRandomTile();
       this.addRandomTile();
     }
-
-    this.updateBoard();
-    // eslint-disable-next-line no-console
-    console.log(initialState);
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     this.board = this.board.map((row) => this.slideAndMerge(row));
     this.finalizeMove();
   }
 
   moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     this.board = this.board.map((row) =>
       // eslint-disable-next-line prettier/prettier
       this.slideAndMerge(row.reverse()).reverse());
+
     this.finalizeMove();
   }
 
@@ -77,9 +87,8 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.board;
+    return JSON.parse(JSON.stringify(this.board));
   }
-
   /**
    * Returns the current game status.
    *
@@ -107,6 +116,8 @@ class Game {
    */
   start() {
     this.status = 'playing';
+    this.addRandomTile();
+    this.addRandomTile();
     this.updateBoard();
   }
 
@@ -114,13 +125,9 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.board = Array(4)
-      .fill(null)
-      .map(() => Array(4).fill(0));
+    this.board = JSON.parse(JSON.stringify(this.initialState));
     this.score = 0;
     this.status = 'idle';
-    this.addRandomTile();
-    this.addRandomTile();
     this.updateBoard();
   }
 
