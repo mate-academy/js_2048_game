@@ -26,7 +26,7 @@ class Game {
       }
 
       // Об'єднуємо однакові елементи
-      for (let k = container.length - 1; k > 0; k = k - 2) {
+      for (let k = container.length - 1; k > 0; k--) {
         if (container[k] === container[k - 1]) {
           container[k] *= 2; // Об'єднуємо елементи
           container[k - 1] = 0; // Обнуляємо елемент, що об'єднався
@@ -57,10 +57,11 @@ class Game {
       }
 
       // Об'єднуємо однакові елементи
-      for (let k = 0; k < container.length - 1; k = k + 2) {
+      for (let k = 0; k < container.length - 1; k++) {
         if (container[k] === container[k + 1]) {
           container[k + 1] *= 2; // Об'єднуємо елементи
           container[k] = 0; // Обнуляємо елемент, що об'єднався
+          k++;
         }
       }
 
@@ -171,8 +172,6 @@ class Game {
     }
   }
 
-  getStatus() {}
-
   start() {
     this.status = 'playing';
     this.board = addNumberToBoard(this.board);
@@ -182,9 +181,6 @@ class Game {
     this.updateBoard();
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     this.board = [
       [0, 0, 0, 0],
@@ -195,7 +191,6 @@ class Game {
 
     this.score = 0;
     this.status = 'idle';
-    // removeArrowKeyListener(Handlers.arrowHandlers);
     makeButtonChange(this.status);
     this.updateBoard();
   }
@@ -213,6 +208,7 @@ class Game {
         } else {
           cellsArr[i][j].innerText = '';
         }
+        cellsArr[i][j].style.backgroundColor = getColor(this.board[i][j]);
       }
     }
 
@@ -317,6 +313,26 @@ function updateScore(num) {
   count.innerHTML = num;
 }
 
+// Перевірка чи є доступні ходи
+function hasAvailableMoves(board) {
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[i].length; j++) {
+      // Перевірка сусідніх клітинок (вгору, вниз, ліво, право)
+      if (
+        (i > 0 && board[i][j] === board[i - 1][j]) || // Вгору
+        (i < board.length - 1 && board[i][j] === board[i + 1][j]) || // Вниз
+        (j > 0 && board[i][j] === board[i][j - 1]) || // Ліво
+        (j < board[i].length - 1 && board[i][j] === board[i][j + 1]) // Право
+      ) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+// Функція перевірка виграш чи прошраш
 function checkWinOrLose(board, stat) {
   const array = board.flat();
 
@@ -326,7 +342,7 @@ function checkWinOrLose(board, stat) {
 
   const clearArr = array.filter((item) => item !== 0);
 
-  if (clearArr.length === 16) {
+  if (clearArr.length === 16 && !hasAvailableMoves(board)) {
     return 'lose';
   }
 
@@ -345,13 +361,31 @@ function addArrowKeyListener(handlerMap) {
     }
   };
 
-  document.addEventListener('keydown', arrowKeyHandler);
+  document.addEventListener('keyup', arrowKeyHandler);
 }
 
 function removeArrowKeyListener() {
   if (arrowKeyHandler) {
-    document.removeEventListener('keydown', arrowKeyHandler);
-    arrowKeyHandler = null; // Очищаємо посилання
+    document.removeEventListener('keyup', arrowKeyHandler);
+    arrowKeyHandler = null;
   }
+}
+
+// Функція ствоерення кольору для клітинок
+function getColor(value) {
+  if (value === 0) {
+    return 'rgb(200, 200, 200)';
+  }
+
+  const maxColor = [255, 0, 0];
+  const baseColor = [255, 255, 0];
+  const scale = Math.log2(value) - 1;
+  const factor = Math.min(scale / 10, 1);
+
+  const color = baseColor.map((c, i) => {
+    return Math.round(c + (maxColor[i] - c) * factor);
+  });
+
+  return `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
 }
 module.exports = Game;
