@@ -239,13 +239,11 @@ function createNumberTwoOrFour(arr) {
 }
 
 // Функція яка генерує рандомне число в діапазоні 0-3 включно
-
 function createNumberZeroToThree() {
   return Math.floor(Math.random() * (3 + 1));
 }
 
 // Функція генерує 2 або 4 на випадковому вільному місці
-
 function addNumberToBoard(arr) {
   if (!arr.flat().includes(0)) {
     return arr;
