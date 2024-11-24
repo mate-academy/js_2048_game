@@ -8,9 +8,19 @@
     />
     <title>2048</title>
     <link
+      rel="icon"
+      type="image/x-icon"
+      href="./images/2048.png"
+    >
+    <link
       rel="stylesheet"
       href="./styles/main.scss"
     />
+    <script
+      src="scripts/main.js"
+      type="module"
+      defer
+    ></script>
   </head>
   <body>
     <div class="container">
@@ -21,41 +31,15 @@
             Score:
             <span class="game-score">0</span>
           </p>
+          <p class="info best">
+            Best:
+            <span class="game-best">0</span>
+          </p>
           <button class="button start">Start</button>
         </div>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="game-field" id="game-field"></div>
 
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
@@ -63,8 +47,8 @@
         <p class="message message-start">
           Press "Start" to begin game. Good luck!
         </p>
+        <p class="message message-end hidden">Geme is over. Restart?</p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
   </body>
 </html>
