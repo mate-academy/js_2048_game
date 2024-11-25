@@ -243,7 +243,7 @@ class Game {
   }
 
   restart() {
-    this.state = this.copyState(this.initialState);
+    this.state = this.initialState.map((row) => [...row]);
     this.score = 0;
     this.status = 'idle';
   }
