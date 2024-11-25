@@ -243,11 +243,9 @@ class Game {
   }
 
   restart() {
-    if (this.status === 'playing') {
-      this.state = this.copyState(this.initialState);
-      this.score = 0;
-      this.status = 'idle';
-    }
+    this.state = this.copyState(this.initialState);
+    this.score = 0;
+    this.status = 'idle';
   }
 
   areStatesEqual(state1, state2) {
