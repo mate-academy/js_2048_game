@@ -77,33 +77,32 @@ document.addEventListener('keydown', function (e) {
       getButtonStart.textContent = 'Restart';
     }
 
-    if (e.key === 'ArrowRight') {
-      // eslint-disable-next-line no-console
-      console.log('Right');
-      game.moveRight();
-      renderField(game.state); // Відображаємо оновлене поле після руху
+    switch (e.key) {
+      case 'ArrowRight':
+        // eslint-disable-next-line no-console
+        console.log('Right');
+        game.moveRight();
+        break;
+      case 'ArrowLeft':
+        // eslint-disable-next-line no-console
+        console.log('Left');
+        game.moveLeft();
+        break;
+      case 'ArrowUp':
+        // eslint-disable-next-line no-console
+        console.log('Up');
+        game.moveUp();
+        break;
+      case 'ArrowDown':
+        // eslint-disable-next-line no-console
+        console.log('Down');
+        game.moveDown();
+        break;
+      default:
+        return;
     }
 
-    if (e.key === 'ArrowLeft') {
-      // eslint-disable-next-line no-console
-      console.log('Left');
-      game.moveLeft();
-      renderField(game.state); // Відображаємо оновлене поле після руху
-    }
-
-    if (e.key === 'ArrowUp') {
-      // eslint-disable-next-line no-console
-      console.log('Up');
-      game.moveUp();
-      renderField(game.state); // Відображаємо оновлене поле після руху
-    }
-
-    if (e.key === 'ArrowDown') {
-      // eslint-disable-next-line no-console
-      console.log('Down');
-      game.moveDown();
-      renderField(game.state); // Відображаємо оновлене поле після руху
-    }
+    renderField(game.state); // Відображаємо оновлене поле після руху
   }
 });
 
