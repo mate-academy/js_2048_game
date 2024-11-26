@@ -1,0 +1,48 @@
+.game-header {
+  @include flex-center;
+
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: calc(0.5 * $cell-border-spacing);
+  padding: $cell-border-spacing;
+  box-sizing: border-box;
+
+  h1 {
+    @include flex-center;
+
+    background: #edc22e;
+    color: $font-color-light;
+    height: $cell-size;
+    width: $cell-size;
+    font-size: 4vmin;
+    border-radius: $cell-border-radius;
+    margin: 0;
+  }
+
+  .info {
+    @include flex-center;
+
+    flex-direction: column;
+    background: $bg-light;
+    height: $cell-size;
+    width: $cell-size;
+    border-radius: $cell-border-radius;
+    color: $font-color-dark;
+    font-size: 3vmin;
+    margin: 0 $cell-border-spacing 0 0;
+  }
+}
+
+.controls {
+  display: flex;
+
+  .start {
+    @include button-styles(#1dae28, #179921);
+  }
+
+  .restart {
+    outline: none;
+
+    @include button-styles(#f65e3b, #f87474);
+  }
+}
