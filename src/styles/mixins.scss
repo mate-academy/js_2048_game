@@ -1,0 +1,23 @@
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin button-styles($bg-color, $hover-color) {
+  background: $bg-color;
+  border: none;
+  border-radius: $cell-border-radius;
+  cursor: pointer;
+  color: $font-color-light;
+  font-family: sans-serif;
+  font-weight: 700;
+  height: $cell-size;
+  width: $cell-size;
+  font-size: 3vmin;
+  transition: 0.25s ease background;
+
+  &:hover {
+    background: $hover-color;
+  }
+}
