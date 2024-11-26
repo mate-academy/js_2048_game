@@ -8,7 +8,6 @@ const startButton = document.getElementById('startButton');
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
-const messagePlaying = document.querySelector('.message-playing');
 
 function updateBoard() {
   const state = game.getState();
@@ -45,22 +44,18 @@ function updateMessages() {
     messageWin.classList.remove('hidden');
     messageLose.classList.add('hidden');
     messageStart.classList.add('hidden');
-    messagePlaying.classList.add('hidden');
   } else if (status === 'lose') {
     messageLose.classList.remove('hidden');
     messageWin.classList.add('hidden');
     messageStart.classList.add('hidden');
-    messagePlaying.classList.add('hidden');
-  } else if (status === 'playing') {
-    messagePlaying.classList.remove('hidden');
-    messageStart.classList.add('hidden');
-    messageWin.classList.add('hidden');
-    messageLose.classList.add('hidden');
-  } else {
+  } else if (status === 'idle') {
     messageStart.classList.remove('hidden');
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
-    messagePlaying.classList.add('hidden');
+  } else {
+    messageStart.classList.add('hidden');
+    messageWin.classList.add('hidden');
+    messageLose.classList.add('hidden');
   }
 }
 
