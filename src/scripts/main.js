@@ -39,6 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
       startButton.classList.add('restart');
       game.start();
     } else {
+      startButton.textContent = 'Start';
+      startButton.classList.remove('restart');
+      startButton.classList.add('start');
       game.restart();
     }
     updateUI();

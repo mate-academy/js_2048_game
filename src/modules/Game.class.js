@@ -21,6 +21,10 @@ class Game {
    * initial state.
    */
   constructor(initialState = null) {
+    this.defaultState = initialState
+      ? JSON.parse(JSON.stringify(initialState))
+      : null;
+
     this.board =
       initialState ||
       Array(4)
@@ -97,11 +101,16 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.board = Array(4)
+    const x = Array(4)
       .fill(0)
       .map(() => Array(4).fill(0));
+
+    this.board = this.defaultState
+      ? JSON.parse(JSON.stringify(this.defaultState))
+      : x;
     this.score = 0;
-    this.start();
+    this.status = 'idle';
+    // this.start();
   }
 
   // Add your own methods here
