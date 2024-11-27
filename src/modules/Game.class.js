@@ -269,18 +269,14 @@ export class Game {
           canMove = true;
         }
       }
+    }
 
-      if (has2048Cell) {
-        this.status = WIN;
-        this.winCallback();
-        break;
-      }
-
-      if (canMove) {
-        this.status = PLAYING;
-        break;
-      }
-
+    if (has2048Cell) {
+      this.status = WIN;
+      this.winCallback();
+    } else if (canMove) {
+      this.status = PLAYING;
+    } else {
       this.status = LOSE;
       this.loseCallback();
     }
