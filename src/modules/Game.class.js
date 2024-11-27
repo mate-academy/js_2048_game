@@ -193,19 +193,28 @@ export default class Game {
   }
 
   hasPossibleMoves() {
-    for (let r = 0; r < Game.Config.ROWS; r++) {
-      for (let c = 0; c < Game.Config.COLUMNS; c++) {
+    const rows = Game.Config.ROWS;
+    const columns = Game.Config.COLUMNS;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < columns; c++) {
         const current = this.state[r][c];
 
         if (current === 0) {
           return true;
         }
 
-        if (c < Game.Config.COLUMNS && current === this.state[r][c + 1]) {
-          return true;
-        }
+        const right = c + 1 < columns ? this.state[r][c + 1] : null;
+        const down = r + 1 < rows ? this.state[r + 1][c] : null;
+        const left = c - 1 >= 0 ? this.state[r][c - 1] : null;
+        const up = r - 1 >= 0 ? this.state[r - 1][c] : null;
 
-        if (r < Game.Config.ROWS - 1 && current === this.state[r + 1][c]) {
+        if (
+          current === right ||
+          current === down ||
+          current === left ||
+          current === up
+        ) {
           return true;
         }
       }
