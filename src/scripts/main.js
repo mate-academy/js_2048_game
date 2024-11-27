@@ -6,23 +6,18 @@ const game = new Game();
 
 const getButtonStart = document.querySelector('button');
 const getCell = document.querySelectorAll('.field-cell');
-// eslint-disable-next-line no-unused-vars
-const getTBody = document.querySelectorAll('tbody td');
 let click = 0;
 
-// Додаємо обробку натискання на кнопку "Start"
 // eslint-disable-next-line no-shadow
 getButtonStart.addEventListener('click', function (event) {
   if (event.target.tagName === 'BUTTON') {
-    // getButtonStart.classList.remove('start');
-    // getButtonStart.textContent = 'Restart';
     click++;
 
     getButtonStart.classList.add('start');
 
     if (click === 1) {
-      game.start(); // Start the game
-      renderField(game.state); // Display the initial game state
+      game.start();
+      renderField(game.state);
     } else if (click > 1) {
       game.restart();
       renderField(game.state);
@@ -30,10 +25,9 @@ getButtonStart.addEventListener('click', function (event) {
   }
 });
 
-// Функція для рендерингу поля
 function renderField(state) {
   getCell.forEach((cell) => {
-    cell.textContent = ''; // Очищаємо поле
+    cell.textContent = '';
 
     cell.classList.remove(
       'field-cell--2',
@@ -47,10 +41,9 @@ function renderField(state) {
       'field-cell--512',
       'field-cell--1024',
       'field-cell--2048',
-    ); // Очищаємо класи
+    );
   });
 
-  // Перебираємо масив і відображаємо значення в клітинках
   state.forEach((row, rowIndex) => {
     row.forEach((cell, cellIndex) => {
       const cellElement = getCell[rowIndex * 4 + cellIndex];
@@ -63,7 +56,6 @@ function renderField(state) {
   });
 }
 
-// Логіка для руху
 document.addEventListener('keydown', function (e) {
   if (e) {
     if (
@@ -79,23 +71,15 @@ document.addEventListener('keydown', function (e) {
 
     switch (e.key) {
       case 'ArrowRight':
-        // eslint-disable-next-line no-console
-        console.log('Right');
         game.moveRight();
         break;
       case 'ArrowLeft':
-        // eslint-disable-next-line no-console
-        console.log('Left');
         game.moveLeft();
         break;
       case 'ArrowUp':
-        // eslint-disable-next-line no-console
-        console.log('Up');
         game.moveUp();
         break;
       case 'ArrowDown':
-        // eslint-disable-next-line no-console
-        console.log('Down');
         game.moveDown();
         break;
       default:
