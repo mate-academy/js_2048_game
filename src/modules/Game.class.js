@@ -1,3 +1,4 @@
+/* eslint-disable function-paren-newline */
 /* eslint-disable prefer-const */
 'use strict';
 
@@ -37,6 +38,7 @@ class Game {
     ],
   ) {
     this.initialState = initialState;
+    this.score = 0;
   }
 
   moveLeft() {
@@ -63,8 +65,7 @@ class Game {
     }
 
     this.addRandomOneNumber();
-    // eslint-disable-next-line no-console
-    console.log(this.initialState);
+    this.addScore(10);
   }
 
   moveRight() {
@@ -92,7 +93,9 @@ class Game {
       row.push(...newRow);
     }
     this.addRandomOneNumber();
+    this.addScore(10);
   }
+
   moveUp() {
     for (let col = 0; col < this.initialState[0].length; col++) {
       let column = this.initialState
@@ -122,6 +125,7 @@ class Game {
     }
 
     this.addRandomOneNumber();
+    this.addScore(10);
   }
 
   moveDown() {
@@ -153,17 +157,26 @@ class Game {
     }
 
     this.addRandomOneNumber();
+    this.addScore(10);
   }
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
+
+  addScore(points) {
+    this.score += points;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.initialState;
+  }
 
   /**
    * Returns the current game status.
@@ -179,21 +192,25 @@ class Game {
     const isWin = this.initialState.some((row) => row.includes(2048));
 
     if (isWin) {
-      const createDivWin = document.createElement('div');
+      const getWinDiv = document.querySelector('.message.message-win.hidden');
 
-      createDivWin.classList.add('message-win');
-      createDivWin.textContent = 'You winner';
-      document.body.append(createDivWin);
+      if (getWinDiv) {
+        getWinDiv.classList.remove('hidden');
+        getWinDiv.textContent = 'You winner';
+        document.body.append(getWinDiv);
+      }
     }
 
     const isLose = this.checkLose();
 
     if (isLose === 'Lose') {
-      const createDivLose = document.createElement('div');
+      const getLoseDiv = document.querySelector('.message.message-lose.hidden');
 
-      createDivLose.classList.add('message');
-      createDivLose.textContent = 'You lose';
-      document.body.append(createDivLose);
+      if (getLoseDiv) {
+        getLoseDiv.classList.remove('hidden');
+        getLoseDiv.textContent = 'You lose';
+        document.body.append(getLoseDiv);
+      }
     }
   }
 
@@ -206,28 +223,32 @@ class Game {
   }
 
   checkLose() {
-    if (this.initialState.every((row) => row.every((cell) => cell !== 0))) {
-      for (let i = 0; i < this.initialState.length; i++) {
-        for (let j = 0; j < this.initialState[i].length; j++) {
-          const cell = this.initialState[i][j];
+    const isFull = this.initialState.every((row) =>
+      // eslint-disable-next-line prettier/prettier
+      row.every((cell) => cell !== 0));
 
-          if (
-            (i > 0 && this.initialState[i - 1][j] === cell) ||
-            (i < this.initialState.length - 1 &&
-              this.initialState[i + 1][j] === cell) ||
-            (j > 0 && this.initialState[i][j - 1] === cell) ||
-            (j < this.initialState[i].length - 1 &&
-              this.initialState[i][j + 1] === cell)
-          ) {
-            return 'Continue';
-          }
-        }
-      }
-
-      return 'Lose';
+    if (!isFull) {
+      return 'Continue';
     }
 
-    return 'Continue';
+    const hasMove = this.initialState.some((row, i) =>
+      row.some((cell, j) => this.canMerge(i, j)),
+    );
+
+    return hasMove ? 'Continue' : 'Lose';
+  }
+
+  canMerge(row, col) {
+    const cell = this.initialState[row][col];
+
+    return (
+      (row > 0 && this.initialState[row - 1][col] === cell) ||
+      (row < this.initialState.length - 1 &&
+        this.initialState[row + 1][col] === cell) ||
+      (col > 0 && this.initialState[row][col - 1] === cell) ||
+      (col < this.initialState[row].length - 1 &&
+        this.initialState[row][col + 1] === cell)
+    );
   }
 
   addRandomNumber() {

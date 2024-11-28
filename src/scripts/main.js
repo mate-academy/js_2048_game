@@ -6,6 +6,8 @@ const game = new Game();
 
 const getButtonStart = document.querySelector('button');
 const getCell = document.querySelectorAll('.field-cell');
+const scoreElement = document.querySelector('.game-score');
+
 let click = 0;
 
 // eslint-disable-next-line no-shadow
@@ -18,6 +20,10 @@ getButtonStart.addEventListener('click', function (event) {
     if (click === 1) {
       game.start();
       renderField(game.state);
+
+      const getMessage = document.querySelector('.message.message-start');
+
+      getMessage.classList.add('hidden');
     } else if (click > 1) {
       game.restart();
       renderField(game.state);
@@ -86,8 +92,8 @@ document.addEventListener('keydown', function (e) {
         return;
     }
 
-    renderField(game.state); // Відображаємо оновлене поле після руху
+    renderField(game.state);
+    scoreElement.textContent = game.getScore();
+    game.getStatus();
   }
 });
-
-game.getStatus();
