@@ -1,68 +1,133 @@
-'use strict';
+const GRID_SIZE = 4;
+const CELL_SIZE = 12;
+const CELL_GAP = 2;
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
-class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+export default class Grid {
+  #cells;
+
+  constructor(gridElement) {
+    gridElement.style.setProperty('--grid-size', GRID_SIZE);
+    gridElement.style.setProperty('--cell-size', `${CELL_SIZE}vmin`);
+    gridElement.style.setProperty('--cell-gap', `${CELL_GAP}vmin`);
+
+    this.#cells = createCellElements(gridElement).map((cellElement, index) => {
+      return new Cell(
+        cellElement,
+        index % GRID_SIZE,
+        Math.floor(index / GRID_SIZE),
+      );
+    });
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  get cells() {
+    return this.#cells;
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  get cellsByColumn() {
+    return this.#cells.reduce((cellGrid, cell) => {
+      cellGrid[cell.x] = cellGrid[cell.x] || [];
+      cellGrid[cell.x][cell.y] = cell;
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+      return cellGrid;
+    }, []);
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  get cellsByRow() {
+    return this.#cells.reduce((cellGrid, cell) => {
+      cellGrid[cell.y] = cellGrid[cell.y] || [];
+      cellGrid[cell.y][cell.x] = cell;
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+      return cellGrid;
+    }, []);
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  get #emptyCells() {
+    return this.#cells.filter((cell) => cell.tile == null);
+  }
 
-  // Add your own methods here
+  randomEmptyCell() {
+    const randomIndex = Math.floor(Math.random() * this.#emptyCells.length);
+
+    return this.#emptyCells[randomIndex];
+  }
 }
 
-module.exports = Game;
+class Cell {
+  #cellElement;
+  #x;
+  #y;
+  #tile;
+  #mergeTile;
+
+  constructor(cellElement, x, y) {
+    this.#cellElement = cellElement;
+    this.#x = x;
+    this.#y = y;
+  }
+
+  get x() {
+    return this.#x;
+  }
+
+  get y() {
+    return this.#y;
+  }
+
+  get tile() {
+    return this.#tile;
+  }
+
+  set tile(value) {
+    this.#tile = value;
+
+    if (value == null) {
+      return;
+    }
+    this.#tile.x = this.#x;
+    this.#tile.y = this.#y;
+  }
+
+  get mergeTile() {
+    return this.#mergeTile;
+  }
+
+  set mergeTile(value) {
+    this.#mergeTile = value;
+
+    if (value == null) {
+      return;
+    }
+    this.#mergeTile.x = this.#x;
+    this.#mergeTile.y = this.#y;
+  }
+
+  canAccept(tile) {
+    return (
+      this.tile == null ||
+      (this.mergeTile == null && this.tile.value === tile.value)
+    );
+  }
+
+  mergeTiles() {
+    if (this.tile == null || this.mergeTile == null) {
+      return;
+    }
+    this.tile.value = this.tile.value + this.mergeTile.value;
+    this.mergeTile.remove();
+    this.mergeTile = null;
+  }
+}
+
+function createCellElements(gridElement) {
+  const cells = [];
+
+  for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+    const cell = document.createElement('div');
+
+    cell.classList.add('cell');
+    cells.push(cell);
+    gridElement.append(cell);
+  }
+
+  return cells;
+}
