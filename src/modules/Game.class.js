@@ -203,14 +203,27 @@ class Game {
 
     const isLose = this.checkLose();
 
-    if (isLose === 'Lose') {
-      const getLoseDiv = document.querySelector('.message.message-lose.hidden');
+    const loseDiv = document.querySelector('.message.message-lose.hidden');
 
-      if (getLoseDiv) {
-        getLoseDiv.classList.remove('hidden');
-        getLoseDiv.textContent = 'You lose';
-        document.body.append(getLoseDiv);
+    if (isLose === 'Lose') {
+      if (loseDiv) {
+        loseDiv.classList.remove('hidden'); // Робимо видимим
+        loseDiv.textContent = 'You lose';
       }
+    } else if (loseDiv) {
+      loseDiv.classList.add('hidden'); // Ховаємо, якщо програшу немає
+    }
+  }
+
+  restart() {
+    this.state = [...this.initialState];
+    this.addRandomNumber();
+
+    // Ховаємо повідомлення про програш
+    const loseMessage = document.querySelector('.message.message-lose');
+
+    if (loseMessage) {
+      loseMessage.classList.add('hidden');
     }
   }
 
@@ -301,13 +314,6 @@ class Game {
   /**
    * Resets the game.
    */
-  restart() {
-    this.resetArrayToZero(this.initialState);
-
-    this.state = [...this.initialState];
-
-    this.addRandomNumber();
-  }
 
   // Add your own methods here
 }

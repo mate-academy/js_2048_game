@@ -7,6 +7,8 @@ const game = new Game();
 const getButtonStart = document.querySelector('button');
 const getCell = document.querySelectorAll('.field-cell');
 const scoreElement = document.querySelector('.game-score');
+const addLose = document.querySelector('.message.message-lose');
+const divContainer = document.querySelector('message-container');
 
 let click = 0;
 
@@ -21,10 +23,15 @@ getButtonStart.addEventListener('click', function (event) {
       game.start();
       renderField(game.state);
 
-      const getMessage = document.querySelector('.message.message-start');
+      const startM = document.querySelector('.message.message-start');
 
-      getMessage.classList.add('hidden');
+      startM.classList.add('hidden');
     } else if (click > 1) {
+      if (!divContainer.contains(addLose)) {
+        divContainer.append(addLose);
+      } else {
+        addLose.classList.add('hidden');
+      }
       game.restart();
       renderField(game.state);
     }
