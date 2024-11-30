@@ -198,12 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const element = document.querySelector('.game-field');
 
-  if (!element) {
-    console.error('Game field element not found!');
-    return;
-  }
-
   element.addEventListener('touchstart', (event) => {
+    event.preventDefault();
+
     const touch = event.touches[0];
 
     startX = touch.clientX;
