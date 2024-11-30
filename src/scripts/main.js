@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 'use strict';
 
 const cellsAll = document.querySelectorAll('.game-field .field-cell');
@@ -34,22 +35,17 @@ const randomizer = () => {
     randomCell.textContent = '4';
     randomCell.classList.add(`field-cell--4`);
   }
+
+  randomCell.classList.add(`animate`);
+
+  setTimeout(() => {
+    randomCell.classList.remove('animate');
+  }, 200);
 };
 
-// Find all empty cells in the grid
-const fillEmptyCell = () => {
-  const emptyCells = [];
+const fillEmptyCell = () =>
+  Array.from(cellsAll).filter(cell => !cell.textContent.trim());
 
-  cellsAll.forEach(cell => {
-    if (cell.textContent.trim() === '') {
-      emptyCells.push(cell);
-    }
-  });
-
-  return emptyCells;
-};
-
-// Slide and merge the row of cells
 const slideAndMerge = (row) => {
   // Filter out empty values, shift values to left, and pad with empty strings
   const result
@@ -82,7 +78,6 @@ const moveCells = (direction) => {
       row.push(cellsFilled[startIndex + i * increment]);
     };
 
-    // Reverse row for right/down movements
     if (reverse) {
       row = row.reverse();
     };
@@ -102,7 +97,6 @@ const moveCells = (direction) => {
     }
   };
 
-  // Update based on direction
   if (direction === 'left' || direction === 'right') {
     for (let i = 0; i < 4; i++) {
       const startIndex = i * 4;
@@ -125,13 +119,11 @@ const moveCells = (direction) => {
     }
   });
 
-  // Trigger new random tile if a move happened
   if (moved) {
     randomizer();
   };
 };
 
-// Check if the game is over (no more moves or empty cells)
 const checkGameOver = () => {
   if (fillEmptyCell().length > 0) {
     return false;
@@ -139,13 +131,11 @@ const checkGameOver = () => {
 
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 3; j++) {
-      // Check rows for possible merges
       if (cellsAll[i * 4 + j]
         .textContent === cellsAll[i * 4 + j + 1].textContent) {
         return false;
       };
 
-      // Check columns for possible merges
       if (cellsAll[j * 4 + i]
         .textContent === cellsAll[(j + 1) * 4 + i].textContent) {
         return false;
@@ -156,7 +146,6 @@ const checkGameOver = () => {
   return true;
 };
 
-// Reset the game
 const resetGame = () => {
   cellsAll.forEach(cell => {
     cell.textContent = '';
@@ -179,7 +168,6 @@ const resetGame = () => {
   document.querySelector('.message-win').classList.add('hidden');
 };
 
-// Handle arrow key movements
 // eslint-disable-next-line no-shadow
 document.addEventListener('keydown', (event) => {
   if (gameOver) {
@@ -196,12 +184,50 @@ document.addEventListener('keydown', (event) => {
     moveCells('down');
   }
 
-  // Check if the game is over after each move
   if (checkGameOver()) {
     gameOver = true;
     document.querySelector('.message-lose').classList.remove('hidden');
   }
 });
 
-// Restart the game when the start button is clicked
 document.querySelector('.start').addEventListener('click', resetGame);
+
+document.addEventListener('DOMContentLoaded', () => {
+  let startX = 0;
+  let startY = 0;
+  let endX = 0;
+  let endY = 0;
+
+  const element = document.querySelector('.game-field');
+
+  element.addEventListener('touchstart', (event) => {
+    const touch = event.touches[0];
+
+    startX = touch.clientX;
+    startY = touch.clientY;
+  });
+
+  element.addEventListener('touchend', (event) => {
+    const touch = event.changedTouches[0];
+
+    endX = touch.clientX;
+    endY = touch.clientY;
+
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX > 50) {
+        moveCells('right');
+      } else if (deltaX < -50) {
+        moveCells('left');
+      }
+    } else {
+      if (deltaY > 50) {
+        moveCells('down');
+      } else if (deltaY < -50) {
+        moveCells('up');
+      }
+    }
+  });
+});

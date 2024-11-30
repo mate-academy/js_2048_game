@@ -1,3 +1,18 @@
+@keyframes new {
+  0% {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.12);
+  }
+  80% {
+    transform: scale(0.93);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 body {
   margin: 0;
   display: flex;
@@ -20,6 +35,10 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+}
+
+.animate {
+  animation: new 0.3s ease-in-out;
 }
 
 .field-cell--2 {
