@@ -216,15 +216,11 @@ class Game {
   }
 
   restart() {
+    this.resetArrayToZero(this.initialState);
+
     this.state = [...this.initialState];
+
     this.addRandomNumber();
-
-    // Ховаємо повідомлення про програш
-    const loseMessage = document.querySelector('.message.message-lose');
-
-    if (loseMessage) {
-      loseMessage.classList.add('hidden');
-    }
   }
 
   /**
