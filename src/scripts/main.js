@@ -195,10 +195,13 @@ document.querySelector('.start').addEventListener('click', resetGame);
 document.addEventListener('DOMContentLoaded', () => {
   let startX = 0;
   let startY = 0;
-  let endX = 0;
-  let endY = 0;
 
   const element = document.querySelector('.game-field');
+
+  if (!element) {
+    console.error('Game field element not found!');
+    return;
+  }
 
   element.addEventListener('touchstart', (event) => {
     const touch = event.touches[0];
@@ -207,26 +210,40 @@ document.addEventListener('DOMContentLoaded', () => {
     startY = touch.clientY;
   });
 
+  element.addEventListener('touchmove', (event) => {
+    const touch = event.touches[0];
+    const deltaX = touch.clientX - startX;
+    const deltaY = touch.clientY - startY;
+
+    // Prevent default behavior for downward swipe
+    if (deltaY > 0 && Math.abs(deltaY) > Math.abs(deltaX)) {
+      event.preventDefault();
+    }
+  });
+
   element.addEventListener('touchend', (event) => {
     const touch = event.changedTouches[0];
-
-    endX = touch.clientX;
-    endY = touch.clientY;
+    const endX = touch.clientX;
+    const endY = touch.clientY;
 
     const deltaX = endX - startX;
     const deltaY = endY - startY;
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      if (deltaX > 50) {
-        moveCells('right');
-      } else if (deltaX < -50) {
-        moveCells('left');
+      if (Math.abs(deltaX) > 20) {
+        if (deltaX > 0) {
+          moveCells('right');
+        } else {
+          moveCells('left');
+        }
       }
     } else {
-      if (deltaY > 50) {
-        moveCells('down');
-      } else if (deltaY < -50) {
-        moveCells('up');
+      if (Math.abs(deltaY) > 20) {
+        if (deltaY > 0) {
+          moveCells('down');
+        } else {
+          moveCells('up');
+        }
       }
     }
   });
