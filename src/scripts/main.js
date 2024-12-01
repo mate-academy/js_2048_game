@@ -16,7 +16,6 @@ const board = [
 const table = document.querySelector('.game-field');
 const tBody = table.querySelector('tbody');
 const rows = tBody.querySelectorAll('tr');
-const cells = [...rows].flatMap((row) => row.querySelectorAll('td'));
 const startButton = document.querySelector('.start');
 const gameScore = document.querySelector('.game-score');
 const restartButton = document.querySelector('.restart');
