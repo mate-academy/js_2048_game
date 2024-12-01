@@ -51,7 +51,7 @@ class Game {
   resetBoard() {
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        board[i][j] = 0;
+        this.state[i][j] = 0;
       }
     }
     this.score = 0;
@@ -79,13 +79,13 @@ class Game {
   isGameOver() {
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        if (board[i][j] === 0) {
+        if (this.state[i][j] === 0) {
           return false;
         }
 
         if (
-          (i < 3 && board[i][j] === board[i + 1][j]) ||
-          (j < 3 && board[i][j] === board[i][j + 1])
+          (i < 3 && this.state[i][j] === this.state[i + 1][j]) ||
+          (j < 3 && this.state[i][j] === this.state[i][j + 1])
         ) {
           return false;
         }
@@ -118,27 +118,27 @@ class Game {
       let lastRow = -1;
 
       for (let row = 3; row >= 0; row--) {
-        if (board[row][col] !== 0) {
+        if (this.state[row][col] !== 0) {
           if (targetRow > row) {
             if (
-              board[row][col] === board[targetRow][col] &&
+              this.state[row][col] === this.state[targetRow][col] &&
               lastRow !== targetRow
             ) {
-              board[targetRow][col] *= 2;
-              board[row][col] = 0;
+              this.state[targetRow][col] *= 2;
+              this.state[row][col] = 0;
               lastRow = targetRow;
-              this.score += board[targetRow][col];
+              this.score += this.state[targetRow][col];
               this.getScore();
             } else {
-              if (board[targetRow][col] === 0) {
-                board[targetRow][col] = board[row][col];
-                board[row][col] = 0;
+              if (this.state[targetRow][col] === 0) {
+                this.state[targetRow][col] = this.state[row][col];
+                this.state[row][col] = 0;
               } else {
                 targetRow--;
 
                 if (targetRow > row) {
-                  board[targetRow][col] = board[row][col];
-                  board[row][col] = 0;
+                  this.state[targetRow][col] = this.state[row][col];
+                  this.state[row][col] = 0;
                 }
               }
             }
@@ -156,24 +156,24 @@ class Game {
       let firstCol = -1;
 
       for (let col = 0; col < 4; col++) {
-        if (board[row][col] !== 0) {
+        if (this.state[row][col] !== 0) {
           if (targetCol < col) {
             if (
-              board[row][col] === board[row][targetCol] &&
+              this.state[row][col] === this.state[row][targetCol] &&
               firstCol !== targetCol
             ) {
-              board[row][targetCol] *= 2;
-              board[row][col] = 0;
+              this.state[row][targetCol] *= 2;
+              this.state[row][col] = 0;
               firstCol = targetCol;
-              this.score += board[row][targetCol];
+              this.score += this.state[row][targetCol];
               this.getScore();
-            } else if (board[row][targetCol] === 0) {
-              board[row][targetCol] = board[row][col];
-              board[row][col] = 0;
+            } else if (this.state[row][targetCol] === 0) {
+              this.state[row][targetCol] = this.state[row][col];
+              this.state[row][col] = 0;
             } else {
               targetCol++;
-              board[row][targetCol] = board[row][col];
-              board[row][col] = 0;
+              this.state[row][targetCol] = this.state[row][col];
+              this.state[row][col] = 0;
             }
           }
         }
@@ -189,24 +189,24 @@ class Game {
       let firstCol = -1;
 
       for (let col = 3; col >= 0; col--) {
-        if (board[row][col] !== 0) {
+        if (this.state[row][col] !== 0) {
           if (targetCol > col) {
             if (
-              board[row][col] === board[row][targetCol] &&
+              this.state[row][col] === this.state[row][targetCol] &&
               firstCol !== targetCol
             ) {
-              board[row][targetCol] *= 2;
-              board[row][col] = 0;
+              this.state[row][targetCol] *= 2;
+              this.state[row][col] = 0;
               firstCol = targetCol;
-              this.score += board[row][targetCol];
+              this.score += this.state[row][targetCol];
               this.getScore();
-            } else if (board[row][targetCol] === 0) {
-              board[row][targetCol] = board[row][col];
-              board[row][col] = 0;
+            } else if (this.state[row][targetCol] === 0) {
+              this.state[row][targetCol] = this.state[row][col];
+              this.state[row][col] = 0;
             } else {
               targetCol--;
-              board[row][targetCol] = board[row][col];
-              board[row][col] = 0;
+              this.state[row][targetCol] = this.state[row][col];
+              this.state[row][col] = 0;
             }
           }
         }
@@ -222,24 +222,24 @@ class Game {
       let firstRow = -1;
 
       for (let row = 0; row <= 3; row++) {
-        if (board[row][col] !== 0) {
+        if (this.state[row][col] !== 0) {
           if (targetRow < row) {
             if (
-              board[row][col] === board[targetRow][col] &&
+              this.state[row][col] === this.state[targetRow][col] &&
               firstRow !== targetRow
             ) {
-              board[targetRow][col] *= 2;
-              board[row][col] = 0;
+              this.state[targetRow][col] *= 2;
+              this.state[row][col] = 0;
               firstRow = targetRow;
-              this.score += board[targetRow][col];
+              this.score += this.state[targetRow][col];
               this.getScore();
-            } else if (board[targetRow][col] === 0) {
-              board[targetRow][col] = board[row][col];
-              board[row][col] = 0;
+            } else if (this.state[targetRow][col] === 0) {
+              this.state[targetRow][col] = this.state[row][col];
+              this.state[row][col] = 0;
             } else {
               targetRow++;
-              board[targetRow][col] = board[row][col];
-              board[row][col] = 0;
+              this.state[targetRow][col] = this.state[row][col];
+              this.state[row][col] = 0;
             }
           }
         }
@@ -254,7 +254,7 @@ class Game {
 
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        if (board[i][j] === 0) {
+        if (this.state[i][j] === 0) {
           nullCells.push({ x: i, y: j });
         }
       }
@@ -264,7 +264,7 @@ class Game {
       const randomCell = Math.floor(Math.random() * nullCells.length);
       const { x, y } = nullCells[randomCell];
 
-      board[x][y] = Math.random() < 0.9 ? 2 : 4;
+      this.state[x][y] = Math.random() < 0.9 ? 2 : 4;
     }
   }
 
@@ -273,7 +273,7 @@ class Game {
       const rowCells = rows[row].querySelectorAll('td');
 
       for (let i = 0; i < rowCells.length; i++) {
-        const value = board[row][i];
+        const value = this.state[row][i];
 
         if (value !== 0) {
           rowCells[i].textContent = value;
