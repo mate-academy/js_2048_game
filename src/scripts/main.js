@@ -18,6 +18,8 @@ const tBody = table.querySelector('tbody');
 const rows = tBody.querySelectorAll('tr');
 const cells = [...rows].flatMap((row) => row.querySelectorAll('td'));
 const startButton = document.querySelector('.start');
+const gameScore = document.querySelector('.game-score');
+const restartButton = document.querySelector('.restart');
 
 document.addEventListener('DOMContentLoaded', () => {
   const game = new Game(board);
@@ -44,7 +46,7 @@ class Game {
   }
 
   getScore() {
-    return this.score;
+    gameScore.textContent = this.score;
   }
 
   resetBoard() {
@@ -64,11 +66,15 @@ class Game {
     this.changeBoard();
     document.removeEventListener('keydown', this.handleKeyPress);
     document.addEventListener('keydown', this.handleKeyPress);
+    startButton.className = 'button restart';
+    startButton.textContent = 'Restart';
   }
 
   restart() {
-    this.resetBoard();
-    this.status = 'start';
+    restartButton.addEventListener('click', () => {
+      this.resetBoard();
+      this.status = 'start';
+    });
   }
 
   isGameOver() {
@@ -122,6 +128,8 @@ class Game {
               board[targetRow][col] *= 2;
               board[row][col] = 0;
               lastRow = targetRow;
+              this.score += board[targetRow][col];
+              this.getScore();
             } else {
               if (board[targetRow][col] === 0) {
                 board[targetRow][col] = board[row][col];
@@ -139,6 +147,7 @@ class Game {
         }
       }
     }
+    this.spawnCell();
     this.changeBoard();
   }
 
@@ -157,6 +166,8 @@ class Game {
               board[row][targetCol] *= 2;
               board[row][col] = 0;
               firstCol = targetCol;
+              this.score += board[row][targetCol];
+              this.getScore();
             } else if (board[row][targetCol] === 0) {
               board[row][targetCol] = board[row][col];
               board[row][col] = 0;
@@ -169,6 +180,7 @@ class Game {
         }
       }
     }
+    this.spawnCell();
     this.changeBoard();
   }
 
@@ -187,6 +199,8 @@ class Game {
               board[row][targetCol] *= 2;
               board[row][col] = 0;
               firstCol = targetCol;
+              this.score += board[row][targetCol];
+              this.getScore();
             } else if (board[row][targetCol] === 0) {
               board[row][targetCol] = board[row][col];
               board[row][col] = 0;
@@ -199,6 +213,7 @@ class Game {
         }
       }
     }
+    this.spawnCell();
     this.changeBoard();
   }
 
@@ -217,6 +232,8 @@ class Game {
               board[targetRow][col] *= 2;
               board[row][col] = 0;
               firstRow = targetRow;
+              this.score += board[targetRow][col];
+              this.getScore();
             } else if (board[targetRow][col] === 0) {
               board[targetRow][col] = board[row][col];
               board[row][col] = 0;
@@ -229,6 +246,7 @@ class Game {
         }
       }
     }
+    this.spawnCell();
     this.changeBoard();
   }
 
