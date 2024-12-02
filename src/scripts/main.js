@@ -1,57 +1,55 @@
-'use strict';
+// 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
+// // Uncomment the next lines to use your game instance in the browser
 // const Game = require('../modules/Game.class');
-// const game = new Game();
-
-// Write your code here
-let board;
-let score = 0;
+let game;
 const rows = 4;
-const column = 4;
+const columns = 4;
 
+// Запуск гри при завантаженні сторінки
 window.onload = function () {
-  initialState();
+  setupGame();
 };
 
-function initialState() {
-  board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+// Ініціалізація гри та підключення до DOM
+function setupGame() {
+  game = new Game();
+  game.start();
+  updateGameField();
 
-  score = 0;
-  addNewNumber();
-  addNewNumber();
-  updateGameField(); // оновлюю таблицю
+  // Додаємо обробники подій для клавіш
+  document.addEventListener('keyup', handleKeyPress);
 }
 
+// Оновлення ігрового поля в DOM
 function updateGameField() {
+  const board = game.getState();
   const fieldRows = document.querySelectorAll('.field-row');
 
   if (!fieldRows || fieldRows.length === 0) {
     return;
   }
 
-  for (let rowIdx = 0; rowIdx < rows; rowIdx++) {
-    const cells = fieldRows[rowIdx].children; // Клітинки у поточному рядку
+  for (let r = 0; r < rows; r++) {
+    const cells = fieldRows[r].children; // Клітинки в рядку
 
-    for (let colIdx = 0; colIdx < column; colIdx++) {
-      const cell = cells[colIdx];
-      const num = board[rowIdx][colIdx];
+    for (let c = 0; c < columns; c++) {
+      const cell = cells[c];
+      const num = board[r][c];
 
       updateCell(cell, num);
     }
   }
-  // оновлюю рахунок
-  document.getElementById('game-score').textContent = `Score: ${score}`;
+
+  // Оновлюємо рахунок
+  document.getElementById('game-score').textContent =
+    `Score: ${game.getScore()}`;
 }
 
+// Оновлення стилю окремої клітинки
 function updateCell(cell, num) {
   cell.textContent = '';
-  cell.classList.value = 'cell';
+  cell.className = 'cell'; // Скидаємо класи
 
   if (num > 0) {
     cell.textContent = num;
@@ -64,71 +62,36 @@ function updateCell(cell, num) {
   }
 }
 
-document.addEventListener('keyup', (e) => {
-  let moved = false;
-
-  if (e.code === 'ArrowLeft') {
-    moved = moveLeft();
+// Обробка натискання клавіш
+function handleKeyPress(e) {
+  if (game.getStatus() !== 'playing') {
+    return;
   }
 
-  if (moved) {
-    addNewNumber(); // додаю число якщо був рух
-    updateGameField(); // оновлюю
-  }
-});
-
-function filterZero(inputRow) {
-  return inputRow.filter((num) => num !== 0);
-}
-
-function slide(inputRow) {
-  const row = [...filterZero(inputRow)];
-
-  for (let i = 0; i < row.length - 1; i++) {
-    if (row[i] === row[i + 1]) {
-      row[i] *= 2; // об'єдную числа
-      score += row[i]; // додаю до рахунку
-      row[i + 1] = 0;
-    }
+  switch (e.code) {
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+    default:
+      return;
   }
 
-  return filterZero(row).concat(Array(column - row.length).fill(0));
-}
+  // Оновлюємо поле після кожного ходу
+  updateGameField();
 
-function moveLeft() {
-  let moved = false;
-
-  for (let rowIdx = 0; rowIdx < rows; rowIdx++) {
-    const originalRow = [...board[rowIdx]]; // зберігаю початковий стан рядка
-    const newRow = slide(board[rowIdx]);
-
-    if (newRow.toString() !== originalRow.toString()) {
-      moved = true; // якщо рядок змінився значить був рух
-    }
-
-    board[rowIdx] = newRow; // оновлюю рядок
+  // Перевіряємо статус гри
+  if (game.getStatus() === 'win') {
+    alert('You win!');
+  } else if (game.getStatus() === 'lose') {
+    alert('Game over!');
   }
-
-  return moved; // повертаю true, якщо був рух
-}
-
-function addNewNumber() {
-  const emptyCells = [];
-
-  for (let rowIdx = 0; rowIdx < rows; rowIdx++) {
-    for (let colIdx = 0; colIdx < column; colIdx++) {
-      if (board[rowIdx][colIdx] === 0) {
-        emptyCells.push({ r: rowIdx, c: colIdx });
-      }
-    }
-  }
-
-  if (emptyCells.length === 0) {
-    return; // якщо немає місця, нічого не додає
-  }
-
-  const randomIndex = Math.floor(Math.random() * emptyCells.length);
-  const { r, c } = emptyCells[randomIndex];
-
-  board[r][c] = Math.random() < 0.9 ? 2 : 4; // випадкове число 2 або 4
 }

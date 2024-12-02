@@ -1,68 +1,222 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
   /**
    * Creates a new game instance.
-   *
    * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
    */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(initialState = null) {
+    this.rows = 4;
+    this.columns = 4;
+    this.score = 0;
+    this.status = 'idle';
+    this.board = initialState || this.createEmptyBoard();
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
-
   /**
-   * @returns {number}
-   */
-  getScore() {}
-
-  /**
+   * Creates an empty board.
    * @returns {number[][]}
    */
-  getState() {}
-
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  createEmptyBoard() {
+    return Array.from({ length: this.rows }, () => Array(this.columns).fill(0));
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = 'playing';
+    this.board = this.createEmptyBoard();
+    this.addNewNumber();
+    this.addNewNumber();
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.start();
+    this.score = 0;
+  }
 
-  // Add your own methods here
+  /**
+   * Returns the current score.
+   * @returns {number}
+   */
+  getScore() {
+    return this.score;
+  }
+
+  /**
+   * Returns the current board state.
+   * @returns {number[][]}
+   */
+  getState() {
+    return this.board;
+  }
+
+  /**
+   * Returns the current game status.
+   * @returns {string}
+   */
+  getStatus() {
+    return this.status;
+  }
+
+  /**
+   * Adds a new number (2 or 4) to a random empty cell.
+   */
+  addNewNumber() {
+    const emptyCells = [];
+
+    for (let r = 0; r < this.rows; r++) {
+      for (let c = 0; c < this.columns; c++) {
+        if (this.board[r][c] === 0) {
+          emptyCells.push({ r, c });
+        }
+      }
+    }
+
+    if (emptyCells.length === 0) {
+      return;
+    }
+
+    const { r, c } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+    this.board[r][c] = Math.random() < 0.9 ? 2 : 4;
+  }
+
+  /**
+   * Slides and merges a row to the left.
+   * @param {number[]} row
+   * @returns {number[]}
+   */
+  slideRowLeft(row) {
+    const nonZero = row.filter((num) => num !== 0);
+    const merged = [];
+
+    for (let i = 0; i < nonZero.length; i++) {
+      if (nonZero[i] === nonZero[i + 1]) {
+        merged.push(nonZero[i] * 2);
+        this.score += nonZero[i] * 2;
+        i++;
+      } else {
+        merged.push(nonZero[i]);
+      }
+    }
+
+    while (merged.length < this.columns) {
+      merged.push(0);
+    }
+
+    return merged;
+  }
+
+  /**
+   * Moves the board left.
+   */
+  moveLeft() {
+    let moved = false;
+
+    for (let r = 0; r < this.rows; r++) {
+      const originalRow = [...this.board[r]];
+      const newRow = this.slideRowLeft(this.board[r]);
+
+      if (newRow.toString() !== originalRow.toString()) {
+        moved = true;
+      }
+
+      this.board[r] = newRow;
+    }
+
+    if (moved) {
+      this.addNewNumber();
+    }
+  }
+
+  /**
+   * Moves the board right.
+   */
+  moveRight() {
+    this.board = this.board.map((row) =>
+      this.slideRowLeft(row.reverse()).reverse(),);
+    this.addNewNumber();
+  }
+
+  /**
+   * Moves the board up.
+   */
+  moveUp() {
+    this.transposeBoard();
+    this.moveLeft();
+    this.transposeBoard();
+  }
+
+  /**
+   * Moves the board down.
+   */
+  moveDown() {
+    this.transposeBoard();
+    this.moveRight();
+    this.transposeBoard();
+  }
+
+  /**
+   * Transposes the board (rows become columns and vice versa).
+   */
+  transposeBoard() {
+    const transposed = this.createEmptyBoard();
+
+    for (let r = 0; r < this.rows; r++) {
+      for (let c = 0; c < this.columns; c++) {
+        transposed[c][r] = this.board[r][c];
+      }
+    }
+
+    this.board = transposed;
+  }
+
+  /**
+   * Checks the game status (win, lose, or continue playing).
+   */
+  updateStatus() {
+    if (this.board.some((row) => row.includes(2048))) {
+      this.status = 'win';
+
+      return;
+    }
+
+    if (!this.hasMoves()) {
+      this.status = 'lose';
+
+      return;
+    }
+
+    this.status = 'playing';
+  }
+
+  /**
+   * Checks if there are any valid moves left.
+   * @returns {boolean}
+   */
+  hasMoves() {
+    for (let r = 0; r < this.rows; r++) {
+      for (let c = 0; c < this.columns; c++) {
+        if (this.board[r][c] === 0) {
+          return true;
+        }
+
+        if (
+          (c < this.columns - 1 && this.board[r][c] === this.board[r][c + 1]) ||
+          (r < this.rows - 1 && this.board[r][c] === this.board[r + 1][c])
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }
 
 module.exports = Game;
