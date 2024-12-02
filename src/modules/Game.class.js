@@ -37,8 +37,22 @@ class Game {
     this.status = 'idle'; // Початковий статус гри
   }
 
+  arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   moveLeft() {
-    this.checkLose();
+    let changeBoard = false;
 
     for (let i = 0; i < 4; i++) {
       let newRow = this.board[i].filter((value) => value !== 0);
@@ -48,6 +62,7 @@ class Game {
           newRow[j] *= 2;
           this.score += newRow[j];
           newRow[j + 1] = 0;
+          changeBoard = true;
         }
       }
 
@@ -57,13 +72,19 @@ class Game {
         newRow.push(0);
       }
 
+      if (!this.arraysEqual(this.board[i], newRow)) {
+        changeBoard = true;
+      }
+
       this.board[i] = newRow;
     }
 
-    this.addRandomTile();
+    if (this.status === 'playing' && changeBoard) {
+      this.addRandomTile();
+    }
   }
   moveRight() {
-    this.checkLose();
+    let changeBoard = false;
 
     for (let i = 0; i < 4; i++) {
       let newRow = this.board[i]
@@ -76,6 +97,7 @@ class Game {
           newRow[j] *= 2;
           this.score += newRow[j];
           newRow[j + 1] = 0;
+          changeBoard = true;
         }
       }
 
@@ -87,13 +109,19 @@ class Game {
 
       newRow.reverse();
 
+      if (!this.arraysEqual(this.board[i], newRow)) {
+        changeBoard = true;
+      }
+
       this.board[i] = newRow;
     }
 
-    this.addRandomTile();
+    if (this.status === 'playing' && changeBoard) {
+      this.addRandomTile();
+    }
   }
   moveUp() {
-    this.checkLose();
+    let changeBoard = false;
 
     for (let col = 0; col < 4; col++) {
       let newCol = [];
@@ -109,6 +137,7 @@ class Game {
           newCol[i] *= 2;
           this.score += newCol[i];
           newCol[i + 1] = 0;
+          changeBoard = true;
         }
       }
 
@@ -118,15 +147,27 @@ class Game {
         newCol.push(0);
       }
 
+      if (
+        !this.arraysEqual(
+          this.board.map((row) => row[col]),
+          newCol,
+        )
+      ) {
+        changeBoard = true;
+      }
+
       for (let row = 0; row < 4; row++) {
         this.board[row][col] = newCol[row];
       }
     }
-    this.addRandomTile();
+
+    if (this.status === 'playing' && changeBoard) {
+      this.addRandomTile();
+    }
   }
 
   moveDown() {
-    this.checkLose();
+    let changeBoard = false;
 
     for (let col = 0; col < 4; col++) {
       let newCol = [];
@@ -144,6 +185,7 @@ class Game {
           newCol[i] *= 2;
           this.score += newCol[i];
           newCol[i + 1] = 0;
+          changeBoard = true;
         }
       }
       newCol = newCol.filter((value) => value !== 0);
@@ -157,7 +199,10 @@ class Game {
         this.board[row][col] = newCol[3 - row];
       }
     }
-    this.addRandomTile();
+
+    if (this.status === 'playing' && changeBoard) {
+      this.addRandomTile();
+    }
   }
 
   /**

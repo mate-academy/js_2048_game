@@ -80,10 +80,8 @@ function updateStatus() {
 const startButton = document.querySelector('.start');
 
 startButton.addEventListener('click', () => {
-  startButton.classList.toggle('restart');
-  startButton.textContent = 'Start';
-
-  if (startButton.classList.contains('restart')) {
+  if (startButton.classList.contains('start')) {
+    startButton.classList.replace('start', 'restart');
     startButton.textContent = 'Restart';
   }
   game.start();
