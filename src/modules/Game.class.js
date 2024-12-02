@@ -71,6 +71,7 @@ class Game {
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         if (this.state[i][j] === 2048) {
+          this.status = 'win';
           winMessage.className = 'message message-win';
 
           setTimeout(() => {
@@ -100,6 +101,7 @@ class Game {
     }
 
     if (ansver === true) {
+      this.status = 'lose';
       loseMessage.className = 'message message-lose';
 
       setTimeout(() => {
@@ -109,19 +111,21 @@ class Game {
   }
 
   handleKeyPress(e) {
-    switch (e.key) {
-      case 'ArrowUp':
-        this.moveUp();
-        break;
-      case 'ArrowDown':
-        this.moveDown();
-        break;
-      case 'ArrowLeft':
-        this.moveLeft();
-        break;
-      case 'ArrowRight':
-        this.moveRight();
-        break;
+    if (this.status === 'inProcess') {
+      switch (e.key) {
+        case 'ArrowUp':
+          this.moveUp();
+          break;
+        case 'ArrowDown':
+          this.moveDown();
+          break;
+        case 'ArrowLeft':
+          this.moveLeft();
+          break;
+        case 'ArrowRight':
+          this.moveRight();
+          break;
+      }
     }
   }
 
