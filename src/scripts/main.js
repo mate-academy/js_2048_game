@@ -7,7 +7,6 @@ const game = new Game();
 // Start and restart Game (change button)
 
 // Write your code here
-// Методи руху по полю
 
 document.addEventListener('keydown', (e) => {
   switch (e.key) {

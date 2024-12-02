@@ -1,10 +1,5 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
   /**
    * Creates a new game instance.
@@ -21,10 +16,6 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
-
-    // Ініціалізуємо гральну дошку
     this.defaultState = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -33,8 +24,8 @@ class Game {
     ];
 
     this.board = initialState || JSON.parse(JSON.stringify(this.defaultState));
-    this.score = 0; // Початкови рахунок
-    this.status = 'idle'; // Початковий статус гри
+    this.score = 0;
+    this.status = 'idle';
   }
 
   arraysEqual(arr1, arr2) {
@@ -268,9 +259,6 @@ class Game {
     return true;
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
     this.board = JSON.parse(JSON.stringify(this.defaultState));
     this.score = 0;
@@ -298,14 +286,9 @@ class Game {
     }
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     return this.start();
   }
-
-  // Add your own methods here
 }
 
 module.exports = Game;
