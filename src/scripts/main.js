@@ -37,6 +37,7 @@ getButtonStart.addEventListener('click', function (event) {
 
       game.restart();
       renderField(game.state);
+      scoreElement.textContent = 0;
     }
   }
 });

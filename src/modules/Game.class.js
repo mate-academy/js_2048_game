@@ -42,6 +42,8 @@ class Game {
   }
 
   moveLeft() {
+    let moved = false;
+
     for (const row of this.initialState) {
       let numbers = row.filter((num) => num !== 0);
 
@@ -53,6 +55,7 @@ class Game {
             numbers[i] += numbers[i];
           }
           numbers[i + 1] = 0;
+          moved = true;
         }
       }
 
@@ -60,15 +63,24 @@ class Game {
 
       const newRow = numbers.concat(Array(row.length - numbers.length).fill(0));
 
+      // Повертаємо новий рядок в initialState
+      if (newRow.some((num, index) => num !== row[index])) {
+        moved = true;
+      }
+
       row.length = 0;
       row.push(...newRow);
     }
 
-    this.addRandomOneNumber();
-    this.addScore(10);
+    if (moved) {
+      this.addRandomOneNumber();
+      this.addScore(10);
+    }
   }
 
   moveRight() {
+    let moved = false;
+
     for (const row of this.initialState) {
       let numbers = row.filter((num) => num !== 0);
 
@@ -80,6 +92,7 @@ class Game {
             numbers[i] += numbers[i];
           }
           numbers[i - 1] = 0;
+          moved = true;
         }
       }
 
@@ -89,14 +102,23 @@ class Game {
         .fill(0)
         .concat(numbers);
 
+      if (!row.every((val, index) => val === newRow[index])) {
+        moved = true;
+      }
+
       row.length = 0;
       row.push(...newRow);
     }
-    this.addRandomOneNumber();
-    this.addScore(10);
+
+    if (moved) {
+      this.addRandomOneNumber();
+      this.addScore(10);
+    }
   }
 
   moveUp() {
+    let moved = false;
+
     for (let col = 0; col < this.initialState[0].length; col++) {
       let column = this.initialState
         .map((row) => row[col])
@@ -110,6 +132,8 @@ class Game {
             column[i] += column[i];
           }
           column[i + 1] = 0;
+          moved = true;
+          // console.log(moved);
         }
       }
 
@@ -120,15 +144,22 @@ class Game {
       );
 
       for (let row = 0; row < this.initialState.length; row++) {
+        if (this.initialState[row][col] !== newColumn[row]) {
+          moved = true; // Якщо змінився стан колонки
+        }
         this.initialState[row][col] = newColumn[row];
       }
     }
 
-    this.addRandomOneNumber();
-    this.addScore(10);
+    if (moved) {
+      this.addRandomOneNumber();
+      this.addScore(10);
+    }
   }
 
   moveDown() {
+    let moved = false;
+
     for (let col = 0; col < this.initialState[0].length; col++) {
       let column = this.initialState
         .map((row) => row[col])
@@ -142,6 +173,7 @@ class Game {
             column[i] += column[i];
           }
           column[i - 1] = 0;
+          moved = true;
         }
       }
 
@@ -153,11 +185,14 @@ class Game {
 
       for (let row = 0; row < this.initialState.length; row++) {
         this.initialState[row][col] = newColumn[row];
+        moved = true;
       }
     }
 
-    this.addRandomOneNumber();
-    this.addScore(10);
+    if (moved) {
+      this.addRandomOneNumber();
+      this.addScore(10);
+    }
   }
 
   /**
@@ -221,6 +256,8 @@ class Game {
     this.state = [...this.initialState];
 
     this.addRandomNumber();
+
+    this.score = 0;
   }
 
   /**
@@ -234,7 +271,8 @@ class Game {
   checkLose() {
     const isFull = this.initialState.every((row) =>
       // eslint-disable-next-line prettier/prettier
-      row.every((cell) => cell !== 0));
+      row.every((cell) => cell !== 0),
+    );
 
     if (!isFull) {
       return 'Continue';
