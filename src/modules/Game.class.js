@@ -239,13 +239,13 @@ class Game {
     const newState = [0, 1, 2, 3].map((col) => {
       const column = this.state
         .map((row) => row[col])
-        .filter((cell) => cell !== 0); // Вибираємо колонку без нулів
+        .filter((cell) => cell !== 0);
 
       for (let i = 0; i < column.length - 1; i++) {
         if (column[i] === column[i + 1]) {
           column[i] *= 2;
           column[i + 1] = 0;
-          this.score += column[i]; // Додаємо очки
+          this.score += column[i];
         }
       }
 
@@ -254,7 +254,6 @@ class Game {
       return [...compressed, ...Array(4 - compressed.length).fill(0)];
     });
 
-    // Транспонуємо назад у формат рядків
     this.state = [0, 1, 2, 3].map((row) => newState.map((col) => col[row]));
 
     if (JSON.stringify(this.state) !== previousState) {
