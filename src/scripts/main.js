@@ -1,7 +1,7 @@
 // 'use strict';
 
 // // Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
+const Game = require('../modules/Game.class');
 let game;
 const rows = 4;
 const columns = 4;
@@ -42,22 +42,22 @@ function updateGameField() {
   }
 
   // Оновлюємо рахунок
-  document.getElementById('game-score').textContent =
+  document.querySelector('game-score').textContent =
     `Score: ${game.getScore()}`;
 }
 
 // Оновлення стилю окремої клітинки
 function updateCell(cell, num) {
   cell.textContent = '';
-  cell.className = 'cell'; // Скидаємо класи
+  cell.classList = 'field-cell'; // Скидаємо класи
 
   if (num > 0) {
     cell.textContent = num;
 
     if (num <= 1024) {
-      cell.classList.add(`x${num}`);
+      cell.classList.add(`field-cell--${num}`);
     } else {
-      cell.classList.add('x2048');
+      cell.classList.add('field-cell--2048');
     }
   }
 }

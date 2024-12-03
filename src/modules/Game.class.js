@@ -139,7 +139,8 @@ class Game {
    */
   moveRight() {
     this.board = this.board.map((row) =>
-      this.slideRowLeft(row.reverse()).reverse(),);
+      this.slideRowLeft(row.reverse()).reverse(),
+    );
     this.addNewNumber();
   }
 
