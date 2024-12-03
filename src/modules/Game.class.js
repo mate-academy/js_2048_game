@@ -14,7 +14,7 @@ const gameScore = document.querySelector('.game-score');
 const restartButton = document.querySelector('.restart');
 const startMessage = document.querySelector('.message-start');
 const loseMessage = document.querySelector('.message-lose');
-const winMessage = document.querySelector('.win-message');
+const winMessage = document.querySelector('.message-win');
 
 class Game {
   constructor(initialState = []) {
@@ -58,13 +58,21 @@ class Game {
     startButton.className = 'button restart';
     startButton.textContent = 'Restart';
     startMessage.remove();
+    winMessage.className = 'message message-win hidden';
+    loseMessage.className = 'message message-min hidden';
   }
 
   restart() {
-    restartButton.addEventListener('click', () => {
+    restartButton.removeEventListener('click', this.handleRestart);
+
+    this.handleRestart = () => {
       this.resetBoard();
       this.status = 'start';
-    });
+      winMessage.classList.add('hidden');
+      loseMessage.classList.add('hidden');
+      this.start();
+    };
+    restartButton.addEventListener('click', this.handleRestart);
   }
 
   isGameWin() {
@@ -73,10 +81,6 @@ class Game {
         if (this.state[i][j] === 2048) {
           this.status = 'win';
           winMessage.className = 'message message-win';
-
-          setTimeout(() => {
-            loseMessage.remove();
-          }, 10000);
         }
       }
     }
@@ -103,10 +107,6 @@ class Game {
     if (ansver === true) {
       this.status = 'lose';
       loseMessage.className = 'message message-lose';
-
-      setTimeout(() => {
-        loseMessage.remove();
-      }, 10000);
     }
   }
 
@@ -135,13 +135,13 @@ class Game {
     const newState = [0, 1, 2, 3].map((col) => {
       const column = this.state
         .map((row) => row[col])
-        .filter((cell) => cell !== 0); // Вибираємо колонку без нулів
+        .filter((cell) => cell !== 0);
 
       for (let i = column.length - 1; i > 0; i--) {
         if (column[i] === column[i - 1]) {
           column[i] *= 2;
           column[i - 1] = 0;
-          this.score += column[i]; // Додаємо очки
+          this.score += column[i];
         }
       }
 
@@ -150,7 +150,6 @@ class Game {
       return [...Array(4 - compressed.length).fill(0), ...compressed];
     });
 
-    // Транспонуємо назад у формат рядків
     this.state = [0, 1, 2, 3].map((row) => newState.map((col) => col[row]));
 
     if (JSON.stringify(this.state) !== previousState) {
@@ -166,13 +165,13 @@ class Game {
     const previousState = JSON.stringify(this.state);
 
     const newState = this.state.map((row) => {
-      const filtered = row.filter((cell) => cell !== 0); // Видаляємо нулі
+      const filtered = row.filter((cell) => cell !== 0);
 
       for (let i = 0; i < filtered.length - 1; i++) {
         if (filtered[i] === filtered[i + 1]) {
           filtered[i] *= 2;
           filtered[i + 1] = 0;
-          this.score += filtered[i]; // Додаємо очки
+          this.score += filtered[i];
         }
       }
 
@@ -197,16 +196,16 @@ class Game {
     const newState = this.state.map((row, rowIndex) => {
       const reversed = [...row].reverse();
 
-      const filtered = reversed.filter((cell) => cell !== 0); // Видаляємо нулі
+      const filtered = reversed.filter((cell) => cell !== 0);
 
-      const merged = Array(4).fill(false); // Масив для відстеження злиттів
+      const merged = Array(4).fill(false);
 
       for (let i = 0; i < filtered.length - 1; i++) {
         if (filtered[i] === filtered[i + 1] && !merged[i] && !merged[i + 1]) {
-          filtered[i] *= 2; // Об'єднуємо
-          filtered[i + 1] = 0; // Обнуляємо наступну клітинку
-          merged[i] = true; // Відзначаємо злиття
-          this.score += filtered[i]; // Додаємо очки
+          filtered[i] *= 2;
+          filtered[i + 1] = 0;
+          merged[i] = true;
+          this.score += filtered[i];
         }
       }
 
