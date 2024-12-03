@@ -130,6 +130,8 @@ class Game {
   }
 
   moveDown() {
+    const previousState = JSON.stringify(this.state);
+
     const newState = [0, 1, 2, 3].map((col) => {
       const column = this.state
         .map((row) => row[col])
@@ -151,7 +153,9 @@ class Game {
     // Транспонуємо назад у формат рядків
     this.state = [0, 1, 2, 3].map((row) => newState.map((col) => col[row]));
 
-    this.spawnCell();
+    if (JSON.stringify(this.state) !== previousState) {
+      this.spawnCell();
+    }
     this.changeBoard();
     this.isGameWin();
     this.isGameOver();
@@ -159,6 +163,8 @@ class Game {
   }
 
   moveLeft() {
+    const previousState = JSON.stringify(this.state);
+
     const newState = this.state.map((row) => {
       const filtered = row.filter((cell) => cell !== 0); // Видаляємо нулі
 
@@ -176,7 +182,10 @@ class Game {
     });
 
     this.state = newState;
-    this.spawnCell();
+
+    if (JSON.stringify(this.state) !== previousState) {
+      this.spawnCell();
+    }
     this.changeBoard();
     this.isGameWin();
     this.isGameOver();
@@ -184,6 +193,8 @@ class Game {
   }
 
   moveRight() {
+    const previousState = JSON.stringify(this.state);
+
     const newState = this.state.map((row) => {
       const reversed = [...row].reverse().filter((cell) => cell !== 0);
 
@@ -203,7 +214,10 @@ class Game {
     });
 
     this.state = newState;
-    this.spawnCell();
+
+    if (JSON.stringify(this.state) !== previousState) {
+      this.spawnCell();
+    }
     this.changeBoard();
     this.isGameWin();
     this.isGameOver();
@@ -211,6 +225,8 @@ class Game {
   }
 
   moveUp() {
+    const previousState = JSON.stringify(this.state);
+
     const newState = [0, 1, 2, 3].map((col) => {
       const column = this.state
         .map((row) => row[col])
@@ -231,7 +247,10 @@ class Game {
 
     // Транспонуємо назад у формат рядків
     this.state = [0, 1, 2, 3].map((row) => newState.map((col) => col[row]));
-    this.spawnCell();
+
+    if (JSON.stringify(this.state) !== previousState) {
+      this.spawnCell();
+    }
     this.changeBoard();
     this.isGameWin();
     this.isGameOver();
