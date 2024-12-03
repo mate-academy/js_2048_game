@@ -194,21 +194,28 @@ class Game {
 
   moveRight() {
     const previousState = JSON.stringify(this.state);
+    const newState = this.state.map((row, rowIndex) => {
+      const reversed = [...row].reverse();
 
-    const newState = this.state.map((row) => {
-      const reversed = [...row].reverse().filter((cell) => cell !== 0);
+      const filtered = reversed.filter((cell) => cell !== 0); // Видаляємо нулі
 
-      for (let i = 0; i < reversed.length - 1; i++) {
-        if (reversed[i] === reversed[i + 1]) {
-          reversed[i] *= 2;
-          reversed[i + 1] = 0;
-          this.score += reversed[i];
+      const merged = Array(4).fill(false); // Масив для відстеження злиттів
+
+      for (let i = 0; i < filtered.length - 1; i++) {
+        if (filtered[i] === filtered[i + 1] && !merged[i] && !merged[i + 1]) {
+          filtered[i] *= 2; // Об'єднуємо
+          filtered[i + 1] = 0; // Обнуляємо наступну клітинку
+          merged[i] = true; // Відзначаємо злиття
+          this.score += filtered[i]; // Додаємо очки
         }
       }
 
-      const compressed = reversed.filter((cell) => cell !== 0);
+      const compressed = filtered.filter((cell) => cell !== 0);
 
-      const result = [...Array(4 - compressed.length).fill(0), ...compressed];
+      const result = [
+        ...compressed,
+        ...Array(4 - compressed.length).fill(0),
+      ].reverse();
 
       return result;
     });
@@ -217,7 +224,9 @@ class Game {
 
     if (JSON.stringify(this.state) !== previousState) {
       this.spawnCell();
+    } else {
     }
+
     this.changeBoard();
     this.isGameWin();
     this.isGameOver();

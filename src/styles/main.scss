@@ -20,7 +20,9 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
-  transition: all 0.3s, ease;
+  transition:
+    all 0.3s,
+    ease;
 
   &::before {
     transform: scale(1.1);
