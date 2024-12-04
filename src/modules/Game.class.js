@@ -26,7 +26,10 @@ class Game {
    */
   start() {
     this.status = 'playing';
-    this.board = this.createEmptyBoard();
+
+    this.board = Array(this.rows)
+      .fill()
+      .map(() => Array(this.columns).fill(0));
     this.addNewNumber();
     this.addNewNumber();
   }
@@ -69,21 +72,22 @@ class Game {
   addNewNumber() {
     const emptyCells = [];
 
-    for (let r = 0; r < this.rows; r++) {
-      for (let c = 0; c < this.columns; c++) {
-        if (this.board[r][c] === 0) {
-          emptyCells.push({ r, c });
+    for (let rowIdx = 0; rowIdx < this.rows; rowIdx++) {
+      for (let colIdx = 0; colIdx < this.columns; colIdx++) {
+        if (this.board[rowIdx][colIdx] === 0) {
+          emptyCells.push({ row: rowIdx, col: colIdx });
         }
       }
     }
 
     if (emptyCells.length === 0) {
-      return;
+      return; // Немає порожніх клітинок
     }
 
-    const { r, c } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    const { row, col } =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-    this.board[r][c] = Math.random() < 0.9 ? 2 : 4;
+    this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
   }
 
   /**
@@ -138,9 +142,10 @@ class Game {
    * Moves the board right.
    */
   moveRight() {
-    this.board = this.board.map((row) =>
-      this.slideRowLeft(row.reverse()).reverse(),
-    );
+    this.board = this.board.map((row) => {
+      return this.slideRowLeft(row.reverse()).reverse();
+    });
+
     this.addNewNumber();
   }
 
@@ -201,17 +206,19 @@ class Game {
    * @returns {boolean}
    */
   hasMoves() {
-    for (let r = 0; r < this.rows; r++) {
-      for (let c = 0; c < this.columns; c++) {
-        if (this.board[r][c] === 0) {
-          return true;
+    for (let rowIdx = 0; rowIdx < this.rows; rowIdx++) {
+      for (let colIdx = 0; colIdx < this.columns; colIdx++) {
+        if (this.board[rowIdx][colIdx] === 0) {
+          return true; // Є порожня клітинка
         }
 
         if (
-          (c < this.columns - 1 && this.board[r][c] === this.board[r][c + 1]) ||
-          (r < this.rows - 1 && this.board[r][c] === this.board[r + 1][c])
+          (colIdx < this.columns - 1 &&
+            this.board[rowIdx][colIdx] === this.board[rowIdx][colIdx + 1]) ||
+          (rowIdx < this.rows - 1 &&
+            this.board[rowIdx][colIdx] === this.board[rowIdx + 1][colIdx])
         ) {
-          return true;
+          return true; // Можливе злиття
         }
       }
     }
