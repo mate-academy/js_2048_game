@@ -25,6 +25,10 @@ let gameArr = [
   // [0, 0, 0, 0],
   // [0, 0, 0, 0],
 ];
+let left = false;
+let right = false;
+let up = false;
+let down = false;
 
 button.addEventListener('click', (e) => {
   if (button.classList.contains('start')) {
@@ -81,35 +85,81 @@ game.restart = () => {
 };
 
 game.moveLeft = function () {
+  let testArr = structuredClone(gameArr);
+
   gameArr.forEach((item) => arrLeft(item));
-  pushToDoubleArr(gameArr);
+
+  if (!compareArrays(testArr, gameArr)) {
+    pushToDoubleArr(gameArr);
+    left = false;
+    right = false;
+    up = false;
+    down = false;
+  } else {
+    left = true;
+  }
+  testArr = null;
   score.textContent = scoreValue;
   update();
 };
 
 game.moveRight = function () {
+  let testArr = structuredClone(gameArr);
+
   gameArr.forEach((item) => arrRight(item));
-  pushToDoubleArr(gameArr);
+
+  if (!compareArrays(testArr, gameArr)) {
+    pushToDoubleArr(gameArr);
+    left = false;
+    right = false;
+    up = false;
+    down = false;
+  } else {
+    right = true;
+  }
+  testArr = null;
   score.textContent = scoreValue;
   update();
 };
 
 game.moveUp = function () {
   let newArray = helperUp(gameArr);
+  let testArr = structuredClone(gameArr);
 
   gameArr = structuredClone(newArray);
   newArray = null;
-  pushToDoubleArr(gameArr);
+
+  if (!compareArrays(testArr, gameArr)) {
+    pushToDoubleArr(gameArr);
+    left = false;
+    right = false;
+    up = false;
+    down = false;
+  } else {
+    up = true;
+  }
+  testArr = null;
   score.textContent = scoreValue;
   update();
 };
 
 game.moveDown = function () {
   let newArray = helperDown(gameArr);
+  let testArr = structuredClone(gameArr);
 
   gameArr = structuredClone(newArray);
   newArray = null;
-  pushToDoubleArr(gameArr);
+
+  if (!compareArrays(testArr, gameArr)) {
+    pushToDoubleArr(gameArr);
+    left = false;
+    right = false;
+    up = false;
+    down = false;
+  } else {
+    down = true;
+  }
+  testArr = null;
   score.textContent = scoreValue;
   update();
 };
@@ -241,6 +291,8 @@ function arrLeft(el) {
 }
 
 function arrRight(el) {
+  // const testArr = [...el];
+
   for (let i = 1; i < el.length; i++) {
     if (el[i] === 0 && el[i - 1] !== 0) {
       [el[i], el[i - 1]] = [el[i - 1], el[i]];
@@ -307,6 +359,10 @@ function update() {
       element.classList.add(`field-cell--${element.textContent}`);
     }
   });
+
+  if (left && right && up && down) {
+    mesLose.classList.remove('hidden');
+  }
 }
 
 function pushToDoubleArr(arr) {
@@ -334,4 +390,24 @@ function pushToDoubleArr(arr) {
   }
 
   return arr;
+}
+
+function compareArrays(arr1, arr2) {
+  const arr1inLine = [];
+  const arr2inLine = [];
+
+  for (let i = 0; i < arr1.length; i++) {
+    for (let j = 0; j < arr1.length; j++) {
+      arr1inLine.push(arr1[i][j]);
+      arr2inLine.push(arr2[i][j]);
+    }
+  }
+
+  for (let i = 0; i < arr1inLine.length; i++) {
+    if (arr1inLine[i] !== arr2inLine[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
