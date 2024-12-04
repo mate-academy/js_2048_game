@@ -2,7 +2,7 @@
 
 // // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
-const game = new Game(); // Ініціалізація гри;
+const game = new Game();
 const rows = 4;
 const columns = 4;
 
@@ -21,14 +21,14 @@ startButton.addEventListener('click', () => {
 
   updateGameField();
 
-  // Приховуємо початкове повідомлення
+  // Приховую початкове повідомлення
   const messageStart = document.querySelector('.message-start');
 
   if (messageStart) {
     messageStart.style.display = 'none';
   }
 
-  // Змінюємо текст кнопки на "Restart"
+  // Змінюю текст кнопки на "Restart"
   startButton.textContent = 'Restart';
 
   startButton.style.backgroundColor = 'red';
@@ -64,10 +64,10 @@ function updateGameField() {
   document.querySelector('.game-score').textContent = `${game.getScore()}`;
 }
 
-// Оновлення стилю окремої клітинки
+// стилі окремої клітинки
 function updateCell(cell, num) {
   cell.textContent = '';
-  cell.className = 'field-cell'; // Скидаємо класи
+  cell.className = 'field-cell';
 
   if (num > 0) {
     cell.textContent = num;
@@ -103,10 +103,10 @@ function handleKeyPress(e) {
       return;
   }
 
-  // Оновлюємо поле після кожного ходу
+  // Оновлюю поле після кожного ходу
   updateGameField();
 
-  // Перевіряємо статус гри
+  // Перевірю статус гри
   if (checkVictory(game.getState())) {
     game.setStatus('win');
     showWinMessage();
