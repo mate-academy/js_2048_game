@@ -41,8 +41,16 @@ class Game {
   restart() {
     this.start();
     this.score = 0;
+    // this.updateScoreDisplay();
   }
 
+  // updateScoreDisplay() {
+  //   const scoreElement = document.querySelector('.game-score');
+
+  //   if (scoreElement) {
+  //     scoreElement.textContent = '0'; // Відображення рахунку
+  //   }
+  // }
   /**
    * Returns the current score.
    * @returns {number}
