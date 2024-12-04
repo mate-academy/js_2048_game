@@ -2,7 +2,7 @@
 
 // // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
-let game;
+const game = new Game(); // Ініціалізація гри;
 const rows = 4;
 const columns = 4;
 
@@ -13,8 +13,7 @@ const columns = 4;
 const startButton = document.querySelector('.button.start');
 
 startButton.addEventListener('click', () => {
-  if (!game) {
-    game = new Game(); // Ініціалізація гри
+  if (game.getStatus() === 'idle' || game.getStatus() === 'lose') {
     game.start();
   } else {
     game.restart(); // Перезапуск гри
@@ -50,10 +49,10 @@ function updateGameField() {
     return;
   }
 
-  for (let r = 0; r < rows; r++) {
+  for (let r = 0; r < 4; r++) {
     const cells = fieldRows[r].children; // Клітинки в рядку
 
-    for (let c = 0; c < columns; c++) {
+    for (let c = 0; c < 4; c++) {
       const cell = cells[c];
       const num = board[r][c];
 
@@ -68,7 +67,7 @@ function updateGameField() {
 // Оновлення стилю окремої клітинки
 function updateCell(cell, num) {
   cell.textContent = '';
-  cell.classList = 'field-cell'; // Скидаємо класи
+  cell.className = 'field-cell'; // Скидаємо класи
 
   if (num > 0) {
     cell.textContent = num;
@@ -109,15 +108,15 @@ function handleKeyPress(e) {
 
   // Перевіряємо статус гри
   if (checkVictory(game.getState())) {
-    showWimMessange();
     game.setStatus('win');
-  } else if (checkGameOver(game.getStatus())) {
-    showLoseMessange();
+    showWinMessage();
+  } else if (checkGameOver(game.getState())) {
     game.setStatus('lose');
+    showLoseMessage();
   }
 }
 
-function showWimMessange() {
+function showWinMessage() {
   const messangeWim = document.querySelector('.message-win');
 
   if (messangeWim) {
@@ -125,7 +124,7 @@ function showWimMessange() {
   }
 }
 
-function showLoseMessange() {
+function showLoseMessage() {
   const messangeLose = document.querySelector('.message-lose');
 
   if (messangeLose) {
@@ -149,22 +148,24 @@ function checkVictory(board) {
 
 // функція для перевірки Game Over
 function checkGameOver(board) {
+  // Перевіряємо наявність порожніх клітинок
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      if (board[r][c] === 2048) {
-        return false; // якщо є порожня клітинка то хід можливий
+      if (board[r][c] === 0) {
+        return false; // Є порожня клітинка, гра продовжується
       }
-      // Перевірка на можливість злиття клітинок:
 
+      // Перевірка можливості злиття по горизонталі
       if (c < columns - 1 && board[r][c] === board[r][c + 1]) {
-        return false; // Якщо є клітинки, що можуть злитись по горизонталі
+        return false;
       }
 
+      // Перевірка можливості злиття по вертикалі
       if (r < rows - 1 && board[r][c] === board[r + 1][c]) {
-        return false; // Якщо є клітинки, що можуть злитись по вертикалі
+        return false;
       }
     }
   }
 
-  return true;
+  return true; // Гру закінчено (немає можливих ходів)
 }

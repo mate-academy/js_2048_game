@@ -25,11 +25,12 @@ class Game {
    * Starts the game.
    */
   start() {
-    this.status = 'playing';
+    if (this.status !== 'idle' && this.status !== 'lose') {
+      return; // Забороняємо перезапуск, якщо гра ще триває або вже виграна
+    }
 
-    this.board = Array(this.rows)
-      .fill()
-      .map(() => Array(this.columns).fill(0));
+    this.status = 'playing';
+    this.board = this.createEmptyBoard();
     this.addNewNumber();
     this.addNewNumber();
   }
@@ -58,10 +59,10 @@ class Game {
     return this.board;
   }
 
-  /**
-   * Returns the current game status.
-   * @returns {string}
-   */
+  setStatus(newStatus) {
+    this.status = newStatus;
+  }
+
   getStatus() {
     return this.status;
   }
@@ -81,7 +82,9 @@ class Game {
     }
 
     if (emptyCells.length === 0) {
-      return; // Немає порожніх клітинок
+      this.updateStatus(); // Оновлюємо статус
+
+      return;
     }
 
     const { row, col } =
@@ -142,11 +145,22 @@ class Game {
    * Moves the board right.
    */
   moveRight() {
+    let moved = false;
+
     this.board = this.board.map((row) => {
-      return this.slideRowLeft(row.reverse()).reverse();
+      const originalRow = [...row];
+      const newRow = this.slideRowLeft(row.reverse()).reverse();
+
+      if (newRow.toString() !== originalRow.toString()) {
+        moved = true;
+      }
+
+      return newRow;
     });
 
-    this.addNewNumber();
+    if (moved) {
+      this.addNewNumber();
+    }
   }
 
   /**
@@ -154,8 +168,14 @@ class Game {
    */
   moveUp() {
     this.transposeBoard();
-    this.moveLeft();
+
+    const moved = this.moveLeft(); // moveLeft повертає значення moved
+
     this.transposeBoard();
+
+    if (moved) {
+      this.addNewNumber();
+    }
   }
 
   /**
@@ -186,19 +206,39 @@ class Game {
    * Checks the game status (win, lose, or continue playing).
    */
   updateStatus() {
-    if (this.board.some((row) => row.includes(2048))) {
-      this.status = 'win';
+    let hasEmpty = false;
+    let canMerge = false;
 
-      return;
+    for (let rowIdx = 0; rowIdx < this.rows; rowIdx++) {
+      for (let colIdx = 0; colIdx < this.columns; colIdx++) {
+        if (this.board[rowIdx][colIdx] === 0) {
+          hasEmpty = true;
+        }
+
+        if (
+          (colIdx < this.columns - 1 &&
+            this.board[rowIdx][colIdx] === this.board[rowIdx][colIdx + 1]) ||
+          (rowIdx < this.rows - 1 &&
+            this.board[rowIdx][colIdx] === this.board[rowIdx + 1][colIdx])
+        ) {
+          canMerge = true;
+        }
+
+        if (hasEmpty || canMerge) {
+          this.status = 'playing';
+
+          return;
+        }
+
+        if (this.board[rowIdx][colIdx] === 2048) {
+          this.status = 'win';
+
+          return;
+        }
+      }
     }
 
-    if (!this.hasMoves()) {
-      this.status = 'lose';
-
-      return;
-    }
-
-    this.status = 'playing';
+    this.status = 'lose';
   }
 
   /**
