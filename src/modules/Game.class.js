@@ -109,11 +109,14 @@ class Game {
   slideRowLeft(row) {
     const nonZero = row.filter((num) => num !== 0);
     const merged = [];
+    let scoreGained = 0;
 
     for (let i = 0; i < nonZero.length; i++) {
       if (nonZero[i] === nonZero[i + 1]) {
-        merged.push(nonZero[i] * 2);
-        this.score += nonZero[i] * 2;
+        const mergedValue = nonZero[i] * 2;
+
+        merged.push(mergedValue);
+        scoreGained += mergedValue; // Add to score
         i++;
       } else {
         merged.push(nonZero[i]);
@@ -124,29 +127,34 @@ class Game {
       merged.push(0);
     }
 
-    return merged;
+    return { newRow: merged, scoreGained };
   }
-
   /**
    * Moves the board left.
    */
   moveLeft() {
     let moved = false;
+    let totalScoreGained = 0;
 
     for (let r = 0; r < this.rows; r++) {
       const originalRow = [...this.board[r]];
-      const newRow = this.slideRowLeft(this.board[r]);
+      const { newRow, scoreGained } = this.slideRowLeft(this.board[r]);
 
       if (newRow.toString() !== originalRow.toString()) {
         moved = true;
       }
 
       this.board[r] = newRow;
+      totalScoreGained += scoreGained;
     }
 
     if (moved) {
+      this.score += totalScoreGained;
+      this.updateScoreDisplay(); 
       this.addNewNumber();
     }
+
+    return moved;
   }
 
   /**
@@ -154,21 +162,29 @@ class Game {
    */
   moveRight() {
     let moved = false;
+    let totalScoreGained = 0;
 
     this.board = this.board.map((row) => {
       const originalRow = [...row];
-      const newRow = this.slideRowLeft(row.reverse()).reverse();
+      const { newRow, scoreGained } = this.slideRowLeft(row.reverse());
+      const reversedRow = newRow.reverse();
 
-      if (newRow.toString() !== originalRow.toString()) {
+      if (reversedRow.toString() !== originalRow.toString()) {
         moved = true;
       }
 
-      return newRow;
+      totalScoreGained += scoreGained;
+
+      return reversedRow;
     });
 
     if (moved) {
+      this.score += totalScoreGained;
+      this.updateScoreDisplay();
       this.addNewNumber();
     }
+
+    return moved;
   }
 
   /**
@@ -177,13 +193,11 @@ class Game {
   moveUp() {
     this.transposeBoard();
 
-    const moved = this.moveLeft(); // moveLeft повертає значення moved
+    const moved = this.moveLeft();
 
     this.transposeBoard();
 
-    if (moved) {
-      this.addNewNumber();
-    }
+    return moved;
   }
 
   /**
@@ -191,8 +205,12 @@ class Game {
    */
   moveDown() {
     this.transposeBoard();
-    this.moveRight();
+
+    const moved = this.moveRight();
+
     this.transposeBoard();
+
+    return moved;
   }
 
   /**

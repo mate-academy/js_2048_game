@@ -6,17 +6,19 @@ const game = new Game();
 const rows = 4;
 const columns = 4;
 
-// Запуск гри при завантаженні сторінки
-// window.onload = function () {
-//   setupGame();
-// };
 const startButton = document.querySelector('.button.start');
 
 startButton.addEventListener('click', () => {
-  if (game.getStatus() === 'idle' || game.getStatus() === 'lose') {
+  if (game.getStatus() === 'idle') {
     game.start();
   } else {
-    game.restart(); // Перезапуск гри
+    const messageLose2 = document.querySelector('.message-lose');
+
+    if (messageLose2) {
+      messageLose2.style.display = 'none';
+    }
+
+    game.restart();
   }
 
   updateGameField();
