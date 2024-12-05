@@ -48,27 +48,6 @@ class Game {
     }
   }
 
-  // reset() {
-  //   this.hideMessage();
-
-  //   this.board = [
-  //     [0, 0, 0, 0],
-  //     [0, 0, 0, 0],
-  //     [0, 0, 0, 0],
-  //     [0, 0, 0, 0],
-  //   ];
-  //   this.score = 0;
-  //   this.status = 'idle';
-  //   this.score = 0;
-  //   this.status = 'idle';
-
-  //   const scoreElement = document.querySelector('.game-score');
-
-  //   if (scoreElement) {
-  //     scoreElement.textContent = this.score;
-  //   }
-  // }
-
   restart() {
     this.hideMessage();
 
@@ -88,8 +67,6 @@ class Game {
     }
 
     this.render();
-
-    // this.start();
   }
 
   moveLeft() {

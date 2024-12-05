@@ -34,7 +34,7 @@ button.addEventListener('click', () => {
     button.textContent = 'Restart';
   } else {
     game.restart();
-    // game.start();
+    game.start();
     showMessage('start');
     button.textContent = 'Start';
   }
