@@ -33,6 +33,65 @@ class Game {
     this.status = 'idle'; // 'idle', 'playing', 'win', 'lose'
   }
 
+  start() {
+    if (this.status === 'idle') {
+      this.status = 'playing';
+      this.addRandomTile();
+      this.addRandomTile();
+      this.render();
+
+      const button = document.querySelector('.button');
+
+      if (button) {
+        button.textContent = 'Restart';
+      }
+    }
+  }
+
+  // reset() {
+  //   this.hideMessage();
+
+  //   this.board = [
+  //     [0, 0, 0, 0],
+  //     [0, 0, 0, 0],
+  //     [0, 0, 0, 0],
+  //     [0, 0, 0, 0],
+  //   ];
+  //   this.score = 0;
+  //   this.status = 'idle';
+  //   this.score = 0;
+  //   this.status = 'idle';
+
+  //   const scoreElement = document.querySelector('.game-score');
+
+  //   if (scoreElement) {
+  //     scoreElement.textContent = this.score;
+  //   }
+  // }
+
+  restart() {
+    this.hideMessage();
+
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.score = 0;
+    this.status = 'idle';
+
+    const scoreElement = document.querySelector('.game-score');
+
+    if (scoreElement) {
+      scoreElement.textContent = this.score;
+    }
+
+    this.render();
+
+    // this.start();
+  }
+
   moveLeft() {
     if (this.status !== 'playing') {
       return;
@@ -257,21 +316,6 @@ class Game {
     return this.status;
   }
 
-  start() {
-    if (this.status === 'idle') {
-      this.status = 'playing';
-      this.addRandomTile();
-      this.addRandomTile();
-      this.render();
-
-      const button = document.querySelector('.button');
-
-      if (button) {
-        button.textContent = 'Restart';
-      }
-    }
-  }
-
   render() {
     const cells = document.querySelectorAll('.field-cell');
     let index = 0;
@@ -281,9 +325,11 @@ class Game {
         const cell = cells[index];
         const value = this.board[r][c];
 
-        cell.innerHTML = value || '';
-        cell.className = `field-cell ${value ? `field-cell--${value}` : ''}`;
-        index++;
+        if (cell) {
+          cell.innerHTML = value || '';
+          cell.className = `field-cell ${value ? `field-cell--${value}` : ''}`;
+          index++;
+        }
       }
     }
   }
@@ -303,27 +349,6 @@ class Game {
     if (messageElement) {
       messageElement.style.display = 'none';
     }
-  }
-
-  restart() {
-    this.hideMessage();
-
-    this.board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    this.score = 0;
-    this.status = 'idle';
-
-    const scoreElement = document.querySelector('.game-score');
-
-    if (scoreElement) {
-      scoreElement.textContent = this.score;
-    }
-
-    this.start();
   }
 }
 
