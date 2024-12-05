@@ -150,7 +150,7 @@ class Game {
 
     if (moved) {
       this.score += totalScoreGained;
-      this.updateScoreDisplay(); 
+      // this.updateScoreDisplay();
       this.addNewNumber();
     }
 
@@ -180,7 +180,7 @@ class Game {
 
     if (moved) {
       this.score += totalScoreGained;
-      this.updateScoreDisplay();
+      // this.updateScoreDisplay();
       this.addNewNumber();
     }
 
