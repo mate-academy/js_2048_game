@@ -25,10 +25,6 @@ let gameArr = [
   // [0, 0, 0, 0],
   // [0, 0, 0, 0],
 ];
-let left = false;
-let right = false;
-let up = false;
-let down = false;
 
 button.addEventListener('click', (e) => {
   if (button.classList.contains('start')) {
@@ -53,7 +49,18 @@ game.getStatus = () => {
 game.start = function () {
   button.classList.replace('start', 'restart');
   button.textContent = 'Restart';
-  mesStart.classList.add('hidden');
+
+  if (!mesStart.className.includes('hidden')) {
+    mesStart.classList.add('hidden');
+  }
+
+  if (!mesWin.className.includes('hidden')) {
+    mesWin.classList.add('hidden');
+  }
+
+  if (!mesLose.className.includes('hidden')) {
+    mesLose.classList.add('hidden');
+  }
   statusGame = 'playing';
   gameArr = structuredClone(initialState);
   score.textContent = 0;
@@ -91,12 +98,6 @@ game.moveLeft = function () {
 
   if (!compareArrays(testArr, gameArr)) {
     pushToDoubleArr(gameArr);
-    left = false;
-    right = false;
-    up = false;
-    down = false;
-  } else {
-    left = true;
   }
   testArr = null;
   score.textContent = scoreValue;
@@ -110,12 +111,6 @@ game.moveRight = function () {
 
   if (!compareArrays(testArr, gameArr)) {
     pushToDoubleArr(gameArr);
-    left = false;
-    right = false;
-    up = false;
-    down = false;
-  } else {
-    right = true;
   }
   testArr = null;
   score.textContent = scoreValue;
@@ -131,12 +126,6 @@ game.moveUp = function () {
 
   if (!compareArrays(testArr, gameArr)) {
     pushToDoubleArr(gameArr);
-    left = false;
-    right = false;
-    up = false;
-    down = false;
-  } else {
-    up = true;
   }
   testArr = null;
   score.textContent = scoreValue;
@@ -152,12 +141,6 @@ game.moveDown = function () {
 
   if (!compareArrays(testArr, gameArr)) {
     pushToDoubleArr(gameArr);
-    left = false;
-    right = false;
-    up = false;
-    down = false;
-  } else {
-    down = true;
   }
   testArr = null;
   score.textContent = scoreValue;
@@ -360,7 +343,42 @@ function update() {
     }
   });
 
-  if (left && right && up && down) {
+  const checkCellsArr = [];
+  let noMoves = false;
+
+  for (let i = 0; i < 4; i++) {
+    const subArr = [];
+
+    for (let j = 0; j < 4; j++) {
+      subArr.push(gameArr[j][i]);
+    }
+    checkCellsArr.push(subArr);
+  }
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (!gameArr[i].includes(0) && gameArr[i][j] === gameArr[i][j + 1]) {
+        noMoves = true;
+      }
+    }
+
+    if (gameArr[i].includes(0)) {
+      noMoves = true;
+    }
+  }
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (
+        !checkCellsArr[i].includes(0) &&
+        checkCellsArr[i][j] === checkCellsArr[i][j + 1]
+      ) {
+        noMoves = true;
+      }
+    }
+  }
+
+  if (!noMoves) {
     mesLose.classList.remove('hidden');
   }
 }
