@@ -41,16 +41,8 @@ class Game {
   restart() {
     this.start();
     this.score = 0;
-    // this.updateScoreDisplay();
   }
 
-  // updateScoreDisplay() {
-  //   const scoreElement = document.querySelector('.game-score');
-
-  //   if (scoreElement) {
-  //     scoreElement.textContent = '0'; // Відображення рахунку
-  //   }
-  // }
   /**
    * Returns the current score.
    * @returns {number}
@@ -73,6 +65,13 @@ class Game {
 
   getStatus() {
     return this.status;
+  }
+
+  calculateBoardSum() {
+    return this.board
+      .flat()
+      .filter(Boolean)
+      .reduce((acc, val) => acc + val, 0);
   }
 
   /**
@@ -150,7 +149,6 @@ class Game {
 
     if (moved) {
       this.score += totalScoreGained;
-      // this.updateScoreDisplay();
       this.addNewNumber();
     }
 
@@ -180,7 +178,6 @@ class Game {
 
     if (moved) {
       this.score += totalScoreGained;
-      // this.updateScoreDisplay();
       this.addNewNumber();
     }
 
