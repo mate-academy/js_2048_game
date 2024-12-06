@@ -13,9 +13,14 @@ startButton.addEventListener('click', () => {
     game.start();
   } else {
     const messageLose2 = document.querySelector('.message-lose');
+    const messageWin = document.querySelector('.message-win');
 
     if (messageLose2) {
       messageLose2.style.display = 'none';
+    }
+
+    if (messageWin) {
+      messageWin.classList.add('hidden');
     }
 
     game.restart();
@@ -127,10 +132,11 @@ function showWinMessage() {
 }
 
 function showLoseMessage() {
-  const messangeLose = document.querySelector('.message-lose');
+  const messageLose = document.querySelector('.message-lose');
 
-  if (messangeLose) {
-    messangeLose.classList.remove('hidden');
+  if (messageLose) {
+    messageLose.style.display = 'block';
+    messageLose.classList.remove('hidden');
   }
 }
 
