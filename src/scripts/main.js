@@ -1,12 +1,42 @@
 'use strict';
 
-import Game from '../modules/Game.class';
+import Game, { useLocalStorage } from '../modules/Game.class';
 
 const game = new Game();
 
 // Write your code here
 const startRestart = document.getElementsByClassName('button')[0];
 const message = document.getElementsByClassName('message');
+const bestScore = document.querySelector('.best');
+const [score] = useLocalStorage('gameScore', 21);
+
+bestScore.textContent = score;
+// let touchStart = null;
+
+// const handleTouchStart = (event) => {
+//   // setTouchStart({ x: event.touches[0].clientX });
+// };
+
+// const handleTouchMove = (event) => {
+//   // setTouchEnd({ x: event.touches[0].clientX });
+// };
+
+// const handleTouchEnd = () => {
+//   if (touchStart && touchEnd) {
+//     const deltaX = touchEnd.x - touchStart.x;
+
+//     if (Math.abs(deltaX) > 50) {
+//       if (deltaX > 0) {
+//         handleMoveLeft();
+//       } else {
+//         handleMoveRight();
+//       }
+//     }
+//   }
+
+//   // setTouchStart(null);
+//   // setTouchEnd(null);
+// };
 
 startRestart.onclick = () => {
   const gameStatus = game.getStatus();

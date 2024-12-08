@@ -1,36 +1,6 @@
-/* eslint-disable max-len */
 'use strict';
-// #region start game
 
-function getRandomIndexEmptyCells(currentIndexEmptyCells, gameStatus) {
-  let firstNum;
-  let secondNum;
-
-  if (currentIndexEmptyCells.length === 0) {
-    return [];
-  }
-
-  if (gameStatus === 'playing') {
-    do {
-      firstNum = Math.floor(Math.random() * 16);
-    } while (!currentIndexEmptyCells.includes(firstNum));
-
-    return [firstNum];
-  }
-
-  do {
-    firstNum = Math.floor(Math.random() * 16);
-    secondNum = Math.floor(Math.random() * 16);
-  } while (
-    !currentIndexEmptyCells.includes(firstNum) ||
-    !currentIndexEmptyCells.includes(secondNum) ||
-    firstNum === secondNum
-  );
-
-  return [firstNum, secondNum];
-}
-
-function getIndexEmptyCells(state) {
+function generateIndexNewTiles(state, gameStatus) {
   const indexEmptyCells = [];
 
   state.flat().forEach((num, i) => {
@@ -39,15 +9,41 @@ function getIndexEmptyCells(state) {
     }
   });
 
-  return indexEmptyCells;
+  if (indexEmptyCells.length === 0) {
+    return [];
+  }
+
+  let firstNum;
+  let secondNum;
+
+  if (gameStatus === 'playing') {
+    do {
+      firstNum = Math.floor(Math.random() * 16);
+    } while (!indexEmptyCells.includes(firstNum));
+
+    return [firstNum];
+  }
+
+  do {
+    firstNum = Math.floor(Math.random() * 16);
+    secondNum = Math.floor(Math.random() * 16);
+  } while (
+    !indexEmptyCells.includes(firstNum) ||
+    !indexEmptyCells.includes(secondNum) ||
+    firstNum === secondNum
+  );
+
+  return [firstNum, secondNum];
 }
 
-function getNewFlatState(currentState, randomIndexEmptyCells) {
+function getNewFlatState(currentState, indexNewTiles) {
   const newFlatState = [];
 
   currentState.flat().forEach((num, i) => {
-    if (randomIndexEmptyCells.includes(i)) {
-      newFlatState.push(getProbabilityFour());
+    const valueNewTile = Math.floor(Math.random() * 10) === 0 ? 4 : 2;
+
+    if (indexNewTiles.includes(i)) {
+      newFlatState.push(valueNewTile);
     } else {
       newFlatState.push(num);
     }
@@ -84,105 +80,25 @@ function getTwoDimensionalState(flatState) {
   return twoDimensionalState;
 }
 
-function getProbabilityFour() {
-  if (Math.floor(Math.random() * 10) === 0) {
-    return 4;
-  } else {
-    return 2;
-  }
-}
-// #endregion start game
+export function useLocalStorage(key, startValue) {
+  let data = localStorage.getItem(key);
 
-// #region move cells
-
-function moveVertically(state, down = false) {
-  const newState = [[], [], [], []];
-
-  state.forEach((_, i) => {
-    const column = Array.from({ length: 4 }, (__, j) => state[j][i]);
-
-    if (down) {
-      column.reverse();
-    }
-
-    const itemsInColumn = column.filter((cell) => cell);
-
-    if (column.every((cell) => !cell)) {
-      newState.forEach((row) => row.push(0));
-    }
-
-    if (itemsInColumn.length === 1) {
-      column.sort((a, b) => b - a);
-      newState.forEach((row, j) => row.push(column[j]));
-    }
-
-    if (itemsInColumn.length > 1) {
-      const newCol = compareAdjacentCells(itemsInColumn).filter((cell) => cell);
-
-      newState.forEach((row, j) => row.push(newCol[j] || 0));
-    }
-  });
-
-  if (down) {
-    newState.reverse();
+  if (data === null) {
+    data = startValue;
   }
 
-  return newState;
-}
-
-function moveHorizontally(state, right = false) {
-  const newState = [[], [], [], []];
-
-  state.forEach((_, i) => {
-    const row = Array.from({ length: 4 }, (__, j) => state[i][j]);
-
-    if (right) {
-      row.reverse();
-    }
-
-    const itemsInRow = row.filter((cell) => cell);
-
-    if (row.every((cell) => !cell)) {
-      row.forEach(() => newState[i].push(0));
-    }
-
-    if (itemsInRow.length === 1) {
-      newState[i] = row.sort((a, b) => b - a);
-    }
-
-    if (itemsInRow.length > 1) {
-      const newRow = compareAdjacentCells(itemsInRow).filter((cell) => cell);
-
-      for (let j = 0; j < 4; j++) {
-        newState[i].push(newRow[j] || 0);
-      }
-    }
-  });
-
-  if (right) {
-    newState.forEach((row) => row.reverse());
+  try {
+    data = JSON.parse(data);
+  } catch {
+    localStorage.removeItem(key);
   }
 
-  return newState;
+  const save = (newValue) => {
+    localStorage.setItem(key, JSON.stringify(newValue));
+  };
+
+  return [data, save];
 }
-
-function compareAdjacentCells(line) {
-  const newLine = Array(4).fill(0);
-
-  for (let i = 0; i < line.length; ) {
-    if (line[i] === line[i + 1]) {
-      newLine[i] = line[i] + line[i + 1];
-      i += 2;
-    } else {
-      newLine[i] = line[i];
-      i++;
-    }
-  }
-
-  return newLine;
-}
-
-// #endregion move cells
 
 class Game {
   gameStatus = 'idle';
@@ -193,99 +109,64 @@ class Game {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
-  }
+  currentScore = 0;
 
   moveLeft() {
-    const newState = moveHorizontally(this.currentState);
+    const newState = this.moveHorizontally(this.currentState);
 
-    if (JSON.stringify(this.currentState) === JSON.stringify(newState)) {
-      return;
+    if (JSON.stringify(this.currentState) !== JSON.stringify(newState)) {
+      this.getState(newState);
     }
-
-    this.getState(newState);
   }
 
   moveRight() {
-    const newState = moveHorizontally(this.currentState, true);
+    const newState = this.moveHorizontally(this.currentState, true);
 
-    if (JSON.stringify(this.currentState) === JSON.stringify(newState)) {
-      return;
+    if (JSON.stringify(this.currentState) !== JSON.stringify(newState)) {
+      this.getState(newState);
     }
-
-    this.getState(newState);
   }
 
   moveUp() {
-    const newState = moveVertically(this.currentState);
+    const newState = this.moveVertically(this.currentState);
 
-    if (JSON.stringify(this.currentState) === JSON.stringify(newState)) {
-      return;
+    if (JSON.stringify(this.currentState) !== JSON.stringify(newState)) {
+      this.getState(newState);
     }
-
-    this.getState(newState);
   }
 
   moveDown() {
-    const newState = moveVertically(this.currentState, true);
+    const newState = this.moveVertically(this.currentState, true);
 
-    if (JSON.stringify(this.currentState) === JSON.stringify(newState)) {
-      return;
+    if (JSON.stringify(this.currentState) !== JSON.stringify(newState)) {
+      this.getState(newState);
     }
-
-    this.getState(newState);
   }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    const gameScore = [...document.getElementsByClassName('game-score')][1];
+    const [, setScore] = useLocalStorage('gameScore', 0);
+    const bestScore = document.querySelector('.best');
 
-  /**
-   * @returns {number[][]}
-   */
+    gameScore.textContent = this.currentScore;
+
+    if (this.currentScore > bestScore.textContent) {
+      setScore(this.currentScore);
+      bestScore.textContent = this.currentScore;
+    }
+  }
+
   getState(state) {
-    const indexEmptyCells = getIndexEmptyCells(state);
-
-    const randomIndexEmptyCells = getRandomIndexEmptyCells(
-      indexEmptyCells,
-      this.gameStatus,
-    );
-
-    const newFlatState = getNewFlatState(state, randomIndexEmptyCells);
+    const indexNewTiles = generateIndexNewTiles(state, this.gameStatus);
+    const newFlatState = getNewFlatState(state, indexNewTiles);
 
     this.currentState = getTwoDimensionalState(newFlatState);
     setCells(newFlatState);
+    this.getScore();
     this.searchMoveOpportunity(newFlatState, this.currentState);
     this.search2048Cell(newFlatState);
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     return this.gameStatus;
   }
@@ -302,6 +183,98 @@ class Game {
   }
 
   // Add your own methods here
+  moveVertically(state, down = false) {
+    const newState = [[], [], [], []];
+
+    state.forEach((_, i) => {
+      const column = Array.from({ length: 4 }, (__, j) => state[j][i]);
+
+      if (down) {
+        column.reverse();
+      }
+
+      const itemsInColumn = column.filter((cell) => cell);
+
+      if (column.every((cell) => !cell)) {
+        newState.forEach((row) => row.push(0));
+      }
+
+      if (itemsInColumn.length === 1) {
+        column.sort((a, b) => b - a);
+        newState.forEach((row, j) => row.push(column[j]));
+      }
+
+      if (itemsInColumn.length > 1) {
+        const newCol = this.mergeAdjacentCells(itemsInColumn).filter(
+          (cell) => cell,
+        );
+
+        newState.forEach((row, j) => row.push(newCol[j] || 0));
+      }
+    });
+
+    if (down) {
+      newState.reverse();
+    }
+
+    return newState;
+  }
+
+  moveHorizontally(state, right = false) {
+    const newState = [[], [], [], []];
+
+    state.forEach((_, i) => {
+      const row = Array.from({ length: 4 }, (__, j) => state[i][j]);
+
+      if (right) {
+        row.reverse();
+      }
+
+      const itemsInRow = row.filter((cell) => cell);
+
+      if (row.every((cell) => !cell)) {
+        row.forEach(() => newState[i].push(0));
+      }
+
+      if (itemsInRow.length === 1) {
+        newState[i] = row.sort((a, b) => b - a);
+      }
+
+      if (itemsInRow.length > 1) {
+        const newRow = this.mergeAdjacentCells(itemsInRow).filter(
+          (cell) => cell,
+        );
+
+        for (let j = 0; j < 4; j++) {
+          newState[i].push(newRow[j] || 0);
+        }
+      }
+    });
+
+    if (right) {
+      newState.forEach((row) => row.reverse());
+    }
+
+    return newState;
+  }
+
+  mergeAdjacentCells(line) {
+    const newLine = Array(4).fill(0);
+
+    for (let i = 0; i < line.length; ) {
+      if (line[i] === line[i + 1]) {
+        newLine[i] = line[i] + line[i + 1];
+        this.currentScore += newLine[i];
+        i += 2;
+      } else {
+        newLine[i] = line[i];
+        i++;
+      }
+    }
+
+    return newLine;
+  }
+
   searchMoveOpportunity(flatState, state) {
     if (flatState.every((cell) => cell)) {
       let hasEqualCells = false;
