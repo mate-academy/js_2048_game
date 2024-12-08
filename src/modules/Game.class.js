@@ -75,41 +75,54 @@ class Game {
     }
 
     let totalPoints = 0;
+    let boardChanged = false;
 
+    // Этап 1: Сдвиг плиток
     for (let r = 0; r < 4; r++) {
-      const { newRow, points } = this.slideAndMerge(this.board[r]);
+      const { newRow, points, changed } = this.slideAndMerge(this.board[r]);
 
-      this.board[r] = newRow;
-      totalPoints += points;
+      if (changed) {
+        this.board[r] = newRow;
+        totalPoints += points;
+        boardChanged = true;
+      }
     }
 
-    this.updateScore(totalPoints);
-    this.addRandomTile();
-    this.render();
-
-    this.checkGameOver();
+    // Если произошли изменения (сдвиг или объединение), добавляем новую плитку
+    if (boardChanged) {
+      this.addRandomTile();
+      this.render();
+      this.updateScore(totalPoints);
+      this.checkGameOver();
+    }
   }
-
   moveRight() {
     if (this.status !== 'playing') {
       return;
     }
 
     let totalPoints = 0;
+    let boardChanged = false;
 
+    // Этап 1: Сдвиг плиток
     for (let r = 0; r < 4; r++) {
       const reversedRow = [...this.board[r]].reverse();
-      const { newRow, points } = this.slideAndMerge(reversedRow);
+      const { newRow, points, changed } = this.slideAndMerge(reversedRow);
 
-      this.board[r] = newRow.reverse();
-      totalPoints += points;
+      if (changed) {
+        this.board[r] = newRow.reverse();
+        totalPoints += points;
+        boardChanged = true;
+      }
     }
 
-    this.updateScore(totalPoints);
-    this.addRandomTile();
-    this.render();
-
-    this.checkGameOver();
+    // Если произошли изменения (сдвиг или объединение), добавляем новую плитку
+    if (boardChanged) {
+      this.addRandomTile();
+      this.render();
+      this.updateScore(totalPoints);
+      this.checkGameOver();
+    }
   }
 
   moveUp() {
@@ -118,35 +131,38 @@ class Game {
     }
 
     let totalPoints = 0;
-    const transposedBoard = [];
+    let boardChanged = false;
 
+    // Этап 1: Сдвиг плиток
     for (let col = 0; col < 4; col++) {
       const column = [];
 
+      // Собираем все плитки в колонке, исключая нули
       for (let row = 0; row < 4; row++) {
         column.push(this.board[row][col]);
       }
-      transposedBoard.push(column);
-    }
 
-    for (let col = 0; col < 4; col++) {
-      const { newRow, points } = this.slideAndMerge(transposedBoard[col]);
+      // Применяем метод slideAndMerge для этой колонки
+      const { newRow, points, changed } = this.slideAndMerge(column);
 
-      transposedBoard[col] = newRow;
-      totalPoints += points;
-    }
+      // Если произошло изменение (сдвиг или объединение), обновляем колонку
+      if (changed) {
+        totalPoints += points;
+        boardChanged = true;
 
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        this.board[row][col] = transposedBoard[col][row];
+        for (let row = 0; row < 4; row++) {
+          this.board[row][col] = newRow[row];
+        }
       }
     }
 
-    this.updateScore(totalPoints);
-    this.addRandomTile();
-    this.render();
-
-    this.checkGameOver();
+    // Если произошли изменения, добавляем новую плитку
+    if (boardChanged) {
+      this.addRandomTile();
+      this.render();
+      this.updateScore(totalPoints);
+      this.checkGameOver();
+    }
   }
 
   moveDown() {
@@ -155,35 +171,37 @@ class Game {
     }
 
     let totalPoints = 0;
-    const transposedBoard = [];
+    let boardChanged = false;
 
+    // Этап 1: Сдвиг плиток
     for (let col = 0; col < 4; col++) {
       const column = [];
 
-      for (let row = 0; row < 4; row++) {
+      // Собираем все плитки в колонке (перевернутый порядок)
+      for (let row = 3; row >= 0; row--) {
         column.push(this.board[row][col]);
       }
-      transposedBoard.push(column.reverse());
-    }
 
-    for (let col = 0; col < 4; col++) {
-      const { newRow, points } = this.slideAndMerge(transposedBoard[col]);
+      // Применяем метод slideAndMerge для этой колонки
+      const { newRow, points, changed } = this.slideAndMerge(column);
 
-      transposedBoard[col] = newRow.reverse();
-      totalPoints += points;
-    }
+      if (changed) {
+        totalPoints += points;
+        boardChanged = true;
 
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        this.board[row][col] = transposedBoard[col][row];
+        for (let row = 0; row < 4; row++) {
+          this.board[3 - row][col] = newRow[row];
+        }
       }
     }
 
-    this.updateScore(totalPoints);
-    this.addRandomTile();
-    this.render();
-
-    this.checkGameOver();
+    // Если произошли изменения, добавляем новую плитку
+    if (boardChanged) {
+      this.addRandomTile();
+      this.render();
+      this.updateScore(totalPoints);
+      this.checkGameOver();
+    }
   }
 
   updateScore(points) {
@@ -239,12 +257,14 @@ class Game {
   slideAndMerge(row) {
     const newRow = row.filter((val) => val !== 0);
     let points = 0;
+    let changed = false; // Флаг для отслеживания изменений
 
     for (let i = 0; i < newRow.length - 1; i++) {
       if (newRow[i] === newRow[i + 1]) {
         newRow[i] *= 2;
         points += newRow[i];
         newRow.splice(i + 1, 1);
+        changed = true; // Объединение плиток считается изменением
       }
     }
 
@@ -252,7 +272,11 @@ class Game {
       newRow.push(0);
     }
 
-    return { newRow, points };
+    if (newRow.join('') !== row.join('')) {
+      changed = true;
+    }
+
+    return { newRow, points, changed };
   }
 
   isGameOver() {

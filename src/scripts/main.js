@@ -31,12 +31,21 @@ button.addEventListener('click', () => {
   if (game.status === 'idle') {
     game.start();
     showMessage('start');
+
+    // Изменение класса и текста кнопки
+    button.classList.remove('start'); // Удаляем старый класс (если был)
+    button.classList.add('restart');
     button.textContent = 'Restart';
+    messageStart.textContent = 'Press "Restart" to start the new Game';
   } else {
-    game.restart();
-    game.start();
-    showMessage('start');
-    button.textContent = 'Start';
+    const confirmRestart = confirm('Хотите начать новую игру?');
+
+    if (confirmRestart) {
+      game.restart();
+      game.start();
+      showMessage('start');
+      button.textContent = 'Restart';
+    }
   }
 });
 
