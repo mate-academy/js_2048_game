@@ -86,12 +86,6 @@ body {
   }
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
-}
-
 .game-header {
   display: flex;
   width: 100%;
@@ -196,7 +190,7 @@ h1 {
   height: 150px;
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
   from {
     opacity: 0;
     transform: scale(0.5);

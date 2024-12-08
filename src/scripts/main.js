@@ -6,23 +6,25 @@ const rows = 4;
 const columns = 4;
 let isGameStarted = false;
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   board = Array.from({ length: rows }, () => Array(columns).fill(0));
   renderBoard();
 
-  const startButton = document.querySelector(".start");
-  startButton.addEventListener("click", startGame);
+  const startButton = document.querySelector('.start');
+
+  startButton.addEventListener('click', startGame);
 
   const restartButton = document.querySelector('.restart');
-  restartButton.addEventListener('click', restartGame)
+
+  restartButton.addEventListener('click', restartGame);
 });
 
 function startGame() {
   isGameStarted = true;
 
-  document.querySelector(".message-start").classList.add("hidden");
-  document.querySelector(".start").classList.add("hidden");
-  document.querySelector(".restart").classList.remove("hidden");
+  document.querySelector('.message-start').classList.add('hidden');
+  document.querySelector('.start').classList.add('hidden');
+  document.querySelector('.restart').classList.remove('hidden');
 
   addRandomTile();
   addRandomTile();
@@ -34,37 +36,49 @@ function restartGame() {
   isGameStarted = false;
   renderBoard();
 
+  document.querySelector('.game-score').innerText = score;
 
-  document.querySelector(".game-score").innerText = score;
-
-  document.querySelector(".restart").classList.add("hidden");
-  document.querySelector(".message-lose").classList.add("hidden");
-  document.querySelector(".message-win").classList.add("hidden");
-  document.querySelector(".start").classList.remove("hidden");
-  document.querySelector(".message-start").classList.remove("hidden");
+  document.querySelector('.restart').classList.add('hidden');
+  document.querySelector('.message-lose').classList.add('hidden');
+  document.querySelector('.message-win').classList.add('hidden');
+  document.querySelector('.start').classList.remove('hidden');
+  document.querySelector('.message-start').classList.remove('hidden');
 }
 
 function winGame() {
-  document.querySelector(".message-win").classList.remove("hidden");
+  document.querySelector('.message-win').classList.remove('hidden');
   isGameStarted = false;
 }
 
 function loseGame() {
-  document.querySelector(".message-lose").classList.remove("hidden");
+  document.querySelector('.message-lose').classList.remove('hidden');
   isGameStarted = false;
 }
 
 function isNoMovesLeft() {
-  if (hasEmptyTile()) return false;
+  if (hasEmptyTile()) {
+    return false;
+  }
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       const current = board[r][c];
 
-      if (r > 0 && board[r - 1][c] === current) return false;
-      if (r < rows - 1 && board[r + 1][c] === current) return false;
-      if (c > 0 && board[r][c - 1] === current) return false;
-      if (c < columns - 1 && board[r][c + 1] === current) return false;
+      if (r > 0 && board[r - 1][c] === current) {
+        return false;
+      }
+
+      if (r < rows - 1 && board[r + 1][c] === current) {
+        return false;
+      }
+
+      if (c > 0 && board[r][c - 1] === current) {
+        return false;
+      }
+
+      if (c < columns - 1 && board[r][c + 1] === current) {
+        return false;
+      }
     }
   }
 
@@ -72,12 +86,14 @@ function isNoMovesLeft() {
 }
 
 function renderBoard() {
-  const gameField = document.getElementById("board");
-  gameField.innerHTML = "";
+  const gameField = document.getElementById('board');
+
+  gameField.innerHTML = '';
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      const tile = document.createElement("div");
+      const tile = document.createElement('div');
+
       tile.id = `${r}-${c}`;
       updateTile(tile, board[r][c]);
       gameField.append(tile);
@@ -90,17 +106,23 @@ function hasEmptyTile() {
 }
 
 function addRandomTile() {
-  if (!hasEmptyTile()) return;
+  if (!hasEmptyTile()) {
+    return;
+  }
 
   let found = false;
+
   while (!found) {
     const r = Math.floor(Math.random() * rows);
     const c = Math.floor(Math.random() * columns);
 
     if (board[r][c] === 0) {
       const newValue = Math.random() < 0.6 ? 2 : 4;
+
       board[r][c] = newValue;
+
       const tile = document.getElementById(`${r}-${c}`);
+
       updateTile(tile, newValue, true);
       found = true;
     }
@@ -109,17 +131,25 @@ function addRandomTile() {
 
 function updateTile(tile, num, animate = false) {
   tile.innerText = num > 0 ? num : '';
-  tile.className = `field-cell${num > 0 && num <= 2048 ? ` field-cell--${num}` : ''}`;
+
+  tile.className = `field-cell${num > 0 && num <= 2048
+    ? ` field-cell--${num}`
+    : ''
+  }`;
+
   if (animate) {
     tile.style.transform = 'scale(0.5)';
+
     setTimeout(() => {
       tile.style.transform = 'scale(1)';
     }, 50);
   }
 }
 
-document.addEventListener("keyup", (e) => {
-  if (!isGameStarted) return;
+document.addEventListener('keyup', (e) => {
+  if (!isGameStarted) {
+    return;
+  }
 
   const moves = {
     ArrowLeft: slideLeft,
@@ -133,9 +163,10 @@ document.addEventListener("keyup", (e) => {
     addRandomTile();
   }
 
-  document.querySelector(".game-score").innerText = score;
+  document.querySelector('.game-score').innerText = score;
 });
 
+/* eslint-disable no-param-reassign */
 function filterZero(row) {
   return row.filter(num => num !== 0);
 }
@@ -202,11 +233,13 @@ function updateBoard() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       const tile = document.getElementById(`${r}-${c}`);
+
       updateTile(tile, board[r][c]);
     }
 
     if (board[r].includes(2048)) {
       winGame();
+
       return;
     };
 
