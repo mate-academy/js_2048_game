@@ -8,35 +8,14 @@ const game = new Game();
 const startRestart = document.getElementsByClassName('button')[0];
 const message = document.getElementsByClassName('message');
 const bestScore = document.querySelector('.best');
-const [score] = useLocalStorage('gameScore', 21);
+const [score] = useLocalStorage('gameScore', 0);
 
 bestScore.textContent = score;
-// let touchStart = null;
 
-// const handleTouchStart = (event) => {
-//   // setTouchStart({ x: event.touches[0].clientX });
-// };
-
-// const handleTouchMove = (event) => {
-//   // setTouchEnd({ x: event.touches[0].clientX });
-// };
-
-// const handleTouchEnd = () => {
-//   if (touchStart && touchEnd) {
-//     const deltaX = touchEnd.x - touchStart.x;
-
-//     if (Math.abs(deltaX) > 50) {
-//       if (deltaX > 0) {
-//         handleMoveLeft();
-//       } else {
-//         handleMoveRight();
-//       }
-//     }
-//   }
-
-//   // setTouchStart(null);
-//   // setTouchEnd(null);
-// };
+// let touchStartX = null;
+// let touchEndX = null;
+// let touchStartY = null;
+// let touchEndY = null;
 
 startRestart.onclick = () => {
   const gameStatus = game.getStatus();
@@ -100,3 +79,53 @@ const keydownHandler = (e) => {
 };
 
 addEventListener('keydown', keydownHandler);
+
+// Обробники для свайпів
+let touchStartX = null;
+let touchStartY = null;
+
+const touchStartHandler = (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+};
+
+const touchEndHandler = (e) => {
+  if (game.getStatus() === 'idle') {
+    return;
+  }
+
+  const touchEndX = e.changedTouches[0].clientX;
+  const touchEndY = e.changedTouches[0].clientY;
+
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+    if (deltaX > 0) {
+      game.moveRight();
+    } else {
+      game.moveLeft();
+    }
+  } else if (Math.abs(deltaY) > 50) {
+    if (deltaY > 0) {
+      game.moveDown();
+    } else {
+      game.moveUp();
+    }
+  }
+
+  if (game.getStatus() === 'lose') {
+    message[0].classList.toggle('hidden');
+    removeEventListener('touchstart', touchStartHandler);
+    removeEventListener('touchend', touchEndHandler);
+  }
+
+  if (game.getStatus() === 'win') {
+    message[1].classList.toggle('hidden');
+    removeEventListener('touchstart', touchStartHandler);
+    removeEventListener('touchend', touchEndHandler);
+  }
+};
+
+addEventListener('touchstart', touchStartHandler);
+addEventListener('touchend', touchEndHandler);
