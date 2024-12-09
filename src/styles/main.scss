@@ -11,7 +11,7 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #bdac97;
   width: 75px;
   height: 75px;
   border-radius: 5px;
@@ -26,21 +26,21 @@ body {
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #ebd8b6;
   }
 
   &--8 {
-    background: #f2b179;
+    background: #f3b178;
     color: #f9f6f2;
   }
 
   &--16 {
-    background: #f59563;
+    background: #f69461;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #f57c5f;
     color: #f9f6f2;
   }
 
@@ -76,9 +76,9 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: #9c8b7c;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 20px;
 }
 
 .game-header {
