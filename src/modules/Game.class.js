@@ -1,5 +1,4 @@
 'use strict';
-
 class Game {
   constructor(
     initialState = [
