@@ -26,7 +26,6 @@ document.addEventListener('keydown', (e) => {
 
 document.querySelector('.button').addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
-    console.log('dwddaw');
     game.start();
   } else {
     game.restart();
