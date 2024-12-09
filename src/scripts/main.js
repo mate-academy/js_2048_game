@@ -3,72 +3,76 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-const buttonStart = document.querySelector('.button.start');
-const messageStart = document.querySelector('.message-start');
+const gameButton = document.querySelector('.button');
+const gameScore = document.querySelector('.game-score');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
-const gameScore = document.querySelector('.game-score');
+const messageStart = document.querySelector('.message-start');
+const gameField = document.querySelector('.game-field');
 
-function Table() {
-  const state = game.getState();
-  const rows = document.querySelectorAll('.field-row');
+document.addEventListener('keyup', (arrow) => {
+  if (game.status === 'playing') {
+    switch (arrow.key) {
+      case 'ArrowUp':
+        game.moveUp();
+        break;
+      case 'ArrowDown':
+        game.moveDown();
+        break;
+      case 'ArrowRight':
+        game.moveRight();
+        break;
+      case 'ArrowLeft':
+        game.moveLeft();
+        break;
+      default:
+        break;
+    }
 
-  gameScore.textContent = game.getScore();
+    updateUi(game.board);
 
-  state.forEach((row, iRow) => {
-    row.forEach((valueCell, iCell) => {
-      const cell = rows[iRow].children[iCell];
+    if (game.getStatus() === 'win') {
+      messageWin.classList.remove('hidden');
+    }
 
-      cell.className = 'field-cell';
-      cell.textContent = '';
-
-      if (valueCell > 0) {
-        cell.textContent = valueCell;
-        cell.classList.add(`field-cell--${valueCell}`);
-      }
-    });
-  });
-
-  if (game.getStatus() === 'win') {
-    messageWin.classList.remove('hidden');
-  } else if (game.getStatus() === 'lose') {
-    messageLose.classList.remove('hidden');
+    if (game.getStatus() === 'lose') {
+      messageLose.classList.remove('hidden');
+    }
   }
-}
-
-buttonStart.addEventListener('click', () => {
-  if (game.getStatus() === 'idle') {
-    game.start();
-    buttonStart.classList.remove('start');
-    buttonStart.classList.add('restart');
-    buttonStart.textContent = 'Restart';
-    messageStart.classList.add('hidden');
-  } else {
-    buttonStart.classList.remove('restart');
-    buttonStart.classList.add('start');
-    buttonStart.textContent = 'Start';
-    messageStart.classList.remove('hidden');
-    messageLose.classList.add('hidden');
-    messageWin.classList.add('hidden');
-    game.restart();
-  }
-  Table();
 });
 
-document.addEventListener('keydown', (e) => {
-  switch (e.key) {
-    case 'ArrowLeft':
-      game.moveLeft();
-      break;
-    case 'ArrowRight':
-      game.moveRight();
-      break;
-    case 'ArrowUp':
-      game.moveUp();
-      break;
-    case 'ArrowDown':
-      game.moveDown();
-      break;
+function updateUi(board) {
+  const cells = gameField.querySelectorAll('.field-cell');
+
+  board.flat().forEach((value, index) => {
+    const cell = cells[index];
+
+    cell.textContent = value === 0 ? '' : value;
+    cell.className = `field-cell ${value > 0 ? `field-cell--${value}` : ''}`;
+  });
+
+  gameScore.textContent = game.getScore();
+}
+
+gameButton.addEventListener('click', (e) => {
+  const button = e.target;
+
+  if (button.classList.contains('start')) {
+    game.start();
+    button.classList.replace('start', 'restart');
+    button.textContent = 'Restart';
+
+    messageStart.classList.add('hidden');
+    updateUi(game.board);
+  } else {
+    game.restart();
+
+    button.classList.replace('restart', 'start');
+    button.textContent = 'Start';
+
+    messageStart.classList.remove('hidden');
+    messageWin.classList.add('hidden');
+    messageLose.classList.add('hidden');
+    updateUi(game.board);
   }
-  Table();
 });
