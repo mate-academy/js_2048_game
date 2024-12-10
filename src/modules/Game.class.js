@@ -52,7 +52,7 @@ function getNewFlatState(currentState, indexNewTiles) {
   return newFlatState;
 }
 
-function setCells(flatState) {
+export function setCells(flatState) {
   const cells = [...document.getElementsByClassName('field-cell')];
 
   cells.forEach((cell, i) => {
@@ -145,13 +145,15 @@ class Game {
 
   getScore() {
     const gameScore = [...document.getElementsByClassName('game-score')][1];
-    const [, setScore] = useLocalStorage('gameScore', 0);
+    const [, setBestScore] = useLocalStorage('bestScore', 0);
+    const [, setCurrentScore] = useLocalStorage('currentScore', 0);
     const bestScore = document.querySelector('.best');
 
     gameScore.textContent = this.currentScore;
+    setCurrentScore(this.currentScore);
 
     if (this.currentScore > bestScore.textContent) {
-      setScore(this.currentScore);
+      setBestScore(this.currentScore);
       bestScore.textContent = this.currentScore;
     }
   }
@@ -159,12 +161,17 @@ class Game {
   getState(state) {
     const indexNewTiles = generateIndexNewTiles(state, this.gameStatus);
     const newFlatState = getNewFlatState(state, indexNewTiles);
+    const [, setState] = useLocalStorage('gameState', this.startState);
 
     this.currentState = getTwoDimensionalState(newFlatState);
     setCells(newFlatState);
     this.getScore();
     this.searchMoveOpportunity(newFlatState, this.currentState);
     this.search2048Cell(newFlatState);
+
+    if (this.gameStatus !== 'lose' && this.gameStatus !== 'win') {
+      setState(this.currentState);
+    }
   }
 
   getStatus() {
@@ -174,11 +181,17 @@ class Game {
   start() {
     this.getState(this.startState);
     this.gameStatus = 'playing';
+
+    const [, setStatus] = useLocalStorage('gameStatus', 'playing');
+
+    setStatus('playing');
   }
 
   restart() {
     this.gameStatus = 'idle';
+    this.currentScore = 0;
     this.getState(this.startState);
+    localStorage.removeItem('currentScore');
     this.gameStatus = 'playing';
   }
 
@@ -293,6 +306,9 @@ class Game {
 
       if (!hasEqualCells) {
         this.gameStatus = 'lose';
+
+        localStorage.removeItem('gameStatus');
+        localStorage.removeItem('gameState');
       }
     }
   }
@@ -301,6 +317,9 @@ class Game {
     flatState.forEach((cell) => {
       if (cell === 2048) {
         this.gameStatus = 'win';
+
+        localStorage.removeItem('gameStatus');
+        localStorage.removeItem('gameState');
       }
     });
   }

@@ -1,6 +1,6 @@
 'use strict';
 
-import Game, { useLocalStorage } from '../modules/Game.class';
+import Game, { setCells, useLocalStorage } from '../modules/Game.class';
 
 const game = new Game();
 
@@ -8,19 +8,32 @@ const game = new Game();
 const startRestart = document.getElementsByClassName('button')[0];
 const message = document.getElementsByClassName('message');
 const bestScore = document.querySelector('.best');
-const [score] = useLocalStorage('gameScore', 0);
+const currentScoreTile = [...document.getElementsByClassName('game-score')][1];
+
+const [score] = useLocalStorage('bestScore', 0);
+const [currentScore] = useLocalStorage('currentScore', 0);
+const [state] = useLocalStorage('gameState', game.startState);
+const [gameStatus] = useLocalStorage('gameStatus', 'idle');
+
+if (gameStatus === 'playing') {
+  game.currentState = state;
+  game.currentScore = currentScore;
+  currentScoreTile.textContent = currentScore;
+  setCells(state.flat());
+  game.gameStatus = gameStatus;
+
+  startRestart.classList.remove('start');
+  startRestart.classList.add('restart');
+
+  startRestart.textContent = 'Restart';
+
+  message[2].classList.toggle('hidden');
+}
 
 bestScore.textContent = score;
 
-// let touchStartX = null;
-// let touchEndX = null;
-// let touchStartY = null;
-// let touchEndY = null;
-
 startRestart.onclick = () => {
-  const gameStatus = game.getStatus();
-
-  if (gameStatus === 'idle') {
+  if (game.getStatus() === 'idle') {
     startRestart.classList.remove('start');
     startRestart.classList.add('restart');
 
@@ -31,18 +44,15 @@ startRestart.onclick = () => {
     game.start();
   }
 
-  if (gameStatus === 'playing') {
+  if (game.getStatus() === 'playing') {
     game.restart();
   }
 
-  if (gameStatus === 'lose') {
-    game.restart();
-    message[0].classList.toggle('hidden');
-  }
+  if (game.getStatus() === 'lose' || game.getStatus() === 'win') {
+    const messageIndex = game.getStatus() === 'lose' ? 0 : 1;
 
-  if (gameStatus === 'win') {
     game.restart();
-    message[1].classList.toggle('hidden');
+    message[messageIndex].classList.toggle('hidden');
   }
 };
 
@@ -67,20 +77,16 @@ const keydownHandler = (e) => {
     game.moveLeft();
   }
 
-  if (game.getStatus() === 'lose') {
-    message[0].classList.toggle('hidden');
-    removeEventListener('keydown', keydownHandler);
-  }
+  if (game.getStatus() === 'lose' || game.getStatus() === 'win') {
+    const messageIndex = game.getStatus() === 'lose' ? 0 : 1;
 
-  if (game.getStatus() === 'win') {
-    message[1].classList.toggle('hidden');
+    message[messageIndex].classList.toggle('hidden');
     removeEventListener('keydown', keydownHandler);
   }
 };
 
 addEventListener('keydown', keydownHandler);
 
-// Обробники для свайпів
 let touchStartX = null;
 let touchStartY = null;
 
@@ -114,14 +120,10 @@ const touchEndHandler = (e) => {
     }
   }
 
-  if (game.getStatus() === 'lose') {
-    message[0].classList.toggle('hidden');
-    removeEventListener('touchstart', touchStartHandler);
-    removeEventListener('touchend', touchEndHandler);
-  }
+  if (game.getStatus() === 'lose' || game.getStatus() === 'win') {
+    const messageIndex = game.getStatus() === 'lose' ? 0 : 1;
 
-  if (game.getStatus() === 'win') {
-    message[1].classList.toggle('hidden');
+    message[messageIndex].classList.toggle('hidden');
     removeEventListener('touchstart', touchStartHandler);
     removeEventListener('touchend', touchEndHandler);
   }
