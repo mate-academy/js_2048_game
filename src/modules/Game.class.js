@@ -26,8 +26,8 @@ class Game {
   moveLeft() {
     let moved = false;
 
-    for (const row of this.board) {
-      let newRow = row.filter((val) => val);
+    for (let row = 0; row < 4; row++) {
+      let newRow = this.board[row].filter((val) => val);
 
       while (newRow.length < 4) {
         newRow.push(0);
@@ -38,7 +38,6 @@ class Game {
           newRow[i] *= 2;
           newRow[i + 1] = 0;
           this.score += newRow[i];
-          moved = true;
         }
       }
       newRow = newRow.filter((val) => val);
@@ -46,7 +45,11 @@ class Game {
       while (newRow.length < 4) {
         newRow.push(0);
       }
-      row.splice(0, 4, ...newRow);
+
+      if (this.board[row].join() !== newRow.join()) {
+        this.board[row] = newRow;
+        moved = true;
+      }
     }
 
     if (moved) {
@@ -70,7 +73,6 @@ class Game {
           newRow[i] *= 2;
           newRow[i + 1] = 0;
           this.score += newRow[i];
-          moved = true;
         }
       }
       newRow = newRow.filter((val) => val).reverse();
@@ -107,12 +109,11 @@ class Game {
         newCol.push(0);
       }
 
-      for (let i = 0; i < newCol.length - 1; i++) {
+      for (let i = 0; i < newCol.length; i++) {
         if (newCol[i] === newCol[i + 1]) {
           newCol[i] *= 2;
           newCol[i + 1] = 0;
           this.score += newCol[i];
-          moved = true;
         }
       }
 
@@ -124,9 +125,9 @@ class Game {
 
       for (let row = 0; row < 4; row++) {
         if (this.board[row][col] !== newCol[row]) {
-          this.board[row][col] = newCol[row];
           moved = true;
         }
+        this.board[row][col] = newCol[row];
       }
     }
 
@@ -157,7 +158,6 @@ class Game {
           newCol[i] *= 2;
           newCol[i - 1] = 0;
           this.score += newCol[i];
-          moved = true;
         }
       }
 
@@ -169,9 +169,9 @@ class Game {
 
       for (let row = 0; row < 4; row++) {
         if (this.board[row][col] !== newCol[row]) {
-          this.board[row][col] = newCol[row];
           moved = true;
         }
+        this.board[row][col] = newCol[row];
       }
     }
 

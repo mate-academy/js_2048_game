@@ -6,10 +6,12 @@ const button = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-lose');
-let firstMove = false;
 
 button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
+    button.classList.remove('start');
+    button.classList.add('restart');
+    button.textContent = 'Restart';
     messageStart.classList.add('hidden');
 
     game.start();
@@ -20,7 +22,6 @@ button.addEventListener('click', () => {
     messageStart.classList.remove('hidden');
 
     game.restart();
-    firstMove = false;
   }
 
   updateUI(game);
@@ -29,16 +30,6 @@ button.addEventListener('click', () => {
 document.addEventListener('keydown', (e) => {
   if (game.getStatus() !== 'playing') {
     return;
-  }
-
-  if (!firstMove) {
-    firstMove = true;
-  }
-
-  if (firstMove) {
-    button.classList.remove('start');
-    button.classList.add('restart');
-    button.textContent = 'Restart';
   }
 
   switch (e.key) {
