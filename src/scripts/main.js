@@ -61,20 +61,21 @@ const keydownHandler = (e) => {
     return;
   }
 
-  if (e.key === 'ArrowUp') {
-    game.moveUp();
-  }
-
-  if (e.key === 'ArrowRight') {
-    game.moveRight();
-  }
-
-  if (e.key === 'ArrowDown') {
-    game.moveDown();
-  }
-
-  if (e.key === 'ArrowLeft') {
-    game.moveLeft();
+  switch (e.key) {
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    default:
+      break;
   }
 
   if (game.getStatus() === 'lose' || game.getStatus() === 'win') {
