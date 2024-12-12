@@ -147,6 +147,8 @@ function updateTile(tile, num, animate = false) {
 }
 
 document.addEventListener('keyup', (e) => {
+  const originalBoard = JSON.stringify(board);
+
   if (!isGameStarted) {
     return;
   }
@@ -160,7 +162,10 @@ document.addEventListener('keyup', (e) => {
 
   if (moves[e.code]) {
     moves[e.code]();
-    addRandomTile();
+
+    if (originalBoard !== JSON.stringify(board)) {
+      addRandomTile();
+    }
   }
 
   document.querySelector('.game-score').innerText = score;
