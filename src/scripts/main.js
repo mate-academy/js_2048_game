@@ -1,100 +1,56 @@
-/* eslint-disable function-paren-newline */
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
-
 export class Game {
-  constructor(initialState = null) {
-    this.size = 4; // 4x4 board
-    this.board = initialState || this.generateEmptyBoard();
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.board = initialState;
     this.score = 0;
-    this.status = 'waiting';
-  }
-
-  generateEmptyBoard() {
-    return Array.from({ length: this.size }, () => Array(this.size).fill(0));
-  }
-
-  getState() {
-    return this.board;
-  }
-
-  getScore() {
-    return this.score;
-  }
-
-  getStatus() {
-    return this.status;
-  }
-
-  spawnTile() {
-    const emptyCells = [];
-
-    for (let row = 0; row < this.size; row++) {
-      for (let col = 0; col < this.size; col++) {
-        if (this.board[row][col] === 0) {
-          emptyCells.push({ row, col });
-        }
-      }
-    }
-
-    if (emptyCells.length > 0) {
-      const { row, col } =
-        emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-      this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
-    }
-  }
-
-  compressRow(row) {
-    const newRow = row.filter((num) => num !== 0);
-
-    while (newRow.length < this.size) {
-      newRow.push(0);
-    }
-
-    return newRow;
-  }
-
-  mergeRow(row) {
-    for (let i = 0; i < this.size - 1; i++) {
-      if (row[i] !== 0 && row[i] === row[i + 1]) {
-        row[i] *= 2;
-        this.score += row[i];
-        row[i + 1] = 0;
-      }
-    }
-
-    return row;
+    this.status = 'idle';
   }
 
   moveLeft() {
     let moved = false;
 
-    this.board = this.board.map((row) => {
-      const compressed = this.compressRow(row);
-      const merged = this.mergeRow(compressed);
-      const newRow = this.compressRow(merged);
+    for (const row of this.board) {
+      const filteredRow = row.filter((num) => num !== 0);
+      const newRow = [];
+
+      for (let i = 0; i < filteredRow.length; i++) {
+        if (filteredRow[i] === filteredRow[i + 1]) {
+          newRow.push(filteredRow[i] * 2);
+          this.score += filteredRow[i] * 2;
+          i++;
+          moved = true;
+        } else {
+          newRow.push(filteredRow[i]);
+        }
+      }
+
+      while (newRow.length < 4) {
+        newRow.push(0);
+      }
 
       if (newRow.toString() !== row.toString()) {
         moved = true;
       }
-
-      return newRow;
-    });
+      row.splice(0, 4, ...newRow);
+    }
 
     if (moved) {
-      this.spawnTile();
-      this.checkGameStatus();
+      this.addRandomTile();
     }
   }
 
   moveRight() {
-    this.board = this.board.map((row) => row.reverse());
+    this.board.forEach((row) => row.reverse());
     this.moveLeft();
-    this.board = this.board.map((row) => row.reverse());
+    this.board.forEach((row) => row.reverse());
   }
 
   moveUp() {
@@ -109,37 +65,100 @@ export class Game {
     this.transposeBoard();
   }
 
-  transposeBoard() {
-    this.board = this.board[0].map((_, colIndex) =>
-      this.board.map((row) => row[colIndex]),
-    );
+  getScore() {
+    return this.score;
   }
 
-  checkGameStatus() {
-    if (this.board.some((row) => row.includes(2048))) {
-      this.status = 'won';
-    } else if (!this.canMove()) {
-      this.status = 'lost';
+  getState() {
+    return this.board;
+  }
+
+  getStatus() {
+    if (this.status === 'win' || this.status === 'lose') {
+      return this.status;
+    }
+
+    for (const row of this.board) {
+      for (const cell of row) {
+        if (cell === 2048) {
+          this.status = 'win';
+
+          return 'win';
+        }
+      }
+    }
+
+    if (this.isBoardFull() && !this.hasValidMoves()) {
+      this.status = 'lose';
+
+      return 'lose';
+    }
+    this.status = 'playing';
+
+    return 'playing';
+  }
+
+  start() {
+    this.resetBoard();
+    this.addRandomTile();
+    this.addRandomTile();
+    this.status = 'playing';
+  }
+
+  restart() {
+    this.start();
+    this.score = 0;
+  }
+
+  addRandomTile() {
+    const emptyCells = [];
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.board[i][j] === 0) {
+          emptyCells.push([i, j]);
+        }
+      }
+    }
+
+    if (emptyCells.length > 0) {
+      const [row, col] =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+      this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
     }
   }
 
-  canMove() {
-    for (let row = 0; row < this.size; row++) {
-      for (let col = 0; col < this.size; col++) {
-        if (this.board[row][col] === 0) {
-          return true;
-        }
+  transposeBoard() {
+    const newBoard = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        newBoard[i][j] = this.board[j][i];
+      }
+    }
+    this.board = newBoard;
+  }
+
+  isBoardFull() {
+    return this.board.every((row) => row.every((cell) => cell !== 0));
+  }
+
+  hasValidMoves() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        const cell = this.board[i][j];
 
         if (
-          col < this.size - 1 &&
-          this.board[row][col] === this.board[row][col + 1]
-        ) {
-          return true;
-        }
-
-        if (
-          row < this.size - 1 &&
-          this.board[row][col] === this.board[row + 1][col]
+          (i > 0 && this.board[i - 1][j] === cell) ||
+          (i < 3 && this.board[i + 1][j] === cell) ||
+          (j > 0 && this.board[i][j - 1] === cell) ||
+          (j < 3 && this.board[i][j + 1] === cell)
         ) {
           return true;
         }
@@ -149,15 +168,14 @@ export class Game {
     return false;
   }
 
-  start() {
-    this.board = this.generateEmptyBoard();
-    this.score = 0;
-    this.status = 'playing';
-    this.spawnTile();
-    this.spawnTile();
-  }
-
-  restart() {
-    this.start();
+  resetBoard() {
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
   }
 }
+
+module.exports = Game;
