@@ -45,22 +45,42 @@ class Game {
    * Moves all the tiles to the left and adds a random new tile.
    */
   moveLeft() {
+    let stateChanged = false;
+
     this.state.forEach((row, i) => {
+      const initialRow = [...this.state[i]];
+
       this.state[i] = this.shift(row, 'left');
+
+      if (!this.arraysEqual(initialRow, this.state[i])) {
+        stateChanged = true;
+      }
     });
 
-    this.addRandomCell();
+    if (stateChanged) {
+      this.addRandomCell();
+    }
   }
 
   /**
    * Moves all the tiles to the right and adds a random new tile.
    */
   moveRight() {
+    let stateChanged = false;
+
     this.state.forEach((row, i) => {
+      const initialRow = [...this.state[i]];
+
       this.state[i] = this.shift(row, 'right');
+
+      if (!this.arraysEqual(initialRow, this.state[i])) {
+        stateChanged = true;
+      }
     });
 
-    this.addRandomCell();
+    if (stateChanged) {
+      this.addRandomCell();
+    }
   }
 
   /**
@@ -70,16 +90,25 @@ class Game {
     const numColumns = this.state[0].length;
     const numRows = this.state.length;
 
+    let stateChanged = false;
+
     for (let col = 0; col < numColumns; col++) {
+      const initialColumn = this.state.map((row) => row[col]);
       const column = this.state.map((row) => row[col]);
       const newColumn = this.shift(column, 'up');
+
+      if (!this.arraysEqual(initialColumn, newColumn)) {
+        stateChanged = true;
+      }
 
       for (let row = 0; row < numRows; row++) {
         this.state[row][col] = newColumn[row];
       }
     }
 
-    this.addRandomCell();
+    if (stateChanged) {
+      this.addRandomCell();
+    }
   }
 
   /**
@@ -89,16 +118,42 @@ class Game {
     const numColumns = this.state[0].length;
     const numRows = this.state.length;
 
+    let stateChanged = false;
+
     for (let col = 0; col < numColumns; col++) {
+      const initialColumn = this.state.map((row) => row[col]);
       const column = this.state.map((row) => row[col]);
       const newColumn = this.shift(column, 'down');
+
+      if (!this.arraysEqual(initialColumn, newColumn)) {
+        stateChanged = true;
+      }
 
       for (let row = 0; row < numRows; row++) {
         this.state[row][col] = newColumn[row];
       }
     }
 
-    this.addRandomCell();
+    if (stateChanged) {
+      this.addRandomCell();
+    }
+  }
+
+  /**
+   * Method for comparing two arrays (to check for state changes)
+   */
+  arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   /**
