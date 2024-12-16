@@ -6,17 +6,14 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
-  constructor(
-    initialState = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ],
-  ) {
-    this.board = initialState;
+  constructor(initialState = null) {
+    this.board =
+      initialState ||
+      Array(4)
+        .fill(null)
+        .map(() => Array(4).fill(0));
     this.score = 0;
-    this.status = 'idle'; // 'idle', 'playing', 'win', 'lose'
+    this.status = 'idle';
   }
 
   getState() {
@@ -33,99 +30,53 @@ class Game {
 
   start() {
     this.status = 'playing';
-    this.addNewTile();
-    this.addNewTile();
+    this.addRandomTile();
+    this.addRandomTile();
   }
 
   restart() {
-    this.board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.board = Array(4)
+      .fill(null)
+      .map(() => Array(4).fill(0));
     this.score = 0;
     this.status = 'idle';
-    this.addNewTile();
-    this.addNewTile();
-  }
-
-  addNewTile() {
-    const emptyCells = [];
-
-    this.board.forEach((row, rIndex) => {
-      row.forEach((cell, cIndex) => {
-        if (cell === 0) {
-          emptyCells.push([rIndex, cIndex]);
-        }
-      });
-    });
-
-    if (emptyCells.length > 0) {
-      const [rIndex, cIndex] =
-        emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-      this.board[rIndex][cIndex] = Math.random() < 0.9 ? 2 : 4;
-    }
+    this.start();
   }
 
   moveLeft() {
-    let moved = false;
-
-    this.board.forEach((row) => {
-      const newRow = row.filter((cell) => cell !== 0);
-      const mergedRow = [];
-      let skip = false;
-
-      for (let i = 0; i < newRow.length; i++) {
-        if (skip) {
-          skip = false;
-          continue;
-        }
-
-        if (i + 1 < newRow.length && newRow[i] === newRow[i + 1]) {
-          mergedRow.push(newRow[i] * 2);
-          this.score += newRow[i] * 2;
-          skip = true;
-        } else {
-          mergedRow.push(newRow[i]);
-        }
-      }
-
-      while (mergedRow.length < 4) {
-        mergedRow.push(0);
-      }
-      row.splice(0, 4, ...mergedRow);
-      moved = true;
-    });
-
-    if (moved) {
-      this.addNewTile();
-    }
+    // Implement sliding and merging logic here
   }
 
   moveRight() {
-    this.board.forEach((row) => row.reverse());
-    this.moveLeft();
-    this.board.forEach((row) => row.reverse());
+    // Rotate the board, call moveLeft, then rotate back
   }
 
   moveUp() {
-    this.board = this.transpose(this.board);
-    this.moveLeft();
-    this.board = this.transpose(this.board);
+    // Similar to moveRight
   }
 
   moveDown() {
-    this.board = this.transpose(this.board);
-    this.moveRight();
-    this.board = this.transpose(this.board);
+    // Similar to moveRight
   }
 
-  transpose(board) {
-    return board[0].map((_, colIndex) => board.map((row) => row[colIndex]));
+  addRandomTile() {
+    const emptyCells = [];
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.board[i][j] === 0) {
+          emptyCells.push([i, j]);
+        }
+      }
+    }
+
+    if (emptyCells.length === 0) {
+      return;
+    }
+
+    const [x, y] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+    this.board[x][y] = Math.random() < 0.9 ? 2 : 4;
   }
 }
-
-// Export Game class
 module.exports = Game;

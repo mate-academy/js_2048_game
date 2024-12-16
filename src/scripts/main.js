@@ -8,73 +8,59 @@ import Game from '../modules/Game.class.js';
 
 const game = new Game();
 const startButton = document.querySelector('.button.start');
-const restartButton = document.querySelector('.button.restart');
+const scoreDisplay = document.querySelector('.game-score');
 const gameField = document.querySelector('.game-field');
-const scoreContainer = document.querySelector('.game-score');
-const messageContainer = document.querySelector('.message-container');
 
 startButton.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
-    startButton.classList.add('hidden');
-    restartButton.classList.remove('hidden');
-    render();
+    startButton.textContent = 'Restart';
+  } else {
+    game.restart();
   }
-});
-
-restartButton.addEventListener('click', () => {
-  game.restart();
-  startButton.classList.remove('hidden');
-  restartButton.classList.add('hidden');
-  render();
+  updateUI();
 });
 
 document.addEventListener('keydown', (event) => {
-  switch (event.keyCode) {
-    case 37: // Left arrow
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
+  switch (event.key) {
+    case 'ArrowLeft':
       game.moveLeft();
       break;
-    case 38: // Up arrow
-      game.moveUp();
-      break;
-    case 39: // Right arrow
+    case 'ArrowRight':
       game.moveRight();
       break;
-    case 40: // Down arrow
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowDown':
       game.moveDown();
       break;
-    default:
-      break;
   }
-  render();
+  game.addRandomTile();
+  updateUI();
+
+  if (game.getStatus() === 'win') {
+    document.querySelector('.message-win').classList.remove('hidden');
+  } else if (game.getStatus() === 'lose') {
+    document.querySelector('.message-lose').classList.remove('hidden');
+  }
 });
 
-function render() {
-  const board = game.getState();
-  const score = game.getScore();
-  const status = game.getStatus();
+function updateUI() {
+  const state = game.getState();
 
-  // Update game field UI
-  const cells = gameField.querySelectorAll('.field-cell');
+  gameField.querySelectorAll('.field-cell').forEach((cell, index) => {
+    const x = Math.floor(index / 4);
+    const y = index % 4;
 
-  board.forEach((row, rowIndex) => {
-    row.forEach((cell, colIndex) => {
-      const cellElement = cells[rowIndex * 4 + colIndex];
-
-      cellElement.textContent = cell === 0 ? '' : cell;
-      cellElement.className = `field-cell field-cell--${cell || ''}`;
-    });
+    cell.textContent = state[x][y] === 0 ? '' : state[x][y];
+    cell.className = `field-cell field-cell--${state[x][y] || ''}`;
   });
-
-  // Update score
-  scoreContainer.textContent = score;
-
-  // Show win/lose message
-  if (status === 'win') {
-    messageContainer.querySelector('.message-win').classList.remove('hidden');
-  } else if (status === 'lose') {
-    messageContainer.querySelector('.message-lose').classList.remove('hidden');
-  }
+  scoreDisplay.textContent = game.getScore();
 }
 
 
