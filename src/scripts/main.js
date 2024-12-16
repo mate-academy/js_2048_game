@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prefer-const */
 /* eslint-disable no-shadow */
@@ -75,6 +76,7 @@ function render() {
     messageContainer.querySelector('.message-lose').classList.remove('hidden');
   }
 }
+
 
 
 
