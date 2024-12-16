@@ -1,85 +1,143 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable prefer-const */
 /* eslint-disable no-shadow */
 /* eslint-disable prettier/prettier */
 'use strict';
+class Game {
+  constructor(initialState) {
+    this.board = initialState || this.generateEmptyBoard();
+    this.score = 0;
+    this.status = 'idle';
+  }
 
-import { Game } from "../modules/Game.class.js";
+  generateEmptyBoard() {
+    return Array.from({ length: 4 }, () => Array(4).fill(0));
+  }
 
-const game = new Game();
-const gameField = document.querySelector(".game-field");
-const scoreElement = document.querySelector(".game-score");
-const startButton = document.querySelector(".button.start");
-const messages = {
-  lose: document.querySelector(".message-lose"),
-  win: document.querySelector(".message-win"),
-  start: document.querySelector(".message-start"),
-};
+  spawnRandomTile() {
+    const emptyCells = [];
 
-// Render the game board
-function renderBoard() {
-  const state = game.getState();
+    for (let x = 0; x < 4; x++) {
+      for (let y = 0; y < 4; y++) {
+        if (this.board[x][y] === 0) {
+          emptyCells.push([x, y]);
+        }
+      }
+    }
 
-  gameField.innerHTML = state
-    .map(
-      row =>
-        `<tr class="field-row">${row
-          .map(
-            cell => `<td class="field-cell ${cell ? `field-cell--${cell}` : ""}">${cell || ""}</td>`,
-          )
-          .join("")}</tr>`,
-    )
-    .join("");
+    if (emptyCells.length === 0) {
+      return;
+    }
 
-  scoreElement.textContent = game.getScore();
+    const [x, y] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+    this.board[x][y] = Math.random() < 0.9 ? 2 : 4;
+  }
+
+  moveLeft() {
+    let moved = false;
+
+    for (let row of this.board) {
+      const newRow = row.filter((val) => val !== 0);
+
+      for (let i = 0; i < newRow.length - 1; i++) {
+        if (newRow[i] === newRow[i + 1]) {
+          newRow[i] *= 2;
+          this.score += newRow[i];
+          newRow[i + 1] = 0;
+          moved = true;
+        }
+      }
+
+      const finalRow = newRow.filter((val) => val !== 0);
+
+      while (finalRow.length < 4) {
+        finalRow.push(0);
+      }
+
+      for (let i = 0; i < 4; i++) {
+        row[i] = finalRow[i];
+      }
+    }
+
+    if (moved) {
+      this.spawnRandomTile();
+    }
+
+    return moved;
+  }
+
+  // Implement moveRight, moveUp, moveDown similarly...
+
+  getScore() {
+    return this.score;
+  }
+
+  getState() {
+    return this.board;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
+  start() {
+    this.board = this.generateEmptyBoard();
+    this.spawnRandomTile();
+    this.spawnRandomTile();
+    this.status = 'playing';
+  }
+
+  restart() {
+    this.start();
+    this.score = 0;
+  }
 }
 
-// Handle keypress events for movement
-document.addEventListener("keydown", event => {
-  if (game.getStatus() !== "playing") {
-    return;
-  }
+// Game setup
+document.addEventListener('DOMContentLoaded', () => {
+  const game = new Game();
+  const startButton = document.querySelector('.button.start');
+  const scoreDisplay = document.querySelector('.game-score');
+  const messageContainer = document.querySelector('.message-container');
 
-  switch (event.key) {
-    case "ArrowLeft":
-      game.moveLeft();
-      break;
-    case "ArrowRight":
-      game.moveRight();
-      break;
-    case "ArrowUp":
-      game.moveUp();
-      break;
-    case "ArrowDown":
-      game.moveDown();
-      break;
-  }
+  const updateUI = () => {
+    const board = game.getState();
+    const cells = document.querySelectorAll('.field-cell');
 
-  renderBoard();
-  updateStatus();
+    cells.forEach((cell, index) => {
+      const x = Math.floor(index / 4);
+      const y = index % 4;
+      const value = board[x][y];
+
+      cell.textContent = value === 0 ? '' : value;
+      cell.className = `field-cell ${value ? `field-cell--${value}` : ''}`;
+    });
+    scoreDisplay.textContent = game.getScore();
+  };
+
+  startButton.addEventListener('click', () => {
+    if (game.getStatus() === 'idle') {
+      game.start();
+      startButton.textContent = 'Restart';
+    } else {
+      game.restart();
+    }
+    updateUI();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (game.getStatus() !== 'playing') {
+      return;
+    }
+
+    const moved =
+      e.key === 'ArrowLeft' && game.moveLeft();
+
+    if (moved) {
+      updateUI();
+    }
+  });
 });
 
-// Update game status messages
-function updateStatus() {
-  const status = game.getStatus();
 
-  if (status === "win") {
-    messages.win.classList.remove("hidden");
-  } else if (status === "lose") {
-    messages.lose.classList.remove("hidden");
-  } else {
-    messages.win.classList.add("hidden");
-    messages.lose.classList.add("hidden");
-    messages.start.classList.add("hidden");
-  }
-}
-
-// Handle start/restart button
-startButton.addEventListener("click", () => {
-  game.restart();
-  renderBoard();
-  updateStatus();
-  startButton.textContent = "Restart";
-});
-
-// Initialize the game
-game.start();
-renderBoard();
