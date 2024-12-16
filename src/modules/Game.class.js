@@ -96,6 +96,7 @@ class Game {
   }
 
   moveLeft() {
+    const previousState = JSON.stringify(this.board);
     const rows = this.cellsGroupedByRow();
 
     for (let rowIdx = 0; rowIdx < 4; rowIdx++) {
@@ -104,9 +105,14 @@ class Game {
       row = this.combineTiles(row);
       this.board[rowIdx] = row;
     }
-    this.addRandomTile();
+
+    if (JSON.stringify(this.board) !== previousState) {
+      this.addRandomTile();
+    }
   }
+
   moveRight() {
+    const previousState = JSON.stringify(this.board);
     const rows = this.cellsGroupedByRow();
 
     for (let rowIdx = 0; rowIdx < 4; rowIdx++) {
@@ -116,9 +122,14 @@ class Game {
       row.reverse();
       this.board[rowIdx] = row;
     }
-    this.addRandomTile();
+
+    if (JSON.stringify(this.board) !== previousState) {
+      this.addRandomTile();
+    }
   }
+
   moveUp() {
+    const previousState = JSON.stringify(this.board);
     const columns = this.cellsGroupedByColumn();
 
     for (let col = 0; col < 4; col++) {
@@ -131,24 +142,31 @@ class Game {
       }
     }
 
-    this.addRandomTile();
+    if (JSON.stringify(this.board) !== previousState) {
+      this.addRandomTile();
+    }
   }
+
   moveDown() {
+    const previousState = JSON.stringify(this.board);
     const columns = this.cellsGroupedByColumn();
 
     for (let col = 0; col < 4; col++) {
       let column = columns[col].reverse();
 
       column = this.combineTiles(column);
-
       column.reverse();
 
       for (let row = 0; row < 4; row++) {
         this.board[row][col] = column[row];
       }
     }
-    this.addRandomTile();
+
+    if (JSON.stringify(this.board) !== previousState) {
+      this.addRandomTile();
+    }
   }
+
   win() {
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
@@ -165,23 +183,21 @@ class Game {
   canMove() {
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
-        // Якщо плитка порожня, можна рухати
         if (this.board[row][col] === 0) {
           return true;
         }
 
-        // Перевірка сусідніх плиток для можливості злиття
         if (row < 3 && this.board[row][col] === this.board[row + 1][col]) {
-          return true; // Можна зливати плитки по вертикалі
+          return true;
         }
 
         if (col < 3 && this.board[row][col] === this.board[row][col + 1]) {
-          return true; // Можна зливати плитки по горизонталі
+          return true;
         }
       }
     }
 
-    return false; // Якщо немає можливості для руху або злиття
+    return false;
   }
   getScore() {
     return this.currentScore;

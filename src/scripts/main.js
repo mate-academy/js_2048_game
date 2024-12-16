@@ -54,14 +54,25 @@ document.addEventListener('keydown', (keyboardEvent) => {
     return;
   }
 
-  if (keyboardEvent.key === 'ArrowUp') {
-    game.moveUp();
-  } else if (keyboardEvent.key === 'ArrowDown') {
-    game.moveDown();
-  } else if (keyboardEvent.key === 'ArrowLeft') {
-    game.moveLeft();
-  } else if (keyboardEvent.key === 'ArrowRight') {
-    game.moveRight();
+  switch (keyboardEvent.key) {
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+
+    default:
+      return;
   }
 
   if (game.win()) {
