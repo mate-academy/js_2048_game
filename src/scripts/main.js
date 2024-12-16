@@ -2,59 +2,68 @@
 'use strict';
 import Game from '../modules/Game.class.js';
 
-const game = new Game();
-const startButton = document.querySelector('.button.start');
-const scoreDisplay = document.querySelector('.game-score');
-const gameField = document.querySelector('.game-field');
+document.addEventListener('DOMContentLoaded', () => {
+  const game = new Game();
 
-startButton.addEventListener('click', () => {
-  if (game.getStatus() === 'idle') {
+  const startButton = document.querySelector('.button.start');
+  const restartButton = document.querySelector('.button.restart');
+  const scoreElement = document.querySelector('.game-score');
+  const messageLose = document.querySelector('.message-lose');
+  const messageWin = document.querySelector('.message-win');
+  const messageStart = document.querySelector('.message-start');
+  const gameField = document.querySelector('.game-field');
+
+  function updateUI() {
+    // Обновление счета
+    scoreElement.textContent = game.getScore();
+
+    // Проверка на выигрыш или окончание игры
+    if (game.getStatus() === 'game-win') {
+      messageLose.classList.add('hidden');
+      messageStart.classList.add('hidden');
+      messageWin.classList.remove('hidden');
+    } else if (game.getStatus() === 'game-over') {
+      messageWin.classList.add('hidden');
+      messageStart.classList.add('hidden');
+      messageLose.classList.remove('hidden');
+    }
+
+    // Обновление игрового поля
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        const cell = gameField.rows[row].cells[col];
+        const value = game.getState()[row][col];
+
+        if (value) {
+          cell.textContent = value;
+          cell.classList.add(`field-cell--${value}`);
+        } else {
+          cell.textContent = '';
+          cell.classList.remove(/field-cell--\d+/);
+        }
+      }
+    }
+  }
+
+  startButton.addEventListener('click', () => {
     game.start();
-    startButton.textContent = 'Restart';
-  } else {
-    game.restart();
-  }
-  updateUI();
-});
-
-document.addEventListener('keydown', (event) => {
-  if (game.getStatus() !== 'playing') {
-    return;
-  }
-
-  switch (event.key) {
-    case 'ArrowLeft':
-      game.moveLeft();
-      break;
-    case 'ArrowRight':
-      game.moveRight();
-      break;
-    case 'ArrowUp':
-      game.moveUp();
-      break;
-    case 'ArrowDown':
-      game.moveDown();
-      break;
-  }
-  game.addRandomTile();
-  updateUI();
-
-  if (game.getStatus() === 'win') {
-    document.querySelector('.message-win').classList.remove('hidden');
-  } else if (game.getStatus() === 'lose') {
-    document.querySelector('.message-lose').classList.remove('hidden');
-  }
-});
-
-function updateUI() {
-  const state = game.getState();
-
-  gameField.querySelectorAll('.field-cell').forEach((cell, index) => {
-    const x = Math.floor(index / 4);
-    const y = index % 4;
-
-    cell.textContent = state[x][y] === 0 ? '' : state[x][y];
-    cell.className = `field-cell field-cell--${state[x][y] || ''}`;
+    startButton.classList.add('hidden');
+    updateUI();
   });
-  scoreDisplay.textContent = game.getScore();
-}
+
+  restartButton.addEventListener('click', () => {
+    game.restart();
+    updateUI();
+  });
+
+  // Слушаем нажатия клавиш со стрелками
+  document.addEventListener('keydown', (event) => {
+    if (game.getStatus() === 'game-start') {
+      return;
+    }
+    game.handleKeyPress(event);
+    updateUI();
+  });
+
+  updateUI();
+});
