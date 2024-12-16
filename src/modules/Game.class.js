@@ -1,68 +1,216 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    initialScore = 0,
+  ) {
+    this.board = initialState;
+    this.currentBoard = [...initialState];
+    this.initialScore = initialScore;
+    this.currentScore = initialScore;
+    this.status = 'idle';
+    this.hasWon = false;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  addRandomTile() {
+    const emptyCells = [];
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+    for (let row = 0; row < this.board.length; row++) {
+      for (let col = 0; col < this.board[row].length; col++) {
+        if (this.board[row][col] === 0) {
+          emptyCells.push({ row, col });
+        }
+      }
+    }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+    if (emptyCells.length > 0) {
+      const randomCell =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+      this.board[randomCell.row][randomCell.col] = Math.random() < 0.9 ? 2 : 4;
+    }
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  slideTiles(columns) {
+    for (let col = 0; col < 4; col++) {
+      let column = columns[col];
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+      column = this.combineTiles(column);
 
-  // Add your own methods here
+      for (let row = 0; row < 4; row++) {
+        this.board[row][col] = column[row];
+      }
+    }
+  }
+
+  combineTiles(tiles) {
+    const result = tiles.filter((tile) => tile !== 0);
+    let scoreChange = 0;
+
+    for (let i = 0; i < result.length - 1; i++) {
+      if (result[i] === result[i + 1]) {
+        result[i] *= 2;
+        result[i + 1] = 0;
+        scoreChange += result[i];
+      }
+    }
+
+    const newTiles = result
+      .filter((tile) => tile !== 0)
+      .concat([0, 0, 0, 0])
+      .slice(0, 4);
+
+    this.currentScore += scoreChange;
+
+    return newTiles;
+  }
+
+  cellsGroupedByColumn() {
+    const groupedColumns = [[], [], [], []];
+
+    for (let col = 0; col < 4; col++) {
+      for (let row = 0; row < 4; row++) {
+        groupedColumns[col].push(this.board[row][col]);
+      }
+    }
+
+    return groupedColumns;
+  }
+
+  cellsGroupedByRow() {
+    const groupedRows = [[], [], [], []];
+
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        groupedRows[row].push(this.board[row][col]);
+      }
+    }
+
+    return groupedRows;
+  }
+
+  moveLeft() {
+    const rows = this.cellsGroupedByRow();
+
+    for (let rowIdx = 0; rowIdx < 4; rowIdx++) {
+      let row = rows[rowIdx];
+
+      row = this.combineTiles(row);
+      this.board[rowIdx] = row;
+    }
+    this.addRandomTile();
+  }
+  moveRight() {
+    const rows = this.cellsGroupedByRow();
+
+    for (let rowIdx = 0; rowIdx < 4; rowIdx++) {
+      let row = rows[rowIdx].reverse();
+
+      row = this.combineTiles(row);
+      row.reverse();
+      this.board[rowIdx] = row;
+    }
+    this.addRandomTile();
+  }
+  moveUp() {
+    const columns = this.cellsGroupedByColumn();
+
+    for (let col = 0; col < 4; col++) {
+      let column = columns[col];
+
+      column = this.combineTiles(column);
+
+      for (let row = 0; row < 4; row++) {
+        this.board[row][col] = column[row];
+      }
+    }
+
+    this.addRandomTile();
+  }
+  moveDown() {
+    const columns = this.cellsGroupedByColumn();
+
+    for (let col = 0; col < 4; col++) {
+      let column = columns[col].reverse();
+
+      column = this.combineTiles(column);
+
+      column.reverse();
+
+      for (let row = 0; row < 4; row++) {
+        this.board[row][col] = column[row];
+      }
+    }
+    this.addRandomTile();
+  }
+  win() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 2048) {
+          this.hasWon = true;
+
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+  canMove() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        // Якщо плитка порожня, можна рухати
+        if (this.board[row][col] === 0) {
+          return true;
+        }
+
+        // Перевірка сусідніх плиток для можливості злиття
+        if (row < 3 && this.board[row][col] === this.board[row + 1][col]) {
+          return true; // Можна зливати плитки по вертикалі
+        }
+
+        if (col < 3 && this.board[row][col] === this.board[row][col + 1]) {
+          return true; // Можна зливати плитки по горизонталі
+        }
+      }
+    }
+
+    return false; // Якщо немає можливості для руху або злиття
+  }
+  getScore() {
+    return this.currentScore;
+  }
+  getState() {
+    return this.board;
+  }
+  getStatus() {
+    return this.status;
+  }
+  start() {
+    this.currentBoard = JSON.parse(JSON.stringify(this.board));
+    this.currentScore = this.initialScore;
+    this.addRandomTile();
+    this.addRandomTile();
+    this.status = 'playing';
+  }
+  restart() {
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.currentBoard = JSON.parse(JSON.stringify(this.board));
+    this.currentScore = this.initialScore;
+    this.status = 'idle';
+    this.hasWon = false;
+  }
 }
 
 module.exports = Game;
