@@ -42,14 +42,12 @@ class Game {
 
     this.board = this.board.map((row) => {
       const filtered = row.filter((v) => v !== 0);
-      const merged = Array(4).fill(false);
 
       for (let i = 0; i < filtered.length - 1; i++) {
-        if (filtered[i] === filtered[i + 1] && !merged[i]) {
+        if (filtered[i] === filtered[i + 1]) {
           filtered[i] *= 2;
           this.score += filtered[i];
           filtered[i + 1] = 0;
-          merged[i] = true;
           moved = true;
         }
       }
@@ -118,12 +116,13 @@ class Game {
     }
 
     const movesAvailable = this.board.some((row, i) => {
-      row.some(
-        (cell, j) =>
+      return row.some((cell, j) => {
+        return (
           cell === 0 ||
           (j < 3 && cell === this.board[i][j + 1]) ||
-          (i < 3 && cell === this.board[i + 1][j]),
-      );
+          (i < 3 && cell === this.board[i + 1][j])
+        );
+      });
     });
 
     if (!movesAvailable) {
