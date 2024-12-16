@@ -1,8 +1,4 @@
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
-/* eslint-disable prefer-const */
 /* eslint-disable no-shadow */
-/* eslint-disable prettier/prettier */
 'use strict';
 import Game from '../modules/Game.class.js';
 
@@ -62,7 +58,3 @@ function updateUI() {
   });
   scoreDisplay.textContent = game.getScore();
 }
-
-
-
-
