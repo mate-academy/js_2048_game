@@ -1,40 +1,22 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0]
-  ]) {
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
     this.score = 0;
     this.status = 'idle';
     this.initialState = initialState;
     this.state = this.cloneState(this.initialState);
-
   }
 
   cloneState(state) {
-    return state.map(row => [...row]);
+    return state.map((row) => [...row]);
   }
 
   createRandomCell() {
@@ -47,18 +29,18 @@ class Game {
         }
       }
     }
-    
+
     if (newField.length > 0) {
       const randomCellIndex = Math.floor(Math.random() * newField.length);
 
-      const [ x, y ] = newField[randomCellIndex];
+      const [x, y] = newField[randomCellIndex];
 
-      this.state[x][y] =  Math.random() < 0.9 ? 2 : 4;
+      this.state[x][y] = Math.random() < 0.9 ? 2 : 4;
     }
   }
 
   combineCell(cells) {
-    const newCells = cells.filter(cell => cell !== 0);
+    const newCells = cells.filter((cell) => cell !== 0);
 
     for (let i = 0; i < newCells.length - 1; i++) {
       if (newCells[i] === newCells[i + 1]) {
@@ -68,7 +50,7 @@ class Game {
       }
     }
 
-    return newCells.filter(cell => cell !== 0);
+    return newCells.filter((cell) => cell !== 0);
   }
 
   rotateState(state) {
@@ -78,7 +60,7 @@ class Game {
       rotatedState[y] = [];
 
       for (let x = 3; x >= 0; x--) {
-          rotatedState[y].push(state[x][y]);
+        rotatedState[y].push(state[x][y]);
       }
     }
 
@@ -89,11 +71,11 @@ class Game {
     const rotatedState = [];
 
     for (let y = 0; y < 4; y++) {
-        rotatedState[y] = [];
+      rotatedState[y] = [];
 
-        for (let x = 0; x < 4; x++) {
-            rotatedState[y].push(state[x][y]);
-        }
+      for (let x = 0; x < 4; x++) {
+        rotatedState[y].push(state[x][y]);
+      }
     }
 
     return rotatedState.reverse();
@@ -141,15 +123,15 @@ class Game {
 
   moveStateUp(state) {
     const rotatedState = this.rotateState(state);
-    
-    const rotatedMoveRight = this.moveStateRight(rotatedState)
 
-    return this.rotateStateBack(rotatedMoveRight)
+    const rotatedMoveRight = this.moveStateRight(rotatedState);
+
+    return this.rotateStateBack(rotatedMoveRight);
   }
 
   moveStateDown(state) {
     const rotatedState = this.rotateState(state);
-    
+
     const rotatedMoveLeft = this.moveStateLeft(rotatedState);
 
     return this.rotateStateBack(rotatedMoveLeft);
@@ -157,6 +139,7 @@ class Game {
 
   move(direction) {
     const stateBeforeMove = this.cloneState(this.state);
+
     this.checkGameStatus();
 
     this.createRandomCell();
@@ -183,23 +166,23 @@ class Game {
   }
 
   moveLeft() {
-    return this.move('left')
+    return this.move('left');
   }
 
   moveRight() {
-    return this.move('right')
+    return this.move('right');
   }
 
   moveUp() {
-    return this.move('up')
+    return this.move('up');
   }
 
   moveDown() {
-    return this.move('down')
+    return this.move('down');
   }
 
   checkGameStatus() {
-    if (!this.hasEmptyCell() && !this.canCombineCells()) { 
+    if (!this.hasEmptyCell() && !this.canCombineCells()) {
       this.status = 'lose';
 
       return;
@@ -231,9 +214,10 @@ class Game {
   canCombineCells() {
     for (let x = 0; x < 4; x++) {
       for (let y = 0; y < 4; y++) {
-
-        if ((y < 3 && this.state[x][y] === this.state[x][y + 1])
-          || (x < 3 && this.state[x][y] === this.state[x + 1][y])) {
+        if (
+          (y < 3 && this.state[x][y] === this.state[x][y + 1]) ||
+          (x < 3 && this.state[x][y] === this.state[x + 1][y])
+        ) {
           return true;
         }
       }
@@ -242,7 +226,7 @@ class Game {
     return false;
   }
 
-  areStatesEqual (state1, state2) {
+  areStatesEqual(state1, state2) {
     for (let x = 0; x < 4; x++) {
       for (let y = 0; y < 4; y++) {
         if (state1[x][y] !== state2[x][y]) {
@@ -280,7 +264,7 @@ class Game {
     }
 
     this.status = 'idle';
-    this.score = 0
+    this.score = 0;
   }
 }
 
