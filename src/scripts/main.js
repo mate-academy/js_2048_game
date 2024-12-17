@@ -43,8 +43,12 @@ function updateUI() {
     messages.lose.classList.remove('hidden');
   }
 
-  startButton.textContent =
-    game.getStatus() === 'playing' ? 'Restart' : 'Start';
+  if (game.getStatus() === 'playing' || game.getStatus() === 'lose') {
+    startButton.textContent = 'Restart';
+  } else {
+    startButton.textContent = 'Start';
+  }
+
   startButton.classList.add('restart');
 }
 
