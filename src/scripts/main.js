@@ -56,3 +56,5 @@ startButton.addEventListener('click', () => {
     loseMessage.classList.add('hidden');
   }
 });
+
+// comments
