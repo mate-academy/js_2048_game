@@ -28,72 +28,57 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
-    // eslint-disable-next-line no-console
     this.state = 'idle';
     this.score = 0;
     this.initialState = initialState;
   }
 
+  // eslint-disable-next-line no-console
+
   moveLeft() {
-    if (this.state !== 'idle') {
-      const moveTheLeft = this.initialState.map((row) => mergeToTheLeft(row));
-
-      this.state = loseWinState(moveTheLeft);
-
-      this.score += calculateScore(this.initialState, moveTheLeft);
-
-      const newCellAdded = addNewCellRandomCell(moveTheLeft, 1);
-
-      this.initialState = newCellAdded;
-
-      return this.initialState;
+    if (this.state === 'idle') {
+      return;
     }
+
+    const updatedState = this.processMoveLeft();
+
+    this.updatedGameState(updatedState);
+
+    return this.initialState;
   }
   moveRight() {
-    if (this.state !== 'idle') {
-      const moveTheRight = this.initialState.map((row) => mergeToTheRight(row));
-
-      this.state = loseWinState(moveTheRight);
-
-      this.score += calculateScore(this.initialState, moveTheRight);
-
-      const newCellAdded = addNewCellRandomCell(moveTheRight, 1);
-
-      this.initialState = newCellAdded;
-
-      return this.initialState;
+    if (this.state === 'idle') {
+      return;
     }
+
+    const updatedState = this.processMoveRight();
+
+    this.updatedGameState(updatedState);
+
+    return this.initialState;
   }
   moveUp() {
-    if (this.state !== 'idle') {
-      const moveAllNonZeroToTheUp = mergeUp(this.initialState);
-
-      this.state = loseWinState(moveAllNonZeroToTheUp);
-
-      this.score += calculateScore(this.initialState, moveAllNonZeroToTheUp);
-
-      const newCellAdded = addNewCellRandomCell(moveAllNonZeroToTheUp, 1);
-
-      this.initialState = newCellAdded;
-
-      return this.initialState;
+    if (this.state === 'idle') {
+      return;
     }
+
+    const updatedState = this.processMoveUp();
+
+    this.updatedGameState(updatedState);
+
+    return this.initialState;
   }
   moveDown() {
-    if (this.state !== 'idle') {
-      const moveAllNonZeroToTheDown = mergeDown(this.initialState);
-
-      this.score += calculateScore(this.initialState, moveAllNonZeroToTheDown);
-      this.state = loseWinState(moveAllNonZeroToTheDown);
-
-      const newCellAdded = addNewCellRandomCell(moveAllNonZeroToTheDown, 1);
-
-      this.initialState = newCellAdded;
-
-      return this.initialState;
+    if (this.state === 'idle') {
+      return;
     }
-  }
 
+    const updatedState = this.processMoveDown();
+
+    this.updatedGameState(updatedState);
+
+    return this.initialState;
+  }
   /**
    * @returns {number}
    */
@@ -126,17 +111,11 @@ class Game {
    * Starts the game.
    */
   start() {
-    const allInitialDateIsZero = this.initialState
-      .flat()
-      .every((value) => value === 0);
+    const initialStateEmpty = this.isInitialStateAllZeros;
 
-    const returnToInitialArray = allInitialDateIsZero
-      ? addNewCellRandomCell(this.initialState, 2)
-      : addNewCellRandomCell(this.initialState, 1);
+    const newInitialState = this.generateInitialState(initialStateEmpty);
 
-    this.initialState = returnToInitialArray;
-    this.score = 0;
-    this.state = 'playing';
+    this.resetGamesState(newInitialState);
 
     return this.initialState;
   }
@@ -151,188 +130,103 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
+
     this.score = 0;
     this.state = 'idle';
 
     return this.initialState;
   }
 
-  // Add your own methods here
-}
-
-function addNewCellRandomCell(initialState, qntOfRandomCellsToAdd) {
-  const flatGameInARow = initialState.flat();
-  const availableIndices = flatGameInARow
-    .map((value, i) => (value === 0 ? i : null))
-    .filter((value) => value !== null);
-
-  if (availableIndices.length === 0) {
-    return initialState;
+  // add metodo de inicialização do jogo
+  isInitialStateAllZeros() {
+    return this.initialState.flat().every((value) => value === 0);
   }
 
-  for (let i = 0; i < qntOfRandomCellsToAdd; i++) {
-    if (availableIndices.length === 0) {
-      break;
-    }
+  generateInitialState(isEmpty) {
+    const numberOfCellsToAdd = isEmpty ? 2 : 1;
 
-    const randomIndex = Math.floor(Math.random() * availableIndices.length);
-    const indexToAdd = availableIndices.splice(randomIndex, 1)[0];
-    const randomValue = Math.random() < 0.9 ? 2 : 4;
-
-    flatGameInARow[indexToAdd] = randomValue;
+    return this.addNewCellRandomCell(this.initialState, numberOfCellsToAdd);
   }
 
-  const returnToInitialArray = [];
-
-  while (flatGameInARow.length) {
-    returnToInitialArray.push(flatGameInARow.splice(0, 4));
+  resetGamesState(newState) {
+    this.initialState = newState;
+    this.score = 0;
+    this.state = 'playing';
   }
 
-  return returnToInitialArray;
-}
+  // add metodo de atualização do tabuleiro quando se move para a esquerda
+  processMoveLeft() {
+    const moveRows = this.initialState.map(this.mergeToTheLeft);
+    const withNewCell = this.addNewCellRandomCell(moveRows, 1);
 
-function mergeToTheLeft(result) {
-  for (let i = 0; i < result.length - 1; i++) {
-    if (result[i] === result[i + 1] && result[i] !== 0) {
-      result[i] *= 2;
-      result[i + 1] = 0;
-    }
+    return withNewCell;
   }
 
-  const filtered = result.filter((num) => num !== 0);
-
-  while (filtered.length < result.length) {
-    filtered.push(0);
+  // atualiza os movimentos independente da direção
+  updatedGameState(newState) {
+    this.state = this.loseWinState(newState);
+    this.score += this.calculateScore(this.initialState, newState);
+    this.initialState = newState;
   }
 
-  return filtered;
-}
+  // add metodo de atualização do tabuleiro quando se move para a direta
+  processMoveRight() {
+    const moveRows = this.initialState(this.mergeToTheRight);
+    const withNewCell = this.addNewCellRandomCell(moveRows, 1);
 
-function mergeToTheRight(result) {
-  let nonZeroValues = result.filter((value) => value !== 0);
-
-  for (let i = nonZeroValues.length - 1; i > 0; i--) {
-    if (nonZeroValues[i] === nonZeroValues[i - 1]) {
-      nonZeroValues[i] *= 2;
-      nonZeroValues[i - 1] = 0;
-    }
-  }
-  // Remove zeros again after merging
-  nonZeroValues = nonZeroValues.filter((value) => value !== 0);
-
-  // Add zeros to the left to maintain the row length
-  while (nonZeroValues.length < result.length) {
-    nonZeroValues.unshift(0);
+    return withNewCell;
   }
 
-  return nonZeroValues;
-}
+  // add metodo de atualização do tabuleiro quando se move para cima
+  processMoveUp() {
+    const moveRows = this.initialState(this.mergeToTheUp);
+    const withNewCell = this.addNewCellRandomCell(moveRows, 1);
 
-function mergeDown(initialState) {
-  const result = initialState.map((col) => [...col]);
+    return withNewCell;
+  }
 
-  for (let col = 0; col < result[0].length; col++) {
-    const column = result.map((row) => row[col]);
+  // add metodo de atualização do tabuleiro quando se move para baixo
+  processMoveDown() {
+    const moveRows = this.initialState(this.mergeToTheDown);
+    const withNewCell = this.addNewCellRandomCell(moveRows, 1);
 
-    for (let i = column.length - 1; i > 0; i--) {
-      if (column[i] === column[i - 1] && column[i] !== 0) {
-        column[i] *= 2;
-        column[i - 1] = 0;
+    return withNewCell;
+  }
+
+  // add novas celulas ao tabuleiro
+  addNewCellRandomCell(initialState, qtdCellAdd) {
+    const matrixInRow = initialState.flat();
+
+    const indexEvaluation = matrixInRow.forEach((value, index) => {
+      if (value === 0 && qtdCellAdd > 0) {
+        matrixInRow[index] = 1;
+      } else {
+        matrixInRow[index] = null;
       }
-    }
+    });
 
-    const filtered = column.filter((num) => num !== 0);
-
-    while (filtered.length < column.length) {
-      filtered.unshift(0);
-    }
-
-    for (let i = 0; i < result.length; i++) {
-      result[i][col] = filtered[i];
+    if (indexEvaluation.length === 0) {
+      return initialState;
     }
   }
 
-  return result;
-}
+  // verifica se perdeu ou ganhou
+  loseWinState() {}
 
-function mergeUp(initialState) {
-  const result = initialState.map((col) => [...col]);
+  // verifca a pontuação
+  calculateScore() {}
 
-  for (let col = 0; col < result[0].length; col++) {
-    const column = result.map((row) => row[col]);
+  // mescla para a esquerda
+  mergeToTheLeft() {}
 
-    for (let i = 0; i < column.length - 1; i++) {
-      if (column[i] === column[i + 1] && column[i] !== 0) {
-        column[i] *= 2;
-        column[i + 1] = 0;
-      }
-    }
+  // mescla para a direita
+  mergeToTheRight() {}
 
-    const filtered = column.filter((num) => num !== 0);
+  // mescla para cima
+  mergeToTheUp() {}
 
-    while (filtered.length < column.length) {
-      filtered.push(0);
-    }
-
-    for (let i = 0; i < result.length; i++) {
-      result[i][col] = filtered[i];
-    }
-  }
-
-  return result;
-}
-
-function checkIfWin(initialState) {
-  for (let i = 0; i < initialState.length; i++) {
-    for (let j = 0; j < initialState[i].length; j++) {
-      if (initialState[i][j] === 2048) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-function checkIfLose(initialState) {
-  for (let i = 0; i < initialState.length; i++) {
-    for (let j = 0; j < initialState[i].length; j++) {
-      if (initialState[i][j] === 0) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
-function loseWinState(initialState) {
-  const lose = checkIfLose(initialState);
-  const win = checkIfWin(initialState);
-
-  if (lose) {
-    return 'lose';
-  }
-
-  if (win) {
-    return 'win';
-  }
-
-  return 'playing';
-}
-
-function calculateScore(initialState, finalState) {
-  let score = 0;
-
-  for (let i = 0; i < initialState.length; i++) {
-    for (let j = 0; j < initialState[i].length; j++) {
-      if (finalState[i][j] > initialState[i][j]) {
-        score += finalState[i][j];
-      }
-    }
-  }
-
-  return score;
+  // mescla para baixo
+  mergeToTheDown() {}
 }
 
 module.exports = Game;
