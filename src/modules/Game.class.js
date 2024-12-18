@@ -151,21 +151,21 @@ class Game {
         case 'left':
           this.state = this.moveStateLeft(this.state);
           break;
-  
+
         case 'right':
           this.state = this.moveStateRight(this.state);
           break;
-  
+
         case 'up':
           this.state = this.moveStateUp(this.state);
           break;
-  
+
         case 'down':
           this.state = this.moveStateDown(this.state);
           break;
       }
     }
-    
+
     return !this.areStatesEqual(this.state, stateBeforeMove);
   }
 
@@ -283,7 +283,7 @@ class Game {
   }
 
   restart() {
-    if (this.status === 'playing') {
+    if (this.status === 'playing' || this.status === 'lose') {
       this.state = this.cloneState(this.initialState);
     }
 

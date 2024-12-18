@@ -72,7 +72,9 @@ button.addEventListener('click', () => {
   button.textContent = 'Restart';
   button.className = 'button restart';
 
-  document.querySelector('.message-start').classList.add('hidden');
-
   updateState();
+
+  document.querySelector('.message-win').classList.add('hidden');
+  document.querySelector('.message-lose').classList.add('hidden');
+  document.querySelector('.message-start').classList.add('hidden');
 });
