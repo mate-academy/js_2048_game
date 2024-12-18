@@ -138,47 +138,71 @@ class Game {
   }
 
   move(direction) {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const stateBeforeMove = this.cloneState(this.state);
 
     this.checkGameStatus();
 
-    this.createRandomCell();
-
-    switch (direction) {
-      case 'left':
-        this.state = this.moveStateLeft(this.state);
-        break;
-
-      case 'right':
-        this.state = this.moveStateRight(this.state);
-        break;
-
-      case 'up':
-        this.state = this.moveStateUp(this.state);
-        break;
-
-      case 'down':
-        this.state = this.moveStateDown(this.state);
-        break;
+    if (this.hasEmptyCell || this.canCombineCells) {
+      switch (direction) {
+        case 'left':
+          this.state = this.moveStateLeft(this.state);
+          break;
+  
+        case 'right':
+          this.state = this.moveStateRight(this.state);
+          break;
+  
+        case 'up':
+          this.state = this.moveStateUp(this.state);
+          break;
+  
+        case 'down':
+          this.state = this.moveStateDown(this.state);
+          break;
+      }
     }
-
-    return this.areStatesEqual(this.state, stateBeforeMove);
+    
+    return !this.areStatesEqual(this.state, stateBeforeMove);
   }
 
   moveLeft() {
-    return this.move('left');
+    const canMove = this.move('left');
+
+    if (canMove) {
+      this.createRandomCell();
+      this.checkGameStatus();
+    }
   }
 
   moveRight() {
-    return this.move('right');
+    const canMove = this.move('right');
+
+    if (canMove) {
+      this.createRandomCell();
+      this.checkGameStatus();
+    }
   }
 
   moveUp() {
-    return this.move('up');
+    const canMove = this.move('up');
+
+    if (canMove) {
+      this.createRandomCell();
+      this.checkGameStatus();
+    }
   }
 
   moveDown() {
-    return this.move('down');
+    const canMove = this.move('down');
+
+    if (canMove) {
+      this.createRandomCell();
+      this.checkGameStatus();
+    }
   }
 
   checkGameStatus() {
