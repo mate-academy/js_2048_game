@@ -14,6 +14,8 @@ class Game {
   }
 
   moveLeft() {
+    let moved = false;
+
     for (let row = 0; row < this.grid.length; row++) {
       let rowWithoutZero = this.grid[row].filter((item) => item > 0);
 
@@ -22,6 +24,7 @@ class Game {
           rowWithoutZero[i] *= 2;
           rowWithoutZero[i + 1] = 0;
           this.score += rowWithoutZero[i];
+          moved = true;
         }
       }
 
@@ -31,19 +34,28 @@ class Game {
         rowWithoutZero.push(0);
       }
 
+      if (this.grid[row].toString() !== rowWithoutZero.toString()) {
+        moved = true;
+      }
+
       this.grid[row] = rowWithoutZero;
     }
 
     this.updateDOM();
-    this.checkWin();
 
-    if (this.status === 'playing') {
-      this.addStartCell();
-      this.checkLose();
+    if (this.checkWin()) {
+      return;
     }
+
+    if (moved) {
+      this.addStartCell();
+    }
+    this.checkLose();
   }
 
   moveRight() {
+    let moved = false;
+
     for (let row = 0; row < this.grid.length; row++) {
       let rowWithoutZero = this.grid[row].filter((item) => item > 0);
 
@@ -52,6 +64,7 @@ class Game {
           rowWithoutZero[i] *= 2;
           rowWithoutZero[i - 1] = 0;
           this.score += rowWithoutZero[i];
+          moved = true;
         }
       }
 
@@ -61,19 +74,28 @@ class Game {
         rowWithoutZero.unshift(0);
       }
 
+      if (this.grid[row].toString() !== rowWithoutZero.toString()) {
+        moved = true;
+      }
+
       this.grid[row] = rowWithoutZero;
     }
 
     this.updateDOM();
-    this.checkWin();
 
-    if (this.status === 'playing') {
-      this.addStartCell();
-      this.checkLose();
+    if (this.checkWin()) {
+      return;
     }
+
+    if (moved) {
+      this.addStartCell();
+    }
+    this.checkLose();
   }
 
   moveUp() {
+    let moved = false;
+
     for (let col = 0; col < this.grid[0].length; col++) {
       let colWithoutZero = [];
 
@@ -88,6 +110,7 @@ class Game {
           colWithoutZero[i] *= 2;
           colWithoutZero[i + 1] = 0;
           this.score += colWithoutZero[i];
+          moved = true;
         }
       }
 
@@ -98,20 +121,28 @@ class Game {
       }
 
       for (let row = 0; row < this.grid.length; row++) {
+        if (this.grid[row][col] !== colWithoutZero[row]) {
+          moved = true;
+        }
         this.grid[row][col] = colWithoutZero[row];
       }
     }
 
     this.updateDOM();
-    this.checkWin();
 
-    if (this.status === 'playing') {
-      this.addStartCell();
-      this.checkLose();
+    if (this.checkWin()) {
+      return;
     }
+
+    if (moved) {
+      this.addStartCell();
+    }
+    this.checkLose();
   }
 
   moveDown() {
+    let moved = false;
+
     for (let col = 0; col < this.grid.length; col++) {
       let colWithoutZero = [];
 
@@ -126,6 +157,7 @@ class Game {
           colWithoutZero[i] *= 2;
           colWithoutZero[i - 1] = 0;
           this.score += colWithoutZero[i];
+          moved = true;
         }
       }
 
@@ -136,17 +168,23 @@ class Game {
       }
 
       for (let row = 0; row < this.grid.length; row++) {
+        if (this.grid[row][col] !== colWithoutZero[row]) {
+          moved = true;
+        }
         this.grid[row][col] = colWithoutZero[row] || 0;
       }
     }
 
     this.updateDOM();
-    this.checkWin();
 
-    if (this.status === 'playing') {
-      this.addStartCell();
-      this.checkLose();
+    if (this.checkWin()) {
+      return;
     }
+
+    if (moved) {
+      this.addStartCell();
+    }
+    this.checkLose();
   }
 
   checkWin() {
