@@ -32,6 +32,71 @@ class Game {
     this.restart();
   }
 
+  slideAndMerge(row) {
+    const filteredRow = row.filter((val) => val !== 0);
+    const newRow = [];
+
+    for (let i = 0; i < filteredRow.length; i++) {
+      if (filteredRow[i] === filteredRow[i + 1]) {
+        newRow.push(filteredRow[i] * 2);
+        this.score += filteredRow[i] * 2;
+        i++;
+      } else {
+        newRow.push(filteredRow[i]);
+      }
+    }
+
+    while (newRow.length < 4) {
+      newRow.push(0);
+    }
+
+    return newRow;
+  }
+
+  move(direction) {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const rotated = (board) => {
+      return board[0].map((_, colIndex) => board.map((row) => row[colIndex]));
+    };
+
+    let moved = false;
+
+    if (direction === 'up' || direction === 'down') {
+      this.board = rotated(this.board);
+    }
+
+    for (let i = 0; i < 4; i++) {
+      const row =
+        direction === 'right' || direction === 'down'
+          ? [...this.board[i]].reverse()
+          : [...this.board[i]];
+
+      const newRow = this.slideAndMerge(row);
+
+      if (direction === 'right' || direction === 'down') {
+        newRow.reverse();
+      }
+
+      if (this.board[i].toString() !== newRow.toString()) {
+        this.board[i] = newRow;
+        moved = true;
+      }
+    }
+
+    if (direction === 'up' || direction === 'down') {
+      this.board = rotated(this.board);
+    }
+
+    if (moved) {
+      this.addRandomTitle();
+    }
+
+    this.chechGameOver();
+  }
+
   moveLeft() {}
   moveRight() {}
   moveUp() {}
