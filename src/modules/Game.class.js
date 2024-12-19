@@ -22,9 +22,9 @@ class Game {
       cell.textContent = value === 0 ? '' : value;
 
       if (value > 0) {
-        cell.className = `field-cell--${value}`;
+        cell.classList.add(`field-cell--${value}`);
       } else {
-        cell.className = 'field-cell';
+        cell.classList = 'field-cell';
       }
     });
   }
