@@ -1,15 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
     <title>2048</title>
-    <link rel="stylesheet" href="./styles/main.scss">
     <link
-      rel="icon"
-      type="image/x-icon"
-      href="./images/favIcon.png"
-    >
+      rel="stylesheet"
+      href="./styles/main.scss"
+    />
   </head>
   <body>
     <div class="container">
@@ -17,13 +18,14 @@
         <h1>2048</h1>
         <div class="controls">
           <p class="info">
-            Score: <span class="game-score">0</span>
+            Score:
+            <span class="game-score">0</span>
           </p>
-          <button id="start-button" class="button start">Start</button>
+          <button class="button start">Start</button>
         </div>
       </div>
 
-      <table id="game-field" class="game-field">
+      <table class="game-field">
         <tbody>
           <tr class="field-row">
             <td class="field-cell"></td>
@@ -39,14 +41,12 @@
             <td class="field-cell"></td>
           </tr>
 
-
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
-
 
           <tr class="field-row">
             <td class="field-cell"></td>
@@ -58,11 +58,16 @@
       </table>
 
       <div class="message-container">
-        <p id="message-lose" class="message message-lose hidden">You lose! Restart the game?</p>
-        <p id="message-win" class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p id="message-start" class="message message-start">Press "Start" to begin game. Good luck!</p>
+        <p class="message message-lose hidden">You lose! Restart the game?</p>
+        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
+        <p class="message message-start">
+          Press "Start" to begin game. Good luck!
+        </p>
       </div>
     </div>
-    <script type="text/javascript" src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
