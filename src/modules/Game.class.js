@@ -1,6 +1,4 @@
-/* eslint-disable no-shadow */
-/* eslint-disable max-len */
-/* eslint-disable prefer-const */
+/* eslint-disable prettier/prettier */
 'use strict';
 
 /**
@@ -10,190 +8,148 @@
  */
 class Game {
   constructor(initialState = null) {
-    this.grid = initialState || this.createEmptyGrid();
+    this.boardSize = 4; // Fixed 4x4 grid
+    this.board = initialState || this.createEmptyBoard();
     this.score = 0;
-    this.status = 'game-start'; // 'game-start', 'game-over', 'game-win'
-    this.won = false;
-    this.addRandomTile(); // Начинаем с случайной плитки
+    this.status = 'idle'; // Possible values: 'idle', 'playing', 'win', 'lose'
   }
 
-  // Создание пустого поля 4x4
-  createEmptyGrid() {
-    return [
-      [null, null, null, null],
-      [null, null, null, null],
-      [null, null, null, null],
-      [null, null, null, null],
-    ];
+  createEmptyBoard() {
+    return Array(this.boardSize)
+      .fill()
+      .map(() => Array(this.boardSize).fill(0));
   }
 
-  // Получить состояние игры (поле и счет)
   getState() {
-    return this.grid;
+    return this.board;
   }
 
-  // Получить текущий счет
   getScore() {
     return this.score;
   }
 
-  // Получить статус игры ('game-start', 'game-over', 'game-win')
   getStatus() {
     return this.status;
   }
 
-  // Начать игру заново (сбросить поле и счет)
   start() {
-    this.grid = this.createEmptyGrid();
+    this.board = this.createEmptyBoard();
     this.score = 0;
-    this.status = 'game-start';
-    this.won = false;
+    this.status = 'playing';
     this.addRandomTile();
-    this.addRandomTile(); // Две стартовые плитки
+    this.addRandomTile();
   }
 
-  // Перезапуск игры (сброс)
   restart() {
     this.start();
   }
 
-  // Добавить случайную плитку (2 или 4)
   addRandomTile() {
-    let emptyCells = [];
+    const emptyCells = [];
 
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        if (this.grid[row][col] === null) {
-          emptyCells.push([row, col]);
+    for (let r = 0; r < this.boardSize; r++) {
+      for (let c = 0; c < this.boardSize; c++) {
+        if (this.board[r][c] === 0) {
+          emptyCells.push([r, c]);
         }
       }
     }
 
-    if (emptyCells.length === 0) {
-      return;
+    if (emptyCells.length > 0) {
+      const [row, col] =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+      this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
     }
-
-    const [row, col] =
-      emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-    this.grid[row][col] = Math.random() < 0.1 ? 4 : 2;
   }
 
-  // Обработать перемещение клеток в заданном направлении
-  move(direction) {
-    let moved = false;
+  slide(row) {
+    const filteredRow = row.filter((num) => num !== 0); // Remove all zeros
+    const newRow = [];
 
-    if (direction === 'left') {
-      for (let row = 0; row < 4; row++) {
-        moved = this.moveRowLeft(row) || moved;
-      }
-    } else if (direction === 'right') {
-      for (let row = 0; row < 4; row++) {
-        moved = this.moveRowRight(row) || moved;
-      }
-    } else if (direction === 'up') {
-      for (let col = 0; col < 4; col++) {
-        moved = this.moveColumnUp(col) || moved;
-      }
-    } else if (direction === 'down') {
-      for (let col = 0; col < 4; col++) {
-        moved = this.moveColumnDown(col) || moved;
+    while (filteredRow.length > 0) {
+      if (filteredRow.length > 1 && filteredRow[0] === filteredRow[1]) {
+        newRow.push(filteredRow[0] * 2);
+        this.score += filteredRow[0] * 2;
+        filteredRow.splice(0, 2); // Remove the merged cells
+      } else {
+        newRow.push(filteredRow[0]);
+        filteredRow.splice(0, 1);
       }
     }
 
-    if (moved) {
-      this.addRandomTile(); // Добавляем новую случайную плитку после хода
-    }
+    while (newRow.length < this.boardSize) {
+      newRow.push(0);
+    } // Fill with zeros
 
-    return moved;
+    return newRow;
   }
 
-  // Перемещение строки влево
-  moveRowLeft(row) {
-    let changed = false;
-    let newRow = this.grid[row].filter((val) => val !== null); // Убираем пустые значения
+  moveLeft() {
+    const oldBoard = JSON.stringify(this.board);
 
-    for (let i = 0; i < newRow.length - 1; i++) {
-      if (newRow[i] === newRow[i + 1]) {
-        newRow[i] = newRow[i] * 2;
-        this.score += newRow[i];
-        newRow[i + 1] = null;
-        changed = true;
-      }
+    this.board = this.board.map((row) => this.slide(row));
+
+    if (JSON.stringify(this.board) !== oldBoard) {
+      this.addRandomTile();
+      this.checkGameState();
     }
-    newRow = newRow.filter((val) => val !== null); // Убираем пустые значения
-
-    while (newRow.length < 4) {
-      newRow.push(null); // Дополняем до 4 элементов
-    }
-    this.grid[row] = newRow;
-
-    return changed;
   }
 
-  // Перемещение строки вправо (обратный порядок)
-  moveRowRight(row) {
-    this.grid[row] = this.grid[row].reverse();
+  moveRight() {
+    const oldBoard = JSON.stringify(this.board);
 
-    const changed = this.moveRowLeft(row);
+    this.board = this.board.map((row) => this.slide(row.reverse()).reverse());
 
-    this.grid[row] = this.grid[row].reverse();
-
-    return changed;
+    if (JSON.stringify(this.board) !== oldBoard) {
+      this.addRandomTile();
+      this.checkGameState();
+    }
   }
 
-  // Перемещение столбца вверх
-  moveColumnUp(col) {
-    let column = this.grid.map((row) => row[col]);
-    let changed = this.moveRowLeft(column);
+  moveUp() {
+    this.transposeBoard();
+    this.moveLeft();
+    this.transposeBoard();
+  }
 
-    for (let i = 0; i < 4; i++) {
-      this.grid[i][col] = column[i];
+  moveDown() {
+    this.transposeBoard();
+    this.moveRight();
+    this.transposeBoard();
+  }
+
+  transposeBoard() {
+    this.board = this.board[0].map((_, colIndex) =>
+      this.board.map((row) => row[colIndex]));
+  }
+
+  checkGameState() {
+    if (this.board.flat().includes(2048)) {
+      this.status = 'win';
+    } else if (!this.canMove()) {
+      this.status = 'lose';
+    }
+  }
+
+  canMove() {
+    // Check for empty cells
+    if (this.board.flat().includes(0)) {
+      return true;
     }
 
-    return changed;
-  }
-
-  // Перемещение столбца вниз (обратный порядок)
-  moveColumnDown(col) {
-    let column = this.grid.map((row) => row[col]).reverse();
-    let changed = this.moveRowLeft(column);
-
-    for (let i = 0; i < 4; i++) {
-      this.grid[i][col] = column[3 - i];
-    }
-
-    return changed;
-  }
-
-  // Проверка на окончание игры (нет доступных ходов)
-  checkGameOver() {
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        if (this.grid[row][col] === null) {
-          return false;
-        }
-
-        if (row < 3 && this.grid[row][col] === this.grid[row + 1][col]) {
-          return false;
-        }
-
-        if (col < 3 && this.grid[row][col] === this.grid[row][col + 1]) {
-          return false;
+    // Check for possible merges
+    for (let r = 0; r < this.boardSize; r++) {
+      for (let c = 0; c < this.boardSize - 1; c++) {
+        if (this.board[r][c] === this.board[r][c + 1]) {
+          return true;
         }
       }
     }
 
-    return true;
-  }
-
-  // Проверка на победу (2048 в любой клетке)
-  checkWin() {
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        if (this.grid[row][col] === 2048) {
-          this.status = 'game-win';
-
+    for (let c = 0; c < this.boardSize; c++) {
+      for (let r = 0; r < this.boardSize - 1; r++) {
+        if (this.board[r][c] === this.board[r + 1][c]) {
           return true;
         }
       }
@@ -201,34 +157,6 @@ class Game {
 
     return false;
   }
-
-  // Обработка нажатий клавиш
-  handleKeyPress(event) {
-    let moved = false;
-
-    switch (event.key) {
-      case 'ArrowLeft':
-        moved = this.move('left');
-        break;
-      case 'ArrowRight':
-        moved = this.move('right');
-        break;
-      case 'ArrowUp':
-        moved = this.move('up');
-        break;
-      case 'ArrowDown':
-        moved = this.move('down');
-        break;
-    }
-
-    if (moved) {
-      if (this.checkWin()) {
-        this.status = 'game-win';
-      } else if (this.checkGameOver()) {
-        this.status = 'game-over';
-      }
-    }
-  }
 }
 
-export default Game;
+module.exports = Game;

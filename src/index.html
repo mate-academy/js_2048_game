@@ -21,49 +21,106 @@
             Score:
             <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button
+            class="button start"
+            id="ButtonStart"
+          >
+            Start
+          </button>
         </div>
       </div>
+
       <table class="game-field">
         <tbody>
-          <!-- Generate 4x4 grid -->
           <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+            <td
+              class="field-cell"
+              data-position="0-0"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="0-1"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="0-2"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="0-3"
+            ></td>
           </tr>
+
           <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+            <td
+              class="field-cell"
+              data-position="1-0"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="1-1"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="1-2"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="1-3"
+            ></td>
           </tr>
+
           <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+            <td
+              class="field-cell"
+              data-position="2-0"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="2-1"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="2-2"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="2-3"
+            ></td>
           </tr>
+
           <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+            <td
+              class="field-cell"
+              data-position="3-0"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="3-1"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="3-2"
+            ></td>
+            <td
+              class="field-cell"
+              data-position="3-3"
+            ></td>
           </tr>
         </tbody>
       </table>
+
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
         <p class="message message-win hidden">Winner! Congrats! You did it!</p>
         <p class="message message-start">
-          Press "Start" to begin the game. Good luck!
+          Press "Start" to begin game. Good luck!
         </p>
       </div>
     </div>
     <script
-      src="scripts/main.js"
       type="module"
+      src="scripts/main.js"
     ></script>
   </body>
 </html>
