@@ -1,10 +1,23 @@
+:root {
+  --pimary: #bbada0;
+  --white: #fff;
+  --bg: #fbf8ef;
+  --text-info: #eee4da;
+}
+
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: var(--bg);
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
@@ -12,14 +25,14 @@ body {
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: 100px;
+  height: 100px;
   border-radius: 5px;
   color: #776e65;
-  box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  font-size: 45px;
 
   &--2 {
     background: #eee4da;
@@ -37,70 +50,101 @@ body {
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+    font-size: 40px;
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+    font-size: 40px;
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+    font-size: 40px;
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    font-size: 40px;
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    font-size: 40px;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    font-size: 40px;
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+    font-size: 30px;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    font-size: 30px;
   }
 }
 
+.game-container {
+  position: relative;
+}
+
 .game-field {
-  background: #bbada0;
+  background: var(--pimary);
   border-spacing: 10px;
   border-radius: 5px;
 }
 
-.game-header {
-  display: flex;
+.tile-container {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+}
+
+.game-header {
+  width: 100%;
+  padding: 10px 10px 0;
+  margin-bottom: 15px;
+  opacity: 0;
+  animation: move-down 0.5s ease forwards;
+
+  @keyframes move-down {
+    0% {
+      opacity: 0;
+      transform: translateY(-100px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.game-header-container {
+  display: flex;
   justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
-  box-sizing: border-box;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
+  color: #776e65;
+  font-size: 48px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
   margin: 0;
 }
 
@@ -109,21 +153,55 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: var(--pimary);
+  width: 100px;
+  height: 60px;
   border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
+  color: var(--text-info);
+  text-transform: uppercase;
+  font-size: 12px;
+  margin: 0;
+}
+
+.game-score {
+  position: relative;
+
+  &--animate::after {
+    content: var(--score-diffeerence, '');
+    color: rgba(119, 110, 101, 0.9);
+    position: absolute;
+    left: 0;
+    animation: move-up 600ms ease-in;
+    animation-fill-mode: forwards;
+  }
+}
+
+@keyframes move-up {
+  0% {
+    top: 20px;
+    opacity: 1;
+  }
+  100% {
+    top: -50px;
+    opacity: 0;
+  }
+}
+
+.game-score,
+.game-best {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--white);
 }
 
 .controls {
   display: flex;
+  gap: 10px;
 }
 
 .button {
+  display: block;
+  margin-left: auto;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -131,8 +209,8 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
+  width: 210px;
+  height: 40px;
 
   transition: 0.25s ease background;
 }
@@ -155,7 +233,6 @@ h1 {
 }
 
 .message {
-  box-sizing: border-box;
   width: 100%;
   background: #d6cdc4;
   color: #776e65;
@@ -173,7 +250,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
+  width: 450px;
 }
 
 .message-win {

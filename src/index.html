@@ -4,64 +4,79 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0" />
+      content="width=device-width, initial-scale=1.0"
+    />
     <title>2048</title>
     <link
       rel="stylesheet"
-      href="./styles/main.scss" />
+      href="./styles/main.scss"
+    />
     <link
       rel="icon"
       href="images/favicon.svg"
-      type="image/svg+xml" />
+      type="image/svg+xml"
+    />
     <link
       rel="shortcut icon"
       href="favicon.ico"
-      type="image/x-icon" />
+      type="image/x-icon"
+    />
   </head>
   <body>
     <div class="container">
       <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score:
-            <span class="game-score">0</span>
-          </p>
-          <button class="button start">Start</button>
+        <div class="game-header-container">
+          <h1>2048</h1>
+          <div class="controls">
+            <p class="info">
+              Score
+              <span class="game-score">0</span>
+            </p>
+            <p class="info">
+              Best
+              <span class="game-best">0</span>
+            </p>
+          </div>
         </div>
+
+        <button class="button start">Start</button>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+      <div class="game-container">
+        <table class="game-field">
+          <tbody>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="tile-container"></div>
+      </div>
 
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
@@ -73,6 +88,7 @@
     </div>
     <script
       src="scripts/main.js"
-      type="module"></script>
+      type="module"
+    ></script>
   </body>
 </html>

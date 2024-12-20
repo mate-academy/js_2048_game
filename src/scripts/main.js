@@ -1,58 +1,26 @@
 'use strict';
 
 const Game = require('../modules/Game.class');
+const { updateCells, updateScore, updateStatus } = require('./domUtils.js');
+
 const game = new Game();
 
 const startBtn = document.querySelector('.start');
 const fieldRows = document.querySelectorAll('.field-row');
 const gameScore = document.querySelector('.game-score');
+const gameBest = document.querySelector('.game-best');
 const messages = document.querySelector('.message-container').children;
 
-function updateScore() {
-  gameScore.textContent = game.getScore();
+const bestScore = localStorage.getItem('best');
+
+if (bestScore) {
+  gameBest.textContent = bestScore;
 }
 
-function updateStatus() {
-  const [messageLose, messageWin, messageStart] = messages;
-  const gameStatus = game.getStatus();
-  const hiddenClass = 'hidden';
-
-  Array.from(messages).forEach((message) => {
-    message.classList.add(hiddenClass);
-  });
-
-  switch (gameStatus) {
-    case Game.Statuses.IDLE:
-      messageStart.classList.remove(hiddenClass);
-      break;
-    case Game.Statuses.WIN:
-      messageWin.classList.remove(hiddenClass);
-      break;
-    case Game.Statuses.LOSE:
-      messageLose.classList.remove(hiddenClass);
-      break;
-    default:
-      break;
-  }
-}
-
-function updateCells() {
-  const state = game.getState();
-
-  Array.from(fieldRows).forEach((row, rowIndex) => {
-    for (let colIndex = 0; colIndex < 4; colIndex++) {
-      const currentNumber = +state[rowIndex][colIndex];
-      const currentElement = row.children[colIndex];
-
-      currentElement.textContent = currentNumber || '';
-      currentElement.classList = '';
-      currentElement.classList.add('field-cell');
-
-      if (currentNumber) {
-        currentElement.classList.add(`field-cell--${currentNumber}`);
-      }
-    }
-  });
+function updateAll() {
+  updateCells(game, fieldRows);
+  updateScore(game, gameScore, gameBest);
+  updateStatus(game, messages);
 }
 
 document.addEventListener('keydown', (evt) => {
@@ -60,9 +28,7 @@ document.addEventListener('keydown', (evt) => {
     return;
   }
 
-  const keyName = evt.key;
-
-  switch (keyName) {
+  switch (evt.key) {
     case 'ArrowUp':
       game.moveUp();
       break;
@@ -79,29 +45,20 @@ document.addEventListener('keydown', (evt) => {
       return;
   }
 
-  updateCells();
-  updateScore();
-  updateStatus();
+  updateAll();
 });
 
 startBtn.addEventListener('click', () => {
   if (startBtn.classList.contains('start')) {
     game.start();
-    updateCells();
-    updateScore();
-    updateStatus();
 
-    startBtn.classList.remove('start');
-    startBtn.classList.add('restart');
+    startBtn.classList.replace('start', 'restart');
     startBtn.textContent = 'Restart';
   } else if (startBtn.classList.contains('restart')) {
-    startBtn.classList.remove('restart');
-    startBtn.classList.add('start');
-    startBtn.textContent = 'Start';
-
     game.restart();
-    updateCells();
-    updateScore();
-    updateStatus();
+
+    startBtn.classList.replace('restart', 'start');
+    startBtn.textContent = 'Start';
   }
+  updateAll();
 });
