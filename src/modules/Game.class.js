@@ -1,25 +1,6 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
   constructor(
     cells = [
       [0, 0, 0, 0],
@@ -93,60 +74,92 @@ class Game {
     if (moved) {
       this.addRandomTitle();
     }
-
-    this.chechGameOver();
+    this.checkGameOver();
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    this.move('left');
+  }
+  moveRight() {
+    this.move('right');
+  }
+  moveUp() {
+    this.move('up');
+  }
+  moveDown() {
+    this.move('down');
+  }
 
-  /**
-   * @returns {number}
-   */
+  checkGameOver() {
+    if (this.board.some((row) => row.includes(2048))) {
+      this.status = 'win';
+    } else if (!this.canMove()) {
+      this.status = 'lose';
+    }
+  }
+
+  canMove() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.board[i][j] === 0) {
+          return true;
+        }
+
+        if (j < 3 && this.board[i][j] === this.board[i][j + 1]) {
+          return true;
+        }
+
+        if (i < 3 && this.board[i][j] === this.board[i + 1][j]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  addRandomTitle() {
+    const emptyCells = [];
+
+    this.board.forEach((row, rowIndex) => {
+      row.forEach((value, colIndex) => {
+        if (value === 0) {
+          emptyCells.push({ rowIndex, colIndex });
+        }
+      });
+    });
+
+    if (emptyCells.length > 0) {
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+      const { rowIndex, colIndex } = emptyCells[randomIndex];
+
+      this.board[rowIndex][colIndex] = Math.random() < 0.9 ? 2 : 4;
+    }
+  }
+
   getScore() {
-    return this.getScore;
+    return this.score;
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.board.map((row) => [...row]);
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     return this.status;
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
     this.status = 'playing';
+    this.addRandomTitle();
+    this.addRandomTitle();
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     this.board = this.cells.map((row) => [...row]);
     this.score = 0;
     this.status = 'idle';
   }
-
-  // Add your own methods here
 }
 
 module.exports = Game;
