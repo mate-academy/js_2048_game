@@ -144,7 +144,7 @@ class Game {
     }
 
     const hasWinningCell = this.board.some((row) => {
-      row.some((cell) => cell === 2048);
+      return row.some((cell) => cell === 2048);
     });
 
     if (hasWinningCell) {
