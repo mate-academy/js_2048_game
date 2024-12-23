@@ -42,25 +42,59 @@ class Game {
       const cells = row.getElementsByClassName('field-cell');
 
       Array.from(cells).forEach((cell, cellIndex) => {
-        cell.textContent = state[rowIndex][cellIndex];
+        if (state[rowIndex][cellIndex] !== 0) {
+          cell.textContent = state[rowIndex][cellIndex];
+        }
       });
     });
   }
 
   moveLeft() {
-    console.log('moveLeft');
+    return this.isMovePossibleHorisontally(currentState);
+  }
+
+  isMovePossibleHorisontally(state) {
+    let sameValueDetected = false;
+
+    for (const rows of Array.from(state)) {
+      const filtered = rows.filter((value) => value > 0);
+
+      for (let i = 1; i < filtered.length; i++) {
+        if (filtered[i] === filtered[i - 1]) {
+          sameValueDetected = true;
+        }
+      }
+    }
+
+    return sameValueDetected;
+  }
+
+  isMovePossibleVertically(state) {
+    let sameValueDetected = false;
+
+    for (const rows of Array.from(state)) {
+      const filtered = rows.filter((value) => value > 0);
+
+      for (let i = 1; i < filtered.length; i++) {
+        if (filtered[i] === filtered[i - 1]) {
+          sameValueDetected = true;
+        }
+      }
+    }
+
+    return sameValueDetected;
   }
 
   moveRight() {
-    console.log('moveRight');
+    // console.log('moveRight');
   }
 
   moveUp() {
-    console.log('moveUp');
+    // console.log('moveUp');
   }
 
   moveDown() {
-    console.log('moveDown');
+    // console.log('moveDown');
   }
 
   /**
