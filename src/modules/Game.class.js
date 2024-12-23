@@ -1,10 +1,12 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
+let currentState = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+
 class Game {
   /**
    * Creates a new game instance.
@@ -20,15 +22,46 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
+
+  constructor(initialState = currentState) {
     // eslint-disable-next-line no-console
-    console.log(initialState);
+    // console.log(initialState);
+
+    if (initialState !== currentState) {
+      currentState = initialState;
+    }
+
+    this.drawCells(currentState);
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  drawCells(state) {
+    const table = document.querySelector('.game-field tbody');
+    const rows = table.getElementsByClassName('field-row');
+
+    Array.from(rows).forEach((row, rowIndex) => {
+      const cells = row.getElementsByClassName('field-cell');
+
+      Array.from(cells).forEach((cell, cellIndex) => {
+        cell.textContent = state[rowIndex][cellIndex];
+      });
+    });
+  }
+
+  moveLeft() {
+    console.log('moveLeft');
+  }
+
+  moveRight() {
+    console.log('moveRight');
+  }
+
+  moveUp() {
+    console.log('moveUp');
+  }
+
+  moveDown() {
+    console.log('moveDown');
+  }
 
   /**
    * @returns {number}
@@ -61,8 +94,6 @@ class Game {
    * Resets the game.
    */
   restart() {}
-
-  // Add your own methods here
 }
 
 module.exports = Game;
