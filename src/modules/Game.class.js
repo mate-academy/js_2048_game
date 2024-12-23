@@ -1,10 +1,10 @@
 'use strict';
 
 let currentState = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
+  [1, 0, 0, 0],
+  [2, 2, 0, 0],
+  [2, 3, 3, 0],
+  [4, 4, 4, 4],
 ];
 
 class Game {
@@ -49,10 +49,6 @@ class Game {
     });
   }
 
-  moveLeft() {
-    return this.isMovePossibleHorisontally(currentState);
-  }
-
   isMovePossibleHorisontally(state) {
     let sameValueDetected = false;
 
@@ -71,8 +67,9 @@ class Game {
 
   isMovePossibleVertically(state) {
     let sameValueDetected = false;
+    const rotated = this.rotateMatrix(state);
 
-    for (const rows of Array.from(state)) {
+    for (const rows of Array.from(rotated)) {
       const filtered = rows.filter((value) => value > 0);
 
       for (let i = 1; i < filtered.length; i++) {
@@ -85,16 +82,28 @@ class Game {
     return sameValueDetected;
   }
 
+  // from chat gpt
+  rotateMatrix(array) {
+    return array[0].map(
+      (_, colIndex) => array.map((row) => row[colIndex]).reverse(),
+      // eslint-disable-next-line function-paren-newline
+    );
+  }
+
+  moveLeft() {
+    this.isMovePossibleHorisontally(currentState);
+  }
+
   moveRight() {
-    // console.log('moveRight');
+    this.isMovePossibleHorisontally(currentState);
   }
 
   moveUp() {
-    // console.log('moveUp');
+    this.isMovePossibleVertically(currentState);
   }
 
   moveDown() {
-    // console.log('moveDown');
+    this.isMovePossibleVertically(currentState);
   }
 
   /**
