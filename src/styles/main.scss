@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  position: relative;
 
   &--2 {
     background: #eee4da;
@@ -72,6 +73,36 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+  }
+
+  &--new {
+    animation: fade-in 0.2s ease-out;
+  }
+
+  &--move {
+    animation: slide-in 0.3s ease-out;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(-10px);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
