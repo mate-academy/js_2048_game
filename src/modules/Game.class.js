@@ -1,25 +1,6 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
   constructor(
     initialState = [
       [0, 0, 0, 0],
@@ -34,110 +15,47 @@ class Game {
     this.isGameStarted = false;
   }
 
-  moveLeft() {
-    const previousBoard = this.getState();
+  move(direction) {
+    const isHorizontal = direction === 'left' || direction === 'right';
+    const isReverse = direction === 'right' || direction === 'down';
 
-    this.board.forEach((row, index) => {
-      const nonZeroElements = row.filter((value) => value !== 0);
+    let boardToProcess = isHorizontal ? this.board : this.transpose(this.board);
+
+    boardToProcess = boardToProcess.map((row) => {
+      const processedRow = isReverse ? row.slice().reverse() : row;
+      const nonZeroElements = processedRow.filter((value) => value !== 0);
       const combinedRow = this.joinValues(nonZeroElements, row.length);
 
-      this.board[index] = combinedRow;
+      return isReverse ? combinedRow.reverse() : combinedRow;
     });
 
-    if (this.isBoardChanged(previousBoard, this.board)) {
-      const randomCell = this.getRandomCell(1);
+    this.board = isHorizontal ? boardToProcess : this.transpose(boardToProcess);
+  }
 
-      this.addNewCell(randomCell);
-    }
+  moveLeft() {
+    this.move('left');
   }
 
   moveRight() {
-    const previousBoard = this.getState();
-
-    this.board.forEach((row, index) => {
-      const reversedRow = row.slice().reverse();
-
-      const nonZeroElements = reversedRow.filter((value) => value !== 0);
-      const combinedRow = this.joinValues(nonZeroElements, row.length);
-
-      this.board[index] = combinedRow.reverse();
-    });
-
-    if (this.isBoardChanged(previousBoard, this.board)) {
-      const randomCell = this.getRandomCell(1);
-
-      this.addNewCell(randomCell);
-    }
+    this.move('right');
   }
 
   moveUp() {
-    const previousBoard = this.getState();
-
-    const transposedBoard = this.transpose(this.board);
-
-    transposedBoard.forEach((row, index) => {
-      const nonZeroElements = row.filter((value) => value !== 0);
-      const combinedRow = this.joinValues(nonZeroElements, row.length);
-
-      transposedBoard[index] = combinedRow;
-    });
-
-    this.board = this.transpose(transposedBoard);
-
-    if (this.isBoardChanged(previousBoard, this.board)) {
-      const randomCell = this.getRandomCell(1);
-
-      this.addNewCell(randomCell);
-    }
+    this.move('up');
   }
 
   moveDown() {
-    const previousBoard = this.getState();
-
-    const transposedBoard = this.transpose(this.board);
-
-    transposedBoard.forEach((row, index) => {
-      const reversedRow = row.slice().reverse();
-
-      const nonZeroElements = reversedRow.filter((value) => value !== 0);
-      const combinedRow = this.joinValues(nonZeroElements, row.length);
-
-      transposedBoard[index] = combinedRow.reverse();
-    });
-
-    this.board = this.transpose(transposedBoard);
-
-    if (this.isBoardChanged(previousBoard, this.board)) {
-      const randomCell = this.getRandomCell(1);
-
-      this.addNewCell(randomCell);
-    }
+    this.move('down');
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
     return this.score;
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.board.map((row) => [...row]);
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     if (!this.isGameStarted) {
       return 'idle';
@@ -148,7 +66,7 @@ class Game {
     });
 
     if (hasWinningCell) {
-      return 'win'; // Игрок выиграл
+      return 'win';
     }
 
     const hasMoves = this.checkAvailableMoves();
@@ -160,26 +78,22 @@ class Game {
     return 'playing';
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
     const randomCell = this.getRandomCell(2);
 
-    this.addNewCell(randomCell);
+    const newCells = this.addNewCell(randomCell);
+
     this.isGameStarted = true;
+
+    return newCells;
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     this.board = this.initialState.map((row) => [...row]);
     this.score = 0;
     this.isGameStarted = false;
   }
 
-  // Add your own methods here
   getRandomCell(count) {
     const currentBoard = this.getState();
 
@@ -208,12 +122,17 @@ class Game {
   }
 
   addNewCell(newIndex) {
+    const newCells = [];
+
     for (const cell of newIndex) {
       const row = cell.row;
       const col = cell.col;
 
       this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
+      newCells.push({ row, col, value: this.board[row][col] });
     }
+
+    return newCells;
   }
 
   checkAvailableMoves() {
@@ -238,18 +157,16 @@ class Game {
       if (arr[i] === arr[i + 1]) {
         const mergedValue = arr[i] * 2;
 
-        result.push(mergedValue); // Удваиваем значение
-        // Добавляем удвоенное значение к увеличению очков
+        result.push(mergedValue);
         scoreIncrease += mergedValue;
-        i++; // Пропускаем следующий элемент, так как он уже объединен
+        i++;
       } else {
-        result.push(arr[i]); // Добавляем значение без изменений
+        result.push(arr[i]);
       }
     }
 
-    // Добавляем оставшиеся пустые слоты в массив
     while (result.length < targetLength) {
-      result.push(0); // Заполняем нулями (или другими значениями, если нужно)
+      result.push(0);
     }
     this.score += scoreIncrease;
 
@@ -260,12 +177,12 @@ class Game {
     for (let i = 0; i < prevBoard.length; i++) {
       for (let j = 0; j < prevBoard[i].length; j++) {
         if (prevBoard[i][j] !== currentBoard[i][j]) {
-          return true; // Нашли изменения
+          return true;
         }
       }
     }
 
-    return false; // Изменений нет
+    return false;
   }
 
   transpose(matrix) {

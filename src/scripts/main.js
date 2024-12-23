@@ -6,13 +6,15 @@ const game = new Game();
 
 const rows = Array.from(document.querySelectorAll('.field-row'));
 const cells = rows.map((row) => {
-  Array.from(row.querySelectorAll('.field-cell'));
+  return Array.from(row.querySelectorAll('.field-cell'));
 });
 
 const loseSMS = document.querySelector('.message-lose');
 const winSMS = document.querySelector('.message-win');
 
 document.addEventListener('keydown', (e) => {
+  const previousBoard = game.getState();
+
   if (game.getStatus() === 'playing') {
     switch (e.key) {
       case 'ArrowUp':
@@ -28,11 +30,18 @@ document.addEventListener('keydown', (e) => {
         game.moveRight();
         break;
     }
-    updateTable(game, cells);
+
+    if (game.isBoardChanged(previousBoard, game.board)) {
+      const newCells = game.addNewCell(game.getRandomCell(1));
+
+      updateTable(game, cells, 'new', newCells);
+    }
 
     if (game.getStatus() === 'win') {
       winSMS.classList.remove('hidden');
-    } else if (game.getStatus() === 'lose') {
+    }
+
+    if (game.getStatus() === 'lose') {
       loseSMS.classList.remove('hidden');
     }
   }
@@ -44,8 +53,9 @@ const button = document.querySelector('.controls .button');
 
 button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
-    game.start();
-    updateTable(game, cells);
+    const newCells = game.start();
+
+    updateTable(game, cells, 'new', newCells);
     startSMS.classList.add('hidden');
     button.textContent = 'Restart';
   }
@@ -63,28 +73,38 @@ button.addEventListener('click', () => {
   button.classList.toggle('restart');
 });
 
-function updateTable(gameInstance, td) {
-  // Получаем текущее состояние доски из класса Game
+function updateTable(gameInstance, td, animationType = null, coords = []) {
   const board = gameInstance.getState();
 
   board.forEach((row, rowIndex) => {
     row.forEach((value, colIndex) => {
       const cell = td[rowIndex][colIndex];
-      // Обновляем текстовое содержимое ячейки
 
       cell.textContent = value === 0 ? '' : value;
-      // Удаляем старые классы, соответствующие значениям
-      cell.className = 'field-cell'; // Сброс к базовому классу
-      // Добавляем новый класс
+      cell.className = 'field-cell';
 
       if (value !== 0) {
         cell.classList.add(`field-cell--${value}`);
       }
+
+      if (
+        animationType === 'new' &&
+        coords.some((c) => c.row === rowIndex && c.col === colIndex)
+      ) {
+        cell.classList.add('field-cell--new');
+      }
+
+      cell.addEventListener(
+        'animationend',
+        () => {
+          cell.classList.remove('field-cell--new', 'field-cell--move');
+        },
+        { once: true },
+      );
     });
   });
 
-  // Обновление счёта
-  const score = gameInstance.getScore(); // Получаем текущий счёт
+  const score = gameInstance.getScore();
 
   document.querySelector('.game-score').textContent = score;
 }
