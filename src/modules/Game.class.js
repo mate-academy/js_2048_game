@@ -7,6 +7,8 @@ let currentState = [
   [0, 0, 0, 0],
 ];
 
+let score = 0;
+
 class Game {
   /**
    * Creates a new game instance.
@@ -30,41 +32,8 @@ class Game {
     this.gameStarted = false;
   }
 
-  drawCells() {
-    this.addRandom();
-
-    const table = document.querySelector('.game-field tbody');
-    const rows = table.getElementsByClassName('field-row');
-
-    Array.from(rows).forEach((row, rowIndex) => {
-      const cells = row.getElementsByClassName('field-cell');
-
-      Array.from(cells).forEach((cell) => {
-        cell.textContent = '';
-      });
-
-      Array.from(cells).forEach((cell, cellIndex) => {
-        if (currentState[rowIndex][cellIndex] !== 0) {
-          cell.textContent = currentState[rowIndex][cellIndex];
-
-          for (const classItem of cell.classList) {
-            if (classItem !== 'field-cell') {
-              cell.classList.remove(classItem);
-            }
-          }
-
-          cell.classList.add(
-            `field-cell--${currentState[rowIndex][cellIndex]}`,
-          );
-        } else {
-          for (const classItem of cell.classList) {
-            if (classItem !== 'field-cell') {
-              cell.classList.remove(classItem);
-            }
-          }
-        }
-      });
-    });
+  setDrawCallback(callback) {
+    this.drawCallback = callback;
   }
 
   isMovePossibleHorisontally(state) {
@@ -80,13 +49,17 @@ class Game {
   hasSameNeighbours(array) {
     let sameValueDetected = false;
 
-    for (const rows of Array.from(array)) {
-      const filtered = rows.filter((value) => value > 0);
+    for (const row of Array.from(array)) {
+      const filtered = row.filter((value) => value > 0);
 
       for (let i = 1; i < filtered.length; i++) {
         if (filtered[i] === filtered[i - 1]) {
           sameValueDetected = true;
         }
+      }
+
+      if (row.some((value) => value === 0)) {
+        sameValueDetected = true;
       }
     }
 
@@ -145,24 +118,32 @@ class Game {
       const rowCopy = [...row].filter((value) => value > 0);
 
       if (direction === 'left') {
+        this.drawCallback();
+
         const rowResult = this.mergeRowLeft(rowCopy);
 
         result.push(rowResult);
       }
 
       if (direction === 'right') {
+        this.drawCallback();
+
         const rowResult = this.mergeRowLeft(rowCopy.reverse());
 
         result.push(rowResult.reverse());
       }
 
       if (direction === 'up') {
+        this.drawCallback();
+
         const rowResult = this.mergeRowLeft(rowCopy);
 
         result.push(rowResult);
       }
 
       if (direction === 'down') {
+        this.drawCallback();
+
         const rowResult = this.mergeRowLeft(rowCopy);
 
         result.push(rowResult);
@@ -178,7 +159,9 @@ class Game {
 
     currentState = finalResult;
 
-    this.drawCells();
+    if (this.drawCallback) {
+      this.drawCallback();
+    }
 
     return finalResult;
   }
@@ -190,6 +173,7 @@ class Game {
     while (count < row.length) {
       if (row[count] === row[count + 1]) {
         rowResult[count] = row[count] + row[count + 1];
+        score += rowResult[count];
         row.splice(count, 1);
         row.push(0);
       } else {
@@ -230,7 +214,9 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return score;
+  }
 
   /**
    * @returns {number[][]}
@@ -251,8 +237,8 @@ class Game {
    */
   getStatus() {
     if (
-      this.isMovePossibleHorisontally(currentState) ||
-      this.isMovePossibleVertically(currentState)
+      !this.isMovePossibleHorisontally(currentState) &&
+      !this.isMovePossibleVertically(currentState)
     ) {
       return 'lose';
     }
@@ -273,18 +259,20 @@ class Game {
    */
   start() {
     this.gameStarted = true;
-
-    // const startMessage = document.querySelector('.message.message-start');
-
-    // startMessage.hidden = true;
     this.addRandom();
-    this.drawCells();
+
+    if (this.drawCallback) {
+      this.drawCallback();
+    }
   }
 
   /**
    * Resets the game.
    */
   restart() {
+    score = 0;
+    this.drawCallback();
+
     currentState = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],

@@ -2,19 +2,36 @@
 
 const Game = require('../modules/Game.class');
 const game = new Game();
-
-// Write your code here
+// // Write your code here
 
 const startButton = document.querySelector('.start');
+const scoreScreen = document.querySelector('.game-score');
+const loseMessage = document.querySelector('.message-lose');
+const startMessage = document.querySelector('.message.message-start');
 
 startButton.addEventListener('click', () => {
-  game.start();
-  startButton.textContent = 'Restart';
+  if (!game.gameStarted) {
+    game.start();
+    startMessage.hidden = true;
+    startButton.textContent = 'restart';
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+    loseMessage.style.display = 'none';
+  } else {
+    game.restart();
+  }
 });
+
+game.setDrawCallback(drawCells);
 
 document.addEventListener('keydown', (e) => {
   if (game.getStatus() === 'idle') {
     e.preventDefault();
+  }
+
+  if (game.getStatus() === 'lose') {
+    e.preventDefault();
+    loseMessage.style.display = 'block';
   }
 
   if (e.key === 'ArrowLeft') {
@@ -32,4 +49,43 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowDown') {
     game.moveDown();
   }
+
+  scoreScreen.textContent = game.getScore();
 });
+
+function drawCells() {
+  game.addRandom();
+
+  const table = document.querySelector('.game-field tbody');
+  const rows = table.getElementsByClassName('field-row');
+
+  Array.from(rows).forEach((row, rowIndex) => {
+    const cells = row.getElementsByClassName('field-cell');
+
+    Array.from(cells).forEach((cell) => {
+      cell.textContent = '';
+    });
+
+    const currentState = game.getState();
+
+    Array.from(cells).forEach((cell, cellIndex) => {
+      if (currentState[rowIndex][cellIndex] !== 0) {
+        cell.textContent = currentState[rowIndex][cellIndex];
+
+        for (const classItem of cell.classList) {
+          if (classItem !== 'field-cell') {
+            cell.classList.remove(classItem);
+          }
+        }
+
+        cell.classList.add(`field-cell--${currentState[rowIndex][cellIndex]}`);
+      } else {
+        for (const classItem of cell.classList) {
+          if (classItem !== 'field-cell') {
+            cell.classList.remove(classItem);
+          }
+        }
+      }
+    });
+  });
+}
