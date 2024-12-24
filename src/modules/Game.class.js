@@ -1,7 +1,7 @@
 'use strict';
 
 let currentState = [
-  [1, 0, 0, 0],
+  [0, 1, 0, 0],
   [2, 2, 0, 0],
   [3, 3, 3, 0],
   [4, 4, 4, 4],
@@ -94,41 +94,23 @@ class Game {
     );
   }
 
-  mergeRows(state, direction = 'left') {
+  mergeRows(state, direction) {
     const result = [];
 
     for (const row of state) {
-      const rowResult = [0, 0, 0, 0];
-      const rowCopy = [...row];
+      const rowCopy = [...row].filter((value) => value > 0);
 
       if (direction === 'left') {
-        let count = 0;
+        const rowResult = this.mergeRowLeft(rowCopy);
 
-        while (count < rowCopy.length) {
-          if (row[count] === rowCopy[count + 1]) {
-            rowResult[count] = rowCopy[count] + rowCopy[count + 1];
-            rowCopy.splice(count, 1);
-            rowCopy.push(0);
-          } else {
-            rowResult[count] = rowCopy[count];
-          }
-          count += 1;
-        }
+        result.push(rowResult);
       }
 
       if (direction === 'right') {
-        let count = row.length - 1;
+        const rowResult = this.mergeRowLeft(rowCopy.reverse());
 
-        while (count >= 0) {
-          if (row[count] === row[count - 1]) {
-            rowResult[count] = row[count] + row[count - 1];
-            count -= 2;
-          } else {
-            count -= 1;
-          }
-        }
+        result.push(rowResult.reverse());
       }
-      result.push(rowResult);
     }
     currentState = result;
     this.drawCells();
@@ -136,15 +118,35 @@ class Game {
     return result;
   }
 
+  mergeRowLeft(row) {
+    const rowResult = [0, 0, 0, 0];
+    let count = 0;
+
+    while (count < row.length) {
+      if (row[count] === row[count + 1]) {
+        rowResult[count] = row[count] + row[count + 1];
+        row.splice(count, 1);
+        row.push(0);
+      } else {
+        rowResult[count] = row[count];
+      }
+      count += 1;
+    }
+
+    rowResult.length = 4;
+
+    return rowResult;
+  }
+
   moveLeft() {
     if (this.isMovePossibleHorisontally(currentState, 'left')) {
-      currentState = this.mergeRows(currentState);
+      currentState = this.mergeRows(currentState, 'left');
       this.drawCells();
     }
   }
 
   moveRight() {
-    currentState = this.mergeRows(currentState);
+    currentState = this.mergeRows(currentState, 'right');
   }
 
   moveUp() {
