@@ -1,10 +1,10 @@
 'use strict';
 
 let currentState = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
+  [128, 128, 0, 8],
+  [16, 8, 16, 32],
+  [8, 16, 32, 64],
+  [16, 32, 0, 128],
 ];
 
 let score = 0;
@@ -92,7 +92,10 @@ class Game {
       return;
     }
 
-    const randomCell = Math.floor(Math.random() * emptyCells.length);
+    const randomCell =
+      emptyCells.length === 1
+        ? 0
+        : Math.floor(Math.random() * emptyCells.length);
     const randomOption = Math.floor(Math.random() * options.length);
 
     const [row, col] = emptyCells[randomCell];
@@ -174,24 +177,28 @@ class Game {
   moveLeft() {
     if (this.gameStarted) {
       this.moveCells('left');
+      this.addRandom();
     }
   }
 
   moveRight() {
     if (this.gameStarted) {
       this.moveCells('right');
+      this.addRandom();
     }
   }
 
   moveUp() {
     if (this.gameStarted) {
       this.moveCells('up');
+      this.addRandom();
     }
   }
 
   moveDown() {
     if (this.gameStarted) {
       this.moveCells('down');
+      this.addRandom();
     }
   }
 
@@ -220,15 +227,15 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
+    if (currentState.flat().some((value) => value === 2048)) {
+      return 'win';
+    }
+
     if (
       !this.isMovePossibleHorisontally(currentState) &&
       !this.isMovePossibleVertically(currentState)
     ) {
       return 'lose';
-    }
-
-    if (currentState.some((value) => value === 2048)) {
-      return 'win';
     }
 
     if (currentState.every((value) => value === 0)) {

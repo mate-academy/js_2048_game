@@ -1,12 +1,21 @@
 'use strict';
 
 const Game = require('../modules/Game.class');
-const game = new Game();
+// const game = new Game();
+
+const game = new Game([
+  [128, 128, 0, 8],
+  [16, 8, 16, 32],
+  [8, 16, 32, 64],
+  [16, 32, 0, 128],
+]);
+
 // // Write your code here
 
 const startButton = document.querySelector('.start');
 const scoreScreen = document.querySelector('.game-score');
 const loseMessage = document.querySelector('.message-lose');
+const winMessage = document.querySelector('.message-win');
 const startMessage = document.querySelector('.message.message-start');
 
 startButton.addEventListener('click', () => {
@@ -18,9 +27,12 @@ startButton.addEventListener('click', () => {
     startButton.classList.remove('start');
     startButton.classList.add('restart');
     loseMessage.style.display = 'none';
+    winMessage.style.display = 'none';
   } else {
     game.restart();
     scoreScreen.textContent = game.getScore();
+    loseMessage.style.display = 'none';
+    winMessage.style.display = 'none';
     drawCells();
   }
 });
@@ -32,6 +44,35 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
+  if (e.key === 'ArrowLeft') {
+    game.moveLeft();
+    // game.addRandom();
+    drawCells();
+  }
+
+  if (e.key === 'ArrowRight') {
+    game.moveRight();
+    // game.addRandom();
+    drawCells();
+  }
+
+  if (e.key === 'ArrowUp') {
+    game.moveUp();
+    // game.addRandom();
+    drawCells();
+  }
+
+  if (e.key === 'ArrowDown') {
+    game.moveDown();
+    // game.addRandom();
+    drawCells();
+  }
+
+  if (game.getStatus() === 'win') {
+    e.preventDefault();
+    winMessage.style.display = 'block';
+  }
+
   if (game.getStatus() === 'idle') {
     e.preventDefault();
   }
@@ -39,30 +80,6 @@ document.addEventListener('keydown', (e) => {
   if (game.getStatus() === 'lose') {
     e.preventDefault();
     loseMessage.style.display = 'block';
-  }
-
-  if (e.key === 'ArrowLeft') {
-    game.moveLeft();
-    game.addRandom();
-    drawCells();
-  }
-
-  if (e.key === 'ArrowRight') {
-    game.moveRight();
-    game.addRandom();
-    drawCells();
-  }
-
-  if (e.key === 'ArrowUp') {
-    game.moveUp();
-    game.addRandom();
-    drawCells();
-  }
-
-  if (e.key === 'ArrowDown') {
-    game.moveDown();
-    game.addRandom();
-    drawCells();
   }
 
   scoreScreen.textContent = game.getScore();
