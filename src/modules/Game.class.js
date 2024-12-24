@@ -2,17 +2,10 @@
 
 let currentState = [
   [0, 1, 0, 0],
-  [2, 2, 0, 0],
-  [3, 3, 3, 0],
+  [2, 2, 2, 0],
+  [4, 4, 2, 0],
   [4, 4, 4, 4],
 ];
-
-// let currentState = [
-//   [1, 0, 0, 0],
-//   [4, 0, 0, 0],
-//   [6, 3, 0, 0],
-//   [8, 8, 0, 0],
-// ];
 
 class Game {
   /**
@@ -65,7 +58,7 @@ class Game {
   }
 
   isMovePossibleVertically(state) {
-    const rotated = this.rotateMatrix(state);
+    const rotated = this.rotateArrayClockwise(state);
 
     return this.hasSameNeighbours(rotated);
   }
@@ -87,15 +80,33 @@ class Game {
   }
 
   // from chat gpt
-  rotateMatrix(array) {
+  rotateArrayClockwise(array) {
     return array[0].map(
       (_, colIndex) => array.map((row) => row[colIndex]).reverse(),
       // eslint-disable-next-line function-paren-newline
     );
   }
 
-  mergeRows(state, direction) {
+  rotateArrayCounterClockwise(array) {
+    return array[0]
+      .map((_, colIndex) => array.map((row) => row[colIndex]))
+      .reverse();
+  }
+
+  mergeCells(direction) {
     const result = [];
+
+    // const state =
+    //   direction === 'up' || direction === 'down'
+    //     ? this.rotateArrayClockwise(currentState)
+    //     : [...currentState];
+
+    const state =
+      direction === 'up'
+        ? this.rotateArrayCounterClockwise(currentState)
+        : direction === 'down'
+          ? this.rotateArrayClockwise(currentState)
+          : [...currentState];
 
     for (const row of state) {
       const rowCopy = [...row].filter((value) => value > 0);
@@ -111,11 +122,33 @@ class Game {
 
         result.push(rowResult.reverse());
       }
+
+      if (direction === 'up') {
+        const rowResult = this.mergeRowLeft(rowCopy);
+
+        result.push(rowResult);
+      }
+
+      if (direction === 'down') {
+        const rowResult = this.mergeRowLeft(rowCopy);
+
+        result.push(rowResult);
+      }
     }
-    currentState = result;
+
+    const finalResult =
+      direction === 'up'
+        ? this.rotateArrayClockwise(result)
+        : direction === 'down'
+          ? this.rotateArrayCounterClockwise(result)
+          : result;
+
     this.drawCells();
 
-    return result;
+    currentState = finalResult;
+    this.drawCells();
+
+    return finalResult;
   }
 
   mergeRowLeft(row) {
@@ -139,22 +172,27 @@ class Game {
   }
 
   moveLeft() {
-    if (this.isMovePossibleHorisontally(currentState, 'left')) {
-      currentState = this.mergeRows(currentState, 'left');
-      this.drawCells();
+    if (this.isMovePossibleHorisontally(currentState)) {
+      currentState = this.mergeCells('left');
     }
   }
 
   moveRight() {
-    currentState = this.mergeRows(currentState, 'right');
+    if (this.isMovePossibleHorisontally(currentState)) {
+      currentState = this.mergeCells('right');
+    }
   }
 
   moveUp() {
-    this.isMovePossibleVertically(currentState);
+    if (this.isMovePossibleVertically(currentState)) {
+      currentState = this.mergeCells('up');
+    }
   }
 
   moveDown() {
-    this.isMovePossibleVertically(currentState);
+    if (this.isMovePossibleVertically(currentState)) {
+      currentState = this.mergeCells('down');
+    }
   }
 
   /**
