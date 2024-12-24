@@ -4,10 +4,10 @@ const Game = require('../modules/Game.class');
 // const game = new Game();
 
 const game = new Game([
-  [128, 128, 0, 8],
-  [16, 8, 16, 32],
-  [8, 16, 32, 64],
-  [16, 32, 0, 128],
+  [2, 2, 4, 4],
+  [2, 2, 4, 4],
+  [2, 2, 4, 4],
+  [0, 0, 4, 4],
 ]);
 
 // // Write your code here

@@ -24,9 +24,11 @@ class Game {
    */
 
   constructor(initialState = currentState) {
-    if (initialState !== currentState) {
-      currentState = initialState;
-    }
+    // if (initialState !== currentState) {
+    //   currentState = initialState;
+    // }
+    this.initialStateSaved = JSON.parse(JSON.stringify(initialState));
+    currentState = initialState;
     this.score = 0;
     this.status = 'idle';
     this.gameStarted = false;
@@ -248,7 +250,7 @@ class Game {
     this.gameStarted = true;
     this.addRandom();
     this.addRandom();
-    this.status = 'playing'
+    this.status = 'playing';
   }
 
   /**
@@ -257,12 +259,17 @@ class Game {
   restart() {
     this.score = 0;
     this.status = 'idle';
-    currentState = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+
+    if (!this.initialStateSaved.flat().every((value) => value === 0)) {
+      currentState = [...this.initialStateSaved];
+    } else {
+      currentState = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
+    }
   }
 }
 
