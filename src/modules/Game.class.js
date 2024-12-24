@@ -2,9 +2,9 @@
 
 let currentState = [
   [0, 1, 0, 0],
-  [2, 2, 2, 0],
-  [4, 4, 2, 0],
-  [4, 4, 4, 4],
+  [3, 2, 1, 0],
+  [4, 1, 2, 0],
+  [1, 2, 3, 4],
 ];
 
 class Game {
@@ -93,13 +93,8 @@ class Game {
       .reverse();
   }
 
-  mergeCells(direction) {
+  moveCells(direction) {
     const result = [];
-
-    // const state =
-    //   direction === 'up' || direction === 'down'
-    //     ? this.rotateArrayClockwise(currentState)
-    //     : [...currentState];
 
     const state =
       direction === 'up'
@@ -172,27 +167,19 @@ class Game {
   }
 
   moveLeft() {
-    if (this.isMovePossibleHorisontally(currentState)) {
-      currentState = this.mergeCells('left');
-    }
+    currentState = this.moveCells('left');
   }
 
   moveRight() {
-    if (this.isMovePossibleHorisontally(currentState)) {
-      currentState = this.mergeCells('right');
-    }
+    currentState = this.moveCells('right');
   }
 
   moveUp() {
-    if (this.isMovePossibleVertically(currentState)) {
-      currentState = this.mergeCells('up');
-    }
+    currentState = this.moveCells('up');
   }
 
   moveDown() {
-    if (this.isMovePossibleVertically(currentState)) {
-      currentState = this.mergeCells('down');
-    }
+    currentState = this.moveCells('down');
   }
 
   /**
