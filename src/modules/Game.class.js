@@ -1,10 +1,10 @@
 'use strict';
 
 let currentState = [
-  [0, 1, 0, 0],
-  [3, 2, 1, 0],
-  [4, 1, 2, 0],
-  [1, 2, 3, 4],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
 ];
 
 class Game {
@@ -93,6 +93,30 @@ class Game {
       .reverse();
   }
 
+  addRandom() {
+    const emptyCells = [];
+    const options = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (currentState[i][j] === 0) {
+          emptyCells.push([i, j]);
+        }
+      }
+    }
+
+    if (emptyCells.length === 0) {
+      return;
+    }
+
+    const randomCell = Math.floor(Math.random() * emptyCells.length);
+    const randomOption = Math.floor(Math.random() * options.length);
+
+    const [row, col] = emptyCells[randomCell];
+
+    currentState[row][col] = options[randomOption];
+  }
+
   moveCells(direction) {
     const result = [];
 
@@ -141,6 +165,8 @@ class Game {
     this.drawCells();
 
     currentState = finalResult;
+    this.addRandom();
+
     this.drawCells();
 
     return finalResult;
@@ -167,19 +193,19 @@ class Game {
   }
 
   moveLeft() {
-    currentState = this.moveCells('left');
+    this.moveCells('left');
   }
 
   moveRight() {
-    currentState = this.moveCells('right');
+    this.moveCells('right');
   }
 
   moveUp() {
-    currentState = this.moveCells('up');
+    this.moveCells('up');
   }
 
   moveDown() {
-    currentState = this.moveCells('down');
+    this.moveCells('down');
   }
 
   /**
