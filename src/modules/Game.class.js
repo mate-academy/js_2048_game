@@ -32,10 +32,6 @@ class Game {
     this.gameStarted = false;
   }
 
-  setDrawCallback(callback) {
-    this.drawCallback = callback;
-  }
-
   isMovePossibleHorisontally(state) {
     return this.hasSameNeighbours(state);
   }
@@ -118,32 +114,24 @@ class Game {
       const rowCopy = [...row].filter((value) => value > 0);
 
       if (direction === 'left') {
-        this.drawCallback();
-
         const rowResult = this.mergeRowLeft(rowCopy);
 
         result.push(rowResult);
       }
 
       if (direction === 'right') {
-        this.drawCallback();
-
         const rowResult = this.mergeRowLeft(rowCopy.reverse());
 
         result.push(rowResult.reverse());
       }
 
       if (direction === 'up') {
-        this.drawCallback();
-
         const rowResult = this.mergeRowLeft(rowCopy);
 
         result.push(rowResult);
       }
 
       if (direction === 'down') {
-        this.drawCallback();
-
         const rowResult = this.mergeRowLeft(rowCopy);
 
         result.push(rowResult);
@@ -158,10 +146,6 @@ class Game {
           : result;
 
     currentState = finalResult;
-
-    if (this.drawCallback) {
-      this.drawCallback();
-    }
 
     return finalResult;
   }
@@ -260,10 +244,7 @@ class Game {
   start() {
     this.gameStarted = true;
     this.addRandom();
-
-    if (this.drawCallback) {
-      this.drawCallback();
-    }
+    this.addRandom();
   }
 
   /**
@@ -271,7 +252,6 @@ class Game {
    */
   restart() {
     score = 0;
-    this.drawCallback();
 
     currentState = [
       [0, 0, 0, 0],
@@ -279,6 +259,8 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
+
+    this.start();
   }
 }
 

@@ -12,6 +12,7 @@ const startMessage = document.querySelector('.message.message-start');
 startButton.addEventListener('click', () => {
   if (!game.gameStarted) {
     game.start();
+    drawCells();
     startMessage.hidden = true;
     startButton.textContent = 'restart';
     startButton.classList.remove('start');
@@ -19,12 +20,18 @@ startButton.addEventListener('click', () => {
     loseMessage.style.display = 'none';
   } else {
     game.restart();
+    scoreScreen.textContent = game.getScore();
+    drawCells();
   }
 });
 
-game.setDrawCallback(drawCells);
-
 document.addEventListener('keydown', (e) => {
+  if (game.gameStarted === false) {
+    e.preventDefault();
+
+    return;
+  }
+
   if (game.getStatus() === 'idle') {
     e.preventDefault();
   }
@@ -36,26 +43,32 @@ document.addEventListener('keydown', (e) => {
 
   if (e.key === 'ArrowLeft') {
     game.moveLeft();
+    game.addRandom();
+    drawCells();
   }
 
   if (e.key === 'ArrowRight') {
     game.moveRight();
+    game.addRandom();
+    drawCells();
   }
 
   if (e.key === 'ArrowUp') {
     game.moveUp();
+    game.addRandom();
+    drawCells();
   }
 
   if (e.key === 'ArrowDown') {
     game.moveDown();
+    game.addRandom();
+    drawCells();
   }
 
   scoreScreen.textContent = game.getScore();
 });
 
 function drawCells() {
-  game.addRandom();
-
   const table = document.querySelector('.game-field tbody');
   const rows = table.getElementsByClassName('field-row');
 
