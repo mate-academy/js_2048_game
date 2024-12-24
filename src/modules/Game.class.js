@@ -3,9 +3,16 @@
 let currentState = [
   [1, 0, 0, 0],
   [2, 2, 0, 0],
-  [2, 3, 3, 0],
+  [3, 3, 3, 0],
   [4, 4, 4, 4],
 ];
+
+// let currentState = [
+//   [1, 0, 0, 0],
+//   [4, 0, 0, 0],
+//   [6, 3, 0, 0],
+//   [8, 8, 0, 0],
+// ];
 
 class Game {
   /**
@@ -31,45 +38,42 @@ class Game {
       currentState = initialState;
     }
 
-    this.drawCells(currentState);
+    this.drawCells();
   }
 
-  drawCells(state) {
+  drawCells() {
     const table = document.querySelector('.game-field tbody');
     const rows = table.getElementsByClassName('field-row');
 
     Array.from(rows).forEach((row, rowIndex) => {
       const cells = row.getElementsByClassName('field-cell');
 
+      Array.from(cells).forEach((cell) => {
+        cell.textContent = '';
+      });
+
       Array.from(cells).forEach((cell, cellIndex) => {
-        if (state[rowIndex][cellIndex] !== 0) {
-          cell.textContent = state[rowIndex][cellIndex];
+        if (currentState[rowIndex][cellIndex] !== 0) {
+          cell.textContent = currentState[rowIndex][cellIndex];
         }
       });
     });
   }
 
   isMovePossibleHorisontally(state) {
-    let sameValueDetected = false;
-
-    for (const rows of Array.from(state)) {
-      const filtered = rows.filter((value) => value > 0);
-
-      for (let i = 1; i < filtered.length; i++) {
-        if (filtered[i] === filtered[i - 1]) {
-          sameValueDetected = true;
-        }
-      }
-    }
-
-    return sameValueDetected;
+    return this.hasSameNeighbours(state);
   }
 
   isMovePossibleVertically(state) {
-    let sameValueDetected = false;
     const rotated = this.rotateMatrix(state);
 
-    for (const rows of Array.from(rotated)) {
+    return this.hasSameNeighbours(rotated);
+  }
+
+  hasSameNeighbours(array) {
+    let sameValueDetected = false;
+
+    for (const rows of Array.from(array)) {
       const filtered = rows.filter((value) => value > 0);
 
       for (let i = 1; i < filtered.length; i++) {
@@ -90,12 +94,57 @@ class Game {
     );
   }
 
+  mergeRows(state, direction = 'left') {
+    const result = [];
+
+    for (const row of state) {
+      const rowResult = [0, 0, 0, 0];
+      const rowCopy = [...row];
+
+      if (direction === 'left') {
+        let count = 0;
+
+        while (count < rowCopy.length) {
+          if (row[count] === rowCopy[count + 1]) {
+            rowResult[count] = rowCopy[count] + rowCopy[count + 1];
+            rowCopy.splice(count, 1);
+            rowCopy.push(0);
+          } else {
+            rowResult[count] = rowCopy[count];
+          }
+          count += 1;
+        }
+      }
+
+      if (direction === 'right') {
+        let count = row.length - 1;
+
+        while (count >= 0) {
+          if (row[count] === row[count - 1]) {
+            rowResult[count] = row[count] + row[count - 1];
+            count -= 2;
+          } else {
+            count -= 1;
+          }
+        }
+      }
+      result.push(rowResult);
+    }
+    currentState = result;
+    this.drawCells();
+
+    return result;
+  }
+
   moveLeft() {
-    this.isMovePossibleHorisontally(currentState);
+    if (this.isMovePossibleHorisontally(currentState, 'left')) {
+      currentState = this.mergeRows(currentState);
+      this.drawCells();
+    }
   }
 
   moveRight() {
-    this.isMovePossibleHorisontally(currentState);
+    currentState = this.mergeRows(currentState);
   }
 
   moveUp() {
@@ -126,7 +175,14 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    if (
+      !this.isMovePossibleHorisontally(currentState) &&
+      !this.isMovePossibleVertically(currentState)
+    ) {
+      return 'lose';
+    }
+  }
 
   /**
    * Starts the game.
