@@ -5,9 +5,17 @@ const game = new Game();
 
 // Write your code here
 
+const startButton = document.querySelector('.start');
+
+startButton.addEventListener('click', () => {
+  game.start();
+  startButton.textContent = 'Restart';
+});
+
 document.addEventListener('keydown', (e) => {
-  // // eslint-disable-next-line no-console
-  // console.log(e.key);
+  if (game.getStatus() === 'idle') {
+    e.preventDefault();
+  }
 
   if (e.key === 'ArrowLeft') {
     game.moveLeft();

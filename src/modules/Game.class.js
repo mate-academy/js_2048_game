@@ -24,17 +24,15 @@ class Game {
    */
 
   constructor(initialState = currentState) {
-    // eslint-disable-next-line no-console
-    // console.log(initialState);
-
     if (initialState !== currentState) {
       currentState = initialState;
     }
-
-    this.drawCells();
+    this.gameStarted = false;
   }
 
   drawCells() {
+    this.addRandom();
+
     const table = document.querySelector('.game-field tbody');
     const rows = table.getElementsByClassName('field-row');
 
@@ -48,6 +46,22 @@ class Game {
       Array.from(cells).forEach((cell, cellIndex) => {
         if (currentState[rowIndex][cellIndex] !== 0) {
           cell.textContent = currentState[rowIndex][cellIndex];
+
+          for (const classItem of cell.classList) {
+            if (classItem !== 'field-cell') {
+              cell.classList.remove(classItem);
+            }
+          }
+
+          cell.classList.add(
+            `field-cell--${currentState[rowIndex][cellIndex]}`,
+          );
+        } else {
+          for (const classItem of cell.classList) {
+            if (classItem !== 'field-cell') {
+              cell.classList.remove(classItem);
+            }
+          }
         }
       });
     });
@@ -162,10 +176,7 @@ class Game {
           ? this.rotateArrayCounterClockwise(result)
           : result;
 
-    this.drawCells();
-
     currentState = finalResult;
-    this.addRandom();
 
     this.drawCells();
 
@@ -193,19 +204,27 @@ class Game {
   }
 
   moveLeft() {
-    this.moveCells('left');
+    if (this.gameStarted) {
+      this.moveCells('left');
+    }
   }
 
   moveRight() {
-    this.moveCells('right');
+    if (this.gameStarted) {
+      this.moveCells('right');
+    }
   }
 
   moveUp() {
-    this.moveCells('up');
+    if (this.gameStarted) {
+      this.moveCells('up');
+    }
   }
 
   moveDown() {
-    this.moveCells('down');
+    if (this.gameStarted) {
+      this.moveCells('down');
+    }
   }
 
   /**
@@ -216,7 +235,9 @@ class Game {
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return currentState;
+  }
 
   /**
    * Returns the current game status.
@@ -230,22 +251,47 @@ class Game {
    */
   getStatus() {
     if (
-      !this.isMovePossibleHorisontally(currentState) &&
-      !this.isMovePossibleVertically(currentState)
+      this.isMovePossibleHorisontally(currentState) ||
+      this.isMovePossibleVertically(currentState)
     ) {
       return 'lose';
+    }
+
+    if (currentState.some((value) => value === 2048)) {
+      return 'win';
+    }
+
+    if (currentState.every((value) => value === 0)) {
+      return 'idle';
+    } else {
+      return 'playing';
     }
   }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.gameStarted = true;
+
+    // const startMessage = document.querySelector('.message.message-start');
+
+    // startMessage.hidden = true;
+    this.addRandom();
+    this.drawCells();
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    currentState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+  }
 }
 
 module.exports = Game;
