@@ -1,13 +1,11 @@
 'use strict';
 
 let currentState = [
-  [128, 128, 0, 8],
-  [16, 8, 16, 32],
-  [8, 16, 32, 64],
-  [16, 32, 0, 128],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
 ];
-
-let score = 0;
 
 class Game {
   /**
@@ -29,6 +27,8 @@ class Game {
     if (initialState !== currentState) {
       currentState = initialState;
     }
+    this.score = 0;
+    this.status = 'idle';
     this.gameStarted = false;
   }
 
@@ -160,7 +160,7 @@ class Game {
     while (count < row.length) {
       if (row[count] === row[count + 1]) {
         rowResult[count] = row[count] + row[count + 1];
-        score += rowResult[count];
+        this.score += rowResult[count];
         row.splice(count, 1);
         row.push(0);
       } else {
@@ -206,7 +206,7 @@ class Game {
    * @returns {number}
    */
   getScore() {
-    return score;
+    return this.score;
   }
 
   /**
@@ -238,11 +238,7 @@ class Game {
       return 'lose';
     }
 
-    if (currentState.every((value) => value === 0)) {
-      return 'idle';
-    } else {
-      return 'playing';
-    }
+    return this.status;
   }
 
   /**
@@ -252,22 +248,21 @@ class Game {
     this.gameStarted = true;
     this.addRandom();
     this.addRandom();
+    this.status = 'playing'
   }
 
   /**
    * Resets the game.
    */
   restart() {
-    score = 0;
-
+    this.score = 0;
+    this.status = 'idle';
     currentState = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
-
-    this.start();
   }
 }
 
