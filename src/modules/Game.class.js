@@ -279,6 +279,7 @@ class Game {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
       ];
+
       this.addRandom();
       this.addRandom();
     }

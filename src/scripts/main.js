@@ -3,12 +3,7 @@
 const Game = require('../modules/Game.class');
 // const game = new Game();
 
-const game = new Game([
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-]);
+const game = new Game();
 
 // // Write your code here
 
