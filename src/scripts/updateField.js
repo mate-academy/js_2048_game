@@ -1,4 +1,4 @@
-const gameField = document.querySelector('.game-field tbody');
+export const gameField = document.querySelector('.game-field tbody');
 
 const DIRECTIONS = {
   left: (prevState, state) => moveLeft(prevState, state),
@@ -11,9 +11,14 @@ let lastChange = null;
 let lastTimeout = null;
 
 const ANIMATION_DURATION = 250;
+// const ANIMATION_DURATION = 5000;
 
 export function updateField(state, direction) {
   if (lastChange) {
+    if (!isChanged(lastChange, state)) {
+      return;
+    }
+
     clearTimeout(lastTimeout);
 
     clearField();
@@ -25,6 +30,12 @@ export function updateField(state, direction) {
 
   const changes = [createCopy(clearField())];
 
+  if (!isChanged(changes[0], state)) {
+    fillField(state);
+
+    return;
+  }
+
   if (direction) {
     while (true) {
       changes.push(
@@ -32,7 +43,9 @@ export function updateField(state, direction) {
       );
 
       if (!isChanged(changes.at(-1), changes.at(-2))) {
+        changes.pop();
         changes.shift();
+
         changes[changes.length - 1] = state;
 
         break;
@@ -96,10 +109,12 @@ function moveLeft(prevState, state) {
     const row = prevState[i];
     const end = row.length - 1;
 
+    let count = 0;
     let next = false;
 
     for (let j = 0; j < end && !next; j++) {
-      if (row[j] === state[i][j]) {
+      if (j === count && row[j] === state[i][j]) {
+        count++;
         continue;
       }
 
@@ -131,9 +146,11 @@ function moveRight(prevState, state) {
     const row = prevState[i];
 
     let next = false;
+    let count = row.length - 1;
 
     for (let j = row.length - 1; j > 0 && !next; j--) {
-      if (row[j] === state[i][j]) {
+      if (j === count && row[j] === state[i][j]) {
+        count--;
         continue;
       }
 
@@ -164,10 +181,12 @@ function moveUp(prevState, state) {
   for (let j = 0; j < prevState.length; j++) {
     const end = prevState.length - 1;
 
+    let count = 0;
     let next = false;
 
     for (let i = 0; i < end && !next; i++) {
-      if (prevState[i][j] === state[i][j]) {
+      if (i === count && prevState[i][j] === state[i][j]) {
+        count++;
         continue;
       }
 
@@ -179,7 +198,7 @@ function moveUp(prevState, state) {
       }
 
       if (prevState[i + 1][j] && prevState[i][j] === prevState[i + 1][j]) {
-        prevState[i][j] = +prevState[i][j] * 2;
+        prevState[i][j] *= 2;
 
         next = true;
         removeUp(prevState, i + 1, j);
@@ -193,9 +212,11 @@ function moveUp(prevState, state) {
 function moveDown(prevState, state) {
   for (let j = 0; j < prevState.length; j++) {
     let next = false;
+    let count = prevState.length - 1;
 
     for (let i = prevState.length - 1; i > 0 && !next; i--) {
-      if (prevState[i][j] === state[i][j]) {
+      if (count === i && prevState[i][j] === state[i][j]) {
+        count--;
         continue;
       }
 
@@ -225,7 +246,7 @@ function removeUp(prevState, init, j) {
     prevState[i][j] = prevState[i + 1][j];
   }
 
-  prevState[prevState.length - 1][j] = 0;
+  prevState[end][j] = 0;
 }
 
 function removeDown(prevState, init, j) {
