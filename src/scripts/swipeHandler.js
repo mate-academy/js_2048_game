@@ -1,7 +1,9 @@
 let startX, startY, endX, endY;
-const minDistance = 30;
+const minDistance = 15;
 
 export function onTouchStart(e) {
+  e.preventDefault();
+
   const touch = e.touches[0];
 
   startX = touch.pageX;
