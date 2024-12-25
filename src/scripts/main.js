@@ -5,8 +5,6 @@ const Game = require('../modules/Game.class');
 
 const game = new Game();
 
-// // Write your code here
-
 const startButton = document.querySelector('.start');
 const scoreScreen = document.querySelector('.game-score');
 const loseMessage = document.querySelector('.message-lose');
