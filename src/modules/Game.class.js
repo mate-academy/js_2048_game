@@ -270,9 +270,6 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.score = 0;
-    this.status = 'idle';
-
     if (!this.initialStateSaved.flat().every((value) => value === 0)) {
       currentState = [...this.initialStateSaved];
     } else {
@@ -282,7 +279,13 @@ class Game {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
       ];
+      this.addRandom();
+      this.addRandom();
     }
+
+    this.gameStarted = true;
+    this.score = 0;
+    this.status = 'idle';
   }
 }
 
