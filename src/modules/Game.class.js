@@ -24,14 +24,12 @@ class Game {
    */
 
   constructor(initialState = currentState) {
-    // if (initialState !== currentState) {
-    //   currentState = initialState;
-    // }
     this.initialStateSaved = JSON.parse(JSON.stringify(initialState));
     currentState = initialState;
     this.score = 0;
     this.status = 'idle';
     this.gameStarted = false;
+    this.boardChanged = false;
   }
 
   isMovePossibleHorisontally(state) {
@@ -150,6 +148,9 @@ class Game {
           ? this.rotateArrayCounterClockwise(result)
           : result;
 
+    this.boardChanged =
+      JSON.stringify(currentState) !== JSON.stringify(finalResult);
+
     currentState = finalResult;
 
     return finalResult;
@@ -179,28 +180,40 @@ class Game {
   moveLeft() {
     if (this.gameStarted) {
       this.moveCells('left');
-      this.addRandom();
+
+      if (this.boardChanged) {
+        this.addRandom();
+      }
     }
   }
 
   moveRight() {
     if (this.gameStarted) {
       this.moveCells('right');
-      this.addRandom();
+
+      if (this.boardChanged) {
+        this.addRandom();
+      }
     }
   }
 
   moveUp() {
     if (this.gameStarted) {
       this.moveCells('up');
-      this.addRandom();
+
+      if (this.boardChanged) {
+        this.addRandom();
+      }
     }
   }
 
   moveDown() {
     if (this.gameStarted) {
       this.moveCells('down');
-      this.addRandom();
+
+      if (this.boardChanged) {
+        this.addRandom();
+      }
     }
   }
 

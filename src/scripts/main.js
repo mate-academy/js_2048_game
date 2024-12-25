@@ -4,10 +4,10 @@ const Game = require('../modules/Game.class');
 // const game = new Game();
 
 const game = new Game([
-  [2, 2, 4, 4],
-  [2, 2, 4, 4],
-  [2, 2, 4, 4],
-  [0, 0, 4, 4],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
 ]);
 
 // // Write your code here
@@ -46,25 +46,21 @@ document.addEventListener('keydown', (e) => {
 
   if (e.key === 'ArrowLeft') {
     game.moveLeft();
-    // game.addRandom();
     drawCells();
   }
 
   if (e.key === 'ArrowRight') {
     game.moveRight();
-    // game.addRandom();
     drawCells();
   }
 
   if (e.key === 'ArrowUp') {
     game.moveUp();
-    // game.addRandom();
     drawCells();
   }
 
   if (e.key === 'ArrowDown') {
     game.moveDown();
-    // game.addRandom();
     drawCells();
   }
 
