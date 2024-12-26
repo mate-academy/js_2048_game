@@ -65,6 +65,17 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script src="scripts/main.js">
+      const game = new Game();
+
+      document.addEventListener('keydown', (event) => {
+        if (game.getStatus() === 'playing') {
+          if (event.key === 'ArrowLeft') game.moveLeft();
+          if (event.key === 'ArrowRight') game.moveRight();
+          if (event.key === 'ArrowUp') game.moveUp();
+          if (event.key === 'ArrowDown') game.moveDown();
+        }
+      });
+    </script>
   </body>
 </html>
