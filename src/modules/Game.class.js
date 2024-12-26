@@ -1,167 +1,196 @@
-'use strict';
+// src/modules/Game.class.js
 
 class Game {
-  constructor(initialState) {
-    this.size = 4;
-    this.board = initialState || this.createEmptyBoard();
+  constructor(initialState = null) {
+    this.board = initialState || [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
     this.score = 0;
-    this.status = 'idle'; // 'idle', 'playing', 'win', 'lose'
+    this.status = 'idle'; // 'playing', 'won', 'lose'
+    this.addNewTile(); // Start with two random tiles
   }
 
-  createEmptyBoard() {
-    return Array.from({ length: this.size }, () => Array(this.size).fill(0));
-  }
-
-  spawnTile() {
-    const emptyCells = [];
-
-    this.board.forEach(
-      (row, i) =>
-        row.forEach((cell, j) => {
-          if (cell === 0) {
-            emptyCells.push([i, j]);
-          }
-        }),
-      // eslint-disable-next-line function-paren-newline
-    );
-
-    if (emptyCells.length) {
-      const [x, y] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-      this.board[x][y] = Math.random() < 0.1 ? 4 : 2;
-    }
-  }
-
-  slide(row) {
-    const filteredRow = row.filter((cell) => cell !== 0);
-    const zeros = Array(this.size - filteredRow.length).fill(0);
-
-    return [...filteredRow, ...zeros];
-  }
-
-  combine(row) {
-    for (let i = 0; i < row.length - 1; i++) {
-      if (row[i] !== 0 && row[i] === row[i + 1]) {
-        row[i] *= 2;
-        this.score += row[i];
-        row[i + 1] = 0;
-      }
-    }
-
-    return row;
-  }
-
-  moveLeft() {
-    const oldBoard = JSON.stringify(this.board);
-
-    this.board = this.board.map((row) =>
-      // eslint-disable-next-line prettier/prettier
-      this.slide(this.combine(this.slide(row))));
-
-    if (oldBoard !== JSON.stringify(this.board)) {
-      this.spawnTile();
-    }
-  }
-
-  moveRight() {
-    const oldBoard = JSON.stringify(this.board);
-
-    this.board = this.board.map((row) =>
-      // eslint-disable-next-line prettier/prettier
-      this.slide(this.combine(this.slide(row.reverse()))).reverse());
-
-    if (oldBoard !== JSON.stringify(this.board)) {
-      this.spawnTile();
-    }
-  }
-
-  moveUp() {
-    const oldBoard = JSON.stringify(this.board);
-
-    this.transpose();
-    this.moveLeft();
-    this.transpose();
-
-    if (oldBoard !== JSON.stringify(this.board)) {
-      this.spawnTile();
-    }
-  }
-
-  moveDown() {
-    const oldBoard = JSON.stringify(this.board);
-
-    this.transpose();
-    this.moveRight();
-    this.transpose();
-
-    if (oldBoard !== JSON.stringify(this.board)) {
-      this.spawnTile();
-    }
-  }
-
-  transpose() {
-    this.board = this.board[0].map((_, i) => this.board.map((row) => row[i]));
-  }
-
-  getScore() {
-    return this.score;
-  }
-
+  // Helper function to get the current board state
   getState() {
     return this.board;
   }
 
-  getStatus() {
-    if (this.status === 'win' || this.status === 'lose') {
-      return this.status;
-    }
-
-    if (this.board.some((row) => row.includes(2048))) {
-      this.status = 'win';
-
-      return 'win';
-    }
-
-    if (!this.canMove()) {
-      this.status = 'lose';
-
-      return 'lose';
-    }
-
-    return 'playing';
+  // Get the current score
+  getScore() {
+    return this.score;
   }
 
-  canMove() {
-    for (let i = 0; i < this.size; i++) {
-      for (let j = 0; j < this.size; j++) {
-        if (this.board[i][j] === 0) {
-          return true;
-        }
+  // Get the current status of the game ('idle', 'playing', 'won', 'lose')
+  getStatus() {
+    return this.status;
+  }
 
-        if (j < this.size - 1 && this.board[i][j] === this.board[i][j + 1]) {
-          return true;
-        }
+  // Start the game (reset game state)
+  start() {
+    this.status = 'playing';
+    this.score = 0;
 
-        if (i < this.size - 1 && this.board[i][j] === this.board[i + 1][j]) {
-          return true;
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.addNewTile(); // Start with two random tiles
+    this.addNewTile();
+  }
+
+  // Restart the game to the initial state
+  restart() {
+    this.start();
+  }
+
+  // Add a new tile (2 or 4) to a random empty space
+  addNewTile() {
+    const emptyCells = [];
+
+    // eslint-disable-next-line no-shadow
+    for (let row = 0; row < 4; row++) {
+      // eslint-disable-next-line no-shadow
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 0) {
+          emptyCells.push([row, col]);
         }
       }
     }
 
-    return false;
+    if (emptyCells.length === 0) {
+      return;
+    } // No empty space left
+
+    const [row, col] =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    const value = Math.random() < 0.1 ? 4 : 2; // 10% chance for 4, else 2
+
+    this.board[row][col] = value;
   }
 
-  start() {
-    this.board = this.createEmptyBoard();
-    this.score = 0;
-    this.status = 'playing';
-    this.spawnTile();
-    this.spawnTile();
+  // Move the board to the left
+  moveLeft() {
+    let moved = false;
+
+    for (let row = 0; row < 4; row++) {
+      const newRow = this.board[row].filter((val) => val !== 0);
+      const mergedRow = [];
+      let scoreAdded = 0;
+
+      for (let i = 0; i < newRow.length; i++) {
+        if (newRow[i] === newRow[i + 1]) {
+          mergedRow.push(newRow[i] * 2);
+          scoreAdded += newRow[i] * 2;
+          i++;
+        } else {
+          mergedRow.push(newRow[i]);
+        }
+      }
+
+      while (mergedRow.length < 4) {
+        mergedRow.push(0);
+      }
+
+      if (!this.arraysEqual(this.board[row], mergedRow)) {
+        moved = true;
+      }
+
+      this.board[row] = mergedRow;
+      this.score += scoreAdded;
+    }
+
+    if (moved) {
+      this.addNewTile();
+    }
+
+    this.checkGameOver();
+    this.checkWin();
   }
 
-  restart() {
-    this.start();
+  // Check if two arrays are equal
+  arraysEqual(a, b) {
+    return a.every((val, index) => val === b[index]);
+  }
+
+  // Check if the game is won (2048 achieved)
+  checkWin() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 2048) {
+          this.status = 'won';
+
+          return;
+        }
+      }
+    }
+  }
+
+  // Check if the game is over (no valid moves)
+  checkGameOver() {
+    // Check if there are any empty cells
+    let emptyFound = false;
+
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 0) {
+          emptyFound = true;
+          break;
+        }
+      }
+
+      if (emptyFound) {
+        break;
+      }
+    }
+
+    if (!emptyFound) {
+      // Check if there are any valid moves (adjacent tiles with the same value)
+      for (let row = 0; row < 4; row++) {
+        for (let col = 0; col < 4; col++) {
+          if (
+            (row < 3 && this.board[row][col] === this.board[row + 1][col]) ||
+            (col < 3 && this.board[row][col] === this.board[row][col + 1])
+          ) {
+            return;
+          }
+        }
+      }
+      this.status = 'lose';
+    }
+  }
+
+  // Move the board to the right
+  moveRight() {
+    this.board.forEach((row) => row.reverse());
+    this.moveLeft();
+    this.board.forEach((row) => row.reverse());
+  }
+
+  // Move the board up
+  moveUp() {
+    this.board = this.transposeBoard();
+    this.moveLeft();
+    this.board = this.transposeBoard(true);
+  }
+
+  // Move the board down
+  moveDown() {
+    this.board = this.transposeBoard();
+    this.moveRight();
+    this.board = this.transposeBoard(true);
+  }
+
+  // Transpose the board (switch rows and columns)
+  transposeBoard(reverse = false) {
+    return this.board[0].map((_, colIndex) =>
+      // eslint-disable-next-line comma-dangle, prettier/prettier
+      this.board.map((row) => (reverse ? row[3 - colIndex] : row[colIndex])),);
   }
 }
 
-module.exports = Game;
+export default Game;

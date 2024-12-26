@@ -1,81 +1,89 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
-
 import Game from './modules/Game.class.js';
 
 const game = new Game();
-const boardElement = document.querySelector('.field');
-const scoreElement = document.querySelector('.score');
-const statusElement = document.querySelector('.status');
+const gameBoard = document.getElementById('game-board');
+const scoreDisplay = document.getElementById('score');
+const statusDisplay = document.getElementById('status');
+const startButton = document.getElementById('start-button');
+const restartButton = document.getElementById('restart-button');
 
 function renderBoard() {
-  boardElement.innerHTML = '';
+  gameBoard.innerHTML = '';
 
   const state = game.getState();
 
   state.forEach((row) => {
     row.forEach((cell) => {
-      const cellElement = document.createElement('div');
+      const tile = document.createElement('div');
 
-      cellElement.className = `field-cell ${cell ? `field-cell--${cell}` : ''}`;
-      cellElement.textContent = cell || '';
-      boardElement.appendChild(cellElement);
+      tile.classList.add('tile', `tile-${cell}`);
+      tile.textContent = cell !== 0 ? cell : '';
+      gameBoard.appendChild(tile);
     });
   });
 }
 
 function updateScore() {
-  scoreElement.textContent = `Score: ${game.getScore()}`;
+  scoreDisplay.textContent = game.getScore();
 }
 
-function checkStatus() {
-  // eslint-disable-next-line no-shadow
-  const status = game.getStatus();
+function updateStatus() {
+  statusDisplay.textContent =
+    game.getStatus().charAt(0).toUpperCase() + game.getStatus().slice(1);
 
-  if (status !== 'playing') {
-    statusElement.textContent = status === 'won' ? 'You won!' : 'Game over!';
+  if (game.getStatus() === 'won' || game.getStatus() === 'lose') {
+    startButton.textContent = 'Restart';
+    startButton.classList.add('restart');
   } else {
-    statusElement.textContent = '';
+    startButton.textContent = 'Start';
+    startButton.classList.remove('restart');
   }
 }
 
 // eslint-disable-next-line no-shadow
 document.addEventListener('keydown', (event) => {
-  if (game.getStatus() !== 'playing') {
-    return;
-  }
-
-  switch (event.key) {
-    case 'ArrowLeft':
+  if (game.getStatus() === 'playing') {
+    if (event.key === 'ArrowLeft') {
       game.moveLeft();
-      break;
-    case 'ArrowRight':
+    } else if (event.key === 'ArrowRight') {
       game.moveRight();
-      break;
-    case 'ArrowUp':
+    } else if (event.key === 'ArrowUp') {
       game.moveUp();
-      break;
-    case 'ArrowDown':
+    } else if (event.key === 'ArrowDown') {
       game.moveDown();
-      break;
-  }
+    }
 
-  renderBoard();
-  updateScore();
-  checkStatus();
+    renderBoard();
+    updateScore();
+    updateStatus();
+  }
 });
 
-document.querySelector('.start').addEventListener('click', () => {
+startButton.addEventListener('click', () => {
+  if (game.getStatus() === 'idle') {
+    game.start();
+    renderBoard();
+    updateScore();
+    updateStatus();
+  } else {
+    game.restart();
+    renderBoard();
+    updateScore();
+    updateStatus();
+  }
+});
+
+restartButton.addEventListener('click', () => {
   game.restart();
   renderBoard();
   updateScore();
-  checkStatus();
+  updateStatus();
 });
 
-game.start();
-renderBoard();
-updateScore();
-checkStatus();
+window.onload = () => {
+  renderBoard();
+  updateScore();
+  updateStatus();
+};

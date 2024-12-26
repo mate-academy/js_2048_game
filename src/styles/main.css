@@ -1,0 +1,267 @@
+#game {
+  text-align: center;
+  margin: 0 auto;
+  padding: 20px;
+  width: 360px;
+  background-color: #faf8ef;
+  border-radius: 10px;
+  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+#game-board {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 80px 10px 80px 10px 80px 10px 80px;
+  grid-template-columns: repeat(4, 80px);
+  -ms-grid-rows: 80px 10px 80px 10px 80px 10px 80px;
+  grid-template-rows: repeat(4, 80px);
+  grid-gap: 10px;
+  margin: 0 auto;
+  width: 350px;
+}
+
+#game-board > *:nth-child(1) {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+}
+
+#game-board > *:nth-child(2) {
+  -ms-grid-row: 1;
+  -ms-grid-column: 3;
+}
+
+#game-board > *:nth-child(3) {
+  -ms-grid-row: 1;
+  -ms-grid-column: 5;
+}
+
+#game-board > *:nth-child(4) {
+  -ms-grid-row: 1;
+  -ms-grid-column: 7;
+}
+
+#game-board > *:nth-child(5) {
+  -ms-grid-row: 3;
+  -ms-grid-column: 1;
+}
+
+#game-board > *:nth-child(6) {
+  -ms-grid-row: 3;
+  -ms-grid-column: 3;
+}
+
+#game-board > *:nth-child(7) {
+  -ms-grid-row: 3;
+  -ms-grid-column: 5;
+}
+
+#game-board > *:nth-child(8) {
+  -ms-grid-row: 3;
+  -ms-grid-column: 7;
+}
+
+#game-board > *:nth-child(9) {
+  -ms-grid-row: 5;
+  -ms-grid-column: 1;
+}
+
+#game-board > *:nth-child(10) {
+  -ms-grid-row: 5;
+  -ms-grid-column: 3;
+}
+
+#game-board > *:nth-child(11) {
+  -ms-grid-row: 5;
+  -ms-grid-column: 5;
+}
+
+#game-board > *:nth-child(12) {
+  -ms-grid-row: 5;
+  -ms-grid-column: 7;
+}
+
+#game-board > *:nth-child(13) {
+  -ms-grid-row: 7;
+  -ms-grid-column: 1;
+}
+
+#game-board > *:nth-child(14) {
+  -ms-grid-row: 7;
+  -ms-grid-column: 3;
+}
+
+#game-board > *:nth-child(15) {
+  -ms-grid-row: 7;
+  -ms-grid-column: 5;
+}
+
+#game-board > *:nth-child(16) {
+  -ms-grid-row: 7;
+  -ms-grid-column: 7;
+}
+
+.tile {
+  width: 80px;
+  height: 80px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 24px;
+  background-color: #faf8ef;
+  border-radius: 10px;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  font-weight: bold;
+  color: #fff;
+}
+
+.tile-2 {
+  background-color: #eee4da;
+  color: #776e65;
+}
+
+.tile-4 {
+  background-color: #ede0c8;
+  color: #776e65;
+}
+
+.tile-8 {
+  background-color: #f2b179;
+  color: #fff;
+}
+
+.tile-16 {
+  background-color: #f59563;
+  color: #fff;
+}
+
+.tile-32 {
+  background-color: #f67c5f;
+  color: #fff;
+}
+
+.tile-64 {
+  background-color: #f65e3b;
+  color: #fff;
+}
+
+.tile-128 {
+  background-color: #edcf72;
+  color: #fff;
+}
+
+.tile-256 {
+  background-color: #edcc61;
+  color: #fff;
+}
+
+.tile-512 {
+  background-color: #edc850;
+  color: #fff;
+}
+
+.tile-1024 {
+  background-color: #edc53f;
+  color: #fff;
+}
+
+.tile-2048 {
+  background-color: #edc22e;
+  color: #fff;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  -webkit-transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease;
+  margin: 10px;
+  width: 120px;
+}
+
+.start {
+  background-color: #4caf50;
+  color: white;
+}
+.start:hover {
+  background-color: #45a049;
+}
+
+.restart {
+  background-color: #f44336;
+  color: white;
+}
+.restart:hover {
+  background-color: #d32f2f;
+}
+
+.hidden {
+  display: none;
+}
+
+#status {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+#score {
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #333;
+}
+
+#game-over,
+#win {
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 20px;
+  color: #e74c3c;
+  display: none;
+}
+
+.tile-moving {
+  -webkit-animation: moveTile 0.2s ease-in-out;
+  animation: moveTile 0.2s ease-in-out;
+}
+
+@-webkit-keyframes moveTile {
+  0% {
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes moveTile {
+  0% {
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+@media (max-width: 600px) {
+  #game {
+    width: 280px;
+  }
+  #game-board {
+    width: 350px;
+  }
+}
