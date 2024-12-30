@@ -10,62 +10,126 @@ document.addEventListener('DOMContentLoaded', () => {
   const messageLose = document.querySelector('.message-lose');
   const messageWin = document.querySelector('.message-win');
   const gameScore = document.querySelector('.game-score');
+  const gameContainer = document.querySelector('.container');
+
+  // Lock page scrolling
+  document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.width = '100%';
+  document.body.style.height = '100%';
 
   // Touch controls
   let touchStartX = 0;
   let touchStartY = 0;
-  const minSwipeDistance = 50; // Minimum distance for a swipe
+  const minSwipeDistance = 30;
 
-  document.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-  });
+  gameContainer.addEventListener(
+    'touchstart',
+    (e) => {
+      e.preventDefault();
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    },
+    { passive: false },
+  );
 
-  document.addEventListener(
+  gameContainer.addEventListener(
     'touchmove',
     (e) => {
-      // Prevent screen from scrolling while swiping
       e.preventDefault();
     },
     { passive: false },
   );
 
-  document.addEventListener('touchend', (e) => {
-    if (game.getStatus() !== 'playing') {
-      return;
+  gameContainer.addEventListener(
+    'touchend',
+    (e) => {
+      e.preventDefault();
+
+      if (game.getStatus() !== 'playing') {
+        return;
+      }
+
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      // Check if the swipe was long enough
+      if (
+        Math.abs(deltaX) < minSwipeDistance &&
+        Math.abs(deltaY) < minSwipeDistance
+      ) {
+        return;
+      }
+
+      let moved = false;
+
+      // Determine swipe direction
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal swipe
+        if (deltaX > 0) {
+          moved = game.moveRight();
+        } else {
+          moved = game.moveLeft();
+        }
+      } else {
+        // Vertical swipe
+        if (deltaY > 0) {
+          moved = game.moveDown();
+        } else {
+          moved = game.moveUp();
+        }
+      }
+
+      if (moved) {
+        updateGameState();
+      }
+    },
+    { passive: false },
+  );
+
+  // Add touch-action CSS to prevent default touch behaviors
+  const style = document.createElement('style');
+
+  style.textContent = `
+    .container {
+      touch-action: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
+  `;
+  document.head.appendChild(style);
 
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
-
-    // Check if the swipe was long enough
-    if (
-      Math.abs(deltaX) < minSwipeDistance &&
-      Math.abs(deltaY) < minSwipeDistance
-    ) {
+  // Keyboard controls
+  document.addEventListener('keydown', (e) => {
+    if (game.getStatus() !== 'playing') {
       return;
     }
 
     let moved = false;
 
-    // Determine swipe direction by comparing which delta is larger
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      // Horizontal swipe
-      if (deltaX > 0) {
-        moved = game.moveRight();
-      } else {
+    switch (e.key) {
+      case 'ArrowLeft':
         moved = game.moveLeft();
-      }
-    } else {
-      // Vertical swipe
-      if (deltaY > 0) {
-        moved = game.moveDown();
-      } else {
+        break;
+      case 'ArrowRight':
+        moved = game.moveRight();
+        break;
+      case 'ArrowUp':
         moved = game.moveUp();
-      }
+        break;
+      case 'ArrowDown':
+        moved = game.moveDown();
+        break;
+      default:
+        return;
     }
 
     if (moved) {
@@ -161,34 +225,5 @@ document.addEventListener('DOMContentLoaded', () => {
     game.start();
     game.setStatus('playing');
     updateGameState();
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (game.getStatus() !== 'playing') {
-      return;
-    }
-
-    let moved = false;
-
-    switch (e.key) {
-      case 'ArrowLeft':
-        moved = game.moveLeft();
-        break;
-      case 'ArrowRight':
-        moved = game.moveRight();
-        break;
-      case 'ArrowUp':
-        moved = game.moveUp();
-        break;
-      case 'ArrowDown':
-        moved = game.moveDown();
-        break;
-      default:
-        return;
-    }
-
-    if (moved) {
-      updateGameState();
-    }
   });
 });
