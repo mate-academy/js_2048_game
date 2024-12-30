@@ -19,11 +19,12 @@ export default class Game {
     if (initialState) {
       this.state = initialState;
     } else {
+      // Create empty game board
       this.state = [
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [0, 0, 0, 0],
+        [0, 0, 0, 0]
       ];
     }
     this.score = 0;
@@ -251,26 +252,26 @@ export default class Game {
   }
 
   start() {
-    // Explicitly set each cell to 0 first
+    // Reset game board
     this.state = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0],
+      [0, 0, 0, 0]
     ];
     this.score = 0;
     this.status = 'playing';
 
-    // Add exactly two initial tiles
+    // Add two starting tiles
     this.addRandomTile();
     this.addRandomTile();
   }
 
   // Helper method to add a random tile
   addRandomTile() {
-    // Create a list of all empty positions
     const emptyPositions = [];
 
+    // Find empty spots on the board
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.state[row][col] === 0) {
@@ -279,34 +280,18 @@ export default class Game {
       }
     }
 
-    // Only proceed if there are empty positions
     if (emptyPositions.length > 0) {
-      // Select a random empty position
-      const randomIndex = Math.floor(Math.random() * emptyPositions.length);
-      const [row, col] = emptyPositions[randomIndex];
-
-      // Set the new tile value (2 with 90% probability, 4 with 10% probability)
-      const value = Math.random() < 0.9 ? 2 : 4;
-
-      this.state[row][col] = value;
+      // Place new tile in random empty spot
+      const [row, col] = emptyPositions[Math.floor(Math.random() * emptyPositions.length)];
+      // New tile is 2 (90% chance) or 4 (10% chance)
+      this.state[row][col] = Math.random() < 0.9 ? 2 : 4;
     }
   }
 
   // Add this method
   restart() {
-    // Explicitly reset the state
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    this.score = 0;
-    this.status = 'playing';
-
-    // Add exactly two initial tiles
-    this.addRandomTile();
-    this.addRandomTile();
+    // Start fresh game
+    this.start();
   }
 
   hasAvailableMoves() {

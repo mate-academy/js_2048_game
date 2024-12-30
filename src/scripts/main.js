@@ -47,33 +47,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const newValue = board[rowIndex][cellIndex];
         const oldValue = parseInt(cell.textContent) || 0;
 
-        // Remove all existing field-cell-- classes
+        // Clean up any existing special cell classes
         cell.classList.forEach((className) => {
           if (className.startsWith('field-cell--')) {
             cell.classList.remove(className);
           }
         });
 
-        // Handle empty cells (value 0)
+        // Empty cell
         if (newValue === 0) {
           cell.textContent = '';
-          cell.className = 'field-cell'; // Reset to base class only
+          cell.className = 'field-cell';
         } else {
-          // Handle cells with numbers
+          // Cell with a number
           cell.textContent = newValue;
           cell.className = `field-cell field-cell--${newValue}`;
 
-          // Add animation if value changed
+          // Animate new or merged tiles
           if (oldValue !== newValue) {
             if (oldValue === 0) {
+              // Animate new tile appearance
               cell.classList.add('field-cell--new');
-
               setTimeout(() => {
                 cell.classList.remove('field-cell--new');
               }, 150);
             } else if (newValue === oldValue * 2) {
+              // Animate tile merge
               cell.classList.add('field-cell--merged');
-
               setTimeout(() => {
                 cell.classList.remove('field-cell--merged');
               }, 150);
