@@ -62,41 +62,37 @@ export default class Game {
     }
 
     let moved = false;
-    const newBoard = this.board.map((row) => {
-      // Get non-zero numbers
-      const numbers = row.filter((cell) => cell !== 0);
-      const originalLength = numbers.length;
+    let scoreIncrease = 0;
+
+    for (let row = 0; row < 4; row++) {
+      const cells = this.board[row].filter((cell) => cell !== 0);
 
       // Merge adjacent equal numbers
-      for (let i = 0; i < numbers.length - 1; i++) {
-        if (numbers[i] === numbers[i + 1]) {
-          numbers[i] *= 2;
-          this.score += numbers[i];
-          numbers.splice(i + 1, 1);
+      for (let i = 0; i < cells.length - 1; i++) {
+        if (cells[i] === cells[i + 1]) {
+          cells[i] *= 2;
+          scoreIncrease += cells[i]; // Add to score when merging
+          cells.splice(i + 1, 1);
           moved = true;
+          i--; // Check the next pair
         }
       }
 
-      // Fill with zeros
-      const newRow = [...numbers];
-
-      while (newRow.length < 4) {
-        newRow.push(0);
+      // Pad with zeros on the right
+      while (cells.length < 4) {
+        cells.push(0);
       }
 
-      // Check if the row changed
-      if (
-        originalLength !== numbers.length ||
-        JSON.stringify(row) !== JSON.stringify(newRow)
-      ) {
+      // Check if anything moved
+      if (JSON.stringify(this.board[row]) !== JSON.stringify(cells)) {
         moved = true;
       }
 
-      return newRow;
-    });
+      this.board[row] = cells;
+    }
 
     if (moved) {
-      this.board = newBoard;
+      this.score += scoreIncrease;
       this.addRandomTile();
       this.checkGameEnd();
     }
@@ -111,41 +107,36 @@ export default class Game {
     }
 
     let moved = false;
-    const newBoard = this.board.map((row) => {
-      // Get non-zero numbers and reverse
-      const numbers = row.filter((cell) => cell !== 0);
-      const originalLength = numbers.length;
+    let scoreIncrease = 0;
 
-      numbers.reverse();
+    for (let row = 0; row < 4; row++) {
+      const cells = this.board[row].filter((cell) => cell !== 0);
 
       // Merge adjacent equal numbers
-      for (let i = 0; i < numbers.length - 1; i++) {
-        if (numbers[i] === numbers[i + 1]) {
-          numbers[i] *= 2;
-          this.score += numbers[i];
-          numbers.splice(i + 1, 1);
+      for (let i = cells.length - 1; i > 0; i--) {
+        if (cells[i] === cells[i - 1]) {
+          cells[i] *= 2;
+          scoreIncrease += cells[i]; // Add to score when merging
+          cells.splice(i - 1, 1);
           moved = true;
         }
       }
 
-      // Fill with zeros and reverse back
-      const newRow = Array(4 - numbers.length).fill(0);
+      // Pad with zeros on the left
+      while (cells.length < 4) {
+        cells.unshift(0);
+      }
 
-      newRow.push(...numbers.reverse());
-
-      // Check if the row changed
-      if (
-        originalLength !== numbers.length ||
-        JSON.stringify(row) !== JSON.stringify(newRow)
-      ) {
+      // Check if anything moved
+      if (JSON.stringify(this.board[row]) !== JSON.stringify(cells)) {
         moved = true;
       }
 
-      return newRow;
-    });
+      this.board[row] = cells;
+    }
 
     if (moved) {
-      this.board = newBoard;
+      this.score += scoreIncrease;
       this.addRandomTile();
       this.checkGameEnd();
     }
@@ -160,50 +151,45 @@ export default class Game {
     }
 
     let moved = false;
-    const newBoard = Array(4)
-      .fill()
-      .map(() => Array(4).fill(0));
+    let scoreIncrease = 0;
 
-    // Process each column
     for (let col = 0; col < 4; col++) {
-      // Get non-zero numbers
-      const numbers = [];
+      // Get column as array
+      let cells = [];
 
       for (let row = 0; row < 4; row++) {
-        if (this.board[row][col] !== 0) {
-          numbers.push(this.board[row][col]);
-        }
+        cells.push(this.board[row][col]);
       }
 
-      const originalLength = numbers.length;
+      cells = cells.filter((cell) => cell !== 0);
 
       // Merge adjacent equal numbers
-      for (let i = 0; i < numbers.length - 1; i++) {
-        if (numbers[i] === numbers[i + 1]) {
-          numbers[i] *= 2;
-          this.score += numbers[i];
-          numbers.splice(i + 1, 1);
+      for (let i = 0; i < cells.length - 1; i++) {
+        if (cells[i] === cells[i + 1]) {
+          cells[i] *= 2;
+          scoreIncrease += cells[i]; // Add to score when merging
+          cells.splice(i + 1, 1);
           moved = true;
+          i--; // Check the next pair
         }
       }
 
-      // Fill the column from top
-      for (let row = 0; row < numbers.length; row++) {
-        newBoard[row][col] = numbers[row];
+      // Pad with zeros at the bottom
+      while (cells.length < 4) {
+        cells.push(0);
       }
 
-      // Check if the column changed
-      if (
-        originalLength !== numbers.length ||
-        JSON.stringify(this.board.map((r) => r[col])) !==
-          JSON.stringify(newBoard.map((r) => r[col]))
-      ) {
-        moved = true;
+      // Update the column
+      for (let row = 0; row < 4; row++) {
+        if (this.board[row][col] !== cells[row]) {
+          moved = true;
+          this.board[row][col] = cells[row];
+        }
       }
     }
 
     if (moved) {
-      this.board = newBoard;
+      this.score += scoreIncrease;
       this.addRandomTile();
       this.checkGameEnd();
     }
@@ -218,54 +204,44 @@ export default class Game {
     }
 
     let moved = false;
-    const newBoard = Array(4)
-      .fill()
-      .map(() => Array(4).fill(0));
+    let scoreIncrease = 0;
 
-    // Process each column
     for (let col = 0; col < 4; col++) {
-      // Get non-zero numbers
-      const numbers = [];
+      // Get column as array
+      let cells = [];
 
       for (let row = 0; row < 4; row++) {
-        if (this.board[row][col] !== 0) {
-          numbers.push(this.board[row][col]);
-        }
+        cells.push(this.board[row][col]);
       }
 
-      const originalLength = numbers.length;
-
-      numbers.reverse();
+      cells = cells.filter((cell) => cell !== 0);
 
       // Merge adjacent equal numbers
-      for (let i = 0; i < numbers.length - 1; i++) {
-        if (numbers[i] === numbers[i + 1]) {
-          numbers[i] *= 2;
-          this.score += numbers[i];
-          numbers.splice(i + 1, 1);
+      for (let i = cells.length - 1; i > 0; i--) {
+        if (cells[i] === cells[i - 1]) {
+          cells[i] *= 2;
+          scoreIncrease += cells[i]; // Add to score when merging
+          cells.splice(i - 1, 1);
           moved = true;
         }
       }
 
-      // Fill the column from bottom
-      numbers.reverse();
-
-      for (let i = 0; i < numbers.length; i++) {
-        newBoard[4 - numbers.length + i][col] = numbers[i];
+      // Pad with zeros at the top
+      while (cells.length < 4) {
+        cells.unshift(0);
       }
 
-      // Check if the column changed
-      if (
-        originalLength !== numbers.length ||
-        JSON.stringify(this.board.map((r) => r[col])) !==
-          JSON.stringify(newBoard.map((r) => r[col]))
-      ) {
-        moved = true;
+      // Update the column
+      for (let row = 0; row < 4; row++) {
+        if (this.board[row][col] !== cells[row]) {
+          moved = true;
+          this.board[row][col] = cells[row];
+        }
       }
     }
 
     if (moved) {
-      this.board = newBoard;
+      this.score += scoreIncrease;
       this.addRandomTile();
       this.checkGameEnd();
     }
