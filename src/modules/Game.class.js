@@ -24,7 +24,7 @@ export default class Game {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [0, 0, 0, 0]
+        [0, 0, 0, 0],
       ];
     }
     this.score = 0;
@@ -257,7 +257,7 @@ export default class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ];
     this.score = 0;
     this.status = 'playing';
@@ -282,7 +282,9 @@ export default class Game {
 
     if (emptyPositions.length > 0) {
       // Place new tile in random empty spot
-      const [row, col] = emptyPositions[Math.floor(Math.random() * emptyPositions.length)];
+      const [row, col] =
+        emptyPositions[Math.floor(Math.random() * emptyPositions.length)];
+
       // New tile is 2 (90% chance) or 4 (10% chance)
       this.state[row][col] = Math.random() < 0.9 ? 2 : 4;
     }

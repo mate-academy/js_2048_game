@@ -11,6 +11,68 @@ document.addEventListener('DOMContentLoaded', () => {
   const messageWin = document.querySelector('.message-win');
   const gameScore = document.querySelector('.game-score');
 
+  // Touch controls
+  let touchStartX = 0;
+  let touchStartY = 0;
+  const minSwipeDistance = 50; // Minimum distance for a swipe
+
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  });
+
+  document.addEventListener(
+    'touchmove',
+    (e) => {
+      // Prevent screen from scrolling while swiping
+      e.preventDefault();
+    },
+    { passive: false },
+  );
+
+  document.addEventListener('touchend', (e) => {
+    if (game.getStatus() !== 'playing') {
+      return;
+    }
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+
+    // Check if the swipe was long enough
+    if (
+      Math.abs(deltaX) < minSwipeDistance &&
+      Math.abs(deltaY) < minSwipeDistance
+    ) {
+      return;
+    }
+
+    let moved = false;
+
+    // Determine swipe direction by comparing which delta is larger
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // Horizontal swipe
+      if (deltaX > 0) {
+        moved = game.moveRight();
+      } else {
+        moved = game.moveLeft();
+      }
+    } else {
+      // Vertical swipe
+      if (deltaY > 0) {
+        moved = game.moveDown();
+      } else {
+        moved = game.moveUp();
+      }
+    }
+
+    if (moved) {
+      updateGameState();
+    }
+  });
+
   function updateGameState() {
     renderBoard(game.getState());
     gameScore.textContent = game.getScore();
@@ -68,12 +130,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (oldValue === 0) {
               // Animate new tile appearance
               cell.classList.add('field-cell--new');
+
               setTimeout(() => {
                 cell.classList.remove('field-cell--new');
               }, 150);
             } else if (newValue === oldValue * 2) {
               // Animate tile merge
               cell.classList.add('field-cell--merged');
+
               setTimeout(() => {
                 cell.classList.remove('field-cell--merged');
               }, 150);
@@ -107,31 +171,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let moved = false;
 
     switch (e.key) {
-      case 'ArrowUp':
-        game.moveUp();
-        moved = true;
-        break;
-      case 'ArrowDown':
-        game.moveDown();
-        moved = true;
-        break;
       case 'ArrowLeft':
-        game.moveLeft();
-        moved = true;
+        moved = game.moveLeft();
         break;
       case 'ArrowRight':
-        game.moveRight();
-        moved = true;
+        moved = game.moveRight();
         break;
+      case 'ArrowUp':
+        moved = game.moveUp();
+        break;
+      case 'ArrowDown':
+        moved = game.moveDown();
+        break;
+      default:
+        return;
     }
 
     if (moved) {
-      if (startButton.classList.contains('start')) {
-        startButton.classList.remove('start');
-        startButton.classList.add('restart');
-        startButton.textContent = 'Restart';
-        messageStart?.classList.add('hidden');
-      }
       updateGameState();
     }
   });
