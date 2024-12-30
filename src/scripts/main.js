@@ -47,38 +47,37 @@ document.addEventListener('DOMContentLoaded', () => {
         const newValue = board[rowIndex][cellIndex];
         const oldValue = parseInt(cell.textContent) || 0;
 
-        // Only update if value changed
-        if (newValue !== oldValue) {
-          // Remove existing classes
-          cell.classList.forEach((className) => {
-            if (className.startsWith('field-cell--')) {
-              cell.classList.remove(className);
+        // Remove all existing field-cell-- classes
+        cell.classList.forEach((className) => {
+          if (className.startsWith('field-cell--')) {
+            cell.classList.remove(className);
+          }
+        });
+
+        // Handle empty cells (value 0)
+        if (newValue === 0) {
+          cell.textContent = '';
+          cell.className = 'field-cell'; // Reset to base class only
+        } else {
+          // Handle cells with numbers
+          cell.textContent = newValue;
+          cell.className = `field-cell field-cell--${newValue}`;
+
+          // Add animation if value changed
+          if (oldValue !== newValue) {
+            if (oldValue === 0) {
+              cell.classList.add('field-cell--new');
+
+              setTimeout(() => {
+                cell.classList.remove('field-cell--new');
+              }, 150);
+            } else if (newValue === oldValue * 2) {
+              cell.classList.add('field-cell--merged');
+
+              setTimeout(() => {
+                cell.classList.remove('field-cell--merged');
+              }, 150);
             }
-          });
-
-          // Update content and classes
-          if (newValue === 0) {
-            cell.textContent = '';
-          } else {
-            cell.textContent = newValue;
-            cell.classList.add(`field-cell--${newValue}`);
-
-            // Use requestAnimationFrame for smoother animations
-            requestAnimationFrame(() => {
-              if (oldValue === 0) {
-                cell.classList.add('field-cell--new');
-
-                setTimeout(() => {
-                  cell.classList.remove('field-cell--new');
-                }, 150);
-              } else if (newValue === oldValue * 2) {
-                cell.classList.add('field-cell--merged');
-
-                setTimeout(() => {
-                  cell.classList.remove('field-cell--merged');
-                }, 150);
-              }
-            });
           }
         }
       });

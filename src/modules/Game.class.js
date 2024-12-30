@@ -16,18 +16,18 @@ export default class Game {
    * initial state.
    */
   constructor(initialState = null) {
-    // Validate initial state if provided
     if (initialState) {
-      if (
-        !Array.isArray(initialState) ||
-        initialState.length !== 4 ||
-        !initialState.every((row) => Array.isArray(row) && row.length === 4)
-      ) {
-        throw new Error('Invalid initial state: must be 4x4 array');
-      }
+      this.state = initialState;
+    } else {
+      this.state = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
     }
-    this.initialState = initialState;
-    this.restart();
+    this.score = 0;
+    this.status = 'idle';
   }
 
   // Method to set the game status
@@ -42,7 +42,8 @@ export default class Game {
 
   // Method to get the current state of the board
   getState() {
-    return this.board;
+    // Return a copy of the state to prevent unintended modifications
+    return this.state.map((row) => [...row]);
   }
 
   // Method to get the current score
@@ -65,7 +66,7 @@ export default class Game {
     let scoreIncrease = 0;
 
     for (let row = 0; row < 4; row++) {
-      const cells = this.board[row].filter((cell) => cell !== 0);
+      const cells = this.state[row].filter((cell) => cell !== 0);
 
       // Merge adjacent equal numbers
       for (let i = 0; i < cells.length - 1; i++) {
@@ -84,11 +85,11 @@ export default class Game {
       }
 
       // Check if anything moved
-      if (JSON.stringify(this.board[row]) !== JSON.stringify(cells)) {
+      if (JSON.stringify(this.state[row]) !== JSON.stringify(cells)) {
         moved = true;
       }
 
-      this.board[row] = cells;
+      this.state[row] = cells;
     }
 
     if (moved) {
@@ -110,7 +111,7 @@ export default class Game {
     let scoreIncrease = 0;
 
     for (let row = 0; row < 4; row++) {
-      const cells = this.board[row].filter((cell) => cell !== 0);
+      const cells = this.state[row].filter((cell) => cell !== 0);
 
       // Merge adjacent equal numbers
       for (let i = cells.length - 1; i > 0; i--) {
@@ -128,11 +129,11 @@ export default class Game {
       }
 
       // Check if anything moved
-      if (JSON.stringify(this.board[row]) !== JSON.stringify(cells)) {
+      if (JSON.stringify(this.state[row]) !== JSON.stringify(cells)) {
         moved = true;
       }
 
-      this.board[row] = cells;
+      this.state[row] = cells;
     }
 
     if (moved) {
@@ -158,7 +159,7 @@ export default class Game {
       let cells = [];
 
       for (let row = 0; row < 4; row++) {
-        cells.push(this.board[row][col]);
+        cells.push(this.state[row][col]);
       }
 
       cells = cells.filter((cell) => cell !== 0);
@@ -181,9 +182,9 @@ export default class Game {
 
       // Update the column
       for (let row = 0; row < 4; row++) {
-        if (this.board[row][col] !== cells[row]) {
+        if (this.state[row][col] !== cells[row]) {
           moved = true;
-          this.board[row][col] = cells[row];
+          this.state[row][col] = cells[row];
         }
       }
     }
@@ -211,7 +212,7 @@ export default class Game {
       let cells = [];
 
       for (let row = 0; row < 4; row++) {
-        cells.push(this.board[row][col]);
+        cells.push(this.state[row][col]);
       }
 
       cells = cells.filter((cell) => cell !== 0);
@@ -233,9 +234,9 @@ export default class Game {
 
       // Update the column
       for (let row = 0; row < 4; row++) {
-        if (this.board[row][col] !== cells[row]) {
+        if (this.state[row][col] !== cells[row]) {
           moved = true;
-          this.board[row][col] = cells[row];
+          this.state[row][col] = cells[row];
         }
       }
     }
@@ -250,57 +251,69 @@ export default class Game {
   }
 
   start() {
-    // Clear the board first
-    this.board = Array(4)
-      .fill()
-      .map(() => Array(4).fill(0));
+    // Explicitly set each cell to 0 first
+    this.state = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
     this.score = 0;
     this.status = 'playing';
 
-    // Always add exactly two tiles
+    // Add exactly two initial tiles
     this.addRandomTile();
     this.addRandomTile();
   }
 
   // Helper method to add a random tile
   addRandomTile() {
-    const emptyCells = [];
+    // Create a list of all empty positions
+    const emptyPositions = [];
 
-    // Find all empty cells
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
-        if (this.board[row][col] === 0) {
-          emptyCells.push({ row, col });
+        if (this.state[row][col] === 0) {
+          emptyPositions.push([row, col]);
         }
       }
     }
 
-    // Only proceed if there are empty cells
-    if (emptyCells.length > 0) {
-      const { row, col } =
-        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    // Only proceed if there are empty positions
+    if (emptyPositions.length > 0) {
+      // Select a random empty position
+      const randomIndex = Math.floor(Math.random() * emptyPositions.length);
+      const [row, col] = emptyPositions[randomIndex];
 
-      // Always add a number (2 or 4)
-      this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
+      // Set the new tile value (2 with 90% probability, 4 with 10% probability)
+      const value = Math.random() < 0.9 ? 2 : 4;
+
+      this.state[row][col] = value;
     }
   }
 
   // Add this method
   restart() {
+    // Explicitly reset the state
+    this.state = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
     this.score = 0;
-    this.status = 'idle';
+    this.status = 'playing';
 
-    // Just reset the board, start() will handle initialization
-    this.board = Array(4)
-      .fill()
-      .map(() => Array(4).fill(0));
+    // Add exactly two initial tiles
+    this.addRandomTile();
+    this.addRandomTile();
   }
 
   hasAvailableMoves() {
     // Check for possible horizontal merges
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 3; col++) {
-        if (this.board[row][col] === this.board[row][col + 1]) {
+        if (this.state[row][col] === this.state[row][col + 1]) {
           return true;
         }
       }
@@ -309,7 +322,7 @@ export default class Game {
     // Check for possible vertical merges
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 4; col++) {
-        if (this.board[row][col] === this.board[row + 1][col]) {
+        if (this.state[row][col] === this.state[row + 1][col]) {
           return true;
         }
       }
@@ -322,7 +335,7 @@ export default class Game {
     // First check for 2048 tile (win condition)
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
-        if (this.board[row][col] === 2048) {
+        if (this.state[row][col] === 2048) {
           this.status = 'win';
 
           return true;
@@ -333,7 +346,7 @@ export default class Game {
     // Check for empty cells
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
-        if (this.board[row][col] === 0) {
+        if (this.state[row][col] === 0) {
           return false; // Game can continue
         }
       }
@@ -342,7 +355,7 @@ export default class Game {
     // If no empty cells, check for possible merges
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 3; col++) {
-        if (this.board[row][col] === this.board[row][col + 1]) {
+        if (this.state[row][col] === this.state[row][col + 1]) {
           return false; // Can still merge horizontally
         }
       }
@@ -350,7 +363,7 @@ export default class Game {
 
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 4; col++) {
-        if (this.board[row][col] === this.board[row + 1][col]) {
+        if (this.state[row][col] === this.state[row + 1][col]) {
           return false; // Can still merge vertically
         }
       }
@@ -364,10 +377,10 @@ export default class Game {
 
   // Add protected method for board modifications
   #updateBoard(newBoard) {
-    const oldState = JSON.stringify(this.board);
+    const oldState = JSON.stringify(this.state);
 
-    this.board = newBoard;
+    this.state = newBoard;
 
-    return oldState !== JSON.stringify(this.board);
+    return oldState !== JSON.stringify(this.state);
   }
 }
