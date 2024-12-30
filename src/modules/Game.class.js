@@ -37,7 +37,7 @@ export default class Game {
 
   // Method to get the game status
   getStatus() {
-    return this.gameStatus;
+    return this.status;
   }
 
   // Method to get the current state of the board
@@ -62,9 +62,9 @@ export default class Game {
     }
 
     let moved = false;
-    const newBoard = this.board.map(row => {
+    const newBoard = this.board.map((row) => {
       // Get non-zero numbers
-      const numbers = row.filter(cell => cell !== 0);
+      const numbers = row.filter((cell) => cell !== 0);
       const originalLength = numbers.length;
 
       // Merge adjacent equal numbers
@@ -79,12 +79,16 @@ export default class Game {
 
       // Fill with zeros
       const newRow = [...numbers];
+
       while (newRow.length < 4) {
         newRow.push(0);
       }
 
       // Check if the row changed
-      if (originalLength !== numbers.length || JSON.stringify(row) !== JSON.stringify(newRow)) {
+      if (
+        originalLength !== numbers.length ||
+        JSON.stringify(row) !== JSON.stringify(newRow)
+      ) {
         moved = true;
       }
 
@@ -94,7 +98,10 @@ export default class Game {
     if (moved) {
       this.board = newBoard;
       this.addRandomTile();
+      this.checkGameEnd();
     }
+
+    return moved;
   }
 
   // Method to move tiles to the right
@@ -104,10 +111,11 @@ export default class Game {
     }
 
     let moved = false;
-    const newBoard = this.board.map(row => {
+    const newBoard = this.board.map((row) => {
       // Get non-zero numbers and reverse
-      const numbers = row.filter(cell => cell !== 0);
+      const numbers = row.filter((cell) => cell !== 0);
       const originalLength = numbers.length;
+
       numbers.reverse();
 
       // Merge adjacent equal numbers
@@ -122,10 +130,14 @@ export default class Game {
 
       // Fill with zeros and reverse back
       const newRow = Array(4 - numbers.length).fill(0);
+
       newRow.push(...numbers.reverse());
 
       // Check if the row changed
-      if (originalLength !== numbers.length || JSON.stringify(row) !== JSON.stringify(newRow)) {
+      if (
+        originalLength !== numbers.length ||
+        JSON.stringify(row) !== JSON.stringify(newRow)
+      ) {
         moved = true;
       }
 
@@ -135,7 +147,10 @@ export default class Game {
     if (moved) {
       this.board = newBoard;
       this.addRandomTile();
+      this.checkGameEnd();
     }
+
+    return moved;
   }
 
   // Method to move tiles up
@@ -145,17 +160,21 @@ export default class Game {
     }
 
     let moved = false;
-    const newBoard = Array(4).fill().map(() => Array(4).fill(0));
+    const newBoard = Array(4)
+      .fill()
+      .map(() => Array(4).fill(0));
 
     // Process each column
     for (let col = 0; col < 4; col++) {
       // Get non-zero numbers
       const numbers = [];
+
       for (let row = 0; row < 4; row++) {
         if (this.board[row][col] !== 0) {
           numbers.push(this.board[row][col]);
         }
       }
+
       const originalLength = numbers.length;
 
       // Merge adjacent equal numbers
@@ -174,8 +193,11 @@ export default class Game {
       }
 
       // Check if the column changed
-      if (originalLength !== numbers.length ||
-          JSON.stringify(this.board.map(r => r[col])) !== JSON.stringify(newBoard.map(r => r[col]))) {
+      if (
+        originalLength !== numbers.length ||
+        JSON.stringify(this.board.map((r) => r[col])) !==
+          JSON.stringify(newBoard.map((r) => r[col]))
+      ) {
         moved = true;
       }
     }
@@ -183,7 +205,10 @@ export default class Game {
     if (moved) {
       this.board = newBoard;
       this.addRandomTile();
+      this.checkGameEnd();
     }
+
+    return moved;
   }
 
   // Method to move tiles down
@@ -193,18 +218,23 @@ export default class Game {
     }
 
     let moved = false;
-    const newBoard = Array(4).fill().map(() => Array(4).fill(0));
+    const newBoard = Array(4)
+      .fill()
+      .map(() => Array(4).fill(0));
 
     // Process each column
     for (let col = 0; col < 4; col++) {
       // Get non-zero numbers
       const numbers = [];
+
       for (let row = 0; row < 4; row++) {
         if (this.board[row][col] !== 0) {
           numbers.push(this.board[row][col]);
         }
       }
+
       const originalLength = numbers.length;
+
       numbers.reverse();
 
       // Merge adjacent equal numbers
@@ -219,13 +249,17 @@ export default class Game {
 
       // Fill the column from bottom
       numbers.reverse();
+
       for (let i = 0; i < numbers.length; i++) {
         newBoard[4 - numbers.length + i][col] = numbers[i];
       }
 
       // Check if the column changed
-      if (originalLength !== numbers.length ||
-          JSON.stringify(this.board.map(r => r[col])) !== JSON.stringify(newBoard.map(r => r[col]))) {
+      if (
+        originalLength !== numbers.length ||
+        JSON.stringify(this.board.map((r) => r[col])) !==
+          JSON.stringify(newBoard.map((r) => r[col]))
+      ) {
         moved = true;
       }
     }
@@ -233,12 +267,17 @@ export default class Game {
     if (moved) {
       this.board = newBoard;
       this.addRandomTile();
+      this.checkGameEnd();
     }
+
+    return moved;
   }
 
   start() {
     // Clear the board first
-    this.board = Array(4).fill().map(() => Array(4).fill(0));
+    this.board = Array(4)
+      .fill()
+      .map(() => Array(4).fill(0));
     this.score = 0;
     this.status = 'playing';
 
@@ -262,7 +301,9 @@ export default class Game {
 
     // Only proceed if there are empty cells
     if (emptyCells.length > 0) {
-      const { row, col } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      const { row, col } =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
       // Always add a number (2 or 4)
       this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
     }
@@ -272,21 +313,15 @@ export default class Game {
   restart() {
     this.score = 0;
     this.status = 'idle';
+
     // Just reset the board, start() will handle initialization
-    this.board = Array(4).fill().map(() => Array(4).fill(0));
+    this.board = Array(4)
+      .fill()
+      .map(() => Array(4).fill(0));
   }
 
   hasAvailableMoves() {
-    // Check for empty cells
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        if (this.board[row][col] === 0) {
-          return true;
-        }
-      }
-    }
-
-    // Check for possible merges horizontally
+    // Check for possible horizontal merges
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 3; col++) {
         if (this.board[row][col] === this.board[row][col + 1]) {
@@ -295,7 +330,7 @@ export default class Game {
       }
     }
 
-    // Check for possible merges vertically
+    // Check for possible vertical merges
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.board[row][col] === this.board[row + 1][col]) {
@@ -308,18 +343,47 @@ export default class Game {
   }
 
   checkGameEnd() {
-    // Optimize win check
-    const hasWon = this.board.some((row) => row.some((cell) => cell === 2048));
+    // First check for 2048 tile (win condition)
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 2048) {
+          this.status = 'win';
 
-    if (hasWon) {
-      this.gameStatus = 'win';
-
-      return;
+          return true;
+        }
+      }
     }
 
-    if (!this.hasAvailableMoves()) {
-      this.gameStatus = 'lose';
+    // Check for empty cells
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 0) {
+          return false; // Game can continue
+        }
+      }
     }
+
+    // If no empty cells, check for possible merges
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 3; col++) {
+        if (this.board[row][col] === this.board[row][col + 1]) {
+          return false; // Can still merge horizontally
+        }
+      }
+    }
+
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === this.board[row + 1][col]) {
+          return false; // Can still merge vertically
+        }
+      }
+    }
+
+    // If we get here, no moves are possible
+    this.status = 'lose';
+
+    return true;
   }
 
   // Add protected method for board modifications

@@ -15,16 +15,25 @@ document.addEventListener('DOMContentLoaded', () => {
     renderBoard(game.getState());
     gameScore.textContent = game.getScore();
 
-    game.checkGameEnd();
-
     const gameStatus = game.getStatus();
 
-    messageStart?.classList.toggle('hidden', gameStatus !== 'idle');
-    messageLose?.classList.toggle('hidden', gameStatus !== 'lose');
-    messageWin?.classList.toggle('hidden', gameStatus !== 'win');
+    // Hide all messages first
+    messageStart.classList.add('hidden');
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
 
-    if (gameStatus === 'lose' || gameStatus === 'win') {
+    // Show appropriate message based on status
+    if (gameStatus === 'idle') {
+      messageStart.classList.remove('hidden');
+      startButton.textContent = 'Start';
+    } else if (gameStatus === 'lose') {
+      messageLose.classList.remove('hidden');
       startButton.textContent = 'Play Again';
+    } else if (gameStatus === 'win') {
+      messageWin.classList.remove('hidden');
+      startButton.textContent = 'Play Again';
+    } else {
+      startButton.textContent = 'Restart';
     }
   }
 
@@ -38,30 +47,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const newValue = board[rowIndex][cellIndex];
         const oldValue = parseInt(cell.textContent) || 0;
 
-        // Clear all existing classes first
-        cell.classList.forEach(className => {
-          if (className.startsWith('field-cell--')) {
-            cell.classList.remove(className);
-          }
-        });
+        // Only update if value changed
+        if (newValue !== oldValue) {
+          // Remove existing classes
+          cell.classList.forEach((className) => {
+            if (className.startsWith('field-cell--')) {
+              cell.classList.remove(className);
+            }
+          });
 
-        // Always set content and class based on value
-        if (newValue === 0) {
-          cell.textContent = '';
-        } else {
-          cell.textContent = newValue;
-          cell.classList.add(`field-cell--${newValue}`);
+          // Update content and classes
+          if (newValue === 0) {
+            cell.textContent = '';
+          } else {
+            cell.textContent = newValue;
+            cell.classList.add(`field-cell--${newValue}`);
 
-          // Only add animation if the value changed
-          if (oldValue !== newValue) {
+            // Use requestAnimationFrame for smoother animations
             requestAnimationFrame(() => {
               if (oldValue === 0) {
                 cell.classList.add('field-cell--new');
+
                 setTimeout(() => {
                   cell.classList.remove('field-cell--new');
                 }, 150);
               } else if (newValue === oldValue * 2) {
                 cell.classList.add('field-cell--merged');
+
                 setTimeout(() => {
                   cell.classList.remove('field-cell--merged');
                 }, 150);
