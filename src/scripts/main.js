@@ -1,6 +1,5 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 import Game from '../modules/Game.class.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,13 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameScore = document.querySelector('.game-score');
   const gameContainer = document.querySelector('.container');
 
-  // Lock page scrolling
   document.body.style.overflow = 'hidden';
   document.body.style.position = 'fixed';
   document.body.style.width = '100%';
   document.body.style.height = '100%';
 
-  // Touch controls
   let touchStartX = 0;
   let touchStartY = 0;
   const minSwipeDistance = 30;
@@ -56,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const deltaX = touchEndX - touchStartX;
       const deltaY = touchEndY - touchStartY;
 
-      // Check if the swipe was long enough
       if (
         Math.abs(deltaX) < minSwipeDistance &&
         Math.abs(deltaY) < minSwipeDistance
@@ -66,16 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let moved = false;
 
-      // Determine swipe direction
       if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Horizontal swipe
         if (deltaX > 0) {
           moved = game.moveRight();
         } else {
           moved = game.moveLeft();
         }
       } else {
-        // Vertical swipe
         if (deltaY > 0) {
           moved = game.moveDown();
         } else {
@@ -90,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { passive: false },
   );
 
-  // Add touch-action CSS to prevent default touch behaviors
   const style = document.createElement('style');
 
   style.textContent = `
@@ -107,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
   `;
   document.head.appendChild(style);
 
-  // Keyboard controls
   document.addEventListener('keydown', (e) => {
     if (game.getStatus() !== 'playing') {
       return;
@@ -143,23 +134,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const gameStatus = game.getStatus();
 
-    // Hide all messages first
     messageStart.classList.add('hidden');
     messageLose.classList.add('hidden');
     messageWin.classList.add('hidden');
 
-    // Show appropriate message based on status
-    if (gameStatus === 'idle') {
-      messageStart.classList.remove('hidden');
-      startButton.textContent = 'Start';
-    } else if (gameStatus === 'lose') {
-      messageLose.classList.remove('hidden');
-      startButton.textContent = 'Play Again';
-    } else if (gameStatus === 'win') {
-      messageWin.classList.remove('hidden');
-      startButton.textContent = 'Play Again';
-    } else {
-      startButton.textContent = 'Restart';
+    switch (gameStatus) {
+      case 'idle':
+        messageStart.classList.remove('hidden');
+        startButton.textContent = 'Start';
+        break;
+      case 'lose':
+        messageLose.classList.remove('hidden');
+        startButton.textContent = 'Play Again';
+        break;
+      case 'win':
+        messageWin.classList.remove('hidden');
+        startButton.textContent = 'Play Again';
+        break;
+      default:
+        startButton.textContent = 'Restart';
     }
   }
 
@@ -173,33 +166,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const newValue = board[rowIndex][cellIndex];
         const oldValue = parseInt(cell.textContent) || 0;
 
-        // Clean up any existing special cell classes
         cell.classList.forEach((className) => {
           if (className.startsWith('field-cell--')) {
             cell.classList.remove(className);
           }
         });
 
-        // Empty cell
         if (newValue === 0) {
           cell.textContent = '';
           cell.className = 'field-cell';
         } else {
-          // Cell with a number
           cell.textContent = newValue;
           cell.className = `field-cell field-cell--${newValue}`;
 
-          // Animate new or merged tiles
           if (oldValue !== newValue) {
             if (oldValue === 0) {
-              // Animate new tile appearance
               cell.classList.add('field-cell--new');
 
               setTimeout(() => {
                 cell.classList.remove('field-cell--new');
               }, 150);
             } else if (newValue === oldValue * 2) {
-              // Animate tile merge
               cell.classList.add('field-cell--merged');
 
               setTimeout(() => {
