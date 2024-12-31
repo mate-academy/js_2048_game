@@ -10,10 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const messageLose = document.querySelector('.message-lose');
   const messageWin = document.querySelector('.message-win');
   const gameScore = document.querySelector('.game-score');
-  const gameField = document.querySelector('.game-field');
+  const gameContainer = document.querySelector('.container');
 
-  // Lock page scrolling but allow button interactions
+  // Lock page scrolling
   document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.width = '100%';
   document.body.style.height = '100%';
 
   // Touch controls
@@ -21,68 +23,86 @@ document.addEventListener('DOMContentLoaded', () => {
   let touchStartY = 0;
   const minSwipeDistance = 30;
 
-  // Add touch events to game field only
-  gameField.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-  }, { passive: false });
+  gameContainer.addEventListener(
+    'touchstart',
+    (e) => {
+      e.preventDefault();
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    },
+    { passive: false },
+  );
 
-  gameField.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-  }, { passive: false });
+  gameContainer.addEventListener(
+    'touchmove',
+    (e) => {
+      e.preventDefault();
+    },
+    { passive: false },
+  );
 
-  gameField.addEventListener('touchend', (e) => {
-    e.preventDefault();
+  gameContainer.addEventListener(
+    'touchend',
+    (e) => {
+      e.preventDefault();
 
-    if (game.getStatus() !== 'playing') {
-      return;
-    }
-
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
-
-    if (Math.abs(deltaX) < minSwipeDistance && Math.abs(deltaY) < minSwipeDistance) {
-      return;
-    }
-
-    let moved = false;
-
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      if (deltaX > 0) {
-        moved = game.moveRight();
-      } else {
-        moved = game.moveLeft();
+      if (game.getStatus() !== 'playing') {
+        return;
       }
-    } else {
-      if (deltaY > 0) {
-        moved = game.moveDown();
-      } else {
-        moved = game.moveUp();
+
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      // Check if the swipe was long enough
+      if (
+        Math.abs(deltaX) < minSwipeDistance &&
+        Math.abs(deltaY) < minSwipeDistance
+      ) {
+        return;
       }
-    }
 
-    if (moved) {
-      updateGameState();
-    }
-  }, { passive: false });
+      let moved = false;
 
-  // Add touch-action CSS only to game field
+      // Determine swipe direction
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal swipe
+        if (deltaX > 0) {
+          moved = game.moveRight();
+        } else {
+          moved = game.moveLeft();
+        }
+      } else {
+        // Vertical swipe
+        if (deltaY > 0) {
+          moved = game.moveDown();
+        } else {
+          moved = game.moveUp();
+        }
+      }
+
+      if (moved) {
+        updateGameState();
+      }
+    },
+    { passive: false },
+  );
+
+  // Add touch-action CSS to prevent default touch behaviors
   const style = document.createElement('style');
+
   style.textContent = `
-    .game-field {
+    .container {
       touch-action: none;
       -webkit-touch-callout: none;
       -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-    }
-    .button {
-      touch-action: manipulation;
-      cursor: pointer;
     }
   `;
   document.head.appendChild(style);
