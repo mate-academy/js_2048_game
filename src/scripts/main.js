@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const messageLose = document.querySelector('.message-lose');
   const messageWin = document.querySelector('.message-win');
   const gameScore = document.querySelector('.game-score');
-  const gameContainer = document.querySelector('.container');
+  const gameField = document.querySelector('.game-field');
 
   document.body.style.overflow = 'hidden';
   document.body.style.position = 'fixed';
@@ -20,29 +20,28 @@ document.addEventListener('DOMContentLoaded', () => {
   let touchStartY = 0;
   const minSwipeDistance = 30;
 
-  gameContainer.addEventListener(
+  gameField.addEventListener(
     'touchstart',
     (e) => {
-      e.preventDefault();
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
     },
-    { passive: false },
+    { passive: true },
   );
 
-  gameContainer.addEventListener(
+  gameField.addEventListener(
     'touchmove',
     (e) => {
-      e.preventDefault();
+      if (game.getStatus() === 'playing') {
+        e.preventDefault();
+      }
     },
     { passive: false },
   );
 
-  gameContainer.addEventListener(
+  gameField.addEventListener(
     'touchend',
     (e) => {
-      e.preventDefault();
-
       if (game.getStatus() !== 'playing') {
         return;
       }
@@ -82,22 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     { passive: false },
   );
-
-  const style = document.createElement('style');
-
-  style.textContent = `
-    .container {
-      touch-action: none;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-  `;
-  document.head.appendChild(style);
 
   document.addEventListener('keydown', (e) => {
     if (game.getStatus() !== 'playing') {

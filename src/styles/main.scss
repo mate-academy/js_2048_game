@@ -90,6 +90,14 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .game-header {
@@ -151,6 +159,7 @@ h1 {
 .start {
   background: #1dae28;
   font-size: 20px;
+  text-align: center;
 
   &:hover {
     background: #179921;
@@ -159,7 +168,6 @@ h1 {
 
 .restart {
   background: #f1b2b2;
-  justify-content: center;
 
   &:hover {
     background: #f87474;
