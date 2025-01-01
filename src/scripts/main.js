@@ -106,6 +106,62 @@ window.addEventListener('keydown', (e) => {
   renderBoard();
 });
 
+const gameField = document.querySelector('.game-field');
+let startX = 0;
+let startY = 0;
+let endX = 0;
+let endY = 0;
+
+gameField.addEventListener("touchstart", (e) => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+});
+
+gameField.addEventListener("touchmove", (e) => {
+  endX = e.touches[0].clientX;
+  endY = e.touches[0].clientY;
+});
+
+gameField.addEventListener("touchend", () => {
+  const diffX = endX - startX;
+  const diffY = endY - startY;
+
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (diffX > 30) {
+      handleSwipe("right");
+    } else if (diffX < -30) {
+      handleSwipe("left");
+    }
+  } else {
+    if (diffY > 30) {
+      handleSwipe("down");
+    } else if (diffY < -30) {
+      handleSwipe("up");
+    }
+  }
+  startX = 0;
+  startY = 0;
+  endX = 0;
+  endY = 0;
+});
+
+function handleSwipe(direction) {
+  switch (direction) {
+    case "up":
+      game.moveUp();
+      break;
+    case "down":
+      game.moveDown();
+      break;
+    case "left":
+
+      game.moveLeft();
+      break;
+    case "right":
+      game.moveRight();
+      break;
+  }
+}
 let undoSum = 0;
 const undoMessage = document.querySelector('.message-undo');
 
