@@ -21,6 +21,9 @@ function renderBoard() {
         });
       }
 
+      cell.style.animation =
+        game.getStatus() === 'lose' ? 'none' : 'tile-pop 0.3s ease';
+
       cell.textContent = value === 0 ? '' : value;
 
       cell.className = 'field-cell';
@@ -112,31 +115,31 @@ let startY = 0;
 let endX = 0;
 let endY = 0;
 
-gameField.addEventListener("touchstart", (e) => {
+gameField.addEventListener('touchstart', (e) => {
   startX = e.touches[0].clientX;
   startY = e.touches[0].clientY;
 });
 
-gameField.addEventListener("touchmove", (e) => {
+gameField.addEventListener('touchmove', (e) => {
   endX = e.touches[0].clientX;
   endY = e.touches[0].clientY;
 });
 
-gameField.addEventListener("touchend", () => {
+gameField.addEventListener('touchend', () => {
   const diffX = endX - startX;
   const diffY = endY - startY;
 
   if (Math.abs(diffX) > Math.abs(diffY)) {
     if (diffX > 30) {
-      handleSwipe("right");
+      handleSwipe('right');
     } else if (diffX < -30) {
-      handleSwipe("left");
+      handleSwipe('left');
     }
   } else {
     if (diffY > 30) {
-      handleSwipe("down");
+      handleSwipe('down');
     } else if (diffY < -30) {
-      handleSwipe("up");
+      handleSwipe('up');
     }
   }
   startX = 0;
@@ -147,21 +150,21 @@ gameField.addEventListener("touchend", () => {
 
 function handleSwipe(direction) {
   switch (direction) {
-    case "up":
+    case 'up':
       game.moveUp();
       break;
-    case "down":
+    case 'down':
       game.moveDown();
       break;
-    case "left":
-
+    case 'left':
       game.moveLeft();
       break;
-    case "right":
+    case 'right':
       game.moveRight();
       break;
   }
 }
+
 let undoSum = 0;
 const undoMessage = document.querySelector('.message-undo');
 
