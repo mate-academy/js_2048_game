@@ -20,6 +20,7 @@ class Game {
     this.status = Game.InitialStatus.idle;
     this.state = initialState.map((item) => [...item]);
   }
+
   moveLeft() {
     if (this.status !== 'playing') {
       return false;
@@ -158,8 +159,9 @@ class Game {
 
     this.boards();
   }
+
   moveDown() {
-    if (this.status !== 'playing' || this.boards() === false) {
+    if (this.status !== 'playing') {
       return false;
     }
 
@@ -234,6 +236,7 @@ class Game {
       lose.classList.add('hidden');
     }
   }
+
   getState() {
     document.querySelectorAll('.field-cell').forEach((cell, index) => {
       cell.classList.remove(`field-cell--${cell.textContent}`);
@@ -250,6 +253,7 @@ class Game {
       this.status = Game.InitialStatus.win;
     }
   }
+
   start() {
     this.state = Game.InitialState.map((item) => [...item]);
     this.score = 0;
@@ -259,6 +263,7 @@ class Game {
 
     return this.status;
   }
+
   restart() {
     this.score = 0;
     this.state = Game.InitialState.map((item) => [...item]);
