@@ -152,15 +152,22 @@ function handleSwipe(direction) {
   switch (direction) {
     case 'up':
       game.moveUp();
+      renderBoard();
       break;
     case 'down':
       game.moveDown();
+      renderBoard();
+
       break;
     case 'left':
       game.moveLeft();
+      renderBoard();
+
       break;
     case 'right':
       game.moveRight();
+      renderBoard();
+
       break;
   }
 }
