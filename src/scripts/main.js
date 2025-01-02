@@ -22,6 +22,7 @@ button.addEventListener('click', () => {
     game.restart();
     gameScore.textContent = game.getScore();
   }
+  game.getState();
 });
 
 document.addEventListener('keydown', (e) => {
@@ -43,20 +44,3 @@ document.addEventListener('keydown', (e) => {
   game.getState();
   game.getStatus();
 });
-
-/** button.addEventListener('click', () => {
-    button.classList.toggle('restart');
-    button.classList.toggle('start');
-    button.textContent = button
-    .classList.contains('restart') ? 'Restart' : 'Start';
-});
-
-button.addEventListener('click', (e) => {
-  // e.preventDefault();
-
-  if (button.classList.contains('restart')) {
-    game.start();
-  } else {
-    game.restart();
-  }
-}); */

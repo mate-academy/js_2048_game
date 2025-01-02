@@ -16,12 +16,10 @@ class Game {
   };
 
   constructor(initialState = Game.InitialState) {
-    // eslint-disable-next-line no-console
     this.score = 0;
     this.status = Game.InitialStatus.idle;
     this.state = initialState.map((item) => [...item]);
   }
-
   moveLeft() {
     if (this.status !== 'playing') {
       return false;
@@ -59,7 +57,7 @@ class Game {
       }
     }
 
-    this.randomCells();
+    this.boards();
   }
 
   moveRight() {
@@ -104,7 +102,7 @@ class Game {
       }
     }
 
-    this.randomCells();
+    this.boards();
   }
 
   moveUp() {
@@ -158,10 +156,10 @@ class Game {
       }
     }
 
-    this.randomCells();
+    this.boards();
   }
   moveDown() {
-    if (this.status !== 'playing') {
+    if (this.status !== 'playing' || this.boards() === false) {
       return false;
     }
 
@@ -216,28 +214,13 @@ class Game {
       }
     }
 
-    this.randomCells();
+    this.boards();
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
     return this.score;
   }
 
-  /**
-   * @returns {number[][]}   */
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     const win = document.querySelector('.message-win');
     const lose = document.querySelector('.message-lose');
@@ -265,23 +248,21 @@ class Game {
       this.status = Game.InitialStatus.lose;
     } else if (this.state.flat().includes(2048)) {
       this.status = Game.InitialStatus.win;
-    } else {
-      this.status = Game.InitialStatus.playing;
     }
   }
   start() {
-    this.status = Game.InitialStatus.playing;
     this.state = Game.InitialState.map((item) => [...item]);
     this.score = 0;
     this.randomCells();
     this.randomCells();
-    this.getState();
+    this.status = Game.InitialStatus.playing;
+
+    return this.status;
   }
   restart() {
     this.score = 0;
     this.state = Game.InitialState.map((item) => [...item]);
     this.getState();
-    this.status = Game.InitialStatus.idle;
   }
   randomCells() {
     const empty = [];
@@ -301,8 +282,18 @@ class Game {
 
     this.state[empty[randomCell].indexRow][empty[randomCell].indexCell] =
       Math.random() < 0.9 ? 2 : 4;
+  }
 
-    return this.state;
+  boards() {
+    const board = [];
+
+    document.querySelectorAll('.field-cell').forEach((cell, index) => {
+      board[index] = cell.textContent === '' ? 0 : cell.textContent;
+    });
+
+    if (this.state.flat().toString() !== board.toString()) {
+      this.randomCells();
+    }
   }
 }
 
