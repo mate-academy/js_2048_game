@@ -8,29 +8,34 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  background-image: url('/src/images/9259354.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background-color: #f3e5ab;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #5c3b1e;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
-
+  transition: transform 0.2s ease-in-out;
   &--2 {
     background: #eee4da;
+    color: #776e65;
   }
 
   &--4 {
     background: #ede0c8;
+    color: #776e65;
   }
 
   &--8 {
-    background: #f2b179;
+    background: #ffcc80;
     color: #f9f6f2;
   }
 
@@ -50,7 +55,7 @@ body {
   }
 
   &--128 {
-    background: #edcf72;
+    background: #ffca28;
     color: #f9f6f2;
   }
 
@@ -75,10 +80,35 @@ body {
   }
 }
 
+@keyframes tile-pop {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes tile-move {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(100%, 0);
+  }
+}
+
+.field-cell--new {
+  animation: tile-pop 0.2s ease-in-out;
+}
+
 .game-field {
-  background: #bbada0;
+  background: linear-gradient(180deg, #fdf7e3, #fbf0d1);
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .game-header {
@@ -91,7 +121,7 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background: #ffa726;
   color: #f9f6f2;
   width: 75px;
   height: 75px;
@@ -109,11 +139,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: linear-gradient(to bottom, #ffc107, #ffa726);
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #5c3b1e;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -147,17 +177,27 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #e57373;
 
   &:hover {
     background: #f87474;
   }
 }
 
+.undo {
+  margin-left: 10px;
+  background: #d7b299;
+  color: #5c3b1e;
+
+  &:hover {
+    background: #fdf7e3;
+  }
+}
+
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
+  background: linear-gradient(180deg, #fdf7e3, #fbf0d1);
   color: #776e65;
   padding: 10px;
   text-align: center;
@@ -178,6 +218,11 @@ h1 {
 
 .message-win {
   background: #edc22e;
+  color: #f9f6f2;
+}
+
+.message-undo {
+  background: #f87474;
   color: #f9f6f2;
 }
 
