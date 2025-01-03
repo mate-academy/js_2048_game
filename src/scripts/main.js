@@ -7,9 +7,11 @@ import Game from '../modules/Game.class';
 const game = new Game();
 const gameScore = document.querySelector('.game-score');
 const button = document.querySelector('.button');
+const messageStart = document.querySelector('.message-start');
 
 button.addEventListener('click', () => {
   button.classList.toggle('restart');
+  messageStart.classList.toggle('hidden');
 
   if (document.querySelector('.restart')) {
     document.querySelector('.restart').textContent = 'Restart';
