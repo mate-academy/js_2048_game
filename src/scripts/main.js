@@ -10,8 +10,9 @@ const button = document.querySelector('.button');
 const messageStart = document.querySelector('.message-start');
 
 button.addEventListener('click', () => {
-  button.classList.toggle('restart');
   messageStart.classList.toggle('hidden');
+  button.classList.toggle('restart');
+
 
   if (document.querySelector('.restart')) {
     document.querySelector('.restart').textContent = 'Restart';
