@@ -23,191 +23,189 @@ class Game {
   constructor(initialState) {
     // eslint-disable-next-line no-console
     console.log(initialState);
-    this.initialState = initialState;
+
+    this.#gameState = initialState || [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    this.initiationValues = [
+      [...this.#gameState[0]],
+      [...this.#gameState[1]],
+      [...this.#gameState[2]],
+      [...this.#gameState[3]],
+    ];
   }
+  #gameState;
   #score = 0;
-  static gameTable = document.querySelector('.game-field');
+  #gameStatus = 'idle';
 
   moveLeft() {
-    const rowsFromTable = Array.from(Game.gameTable.rows);
+    if (this.#gameStatus === 'playing') {
+      let change = false;
 
-    rowsFromTable.forEach((row) => {
-      let firstNum;
-      let firstSpace = null;
+      this.#gameState.forEach((row) => {
+        let space;
+        let num;
 
-      Array.from(row.cells).forEach((cell) => {
-        if (cell.textContent === '' && firstSpace === null) {
-          firstSpace = cell;
-        } else if (cell.textContent !== '') {
-          // Якщо в клітинці є число і воно співпадає
-          // з посліднім числом ми їх з'єднуємо
-          if (firstNum && firstNum.textContent === cell.textContent) {
-            const newValue = parseFloat(firstNum.textContent) * 2;
-
-            this.#score += newValue;
-            firstNum.innerText = newValue;
-            firstNum.className = `field-cell field-cell--${newValue}`;
-
-            cell.innerText = '';
-            cell.className = 'field-cell';
-
-            firstSpace = firstNum.nextElementSibling;
-            firstNum = null;
-          } else if (firstSpace) {
-            // Якщо в клітинці є число але воно не співпадає з посліднім числом
-            // то ми намагаємося перемістити його в порожню клітинку
-            firstSpace.innerText = cell.textContent;
-            cell.innerText = '';
-            cell.className = 'field-cell';
-            firstNum = firstSpace;
-            firstNum.className = `field-cell field-cell--${firstNum.textContent}`;
-            firstSpace = firstNum.nextElementSibling;
-          } else {
-            // якщо і порожньої клітинки немає, то скоріще за все це перше число
-            // в першій клітинці і ми просто його записуємо
-            firstNum = cell;
+        row.forEach((cell, i) => {
+          if (cell === 0 && space === undefined) {
+            space = i;
+          } else if (cell > 0) {
+            if (row[num] === cell) {
+              row[num] = cell * 2;
+              this.#score += cell * 2;
+              this.checkViktory(cell * 2);
+              row[i] = 0;
+              space = num + 1;
+              num = undefined;
+              change = true;
+            } else if (space !== undefined) {
+              row[space] = cell;
+              row[i] = 0;
+              num = space;
+              space = space + 1;
+              change = true;
+            } else {
+              num = i;
+            }
           }
-        }
+        });
       });
-    });
+
+      // eslint-disable-next-line curly
+      if (change) this.getRandomCell();
+      this.checkLose();
+    }
   }
   moveRight() {
-    const reverseRowsFromTable = Array.from(Game.gameTable.rows).reverse();
+    if (this.#gameStatus === 'playing') {
+      let change = false;
 
-    reverseRowsFromTable.forEach((row) => {
-      let firstNum;
-      let firstSpace = null;
-      const reverseArrayCells = Array.from(row.cells).reverse();
+      this.#gameState.forEach((row) => {
+        let space;
+        let num;
 
-      reverseArrayCells.forEach((cell) => {
-        if (cell.textContent === '' && firstSpace === null) {
-          firstSpace = cell;
-        } else if (cell.textContent !== '') {
-          // Якщо в клітинці є число і воно співпадає
-          // з посліднім числом ми їх з'єднуємо
-          if (firstNum && firstNum.textContent === cell.textContent) {
-            const newValue = parseFloat(firstNum.textContent) * 2;
-
-            this.#score += newValue;
-            firstNum.innerText = newValue;
-            firstNum.className = `field-cell field-cell--${newValue}`;
-
-            cell.innerText = '';
-            cell.className = 'field-cell';
-
-            firstSpace = firstNum.previousElementSibling;
-            firstNum = null;
-          } else if (firstSpace) {
-            // Якщо в клітинці є число але воно не співпадає з посліднім числом
-            // то ми намагаємося перемістити його в порожню клітинку
-            firstSpace.innerText = cell.textContent;
-
-            cell.innerText = '';
-            cell.className = 'field-cell';
-
-            firstNum = firstSpace;
-            firstNum.className = `field-cell field-cell--${firstNum.textContent}`;
-
-            firstSpace = firstNum.previousElementSibling;
-          } else {
-            // якщо і порожньої клітинки немає, то скоріще за все це перше число
-            // в першій клітинці і ми просто його записуємо
-            firstNum = cell;
+        for (let i = row.length; i >= 0; i--) {
+          if (row[i] === 0 && space === undefined) {
+            space = i;
+          } else if (row[i] > 0) {
+            if (row[num] === row[i]) {
+              row[num] = row[i] * 2;
+              this.#score += row[i] * 2;
+              this.checkViktory(row[i] * 2);
+              row[i] = 0;
+              space = num - 1;
+              num = undefined;
+              change = true;
+            } else if (space !== undefined) {
+              row[space] = row[i];
+              row[i] = 0;
+              num = space;
+              space = space - 1;
+              change = true;
+            } else {
+              num = i;
+            }
           }
         }
       });
-    });
+
+      // eslint-disable-next-line curly
+      if (change) this.getRandomCell();
+      this.checkLose();
+    }
   }
   moveUp() {
-    const rowsFromTable = Array.from(Game.gameTable.rows);
+    if (this.#gameStatus === 'playing') {
+      let change = false;
 
-    for (let i = 0; i < rowsFromTable.length; i++) {
-      const cells = [
-        rowsFromTable[0].cells[i],
-        rowsFromTable[1].cells[i],
-        rowsFromTable[2].cells[i],
-        rowsFromTable[3].cells[i],
-      ];
-      let firstNum;
-      let firstSpace = null;
+      const table = this.#gameState;
 
-      cells.forEach((cell) => {
-        if (cell.textContent === '' && firstSpace === null) {
-          firstSpace = cell;
-        } else if (cell.textContent !== '') {
-          if (firstNum && firstNum.textContent === cell.textContent) {
-            const newValue = parseFloat(firstNum.textContent) * 2;
-            const indexForNextCell = cells.indexOf(firstNum);
+      for (let i = 0; i < table[0].length; i++) {
+        let space;
+        let num;
+        const column = i;
 
-            this.#score += newValue;
-            firstNum.innerText = newValue;
-            firstNum.className = `field-cell field-cell--${newValue}`;
+        for (let j = 0; j < table.length; j++) {
+          const currentRow = table[j];
+          const spaceRow = table[space];
+          const numRow = table[num];
 
-            cell.innerText = '';
-            cell.className = 'field-cell';
-
-            firstSpace = cells[indexForNextCell + 1];
-            firstNum = null;
-          } else if (firstSpace) {
-            const indexForNextCell = cells.indexOf(firstSpace);
-
-            firstSpace.innerText = cell.textContent;
-            cell.innerText = '';
-            cell.className = 'field-cell';
-            firstNum = firstSpace;
-            firstNum.className = `field-cell field-cell--${firstNum.textContent}`;
-            firstSpace = cells[indexForNextCell + 1];
-          } else {
-            firstNum = cell;
+          if (currentRow[column] === 0 && space === undefined) {
+            space = j;
+          } else if (currentRow[column] > 0) {
+            if (numRow !== undefined && numRow[column] === currentRow[column]) {
+              numRow[column] = currentRow[column] * 2;
+              this.#score += currentRow[column] * 2;
+              this.checkViktory(currentRow[column] * 2);
+              currentRow[column] = 0;
+              space = num + 1;
+              num = undefined;
+              change = true;
+            } else if (space !== undefined) {
+              spaceRow[column] = currentRow[column];
+              currentRow[column] = 0;
+              num = space;
+              space = space + 1;
+              change = true;
+            } else {
+              num = j;
+            }
           }
         }
-      });
+      }
+
+      // eslint-disable-next-line curly
+      if (change) this.getRandomCell();
+      this.checkLose();
     }
   }
   moveDown() {
-    const rowsFromTable = Array.from(Game.gameTable.rows);
+    if (this.#gameStatus === 'playing') {
+      let change = false;
 
-    for (let i = 0; i < rowsFromTable.length; i++) {
-      const cells = [
-        rowsFromTable[0].cells[i],
-        rowsFromTable[1].cells[i],
-        rowsFromTable[2].cells[i],
-        rowsFromTable[3].cells[i],
-      ].reverse();
-      let firstNum;
-      let firstSpace = null;
+      const table = this.#gameState;
 
-      cells.forEach((cell) => {
-        if (cell.textContent === '' && firstSpace === null) {
-          firstSpace = cell;
-        } else if (cell.textContent !== '') {
-          if (firstNum && firstNum.textContent === cell.textContent) {
-            const newValue = parseFloat(firstNum.textContent) * 2;
-            const indexForNextCell = cells.indexOf(firstNum);
+      for (let i = 0; i < table[0].length; i++) {
+        let space;
+        let num;
+        const column = i;
 
-            this.#score += newValue;
-            firstNum.innerText = newValue;
-            firstNum.className = `field-cell field-cell--${newValue}`;
+        for (let j = table.length - 1; j >= 0; j--) {
+          const currentRow = table[j];
+          const spaceRow = table[space];
+          const numRow = table[num];
 
-            cell.innerText = '';
-            cell.className = 'field-cell';
-
-            firstSpace = cells[indexForNextCell + 1];
-            firstNum = null;
-          } else if (firstSpace) {
-            const indexForNextCell = cells.indexOf(firstSpace);
-
-            firstSpace.innerText = cell.textContent;
-            cell.innerText = '';
-            cell.className = 'field-cell';
-            firstNum = firstSpace;
-            firstNum.className = `field-cell field-cell--${firstNum.textContent}`;
-            firstSpace = cells[indexForNextCell + 1];
-          } else {
-            firstNum = cell;
+          if (currentRow[column] === 0 && space === undefined) {
+            space = j;
+          } else if (currentRow[column] > 0) {
+            if (numRow !== undefined && numRow[column] === currentRow[column]) {
+              numRow[column] = currentRow[column] * 2;
+              this.#score += currentRow[column] * 2;
+              this.checkViktory(currentRow[column] * 2);
+              currentRow[column] = 0;
+              space = num - 1;
+              num = undefined;
+              change = true;
+            } else if (space !== undefined) {
+              spaceRow[column] = currentRow[column];
+              currentRow[column] = 0;
+              num = space;
+              space = space - 1;
+              change = true;
+            } else {
+              num = j;
+            }
           }
         }
-      });
+      }
+
+      // eslint-disable-next-line curly
+      if (change) this.getRandomCell();
+      this.checkLose();
     }
   }
 
@@ -222,24 +220,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    const rowsFromTable = Array.from(Game.gameTable.rows);
-    const result = [];
-
-    rowsFromTable.forEach((row) => {
-      const rowValues = [];
-
-      [...row.cells].forEach((cell) => {
-        if (cell.textContent === '') {
-          rowValues.push(0);
-        } else {
-          rowValues.push(parseInt(cell.textContent));
-        }
-      });
-
-      result.push(rowValues);
-    });
-
-    return result;
+    return this.#gameState;
   }
 
   /**
@@ -252,36 +233,33 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.#gameStatus;
+  }
 
   /**
    * Starts the game.
    */
   start() {
-    const rowsFromTable = Array.from(Game.gameTable.rows);
-
-    if (this.initialState instanceof Array) {
-      this.initialState.forEach((value, indexRow) => {
-        const currentRow = rowsFromTable[indexRow];
-
-        value.forEach((number, indexCell) => {
-          const currentCell = currentRow.cells[indexCell];
-
-          currentCell.classList.add(`field-cell--${number}`);
-          currentCell.innerText = number;
-        });
-      });
-    } else {
-      for (let i = 0; i < 2; i++) {
-        this.getRandomCell();
-      }
-    }
+    this.getRandomCell();
+    this.getRandomCell();
+    this.#gameStatus = 'playing';
   }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.#score = 0;
+    this.#gameStatus = 'idle';
+
+    this.#gameState = [
+      [...this.initiationValues[0]],
+      [...this.initiationValues[1]],
+      [...this.initiationValues[2]],
+      [...this.initiationValues[3]],
+    ];
+  }
 
   getRandomNumber(minNumber, maxNumber) {
     const max = Math.floor(maxNumber);
@@ -291,17 +269,74 @@ class Game {
   }
 
   getRandomCell() {
-    const rowsFromTable = Array.from(Game.gameTable.rows);
-    const row = rowsFromTable[this.getRandomNumber(0, 3)];
-    const cell = row.cells[this.getRandomNumber(0, 3)];
+    const row = this.#gameState[this.getRandomNumber(0, 3)];
+    const cell = this.getRandomNumber(0, 3);
 
-    if (cell.textContent === '') {
-      const valueForCell = Math.random() < 0.1 ? 4 : 2;
-
-      cell.classList.add(`field-cell--${valueForCell}`);
-      cell.innerText = valueForCell;
+    if (row[cell] === 0) {
+      row[cell] = Math.random() < 0.1 ? 4 : 2;
     } else {
       this.getRandomCell();
+    }
+  }
+
+  modifyPage(table, valueForTable) {
+    valueForTable.forEach((row, i) => {
+      const tableRow = table.rows[i];
+
+      row.forEach((value, index) => {
+        if (value === 0) {
+          const cell = tableRow.cells[index];
+
+          cell.innerText = '';
+          cell.className = 'field-cell';
+        } else if (value > 0) {
+          const cell = tableRow.cells[index];
+
+          cell.innerText = value;
+          cell.className = `field-cell field-cell--${value}`;
+        }
+      });
+    });
+  }
+
+  checkViktory(value) {
+    if (value === 2048) {
+      this.#gameStatus = 'win';
+    }
+  }
+
+  checkLose() {
+    let possibleMoving = false;
+
+    for (let i = 0; i < this.#gameState.length; i++) {
+      for (let j = 1; j < this.#gameState.length; j++) {
+        const row = this.#gameState[i];
+
+        if (row[j] === row[j - 1]) {
+          possibleMoving = true;
+          break;
+        } else if (row[j] === 0 || row[j - 1] === 0) {
+          possibleMoving = true;
+          break;
+        }
+      }
+
+      for (let j = 1; j < this.#gameState.length; j++) {
+        const previousRow = this.#gameState[j - 1];
+        const currentRow = this.#gameState[j];
+
+        if (currentRow[i] === previousRow[i]) {
+          possibleMoving = true;
+          break;
+        } else if (currentRow[i] === 0 || previousRow[i] === 0) {
+          possibleMoving = true;
+          break;
+        }
+      }
+    }
+
+    if (!possibleMoving) {
+      this.#gameStatus = 'lose';
     }
   }
 }
