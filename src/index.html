@@ -9,14 +9,26 @@
     <title>2048</title>
     <link
       rel="stylesheet"
-      href="./styles/main.scss"
+      href="./styles/main.css"
     />
+
+    <script type="module" src="modules/Game.class.js"></script>
+    <script
+      type="module"
+      defer
+      src="scripts/main.js"
+    ></script>
+
   </head>
   <body>
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
         <div class="controls">
+          <p class="info">
+            Best:
+            <span class="best-score">0</span>
+          </p>
           <p class="info">
             Score:
             <span class="game-score">0</span>
@@ -65,6 +77,5 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
   </body>
 </html>
