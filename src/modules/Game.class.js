@@ -7,6 +7,7 @@ export default class Game {
       initialState || Array.from({ length: 4 }, () => Array(4).fill(0));
     this.score = 0;
     this.status = 'idle';
+    this.moved = false; // Флаг для отслеживания движения плиток
   }
 
   getState() {
@@ -55,28 +56,48 @@ export default class Game {
   }
 
   moveLeft() {
+    const previousBoard = this.copyBoard();
+
+    this.moved = false;
+
     this.board = this.board.map((row) => this.combineRow(row));
+    this.checkMove(previousBoard);
     this.finalizeMove();
   }
 
   moveRight() {
+    const previousBoard = this.copyBoard();
+
+    this.moved = false;
+
     this.board = this.board.map((row) =>
       this.combineRow(row.reverse()).reverse(),
     );
+    this.checkMove(previousBoard);
     this.finalizeMove();
   }
 
   moveUp() {
+    const previousBoard = this.copyBoard();
+
+    this.moved = false;
     this.board = this.transpose(this.board).map((row) => this.combineRow(row));
     this.board = this.transpose(this.board);
+    this.checkMove(previousBoard);
     this.finalizeMove();
   }
 
   moveDown() {
+    const previousBoard = this.copyBoard();
+
+    this.moved = false;
+
     this.board = this.transpose(this.board).map((row) =>
       this.combineRow(row.reverse()).reverse(),
     );
+
     this.board = this.transpose(this.board);
+    this.checkMove(previousBoard);
     this.finalizeMove();
   }
 
@@ -89,6 +110,7 @@ export default class Game {
         combined.push(nonZero[i] * 2);
         this.score += nonZero[i] * 2;
         i++;
+        this.moved = true;
       } else {
         combined.push(nonZero[i]);
       }
@@ -104,6 +126,28 @@ export default class Game {
     return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
   }
 
+  copyBoard() {
+    return this.board.map((row) => row.slice());
+  }
+
+  checkMove(previousBoard) {
+    if (!this.isEqual(previousBoard, this.board)) {
+      this.moved = true;
+    }
+  }
+
+  isEqual(board1, board2) {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (board1[i][j] !== board2[i][j]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   finalizeMove() {
     if (this.checkWin()) {
       this.status = 'win';
@@ -117,7 +161,9 @@ export default class Game {
       return;
     }
 
-    this.addRandomTile();
+    if (this.moved) {
+      this.addRandomTile();
+    }
   }
 
   checkWin() {
