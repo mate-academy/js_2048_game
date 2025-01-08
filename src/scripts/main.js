@@ -112,6 +112,7 @@ document.addEventListener('keydown', (e) => {
 function restartBtnLogic(msgToHide) {
   game.restart();
   drawGameState(game.getState());
+  gameScore.textContent = 0;
 
   mainButton.classList.remove('restart');
   mainButton.classList.add('start');
