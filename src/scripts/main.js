@@ -4,7 +4,6 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-
 // Write your code here
 const table = document.querySelector('.game-field');
 const gameScore = document.querySelector('.game-score');
@@ -20,21 +19,21 @@ const winMessage = document.querySelector('.message-win');
 function drawGameState(state) {
   for (let j = 0; j < 4; j++) {
     for (let i = 0; i < 4; i++) {
-
       if (state[j][i] === 2048) {
         game.status = 'win';
       }
 
-      table.rows[j].cells[i].classList.remove(`field-cell--${table.rows[j].cells[i].textContent}`);
+      table.rows[j].cells[i].classList.remove(
+        `field-cell--${table.rows[j].cells[i].textContent}`,
+      );
 
       if (state[j][i] === 0) {
-        // debugger;
         table.rows[j].cells[i].textContent = '';
         continue;
       }
 
       table.rows[j].cells[i].textContent = state[j][i];
-      table.rows[j].cells[i].classList.add(`field-cell--${state[j][i]}`)
+      table.rows[j].cells[i].classList.add(`field-cell--${state[j][i]}`);
     }
   }
 }
@@ -48,70 +47,63 @@ function gameMove() {
 
   if (game.getStatus() === 'win') {
     winMessage.classList.remove('hidden');
-  }
-  else if (lose) {
+  } else if (lose) {
     game.status = 'lose';
     loseMessage.classList.remove('hidden');
   }
 }
 
-
 document.addEventListener('keydown', (e) => {
   if (e.code !== 'ArrowDown') {
     return;
   }
-  // debugger;
+
   const success = game.moveDown();
 
   if (!success) {
-    return
+    return;
   }
 
   gameMove();
 });
-
 
 document.addEventListener('keydown', (e) => {
   if (e.code !== 'ArrowUp') {
     return;
   }
-  // debugger;
 
   const success = game.moveUp();
 
   if (!success) {
-    return
+    return;
   }
 
   gameMove();
 });
-
 
 document.addEventListener('keydown', (e) => {
   if (e.code !== 'ArrowLeft') {
     return;
   }
-  // debugger;
+
   const success = game.moveLeft();
 
   if (!success) {
-    return
+    return;
   }
 
   gameMove();
 });
 
-
 document.addEventListener('keydown', (e) => {
   if (e.code !== 'ArrowRight') {
     return;
   }
-  // debugger;
 
   const success = game.moveRight();
 
   if (!success) {
-    return
+    return;
   }
 
   gameMove();
@@ -133,7 +125,6 @@ function restartBtnLogic(msgToHide) {
   }
 }
 
-
 mainButton.addEventListener('click', (e) => {
   if (game.getStatus() === 'idle') {
     game.start();
@@ -144,15 +135,11 @@ mainButton.addEventListener('click', (e) => {
 
     mainButton.textContent = 'Restart';
     startMessage.classList.add('hidden');
-  }
-  else if (game.getStatus() === 'playing') {
+  } else if (game.getStatus() === 'playing') {
     restartBtnLogic();
-  }
-  else if (game.getStatus() === 'lose') {
+  } else if (game.getStatus() === 'lose') {
     restartBtnLogic(loseMessage);
-  }
-  else if (game.getStatus() === 'win') {
+  } else if (game.getStatus() === 'win') {
     restartBtnLogic(winMessage);
   }
-})
-
+});
