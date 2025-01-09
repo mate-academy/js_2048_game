@@ -28,7 +28,6 @@ class Game {
    * initial state.
    */
   constructor(initialState = Game.defaultInitial) {
-    // eslint-disable-next-line no-console
     this.state = JSON.parse(JSON.stringify(initialState));
     this.score = 0;
     this.status = Game.defaultStatus;
@@ -50,7 +49,6 @@ class Game {
           }
         }
 
-        // find next non zero element
         let second = -1;
 
         for (let i = first + 1; i < 4; i++) {
@@ -64,7 +62,6 @@ class Game {
           break;
         }
 
-        // if equal merge, next round start = second + 1
         if (this.state[row][first] === this.state[row][second]) {
           this.state[row][first] *= 2;
           this.state[row][second] = 0;
@@ -73,7 +70,6 @@ class Game {
           start = second + 1;
           continue;
         } else {
-          // if not equal, start = second
           start = second;
           continue;
         }
@@ -108,7 +104,6 @@ class Game {
       let start = 3;
 
       while (start > 0) {
-        // find first non zero element from right
         let first = -1;
 
         for (let i = start; i > 0; i--) {
@@ -118,7 +113,6 @@ class Game {
           }
         }
 
-        // find next non zero element
         let second = -1;
 
         for (let i = first - 1; i >= 0; i--) {
@@ -132,7 +126,6 @@ class Game {
           break;
         }
 
-        // if equal merge, next round start = second + 1
         if (this.state[row][first] === this.state[row][second]) {
           this.state[row][first] *= 2;
           this.state[row][second] = 0;
@@ -141,7 +134,6 @@ class Game {
           start = second - 1;
           continue;
         } else {
-          // if not equal, start = second
           start = second;
           continue;
         }
@@ -157,7 +149,6 @@ class Game {
 
           let idx = null;
 
-          // find index of the right-most zero
           for (let q = 3; q >= 0; q--) {
             if (this.state[i][q] === 0) {
               idx = q;
@@ -184,7 +175,6 @@ class Game {
       let start = 0;
 
       while (start < 4) {
-        // find first non zero element from right
         let first = -1;
 
         for (let i = start; i < 3; i++) {
@@ -194,7 +184,6 @@ class Game {
           }
         }
 
-        // find next non zero element
         let second = -1;
 
         for (let i = first + 1; i < 4; i++) {
@@ -208,7 +197,6 @@ class Game {
           break;
         }
 
-        // if equal merge, next round start = second + 1
         if (this.state[first][col] === this.state[second][col]) {
           this.state[first][col] *= 2;
           this.state[second][col] = 0;
@@ -217,7 +205,6 @@ class Game {
           start = second + 1;
           continue;
         } else {
-          // if not equal, start = second
           start = second;
           continue;
         }
@@ -233,7 +220,6 @@ class Game {
 
           let idx = null;
 
-          // find index of the first zero
           for (let q = 0; q < 4; q++) {
             if (this.state[q][i] === 0) {
               idx = q;
@@ -260,7 +246,6 @@ class Game {
       let start = 3;
 
       while (start > 0) {
-        // find first non zero element from right
         let first = -1;
 
         for (let i = start; i > 0; i--) {
@@ -270,7 +255,6 @@ class Game {
           }
         }
 
-        // find next non zero element
         let second = -1;
 
         for (let i = first - 1; i >= 0; i--) {
@@ -284,7 +268,6 @@ class Game {
           break;
         }
 
-        // if equal merge, next round start = second + 1
         if (this.state[first][col] === this.state[second][col]) {
           this.state[first][col] *= 2;
           this.state[second][col] = 0;
@@ -293,7 +276,6 @@ class Game {
           start = second - 1;
           continue;
         } else {
-          // if not equal, start = second
           start = second;
           continue;
         }
@@ -309,7 +291,6 @@ class Game {
 
           let idx = null;
 
-          // find index of the first zero
           for (let q = 3; q >= 0; q--) {
             if (this.state[q][i] === 0) {
               idx = q;
@@ -399,8 +380,6 @@ class Game {
     } else {
       this.state[x][y] = 2;
     }
-
-    // console.log(this.state);
   }
 
   addScore(num) {
