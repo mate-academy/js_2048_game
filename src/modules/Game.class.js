@@ -1,4 +1,3 @@
-/* eslint-disable function-paren-newline */
 'use strict';
 
 export default class Game {
@@ -7,7 +6,7 @@ export default class Game {
       initialState || Array.from({ length: 4 }, () => Array(4).fill(0));
     this.score = 0;
     this.status = 'idle';
-    this.moved = false; // Флаг для отслеживания движения плиток
+    this.moved = false;
   }
 
   getState() {
@@ -71,8 +70,7 @@ export default class Game {
     this.moved = false;
 
     this.board = this.board.map((row) =>
-      this.combineRow(row.reverse()).reverse(),
-    );
+      this.combineRow(row.reverse()).reverse());
     this.checkMove(previousBoard);
     this.finalizeMove();
   }
@@ -93,8 +91,7 @@ export default class Game {
     this.moved = false;
 
     this.board = this.transpose(this.board).map((row) =>
-      this.combineRow(row.reverse()).reverse(),
-    );
+      this.combineRow(row.reverse()).reverse());
 
     this.board = this.transpose(this.board);
     this.checkMove(previousBoard);
