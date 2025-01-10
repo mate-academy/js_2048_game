@@ -83,19 +83,26 @@ startButton.addEventListener('click', () => {
   }
 });
 
+const KEYS = {
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+  UP: 'ArrowUp',
+  DOWN: 'ArrowDown',
+};
+
 // eslint-disable-next-line no-shadow
 window.addEventListener('keydown', (event) => {
   switch (event.key) {
-    case 'ArrowLeft':
+    case KEYS.LEFT:
       game.moveLeft();
       break;
-    case 'ArrowRight':
+    case KEYS.RIGHT:
       game.moveRight();
       break;
-    case 'ArrowUp':
+    case KEYS.UP:
       game.moveUp();
       break;
-    case 'ArrowDown':
+    case KEYS.DOWN:
       game.moveDown();
       break;
     default:
@@ -105,4 +112,27 @@ window.addEventListener('keydown', (event) => {
   updateBoard();
   updateScore();
   updateMessages();
+
+  // eslint-disable-next-line no-shadow
+  // window.addEventListener('keydown', (event) => {
+  //   switch (event.key) {
+  //     case 'ArrowLeft':
+  //       game.moveLeft();
+  //       break;
+  //     case 'ArrowRight':
+  //       game.moveRight();
+  //       break;
+  //     case 'ArrowUp':
+  //       game.moveUp();
+  //       break;
+  //     case 'ArrowDown':
+  //       game.moveDown();
+  //       break;
+  //     default:
+  //       return;
+  //   }
+
+  //   updateBoard();
+  //   updateScore();
+  //   updateMessages();
 });
