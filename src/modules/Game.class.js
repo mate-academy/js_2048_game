@@ -34,151 +34,46 @@ class Game {
   }
 
   moveLeft() {
-    let moveSuccess = false;
-
-    for (let row = 0; row < 4; row++) {
-      let start = 0;
-
-      while (start < 3) {
-        let first = -1;
-
-        for (let i = start; i < 3; i++) {
-          if (this.state[row][i] !== 0) {
-            first = i;
-            break;
-          }
-        }
-
-        let second = -1;
-
-        for (let i = first + 1; i < 4; i++) {
-          if (this.state[row][i] !== 0) {
-            second = i;
-            break;
-          }
-        }
-
-        if (first === -1 || second === -1) {
-          break;
-        }
-
-        if (this.state[row][first] === this.state[row][second]) {
-          this.state[row][first] *= 2;
-          this.state[row][second] = 0;
-          this.addScore(this.state[row][first]);
-          moveSuccess = true;
-          start = second + 1;
-          continue;
-        } else {
-          start = second;
-          continue;
-        }
-      }
-    }
-
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 4; j++) {
-        if (this.state[i][j] !== 0) {
-          const temp = this.state[i][j];
-
-          this.state[i][j] = 0;
-
-          const idx = this.state[i].findIndex((el) => el === 0);
-
-          this.state[i][idx] = temp;
-
-          if (j !== idx) {
-            moveSuccess = true;
-          }
-        }
-      }
-    }
-
-    return moveSuccess;
+    return this.moveDirection('left');
   }
 
   moveRight() {
-    let moveSuccess = false;
-
-    for (let row = 0; row < 4; row++) {
-      let start = 3;
-
-      while (start > 0) {
-        let first = -1;
-
-        for (let i = start; i > 0; i--) {
-          if (this.state[row][i] !== 0) {
-            first = i;
-            break;
-          }
-        }
-
-        let second = -1;
-
-        for (let i = first - 1; i >= 0; i--) {
-          if (this.state[row][i] !== 0) {
-            second = i;
-            break;
-          }
-        }
-
-        if (first === -1 || second === -1) {
-          break;
-        }
-
-        if (this.state[row][first] === this.state[row][second]) {
-          this.state[row][first] *= 2;
-          this.state[row][second] = 0;
-          moveSuccess = true;
-          this.addScore(this.state[row][first]);
-          start = second - 1;
-          continue;
-        } else {
-          start = second;
-          continue;
-        }
-      }
-    }
-
-    for (let i = 0; i < 4; i++) {
-      for (let j = 3; j >= 0; j--) {
-        if (this.state[i][j] !== 0) {
-          const temp = this.state[i][j];
-
-          this.state[i][j] = 0;
-
-          let idx = null;
-
-          for (let q = 3; q >= 0; q--) {
-            if (this.state[i][q] === 0) {
-              idx = q;
-              break;
-            }
-          }
-
-          this.state[i][idx] = temp;
-
-          if (j !== idx) {
-            moveSuccess = true;
-          }
-        }
-      }
-    }
-
-    return moveSuccess;
+    return this.moveDirection('right');
   }
 
   moveUp() {
+    return this.moveDirection('up');
+  }
+
+  moveDown() {
+    return this.moveDirection('down');
+  }
+
+  moveDirection(direction) {
+    let moveSuccess = this.mergeCells(direction);
+
+    moveSuccess = this.moveToSide(direction);
+
+    return moveSuccess;
+  }
+
+  mergeCells(direction) {
     let moveSuccess = false;
 
-    for (let col = 0; col < 4; col++) {
-      let start = 0;
+    for (let row = 0; row < 4; row++) {
+      let start = this.startByDirection(direction);
 
-      while (start < 4) {
+      while (this.loopConditionByDirection(direction, 3, 0)(start)) {
         let first = -1;
 
-        for (let i = start; i < 3; i++) {
-          if (this.state[i][col] !== 0) {
+        for (
+          let i = start;
+          this.loopConditionByDirection(direction, 3, 0)(i);
+          i = this.operationByDirection(direction)(i)
+        ) {
+          const [x, y] = this.swapByDirection(direction, row, i);
+
+          if (this.state[x][y] !== 0) {
             first = i;
             break;
           }
@@ -186,8 +81,14 @@ class Game {
 
         let second = -1;
 
-        for (let i = first + 1; i < 4; i++) {
-          if (this.state[i][col] !== 0) {
+        for (
+          let i = this.operationByDirection(direction)(first);
+          this.loopConditionByDirection(direction, 4, -1)(i);
+          i = this.operationByDirection(direction)(i)
+        ) {
+          const [x, y] = this.swapByDirection(direction, row, i);
+
+          if (this.state[x][y] !== 0) {
             second = i;
             break;
           }
@@ -197,12 +98,26 @@ class Game {
           break;
         }
 
-        if (this.state[first][col] === this.state[second][col]) {
-          this.state[first][col] *= 2;
-          this.state[second][col] = 0;
+        const [firstEl, secondEl] = this.swapDimension(
+          direction,
+          row,
+          first,
+          second,
+        );
+
+        if (firstEl === secondEl) {
+          if (['left', 'right'].includes(direction)) {
+            this.state[row][first] *= 2;
+            this.state[row][second] = 0;
+            this.addScore(this.state[row][first]);
+          } else {
+            this.state[first][row] *= 2;
+            this.state[second][row] = 0;
+            this.addScore(this.state[first][row]);
+          }
+
           moveSuccess = true;
-          this.addScore(this.state[first][col]);
-          start = second + 1;
+          start = this.operationByDirection(direction)(second);
           continue;
         } else {
           start = second;
@@ -211,23 +126,43 @@ class Game {
       }
     }
 
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 4; j++) {
-        if (this.state[j][i] !== 0) {
-          const temp = this.state[j][i];
+    return moveSuccess;
+  }
 
-          this.state[j][i] = 0;
+  moveToSide(direction) {
+    let moveSuccess = false;
+
+    for (let i = 0; i < 4; i++) {
+      for (
+        let j = this.startByDirection(direction);
+        this.loopConditionByDirection(direction, 4, -1)(j);
+        j = this.operationByDirection(direction)(j)
+      ) {
+        const [x, y] = this.swapByDirection(direction, i, j);
+
+        if (this.state[x][y] !== 0) {
+          const temp = this.state[x][y];
+
+          this.state[x][y] = 0;
 
           let idx = null;
 
-          for (let q = 0; q < 4; q++) {
-            if (this.state[q][i] === 0) {
+          for (
+            let q = this.startByDirection(direction);
+            this.loopConditionByDirection(direction, 4, -1)(q);
+            q = this.operationByDirection(direction)(q)
+          ) {
+            const [x2, y2] = this.swapByDirection(direction, i, q);
+
+            if (this.state[x2][y2] === 0) {
               idx = q;
               break;
             }
           }
 
-          this.state[idx][i] = temp;
+          const [x3, y3] = this.swapByDirection(direction, i, idx);
+
+          this.state[x3][y3] = temp;
 
           if (j !== idx) {
             moveSuccess = true;
@@ -239,75 +174,44 @@ class Game {
     return moveSuccess;
   }
 
-  moveDown() {
-    let moveSuccess = false;
-
-    for (let col = 0; col < 4; col++) {
-      let start = 3;
-
-      while (start > 0) {
-        let first = -1;
-
-        for (let i = start; i > 0; i--) {
-          if (this.state[i][col] !== 0) {
-            first = i;
-            break;
-          }
-        }
-
-        let second = -1;
-
-        for (let i = first - 1; i >= 0; i--) {
-          if (this.state[i][col] !== 0) {
-            second = i;
-            break;
-          }
-        }
-
-        if (first === -1 || second === -1) {
-          break;
-        }
-
-        if (this.state[first][col] === this.state[second][col]) {
-          this.state[first][col] *= 2;
-          this.state[second][col] = 0;
-          moveSuccess = true;
-          this.addScore(this.state[first][col]);
-          start = second - 1;
-          continue;
-        } else {
-          start = second;
-          continue;
-        }
-      }
+  swapByDirection(direction, var1, var2) {
+    if (['up', 'down'].includes(direction)) {
+      return [var2, var1];
     }
 
-    for (let i = 0; i < 4; i++) {
-      for (let j = 3; j >= 0; j--) {
-        if (this.state[j][i] !== 0) {
-          const temp = this.state[j][i];
+    return [var1, var2];
+  }
 
-          this.state[j][i] = 0;
-
-          let idx = null;
-
-          for (let q = 3; q >= 0; q--) {
-            if (this.state[q][i] === 0) {
-              idx = q;
-              break;
-            }
-          }
-
-          this.state[idx][i] = temp;
-
-          if (j !== idx) {
-            moveSuccess = true;
-          }
-        }
-      }
+  startByDirection(direction) {
+    if (['left', 'up'].includes(direction)) {
+      return 0;
     }
 
-    return moveSuccess;
+    return 3;
+  }
+
+  loopConditionByDirection(direction, max, min) {
+    if (['left', 'up'].includes(direction)) {
+      return (start) => start < max;
+    }
+
+    return (start) => start > min;
+  }
+
+  operationByDirection(direction) {
+    if (['left', 'up'].includes(direction)) {
+      return (i) => i + 1;
+    }
+
+    return (i) => i - 1;
+  }
+
+  swapDimension(direction, row, first, second) {
+    if (['up', 'down'].includes(direction)) {
+      return [this.state[first][row], this.state[second][row]];
+    }
+
+    return [this.state[row][first], this.state[row][second]];
   }
 
   /**
@@ -368,6 +272,10 @@ class Game {
         }
       });
     });
+
+    if (indx.length === 0) {
+      return;
+    }
 
     // choose random element
     const randomInd = indx[Math.floor(Math.random() * indx.length)];
