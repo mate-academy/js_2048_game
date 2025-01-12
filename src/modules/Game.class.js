@@ -1,7 +1,7 @@
 'use strict';
 class Game {
-  constructor() {
-    this.initialState = [
+  constructor(initialState) {
+    this.initialState = initialState || [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -9,7 +9,7 @@ class Game {
     ];
     this.score = 0;
     this.status = 'idle';
-    this.board = this.initialState.map((item) => this.item.slice());
+    this.board = this.initialState.map((item) => item.slice());
     this.size = 4;
   }
 
@@ -29,8 +29,12 @@ class Game {
   moveLeft() {
     let moved = false;
 
+    if (this.status !== 'playing') {
+      return null;
+    }
+
     for (let i = 0; i < this.size; i++) {
-      let row = this.board.filter((item) => item !== 0);
+      let row = this.board[i].filter((item) => item !== 0);
 
       for (let j = 0; j < row.length - 1; j++) {
         if (row[j] === row[j + 1]) {
@@ -49,11 +53,11 @@ class Game {
         moved = true;
       }
 
-      this.board = row;
+      this.board[i] = row;
+    }
 
-      if (moved) {
-        this.postMoved();
-      }
+    if (moved) {
+      this.postMoved();
     }
   }
 
@@ -81,7 +85,7 @@ class Game {
 
   transpose() {
     this.board = this.board[0].map((_, index) => {
-      this.board.map((row) => row[index]);
+      return this.board.map((row) => row[index]);
     });
   }
 
@@ -118,20 +122,41 @@ class Game {
   }
 
   checkWin() {
-    return this.board.some((row) => row.includes('2048'));
+    return this.board.some((row) => row.includes(2048));
   }
 
   checkLose() {
-    return !this.board.some((row, i) => {
-      row.some(
-        (item, j) =>
-          item === 0 ||
-          (i > 0 && item === this.board[i - 1][j]) ||
-          (i < this.size - 1 && item === this.board[i + 1][j]) ||
-          (j > 0 && item === this.board[i][j - 1]) ||
-          (j < this.size - 1 && item === this.board[i][j + 1]),
-      );
-    });
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        // Якщо клітинка порожня, гра не програна.
+        if (this.board[i][j] === 0) {
+          return false;
+        }
+
+        // Перевіряємо чи є однакові клітинки поруч по вертикалі.
+        if (i > 0 && this.board[i][j] === this.board[i - 1][j]) {
+          return false;
+        }
+
+        // Перевіряємо чи є однакові клітинки поруч по горизонталі.
+        if (j > 0 && this.board[i][j] === this.board[i][j - 1]) {
+          return false;
+        }
+
+        // Перевіряємо чи є однакові клітинки поруч по вертикалі вниз.
+        if (i < this.size - 1 && this.board[i][j] === this.board[i + 1][j]) {
+          return false;
+        }
+
+        // Перевіряємо чи є однакові клітинки поруч по горизонталі вправо.
+        if (j < this.size - 1 && this.board[i][j] === this.board[i][j + 1]) {
+          return false;
+        }
+      }
+    }
+
+    // Якщо жодних доступних рухів немає, повертаємо true (гра програна).
+    return true;
   }
 
   getScore() {
@@ -142,16 +167,6 @@ class Game {
     return this.board;
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initias.board);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     return this.status;
   }

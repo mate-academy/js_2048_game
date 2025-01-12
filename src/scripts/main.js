@@ -3,7 +3,7 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-const startGame = document.querySelector('.buttun.start');
+const startGame = document.querySelector('.button.start');
 const scoreElement = document.querySelector('.game-score');
 const gameField = document.querySelector('.game-field');
 const messageStart = document.querySelector('.message-start');
@@ -20,8 +20,7 @@ function updateBoard() {
     row.forEach((value, j) => {
       cells[j].textContent = value === 0 ? '' : value;
 
-      cells[j].className =
-        `field-cell--${value ? 'field-cell--' + 'value' : ''}`;
+      cells[j].className = `field-cell--${value ? 'value' : ''}`;
     });
 
     scoreElement.textContent = game.getScore();
@@ -47,12 +46,12 @@ function updateMessage() {
 // Слухач для клавіш стрілок
 document.addEventListener('keydown', handleKeyPress);
 
-function handleKeyPress() {
-  if (game.getStatus !== 'playing') {
+function handleKeyPress(event1) {
+  if (game.getStatus() !== 'playing') {
     return null;
   }
 
-  switch (event.key) {
+  switch (event1.key) {
     case 'ArrowLeft':
       game.moveLeft();
       break;
