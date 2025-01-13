@@ -10,7 +10,7 @@ class Game {
     ],
   ) {
     this.initialState = initialState.map((row) => [...row]);
-    this.board = initialState;
+    this.board = initialState.map((row) => [...row]);
 
     this.score = 0;
     this.status = `idle`;
