@@ -128,14 +128,19 @@ class Game {
     }
   }
 
-  // перевіряю дошку на наявність ходів
   canMove() {
     for (let i = 0; i < this.board.length; i++) {
       for (let n = 0; n < this.board.length - 1; n++) {
         if (
-          this.board[i][n] === this.board[i][n + 1] ||
-          this.board[n][i] === this.board[n + 1][i] ||
-          this.board[n][i] === 0
+          this.board[i][n] === 0 ||
+          this.board[i][n] === this.board[i][n + 1]
+        ) {
+          return;
+        }
+
+        if (
+          this.board[n][i] === 0 ||
+          this.board[n][i] === this.board[n + 1][i]
         ) {
           return;
         }
