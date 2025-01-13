@@ -3,79 +3,79 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-// DOM Elements
-const boardElement = document.getElementById('game-board');
-const scoreElement = document.getElementById('score');
-const statusMessage = document.getElementById('status');
-const startButton = document.getElementById('start');
+const cells = document.querySelectorAll('.field-cell');
+const startBtn = document.querySelector('.button.start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
+const startMessage = document.querySelector('.message-start');
+const gameScore = document.querySelector('.game-score');
 
-// Render the board
-function renderBoard() {
-  boardElement.innerHTML = '';
-
+function render() {
   const state = game.getState();
-
-  state.forEach((row) => {
-    row.forEach((cell) => {
-      const cellElement = document.createElement('div');
-
-      cellElement.className = `field-cell field-cell--${cell || 'empty'}`;
-      cellElement.textContent = cell || '';
-      boardElement.appendChild(cellElement);
-    });
-  });
-}
-
-// Update the score
-function updateScore() {
-  scoreElement.textContent = game.getScore();
-}
-
-// Update game status
-function updateStatus() {
   const gameStatus = game.getStatus();
+  let i = 0;
+
+  for (let row = 0; row < 4; row++) {
+    for (let column = 0; column < 4; column++) {
+      const cell = cells[i];
+      cell.className = 'field-cell';
+
+      if (state[row][column]) {
+        cell.textContent = state[row][column];
+        cell.classList.add(`field-cell--${state[row][column]}`);
+      } else {
+        cell.textContent = '';
+      }
+
+      i++;
+    }
+  }
+
+  gameScore.textContent = game.getScore();
 
   if (gameStatus === 'win') {
-    statusMessage.textContent = 'You win!';
+    winMessage.classList.remove('hidden');
   } else if (gameStatus === 'lose') {
-    statusMessage.textContent = 'Game over!';
-  } else {
-    statusMessage.textContent = '';
+    loseMessage.classList.remove('hidden');
   }
 }
 
-// Handle keyboard input
+startBtn.addEventListener('click', () => {
+  if (startBtn.className === 'button restart') {
+    game.restart();
+  }
+
+  game.start();
+  render();
+
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
+  startMessage.classList.add('hidden');
+
+  startBtn.textContent = 'Restart';
+  startBtn.className = 'button restart';
+});
+
 document.addEventListener('keydown', (e) => {
-  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+  if (game.getStatus() === 'playing') {
     switch (e.key) {
       case 'ArrowLeft':
         game.moveLeft();
         break;
+
       case 'ArrowRight':
         game.moveRight();
         break;
+
       case 'ArrowUp':
         game.moveUp();
         break;
+
       case 'ArrowDown':
         game.moveDown();
         break;
     }
-    renderBoard();
-    updateScore();
-    updateStatus();
+
+    render();
   }
 });
-
-// Start button handler
-startButton.addEventListener('click', () => {
-  game.start();
-  renderBoard();
-  updateScore();
-  updateStatus();
-});
-
-// Initialize game
-game.start();
-renderBoard();
-updateScore();
