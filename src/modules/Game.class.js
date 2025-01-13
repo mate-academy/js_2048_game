@@ -103,8 +103,8 @@ class Game {
       this.board[row1][column1] = this.pickRandomNumber();
     }
 
-    if (this.canMove()) {
-      this.state = 'lose';
+    if (!this.canMove()) {
+      this.status = 'lose';
     }
   }
 
@@ -131,25 +131,23 @@ class Game {
   }
 
   canMove() {
-    for (let i = 0; i < this.board.length; i++) {
-      for (let n = 0; n < this.board.length - 1; n++) {
-        if (
-          this.board[i][n] === 0 ||
-          this.board[i][n] === this.board[i][n + 1]
-        ) {
-          return false;
+    for (let i = 0; i < 4; i++) {
+      for (let n = 0; n < 4; n++) {
+        if (this.board[i][n] === 0) {
+          return true;
         }
 
-        if (
-          this.board[n][i] === 0 ||
-          this.board[n][i] === this.board[n + 1][i]
-        ) {
-          return false;
+        if (n < 3 && this.board[i][n] === this.board[i][n + 1]) {
+          return true;
+        }
+
+        if (i < 3 && this.board[i][n] === this.board[i + 1][n]) {
+          return true;
         }
       }
     }
 
-    return true;
+    return false;
   }
 
   moveLeft() {
