@@ -189,7 +189,7 @@ class Game {
     }
   }
 
-  #getRandomEmptyCell() {
+  #getEmptyCells() {
     const emptyCells = [];
 
     for (let i = 0; i < this.state.length; i++) {
@@ -199,6 +199,12 @@ class Game {
         }
       }
     }
+
+    return emptyCells;
+  }
+
+  #getRandomEmptyCell() {
+    const emptyCells = this.#getEmptyCells();
 
     if (emptyCells.length < 1) {
       return null;
@@ -271,6 +277,12 @@ class Game {
   }
 
   #checkCanMove() {
+    const emptyCells = this.#getEmptyCells();
+
+    if (emptyCells.length >= 1) {
+      return true;
+    }
+
     const canMoveHorisontal = this.state.some((row) => {
       const reversedRow = [...row];
 
