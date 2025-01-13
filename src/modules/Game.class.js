@@ -103,7 +103,9 @@ class Game {
       this.board[row1][column1] = this.pickRandomNumber();
     }
 
-    this.canMove();
+    if (this.canMove()) {
+      this.state = 'lose';
+    }
   }
 
   randomCell() {
@@ -135,19 +137,19 @@ class Game {
           this.board[i][n] === 0 ||
           this.board[i][n] === this.board[i][n + 1]
         ) {
-          return;
+          return false;
         }
 
         if (
           this.board[n][i] === 0 ||
           this.board[n][i] === this.board[n + 1][i]
         ) {
-          return;
+          return false;
         }
       }
     }
 
-    this.status = 'lose';
+    return true;
   }
 
   moveLeft() {
@@ -192,7 +194,7 @@ class Game {
   }
 
   restart() {
-    this.board = this.initialState;
+    this.board = this.initialState.map((row) => [...row]);
 
     this.score = 0;
     this.status = `idle`;
