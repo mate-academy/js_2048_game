@@ -57,10 +57,10 @@ button.addEventListener('click', () => {
     updateBoard();
     messageLose.classList.add('hidden');
     messageWin.classList.add('hidden');
-    button.textContent = 'Start';
+    messageStart.classList.remove('hidden');
     button.classList.remove('restart');
     button.classList.add('start');
-    messageStart.classList.remove('hidden');
+    button.textContent = 'Start';
 
     cells.forEach((cell) => {
       clearCell(cell);
