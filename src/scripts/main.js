@@ -43,6 +43,7 @@ setupInputOnce();
 
 function setupInputOnce() {
   window.addEventListener('keydown', handleInput, { once: true });
+  setupTouchControls();
 }
 
 function handleInput(e) {
@@ -65,6 +66,60 @@ function handleInput(e) {
       return;
   }
 
+  updateGame();
+}
+
+function setupTouchControls() {
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+
+  const threshold = 50;
+
+  window.addEventListener(
+    'touchstart',
+    (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    },
+    { once: true },
+  );
+
+  window.addEventListener(
+    'touchend',
+    (e) => {
+      touchEndX = e.changedTouches[0].clientX;
+      touchEndY = e.changedTouches[0].clientY;
+
+      handleSwipe();
+    },
+    { once: true },
+  );
+
+  function handleSwipe() {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX > threshold) {
+        game.moveRight();
+      } else if (deltaX < -threshold) {
+        game.moveLeft();
+      }
+    } else {
+      if (deltaY > threshold) {
+        game.moveDown();
+      } else if (deltaY < -threshold) {
+        game.moveUp();
+      }
+    }
+
+    updateGame();
+  }
+}
+
+function updateGame() {
   game.updateGameBoard();
 
   const resultStatus = game.getStatus();
