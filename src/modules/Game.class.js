@@ -1,10 +1,5 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
   static STATUSES = {
     idle: 'idle',
@@ -12,20 +7,7 @@ class Game {
     win: 'win',
     lose: 'lose',
   };
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
+
   constructor(
     initialState = [
       [0, 0, 0, 0],
@@ -33,9 +15,37 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ],
+    gameBoard,
+    scoreField,
   ) {
     this.initialState = initialState;
     this.state = initialState.map((row) => [...row]);
+    this.status = Game.STATUSES.idle;
+    this.score = 0;
+    this.gameBoard = gameBoard;
+    this.scoreField = scoreField;
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  getState() {
+    return this.state;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
+  start() {
+    this.status = Game.STATUSES.playing;
+    this.#addCell();
+    this.#addCell();
+  }
+
+  restart() {
+    this.state = this.initialState.map((row) => [...row]);
     this.status = Game.STATUSES.idle;
     this.score = 0;
   }
@@ -54,11 +64,11 @@ class Game {
 
       canMoveLeftInGroup = true;
 
-      return this.#slideTilesInGroup(row);
+      return this.#moveCellsInGroup(row);
     });
 
     if (canMoveLeftInGroup) {
-      this.addCell();
+      this.#addCell();
     }
 
     this.#setStatus();
@@ -80,11 +90,11 @@ class Game {
 
       canMoveRightInGroup = true;
 
-      return this.#slideTilesInGroup(rowReversed).reverse();
+      return this.#moveCellsInGroup(rowReversed).reverse();
     });
 
     if (canMoveRightInGroup) {
-      this.addCell();
+      this.#addCell();
     }
 
     this.#setStatus();
@@ -106,13 +116,13 @@ class Game {
 
       canMoveUpInGroup = true;
 
-      return this.#slideTilesInGroup(row);
+      return this.#moveCellsInGroup(row);
     });
 
     this.state = this.#transpose(updatedCellsGroupByColumns);
 
     if (canMoveUpInGroup) {
-      this.addCell();
+      this.#addCell();
     }
 
     this.#setStatus();
@@ -136,76 +146,42 @@ class Game {
 
       canMoveDownInGroup = true;
 
-      return this.#slideTilesInGroup(reversedRow).reverse();
+      return this.#moveCellsInGroup(reversedRow).reverse();
     });
 
     this.state = this.#transpose(updatedCellsGroupByColumns);
 
     if (canMoveDownInGroup) {
-      this.addCell();
+      this.#addCell();
     }
 
     this.#setStatus();
   }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {
-    return this.score;
-  }
+  updateGameBoard() {
+    const regex = /field-cell--\d+/;
+    const currState = this.getState();
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {
-    return this.state;
-  }
+    this.scoreField.innerText = this.getScore();
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {
-    return this.status;
-  }
-
-  #setStatus() {
-    if (!this.#checkCanMove()) {
-      this.status = Game.STATUSES.lose;
-    }
-
-    if (this.#checkWin()) {
-      this.status = Game.STATUSES.win;
+    for (let i = 0; i < currState.length; i++) {
+      for (let j = 0; j < currState.length; j++) {
+        if (currState[i][j] !== 0) {
+          this.gameBoard.rows[i].cells[j].className =
+            `field-cell field-cell--${currState[i][j]}`;
+          this.gameBoard.rows[i].cells[j].innerText = currState[i][j];
+        } else if (
+          currState[i][j] === 0 &&
+          regex.test(this.gameBoard.rows[i].cells[j].className)
+        ) {
+          this.gameBoard.rows[i].cells[j].className = 'field-cell';
+          this.gameBoard.rows[i].cells[j].innerText = '';
+        }
+      }
     }
   }
 
-  /**
-   * Starts the game.
-   */
-  start() {
-    this.status = Game.STATUSES.playing;
-    this.addCell();
-    this.addCell();
-  }
-
-  /**
-   * Resets the game.
-   */
-  restart() {
-    this.state = this.initialState.map((row) => [...row]);
-    this.status = Game.STATUSES.idle;
-    this.score = 0;
-  }
-
-  // Add your own methods here
-  addCell() {
+  #addCell() {
     const coord = this.#getRandomEmptyCell();
 
     if (coord !== null) {
@@ -237,7 +213,7 @@ class Game {
     return arr[0].map((_, colIndex) => arr.map((row) => row[colIndex]));
   }
 
-  #slideTilesInGroup(group) {
+  #moveCellsInGroup(group) {
     const mergedValues = [0, 0, 0, 0];
 
     for (let i = 1; i < group.length; i++) {
@@ -278,25 +254,19 @@ class Game {
     return group;
   }
 
-  #canMoveInGroup(group) {
-    return group.some((cell, index) => {
-      if (index === 0) {
-        return false;
-      }
+  #setStatus() {
+    if (!this.#checkCanMove()) {
+      this.status = Game.STATUSES.lose;
+    }
 
-      if (cell === 0) {
-        return false;
-      }
+    if (this.#checkWin()) {
+      this.status = Game.STATUSES.win;
+    }
+  }
 
-      if (group[index - 1] === 0) {
-        return true;
-      }
-
-      if (group[index] === group[index - 1]) {
-        return true;
-      }
-
-      return false;
+  #checkWin() {
+    return this.state.some((row) => {
+      return row.some((cell) => cell === 2048);
     });
   }
 
@@ -324,9 +294,25 @@ class Game {
     return canMoveHorisontal || canMoveVertical;
   }
 
-  #checkWin() {
-    return this.state.some((row) => {
-      return row.some((cell) => cell === 2048);
+  #canMoveInGroup(group) {
+    return group.some((cell, index) => {
+      if (index === 0) {
+        return false;
+      }
+
+      if (cell === 0) {
+        return false;
+      }
+
+      if (group[index - 1] === 0) {
+        return true;
+      }
+
+      if (group[index] === group[index - 1]) {
+        return true;
+      }
+
+      return false;
     });
   }
 }

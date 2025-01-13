@@ -1,17 +1,19 @@
 'use strict';
 
-const Game = require('../modules/Game.class');
-const game = new Game();
-
 const gameField = document.querySelector('.game-field');
-const score = document.querySelector('.game-score');
-
+const scoreField = document.querySelector('.game-score');
 const startMessage = document.querySelector('.message-start');
 const loseMessage = document.querySelector('.message-lose');
 const winMessage = document.querySelector('.message-win');
-
-// обробка подій натиску кнопки 'Старт' або 'Перезапуск'
 const button = document.querySelector('.button');
+
+const initialState = Array.from(
+  { length: gameField.tBodies[0].rows.length },
+  () => Array(gameField.tBodies[0].rows[0].cells.length).fill(0),
+);
+
+const Game = require('../modules/Game.class');
+const game = new Game(initialState, gameField.tBodies[0], scoreField);
 
 button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
@@ -20,6 +22,7 @@ button.addEventListener('click', () => {
     button.classList.remove('start');
     button.classList.add('restart');
     button.innerText = 'Restart';
+
     startMessage.classList.add('hidden');
   } else if (button.classList.contains('restart')) {
     game.restart();
@@ -27,15 +30,15 @@ button.addEventListener('click', () => {
     button.classList.remove('restart');
     button.classList.add('start');
     button.innerText = 'Start';
+
     startMessage.classList.remove('hidden');
     winMessage.classList.add('hidden');
     loseMessage.classList.add('hidden');
   }
 
-  updateGameField(gameField.tBodies[0], game.getState(), game.getScore());
+  game.updateGameBoard();
 });
 
-// обробка подій натиску на стрілки для керування
 setupInputOnce();
 
 function setupInputOnce() {
@@ -62,7 +65,7 @@ function handleInput(e) {
       return;
   }
 
-  updateGameField(gameField.tBodies[0], game.getState(), game.getScore());
+  game.updateGameBoard();
 
   const resultStatus = game.getStatus();
 
@@ -75,27 +78,4 @@ function handleInput(e) {
   }
 
   setupInputOnce();
-}
-
-// функція для перемальовки ігрового поля
-function updateGameField(gameBoard, currState, currScore = 0) {
-  const regex = /field-cell--\d+/;
-
-  score.innerText = currScore;
-
-  for (let i = 0; i < currState.length; i++) {
-    for (let j = 0; j < currState.length; j++) {
-      if (currState[i][j] !== 0) {
-        gameBoard.rows[i].cells[j].className =
-          `field-cell field-cell--${currState[i][j]}`;
-        gameBoard.rows[i].cells[j].innerText = currState[i][j];
-      } else if (
-        currState[i][j] === 0 &&
-        regex.test(gameField.rows[i].cells[j].className)
-      ) {
-        gameBoard.rows[i].cells[j].className = 'field-cell';
-        gameBoard.rows[i].cells[j].innerText = '';
-      }
-    }
-  }
 }
