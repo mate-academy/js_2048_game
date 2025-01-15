@@ -1,5 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html
+  lang="en"
+  class="game"
+>
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -12,59 +15,53 @@
       href="./styles/main.scss"
     />
   </head>
-  <body>
+  <body class="game__body">
     <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
+      <header class="game__header">
+        <h1 class="game__title">2048</h1>
+        <div class="game__controls">
+          <p class="game__info">
             Score:
-            <span class="game-score">0</span>
+            <span class="game__score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button class="game__button game__button--start">Start</button>
         </div>
-      </div>
+      </header>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+      <main class="game__field">
+        <div class="game__cell">2</div>
+        <div class="game__cell"></div>
+        <div class="game__cell"></div>
+        <div class="game__cell"></div>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+        <div class="game__cell"></div>
+        <div class="game__cell"></div>
+        <div class="game__cell"></div>
+        <div class="game__cell"></div>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+        <div class="game__cell"></div>
+        <div class="game__cell"></div>
+        <div class="game__cell"></div>
+        <div class="game__cell"></div>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
+        <div class="game__cell"></div>
+        <div class="game__cell"></div>
+        <div class="game__cell"></div>
+        <div class="game__cell"></div>
+      </main>
 
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">
+      <footer class="game__messages">
+        <p class="game__message game__message--lose game__message--hidden">
+          You lose! Restart the game?
+        </p>
+        <p class="game__message game__message--win game__message--hidden">
+          Winner! Congrats! You did it!
+        </p>
+        <p class="game__message game__message--start">
           Press "Start" to begin game. Good luck!
         </p>
-      </div>
+      </footer>
     </div>
-    <script src="scripts/main.js"></script>
+    <script src="scripts/main.js" type="module"></script>
   </body>
 </html>
