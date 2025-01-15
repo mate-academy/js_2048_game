@@ -13,144 +13,90 @@ export default class Game {
     this.status = 'idle';
   }
 
-  moveLeft() {
+  handleMove(getLine, setLine, reverse = false) {
     if (this.status !== 'playing') {
       return;
     }
 
     const prevState = structuredClone(this.state);
+    const size = 4;
 
-    for (let i = 0; i < 4; i++) {
-      const row = this.state[i].filter((cell) => cell !== 0);
+    for (let i = 0; i < size; i++) {
+      let line = getLine(i).filter((cell) => cell !== 0);
 
-      for (let j = 0; j < row.length - 1; j++) {
-        if (row[j] === row[j + 1]) {
-          row[j] *= 2;
-          this.score += row[j];
-          row.splice(j + 1, 1);
+      if (reverse) {
+        line = line.reverse();
+      }
+
+      for (let j = 0; j < line.length - 1; j++) {
+        if (line[j] === line[j + 1]) {
+          line[j] *= 2;
+          this.score += line[j];
+          line.splice(j + 1, 1);
         }
       }
 
-      while (row.length < 4) {
-        row.push(0);
+      while (line.length < size) {
+        if (reverse) {
+          line.unshift(0);
+        } else {
+          line.push(0);
+        }
       }
-      this.state[i] = row;
+
+      if (reverse) {
+        line = line.reverse();
+      }
+
+      setLine(i, line);
     }
 
     if (prevState !== structuredClone(this.state)) {
       this.addRandomTile();
       this.updateGameStatus();
     }
+  }
+
+  moveLeft() {
+    this.handleMove(
+      (i) => this.state[i],
+      (i, line) => {
+        this.state[i] = line;
+      },
+    );
   }
 
   moveRight() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    const prevState = structuredClone(this.state);
-
-    for (let i = 0; i < 4; i++) {
-      const row = this.state[i].filter((cell) => cell !== 0);
-
-      for (let j = row.length - 1; j > 0; j--) {
-        if (row[j] === row[j - 1]) {
-          row[j] *= 2;
-          this.score += row[j];
-          row.splice(j - 1, 1);
-          j--;
-        }
-      }
-
-      while (row.length < 4) {
-        row.unshift(0);
-      }
-      this.state[i] = row;
-    }
-
-    if (prevState !== structuredClone(this.state)) {
-      this.addRandomTile();
-      this.updateGameStatus();
-    }
+    this.handleMove(
+      (i) => this.state[i],
+      (i, line) => {
+        this.state[i] = line;
+      },
+      true,
+    );
   }
 
   moveUp() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    const prevState = structuredClone(this.state);
-
-    for (let j = 0; j < 4; j++) {
-      const column = [];
-
-      for (let i = 0; i < 4; i++) {
-        if (this.state[i][j] !== 0) {
-          column.push(this.state[i][j]);
-        }
-      }
-
-      for (let i = 0; i < column.length - 1; i++) {
-        if (column[i] === column[i + 1]) {
-          column[i] *= 2;
-          this.score += column[i];
-          column.splice(i + 1, 1);
-        }
-      }
-
-      while (column.length < 4) {
-        column.push(0);
-      }
-
-      for (let i = 0; i < 4; i++) {
-        this.state[i][j] = column[i];
-      }
-    }
-
-    if (prevState !== structuredClone(this.state)) {
-      this.addRandomTile();
-      this.updateGameStatus();
-    }
+    this.handleMove(
+      (j) => this.state.map((row) => row[j]),
+      (j, line) => {
+        line.forEach((value, i) => {
+          this.state[i][j] = value;
+        });
+      },
+    );
   }
 
   moveDown() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    const prevState = structuredClone(this.state);
-
-    for (let j = 0; j < 4; j++) {
-      const column = [];
-
-      for (let i = 0; i < 4; i++) {
-        if (this.state[i][j] !== 0) {
-          column.push(this.state[i][j]);
-        }
-      }
-
-      for (let i = column.length - 1; i > 0; i--) {
-        if (column[i] === column[i - 1]) {
-          column[i] *= 2;
-          this.score += column[i];
-          column.splice(i - 1, 1);
-          i--;
-        }
-      }
-
-      while (column.length < 4) {
-        column.unshift(0);
-      }
-
-      for (let i = 0; i < 4; i++) {
-        this.state[i][j] = column[i];
-      }
-    }
-
-    if (prevState !== structuredClone(this.state)) {
-      this.addRandomTile();
-      this.updateGameStatus();
-    }
+    this.handleMove(
+      (j) => this.state.map((row) => row[j]),
+      (j, line) => {
+        line.forEach((value, i) => {
+          this.state[i][j] = value;
+        });
+      },
+      true,
+    );
   }
 
   getScore() {

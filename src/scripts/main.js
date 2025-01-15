@@ -13,6 +13,53 @@ document.addEventListener('DOMContentLoaded', () => {
   const messageWin = document.querySelector('.message-win');
   const messageLose = document.querySelector('.message-lose');
 
+  const handleSwipe = (e) => {
+    if (game.getStatus() !== 'playing') {
+      return;
+    }
+
+    const touch = e.changedTouches[0];
+    const diffX = touch.clientX - touchStartX;
+    const diffY = touch.clientY - touchStartY;
+    const minSwipeDistance = 50;
+
+    if (
+      Math.abs(diffX) > minSwipeDistance ||
+      Math.abs(diffY) > minSwipeDistance
+    ) {
+      if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 0) {
+          game.moveRight();
+        } else {
+          game.moveLeft();
+        }
+      } else {
+        if (diffY > 0) {
+          game.moveDown();
+        } else {
+          game.moveUp();
+        }
+      }
+      updateUI();
+    }
+  };
+
+  let touchStartX;
+  let touchStartY;
+
+  gameField.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+  });
+
+  gameField.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+  });
+
+  gameField.addEventListener('touchend', handleSwipe);
+
   function updateUI() {
     const state = game.getState();
     const gameStatus = game.getStatus();
