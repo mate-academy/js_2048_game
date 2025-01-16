@@ -1,0 +1,67 @@
+@use 'sass:color';
+
+.controls {
+  display: flex;
+}
+
+.button {
+  position: relative;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  color: $light-text-color;
+  font-family: sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  width: $cell-size;
+  height: $cell-size;
+
+  transition: 0.25s ease background;
+}
+
+.button.show-hand::before {
+  position: absolute;
+  top: 50%;
+  left: 120%;
+  transform: translate(-50%, -50%);
+  content: '👈';
+  font-weight: 900;
+  font-size: 44px;
+
+  animation: tap 1s linear infinite alternate;
+}
+
+@keyframes tap {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(-45%, -45%) rotate(-10deg);
+  }
+
+  75% {
+    transform: translate(-50%, -50%) rotate(5deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+
+.start {
+  background: $start-button-background;
+  font-size: 20px;
+
+  &:hover {
+    background: color.adjust($start-button-background, $lightness: -10%);
+  }
+}
+
+.restart {
+  background: $restart-button-background;
+
+  &:hover {
+    background: color.adjust($restart-button-background, $lightness: -10%);
+  }
+}

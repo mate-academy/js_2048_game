@@ -1,0 +1,14 @@
+.page {
+  &__body {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: $background-color;
+    font-family: Inter, sans-serif;
+    font-weight: 900;
+    color: $text-color;
+    font-size: 24px;
+  }
+}

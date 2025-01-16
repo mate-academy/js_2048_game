@@ -1,0 +1,31 @@
+@use 'sass:color';
+
+.message {
+  box-sizing: border-box;
+  width: 100%;
+  background: $cell-background;
+  color: $text-color;
+  padding: 10px;
+  text-align: center;
+  border-radius: $border-radius;
+  font-size: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+.message-win {
+  background: $win-background;
+  color: $light-text-color;
+}
+
+.message-lose {
+  background-color: color.adjust($lose-background, $lightness: -10%);
+  color: $light-text-color;
+}
+
+.message-container {
+  width: 100%;
+  height: 150px;
+}
