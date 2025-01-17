@@ -120,14 +120,30 @@ export class Game {
   }
 
   moveUp() {
+    const previousState = JSON.stringify(this.board);
+
     this.transpose();
     this.moveLeft();
     this.transpose();
+
+    if (JSON.stringify(this.board) !== previousState) {
+      this.spawnTile();
+      this.checkGameOver();
+    }
   }
   moveDown() {
+    const previousState = JSON.stringify(this.board);
+
     this.transpose();
-    this.moveRight();
+    this.board = this.board.map((row) =>
+    this.slideAndMerge(row.slice().reverse()).reverse()
+  );
     this.transpose();
+
+    if (JSON.stringify(this.board) !== previousState) {
+      this.spawnTile();
+      this.checkGameOver();
+    }
   }
   transpose() {
     this.board = this.board[0].map((_, colIndex) =>

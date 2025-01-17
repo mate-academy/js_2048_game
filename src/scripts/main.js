@@ -50,12 +50,17 @@ function updateUI() {
 
 document.querySelector('.button.start').addEventListener('click', (e) => {
   const button = e.target;
+  const messageStart = document.querySelector('.message-start');
 
   if (game.getStatus() === 'ready' || game.getStatus() === 'lost') {
     game.start();
     updateUI();
     button.classList.add('restart');
     button.textContent = 'Restart';
+
+    if (messageStart) {
+      messageStart.classList.add('hidden');
+    }
   } else {
     game.restart();
     updateUI();
