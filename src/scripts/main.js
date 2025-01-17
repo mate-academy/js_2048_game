@@ -41,7 +41,7 @@ function updateUI() {
     const cell = fieldCells[index];
 
     cell.textContent = value === 0 ? '' : value;
-    cell.className = `field - cell ${value ? `field - cell--${value}` : ''}`;
+    cell.className = `field-cell ${value ? `field-cell--${value}` : ''}`;
   });
 
   scoreElement.textContent = game.getScore();
