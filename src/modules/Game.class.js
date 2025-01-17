@@ -19,60 +19,14 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
+    this.state = initialState;
     this.initialState = initialState;
-
-    const gameField = document.querySelector('.game-field');
-    const cells = gameField.querySelectorAll('.field-cell');
-    const regularArray = this.initialState.flat();
-
-    cells.forEach((cell, index) => {
-      if (regularArray[index] > 0) {
-        cell.textContent = regularArray[index];
-
-        cell.classList.add(`field-cell--${regularArray[index]}`);
-      }
-    });
+    this.status = 'idle';
+    this.score = 0;
   }
 
-  static canCellsMove(grid) {
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        if (grid[row][col] === 0) {
-          return true;
-        }
-      }
-    }
-
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        const current = grid[row][col];
-
-        if (
-          (col < 3 && current === grid[row][col + 1]) ||
-          (row < 3 && current === grid[row + 1][col])
-        ) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  static are2DArraysEqual(arr1, arr2) {
-    if (arr1.length !== arr2.length) {
-      return false;
-    }
-
-    return arr1.every((subArr1, index) => {
-      const subArr2 = arr2[index];
-
-      if (subArr1.length !== subArr2.length) {
-        return false;
-      }
-
-      return subArr1.every((value, subIndex) => value === subArr2[subIndex]);
-    });
+  static transposeMatrix(matrix) {
+    return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
   }
 
   static ifEqualSeeEach(elements) {
@@ -113,262 +67,301 @@ class Game {
     return [ifEqual, indexesOfRight];
   }
 
-  static cellsMerge(target, second) {
-    target.textContent =
-      Number(target.textContent) + Number(second.textContent);
+  static convertTo2DArray(arr) {
+    const result = [];
 
-    const cellClasses1 = Array.from(target.classList);
-    const cellClassNumber1 = cellClasses1.find((className) => {
-      return className.startsWith('field-cell--');
-    });
-    const cellClasses2 = Array.from(second.classList);
-    const cellClassNumber2 = cellClasses2.find((className) => {
-      return className.startsWith('field-cell--');
-    });
+    for (let i = 0; i < 4; i++) {
+      result.push(arr.slice(i * 4, i * 4 + 4));
+    }
 
-    target.classList.remove(cellClassNumber1);
-
-    target.classList.add(`field-cell--${target.textContent}`);
-
-    second.textContent = '';
-    second.classList.remove(cellClassNumber2);
-
-    const gameScore = document.querySelector('.game-score');
-
-    gameScore.textContent =
-      Number(gameScore.textContent) + Number(target.textContent.trim());
+    return result;
   }
 
-  static cellsMove(rowOrColElements) {
+  static cellsMoveValues(rowOrColValues) {
     let insertPosition = 0;
+    const valuesCopy = [...rowOrColValues];
 
-    rowOrColElements.forEach((cell, index) => {
-      if (cell.textContent.trim() !== '') {
+    valuesCopy.forEach((cell, index, row) => {
+      if (cell !== 0) {
         if (insertPosition !== index) {
-          const cellClasses = Array.from(cell.classList);
-          const cellClassNumber = cellClasses.find((className) => {
-            return className.startsWith('field-cell--');
-          });
-          const justNumber = cellClassNumber.replace('field-cell--', '');
-
-          cell.classList.remove(cellClassNumber);
-          cell.textContent = '';
-
-          rowOrColElements[insertPosition].classList.add(cellClassNumber);
-          rowOrColElements[insertPosition].textContent = justNumber;
+          valuesCopy[insertPosition] = cell;
+          row[index] = 0;
         }
         insertPosition++;
       }
     });
+
+    return valuesCopy;
+  }
+
+  static are2DArraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+
+    return arr1.every((subArr1, index) => {
+      const subArr2 = arr2[index];
+
+      if (subArr1.length !== subArr2.length) {
+        return false;
+      }
+
+      return subArr1.every((value, subIndex) => value === subArr2[subIndex]);
+    });
+  }
+
+  canCellsMove(grid) {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (grid[row][col] === 0) {
+          return true;
+        }
+      }
+    }
+
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        const current = grid[row][col];
+
+        if (
+          (col < 3 && current === grid[row][col + 1]) ||
+          (row < 3 && current === grid[row + 1][col])
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  cellsMergeValues(target, second) {
+    const newTarget = target + second;
+    const newSecond = 0;
+
+    this.score += newTarget;
+
+    return [newTarget, newSecond];
   }
 
   moveLeft() {
-    if (event.key === 'ArrowLeft') {
-      const startState = this.getState();
-      const gameFieldBody = document.querySelector('.game-field tbody');
-      const rows = gameFieldBody.querySelectorAll('.field-row');
+    if (this.status === 'playing') {
+      const firstState = this.getState();
 
-      rows.forEach((row) => {
-        const rowList = row.querySelectorAll('.field-cell');
-        const rowArray = [...rowList];
-        const rowNumbers = rowArray.map((td) => {
-          return Number(td.textContent);
-        });
-
-        const ifEquals = Game.ifEqualSeeEach(rowNumbers)[0];
-        const indexesOfRights = Game.ifEqualSeeEach(rowNumbers)[1];
+      this.state = this.state.map((row) => {
+        const rowCopy = [...row];
+        const ifEquals = Game.ifEqualSeeEach(rowCopy)[0];
+        const indexesOfRights = Game.ifEqualSeeEach(rowCopy)[1];
 
         if (ifEquals) {
-          Game.cellsMerge(
-            rowArray[indexesOfRights[0]],
-            rowArray[indexesOfRights[1]],
+          const newCells = this.cellsMergeValues(
+            rowCopy[indexesOfRights[0]],
+            rowCopy[indexesOfRights[1]],
           );
 
+          rowCopy[indexesOfRights[0]] = newCells[0];
+          rowCopy[indexesOfRights[1]] = newCells[1];
+
           if (indexesOfRights.length === 4) {
-            Game.cellsMerge(
-              rowArray[indexesOfRights[2]],
-              rowArray[indexesOfRights[3]],
+            const newCells2 = this.cellsMergeValues(
+              rowCopy[indexesOfRights[2]],
+              rowCopy[indexesOfRights[3]],
             );
+
+            rowCopy[indexesOfRights[2]] = newCells2[0];
+            rowCopy[indexesOfRights[3]] = newCells2[1];
           }
         }
 
-        Game.cellsMove(rowArray);
+        const rowAfterMove = Game.cellsMoveValues(rowCopy);
+
+        return rowAfterMove;
       });
 
-      const finishState = this.getState();
+      const secondState = this.getState();
 
-      if (!Game.are2DArraysEqual(startState, finishState)) {
+      if (!Game.are2DArraysEqual(firstState, secondState)) {
         this.addRandomCell();
       }
+    }
 
-      if (!Game.canCellsMove(this.getState())) {
-        this.ifStateBlocked();
-      }
+    const gameField = this.getState();
+    const flatField = gameField.flat();
+
+    if (flatField.includes(2048)) {
+      this.status = 'win';
+    }
+
+    if (!this.canCellsMove(this.getState())) {
+      this.status = 'lose';
     }
   }
 
   moveRight() {
-    if (event.key === 'ArrowRight') {
-      const startState = this.getState();
-      const gameFieldBody = document.querySelector('.game-field tbody');
-      const rows = gameFieldBody.querySelectorAll('.field-row');
+    if (this.status === 'playing') {
+      const firstState = this.getState();
 
-      rows.forEach((row) => {
-        const rowList = row.querySelectorAll('.field-cell');
-        const rowArray = [...rowList];
-        const reverseRow = rowArray.reverse();
-        const rowNumbers = reverseRow.map((td) => {
-          return Number(td.textContent);
-        });
-
-        const ifEquals = Game.ifEqualSeeEach(rowNumbers)[0];
-        const indexesOfRights = Game.ifEqualSeeEach(rowNumbers)[1];
+      this.state = this.state.map((row) => {
+        const reverseRow = [...row].reverse();
+        const ifEquals = Game.ifEqualSeeEach(reverseRow)[0];
+        const indexesOfRights = Game.ifEqualSeeEach(reverseRow)[1];
 
         if (ifEquals) {
-          Game.cellsMerge(
+          const newCells = this.cellsMergeValues(
             reverseRow[indexesOfRights[0]],
             reverseRow[indexesOfRights[1]],
           );
 
+          reverseRow[indexesOfRights[0]] = newCells[0];
+          reverseRow[indexesOfRights[1]] = newCells[1];
+
           if (indexesOfRights.length === 4) {
-            Game.cellsMerge(
+            const newCells2 = this.cellsMergeValues(
               reverseRow[indexesOfRights[2]],
               reverseRow[indexesOfRights[3]],
             );
+
+            reverseRow[indexesOfRights[2]] = newCells2[0];
+            reverseRow[indexesOfRights[3]] = newCells2[1];
           }
         }
 
-        Game.cellsMove(reverseRow);
+        const rowAfterMove = Game.cellsMoveValues(reverseRow);
+
+        return rowAfterMove.reverse();
       });
 
-      const finishState = this.getState();
+      const secondState = this.getState();
 
-      if (!Game.are2DArraysEqual(startState, finishState)) {
+      if (!Game.are2DArraysEqual(firstState, secondState)) {
         this.addRandomCell();
       }
+    }
 
-      if (!Game.canCellsMove(this.getState())) {
-        this.ifStateBlocked();
-      }
+    const gameField = this.getState();
+    const flatField = gameField.flat();
+
+    if (flatField.includes(2048)) {
+      this.status = 'win';
+    }
+
+    if (!this.canCellsMove(this.getState())) {
+      this.status = 'lose';
     }
   }
 
   moveUp() {
-    if (event.key === 'ArrowUp') {
-      const startState = this.getState();
-      const gameFieldBody = document.querySelector('.game-field tbody');
-      const rows = gameFieldBody.querySelectorAll('.field-row');
-      const column0 = [];
-      const column1 = [];
-      const column2 = [];
-      const column3 = [];
-      const columns = [];
+    if (this.status === 'playing') {
+      const firstState = this.getState();
 
-      columns.push(column0, column1, column2, column3);
+      const currentState = this.state;
+      const transState = Game.transposeMatrix(currentState);
 
-      rows.forEach((row) => {
-        const cellsArray = [...row.querySelectorAll('.field-cell')];
-
-        column0.push(cellsArray[0]);
-        column1.push(cellsArray[1]);
-        column2.push(cellsArray[2]);
-        column3.push(cellsArray[3]);
-      });
-
-      columns.forEach((column) => {
-        const colNumbers = column.map((td) => {
-          return Number(td.textContent);
-        });
-
-        const ifEquals = Game.ifEqualSeeEach(colNumbers)[0];
-        const indexesOfRights = Game.ifEqualSeeEach(colNumbers)[1];
+      const transMovedState = transState.map((row) => {
+        const ifEquals = Game.ifEqualSeeEach(row)[0];
+        const indexesOfRights = Game.ifEqualSeeEach(row)[1];
 
         if (ifEquals) {
-          Game.cellsMerge(
-            column[indexesOfRights[0]],
-            column[indexesOfRights[1]],
+          const newCells = this.cellsMergeValues(
+            row[indexesOfRights[0]],
+            row[indexesOfRights[1]],
           );
 
+          row[indexesOfRights[0]] = newCells[0];
+          row[indexesOfRights[1]] = newCells[1];
+
           if (indexesOfRights.length === 4) {
-            Game.cellsMerge(
-              column[indexesOfRights[2]],
-              column[indexesOfRights[3]],
+            const newCells2 = this.cellsMergeValues(
+              row[indexesOfRights[2]],
+              row[indexesOfRights[3]],
             );
+
+            row[indexesOfRights[2]] = newCells2[0];
+            row[indexesOfRights[3]] = newCells2[1];
           }
         }
 
-        Game.cellsMove(column);
+        const rowAfterMove = Game.cellsMoveValues(row);
+
+        return rowAfterMove;
       });
 
-      const finishState = this.getState();
+      this.state = Game.transposeMatrix(transMovedState);
 
-      if (!Game.are2DArraysEqual(startState, finishState)) {
+      const secondState = this.getState();
+
+      if (!Game.are2DArraysEqual(firstState, secondState)) {
         this.addRandomCell();
       }
+    }
 
-      if (!Game.canCellsMove(this.getState())) {
-        this.ifStateBlocked();
-      }
+    const gameField = this.getState();
+    const flatField = gameField.flat();
+
+    if (flatField.includes(2048)) {
+      this.status = 'win';
+    }
+
+    if (!this.canCellsMove(this.getState())) {
+      this.status = 'lose';
     }
   }
 
   moveDown() {
-    if (event.key === 'ArrowDown') {
-      const startState = this.getState();
-      const gameFieldBody = document.querySelector('.game-field tbody');
-      const rows = gameFieldBody.querySelectorAll('.field-row');
-      const column0 = [];
-      const column1 = [];
-      const column2 = [];
-      const column3 = [];
-      const columns = [];
+    const firstState = this.getState();
 
-      columns.push(column0, column1, column2, column3);
+    if (this.status === 'playing') {
+      const currentState = this.state;
+      const transState = Game.transposeMatrix(currentState);
 
-      rows.forEach((row) => {
-        const cellsArray = [...row.querySelectorAll('.field-cell')];
-
-        column0.push(cellsArray[0]);
-        column1.push(cellsArray[1]);
-        column2.push(cellsArray[2]);
-        column3.push(cellsArray[3]);
-      });
-
-      columns.forEach((column) => {
-        const reverseColumn = column.reverse();
-        const colNumbers = reverseColumn.map((td) => {
-          return Number(td.textContent);
-        });
-
-        const ifEquals = Game.ifEqualSeeEach(colNumbers)[0];
-        const indexesOfRights = Game.ifEqualSeeEach(colNumbers)[1];
+      const transMovedState = transState.map((row) => {
+        const reverseRow = [...row].reverse();
+        const ifEquals = Game.ifEqualSeeEach(reverseRow)[0];
+        const indexesOfRights = Game.ifEqualSeeEach(reverseRow)[1];
 
         if (ifEquals) {
-          Game.cellsMerge(
-            reverseColumn[indexesOfRights[0]],
-            reverseColumn[indexesOfRights[1]],
+          const newCells = this.cellsMergeValues(
+            reverseRow[indexesOfRights[0]],
+            reverseRow[indexesOfRights[1]],
           );
 
+          reverseRow[indexesOfRights[0]] = newCells[0];
+          reverseRow[indexesOfRights[1]] = newCells[1];
+
           if (indexesOfRights.length === 4) {
-            Game.cellsMerge(
-              reverseColumn[indexesOfRights[2]],
-              reverseColumn[indexesOfRights[3]],
+            const newCells2 = this.cellsMergeValues(
+              reverseRow[indexesOfRights[2]],
+              reverseRow[indexesOfRights[3]],
             );
+
+            reverseRow[indexesOfRights[2]] = newCells2[0];
+            reverseRow[indexesOfRights[3]] = newCells2[1];
           }
         }
 
-        Game.cellsMove(reverseColumn);
+        const rowAfterMove = Game.cellsMoveValues(reverseRow);
+
+        return rowAfterMove.reverse();
       });
 
-      const finishState = this.getState();
+      this.state = Game.transposeMatrix(transMovedState);
 
-      if (!Game.are2DArraysEqual(startState, finishState)) {
+      const secondState = this.getState();
+
+      if (!Game.are2DArraysEqual(firstState, secondState)) {
         this.addRandomCell();
       }
+    }
 
-      if (!Game.canCellsMove(this.getState())) {
-        this.ifStateBlocked();
-      }
+    const gameField = this.getState();
+    const flatField = gameField.flat();
+
+    if (flatField.includes(2048)) {
+      this.status = 'win';
+    }
+
+    if (!this.canCellsMove(this.getState())) {
+      this.status = 'lose';
     }
   }
 
@@ -376,50 +369,14 @@ class Game {
    * @returns {number}
    */
   getScore() {
-    const gameScore = document.querySelector('.game-score');
-
-    return Number(gameScore.textContent);
+    return this.score;
   }
 
   /**
    * @returns {number[][]}
    */
   getState() {
-    const gameFieldBody = document.querySelector('.game-field tbody');
-    const rows = gameFieldBody.querySelectorAll('.field-row');
-    const result = [];
-
-    rows.forEach((row) => {
-      const rowList = row.querySelectorAll('.field-cell');
-      const rowArray = [...rowList];
-      const rowNumbers = rowArray.map((td) => {
-        return Number(td.textContent);
-      });
-
-      result.push(rowNumbers);
-    });
-
-    return result;
-  }
-
-  ifStateBlocked() {
-    document.querySelector('.message-lose').classList.remove('hidden');
-  }
-
-  getDomState() {
-    const gameFieldBody = document.querySelector('.game-field tbody');
-    const rows = gameFieldBody.querySelectorAll('.field-row');
-    const cellsDomLinear = [];
-
-    rows.forEach((row) => {
-      const rowList = row.querySelectorAll('.field-cell');
-
-      rowList.forEach((cell) => {
-        cellsDomLinear.push(cell);
-      });
-    });
-
-    return cellsDomLinear;
+    return this.state;
   }
 
   /**
@@ -433,71 +390,30 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
-    const gameField = this.getState();
-    const flatField = gameField.flat();
-
-    if (flatField.includes(2048)) {
-      return 'win';
-    }
+    return this.status;
   }
 
   /**
    * Starts the game.
    */
   start() {
-    const gameHeader = document.querySelector('.game-header');
-    const button = gameHeader.querySelector('.button');
-    const messageStart = document.querySelector('.message-start');
-
+    this.status = 'playing';
     this.addRandomStartCells();
-
-    button.classList.remove('start');
-    button.classList.add('restart');
-    button.textContent = 'restart';
-    messageStart.classList.add('hidden');
   }
 
   /**
    * Resets the game.
    */
   restart() {
-    const gameField = document.querySelector('.game-field');
-    const cells = gameField.querySelectorAll('.field-cell');
-    const regularArray = [];
-
-    document.querySelector('.game-score').textContent = 0;
-    document.querySelector('.message-win').classList.add('hidden');
-    document.querySelector('.message-lose').classList.add('hidden');
-
-    this.initialState.forEach((row) => {
-      row.forEach((elem) => {
-        regularArray.push(elem);
-      });
-    });
-
-    cells.forEach((cell, index) => {
-      const cellClasses = Array.from(cell.classList);
-      const cellClassNumber = cellClasses.find((className) => {
-        return className.startsWith('field-cell--');
-      });
-
-      cell.classList.remove(cellClassNumber);
-
-      if (regularArray[index] > 0) {
-        cell.textContent = regularArray[index];
-        cell.classList.add(`field-cell--${regularArray[index]}`);
-      } else {
-        cell.textContent = '';
-      }
-    });
-
+    this.status = 'playing';
+    this.state = this.initialState;
+    this.score = 0;
     this.addRandomStartCells();
   }
 
   addRandomCell() {
     const currentState = this.getState();
     const linearState = currentState.flat();
-    const linearDomState = this.getDomState();
 
     const iOfNulls = [];
 
@@ -519,21 +435,15 @@ class Game {
         value = 2;
       }
 
-      linearDomState[randomIOfNull].textContent = value;
-      linearDomState[randomIOfNull].classList.add(`field-cell--${value}`);
+      linearState[randomIOfNull] = value;
+
+      this.state = Game.convertTo2DArray(linearState);
     }
   }
 
   addRandomStartCells() {
     const currentState = this.getState();
-    const linearState = [];
-    const linearDomState = this.getDomState();
-
-    currentState.forEach((row) => {
-      row.forEach((cell) => {
-        linearState.push(cell);
-      });
-    });
+    const linearState = currentState.flat();
 
     const iOfNulls = [];
 
@@ -547,9 +457,7 @@ class Game {
       const randomIndex1 = Math.floor(Math.random() * iOfNulls.length);
       const randomIOfNull1 = iOfNulls[randomIndex1];
 
-      if (randomIndex1 >= 0 && randomIndex1 < iOfNulls.length) {
-        iOfNulls.splice(randomIndex1, 1);
-      }
+      iOfNulls.splice(randomIndex1, 1);
 
       const randomIndex2 = Math.floor(Math.random() * iOfNulls.length);
       const randomIOfNull2 = iOfNulls[randomIndex2];
@@ -569,10 +477,10 @@ class Game {
         value2 = 2;
       }
 
-      linearDomState[randomIOfNull1].textContent = value1;
-      linearDomState[randomIOfNull1].classList.add(`field-cell--${value1}`);
-      linearDomState[randomIOfNull2].textContent = value2;
-      linearDomState[randomIOfNull2].classList.add(`field-cell--${value2}`);
+      linearState[randomIOfNull1] = value1;
+      linearState[randomIOfNull2] = value2;
+
+      this.state = Game.convertTo2DArray(linearState);
     }
   }
 }
