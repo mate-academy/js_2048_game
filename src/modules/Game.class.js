@@ -50,11 +50,11 @@ class Game {
   }
 
   moveDirection(direction) {
-    let moveSuccess = this.mergeCells(direction);
+    const mergedSuccess = this.mergeCells(direction);
 
-    moveSuccess = this.moveToSide(direction);
+    const moveSuccess = this.moveToSide(direction);
 
-    return moveSuccess;
+    return mergedSuccess || moveSuccess;
   }
 
   mergeCells(direction) {
