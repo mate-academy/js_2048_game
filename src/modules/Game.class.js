@@ -13,8 +13,6 @@ class Game {
     ];
     this.score = 0;
     this.status = 'idle';
-    this.addRandomTile();
-    this.addRandomTile();
   }
 
   addRandomTile() {

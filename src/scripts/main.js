@@ -96,11 +96,11 @@ function handleKeyPress(e) {
 function initGame() {
   hideMessages();
   showMessage(messageStart);
-  game.start();
   updateUI();
 }
 
 startButton.addEventListener('click', () => {
+  game.start();
   initGame();
   hideMessages();
 });
