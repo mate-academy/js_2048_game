@@ -129,6 +129,7 @@ class Game {
 
   restart() {
     this.score = 0;
+    this.grid = this.initialState;
     this.status = 'idle';
   }
 
