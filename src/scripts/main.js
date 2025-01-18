@@ -67,11 +67,11 @@ startButton.addEventListener('click', () => {
     startButton.textContent = 'Restart';
     messageStart.classList.add('hidden');
   } else {
-    game.restart();
-    messageWin.classList.add('hidden');
-    messageLose.classList.add('hidden');
+    game.restart(); // Перезапуск гри
+    messageWin.classList.add('hidden'); // Сховати повідомлення про виграш
+    messageLose.classList.add('hidden'); // Сховати повідомлення про програш
   }
-  renderGrid();
+  renderGrid(); // Оновити сітку
 });
 
 document.addEventListener('keydown', handleKeyPress);

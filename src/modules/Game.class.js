@@ -129,8 +129,10 @@ class Game {
 
   restart() {
     this.score = 0;
-    this.grid = this.initialState;
-    this.status = 'idle';
+    this.grid = this.initialState.map((row) => [...row]); // Глибока копія
+    this.status = 'playing';
+    this._addRandomCell(); // Додаємо нові клітинки
+    this._addRandomCell();
   }
 
   reset() {
