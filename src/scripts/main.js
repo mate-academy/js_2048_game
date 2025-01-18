@@ -100,7 +100,15 @@ function initGame() {
 }
 
 startButton.addEventListener('click', () => {
-  game.start();
+  if (game.getStatus() === 'playing') {
+    game.restart();
+  } else {
+    game.start();
+  }
+
+  startButton.textContent = 'Restart';
+  startButton.classList.remove('start');
+  startButton.classList.add('restart');
   initGame();
   hideMessages();
 });
