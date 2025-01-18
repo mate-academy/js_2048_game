@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 startButton.addEventListener('click', () => {
+  const winMessage = document.querySelector('.message-win');
+  const loseMessage = document.querySelector('.message-lose');
+
   if (startButton.textContent === 'Start') {
     message.className = 'hidden';
     window.game = new Game();
@@ -22,6 +25,9 @@ startButton.addEventListener('click', () => {
     startButton.classList = 'button restart';
   } else if (startButton.textContent === 'Restart') {
     window.game = new Game();
+    console.log('bla bla bla');
+    loseMessage.classList.add('hidden');
+    winMessage.classList.add('hidden');
     game.restart();
     game.render();
     startButton.textContent = 'Start';
@@ -30,17 +36,19 @@ startButton.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') {
-    game.moveLeft();
-    game.render();
-  } else if (e.key === 'ArrowRight') {
-    game.moveRight();
-    game.render();
-  } else if (e.key === 'ArrowUp') {
-    game.moveUp();
-    game.render();
-  } else if (e.key === 'ArrowDown') {
-    game.moveDown();
-    game.render();
+  switch (e.key) {
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      break;
   }
+  game.render();
 });

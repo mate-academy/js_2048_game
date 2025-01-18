@@ -23,7 +23,7 @@ class Game {
    */
   constructor(initialState) {
     // eslint-disable-next-line no-console
-    console.log(initialState);
+    // console.log(initialState);
     this.initialState = initialState || this.createEmptyBoard();
     this.board = JSON.parse(JSON.stringify(this.initialState));
     this.score = 0;
@@ -112,10 +112,8 @@ class Game {
 
     if (this.status === 'win') {
       winMessage.classList.remove('hidden');
-      winMessage.style.display = 'block';
     } else if (this.status === 'lose') {
       loseMessage.classList.remove('hidden');
-      loseMessage.style.display = 'block';
     }
 
     this.board.forEach((row, rowIndex) => {
