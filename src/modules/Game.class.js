@@ -130,16 +130,9 @@ class Game {
   restart() {
     this.score = 0;
     this.grid = this.initialState.map((row) => [...row]); // Глибока копія
-    this.status = 'playing';
-    this._addRandomCell(); // Додаємо нові клітинки
-    this._addRandomCell();
-  }
-
-  reset() {
-    this.grid = this.initialState.map((row) => [...row]);
-    // Повертаємося до initialState
-    this.score = 0;
     this.status = 'idle';
+    // this._addRandomCell(); // Додаємо нові клітинки
+    // this._addRandomCell();
   }
 
   _slideAndMerge(row) {
