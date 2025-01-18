@@ -97,6 +97,9 @@ function clickOnButton() {
 
     document.querySelector('.message-lose').classList.add('hidden');
     document.querySelector('.message-win').classList.add('hidden');
+    button.classList.remove('restart');
+    button.classList.add('start');
+    button.textContent = 'start';
 
     updateBoard();
 

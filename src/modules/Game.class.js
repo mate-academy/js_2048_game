@@ -405,10 +405,9 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.status = 'playing';
+    this.status = 'idle';
     this.state = this.initialState;
     this.score = 0;
-    this.addRandomStartCells();
   }
 
   addRandomCell() {
