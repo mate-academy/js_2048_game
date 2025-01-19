@@ -75,8 +75,12 @@ startButton.addEventListener('click', () => {
     messageStart.classList.add('hidden');
   } else {
     game.restart();
+    startButton.classList.remove('restart');
+    startButton.classList.add('start');
+    startButton.textContent = 'Start';
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
+    messageStart.classList.remove('hidden');
   }
   renderGrid();
 });
