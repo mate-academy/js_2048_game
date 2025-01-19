@@ -10,6 +10,12 @@ const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const fieldCells = document.querySelectorAll('.field-cell');
 
+// Змінні для клавіш
+const KEY_LEFT = 'ArrowLeft';
+const KEY_RIGHT = 'ArrowRight';
+const KEY_UP = 'ArrowUp';
+const KEY_DOWN = 'ArrowDown';
+
 function renderGrid() {
   const grid = game.getState();
 
@@ -30,17 +36,18 @@ function handleKeyPress(event) {
     return;
   }
 
+  // Використання змінних для перевірки натиснутих клавіш
   switch (event.key) {
-    case 'ArrowLeft':
+    case KEY_LEFT:
       game.moveLeft();
       break;
-    case 'ArrowRight':
+    case KEY_RIGHT:
       game.moveRight();
       break;
-    case 'ArrowUp':
+    case KEY_UP:
       game.moveUp();
       break;
-    case 'ArrowDown':
+    case KEY_DOWN:
       game.moveDown();
       break;
     default:
@@ -67,11 +74,11 @@ startButton.addEventListener('click', () => {
     startButton.textContent = 'Restart';
     messageStart.classList.add('hidden');
   } else {
-    game.restart(); // Перезапуск гри
-    messageWin.classList.add('hidden'); // Сховати повідомлення про виграш
-    messageLose.classList.add('hidden'); // Сховати повідомлення про програш
+    game.restart();
+    messageWin.classList.add('hidden');
+    messageLose.classList.add('hidden');
   }
-  renderGrid(); // Оновити сітку
+  renderGrid();
 });
 
 document.addEventListener('keydown', handleKeyPress);

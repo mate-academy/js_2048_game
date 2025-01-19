@@ -10,10 +10,9 @@ class Game {
     ],
   ) {
     this.initialState = initialState.map((row) => [...row]);
-    // Зберігаємо копію initialState
-    this.grid = initialState.map((row) => [...row]); // Глибока копія
+    this.grid = initialState.map((row) => [...row]);
     this.score = 0;
-    this.status = 'idle'; // 'idle', 'playing', 'win', 'lose'
+    this.status = 'idle';
   }
 
   moveLeft() {
@@ -34,45 +33,38 @@ class Game {
 
     const prevState = JSON.stringify(this.grid);
 
-    // Переміщаємо клітинки вправо без об'єднання
     this.grid = this.grid.map((row) => this._slideRight(row));
 
-    // Тепер об'єднуємо клітинки з однаковими значеннями
     this.grid = this.grid.map((row) => this._mergeRight(row));
 
     this._postMoveHandler(prevState);
   }
 
-  // Функція для переміщення вправо без об'єднання
   _slideRight(row) {
-    const filtered = row.filter((cell) => cell !== 0); // Фільтруємо всі нулі
-    const merged = new Array(4).fill(0); // Масив, в якому всі елементи рівні 0
+    const filtered = row.filter((cell) => cell !== 0);
+    const merged = new Array(4).fill(0);
 
-    let emptyIndex = 3; // Позиція, куди вставляти елементи
+    let emptyIndex = 3;
 
     for (let i = filtered.length - 1; i >= 0; i--) {
-      merged[emptyIndex--] = filtered[i]; // Переміщаємо елементи вправо
+      merged[emptyIndex--] = filtered[i];
     }
 
-    return merged; // Повертаємо новий відсортований масив
+    return merged;
   }
 
-  // Функція для об'єднання клітинок вправо
   _mergeRight(row) {
     const merged = row.slice();
-    // Створюємо копію масиву, щоб не змінювати оригінальний
 
     for (let i = 3; i > 0; i--) {
       if (merged[i] === merged[i - 1] && merged[i] !== 0) {
-        // Перевіряємо на однакові значення
-        merged[i] *= 2; // Об'єднуємо клітинки
-        this.score += merged[i]; // Додаємо до рахунку
-        merged[i - 1] = 0; // Очищаємо клітинку, яка була об'єднана
+        merged[i] *= 2;
+        this.score += merged[i];
+        merged[i - 1] = 0;
       }
     }
 
     return this._slideRight(merged);
-    // Повторно переміщаємо клітинки після об'єднання
   }
 
   moveUp() {
@@ -119,38 +111,36 @@ class Game {
 
   start() {
     if (this.status !== 'idle') {
-      return; // Забороняємо старт, якщо гра вже активна
+      return;
     }
 
-    this.status = 'playing'; // Змінюємо статус на "playing"
-    this._addRandomCell(); // Додаємо випадкову клітинку
-    this._addRandomCell(); // Додаємо ще одну випадкову клітинку
+    this.status = 'playing';
+    this._addRandomCell();
+    this._addRandomCell();
   }
 
   restart() {
     this.score = 0;
-    this.grid = this.initialState.map((row) => [...row]); // Глибока копія
+    this.grid = this.initialState.map((row) => [...row]);
     this.status = 'idle';
-    // this._addRandomCell(); // Додаємо нові клітинки
-    // this._addRandomCell();
   }
 
   _slideAndMerge(row) {
     const filtered = row.filter((cell) => cell !== 0);
     const merged = [];
 
-    let skipNext = false; // Позначка, щоб уникнути подвійного об'єднання
+    let skipNext = false;
 
     for (let i = 0; i < filtered.length; i++) {
       if (skipNext) {
-        skipNext = false; // Пропускаємо поточний елемент
+        skipNext = false;
         continue;
       }
 
       if (filtered[i] === filtered[i + 1]) {
         merged.push(filtered[i] * 2);
         this.score += filtered[i] * 2;
-        skipNext = true; // Позначаємо, щоб пропустити наступне
+        skipNext = true;
       } else {
         merged.push(filtered[i]);
       }
@@ -171,7 +161,6 @@ class Game {
   }
 
   _addRandomCell() {
-    // Ensure you add a random value (e.g., 2 or 4) in an empty spot
     const emptyCells = [];
 
     for (let row = 0; row < this.grid.length; row++) {
@@ -187,7 +176,6 @@ class Game {
       const { row, col } = emptyCells[randomIndex];
 
       this.grid[row][col] = Math.random() < 0.9 ? 2 : 4;
-      // 90% chance for 2, 10% for 4
     }
   }
 
