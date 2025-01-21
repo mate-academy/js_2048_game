@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // eslint-disable-next-line no-shadow
     const status = game.getStatus();
 
-    messageStart.classList.toggle('hidden', status !== 'playing');
+    messageStart.classList.toggle('hidden', status !== 'not_started');
     messageWin.classList.toggle('hidden', status !== 'won');
     messageLose.classList.toggle('hidden', status !== 'game_over');
 

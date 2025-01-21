@@ -5,13 +5,8 @@ class Game {
   constructor(initialState = null) {
     this.size = 4;
     this.score = 0;
-    this.status = 'playing';
-    this.board = initialState || this.createEmptyBoard();
-
-    if (!initialState) {
-      this.addRandomTile();
-      this.addRandomTile();
-    }
+    this.status = 'not_started'; // Updated initial status
+    this.board = this.createEmptyBoard(); // Always start with an empty board
   }
 
   createEmptyBoard() {
