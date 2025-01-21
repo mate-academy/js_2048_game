@@ -62,6 +62,7 @@ export default class Game {
       const mergedRow = filteredRow.map((item, index, currentRow) => {
         if (currentRow[index] === currentRow[index + 1]) {
           const newItem = item * 2;
+
           currentRow[index + 1] = 0;
           this.score += newItem;
 

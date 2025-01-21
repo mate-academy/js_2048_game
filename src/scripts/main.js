@@ -19,6 +19,7 @@ button.addEventListener('click', () => {
     button.classList.add('game__button--restart');
   } else {
     game.restart();
+    game.getScore(score);
     checkMessage();
     button.textContent = 'Start';
     button.classList.remove('game__button--restart');
