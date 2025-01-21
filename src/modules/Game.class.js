@@ -1,44 +1,62 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(initialState = null) {
+    if (initialState) {
+      this.board = initialState;
+    } else {
+      this.board = Array.from({ length: 4 }, () => Array(4).fill(2));
+    }
+
+    this.status = 'idle';
+    this.score = 0;
   }
 
-  moveLeft() {}
-  moveRight() {}
+  moveLeft() {
+    for (let row = 0; row < this.board.length; row++) {
+      const notEmptyCells = [];
+
+      for (let col = 0; col < this.board.length; col++) {
+        if (this.board[row][col] !== 0) {
+          notEmptyCells.push(this.board[row][col]);
+        }
+      }
+
+      for (let i = 0; i < notEmptyCells.length; i++) {
+        if (notEmptyCells[i] === notEmptyCells[i + 1]) {
+          const result = notEmptyCells[i] * 2;
+
+          notEmptyCells[i] = result;
+          notEmptyCells[i + 1] = 0;
+          i++;
+        }
+      }
+
+      for (let k = notEmptyCells.length; k < 3; k++) {
+        notEmptyCells[k] = 0;
+      }
+
+      for (let col = 0; col < this.board[row].length; col++) {
+        this.board[row][col] = notEmptyCells[col];
+      }
+    }
+  }
+  moveRight() {
+    for (let row = 0; row < this.board.length; row++) {
+      this.board[row].reverse();
+      this.moveLeft();
+      this.board[row].reverse();
+    }
+  }
   moveUp() {}
   moveDown() {}
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
-
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getScore() {
+    return this.score;
+  }
+  getState() {
+    return this.board;
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +68,34 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Starts the game.
-   */
   start() {}
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  restart() {
+    this.board = Array.from({ length: 4 }, () => Array(4).fill(0));
+  }
 
-  // Add your own methods here
+  addRandomTile() {
+    const emptyCells = [[]];
+
+    for (let row = 0; row < this.board.length; row++) {
+      for (let col = 0; col < this.board.length; col++) {
+        if (this.board[row][col] === 0) {
+          emptyCells.push([row][col]);
+        }
+      }
+    }
+
+    if (emptyCells.length > 0) {
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+      const [randomRow, randomCol] = emptyCells[randomIndex];
+
+      this.board[randomRow][randomCol] = Math.random() < 0.9 ? 2 : 4;
+    }
+  }
 }
 
 module.exports = Game;
