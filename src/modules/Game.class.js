@@ -46,9 +46,9 @@ class Game {
       for (let cell = 0; cell < newRow.length - 1; cell++) {
         if (newRow[cell] === newRow[cell + 1]) {
           newRow[cell] = newRow[cell] + newRow[cell + 1];
+          this.score += Number(newRow[cell]);
           newRow[cell + 1] = 0;
           cell++;
-          this.score += newRow[cell];
         }
       }
 
@@ -58,22 +58,45 @@ class Game {
 
       this.board[row] = newRow;
     }
+
+    this.randomPlace();
+    this.renderBoard();
+    this.updateCellColor();
   }
   moveRight() {
     for (let row = 0; row < 4; row++) {
-      this.board[row] = this.board[row].reverse();
+      let newRow = this.board[row].filter((cell) => cell !== 0).reverse();
 
-      this.moveLeft();
+      for (let cell = 0; cell < newRow.length - 1; cell++) {
+        if (newRow[cell] === newRow[cell + 1]) {
+          newRow[cell] = newRow[cell] + newRow[cell + 1];
+          this.score += Number(newRow[cell]);
+          newRow[cell + 1] = 0;
+          cell++;
+        }
+      }
+      newRow = newRow.filter((cell) => cell !== 0);
 
-      this.board[row] = this.board[row].reverse();
+      while (newRow.length < 4) {
+        newRow.push(0);
+      }
+      this.board[row] = newRow.reverse();
     }
+
+    this.randomPlace();
+    this.renderBoard();
+    this.updateCellColor();
   }
+
   moveUp() {
     this.board = this.transpose(this.board);
 
     this.moveLeft();
 
     this.board = this.transpose(this.board);
+
+    this.renderBoard();
+    this.updateCellColor();
   }
   moveDown() {
     this.board = this.transpose(this.board);
@@ -81,6 +104,9 @@ class Game {
     this.moveRight();
 
     this.board = this.transpose(this.board);
+
+    this.renderBoard();
+    this.updateCellColor();
   }
 
   /**
@@ -109,9 +135,9 @@ class Game {
    */
   getStatus() {
     // when you started play
-    if (!this.isStarted) {
-      return 'idle';
-    }
+    // if (!this.isStarted) {
+    //   return 'idle';
+    // }
 
     // check for win
     if (this.board.some((row) => row.some((cell) => cell === 2048))) {
@@ -155,6 +181,10 @@ class Game {
 
     this.randomPlace();
     this.randomPlace();
+
+    this.renderBoard();
+    this.updateCellColor();
+    this.getScore();
   }
 
   /**
@@ -174,6 +204,9 @@ class Game {
     this.score = 0;
 
     this.status = 'playing';
+
+    this.renderBoard();
+    this.updateCellColor();
   }
 
   // Add your own methods here
@@ -182,13 +215,29 @@ class Game {
     return matrix[0].map((_, index) => matrix.map((row) => row[index]));
   }
 
+  isBoardFull() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 0) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   randomPlace() {
+    if (this.isBoardFull()) {
+      return;
+    }
+
     const emptyCells = [];
 
     for (let row = 0; row < 4; row++) {
       for (let column = 0; column < 4; column++) {
         if (this.board[row][column] === 0) {
-          emptyCells.push([row][column]);
+          emptyCells.push([row, column]);
         }
       }
     }
@@ -197,6 +246,57 @@ class Game {
     const [randomRow, randomColumn] = emptyCells[randomIndex];
 
     this.board[randomRow][randomColumn] = Math.random() < 0.9 ? 2 : 4;
+  }
+
+  renderBoard() {
+    const boardElement = document.querySelector('.game-field');
+
+    const rows = boardElement.querySelectorAll('tr');
+
+    const rowsArray = Array.from(rows);
+
+    const cells = rowsArray.flatMap((row) =>
+      Array.from(row.querySelectorAll('td')),
+    );
+
+    cells.forEach((cell, index) => {
+      const value = this.board[Math.floor(index / 4)][index % 4];
+
+      cell.textContent = value === 0 ? '' : value;
+    });
+  }
+
+  updateCellColor() {
+    const boardElement = document.querySelector('.game-field');
+
+    const rows = boardElement.querySelectorAll('tr');
+
+    const rowsArray = Array.from(rows);
+
+    const cells = rowsArray.flatMap((row) =>
+      Array.from(row.querySelectorAll('td')),
+    );
+
+    cells.forEach((cell) => {
+      const value = cell.textContent.trim();
+      cell.classList.remove(
+        'field-cell--2',
+        'field-cell--4',
+        'field-cell--8',
+        'field-cell--16',
+        'field-cell--32',
+        'field-cell--64',
+        'field-cell--128',
+        'field-cell--256',
+        'field-cell--512',
+        'field-cell--1024',
+        'field-cell--2048',
+      );
+
+      if (value !== '' && !isNaN(value)) {
+        cell.classList.add(`field-cell--${value}`);
+      }
+    });
   }
 }
 
