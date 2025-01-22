@@ -40,7 +40,10 @@ class Game {
   }
 
   moveLeft() {
+    let moved = false;
+
     for (let row = 0; row < 4; row++) {
+      const originalRow = [...this.board[row]];
       const newRow = this.board[row].filter((cell) => cell !== 0);
 
       for (let cell = 0; cell < newRow.length - 1; cell++) {
@@ -52,19 +55,33 @@ class Game {
         }
       }
 
-      while (newRow.length < 4) {
-        newRow.push(0);
+      const compressedRow = newRow.filter((cell) => cell !== 0);
+
+      while (compressedRow.length < 4) {
+        compressedRow.push(0);
       }
 
-      this.board[row] = newRow;
+      if (originalRow.toString() !== compressedRow.toString()) {
+        moved = true;
+      }
+
+      this.board[row] = compressedRow;
     }
 
-    this.randomPlace();
+    if (moved) {
+      this.randomPlace();
+    }
+
     this.renderBoard();
     this.updateCellColor();
   }
+
   moveRight() {
+    let moved = false;
+
     for (let row = 0; row < 4; row++) {
+      const originalRow = [...this.board[row]];
+
       let newRow = this.board[row].filter((cell) => cell !== 0).reverse();
 
       for (let cell = 0; cell < newRow.length - 1; cell++) {
@@ -75,15 +92,26 @@ class Game {
           cell++;
         }
       }
+
       newRow = newRow.filter((cell) => cell !== 0);
 
       while (newRow.length < 4) {
         newRow.push(0);
       }
-      this.board[row] = newRow.reverse();
+
+      newRow.reverse();
+
+      if (originalRow.toString() !== newRow.toString()) {
+        moved = true;
+      }
+
+      this.board[row] = newRow;
     }
 
-    this.randomPlace();
+    if (moved) {
+      this.randomPlace();
+    }
+
     this.renderBoard();
     this.updateCellColor();
   }
@@ -279,6 +307,7 @@ class Game {
 
     cells.forEach((cell) => {
       const value = cell.textContent.trim();
+
       cell.classList.remove(
         'field-cell--2',
         'field-cell--4',

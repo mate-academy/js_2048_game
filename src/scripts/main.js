@@ -23,6 +23,7 @@ buttonStart.addEventListener('click', () => {
   game.start();
   buttonStart.textContent = 'Restart';
   buttonStart.classList.add('restart');
+  messageStart.textContent = 'Playing';
   CheckStatus();
 });
 
