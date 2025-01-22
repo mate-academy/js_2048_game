@@ -162,7 +162,7 @@ class Game {
   updateGameStatus() {
     if (this.hasWinningTile()) {
       this.status = 'win';
-    } else if (!this.hasEmptyCells() && !this.canMergeTiles()) {
+    } else if (this.isGameOver()) {
       this.status = 'lose';
     }
   }
@@ -171,16 +171,35 @@ class Game {
     return this.state.some((row) => row.includes(WINNING_TILE));
   }
 
-  hasEmptyCells() {
-    return this.state.some((row) => row.includes(0));
-  }
+  isGameOver() {
+    const hasEmptyCells = this.state.some((row) => row.includes(0));
 
-  canMergeTiles() {
-    return this.state.some((row, rowIndex) => {
-      row.some((tile, colIndex) => {
-        return this.canMergeWithNeighbor(rowIndex, colIndex, tile);
+    // Check if any two adjacent tiles can be merged (left-right, up-down)
+    const canMerge = this.state.some((row, rowIndex) => {
+      return row.some((value, colIndex) => {
+        if (value === 0) {
+          return false;
+        }
+
+        // Check right neighbor
+        if (colIndex < BOARD_SIZE - 1 && value === row[colIndex + 1]) {
+          return true;
+        }
+
+        // Check down neighbor
+        if (
+          rowIndex < BOARD_SIZE - 1 &&
+          value === this.state[rowIndex + 1][colIndex]
+        ) {
+          return true;
+        }
+
+        return false;
       });
     });
+
+    // Game is over if there are no empty cells and no mergeable adjacent tiles
+    return !hasEmptyCells && !canMerge;
   }
 
   canMergeWithNeighbor(row, col, tile) {
@@ -188,10 +207,12 @@ class Game {
       return false;
     }
 
-    return (
-      (col < BOARD_SIZE - 1 && tile === this.state[row][col + 1]) || // Right
-      (row < BOARD_SIZE - 1 && tile === this.state[row + 1][col]) // Down
-    );
+    const rightNeighbor =
+      col < BOARD_SIZE - 1 && tile === this.state[row][col + 1];
+    const downNeighbor =
+      row < BOARD_SIZE - 1 && tile === this.state[row + 1][col];
+
+    return rightNeighbor || downNeighbor;
   }
 
   // --- Utility Methods ---
