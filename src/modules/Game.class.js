@@ -10,7 +10,7 @@ class Game {
   constructor(initialState = null) {
     this.board = initialState || this.createEmptyBoard();
     this.score = 0;
-    this.status = 'start';
+    this.status = 'idle';
   }
 
   createEmptyBoard() {
@@ -89,6 +89,10 @@ class Game {
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const previousBoard = this.board.map((row) => [...row]);
 
     this.board = this.board.map((row) => this.moveRowLeft(row));
@@ -100,6 +104,10 @@ class Game {
   }
 
   moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const previousBoard = this.board.map((row) => [...row]);
 
     this.board = this.board.map((row) =>
@@ -113,6 +121,10 @@ class Game {
   }
 
   moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const previousBoard = this.board.map((row) => [...row]);
 
     this.board = this.transpose(this.board);
@@ -125,6 +137,10 @@ class Game {
   }
 
   moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const previousBoard = this.board.map((row) => [...row]);
 
     this.board = this.transpose(this.board);
@@ -163,15 +179,15 @@ class Game {
   }
 
   start() {
-    this.board = this.createEmptyBoard();
-    this.score = 0;
     this.status = 'playing';
     this.generateRandomTile();
     this.generateRandomTile();
   }
 
   restart() {
-    this.start();
+    this.board = this.createEmptyBoard();
+    this.score = 0;
+    this.status = 'idle';
   }
 }
 

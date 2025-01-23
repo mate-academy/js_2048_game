@@ -55,6 +55,19 @@ function handleKeyPress() {
 }
 
 startButton.addEventListener('click', () => {
+  if (game.status === 'idle') {
+    game.start();
+    messageStart.classList.add('hidden');
+    messageWin.classList.add('hidden');
+    messageLose.classList.add('hidden');
+    startButton.textContent = 'Restart';
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+    updateUI();
+
+    return;
+  }
+
   game.restart();
   messageStart.classList.add('hidden');
   messageWin.classList.add('hidden');
