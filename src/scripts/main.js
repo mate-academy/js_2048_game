@@ -15,16 +15,28 @@ const messageStart = document.querySelector('.message-start');
 function updateMessage(stat) {
   if (stat === 'lose') {
     messageLose.classList.remove('hidden');
-    messageStart.сlassList.add('hidden');
+    messageStart.classList.add('hidden');
+    messageWin.classList.add('hidden');
   }
 
   if (stat === 'win') {
     messageWin.classList.remove('hidden');
-    messageStart.сlassList.add('hidden');
+    messageStart.classList.add('hidden');
+    messageLose.classList.add('hidden');
   }
 
   if (stat === 'playing') {
     messageStart.textContent = 'Playing';
+    messageStart.classList.remove('hidden');
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
+  }
+
+  if (stat === 'idle') {
+    messageStart.textContent = 'Press "Start" to begin game. Good luck!';
+    messageStart.classList.remove('hidden');
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
   }
 }
 
@@ -34,7 +46,6 @@ startButton.addEventListener('click', () => {
   updateScore();
   startButton.classList.replace('start', 'restart');
   startButton.textContent = 'Restart';
-
   updateMessage(game.getStatus());
 });
 
@@ -61,8 +72,6 @@ document.addEventListener('keydown', (e) => {
 
   updateBoard();
   updateScore();
-
-  // Обновляем сообщение после каждого хода
   updateMessage(game.getStatus());
 });
 

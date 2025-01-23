@@ -183,7 +183,7 @@ export default class Game {
     }
 
     for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[0].length; j++) {
+      for (let j = 0; j < this.board[i].length - 1; j++) {
         if (this.board[i][j] === this.board[i][j + 1]) {
           return true;
         }
@@ -191,7 +191,7 @@ export default class Game {
     }
 
     for (let i = 0; i < this.board.length - 1; i++) {
-      for (let j = 0; this.board[i].length; j++) {
+      for (let j = 0; j < this.board[i].length; j++) {
         if (this.board[i][j] === this.board[i + 1][j]) {
           return true;
         }
@@ -200,9 +200,10 @@ export default class Game {
 
     return false;
   }
+
   getStatus() {
     if (this.board.flat().includes(2048)) {
-      return `win`;
+      return 'win';
     }
 
     if (!this.hasAvailableMoves()) {
