@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <title>2048 Game</title>
+    <title>2048</title>
     <link
       rel="stylesheet"
       href="./styles/main.scss"
@@ -14,55 +14,40 @@
   </head>
   <body>
     <div class="container">
-      <!-- Заголовок -->
       <div class="game-header">
         <h1>2048</h1>
         <div class="controls">
-          <!-- Відображення рахунку -->
           <p class="info">
             Score:
-            <span
-              class="game-score"
-              id="game-score"
-            >
-              0
-            </span>
+            <span class="game-score">0</span>
           </p>
-          <!-- Кнопка Start / Restart -->
-          <button
-            class="button start"
-            id="start-button"
-          >
-            Start
-          </button>
+          <button class="button start">Start</button>
         </div>
       </div>
 
-      <!-- Ігрове поле -->
-      <table
-        class="game-field"
-        id="game-field"
-      >
+      <table class="game-field">
         <tbody>
-          <!-- Ряди з комірками -->
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
+
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
+
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
+
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
@@ -72,37 +57,17 @@
         </tbody>
       </table>
 
-      <!-- Повідомлення -->
-      <div
-        class="message-container"
-        id="message-container"
-      >
-        <!-- Повідомлення про виграш -->
-        <p
-          class="message message-win hidden"
-          id="message-win"
-        >
-          Winner! Congrats! You did it!
-        </p>
-        <!-- Повідомлення про програш -->
-        <p
-          class="message message-lose hidden"
-          id="message-lose"
-        >
-          You lose! Restart the game?
-        </p>
-        <!-- Стартове повідомлення -->
-        <p
-          class="message message-start"
-          id="message-start"
-        >
+      <div class="message-container">
+        <p class="message message-lose hidden">You lose! Restart the game?</p>
+        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
+        <p class="message message-start">
           Press "Start" to begin game. Good luck!
         </p>
       </div>
     </div>
     <script
+      src="scripts/main.js"
       type="module"
-      src="./scripts/main.js"
     ></script>
   </body>
 </html>

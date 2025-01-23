@@ -1,158 +1,213 @@
-/* eslint-disable function-paren-newline */
 'use strict';
 
+// --- Constants ---
+const BOARD_SIZE = 4;
+const WINNING_TILE = 2048;
+const TILE_PROBABILITY = 0.9;
+
 class Game {
-  constructor(initialState = null) {
-    this.size = 4; // Поле 4x4
-    this.board = initialState || this.createEmptyBoard();
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
     this.score = 0;
-    this.status = 'idle'; // Стани: idle, playing, win, lose
+    this.status = 'idle';
+    this.initialState = initialState;
+    this.state = this.cloneState(this.initialState);
   }
 
-  createEmptyBoard() {
-    return Array(this.size)
-      .fill(0)
-      .map(() => Array(this.size).fill(0));
-  }
-
-  addRandomTile() {
-    const emptyCells = [];
-
-    for (let row = 0; row < this.size; row++) {
-      for (let col = 0; col < this.size; col++) {
-        if (this.board[row][col] === 0) {
-          emptyCells.push([row, col]);
-        }
-      }
-    }
-
-    if (emptyCells.length > 0) {
-      const [row, col] =
-        emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-      this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
-    }
-  }
-
-  canMove() {
-    for (let row = 0; row < this.size; row++) {
-      for (let col = 0; col < this.size; col++) {
-        if (this.board[row][col] === 0) {
-          return true;
-        }
-
-        if (row > 0 && this.board[row][col] === this.board[row - 1][col]) {
-          return true;
-        }
-
-        if (col > 0 && this.board[row][col] === this.board[row][col - 1]) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  slideRowLeft(row) {
-    const filtered = row.filter((val) => val !== 0);
-
-    for (let i = 0; i < filtered.length - 1; i++) {
-      if (filtered[i] === filtered[i + 1]) {
-        filtered[i] *= 2;
-        this.score += filtered[i];
-        filtered[i + 1] = 0;
-      }
-    }
-
-    return [
-      ...filtered.filter((val) => val !== 0),
-      ...Array(this.size - filtered.length).fill(0),
-    ];
-  }
-
-  move(direction) {
-    const rotateBoard = (board, times) => {
-      // eslint-disable-next-line no-shadow
-      let rotated = board;
-
-      for (let i = 0; i < times; i++) {
-        rotated = rotated[0].map((_, col) =>
-          rotated.map((row) => row[col]).reverse(),
-        );
-      }
-
-      return rotated;
-    };
-
-    let rotated = 0;
-
-    if (direction === 'up') {
-      rotated = 1;
-    } else if (direction === 'right') {
-      rotated = 2;
-    } else if (direction === 'down') {
-      rotated = 3;
-    }
-
-    const rotatedBoard = rotateBoard(this.board, rotated);
-    const newBoard = rotatedBoard.map(this.slideRowLeft.bind(this));
-    const restoredBoard = rotateBoard(newBoard, 4 - rotated);
-
-    const boardChanged =
-      JSON.stringify(this.board) !== JSON.stringify(restoredBoard);
-
-    if (boardChanged) {
-      this.board = restoredBoard;
-      this.addRandomTile();
-
-      if (!this.canMove()) {
-        this.status = 'lose';
-      }
-    }
-
-    return boardChanged;
-  }
-
-  moveLeft() {
-    return this.move('left');
-  }
-
-  moveRight() {
-    return this.move('right');
-  }
-
-  moveUp() {
-    return this.move('up');
-  }
-
-  moveDown() {
-    return this.move('down');
-  }
-
-  start() {
-    this.board = this.createEmptyBoard();
-    this.addRandomTile();
-    this.addRandomTile();
-    this.score = 0;
-    this.status = 'playing';
-  }
-
-  restart() {
-    this.start();
-  }
-
+  // --- Public Methods ---
   getScore() {
     return this.score;
   }
 
   getState() {
-    return this.board;
+    return this.state;
   }
 
   getStatus() {
     return this.status;
   }
+
+  start() {
+    if (this.status === 'idle') {
+      this.status = 'playing';
+      this.addRandomTile();
+      this.addRandomTile();
+    }
+  }
+
+  restart() {
+    this.state = this.cloneState(this.initialState);
+    this.score = 0;
+    this.status = 'idle';
+  }
+
+  moveUp() {
+    this.handleMove('up');
+  }
+
+  moveDown() {
+    this.handleMove('down');
+  }
+
+  moveLeft() {
+    this.handleMove('left');
+  }
+
+  moveRight() {
+    this.handleMove('right');
+  }
+
+  // --- Core Logic ---
+  handleMove(direction) {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const moved = this.slide(direction);
+
+    if (moved) {
+      this.addRandomTile();
+      this.updateGameStatus();
+    }
+  }
+
+  slide(direction) {
+    const originalState = this.cloneState(this.state);
+
+    switch (direction) {
+      case 'left':
+        this.state = this.slideLeft(this.state);
+        break;
+      case 'right':
+        this.state = this.slideRight(this.state);
+        break;
+      case 'up':
+        this.state = this.transpose(this.slideLeft(this.transpose(this.state)));
+        break;
+      case 'down':
+        this.state = this.transpose(
+          this.slideRight(this.transpose(this.state)),
+        );
+        break;
+    }
+
+    return !this.areStatesEqual(this.state, originalState);
+  }
+
+  slideLeft(state) {
+    return state.map((row) => this.processRow(row, true));
+  }
+
+  slideRight(state) {
+    return state.map((row) => this.processRow(row, false));
+  }
+
+  processRow(row, isLeft) {
+    const filteredRow = isLeft ? row : [...row].reverse();
+    const mergedRow = this.mergeTiles(filteredRow.filter((n) => n !== 0));
+
+    while (mergedRow.length < BOARD_SIZE) {
+      mergedRow.push(0);
+    }
+
+    return isLeft ? mergedRow : mergedRow.reverse();
+  }
+
+  mergeTiles(row) {
+    for (let i = 0; i < row.length - 1; i++) {
+      if (row[i] === row[i + 1]) {
+        row[i] *= 2;
+        row[i + 1] = 0;
+        this.score += row[i];
+      }
+    }
+
+    return row.filter((n) => n !== 0);
+  }
+
+  addRandomTile() {
+    const emptyTiles = this.findEmptyTiles();
+
+    if (emptyTiles.length === 0) {
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * emptyTiles.length);
+    const [row, column] = emptyTiles[randomIndex];
+
+    this.state[row][column] = Math.random() < TILE_PROBABILITY ? 2 : 4;
+  }
+
+  findEmptyTiles() {
+    const emptyTiles = [];
+
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        if (this.state[row][col] === 0) {
+          emptyTiles.push([row, col]);
+        }
+      }
+    }
+
+    return emptyTiles;
+  }
+
+  // --- Game Status Updates ---
+  updateGameStatus() {
+    if (this.hasWinningTile()) {
+      this.status = 'win';
+    } else if (!this.hasEmptyCells() && !this.canMergeTiles()) {
+      this.status = 'lose';
+    }
+  }
+
+  hasWinningTile() {
+    return this.state.some((row) => row.includes(WINNING_TILE));
+  }
+
+  hasEmptyCells() {
+    return this.state.some((row) => row.includes(0));
+  }
+
+  canMergeTiles() {
+    return this.state.some((row, rowIndex) => {
+      row.some((tile, colIndex) => {
+        return this.canMergeWithNeighbor(rowIndex, colIndex, tile);
+      });
+    });
+  }
+
+  canMergeWithNeighbor(row, col, tile) {
+    if (tile === 0) {
+      return false;
+    }
+
+    return (
+      (col < BOARD_SIZE - 1 && tile === this.state[row][col + 1]) || // Right
+      (row < BOARD_SIZE - 1 && tile === this.state[row + 1][col]) // Down
+    );
+  }
+
+  // --- Utility Methods ---
+  cloneState(state) {
+    return state.map((row) => [...row]);
+  }
+
+  areStatesEqual(state1, state2) {
+    return state1.every((row, rowIndex) => {
+      return row.every((tile, colIndex) => tile === state2[rowIndex][colIndex]);
+    });
+  }
+
+  transpose(state) {
+    return state[0].map((_, colIndex) => state.map((row) => row[colIndex]));
+  }
 }
 
-export { Game };
+module.exports = Game;

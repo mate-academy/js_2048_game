@@ -1,75 +1,76 @@
-import { Game } from '../modules/Game.class';
+'use strict';
 
+// Uncomment the next lines to use your game instance in the browser
+const Game = require('../modules/Game.class');
 const game = new Game();
-const field = document.querySelector('.game-field');
-const scoreElement = document.querySelector('.game-score');
-const startButton = document.querySelector('.button');
-const messageContainer = document.querySelector('.message-container');
+const startMessage = document.querySelector('.message-start');
+const button = document.querySelector('.button');
+const gameField = document.querySelector('.game-field');
+const gameScore = document.querySelector('.game-score');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
 
-function updateUI() {
-  const state = game.getState();
-  const cells = field.querySelectorAll('.field-cell');
-
-  cells.forEach((cell, index) => {
-    const row = Math.floor(index / game.size);
-    const col = index % game.size;
-    const value = state[row][col];
-
-    cell.className = 'field-cell';
-
-    if (value) {
-      cell.classList.add(`field-cell--${value}`);
-    }
-
-    cell.textContent = value || '';
-  });
-
-  scoreElement.textContent = game.getScore();
-
-  if (game.getStatus() === 'won') {
-    messageContainer.querySelector('.message-win').classList.remove('hidden');
-  } else if (game.getStatus() === 'lost') {
-    messageContainer.querySelector('.message-lose').classList.remove('hidden');
-  } else {
-    messageContainer
-      .querySelectorAll('.message')
-      .forEach((m) => m.classList.add('hidden'));
+button.addEventListener('click', () => {
+  if (button.className === 'button restart') {
+    game.restart();
   }
-}
 
-function handleKeydown(e) {
+  game.start();
+  updateUi();
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
+  startMessage.classList.add('hidden');
+  button.textContent = 'Restart';
+  button.className = 'button restart';
+});
+
+document.addEventListener('keydown', (e) => {
   if (game.getStatus() !== 'playing') {
     return;
   }
 
-  let moved = false;
-
-  if (e.key === 'ArrowLeft') {
-    moved = game.moveLeft();
-  } else if (e.key === 'ArrowRight') {
-    moved = game.moveRight();
-  } else if (e.key === 'ArrowUp') {
-    moved = game.moveUp();
-  } else if (e.key === 'ArrowDown') {
-    moved = game.moveDown();
+  switch (e.key) {
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
   }
-
-  if (moved) {
-    updateUI();
-  }
-}
-
-startButton.addEventListener('click', () => {
-  if (game.getStatus() === 'ready' || game.getStatus() === 'lost') {
-    game.start();
-    startButton.textContent = 'Restart';
-    updateUI();
-  } else {
-    game.restart();
-    updateUI();
-  }
+  updateUi();
 });
 
-document.addEventListener('keydown', handleKeydown);
+function updateUi() {
+  const currentState = game.getState();
+  const currentStatus = game.getStatus();
+  const boardRows = gameField.querySelectorAll('.field-row');
 
-updateUI();
+  boardRows.forEach((row, rowIndex) => {
+    const rowCells = row.querySelectorAll('.field-cell');
+
+    rowCells.forEach((cell, colIndex) => {
+      const cellValue = currentState[rowIndex][colIndex];
+
+      cell.innerHTML = cellValue || '';
+      cell.className = 'field-cell';
+
+      if (cellValue > 0) {
+        cell.classList.add(`field-cell--${cellValue}`);
+      }
+    });
+  });
+
+  gameScore.textContent = game.getScore();
+
+  if (currentStatus === 'win') {
+    winMessage.classList.remove('hidden');
+  } else if (currentStatus === 'lose') {
+    loseMessage.classList.remove('hidden');
+  }
+}
