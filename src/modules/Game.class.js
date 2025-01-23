@@ -1,3 +1,4 @@
+/* eslint-disable function-paren-newline */
 'use strict';
 
 /**
@@ -28,7 +29,7 @@ class Game {
     return this.status;
   }
 
-  generateRandomTile(count = 1) {
+  generateRandomTile() {
     const emptyCells = [];
 
     for (let row = 0; row < 4; row++) {
@@ -39,15 +40,11 @@ class Game {
       }
     }
 
-    for (let i = 0; i < count; i++) {
-      if (emptyCells.length > 0) {
-        const { row, col } = emptyCells.splice(
-          Math.floor(Math.random() * emptyCells.length),
-          1,
-        )[0];
+    if (emptyCells.length > 0) {
+      const { row, col } =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-        this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
-      }
+      this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
     }
   }
 
@@ -97,7 +94,7 @@ class Game {
     this.board = this.board.map((row) => this.moveRowLeft(row));
 
     if (!this.areBoardsEqual(previousBoard, this.board)) {
-      this.generateRandomTile(1);
+      this.generateRandomTile();
     }
     this.checkGameStatus();
   }
@@ -105,15 +102,12 @@ class Game {
   moveRight() {
     const previousBoard = this.board.map((row) => [...row]);
 
-    this.board = this.board.map((row) => {
-      const reversedRow = row.reverse();
-      const movedRow = this.moveRowLeft(reversedRow);
-
-      return movedRow.reverse();
-    });
+    this.board = this.board.map((row) =>
+      this.moveRowLeft(row.reverse()).reverse(),
+    );
 
     if (!this.areBoardsEqual(previousBoard, this.board)) {
-      this.generateRandomTile(1);
+      this.generateRandomTile();
     }
     this.checkGameStatus();
   }
@@ -126,9 +120,8 @@ class Game {
     this.board = this.transpose(this.board);
 
     if (!this.areBoardsEqual(previousBoard, this.board)) {
-      this.generateRandomTile(1);
+      this.checkGameStatus();
     }
-    this.checkGameStatus();
   }
 
   moveDown() {
@@ -139,13 +132,14 @@ class Game {
     this.board = this.transpose(this.board);
 
     if (!this.areBoardsEqual(previousBoard, this.board)) {
-      this.generateRandomTile(1);
+      this.checkGameStatus();
     }
-    this.checkGameStatus();
   }
 
   transpose(matrix) {
-    return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
+    return matrix[0].map((value, colIndex) =>
+      matrix.map((row) => row[colIndex]),
+    );
   }
 
   areBoardsEqual(board1, board2) {
@@ -172,7 +166,8 @@ class Game {
     this.board = this.createEmptyBoard();
     this.score = 0;
     this.status = 'playing';
-    this.generateRandomTile(2);
+    this.generateRandomTile();
+    this.generateRandomTile();
   }
 
   restart() {
