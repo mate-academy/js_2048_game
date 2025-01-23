@@ -20,6 +20,7 @@ document.getElementById('start-button').onclick = () => {
 document.getElementById('restart-button').onclick = () => {
   game.restart();
   updateTable(game.getState());
+  score.innerText = game.getScore();
   document.querySelector('.message-start').classList.add('hidden');
   document.querySelector('.message-win').classList.add('hidden');
   document.querySelector('.message-lose').classList.add('hidden');
