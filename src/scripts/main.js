@@ -8,11 +8,34 @@ const game = new Game();
 // Write your code here
 
 const startButton = document.querySelector('.button.start');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
+const messageStart = document.querySelector('.message-start');
+
+function updateMessage(stat) {
+  if (stat === 'lose') {
+    messageLose.classList.remove('hidden');
+    messageStart.сlassList.add('hidden');
+  }
+
+  if (stat === 'win') {
+    messageWin.classList.remove('hidden');
+    messageStart.сlassList.add('hidden');
+  }
+
+  if (stat === 'playing') {
+    messageStart.textContent = 'Playing';
+  }
+}
 
 startButton.addEventListener('click', () => {
   game.start();
   updateBoard();
   updateScore();
+  startButton.classList.replace('start', 'restart');
+  startButton.textContent = 'Restart';
+
+  updateMessage(game.getStatus());
 });
 
 document.addEventListener('keydown', (e) => {
@@ -39,13 +62,8 @@ document.addEventListener('keydown', (e) => {
   updateBoard();
   updateScore();
 
-  if (game.getStatus() === 'win') {
-    alert('You win!');
-  }
-
-  if (game.getStatus() === 'lose') {
-    alert('Game over!');
-  }
+  // Обновляем сообщение после каждого хода
+  updateMessage(game.getStatus());
 });
 
 function updateBoard() {
