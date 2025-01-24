@@ -14,42 +14,86 @@ class Game {
 
   moveLeft() {
     for (let row = 0; row < this.board.length; row++) {
-      const notEmptyCells = [];
+      const notEmptyCellsHo = [];
 
       for (let col = 0; col < this.board.length; col++) {
         if (this.board[row][col] !== 0) {
-          notEmptyCells.push(this.board[row][col]);
+          notEmptyCellsHo.push(this.board[row][col]);
         }
       }
 
-      for (let i = 0; i < notEmptyCells.length; i++) {
-        if (notEmptyCells[i] === notEmptyCells[i + 1]) {
-          const result = notEmptyCells[i] * 2;
+      for (let i = 0; i < notEmptyCellsHo.length; i++) {
+        if (notEmptyCellsHo[i] === notEmptyCellsHo[i + 1]) {
+          const result = notEmptyCellsHo[i] * 2;
 
-          notEmptyCells[i] = result;
-          notEmptyCells[i + 1] = 0;
-          i++;
+          notEmptyCellsHo[i] = result;
+          notEmptyCellsHo.splice(i + 1, 1);
         }
       }
 
-      for (let k = notEmptyCells.length; k < 3; k++) {
-        notEmptyCells[k] = 0;
+      for (let k = notEmptyCellsHo.length; k < 4; k++) {
+        notEmptyCellsHo[k] = 0;
       }
 
       for (let col = 0; col < this.board[row].length; col++) {
-        this.board[row][col] = notEmptyCells[col];
+        this.board[row][col] = notEmptyCellsHo[col];
       }
     }
   }
+
   moveRight() {
+    this.moveLeft();
+
     for (let row = 0; row < this.board.length; row++) {
-      this.board[row].reverse();
-      this.moveLeft();
       this.board[row].reverse();
     }
   }
-  moveUp() {}
-  moveDown() {}
+
+  moveUp() {
+    for (let col = 0; col < this.board.length; col++) {
+      const notEmptyCellsVer = [];
+
+      for (let row = 0; row < this.board.length; row++) {
+        if (this.board[row][col] !== 0) {
+          notEmptyCellsVer.push(this.board[row][col]);
+        }
+      }
+
+      for (let i = 0; i < notEmptyCellsVer.length - 1; i++) {
+        if (notEmptyCellsVer[i] === notEmptyCellsVer[i + 1]) {
+          const result = notEmptyCellsVer[i] * 2;
+
+          notEmptyCellsVer[i] = result;
+          notEmptyCellsVer.splice(i + 1, 1);
+        }
+      }
+
+      for (let k = notEmptyCellsVer.length; k < 4; k++) {
+        notEmptyCellsVer[k] = 0;
+      }
+
+      for (let row = 0; row < this.board.length; row++) {
+        this.board[row][col] = notEmptyCellsVer[row];
+      }
+    }
+  }
+
+  moveDown() {
+    for (let col = 0; col < this.board.length; col++) {
+      const notEmptyCellsVer = [];
+6
+      for (let row = 0; row < this.board.length; row++) {
+        if (this.board[row][col] !== 0) {
+          notEmptyCellsVer.push(this.board[row][col]);
+        }
+      }
+
+      for (let row = 0; row < this.board.length; row++) {
+        this.board[this.board.length - 1 - row][col] =
+          notEmptyCellsVer[row] || 0;
+      }
+    }
+  }
 
   getScore() {
     return this.score;
@@ -72,7 +116,14 @@ class Game {
     return this.status;
   }
 
-  start() {}
+  start() {
+    let i = 0;
+
+    while (i <= 1) {
+      this.addRandomTile();
+      i++;
+    }
+  }
 
   restart() {
     this.board = Array.from({ length: 4 }, () => Array(4).fill(0));
@@ -84,7 +135,7 @@ class Game {
     for (let row = 0; row < this.board.length; row++) {
       for (let col = 0; col < this.board.length; col++) {
         if (this.board[row][col] === 0) {
-          emptyCells.push([row][col]);
+          emptyCells.push([row, col]);
         }
       }
     }
