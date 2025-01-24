@@ -49,6 +49,18 @@ startButton.addEventListener('click', () => {
   updateMessage(game.getStatus());
 });
 
+document.querySelector('.button.start').addEventListener('click', () => {
+  if (startButton.classList.contains('restart')) {
+    game.restart();
+  } else {
+    game.start();
+    startButton.classList.replace('start', 'restart');
+    startButton.textContent = 'Restart';
+  }
+  updateScore();
+  updateMessage(game.getStatus());
+});
+
 document.addEventListener('keydown', (e) => {
   if (game.getStatus() !== 'playing') {
     return;
@@ -97,5 +109,9 @@ function updateBoard() {
 }
 
 function updateScore() {
-  document.querySelector('.game-score').textContent = game.getScore();
+  const scoreElement = document.querySelector('.game-score');
+  const bestScoreElement = document.querySelector('.best-score');
+
+  scoreElement.textContent = game.getScore();
+  bestScoreElement.textContent = game.bestScore;
 }
