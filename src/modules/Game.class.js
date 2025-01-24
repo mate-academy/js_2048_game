@@ -32,8 +32,9 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    if (initialState) {
+      this.state = initialState;
+    }
   }
 
   moveLeft() {
