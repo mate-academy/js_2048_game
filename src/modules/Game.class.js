@@ -81,19 +81,37 @@ class Game {
   moveDown() {
     for (let col = 0; col < this.board.length; col++) {
       const notEmptyCellsVer = [];
-6
+  
+      // Собираем все непустые клетки в столбце
       for (let row = 0; row < this.board.length; row++) {
         if (this.board[row][col] !== 0) {
           notEmptyCellsVer.push(this.board[row][col]);
         }
       }
-
-      for (let row = 0; row < this.board.length; row++) {
-        this.board[this.board.length - 1 - row][col] =
-          notEmptyCellsVer[row] || 0;
+  
+      // Объединяем одинаковые числа
+      for (let i = notEmptyCellsVer.length - 1; i > 0; i--) {
+        if (notEmptyCellsVer[i] === notEmptyCellsVer[i - 1]) {
+          notEmptyCellsVer[i] *= 2;
+          notEmptyCellsVer[i - 1] = 0;
+        }
+      }
+  
+      const mergedCells = notEmptyCellsVer.filter(cell => cell !== 0);
+  
+      let insertIndex = this.board.length - 1;
+      for (let i = mergedCells.length - 1; i >= 0; i--) {
+        this.board[insertIndex][col] = mergedCells[i];
+        insertIndex--;
+      }
+  
+      for (let row = insertIndex; row >= 0; row--) {
+        this.board[row][col] = 0;
       }
     }
   }
+  
+  
 
   getScore() {
     return this.score;
@@ -146,6 +164,12 @@ class Game {
 
       this.board[randomRow][randomCol] = Math.random() < 0.9 ? 2 : 4;
     }
+  }
+
+  function  render(boardState) {
+    const cells = document.querySelectorAll('field-cell');
+
+    
   }
 }
 
