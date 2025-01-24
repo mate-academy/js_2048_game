@@ -10,6 +10,7 @@ export default class Game {
       this.board = Array.from({ length: 4 }, () => Array(4).fill(0));
     }
   }
+
   moveLeft() {
     this.board = this.board.map((row) => {
       const filteredRow = row.filter((num) => num !== 0);
@@ -30,6 +31,10 @@ export default class Game {
     });
     this.updateBestScore();
     this.addRandomTile();
+    this.status = this.getStatus();
+
+    if (this.status === 'win' || this.status === 'lose') {
+    }
   }
 
   moveRight() {
@@ -52,10 +57,15 @@ export default class Game {
     });
     this.updateBestScore();
     this.addRandomTile();
+
+    if (this.status === 'win' || this.status === 'lose') {
+    }
   }
+
   transpose(matrix) {
     return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
   }
+
   moveUp() {
     const transposedBoard = this.transpose(this.board);
 
@@ -80,6 +90,9 @@ export default class Game {
     this.board = this.transpose(transposedBoard);
     this.updateBestScore();
     this.addRandomTile();
+
+    if (this.status === 'win' || this.status === 'lose') {
+    }
   }
 
   moveDown() {
@@ -102,13 +115,19 @@ export default class Game {
         ...filteredRow,
       ];
     }
+
     this.board = this.transpose(transposedBoard);
     this.updateBestScore();
     this.addRandomTile();
+
+    if (this.status === 'win' || this.status === 'lose') {
+    }
   }
+
   getScore() {
     return this.score;
   }
+
   getState() {
     return this.board;
   }
@@ -144,6 +163,7 @@ export default class Game {
 
     return false;
   }
+
   getStatus() {
     if (this.board.flat().includes(2048)) {
       return 'win';
@@ -153,8 +173,9 @@ export default class Game {
       return 'lose';
     }
 
-    return this.board.flat().some((value) => value !== 0) ? 'playing' : 'idle';
+    return 'playing';
   }
+
   addRandomTile() {
     const emptyTiles = [];
 
@@ -204,6 +225,7 @@ export default class Game {
     this.status = 'playing';
     this.renderBoard();
   }
+
   restart() {
     this.board = Array.from({ length: 4 }, () => Array(4).fill(0));
     this.score = 0;
