@@ -176,11 +176,22 @@ class Game {
   }
 
   canMergeTiles() {
-    return this.state.some((row, rowIndex) => {
-      row.some((tile, colIndex) => {
-        return this.canMergeWithNeighbor(rowIndex, colIndex, tile);
-      });
-    });
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        const tile = this.state[row][col];
+
+        if (
+          // eslint-disable-next-line max-len
+          (col < BOARD_SIZE - 1 && tile === this.state[row][col + 1]) || // Right
+          (row < BOARD_SIZE - 1 && tile === this.state[row + 1][col]) || // Down
+          tile === 0 // Empty space
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   canMergeWithNeighbor(row, col, tile) {
