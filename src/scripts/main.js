@@ -69,6 +69,12 @@ startButton.addEventListener('click', () => {
   }
 
   game.restart();
+  messageStart.classList.remove('hidden');
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
+  startButton.textContent = 'Start';
+  startButton.classList.remove('restart');
+  startButton.classList.add('start');
   updateUI();
 });
 

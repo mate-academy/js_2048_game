@@ -8,7 +8,14 @@
  */
 class Game {
   constructor(initialState = null) {
-    this.board = initialState || this.createEmptyBoard();
+    this.initialValue = initialState
+      ? initialState.map((row) => [...row])
+      : null;
+
+    this.board = this.initialValue
+      ? this.initialValue.map((row) => [...row])
+      : this.createEmptyBoard();
+
     this.score = 0;
     this.status = 'idle';
   }
@@ -203,7 +210,10 @@ class Game {
   }
 
   restart() {
-    this.board = this.createEmptyBoard();
+    this.board = this.initialValue
+      ? this.initialValue.map((row) => [...row])
+      : this.createEmptyBoard();
+
     this.score = 0;
     this.status = 'idle';
   }
