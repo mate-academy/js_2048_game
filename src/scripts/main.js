@@ -1,6 +1,5 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const game = new Game();
 
@@ -30,7 +29,7 @@ function renderBoard() {
     const row = Math.floor(index / 4);
     const col = index % 4;
 
-    cell.className = 'field-cell'; // Скидаємо класи
+    cell.className = 'field-cell';
 
     if (board[row][col] !== 0) {
       cell.textContent = board[row][col];
@@ -77,16 +76,6 @@ function updateMessages(state) {
   messageWin.classList.add('hidden');
   messageStart.classList.add('hidden');
 
-  // if (status === 'lose') {
-  //   messageLose.classList.remove('hidden');
-  // } else if (status === 'win') {
-  //   messageWin.classList.remove('hidden');
-  // } else if (status === 'playing') {
-  //   messageStart.classList.add('hidden');
-  // } else if (status === 'start') {
-  //   messageStart.classList.remove('hidden');
-  // }
-
   switch (state) {
     case 'lose':
       messageLose.classList.remove('hidden');
@@ -94,9 +83,6 @@ function updateMessages(state) {
     case 'win':
       messageWin.classList.remove('hidden');
       break;
-    // case 'playing':
-    //   messageStart.classList.add('hidden');
-    //   break;
     case 'idle':
       messageStart.classList.remove('hidden');
       break;
