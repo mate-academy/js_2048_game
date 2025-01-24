@@ -103,6 +103,26 @@ class Game {
     this.checkGameStatus();
   }
 
+  moveRowRight(row) {
+    const filteredRow = row.filter((cell) => cell !== 0);
+
+    for (let i = filteredRow.length - 1; i > 0; i--) {
+      if (filteredRow[i] === filteredRow[i - 1]) {
+        filteredRow[i] *= 2;
+        this.score += filteredRow[i];
+        filteredRow[i - 1] = 0;
+      }
+    }
+
+    const mergedRow = filteredRow.filter((cell) => cell !== 0);
+
+    while (mergedRow.length < 4) {
+      mergedRow.unshift(0);
+    }
+
+    return mergedRow;
+  }
+
   moveRight() {
     if (this.status !== 'playing') {
       return;
@@ -110,9 +130,7 @@ class Game {
 
     const previousBoard = this.board.map((row) => [...row]);
 
-    this.board = this.board.map((row) =>
-      this.moveRowLeft(row.reverse()).reverse(),
-    );
+    this.board = this.board.map((row) => this.moveRowRight(row));
 
     if (!this.areBoardsEqual(previousBoard, this.board)) {
       this.generateRandomTile();
