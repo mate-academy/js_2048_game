@@ -28,7 +28,11 @@ function renderBoard() {
 document.querySelector('.start').addEventListener('click', () => {
   game.start();
   renderBoard();
+  document.querySelector('.button').classList.remove('start');
+  document.querySelector('.button').classList.add('restart');
+  document.querySelector('.restart').textContent = 'Restart';
   document.querySelector('.message-start').classList.add('hidden');
+  document.querySelector('.message-lose').classList.add('hidden')
 });
 
 document.addEventListener('keydown', (e) => {
@@ -38,14 +42,19 @@ document.addEventListener('keydown', (e) => {
 
   let moved = false;
 
-  if (e.key === 'ArrowLeft') {
-    moved = game.moveLeft();
-  } else if (e.key === 'ArrowRight') {
-    moved = game.moveRight();
-  } else if (e.key === 'ArrowUp') {
-    moved = game.moveUp();
-  } else if (e.key === 'ArrowDown') {
-    moved = game.moveDown();
+  switch (e.key) {
+    case 'ArrowLeft':
+      moved = game.moveLeft();
+      break;
+    case 'ArrowRight':
+      moved = game.moveRight();
+      break;
+    case 'ArrowUp':
+      moved = game.moveUp();
+      break;
+    case 'ArrowDown':
+      moved = game.moveDown();
+      break;
   }
 
   if (moved) {
@@ -57,12 +66,6 @@ document.addEventListener('keydown', (e) => {
       document.querySelector('.message-lose').classList.remove('hidden');
     }
   }
-});
-
-document.getElementById('play-again-btn').addEventListener('click', () => {
-  game.restart();
-  renderBoard();
-  document.querySelector('.message-lose').classList.add('hidden');
 });
 
 renderBoard();
