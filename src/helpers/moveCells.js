@@ -1,10 +1,10 @@
-function moveRowLeft(row) {
+function moveRowLeft(row, gameInstance) {
   const filteredRow = row.filter((cell) => cell !== 0);
 
   for (let i = 0; i < filteredRow.length - 1; i++) {
     if (filteredRow[i] === filteredRow[i + 1]) {
       filteredRow[i] *= 2;
-      this.score += filteredRow[i];
+      gameInstance.score += filteredRow[i];
       filteredRow[i + 1] = 0;
     }
   }
@@ -18,13 +18,13 @@ function moveRowLeft(row) {
   return mergedRow;
 }
 
-export function moveRowRight(row) {
+function moveRowRight(row, gameInstance) {
   const filteredRow = row.filter((cell) => cell !== 0);
 
   for (let i = filteredRow.length - 1; i > 0; i--) {
     if (filteredRow[i] === filteredRow[i - 1]) {
       filteredRow[i] *= 2;
-      this.score += filteredRow[i];
+      gameInstance.score += filteredRow[i];
       filteredRow[i - 1] = 0;
     }
   }
@@ -38,11 +38,11 @@ export function moveRowRight(row) {
   return mergedRow;
 }
 
-export function transpose(matrix) {
+function transpose(matrix) {
   return matrix[0].map((value, colIndex) => matrix.map((row) => row[colIndex]));
 }
 
-export function areBoardsEqual(board1, board2) {
+function areBoardsEqual(board1, board2) {
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
       if (board1[row][col] !== board2[row][col]) {
@@ -54,4 +54,9 @@ export function areBoardsEqual(board1, board2) {
   return true;
 }
 
-module.exports = moveRowLeft;
+module.exports = {
+  moveRowLeft,
+  moveRowRight,
+  transpose,
+  areBoardsEqual,
+};

@@ -6,6 +6,12 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
+const {
+  moveRowLeft,
+  moveRowRight,
+  transpose,
+  areBoardsEqual,
+} = require('../helpers/moveCells.js');
 
 class Game {
   constructor(initialState = null) {
@@ -83,9 +89,9 @@ class Game {
 
     const previousBoard = this.board.map((row) => [...row]);
 
-    this.board = this.board.map((row) => this.moveRowLeft(row));
+    this.board = this.board.map((row) => moveRowLeft(row, this));
 
-    if (!this.areBoardsEqual(previousBoard, this.board)) {
+    if (!areBoardsEqual(previousBoard, this.board)) {
       this.generateRandomTile();
     }
     this.checkGameStatus();
@@ -98,9 +104,9 @@ class Game {
 
     const previousBoard = this.board.map((row) => [...row]);
 
-    this.board = this.board.map((row) => this.moveRowRight(row));
+    this.board = this.board.map((row) => moveRowRight(row, this));
 
-    if (!this.areBoardsEqual(previousBoard, this.board)) {
+    if (!areBoardsEqual(previousBoard, this.board)) {
       this.generateRandomTile();
     }
     this.checkGameStatus();
@@ -113,11 +119,11 @@ class Game {
 
     const previousBoard = this.board.map((row) => [...row]);
 
-    this.board = this.transpose(this.board);
+    this.board = transpose(this.board);
     this.moveLeft();
-    this.board = this.transpose(this.board);
+    this.board = transpose(this.board);
 
-    if (!this.areBoardsEqual(previousBoard, this.board)) {
+    if (!areBoardsEqual(previousBoard, this.board)) {
       this.checkGameStatus();
     }
   }
@@ -129,11 +135,11 @@ class Game {
 
     const previousBoard = this.board.map((row) => [...row]);
 
-    this.board = this.transpose(this.board);
+    this.board = transpose(this.board);
     this.moveRight();
-    this.board = this.transpose(this.board);
+    this.board = transpose(this.board);
 
-    if (!this.areBoardsEqual(previousBoard, this.board)) {
+    if (!areBoardsEqual(previousBoard, this.board)) {
       this.checkGameStatus();
     }
   }
