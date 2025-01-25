@@ -6,6 +6,13 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
+  initState = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
   state = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -33,11 +40,16 @@ class Game {
    */
   constructor(initialState) {
     if (initialState) {
-      this.state = initialState;
+      this.state = JSON.parse(JSON.stringify(initialState));
+      this.initState = JSON.parse(JSON.stringify(initialState));
     }
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const prevState = JSON.stringify(this.state);
 
     this.state.forEach((row) => {
@@ -68,14 +80,19 @@ class Game {
         row[i] = compressedRow[i];
       }
     });
-    this.checkForWin();
-    this.checkForLose();
 
     if (JSON.stringify(this.state) !== prevState) {
       this.spawnNewNum();
     }
+
+    this.checkForWin();
+    this.checkForLose();
   }
   moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const prevState = JSON.stringify(this.state);
 
     this.state.forEach((row) => {
@@ -106,14 +123,19 @@ class Game {
         row[i] = compressedRow[i];
       }
     });
-    this.checkForWin();
-    this.checkForLose();
 
     if (JSON.stringify(this.state) !== prevState) {
       this.spawnNewNum();
     }
+
+    this.checkForWin();
+    this.checkForLose();
   }
   moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const prevState = JSON.stringify(this.state);
 
     const columns = this.state[0].map(
@@ -154,15 +176,20 @@ class Game {
       (_, colIndex) => columns.map((row) => row[colIndex]),
       // eslint-disable-next-line function-paren-newline
     );
-    this.checkForWin();
-    this.checkForLose();
 
     if (JSON.stringify(this.state) !== prevState) {
       this.spawnNewNum();
     }
+
+    this.checkForWin();
+    this.checkForLose();
   }
 
   moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const prevState = JSON.stringify(this.state);
 
     const columns = this.state[0].map(
@@ -203,12 +230,13 @@ class Game {
       (_, colIndex) => columns.map((row) => row[colIndex]),
       // eslint-disable-next-line function-paren-newline
     );
-    this.checkForWin();
-    this.checkForLose();
 
     if (JSON.stringify(this.state) !== prevState) {
       this.spawnNewNum();
     }
+
+    this.checkForWin();
+    this.checkForLose();
   }
 
   /**
@@ -245,6 +273,8 @@ class Game {
   start() {
     this.status = 'playing';
     this.spawnNewNum();
+    this.spawnNewNum();
+    this.checkForLose();
   }
 
   /**
@@ -253,11 +283,14 @@ class Game {
   restart() {
     this.clearTable();
     this.score = 0;
-    this.status = 'playing';
-    this.spawnNewNum();
+    this.status = 'idle';
   }
 
   spawnNewNum() {
+    if (!this.checkEmptyCells()) {
+      return;
+    }
+
     const [a, b] = this.getRandomEmptyCell();
 
     if (this.state[a][b] !== 0) {
@@ -284,12 +317,7 @@ class Game {
   }
 
   clearTable() {
-    this.state = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.state = JSON.parse(JSON.stringify(this.initState));
   }
 
   checkForWin() {
@@ -297,6 +325,7 @@ class Game {
       for (let j = 0; j < 4; j++) {
         if (this.state[i][j] === 2048) {
           this.status = 'win';
+          this.handleWin();
 
           return;
         }
@@ -307,6 +336,7 @@ class Game {
   checkForLose() {
     if (!this.checkEmptyCells() && !this.checkMovesAvailable()) {
       this.status = 'lose';
+      this.handleLoss();
     }
   }
 
@@ -328,6 +358,19 @@ class Game {
     }
 
     return false;
+  }
+
+  handleLoss() {
+    // Trigger an event or call a function to update the UI
+    const e = new Event('gameLost');
+
+    document.dispatchEvent(e);
+  }
+  handleWin() {
+    // Trigger an event or call a function to update the UI
+    const e = new Event('gameWin');
+
+    document.dispatchEvent(e);
   }
 }
 

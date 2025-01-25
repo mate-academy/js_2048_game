@@ -9,18 +9,17 @@ const score = document.querySelector('.game-score');
 document.getElementById('start-button').onclick = () => {
   game.start();
   updateTable(game.getState());
-
-  if (game.getStatus() === 'playing') {
-    document.getElementById('start-button').classList.add('hidden');
-    document.getElementById('restart-button').classList.remove('hidden');
-    document.querySelector('.message-start').classList.add('hidden');
-  }
+  document.getElementById('start-button').classList.add('hidden');
+  document.getElementById('restart-button').classList.remove('hidden');
+  document.querySelector('.message-start').classList.add('hidden');
 };
 
 document.getElementById('restart-button').onclick = () => {
   game.restart();
   updateTable(game.getState());
   score.innerText = game.getScore();
+  document.getElementById('start-button').classList.remove('hidden');
+  document.getElementById('restart-button').classList.add('hidden');
   document.querySelector('.message-start').classList.add('hidden');
   document.querySelector('.message-win').classList.add('hidden');
   document.querySelector('.message-lose').classList.add('hidden');
@@ -43,35 +42,46 @@ function updateTable(state) {
   }
 }
 
+function winOrLoseCheck() {
+  if (game.getState() === 'win') {
+    document.querySelector('.message-win').classList.remove('hidden');
+  }
+
+  if (game.getState() === 'lose') {
+    document.querySelector('.message-lose').classList.remove('hidden');
+  }
+}
+
 document.addEventListener('keydown', (e) => {
-  if (game.getStatus() === 'win' || game.getStatus() === 'lose') {
-    if (game.getState() === 'win') {
-    }
-  } else if (game.getStatus() === 'playing') {
+  if (game.getStatus() === 'playing') {
     if (e.key === 'a' || e.key === 'ArrowLeft') {
       game.moveLeft();
+      winOrLoseCheck();
     }
 
     if (e.key === 'd' || e.key === 'ArrowRight') {
       game.moveRight();
+      winOrLoseCheck();
     }
 
     if (e.key === 'w' || e.key === 'ArrowUp') {
       game.moveUp();
+      winOrLoseCheck();
     }
 
     if (e.key === 's' || e.key === 'ArrowDown') {
       game.moveDown();
+      winOrLoseCheck();
     }
     updateTable(game.getState());
     score.innerText = game.getScore();
-
-    if (game.getStatus() === 'win') {
-      document.querySelector('.message-win').classList.remove('hidden');
-    }
-
-    if (game.getStatus() === 'lose') {
-      document.querySelector('.message-lose').classList.remove('hidden');
-    }
   }
+});
+
+document.addEventListener('gameLost', () => {
+  document.querySelector('.message-lose').classList.remove('hidden');
+});
+
+document.addEventListener('gameWin', () => {
+  document.querySelector('.message-win').classList.remove('hidden');
 });
