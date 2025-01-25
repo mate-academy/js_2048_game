@@ -29,6 +29,11 @@ function renderGrid() {
   bestScoreElement.textContent = game.bestScore;
 }
 
+function updateScore() {
+  scoreElement.textContent = game.getScore();
+  bestScoreElement.textContent = game.bestScore;
+}
+
 function checkGameStatus() {
   const stat = game.getStatus();
 
@@ -38,16 +43,22 @@ function checkGameStatus() {
     messageStart.classList.add('hidden');
     startButton.classList.replace('restart', 'start');
     startButton.textContent = 'Start';
-  } else if (stat === 'lose') {
+  }
+
+  if (stat === 'lose') {
     messageLose.classList.remove('hidden');
     messageWin.classList.add('hidden');
     messageStart.classList.add('hidden');
-  } else if (stat === 'playing') {
+  }
+
+  if (stat === 'playing') {
     messageStart.textContent = 'Playing';
     messageStart.classList.remove('hidden');
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
-  } else if (stat === 'idle') {
+  }
+
+  if (stat === 'idle') {
     messageStart.textContent = 'Press "Start" to begin game. Good luck!';
     messageStart.classList.remove('hidden');
     messageWin.classList.add('hidden');
@@ -71,6 +82,7 @@ document.addEventListener('keydown', (e) => {
   }
 
   renderGrid();
+  updateScore();
   checkGameStatus();
 });
 
@@ -80,15 +92,21 @@ startButton.addEventListener('click', () => {
     startButton.classList.remove('start');
     startButton.classList.add('restart');
     startButton.textContent = 'Restart';
+    messageWin.classList.add('hidden');
+
+    game.score = 0;
+    updateScore();
     messageStart.textContent = 'Playing';
     messageStart.classList.remove('hidden');
-    messageWin.classList.add('hidden');
   } else {
     game.restart();
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
     messageStart.textContent = 'Playing';
     messageStart.classList.remove('hidden');
+
+    game.score = 0;
+    updateScore();
   }
 
   renderGrid();

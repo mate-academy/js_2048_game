@@ -2,6 +2,7 @@
 
 export default class Game {
   constructor(initialState) {
+    // eslint-disable-next-line no-console
     this.score = 0;
     this.bestScore = 0;
     this.status = 'idle';
@@ -126,7 +127,6 @@ export default class Game {
     this.board = this.transpose(this.board);
     this._postMoveHandler(prevState);
   }
-
   _postMoveHandler(prevState) {
     if (JSON.stringify(this.board) !== prevState) {
       this.addRandomTile();
@@ -203,7 +203,7 @@ export default class Game {
     const randomIndex = Math.floor(Math.random() * emptyTiles.length);
     const { row, col } = emptyTiles[randomIndex];
 
-    this.board[row][col] = Math.random() < 0.9 ? 1024 : 4;
+    this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
   }
 
   transpose(matrix) {
