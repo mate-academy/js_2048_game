@@ -1,8 +1,10 @@
 'use strict';
+
 export default class Game {
   constructor(initialState) {
     this.score = 0;
     this.bestScore = 0;
+    this.status = 'idle';
 
     if (initialState) {
       this.board = initialState;
@@ -12,6 +14,12 @@ export default class Game {
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const prevState = JSON.stringify(this.board);
+
     this.board = this.board.map((row) => {
       const filteredRow = row.filter((num) => num !== 0);
 
@@ -29,15 +37,17 @@ export default class Game {
         ...Array(row.length - filteredRow.length).fill(0),
       ];
     });
-    this.updateBestScore();
-    this.addRandomTile();
-    this.status = this.getStatus();
 
-    if (this.status === 'win' || this.status === 'lose') {
-    }
+    this._postMoveHandler(prevState);
   }
 
   moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const prevState = JSON.stringify(this.board);
+
     this.board = this.board.map((row) => {
       const filteredRow = row.filter((num) => num !== 0);
 
@@ -55,72 +65,79 @@ export default class Game {
         ...filteredRow,
       ];
     });
-    this.updateBestScore();
-    this.addRandomTile();
 
-    if (this.status === 'win' || this.status === 'lose') {
-    }
-  }
-
-  transpose(matrix) {
-    return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
+    this._postMoveHandler(prevState);
   }
 
   moveUp() {
-    const transposedBoard = this.transpose(this.board);
+    if (this.status !== 'playing') {
+      return;
+    }
 
-    for (let i = 0; i < transposedBoard.length; i++) {
-      const filteredRow = transposedBoard[i].filter((value) => value !== 0);
+    const prevState = JSON.stringify(this.board);
 
-      for (let j = 0; j < filteredRow.length - 1; j++) {
-        if (filteredRow[j] === filteredRow[j + 1]) {
-          filteredRow[j] *= 2;
-          this.score += filteredRow[j];
-          filteredRow.splice(j + 1, 1);
+    this.board = this.transpose(this.board).map((row) => {
+      const filteredRow = row.filter((num) => num !== 0);
+
+      for (let i = 0; i < filteredRow.length - 1; i++) {
+        if (filteredRow[i] === filteredRow[i + 1]) {
+          filteredRow[i] *= 2;
+          this.score += filteredRow[i];
+          filteredRow.splice(i + 1, 1);
           filteredRow.push(0);
         }
       }
 
-      transposedBoard[i] = [
+      return [
         ...filteredRow,
-        ...Array(4 - filteredRow.length).fill(0),
+        ...Array(row.length - filteredRow.length).fill(0),
       ];
-    }
+    });
 
-    this.board = this.transpose(transposedBoard);
-    this.updateBestScore();
-    this.addRandomTile();
-
-    if (this.status === 'win' || this.status === 'lose') {
-    }
+    this.board = this.transpose(this.board);
+    this._postMoveHandler(prevState);
   }
 
   moveDown() {
-    const transposedBoard = this.transpose(this.board);
+    if (this.status !== 'playing') {
+      return;
+    }
 
-    for (let i = 0; i < transposedBoard.length; i++) {
-      const filteredRow = transposedBoard[i].filter((value) => value !== 0);
+    const prevState = JSON.stringify(this.board);
 
-      for (let j = filteredRow.length - 1; j > 0; j--) {
-        if (filteredRow[j] === filteredRow[j - 1]) {
-          filteredRow[j] *= 2;
-          this.score += filteredRow[j];
-          filteredRow.splice(j - 1, 1);
+    this.board = this.transpose(this.board).map((row) => {
+      const filteredRow = row.filter((num) => num !== 0);
+
+      for (let i = filteredRow.length - 1; i > 0; i--) {
+        if (filteredRow[i] === filteredRow[i - 1]) {
+          filteredRow[i] *= 2;
+          this.score += filteredRow[i];
+          filteredRow.splice(i - 1, 1);
           filteredRow.unshift(0);
         }
       }
 
-      transposedBoard[i] = [
-        ...Array(4 - filteredRow.length).fill(0),
+      return [
+        ...Array(row.length - filteredRow.length).fill(0),
         ...filteredRow,
       ];
-    }
+    });
 
-    this.board = this.transpose(transposedBoard);
-    this.updateBestScore();
-    this.addRandomTile();
+    this.board = this.transpose(this.board);
+    this._postMoveHandler(prevState);
+  }
 
-    if (this.status === 'win' || this.status === 'lose') {
+  _postMoveHandler(prevState) {
+    if (JSON.stringify(this.board) !== prevState) {
+      this.addRandomTile();
+
+      if (this.board.flat().includes(2048)) {
+        this.status = 'win';
+      } else if (!this.hasAvailableMoves()) {
+        this.status = 'lose';
+      }
+
+      this.updateBestScore();
     }
   }
 
@@ -130,6 +147,10 @@ export default class Game {
 
   getState() {
     return this.board;
+  }
+
+  getStatus() {
+    return this.status || 'idle';
   }
 
   updateBestScore() {
@@ -164,18 +185,6 @@ export default class Game {
     return false;
   }
 
-  getStatus() {
-    if (this.board.flat().includes(2048)) {
-      return 'win';
-    }
-
-    if (!this.hasAvailableMoves()) {
-      return 'lose';
-    }
-
-    return 'playing';
-  }
-
   addRandomTile() {
     const emptyTiles = [];
 
@@ -197,25 +206,8 @@ export default class Game {
     this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
   }
 
-  renderBoard() {
-    const rows = document.querySelectorAll('.field-row');
-
-    this.board.forEach((row, rowIndex) => {
-      const cells = rows[rowIndex].querySelectorAll('.field-cell');
-
-      row.forEach((cell, colIndex) => {
-        const cellElement = cells[colIndex];
-
-        cellElement.textContent = '';
-
-        if (cell !== 0) {
-          cellElement.textContent = cell;
-          cellElement.className = `field-cell field-cell--${cell}`;
-        } else {
-          cellElement.className = 'field-cell';
-        }
-      });
-    });
+  transpose(matrix) {
+    return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
   }
 
   start() {
@@ -223,7 +215,6 @@ export default class Game {
     this.addRandomTile();
     this.addRandomTile();
     this.status = 'playing';
-    this.renderBoard();
   }
 
   restart() {
@@ -232,6 +223,5 @@ export default class Game {
     this.addRandomTile();
     this.addRandomTile();
     this.status = 'playing';
-    this.renderBoard();
   }
 }
