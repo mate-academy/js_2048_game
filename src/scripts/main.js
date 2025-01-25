@@ -2,6 +2,7 @@
 
 import Game from '../modules/Game.class';
 
+// Write your code here
 const game = new Game();
 
 const startButton = document.querySelector('.button.start');
@@ -35,6 +36,8 @@ function checkGameStatus() {
     messageWin.classList.remove('hidden');
     messageLose.classList.add('hidden');
     messageStart.classList.add('hidden');
+    startButton.classList.replace('restart', 'start');
+    startButton.textContent = 'Start';
   } else if (stat === 'lose') {
     messageLose.classList.remove('hidden');
     messageWin.classList.add('hidden');
@@ -71,7 +74,6 @@ document.addEventListener('keydown', (e) => {
   checkGameStatus();
 });
 
-// Start/Restart button handler
 startButton.addEventListener('click', () => {
   if (startButton.classList.contains('start')) {
     game.start();
@@ -80,6 +82,7 @@ startButton.addEventListener('click', () => {
     startButton.textContent = 'Restart';
     messageStart.textContent = 'Playing';
     messageStart.classList.remove('hidden');
+    messageWin.classList.add('hidden');
   } else {
     game.restart();
     messageWin.classList.add('hidden');

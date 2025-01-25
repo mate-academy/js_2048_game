@@ -203,7 +203,7 @@ export default class Game {
     const randomIndex = Math.floor(Math.random() * emptyTiles.length);
     const { row, col } = emptyTiles[randomIndex];
 
-    this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
+    this.board[row][col] = Math.random() < 0.9 ? 1024 : 4;
   }
 
   transpose(matrix) {
