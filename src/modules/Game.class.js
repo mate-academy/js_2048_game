@@ -5,7 +5,7 @@ class Game {
     if (initialState) {
       this.board = initialState;
     } else {
-      this.board = Array.from({ length: 4 }, () => Array(4).fill(1024));
+      this.board = Array.from({ length: 4 }, () => Array(4).fill(0));
     }
 
     this.status = 'idle';
@@ -44,6 +44,10 @@ class Game {
         this.board[row][col] = notEmptyCellsHo[col];
       }
     }
+
+    if (!this.checkEmptyTile()) {
+      this.endGame();
+    }
   }
 
   moveRight() {
@@ -69,6 +73,10 @@ class Game {
       }
 
       this.board[row] = notEmptyCellsHo.reverse();
+    }
+
+    if (!this.checkEmptyTile()) {
+      this.endGame();
     }
   }
 
