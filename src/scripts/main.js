@@ -52,8 +52,7 @@ function checkGameStatus() {
   }
 
   if (stat === 'playing') {
-    messageStart.textContent = 'Playing';
-    messageStart.classList.remove('hidden');
+    messageStart.classList.add('hidden');
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
   }
@@ -96,14 +95,12 @@ startButton.addEventListener('click', () => {
 
     game.score = 0;
     updateScore();
-    messageStart.textContent = 'Playing';
-    messageStart.classList.remove('hidden');
+    messageStart.classList.add('hidden');
   } else {
     game.restart();
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
-    messageStart.textContent = 'Playing';
-    messageStart.classList.remove('hidden');
+    messageStart.classList.add('hidden');
 
     game.score = 0;
     updateScore();
