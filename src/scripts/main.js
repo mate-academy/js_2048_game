@@ -71,6 +71,8 @@ startButton.addEventListener('click', () => {
   }
 
   game.restart();
+  game.start();
+  messageLose.classList.add('hidden');
   updateUI();
 });
 

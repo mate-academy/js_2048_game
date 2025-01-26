@@ -125,7 +125,7 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.start = 'idle';
+    this.status = 'playing';
     this.board = this.createEmptyBoard();
     this.score = 0;
   }
