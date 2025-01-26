@@ -5,7 +5,7 @@ class Game {
     if (initialState) {
       this.board = initialState;
     } else {
-      this.board = Array.from({ length: 4 }, () => Array(4).fill(2));
+      this.board = Array.from({ length: 4 }, () => Array(4).fill(1024));
     }
 
     this.status = 'idle';
@@ -13,6 +13,10 @@ class Game {
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     for (let row = 0; row < this.board.length; row++) {
       const notEmptyCellsHo = [];
 
@@ -28,6 +32,7 @@ class Game {
 
           notEmptyCellsHo[i] = result;
           notEmptyCellsHo.splice(i + 1, 1);
+          this.score += notEmptyCellsHo[i];
         }
       }
 
@@ -42,14 +47,36 @@ class Game {
   }
 
   moveRight() {
-    this.moveLeft();
+    if (this.status !== 'playing') {
+      return;
+    }
 
     for (let row = 0; row < this.board.length; row++) {
-      this.board[row].reverse();
+      const reversedRow = this.board[row].slice().reverse();
+
+      const notEmptyCellsHo = reversedRow.filter((cell) => cell !== 0);
+
+      for (let i = 0; i < notEmptyCellsHo.length - 1; i++) {
+        if (notEmptyCellsHo[i] === notEmptyCellsHo[i + 1]) {
+          notEmptyCellsHo[i] *= 2;
+          this.score += notEmptyCellsHo[i];
+          notEmptyCellsHo.splice(i + 1, 1);
+        }
+      }
+
+      for (let k = notEmptyCellsHo.length; k < 4; k++) {
+        notEmptyCellsHo[k] = 0;
+      }
+
+      this.board[row] = notEmptyCellsHo.reverse();
     }
   }
 
   moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     for (let col = 0; col < this.board.length; col++) {
       const notEmptyCellsVer = [];
 
@@ -65,6 +92,7 @@ class Game {
 
           notEmptyCellsVer[i] = result;
           notEmptyCellsVer.splice(i + 1, 1);
+          this.score += notEmptyCellsVer[i];
         }
       }
 
@@ -79,18 +107,38 @@ class Game {
   }
 
   moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     for (let col = 0; col < this.board.length; col++) {
       const notEmptyCellsVer = [];
-6
+
       for (let row = 0; row < this.board.length; row++) {
         if (this.board[row][col] !== 0) {
           notEmptyCellsVer.push(this.board[row][col]);
         }
       }
 
-      for (let row = 0; row < this.board.length; row++) {
-        this.board[this.board.length - 1 - row][col] =
-          notEmptyCellsVer[row] || 0;
+      for (let i = notEmptyCellsVer.length - 1; i > 0; i--) {
+        if (notEmptyCellsVer[i] === notEmptyCellsVer[i - 1]) {
+          notEmptyCellsVer[i] *= 2;
+          notEmptyCellsVer[i - 1] = 0;
+          this.score += notEmptyCellsVer[i];
+        }
+      }
+
+      const mergedCells = notEmptyCellsVer.filter((cell) => cell !== 0);
+
+      let insertIndex = this.board.length - 1;
+
+      for (let i = mergedCells.length - 1; i >= 0; i--) {
+        this.board[insertIndex][col] = mergedCells[i];
+        insertIndex--;
+      }
+
+      for (let row = insertIndex; row >= 0; row--) {
+        this.board[row][col] = 0;
       }
     }
   }
@@ -102,21 +150,13 @@ class Game {
     return this.board;
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     return this.status;
   }
 
   start() {
+    this.status = 'playing';
+
     let i = 0;
 
     while (i <= 1) {
@@ -127,10 +167,11 @@ class Game {
 
   restart() {
     this.board = Array.from({ length: 4 }, () => Array(4).fill(0));
+    this.score = 0;
   }
 
   addRandomTile() {
-    const emptyCells = [[]];
+    const emptyCells = [];
 
     for (let row = 0; row < this.board.length; row++) {
       for (let col = 0; col < this.board.length; col++) {
@@ -146,6 +187,32 @@ class Game {
 
       this.board[randomRow][randomCol] = Math.random() < 0.9 ? 2 : 4;
     }
+  }
+
+  checkEmptyTeil() {
+    for (let row = 0; row < this.board.length; row++) {
+      for (let col = 0; col < this.board.length; col++) {
+        if (this.board[row][col] === 0) {
+          return true;
+        }
+
+        if (
+          col < this.board.length - 1 &&
+          this.board[row][col] === this.board[row][col + 1]
+        ) {
+          return true;
+        }
+
+        if (
+          row < this.board.length - 1 &&
+          this.board[row][col] === this.board[row + 1][col]
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }
 
