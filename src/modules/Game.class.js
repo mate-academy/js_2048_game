@@ -34,8 +34,7 @@ class Game {
     this.score = 0;
   }
 
-  //   Змінюємо значення в певній клітинці
-  // this.board[0][0] = 2; // Встановлює значення 2 у верхній лівий кут
+
   start() {
     this.status = 'playing';
     this.addRandomTile();
@@ -58,7 +57,6 @@ class Game {
   moveLeft() {
     let moved = false;
 
-    // Ітерація по кожному рядку сітки
     for (let row = 0; row < this.board.length; row++) {
       // Видаляємо нулі (пусті комірки)
       let newRow = this.board[row].filter((value) => value !== 0);
@@ -90,8 +88,8 @@ class Game {
     return moved; // Повертаємо true, якщо плитки змістилися
   }
 
-  rotateGrid(clockwise = true) {
-    const size = this.board.length; // Розмір сітки
+  rotateGrid(board, clockwise = true) {
+    const size = board.length; // Розмір сітки
     const newBoard = Array(size)
       .fill(null)
       .map(() => Array(size).fill(0)); // порожня сітка
@@ -100,10 +98,10 @@ class Game {
       for (let col = 0; col < size; col++) {
         if (clockwise) {
           // Обертання на 90 градусів за годинниковою стрілкою
-          newBoard[col][size - 1 - row] = this.board[row][col];
+          newBoard[col][size - 1 - row] = board[row][col];
         } else {
           // Обертання на 90 градусів проти годинникової стрілки
-          newBoard[size - 1 - col][row] = this.board[row][col];
+          newBoard[size - 1 - col][row] = board[row][col];
         }
       }
     }
@@ -112,33 +110,33 @@ class Game {
   }
 
   moveRight() {
-    this.rotateGrid(true); // Обертаємо на 180 градусів
-    this.rotateGrid(true);
+    this.rotateGrid(this.board, true); // Обертаємо на 180 градусів
+    this.rotateGrid(this.board, true);
 
     const moved = this.moveLeft();
 
-    this.rotateGrid(false);
-    this.rotateGrid(false); // Повертаємо назад
+    this.rotateGrid(this.board, false);
+    this.rotateGrid(this.board, false); // Повертаємо назад
 
     return moved;
   }
 
   moveUp() {
-    this.rotateGrid(false);
+    this.rotateGrid(this.board, false);
 
     const moved = this.moveLeft();
 
-    this.rotateGrid(true);
+    this.rotateGrid(this.board, true);
 
     return moved;
   }
 
   moveDown() {
-    this.rotateGrid(true);
+    this.rotateGrid(this.board, true);
 
     const moved = this.moveLeft();
 
-    this.rotateGrid(false);
+    this.rotateGrid(this.board, false);
 
     return moved;
   }
@@ -170,7 +168,7 @@ class Game {
   getState() {
     const table = document.querySelector('tbody');
 
-    table.innerHTML = ''; // Очищаємо таблицю
+    table.innerHTML = ''; 
 
     this.board.forEach((row) => {
       const tr = document.createElement('tr');
@@ -182,7 +180,7 @@ class Game {
 
         td.textContent = cell !== 0 ? cell : '';
         td.classList.add('field-cell');
-        td.setAttribute('class', `field-cell field-cell--${cell}`); // Для стилів
+        td.setAttribute('class', `field-cell field-cell--${cell}`);
         tr.appendChild(td);
       });
 
@@ -202,41 +200,50 @@ class Game {
     return this.score;
   }
 
+  canMove() {
+    const copyOfBoard = JSON.parse(JSON.stringify(this.board));
+
+
+    for (let row = 0; row < copyOfBoard.length; row++) {
+        for (let col = 0; col < copyOfBoard[row].length - 1; col++) {
+            if (copyOfBoard[row][col + 1] === 0 || copyOfBoard[row][col] === 0 || 
+                copyOfBoard[row][col] === copyOfBoard[row][col + 1]) {
+                return true;
+            }
+        }
+    }
+
+
+    for (let col = 0; col < copyOfBoard[0].length; col++) {
+        for (let row = 0; row < copyOfBoard.length - 1; row++) {
+            if (copyOfBoard[row + 1][col] === 0 || copyOfBoard[row][col] === 0 || 
+                copyOfBoard[row][col] === copyOfBoard[row + 1][col]) {
+                return true;
+            }
+        }
+    }
+  
+    return false;
+}
+
+
   getStatus() {
     // `idle` - the game has not started yet (the initial state);
     // * `playing` - the game is in progress;
     // * `win` - the game is won;
     // * `lose` - the game is lost
-    // Ітерація по кожному рядку сітки
-
-    // for (let row = 0; row < this.board.length; row++) {
-    //   // Видаляємо нулі (пусті комірки)
-    //   let newRow = this.board[row].filter(value => value !== 0);
-
-    //   // Об'єднуємо сусідні плитки з однаковими значеннями
-    //   for (let i = 0; i < newRow.length - 1; i++) {
-    //     if (newRow[i] === newRow[i + 1]) {
-    //       newRow[i] *= 2; // Подвоюємо значення плитки
-    //       newRow[i + 1] = 0; // Очищаємо наступну плитку
-    //       moved = true; // Позначаємо, що був рух
-    //     }
-    //   }
 
     for (let row = 0; row < this.board.length; row++) {
       for (let col = 0; col < this.board[row].length; col++) {
-        if (this.board[row][col] === 64) {
+        if (this.board[row][col] === 2048) {
           this.status = 'win';
         }
       }
     }
 
-    // if (!moveDown() && !moveUp() && !moveLeft() && !moveRight()) {
-    //  console.log(this.board)
-    // }
-
-    // if (this.status === 'playing' && this.canMove()) {
-    //   this.status = 'lose';
-    // }
+    if (this.status === 'playing' && !this.canMove()) {
+      this.status = 'lose';
+    }
 
     return this.status;
   }

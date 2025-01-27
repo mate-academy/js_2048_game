@@ -1,15 +1,12 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
+
 const Game = require('../modules/Game.class');
 const game = new Game();
 
 const startButton = document.querySelector('.button');
 const scoreButton = document.querySelector('.game-score');
 
-// I don't know how to write logics for status:lose
-// Expecialy the part how it is should detect 
-// that the matrix can't change anymore
 
 startButton.addEventListener('click', () => {
   if (startButton.getAttribute('class') === 'button start') {
@@ -34,18 +31,18 @@ document.addEventListener('keydown', (e) => {
         game.addRandomTile();
 
         break;
-      case 'ArrowRight': // Якщо натиснута стрілка вправо
-        game.moveRight(); // Викликаємо метод moveRight з класу Game
+      case 'ArrowRight': 
+        game.moveRight(); 
         game.addRandomTile();
 
         break;
-      case 'ArrowUp': // Якщо натиснута стрілка вгору
-        game.moveUp(); // Викликаємо метод moveUp з класу Game
+      case 'ArrowUp':
+        game.moveUp(); 
         game.addRandomTile();
 
         break;
-      case 'ArrowDown': // Якщо натиснута стрілка вниз
-        game.moveDown(); // Викликаємо метод moveDown з класу Game
+      case 'ArrowDown': 
+        game.moveDown(); 
         game.addRandomTile();
 
         break;
@@ -64,8 +61,7 @@ document.addEventListener('keydown', (e) => {
     }
 
     scoreButton.textContent = game.getScore();
-    // Оновлюємо інтерфейс після кожного руху
+   
   }
 });
 
-// Write your code here
