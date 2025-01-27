@@ -10,52 +10,48 @@ const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 
+function updateButton(newClass, text) {
+  button.classList.remove('start', 'restart');
+  button.classList.add(newClass);
+  button.textContent = text;
+}
+
+function toggleMessages(messagesToShow = []) {
+  const messages = [messageStart, messageLose, messageWin];
+
+  messages.forEach((msg) => msg.classList.add('hidden'));
+  messagesToShow.forEach((msg) => msg.classList.remove('hidden'));
+}
+
 button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
     game.start();
-
-    button.classList.remove('start');
-    button.classList.add('restart');
-    button.textContent = 'Restart';
-
-    messageStart.classList.add('hidden');
-    messageLose.classList.add('hidden');
-    messageWin.classList.add('hidden');
-  } else if (button.classList.contains('restart')) {
+    updateButton('restart', 'Restart');
+    toggleMessages();
+  } else {
     game.restart();
-
-    button.classList.remove('restart');
-    button.classList.add('start');
-    button.textContent = 'Start';
-
-    messageStart.classList.remove('hidden');
-    messageLose.classList.add('hidden');
-    messageWin.classList.add('hidden');
+    updateButton('start', 'Start');
+    toggleMessages([messageStart]);
   }
 
   setGameField();
   setGameScore();
 });
 
-document.addEventListener('keyup', (e) => {
-  switch (e.key) {
-    case 'ArrowRight':
-      game.moveRight();
-      break;
-    case 'ArrowLeft':
-      game.moveLeft();
-      break;
-    case 'ArrowUp':
-      game.moveUp();
-      break;
-    case 'ArrowDown':
-      game.moveDown();
-      break;
-  }
+const keyActions = {
+  ArrowRight: () => game.moveRight(),
+  ArrowLeft: () => game.moveLeft(),
+  ArrowUp: () => game.moveUp(),
+  ArrowDown: () => game.moveDown(),
+};
 
-  setGameField();
-  setGameScore();
-  setMessages();
+document.addEventListener('keyup', (e) => {
+  if (keyActions[e.key]) {
+    keyActions[e.key]();
+    setGameField();
+    setGameScore();
+    setMessages();
+  }
 });
 
 function setGameField() {
