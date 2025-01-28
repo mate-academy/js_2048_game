@@ -20,12 +20,18 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState, pageRows) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
 
-    this.state = initialState;
+  static initialTable = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
+  constructor(pageRows) {
+    this.tableState = [...Game.initialTable];
     this.pageRows = pageRows;
+    this.status = 'idle';
   }
 
   moveLeft() {
@@ -96,7 +102,7 @@ class Game {
       },
     };
 
-    let mergedTable = this.state;
+    let mergedTable = this.tableState;
 
     // Якщо напрямок 'вгору' чи 'вниз', обертаємо масив
     if (direction === 'up' || direction === 'down') {
@@ -124,9 +130,9 @@ class Game {
 
     // Якщо напрямок 'вгору' чи 'вниз', обертаємо масив назад
     if (direction === 'up' || direction === 'down') {
-      this.state = flipArray.rotateClockwise(mergedTable);
+      this.tableState = flipArray.rotateClockwise(mergedTable);
     } else {
-      this.state = mergedTable;
+      this.tableState = mergedTable;
     }
     // Оновлюємо відображення клітин
   }
@@ -139,7 +145,9 @@ class Game {
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.tableState;
+  }
 
   /**
    * Returns the current game status.
@@ -151,7 +159,9 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
@@ -164,19 +174,33 @@ class Game {
     this.addNewNumberField(number2);
 
     this.renderCells(this.pageRows);
+    this.status = 'playing';
   }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart(rows) {
+    // Скидаємо поле до початкового стану
+    this.tableState = [...Game.initialTable];
+
+    // Додаємо нові числа на поле
+    this.addNewNumberField(this.generate2or4());
+    this.addNewNumberField(this.generate2or4());
+
+    // Оновлюємо відображення клітин
+    this.renderCells(rows);
+
+    // Змінюємо статус гри
+    this.status = 'playing';
+  }
 
   addNewNumberField(number) {
-    const emtpyCells = this.findEmptyCells(this.state);
+    const emtpyCells = this.findEmptyCells(this.tableState);
     const randomIndex = Math.floor(Math.random() * emtpyCells.length);
     const [randomRow, randomCol] = emtpyCells[randomIndex];
 
-    this.state[randomRow][randomCol] = number;
+    this.tableState[randomRow][randomCol] = number;
   }
 
   generate2or4() {
@@ -198,7 +222,7 @@ class Game {
   }
 
   renderCells(pageRows) {
-    const fields = this.state;
+    const fields = this.tableState;
 
     pageRows.forEach((row, rowIndex) => {
       const cells = row.querySelectorAll('.field-cell');

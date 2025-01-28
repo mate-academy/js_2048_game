@@ -3,20 +3,20 @@
 // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 
-const initialState = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
-
 const startButton = document.querySelector('.button-start');
-const pageRows = [...document.querySelectorAll('.field-row')];
+const restartButton = document.querySelector('.button-restart');
+const initialRows = [...document.querySelectorAll('.field-row')];
 
-const game = new Game(initialState, pageRows);
+const game = new Game([...initialRows]);
 
 startButton.addEventListener('click', () => {
+  startButton.style.display = 'none';
+  restartButton.style.display = 'block';
   game.start();
+});
+
+restartButton.addEventListener('click', () => {
+  game.restart([...initialRows]);
 });
 
 document.addEventListener('keydown', (e) => {

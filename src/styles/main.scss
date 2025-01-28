@@ -138,6 +138,7 @@ h1 {
 }
 
 .start {
+  display: block;
   background: #1dae28;
   font-size: 20px;
 
@@ -147,6 +148,7 @@ h1 {
 }
 
 .restart {
+  display: none;
   background: #f1b2b2;
 
   &:hover {
