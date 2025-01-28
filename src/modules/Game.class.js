@@ -37,22 +37,22 @@ class Game {
   moveLeft() {
     this.handleMovement('left');
     this.addNewNumberField(this.generate2or4());
-    this.renderCells(this.pageRows);
+    this.renderCells(false);
   }
   moveRight() {
     this.handleMovement('right');
     this.addNewNumberField(this.generate2or4());
-    this.renderCells(this.pageRows);
+    this.renderCells(false);
   }
   moveUp() {
     this.handleMovement('up');
     this.addNewNumberField(this.generate2or4());
-    this.renderCells(this.pageRows);
+    this.renderCells(false);
   }
   moveDown() {
     this.handleMovement('down');
     this.addNewNumberField(this.generate2or4());
-    this.renderCells(this.pageRows);
+    this.renderCells(false);
   }
 
   handleMovement(direction) {
@@ -149,23 +149,10 @@ class Game {
     return this.tableState;
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     return this.status;
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
     const number1 = this.generate2or4();
     const number2 = this.generate2or4();
@@ -173,23 +160,26 @@ class Game {
     this.addNewNumberField(number1);
     this.addNewNumberField(number2);
 
-    this.renderCells(this.pageRows);
+    this.renderCells(false);
     this.status = 'playing';
   }
 
-  /**
-   * Resets the game.
-   */
-  restart(rows) {
+  restart() {
     // Скидаємо поле до початкового стану
     this.tableState = [...Game.initialTable];
+
+    // Очищаємо відображення клітинок
+    this.renderCells(true); // Передаємо true для очищення
+
+    // Скидаємо рахунок
+    this.score = 0;
 
     // Додаємо нові числа на поле
     this.addNewNumberField(this.generate2or4());
     this.addNewNumberField(this.generate2or4());
 
-    // Оновлюємо відображення клітин
-    this.renderCells(rows);
+    // Оновлюємо відображення клітинок з новими числами
+    this.renderCells(false); // Тепер відображаємо нові значення
 
     // Змінюємо статус гри
     this.status = 'playing';
@@ -221,22 +211,25 @@ class Game {
     return listOfEmptyCells;
   }
 
-  renderCells(pageRows) {
+  renderCells(clear) {
     const fields = this.tableState;
 
-    pageRows.forEach((row, rowIndex) => {
+    this.pageRows.forEach((row, rowIndex) => {
       const cells = row.querySelectorAll('.field-cell');
 
       cells.forEach((cell, cellIndex) => {
         const value = fields[rowIndex][cellIndex];
 
-        if (value === 0) {
-          cell.textContent = '';
+        if (value === 0 || clear === true) {
+          cell.textContent = ''; // Очищуємо клітинку
         } else {
-          cell.textContent = value;
+          cell.textContent = value; // Відображаємо значення
         }
       });
     });
+
+    // Оновлюємо відображення рахунку
+    document.querySelector('.game-score').textContent = this.getScore();
   }
 }
 

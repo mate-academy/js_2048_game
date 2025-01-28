@@ -16,7 +16,7 @@ startButton.addEventListener('click', () => {
 });
 
 restartButton.addEventListener('click', () => {
-  game.restart([...initialRows]);
+  game.restart();
 });
 
 document.addEventListener('keydown', (e) => {
