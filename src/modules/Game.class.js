@@ -23,6 +23,8 @@ class Game {
   constructor(initialState) {
     // eslint-disable-next-line no-console
     console.log(initialState);
+
+    this.fields = initialState;
   }
 
   moveLeft() {}
@@ -52,10 +54,26 @@ class Game {
    */
   getStatus() {}
 
+  addNewNumberField(number, findEmtpyCells) {
+    const emtpyCells = findEmtpyCells(this.fields);
+    const randomIndex = Math.floor(Math.random() * emtpyCells.length);
+    const [randomRow, randomCol] = emtpyCells[randomIndex];
+
+    this.fields[randomRow][randomCol] = number;
+  }
+
   /**
    * Starts the game.
    */
-  start() {}
+  start(generate2or4, findEmptyCells, renderCells) {
+    const number1 = generate2or4();
+    const number2 = generate2or4();
+
+    this.addNewNumberField(number1, findEmptyCells);
+    this.addNewNumberField(number2, findEmptyCells);
+
+    renderCells();
+  }
 
   /**
    * Resets the game.
