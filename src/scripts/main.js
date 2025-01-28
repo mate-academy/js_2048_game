@@ -12,43 +12,42 @@ const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
 
 startButton.addEventListener('click', () => {
-  if (
-    game.getStatus() === 'idle' ||
-    game.getStatus() === 'lose' ||
-    game.getStatus() === 'win'
-  ) {
+  if (game.getStatus() !== 'idle') {
     game.restart();
-    startButton.textContent = 'Restart';
     messageLose.classList.add('hidden');
     messageWin.classList.add('hidden');
     messageStart.classList.add('hidden');
     updateUI();
-  }
-});
+  } else {
+    document.addEventListener('keydown', (ev) => {
+      if (game.getStatus() === 'playing') {
+        switch (ev.key) {
+          case 'ArrowLeft':
+            game.moveLeft();
+            break;
+          case 'ArrowRight':
+            game.moveRight();
+            break;
+          case 'ArrowUp':
+            game.moveUp();
+            break;
+          case 'ArrowDown':
+            game.moveDown();
+            break;
+          default:
+            return;
+        }
 
-document.addEventListener('keydown', (ev) => {
-  if (game.getStatus() !== 'playing') {
-    return;
-  }
+        updateUI();
+      }
+    });
 
-  switch (ev.key) {
-    case 'ArrowLeft':
-      game.moveLeft();
-      break;
-    case 'ArrowRight':
-      game.moveRight();
-      break;
-    case 'ArrowUp':
-      game.moveUp();
-      break;
-    case 'ArrowDown':
-      game.moveDown();
-      break;
-    default:
-      return;
+    startButton.textContent = 'Restart';
+    startButton.classList.add('restart');
+    startButton.classList.remove('start');
+    game.start();
+    updateUI();
   }
-
-  updateUI();
 });
 
 function updateUI() {
@@ -86,6 +85,3 @@ function updateUI() {
     messageStart.classList.add('hidden');
   }
 }
-
-game.start();
-updateUI();

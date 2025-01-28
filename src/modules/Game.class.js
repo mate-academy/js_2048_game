@@ -86,39 +86,47 @@ class Game {
   }
 
   moveLeft() {
-    let moved = false;
+    if (this.status === 'playing') {
+      let moved = false;
 
-    for (let row = 0; row < 4; row++) {
-      const compressed = this.compress(this.board[row]);
-      const merged = this.merge(compressed);
+      for (let row = 0; row < 4; row++) {
+        const compressed = this.compress(this.board[row]);
+        const merged = this.merge(compressed);
 
-      if (!this.areEqual(this.board[row], merged)) {
-        moved = true;
+        if (!this.areEqual(this.board[row], merged)) {
+          moved = true;
+        }
+        this.board[row] = merged;
       }
-      this.board[row] = merged;
-    }
 
-    if (moved) {
-      this.finalizeMove();
+      if (moved) {
+        this.finalizeMove();
+      }
     }
   }
 
   moveRight() {
-    this.reverseBoard();
-    this.moveLeft();
-    this.reverseBoard();
+    if (this.status === 'playing') {
+      this.reverseBoard();
+      this.moveLeft();
+      this.reverseBoard();
+    }
   }
 
   moveUp() {
-    this.transposeBoard();
-    this.moveLeft();
-    this.transposeBoard();
+    if (this.status === 'playing') {
+      this.transposeBoard();
+      this.moveLeft();
+      this.transposeBoard();
+    }
   }
 
   moveDown() {
-    this.transposeBoard();
-    this.moveRight();
-    this.transposeBoard();
+    if (this.status === 'playing') {
+      this.transposeBoard();
+      this.moveRight();
+      this.transposeBoard();
+    }
   }
 
   /**
