@@ -1,12 +1,10 @@
 'use strict';
 
-
 const Game = require('../modules/Game.class');
 const game = new Game();
 
 const startButton = document.querySelector('.button');
 const scoreButton = document.querySelector('.game-score');
-
 
 startButton.addEventListener('click', () => {
   if (startButton.getAttribute('class') === 'button start') {
@@ -31,18 +29,18 @@ document.addEventListener('keydown', (e) => {
         game.addRandomTile();
 
         break;
-      case 'ArrowRight': 
-        game.moveRight(); 
+      case 'ArrowRight':
+        game.moveRight();
         game.addRandomTile();
 
         break;
       case 'ArrowUp':
-        game.moveUp(); 
+        game.moveUp();
         game.addRandomTile();
 
         break;
-      case 'ArrowDown': 
-        game.moveDown(); 
+      case 'ArrowDown':
+        game.moveDown();
         game.addRandomTile();
 
         break;
@@ -61,7 +59,5 @@ document.addEventListener('keydown', (e) => {
     }
 
     scoreButton.textContent = game.getScore();
-   
   }
 });
-

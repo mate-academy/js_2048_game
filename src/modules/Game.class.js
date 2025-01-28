@@ -34,7 +34,6 @@ class Game {
     this.score = 0;
   }
 
-
   start() {
     this.status = 'playing';
     this.addRandomTile();
@@ -168,7 +167,7 @@ class Game {
   getState() {
     const table = document.querySelector('tbody');
 
-    table.innerHTML = ''; 
+    table.innerHTML = '';
 
     this.board.forEach((row) => {
       const tr = document.createElement('tr');
@@ -203,29 +202,32 @@ class Game {
   canMove() {
     const copyOfBoard = JSON.parse(JSON.stringify(this.board));
 
-
     for (let row = 0; row < copyOfBoard.length; row++) {
-        for (let col = 0; col < copyOfBoard[row].length - 1; col++) {
-            if (copyOfBoard[row][col + 1] === 0 || copyOfBoard[row][col] === 0 || 
-                copyOfBoard[row][col] === copyOfBoard[row][col + 1]) {
-                return true;
-            }
+      for (let col = 0; col < copyOfBoard[row].length - 1; col++) {
+        if (
+          copyOfBoard[row][col + 1] === 0 ||
+          copyOfBoard[row][col] === 0 ||
+          copyOfBoard[row][col] === copyOfBoard[row][col + 1]
+        ) {
+          return true;
         }
+      }
     }
-
 
     for (let col = 0; col < copyOfBoard[0].length; col++) {
-        for (let row = 0; row < copyOfBoard.length - 1; row++) {
-            if (copyOfBoard[row + 1][col] === 0 || copyOfBoard[row][col] === 0 || 
-                copyOfBoard[row][col] === copyOfBoard[row + 1][col]) {
-                return true;
-            }
+      for (let row = 0; row < copyOfBoard.length - 1; row++) {
+        if (
+          copyOfBoard[row + 1][col] === 0 ||
+          copyOfBoard[row][col] === 0 ||
+          copyOfBoard[row][col] === copyOfBoard[row + 1][col]
+        ) {
+          return true;
         }
+      }
     }
-  
-    return false;
-}
 
+    return false;
+  }
 
   getStatus() {
     // `idle` - the game has not started yet (the initial state);
