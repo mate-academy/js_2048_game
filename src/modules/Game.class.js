@@ -38,6 +38,7 @@ class Game {
   }
 
   moveLeft() {
+    let moved = false;
     for (let row = 0; row < this.state.length; row++) {
       // eslint-disable-next-line
       let newRow = this.state[row].filter((cell) => cell !== 0); // Remove all zeros
@@ -47,6 +48,7 @@ class Game {
           newRow[col] *= 2; // Merge cells
           this.score += newRow[col]; // Add the value to the score
           newRow[col + 1] = 0; // Set the next cell to zero
+          moved = true;
         }
       }
       newRow = newRow.filter((cell) => cell !== 0); // Remove zeros again
@@ -54,14 +56,20 @@ class Game {
       while (newRow.length < 4) {
         newRow.push(0); // Fill the rest with zeros
       }
+      if (this.state[row].toString() !== newRow.toString()) {
+        moved = true;
+      }
       this.state[row] = newRow;
     }
-    this.addRandomTile();
-    this.checkWin();
-    this.checkGameOver();
+    if (moved) {
+      this.addRandomTile();
+      this.checkWin();
+      this.checkGameOver();
+    }
   }
 
   moveRight() {
+    let moved = false;
     for (let row = 0; row < this.state.length; row++) {
       // eslint-disable-next-line
       let newRow = this.state[row].filter((cell) => cell !== 0); // Remove all zeros
@@ -71,6 +79,7 @@ class Game {
           newRow[col] *= 2; // Merge cells
           this.score += newRow[col]; // Add the value to the score
           newRow[col - 1] = 0; // Set the previous cell to zero
+          moved = true;
         }
       }
       newRow = newRow.filter((cell) => cell !== 0); // Remove zeros again
@@ -78,14 +87,20 @@ class Game {
       while (newRow.length < 4) {
         newRow.unshift(0); // Fill the rest with zeros
       }
+      if (this.state[row].toString() !== newRow.toString()) {
+        moved = true;
+      }
       this.state[row] = newRow;
     }
-    this.addRandomTile();
-    this.checkWin();
-    this.checkGameOver();
+    if (moved) {
+      this.addRandomTile();
+      this.checkWin();
+      this.checkGameOver();
+    }
   }
 
   moveUp() {
+    let moved = false;
     for (let col = 0; col < this.state[0].length; col++) {
       let newCol = [];
 
@@ -100,6 +115,7 @@ class Game {
           newCol[row] *= 2; // Merge cells
           this.score += newCol[row]; // Add the value to the score
           newCol[row + 1] = 0; // Set the next cell to zero
+          moved = true;
         }
       }
       newCol = newCol.filter((cell) => cell !== 0); // Remove zeros again
@@ -109,15 +125,21 @@ class Game {
       }
 
       for (let row = 0; row < this.state.length; row++) {
+        if (this.state[row][col] !== newCol[row]) {
+          moved = true;
+        }
         this.state[row][col] = newCol[row];
       }
     }
-    this.addRandomTile();
-    this.checkWin();
-    this.checkGameOver();
+    if (moved) {
+      this.addRandomTile();
+      this.checkWin();
+      this.checkGameOver();
+    }
   }
 
   moveDown() {
+    let moved = false;
     for (let col = 0; col < this.state[0].length; col++) {
       let newCol = [];
 
@@ -132,6 +154,7 @@ class Game {
           newCol[row] *= 2; // Merge cells
           this.score += newCol[row]; // Add the score
           newCol[row + 1] = 0; // Set the next cell to zero
+          moved = true;
         }
       }
       newCol = newCol.filter((cell) => cell !== 0); // Remove zeros again
@@ -141,12 +164,17 @@ class Game {
       }
 
       for (let row = this.state.length - 1; row >= 0; row--) {
+        if (this.state[row][col] !== newCol[this.state.length - 1 - row]) {
+          moved = true;
+        }
         this.state[row][col] = newCol[this.state.length - 1 - row];
       }
     }
-    this.addRandomTile();
-    this.checkWin();
-    this.checkGameOver();
+    if (moved) {
+      this.addRandomTile();
+      this.checkWin();
+      this.checkGameOver();
+    }
   }
 
   /**
