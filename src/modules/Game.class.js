@@ -39,6 +39,7 @@ class Game {
 
   moveLeft() {
     let moved = false;
+
     for (let row = 0; row < this.state.length; row++) {
       // eslint-disable-next-line
       let newRow = this.state[row].filter((cell) => cell !== 0); // Remove all zeros
@@ -56,11 +57,13 @@ class Game {
       while (newRow.length < 4) {
         newRow.push(0); // Fill the rest with zeros
       }
+
       if (this.state[row].toString() !== newRow.toString()) {
         moved = true;
       }
       this.state[row] = newRow;
     }
+
     if (moved) {
       this.addRandomTile();
       this.checkWin();
@@ -70,6 +73,7 @@ class Game {
 
   moveRight() {
     let moved = false;
+
     for (let row = 0; row < this.state.length; row++) {
       // eslint-disable-next-line
       let newRow = this.state[row].filter((cell) => cell !== 0); // Remove all zeros
@@ -87,11 +91,13 @@ class Game {
       while (newRow.length < 4) {
         newRow.unshift(0); // Fill the rest with zeros
       }
+
       if (this.state[row].toString() !== newRow.toString()) {
         moved = true;
       }
       this.state[row] = newRow;
     }
+
     if (moved) {
       this.addRandomTile();
       this.checkWin();
@@ -101,6 +107,7 @@ class Game {
 
   moveUp() {
     let moved = false;
+
     for (let col = 0; col < this.state[0].length; col++) {
       let newCol = [];
 
@@ -131,6 +138,7 @@ class Game {
         this.state[row][col] = newCol[row];
       }
     }
+
     if (moved) {
       this.addRandomTile();
       this.checkWin();
@@ -140,6 +148,7 @@ class Game {
 
   moveDown() {
     let moved = false;
+
     for (let col = 0; col < this.state[0].length; col++) {
       let newCol = [];
 
@@ -170,6 +179,7 @@ class Game {
         this.state[row][col] = newCol[this.state.length - 1 - row];
       }
     }
+
     if (moved) {
       this.addRandomTile();
       this.checkWin();

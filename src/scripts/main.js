@@ -41,7 +41,7 @@ function renderGameField() {
   const state = game.getState();
 
   state.forEach((row) => {
-    const rowEl = document.createElement('row');
+    const rowEl = document.createElement('tr');
 
     rowEl.classList.add('field-row');
 
