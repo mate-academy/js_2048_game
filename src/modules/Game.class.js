@@ -29,30 +29,34 @@ class Game {
   ];
 
   constructor(pageRows) {
-    this.tableState = [...Game.initialTable];
+    this.tableState = JSON.parse(JSON.stringify(Game.initialTable));
     this.pageRows = pageRows;
+    this.score = 0;
     this.status = 'idle';
   }
 
   moveLeft() {
     this.handleMovement('left');
-    this.addNewNumberField(this.generate2or4());
-    this.renderCells(false);
+    this.addNewTile();
+
+    setTimeout(() => {
+      this.renderCells();
+    }, 2000);
   }
   moveRight() {
     this.handleMovement('right');
-    this.addNewNumberField(this.generate2or4());
-    this.renderCells(false);
+    this.addNewTile();
+    this.renderCells();
   }
   moveUp() {
     this.handleMovement('up');
-    this.addNewNumberField(this.generate2or4());
-    this.renderCells(false);
+    this.addNewTile();
+    this.renderCells();
   }
   moveDown() {
     this.handleMovement('down');
-    this.addNewNumberField(this.generate2or4());
-    this.renderCells(false);
+    this.addNewTile();
+    this.renderCells();
   }
 
   handleMovement(direction) {
@@ -104,23 +108,50 @@ class Game {
 
     let mergedTable = this.tableState;
 
-    // Якщо напрямок 'вгору' чи 'вниз', обертаємо масив
+    // Якщо напрямок 'вгору' чи 'вниз' обертаю масив
     if (direction === 'up' || direction === 'down') {
       mergedTable = flipArray.rotateCounterClockwise(mergedTable);
     }
 
-    // Тепер сортуємо та об'єднуємо рядки
+    // Тепер сортуємо та об'єдную рядки
     mergedTable = mergedTable.map((row) => {
+      // function getCountOfShifts() {
+      //   let countOfShifts = 0;
+
+      //   if (direction === 'right' || direction === 'down') {
+      //     const reversedRow = row.slice().reverse();
+
+      //     reversedRow.forEach((el, index) => {
+
+      //     });
+      //   }
+
+      //   if (direction === 'left' || direction === 'up') {
+      //   }
+      // }
+
       const sortedRow = sortZeros(row, direction);
 
       const mergedRow = () => {
+        let countOfMerges = sortedRow.filter((el) => el === 0).length;
+
         for (let i = 0; i < sortedRow.length; i++) {
           if (sortedRow[i] === sortedRow[i + 1]) {
+            countOfMerges++;
+
             sortedRow[i] += sortedRow[i + 1];
+            this.score += sortedRow[i];
+
+            if (sortedRow[i] === 2048) {
+              this.endGame('win');
+            }
+
             sortedRow[i + 1] = 0;
             i++; // Пропускаємо наступну ітерацію після злиття
           }
         }
+
+        this.moveTileCSS(direction, countOfMerges);
 
         return sortZeros(sortedRow, direction);
       };
@@ -128,23 +159,18 @@ class Game {
       return mergedRow();
     });
 
-    // Якщо напрямок 'вгору' чи 'вниз', обертаємо масив назад
+    // Якщо напрямок 'вгору' чи 'вниз' обертаю масив назад
     if (direction === 'up' || direction === 'down') {
       this.tableState = flipArray.rotateClockwise(mergedTable);
     } else {
       this.tableState = mergedTable;
     }
-    // Оновлюємо відображення клітин
   }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.tableState;
   }
@@ -154,29 +180,34 @@ class Game {
   }
 
   start() {
-    const number1 = this.generate2or4();
-    const number2 = this.generate2or4();
-
-    this.addNewNumberField(number1);
-    this.addNewNumberField(number2);
-
+    this.addNewTile();
+    this.addNewTile();
     this.renderCells();
+
     this.status = 'playing';
   }
 
   restart() {
     this.clearTable();
-
-    const newNumber1 = this.generate2or4();
-    const newNumber2 = this.generate2or4();
-
-    this.addNewNumberField(newNumber1);
-    this.addNewNumberField(newNumber2);
+    this.addNewTile();
+    this.addNewTile();
     this.renderCells();
 
-    // this.score = 0;
+    this.score = 0;
+    this.status = 'playing';
 
-    // this.status = 'playing';
+    document.querySelector('.message-win').classList.add('hidden');
+    document.querySelector('.message-lose').classList.add('hidden');
+  }
+
+  endGame(gameStatus) {
+    if (gameStatus === 'win') {
+      this.status = 'win';
+      document.querySelector('.message-win').classList.remove('hidden');
+    } else {
+      document.querySelector('.message-lose').classList.remove('hidden');
+      this.status = 'lose';
+    }
   }
 
   clearTable() {
@@ -187,35 +218,33 @@ class Game {
         cell.textContent = '';
       });
     });
-
-    window.console.log(this.tableState, 'tablestate');
-    window.console.log(this.pageRows, 'pagerows');
   }
 
-  addNewNumberField(number) {
-    const emtpyCells = this.findEmptyCells(this.tableState);
-    const randomIndex = Math.floor(Math.random() * emtpyCells.length);
-    const [randomRow, randomCol] = emtpyCells[randomIndex];
+  addNewTile() {
+    function findEmptyCells(arr) {
+      const listOfEmptyCells = [];
 
-    this.tableState[randomRow][randomCol] = number;
-  }
-
-  generate2or4() {
-    return Math.random() < 0.1 ? 4 : 2;
-  }
-
-  findEmptyCells(arr) {
-    const listOfEmptyCells = [];
-
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < arr[i].length; j++) {
-        if (arr[i][j] === 0) {
-          listOfEmptyCells.push([i, j]);
+      for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr[i].length; j++) {
+          if (arr[i][j] === 0) {
+            listOfEmptyCells.push([i, j]);
+          }
         }
       }
+
+      return listOfEmptyCells;
     }
 
-    return listOfEmptyCells;
+    const emtpyCells = findEmptyCells(this.tableState);
+
+    if (emtpyCells.length > 0) {
+      const randomIndex = Math.floor(Math.random() * emtpyCells.length);
+      const [randomRow, randomCol] = emtpyCells[randomIndex];
+
+      this.tableState[randomRow][randomCol] = Math.random() < 0.1 ? 4 : 2;
+    } else {
+      this.endGame('lose');
+    }
   }
 
   renderCells() {
@@ -227,15 +256,112 @@ class Game {
       cells.forEach((cell, cellIndex) => {
         const value = fields[rowIndex][cellIndex];
 
+        if (value !== 0) {
+          cell.style.transform = 'scale(1.05)';
+        }
+
         if (value === 0) {
           cell.textContent = '';
         } else {
           cell.textContent = value;
         }
+
+        cell.className = `field-cell field-cell${this.setColorOfCell(value)}`;
+
+        // cell.style.transition = 'transform 0.2s ease';
+        // cell.style.transform = 'translateX(-200px)';
       });
     });
+  }
 
-    document.querySelector('.game-score').textContent = this.getScore();
+  setColorOfCell(cell) {
+    switch (cell) {
+      case 2:
+        return '--2';
+      case 4:
+        return '--4';
+      case 8:
+        return '--8';
+      case 16:
+        return '--16';
+      case 32:
+        return '--32';
+      case 64:
+        return '--64';
+      case 128:
+        return '--128';
+      case 256:
+        return '--256';
+      case 512:
+        return '--512';
+      case 1024:
+        return '--1024';
+      case 2048:
+        return '--2048';
+      default:
+        return '--0';
+    }
+  }
+
+  getShiftIndex(i, row, direction) {
+    let shiftIndex = 0;
+    let newRow = [...row];
+
+    if (direction === 'right' || direction === 'down') {
+      newRow = newRow.reverse();
+    }
+
+    if (i === 1) {
+      switch (true) {
+        case newRow[0] === 0:
+        case newRow[0] === newRow[i]:
+          shiftIndex++;
+
+          break;
+      }
+    }
+
+    if (i === 2) {
+      switch (true) {
+        case newRow[0] === 0:
+        case newRow[1] === 0:
+        case newRow[0] === newRow[i] && newRow[1] === 0:
+        case newRow[1] === newRow[i]:
+        case newRow[0] === newRow[1]:
+      }
+    }
+
+    if (i === 3) {
+      switch (true) {
+        case newRow[0] === 0:
+        case newRow[1] === 0:
+        case newRow[2] === 0:
+        case newRow[0] === newRow[i] && newRow[1] === 0 && newRow[2] === 0:
+        case newRow[1] === newRow[i] &&
+          newRow[2] === 0 &&
+          newRow[0] !== newRow[1]:
+        case newRow[2] === newRow[i] &&
+          newRow[0] !== newRow[1] &&
+          newRow[1] !== newRow[2]:
+      }
+    }
+
+    return shiftIndex;
+  }
+
+  moveTileCSS(direction, shiftIndex) {
+    const shift = shiftIndex * 90;
+
+    this.pageRows.forEach((row) => {
+      const cells = row.querySelectorAll('.field-cell');
+
+      cells.forEach((cell) => {
+        cell.style.transform = `translate(
+          ${direction === 'left' || direction === 'right' ? `${shift}px` : 0}px,
+          ${direction === 'up' || direction === 'down' ? `${shift}px` : 0}px
+        )`;
+      });
+    });
   }
 }
 

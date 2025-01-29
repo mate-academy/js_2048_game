@@ -1,25 +1,82 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  font-family: 'Roboto', sans-serif;
   font-size: 24px;
   font-weight: 900;
+  overflow: hidden;
+}
+
+.title {
+  margin: 0 auto;
+  padding: 10px 20px;
+  background-color: #f1b2b2;
+  border-radius: 10px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.game-field {
+  box-sizing: border-box;
+  width: 360px;
+  height: 360px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 1s ease-in-out;
+}
+
+.field-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  height: 360px;
+  width: 360px;
+}
+
+.field-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 90px;
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  margin: 0;
+  padding: 0;
+  border: 0.5px solid gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   box-sizing: border-box;
+  font-size: 24px;
+  background: #d6cdc4;
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  color: #776e65;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 
   &--2 {
     background: #eee4da;
@@ -75,12 +132,6 @@ body {
   }
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
-}
-
 .game-header {
   display: flex;
   width: 100%;
@@ -96,12 +147,13 @@ h1 {
   width: 75px;
   height: 75px;
   font-size: 24px;
-  border-radius: 5px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  animation: bounceIn 1s ease-in-out;
 }
 
 .info {
@@ -112,11 +164,12 @@ h1 {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
+  border-radius: 10px;
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .controls {
@@ -125,16 +178,21 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   color: #f9f6f2;
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 700;
   font-size: 16px;
   width: 75px;
   height: 75px;
+  transition:
+    0.25s ease background,
+    transform 0.25s ease;
 
-  transition: 0.25s ease background;
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
 .start {
@@ -163,8 +221,9 @@ h1 {
   color: #776e65;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 10px;
   font-size: 20px;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .hidden {
@@ -176,6 +235,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
+  animation: fadeInUp 1s ease-in-out;
 }
 
 .message-win {
@@ -186,4 +246,39 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.test {
+  transform: translate(80px, 0);
 }
