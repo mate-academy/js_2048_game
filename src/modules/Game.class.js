@@ -160,29 +160,36 @@ class Game {
     this.addNewNumberField(number1);
     this.addNewNumberField(number2);
 
-    this.renderCells(false);
+    this.renderCells();
     this.status = 'playing';
   }
 
   restart() {
-    // Скидаємо поле до початкового стану
-    this.tableState = [...Game.initialTable];
+    this.clearTable();
 
-    // Очищаємо відображення клітинок
-    this.renderCells(true); // Передаємо true для очищення
+    const newNumber1 = this.generate2or4();
+    const newNumber2 = this.generate2or4();
 
-    // Скидаємо рахунок
-    this.score = 0;
+    this.addNewNumberField(newNumber1);
+    this.addNewNumberField(newNumber2);
+    this.renderCells();
 
-    // Додаємо нові числа на поле
-    this.addNewNumberField(this.generate2or4());
-    this.addNewNumberField(this.generate2or4());
+    // this.score = 0;
 
-    // Оновлюємо відображення клітинок з новими числами
-    this.renderCells(false); // Тепер відображаємо нові значення
+    // this.status = 'playing';
+  }
 
-    // Змінюємо статус гри
-    this.status = 'playing';
+  clearTable() {
+    this.tableState = JSON.parse(JSON.stringify(Game.initialTable));
+
+    this.pageRows.forEach((row) => {
+      row.querySelectorAll('.field-cell').forEach((cell) => {
+        cell.textContent = '';
+      });
+    });
+
+    window.console.log(this.tableState, 'tablestate');
+    window.console.log(this.pageRows, 'pagerows');
   }
 
   addNewNumberField(number) {
@@ -211,7 +218,7 @@ class Game {
     return listOfEmptyCells;
   }
 
-  renderCells(clear) {
+  renderCells() {
     const fields = this.tableState;
 
     this.pageRows.forEach((row, rowIndex) => {
@@ -220,15 +227,14 @@ class Game {
       cells.forEach((cell, cellIndex) => {
         const value = fields[rowIndex][cellIndex];
 
-        if (value === 0 || clear === true) {
-          cell.textContent = ''; // Очищуємо клітинку
+        if (value === 0) {
+          cell.textContent = '';
         } else {
-          cell.textContent = value; // Відображаємо значення
+          cell.textContent = value;
         }
       });
     });
 
-    // Оновлюємо відображення рахунку
     document.querySelector('.game-score').textContent = this.getScore();
   }
 }
