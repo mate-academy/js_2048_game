@@ -12,6 +12,8 @@ const score = document.querySelector('.game-score');
 button.addEventListener('click', () => {
   game.restart();
   game.start();
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
 
   if (button.textContent === 'Start') {
     messageStart.style.display = 'none';
