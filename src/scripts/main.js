@@ -23,7 +23,7 @@ restartButton.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if (game.status === 'playing') {
+  if (game.status === 'playing' && !game.isAnimating) {
     switch (e.key) {
       case 'ArrowLeft':
         game.moveLeft();
@@ -39,5 +39,6 @@ document.addEventListener('keydown', (e) => {
         break;
     }
   }
+  window.console.log('---------------------------------------');
   score.textContent = game.getScore();
 });

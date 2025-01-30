@@ -15,6 +15,10 @@ body {
   overflow: hidden;
 }
 
+.container {
+  position: relative;
+}
+
 .title {
   margin: 0 auto;
   padding: 10px 20px;
@@ -27,10 +31,8 @@ body {
   box-sizing: border-box;
   width: 360px;
   height: 360px;
-  background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   animation: fadeInUp 1s ease-in-out;
 }
 
@@ -51,7 +53,7 @@ body {
   gap: 10px;
   margin: 0;
   padding: 0;
-  width: 100%;
+  width: 360px;
   height: 90px;
 }
 
@@ -65,71 +67,13 @@ body {
   box-sizing: border-box;
   font-size: 24px;
   background: #d6cdc4;
-  width: 80px;
-  height: 80px;
+  width: 82.5px;
+  height: 82.5px;
   border-radius: 10px;
   color: #776e65;
   text-align: center;
-  vertical-align: center;
   user-select: none;
-  transition: transform 0.3s ease-in-out;
-
-  &:hover {
-    transform: scale(1.1);
-  }
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
+  transition: transform 0.3s ease;
 }
 
 .game-header {
@@ -278,7 +222,50 @@ h1 {
     transform: scale(1);
   }
 }
+.copy-table {
+  position: absolute;
+  top: 119px;
+  padding: 20px;
+  width: 360px;
+  height: 360px;
+  border: 1px solid #705f4d;
+  border-radius: 10px;
+  background-color: #867666;
+  z-index: -1;
+}
+.copy-body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
 
-.test {
-  transform: translate(80px, 0);
+.copy-row {
+  width: 100%;
+  height: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.copy-cell {
+  border-radius: 10px;
+  width: 82.5px;
+  height: 82.5px;
+  border: 0.2px solid #776e65;
+  color: #776e65;
+  background-color: #d6cdc4; /* Колір плитки */
+  border-radius: 10px; /* Закруглені краї (якщо потрібно) */
+  border: 1px solid #d6cdc4; /* Тонкий бордер для заглибленої плитки */
+  box-shadow:
+    inset 0 -2px 5px rgba(255, 255, 255, 0.6),
+    /* Біла тінь знизу */ inset 0 2px 5px rgba(0, 0, 0, 0.6);
+}
+
+.hidden-tile {
+  visibility: hidden;
 }

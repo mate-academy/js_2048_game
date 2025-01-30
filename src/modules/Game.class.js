@@ -33,112 +33,107 @@ class Game {
     this.pageRows = pageRows;
     this.score = 0;
     this.status = 'idle';
+    this.isAnimating = false; // Змінна для контролю анімацій
   }
 
   moveLeft() {
-    this.handleMovement('left');
-    this.addNewTile();
+    this.executeMove('left');
+  }
+
+  moveRight() {
+    this.executeMove('right');
+  }
+
+  moveUp() {
+    this.executeMove('up');
+  }
+
+  moveDown() {
+    this.executeMove('down');
+  }
+
+  async executeMove(direction) {
+    setTimeout(() => {
+      this.isAnimating = false; // Анімація завершена
+    }, 400);
+
+    if (this.isAnimating) {
+      return;
+    }
+
+    this.isAnimating = true; // Починається анімація
+
+    this.renderTileCSS(direction); // Очікуємо завершення анімації плиток
+
+    this.handleMovement(direction); // Виконуємо рух на полі
 
     setTimeout(() => {
       this.renderCells();
-    }, 2000);
-  }
-  moveRight() {
-    this.handleMovement('right');
+    }, 400);
+
     this.addNewTile();
-    this.renderCells();
   }
-  moveUp() {
-    this.handleMovement('up');
-    this.addNewTile();
-    this.renderCells();
+
+  transpose(matrix) {
+    const result = [];
+
+    for (let i = 0; i < matrix[0].length; i++) {
+      result[i] = [];
+
+      for (let j = 0; j < matrix.length; j++) {
+        result[i][j] = matrix[j][i];
+      }
+    }
+
+    return result;
   }
-  moveDown() {
-    this.handleMovement('down');
-    this.addNewTile();
-    this.renderCells();
+
+  rotateClockwise(matrix) {
+    const transposed = this.transpose(matrix);
+
+    for (let i = 0; i < transposed.length; i++) {
+      transposed[i] = transposed[i].reverse();
+    }
+
+    return transposed;
+  }
+
+  rotateCounterClockwise(matrix) {
+    for (let i = 0; i < matrix.length; i++) {
+      matrix[i] = matrix[i].reverse();
+    }
+
+    return this.transpose(matrix);
+  }
+
+  sortZeros(arr, direction) {
+    const zeros = arr.filter((el) => el === 0);
+    const nonZeros = arr.filter((el) => el !== 0);
+
+    if (direction === 'left' || direction === 'up') {
+      return nonZeros.concat(zeros);
+    }
+
+    if (direction === 'down' || direction === 'right') {
+      return zeros.concat(nonZeros);
+    }
   }
 
   handleMovement(direction) {
-    function sortZeros(arr) {
-      const zeros = arr.filter((el) => el === 0);
-      const nonZeros = arr.filter((el) => el !== 0);
-
-      if (direction === 'left' || direction === 'up') {
-        return nonZeros.concat(zeros);
-      }
-
-      if (direction === 'down' || direction === 'right') {
-        return zeros.concat(nonZeros);
-      }
-    } // Функція для розміщення нулів в кінці
-
-    const flipArray = {
-      transpose(matrix) {
-        const result = [];
-
-        for (let i = 0; i < matrix[0].length; i++) {
-          result[i] = [];
-
-          for (let j = 0; j < matrix.length; j++) {
-            result[i][j] = matrix[j][i];
-          }
-        }
-
-        return result;
-      },
-      rotateClockwise(matrix) {
-        const transposed = this.transpose(matrix);
-
-        for (let i = 0; i < transposed.length; i++) {
-          transposed[i] = transposed[i].reverse();
-        }
-
-        return transposed;
-      },
-
-      rotateCounterClockwise(matrix) {
-        for (let i = 0; i < matrix.length; i++) {
-          matrix[i] = matrix[i].reverse();
-        }
-
-        return this.transpose(matrix);
-      },
-    };
-
-    let mergedTable = this.tableState;
+    let mergedTable = JSON.parse(JSON.stringify(this.tableState));
 
     // Якщо напрямок 'вгору' чи 'вниз' обертаю масив
     if (direction === 'up' || direction === 'down') {
-      mergedTable = flipArray.rotateCounterClockwise(mergedTable);
+      mergedTable = this.rotateCounterClockwise(mergedTable);
     }
 
     // Тепер сортуємо та об'єдную рядки
-    mergedTable = mergedTable.map((row) => {
-      // function getCountOfShifts() {
-      //   let countOfShifts = 0;
-
-      //   if (direction === 'right' || direction === 'down') {
-      //     const reversedRow = row.slice().reverse();
-
-      //     reversedRow.forEach((el, index) => {
-
-      //     });
-      //   }
-
-      //   if (direction === 'left' || direction === 'up') {
-      //   }
-      // }
-
-      const sortedRow = sortZeros(row, direction);
+    mergedTable = mergedTable.map((row, rowIndex) => {
+      const sortedRow = this.sortZeros(row, direction);
 
       const mergedRow = () => {
-        let countOfMerges = sortedRow.filter((el) => el === 0).length;
-
         for (let i = 0; i < sortedRow.length; i++) {
           if (sortedRow[i] === sortedRow[i + 1]) {
-            countOfMerges++;
-
             sortedRow[i] += sortedRow[i + 1];
             this.score += sortedRow[i];
 
@@ -151,9 +146,7 @@ class Game {
           }
         }
 
-        this.moveTileCSS(direction, countOfMerges);
-
-        return sortZeros(sortedRow, direction);
+        return this.sortZeros(sortedRow, direction);
       };
 
       return mergedRow();
@@ -161,7 +154,7 @@ class Game {
 
     // Якщо напрямок 'вгору' чи 'вниз' обертаю масив назад
     if (direction === 'up' || direction === 'down') {
-      this.tableState = flipArray.rotateClockwise(mergedTable);
+      this.tableState = this.rotateClockwise(mergedTable);
     } else {
       this.tableState = mergedTable;
     }
@@ -180,7 +173,7 @@ class Game {
   }
 
   start() {
-    this.addNewTile();
+    // this.addNewTile();
     this.addNewTile();
     this.renderCells();
 
@@ -216,6 +209,7 @@ class Game {
     this.pageRows.forEach((row) => {
       row.querySelectorAll('.field-cell').forEach((cell) => {
         cell.textContent = '';
+        // cell.classList.remove('field-cell--some-class');
       });
     });
   }
@@ -256,110 +250,124 @@ class Game {
       cells.forEach((cell, cellIndex) => {
         const value = fields[rowIndex][cellIndex];
 
-        if (value !== 0) {
-          cell.style.transform = 'scale(1.05)';
-        }
-
         if (value === 0) {
           cell.textContent = '';
         } else {
           cell.textContent = value;
         }
 
-        cell.className = `field-cell field-cell${this.setColorOfCell(value)}`;
+        if (value === 0) {
+          cell.classList.add('hidden-tile');
+          cell.style.backgroundColor = '';
+        } else {
+          cell.classList.remove('hidden-tile');
+        }
 
-        // cell.style.transition = 'transform 0.2s ease';
-        // cell.style.transform = 'translateX(-200px)';
+        const colorOfCell = this.setColorOfCell(value);
+
+        cell.style.backgroundColor = colorOfCell;
       });
     });
   }
 
   setColorOfCell(cell) {
-    switch (cell) {
-      case 2:
-        return '--2';
-      case 4:
-        return '--4';
-      case 8:
-        return '--8';
-      case 16:
-        return '--16';
-      case 32:
-        return '--32';
-      case 64:
-        return '--64';
-      case 128:
-        return '--128';
-      case 256:
-        return '--256';
-      case 512:
-        return '--512';
-      case 1024:
-        return '--1024';
-      case 2048:
-        return '--2048';
-      default:
-        return '--0';
-    }
+    const colors = {
+      2: '#eee4da',
+      4: '#ede0c8',
+      8: '#f2b179',
+      16: '#f59563',
+      32: '#f67c5f',
+      64: '#f65e3b',
+      128: '#edcf72',
+      256: '#edcc61',
+      512: '#edc850',
+      1024: '#edc53f',
+      2048: '#edc22e',
+    };
+
+    return colors[cell];
   }
 
-  getShiftIndex(i, row, direction) {
-    let shiftIndex = 0;
-    let newRow = [...row];
+  // Додаємо таймер для плавності анімації
+  renderTileCSS(direction) {
+    let copyTable = JSON.parse(JSON.stringify(this.tableState));
 
-    if (direction === 'right' || direction === 'down') {
-      newRow = newRow.reverse();
+    if (direction === 'up' || direction === 'down') {
+      copyTable = this.rotateCounterClockwise(copyTable);
     }
 
-    if (i === 1) {
-      switch (true) {
-        case newRow[0] === 0:
-        case newRow[0] === newRow[i]:
-          shiftIndex++;
+    copyTable = copyTable.map((row, rowIndex) => {
+      const workingRow = [...row]; // Створюємо копію рядка для роботи з нею
 
-          break;
+      let i = 0;
+
+      while (i < workingRow.length) {
+        if (workingRow[i] === 0) {
+          i++;
+          continue;
+        }
+
+        let sortedWorkingRow = workingRow.slice(i).filter((el) => el !== 0);
+        let cellCountOfShifts = workingRow
+          .slice(i + 1)
+          .filter((el) => el === 0).length;
+
+        if (direction === 'left' || direction === 'up') {
+          sortedWorkingRow = workingRow
+            .slice(0, i + 1)
+            .filter((el) => el !== 0);
+
+          cellCountOfShifts = workingRow
+            .slice(0, i)
+            .filter((el) => el === 0).length;
+        }
+
+        for (let j = 0; j < sortedWorkingRow.length; j++) {
+          if (sortedWorkingRow[j] === sortedWorkingRow[j + 1]) {
+            cellCountOfShifts++;
+            j++;
+          }
+        }
+
+        row[i] = cellCountOfShifts;
+        i++;
       }
+
+      return row;
+    });
+
+    if (direction === 'up' || direction === 'down') {
+      copyTable = this.rotateClockwise(copyTable);
     }
 
-    if (i === 2) {
-      switch (true) {
-        case newRow[0] === 0:
-        case newRow[1] === 0:
-        case newRow[0] === newRow[i] && newRow[1] === 0:
-        case newRow[1] === newRow[i]:
-        case newRow[0] === newRow[1]:
-      }
-    }
-
-    if (i === 3) {
-      switch (true) {
-        case newRow[0] === 0:
-        case newRow[1] === 0:
-        case newRow[2] === 0:
-        case newRow[0] === newRow[i] && newRow[1] === 0 && newRow[2] === 0:
-        case newRow[1] === newRow[i] &&
-          newRow[2] === 0 &&
-          newRow[0] !== newRow[1]:
-        case newRow[2] === newRow[i] &&
-          newRow[0] !== newRow[1] &&
-          newRow[1] !== newRow[2]:
-      }
-    }
-
-    return shiftIndex;
-  }
-
-  moveTileCSS(direction, shiftIndex) {
-    const shift = shiftIndex * 90;
-
-    this.pageRows.forEach((row) => {
+    this.pageRows.forEach((row, rowIndex) => {
       const cells = row.querySelectorAll('.field-cell');
 
-      cells.forEach((cell) => {
-        cell.style.transform = `translate(
-          ${direction === 'left' || direction === 'right' ? `${shift}px` : 0}px,
-          ${direction === 'up' || direction === 'down' ? `${shift}px` : 0}px
-        )`;
+      cells.forEach((cell, cellIndex) => {
+        const tableCell = copyTable[rowIndex][cellIndex];
+
+        let shift = tableCell * 92.5;
+
+        if (direction === 'left' || direction === 'up') {
+          shift = shift * -1;
+        }
+
+        if (tableCell !== 0) {
+          const X = direction === 'left' || direction === 'right' ? shift : 0;
+          const Y = direction === 'up' || direction === 'down' ? shift : 0;
+
+          cell.style.transition = 'transform 0.3s'; // Додаємо анімацію
+          cell.style.transform = `translate(${X}px, ${Y}px)`; // Переміщуємо клітинку
+
+          // Повертаємо клітинку на місце після завершення анімації
+          setTimeout(() => {
+            requestAnimationFrame(() => {
+              cell.classList.add('hidden-tile');
+              cell.style.transition = 'none'; // Прибираєм анімацію
+              cell.style.transform = 'none'; // Повертаємо клітинку на місце
+            });
+          }, 420); // Враховуємо час анімації
+        }
       });
     });
   }
