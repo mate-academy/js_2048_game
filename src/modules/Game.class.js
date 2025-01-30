@@ -44,10 +44,6 @@ class Game {
         this.board[row][col] = notEmptyCellsHo[col];
       }
     }
-
-    if (!this.checkEmptyTile()) {
-      this.endGame();
-    }
   }
 
   moveRight() {
@@ -73,10 +69,6 @@ class Game {
       }
 
       this.board[row] = notEmptyCellsHo.reverse();
-    }
-
-    if (!this.checkEmptyTile()) {
-      this.endGame();
     }
   }
 

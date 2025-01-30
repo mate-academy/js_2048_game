@@ -13,10 +13,16 @@ const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 
 function endGame() {
-  this.status = 'ended';
+  this.status = 'lose';
 
   if (!game.checkEmptyTeil()) {
     messageLose.classList.remove('hidden');
+  }
+
+  if (game.status === 'lose') {
+    messageLose.classList.remove('hidden');
+  } else if (game.status === 'win') {
+    messageWin.classList.remove('hidden');
   }
 
   document.removeEventListener('keydown', this.handleKeyDown);
@@ -27,7 +33,7 @@ function endGame() {
 }
 
 function isWin() {
-  return this.board.some((row) => row.includes(2048));
+  return game.board.some((row) => row.includes(2048));
 }
 
 export function render(boardState) {
@@ -72,7 +78,7 @@ document.addEventListener('keydown', (ev) => {
 
   if (isWin()) {
     messageWin.classList.remove('hidden');
-    game.status = 'ended';
+    game.status = 'win';
 
     return;
   }
@@ -96,6 +102,7 @@ button.addEventListener('click', () => {
     button.classList.remove('restart');
     messageStart.classList.remove('hidden');
     messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
     game.restart();
   }
 
