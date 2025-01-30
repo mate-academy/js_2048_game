@@ -21,14 +21,15 @@
             Score:
             <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button class="button start button-start">Start</button>
+          <button class="button restart button-restart">Restart</button>
         </div>
       </div>
 
       <table class="game-field">
-        <tbody>
+        <tbody class="field-body">
           <tr class="field-row">
-            <td class="field-cell"></td>
+            <td class="field-cell test"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
@@ -57,6 +58,35 @@
         </tbody>
       </table>
 
+      <table class="copy-table">
+        <tbody class="copy-body">
+          <tr class="copy-row">
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+          </tr>
+          <tr class="copy-row">
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+          </tr>
+          <tr class="copy-row">
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+          </tr>
+          <tr class="copy-row">
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+            <td class="copy-cell"></td>
+          </tr>
+        </tbody>
+      </table>
+
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
         <p class="message message-win hidden">Winner! Congrats! You did it!</p>
@@ -65,6 +95,9 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
