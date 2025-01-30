@@ -24,7 +24,6 @@ button.addEventListener('click', () => {
   updateBoard(game.getState());
 });
 
-// Реакція на натискання клавіш
 document.addEventListener('keydown', (e) => {
   switch (e.key) {
     case 'ArrowUp':
