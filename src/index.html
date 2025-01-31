@@ -13,9 +13,43 @@
     />
   </head>
   <body>
-    <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
+    <div class="game-header">
+      <h1>2048</h1>
+    </div>
+    <div class="game-box">
+      <div class="container">
+        <table class="game-field">
+          <tbody class="field-body">
+            <tr class="field-row">
+              <td class="field-cell test"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
+
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
+
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
+
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
+          </tbody>
+        </table>
+
         <div class="controls">
           <p class="info">
             Score:
@@ -24,77 +58,45 @@
           <button class="button start button-start">Start</button>
           <button class="button restart button-restart">Restart</button>
         </div>
-      </div>
 
-      <table class="game-field">
-        <tbody class="field-body">
-          <tr class="field-row">
-            <td class="field-cell test"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <table class="copy-table">
-        <tbody class="copy-body">
-          <tr class="copy-row">
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-          </tr>
-          <tr class="copy-row">
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-          </tr>
-          <tr class="copy-row">
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-          </tr>
-          <tr class="copy-row">
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-            <td class="copy-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">
-          Press "Start" to begin game. Good luck!
-        </p>
+        <table class="copy-table">
+          <tbody class="copy-body">
+            <tr class="copy-row">
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+            </tr>
+            <tr class="copy-row">
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+            </tr>
+            <tr class="copy-row">
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+            </tr>
+            <tr class="copy-row">
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+              <td class="copy-cell"></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
+    <div class="message-container">
+      <p class="message message-lose hidden">You lose! Restart the game?</p>
+      <p class="message message-win hidden">Winner! Congrats! You did it!</p>
+      <p class="message message-start">
+        Press "Start" to begin game. Good luck!
+      </p>
+    </div>
+
     <script
       type="module"
       src="scripts/main.js"
