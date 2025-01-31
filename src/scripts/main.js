@@ -3,11 +3,8 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-// const gameField = document.querySelector('tbody');
 const score = document.querySelector('.game-score');
 const button = document.querySelector('button');
-// const rows = gameField.querySelectorAll('tr');
-// const cells = document.querySelectorAll('td');
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
@@ -52,9 +49,11 @@ export function render(boardState) {
 document.addEventListener('keydown', (ev) => {
   ev.preventDefault();
 
-  if (game.status === 'ended') {
+  if (game.status === 'lose') {
     return;
   }
+
+  const previousState = JSON.stringify(game.board);
 
   game.status = 'playing';
 
@@ -73,7 +72,10 @@ document.addEventListener('keydown', (ev) => {
       break;
   }
 
-  game.addRandomTile();
+  if (JSON.stringify(game.board) !== previousState) {
+    game.addRandomTile();
+  }
+
   render(game.board);
 
   if (isWin()) {
