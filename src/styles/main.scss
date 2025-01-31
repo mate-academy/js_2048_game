@@ -1,4 +1,4 @@
-$field-size: 370px;
+$field-size: 368px;
 $cell-gap: $field-size / 40;
 $cell-size: ($field-size - $cell-gap * 3) / 4;
 $controll-size: $field-size / 5;
@@ -77,6 +77,9 @@ body {
 }
 
 .field-cell {
+  font-family: 'Roboto', serif;
+  font-weight: 700;
+  font-style: normal;
   margin: 0;
   padding: 0;
   border: 0.5px solid gray;
@@ -163,6 +166,12 @@ h1 {
   &:hover {
     transform: scale(1.1);
   }
+}
+
+a:focus,
+button:focus,
+input:focus {
+  outline: none;
 }
 
 .start {
@@ -267,6 +276,7 @@ h1 {
   background-color: #7d6f60;
   z-index: -1;
 }
+
 .copy-body {
   width: 100%;
   height: 100%;
@@ -290,7 +300,6 @@ h1 {
   border-radius: 10px;
   width: $cell-size;
   height: $cell-size;
-  border: 0.2px solid #776e65;
   color: #776e65;
   background-color: #d6cdc4; /* Колір плитки */
   border-radius: 10px; /* Закруглені краї (якщо потрібно) */

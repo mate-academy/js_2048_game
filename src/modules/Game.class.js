@@ -35,13 +35,14 @@ class Game {
       tableState: JSON.parse(JSON.stringify(Game.initialTable)),
       pageRows: pageRows,
       score: 0,
+      best: 0,
       status: 'idle',
       isAnimating: false,
     };
 
     this.config = {
-      transitionTime: 120, // ms
-      renderTime: 140, // ms
+      transitionTime: 90, // ms
+      renderTime: 100, // ms
     };
   }
 
@@ -61,10 +62,48 @@ class Game {
     this.executeMove('down');
   }
 
+  checkGameOver(arr) {
+    const copyArr = JSON.parse(JSON.stringify(arr));
+
+    const isNoHorizontalMerges = copyArr.every((row) => {
+      return row.every((cell, cellIndex) => {
+        if (cell === 0) {
+          return false;
+        }
+
+        if (cellIndex < row.length - 1) {
+          return cell !== row[cellIndex + 1];
+        }
+
+        return true;
+      });
+    });
+
+    const isNoVerticalMerges = this.rotateCounterClockwise(copyArr).every(
+      (row) => {
+        return row.every((cell, cellIndex) => {
+          if (cell === 0) {
+            return false;
+          }
+
+          if (cellIndex < row.length - 1) {
+            return cell !== row[cellIndex + 1];
+          }
+
+          return true;
+        });
+      },
+    );
+
+    if (isNoHorizontalMerges && isNoVerticalMerges) {
+      this.endGame();
+    }
+  }
+
   async executeMove(direction) {
     setTimeout(() => {
       this.state.isAnimating = false; // Анімація завершена
-    }, this.config.renderTime);
+    }, this.config.renderTime + 20);
 
     if (this.state.isAnimating) {
       return;
@@ -84,9 +123,7 @@ class Game {
       this.addNewTile();
     }
 
-    if (this.findEmptyCells().length === 0) {
-      this.endGame('lose');
-    }
+    this.checkGameOver(this.state.tableState);
   }
 
   transpose(matrix) {
@@ -233,6 +270,11 @@ class Game {
     this.addNewTile();
     this.renderCells();
 
+    if (this.state.score > this.state.best) {
+      this.state.best = this.state.score;
+      document.querySelector('.game-best').textContent = this.state.best;
+    }
+
     this.state.score = 0;
     this.state.status = 'playing';
 
@@ -247,6 +289,11 @@ class Game {
     } else {
       document.querySelector('.message-lose').classList.remove('hidden');
       this.state.status = 'lose';
+    }
+
+    if (this.state.score > this.state.best) {
+      this.state.best = this.state.score;
+      document.querySelector('.game-best').textContent = this.state.best;
     }
   }
 
@@ -352,7 +399,7 @@ class Game {
       256: { backgroundColor: '#edcc61', color: '#755e47' },
       512: { backgroundColor: '#edc850', color: '#755e47' },
       1024: { backgroundColor: '#edc53f', color: '#755e47' },
-      2048: { backgroundColor: '#edc22e', color: '#ffffff' },
+      2048: { backgroundColor: '#edc22e', color: '#755e47' },
     };
 
     return colors[cell];
@@ -366,7 +413,7 @@ class Game {
       copyTable = this.rotateCounterClockwise(copyTable);
     }
 
-    copyTable = copyTable.map((row, rowIndex) => {
+    copyTable = copyTable.map((row) => {
       const workingRow = [...row]; // Створюємо копію рядка для роботи з нею
 
       let i = 0;
@@ -426,7 +473,7 @@ class Game {
           const X = direction === 'left' || direction === 'right' ? shift : 0;
           const Y = direction === 'up' || direction === 'down' ? shift : 0;
 
-          cell.style.transition = `transform ${this.config.transitionTime}ms cubic-bezier(0.75, 0.65, 0.8, 1.15)`;
+          cell.style.transition = `transform ${this.config.transitionTime}ms cubic-bezier(0.75, 0.65, 0.8, 1.12)`;
           cell.style.transform = `translate(${X}px, ${Y}px)`;
 
           // Повертаємо клітинку на місце після завершення анімації
@@ -439,6 +486,8 @@ class Game {
         }
       });
     });
+
+    return copyTable.flat().every((el) => el === 0);
   }
 }
 
