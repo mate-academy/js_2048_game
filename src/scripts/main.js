@@ -1,7 +1,8 @@
 'use strict';
 
 // Uncomment the next lines to use your game instance in the browser
-const Game = require('../modules/Game.class');
+import Game from '../modules/Game.class';
+
 const game = new Game();
 
 // Write your code here
@@ -37,7 +38,7 @@ function checkStatus() {
 }
 
 document.addEventListener('keydown', (e) => {
-  if (game.status() !== 'playing') {
+  if (game.getStatus() !== 'playing') {
     // eslint-disable-next-line no-useless-return
     return;
   }
