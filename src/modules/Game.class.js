@@ -1,68 +1,124 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(initialState = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]) {
+    this.state = {
+      board: initialState,
+      score: 0,
+      status: 'idle',
+      isAnimating: false,
+    };
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    this.state.board = this.state.board.map(row => this.slide(row));
+    this.addRandomTile();
+    this.checkGameOver();
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  moveRight() {
+    this.state.board = this.state.board.map(row => this.slide(row.reverse()).reverse());
+    this.addRandomTile();
+    this.checkGameOver();
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  moveUp() {
+    this.state.board = this.transpose(this.state.board).map(row => this.slide(row));
+    this.state.board = this.transpose(this.state.board);
+    this.addRandomTile();
+    this.checkGameOver();
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  moveDown() {
+    this.state.board = this.transpose(this.state.board).map(row => this.slide(row.reverse()).reverse());
+    this.state.board = this.transpose(this.state.board);
+    this.addRandomTile();
+    this.checkGameOver();
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  slide(row) {
+    let arr = row.filter(val => val);
+    let missing = 4 - arr.length;
+    let zeros = Array(missing).fill(0);
+    arr = arr.concat(zeros);
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    for (let i = 0; i < 3; i++) {
+      if (arr[i] === arr[i + 1]) {
+        arr[i] *= 2;
+        arr[i + 1] = 0;
+        this.state.score += arr[i];
+      }
+    }
 
-  // Add your own methods here
+    arr = arr.filter(val => val);
+    missing = 4 - arr.length;
+    zeros = Array(missing).fill(0);
+    arr = arr.concat(zeros);
+
+    return arr;
+  }
+
+  transpose(matrix) {
+    return matrix[0].map((_, i) => matrix.map(row => row[i]));
+  }
+
+  addRandomTile() {
+    let emptyCells = [];
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state.board[i][j] === 0) {
+          emptyCells.push([i, j]);
+        }
+      }
+    }
+
+    if (emptyCells.length > 0) {
+      let [row, col] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      this.state.board[row][col] = Math.random() < 0.9 ? 2 : 4;
+    }
+  }
+
+  getScore() {
+    return this.state.score;
+  }
+
+  getState() {
+    return this.state.board;
+  }
+
+  getStatus() {
+    return this.state.status;
+  }
+
+  start() {
+    this.state.status = 'playing';
+    this.addRandomTile();
+    this.addRandomTile();
+  }
+
+  restart() {
+    this.state.board = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+    this.state.score = 0;
+    this.state.status = 'idle';
+    this.start();
+  }
+
+  checkGameOver() {
+    if (!this.canMove()) {
+      this.state.status = 'gameover';
+    }
+  }
+
+  canMove() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state.board[i][j] === 0) return true;
+        if (j < 3 && this.state.board[i][j] === this.state.board[i][j + 1]) return true;
+        if (i < 3 && this.state.board[i][j] === this.state.board[i + 1][j]) return true;
+      }
+    }
+    return false;
+  }
 }
 
 module.exports = Game;
