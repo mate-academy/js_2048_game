@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  box-shadow: 1px 1px 10px black;
 
   &--2 {
     background: #eee4da;
@@ -79,6 +80,8 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+
+  box-shadow: 1px 1px 5px black;
 }
 
 .game-header {
