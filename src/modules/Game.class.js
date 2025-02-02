@@ -11,28 +11,40 @@ class Game {
   }
 
   moveLeft() {
+    const previousState = JSON.stringify(this.state.board);
     this.state.board = this.state.board.map(row => this.slide(row));
-    this.addRandomTile();
+    if (previousState !== JSON.stringify(this.state.board)) {
+      this.addRandomTile();
+    }
     this.checkGameOver();
   }
 
   moveRight() {
+    const previousState = JSON.stringify(this.state.board);
     this.state.board = this.state.board.map(row => this.slide(row.reverse()).reverse());
-    this.addRandomTile();
+    if (previousState !== JSON.stringify(this.state.board)) {
+      this.addRandomTile();
+    }
     this.checkGameOver();
   }
 
   moveUp() {
+    const previousState = JSON.stringify(this.state.board);
     this.state.board = this.transpose(this.state.board).map(row => this.slide(row));
     this.state.board = this.transpose(this.state.board);
-    this.addRandomTile();
+    if (previousState !== JSON.stringify(this.state.board)) {
+      this.addRandomTile();
+    }
     this.checkGameOver();
   }
 
   moveDown() {
+    const previousState = JSON.stringify(this.state.board);
     this.state.board = this.transpose(this.state.board).map(row => this.slide(row.reverse()).reverse());
     this.state.board = this.transpose(this.state.board);
-    this.addRandomTile();
+    if (previousState !== JSON.stringify(this.state.board)) {
+      this.addRandomTile();
+    }
     this.checkGameOver();
   }
 
