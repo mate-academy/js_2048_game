@@ -60,6 +60,7 @@ class Game {
       down: 'up',
     };
     this.lastMoveDirection = '';
+    this.countMoves = 0;
   }
 
   moveLeft() {
@@ -415,6 +416,7 @@ class Game {
       this.generateNewCells();
       this.getScore();
       this.handleGameResolvment();
+      this.countMoves += 1;
       this.lastMoveDirection = key;
     }
   };
@@ -543,7 +545,7 @@ class Game {
         if (cellValue === 2048) {
           this.status = 'win';
           this.state = 'win';
-          this.totalScoreMessage.textContent = `Your total score is: ${this.getScore()}`;
+          this.totalScoreMessage.innerHTML = `Your total score is: ${this.getScore()}<br>` + 'Moves made ' + this.countMoves;
           this.totalScoreMessage.classList.remove('hidden');
           this.showWinMessage();
         }
@@ -585,7 +587,7 @@ class Game {
     losePromise.then(() => {
       this.status = 'lose';
       this.state = 'lose';
-      this.totalScoreMessage.textContent = `Your total score is: ${this.getScore()}`;
+      this.totalScoreMessage.innerHTML = `Your total score is: ${this.getScore()}<br>` + 'Moves made ' + this.countMoves;
       this.totalScoreMessage.classList.remove('hidden');
       this.showLoseMessage();
     });
