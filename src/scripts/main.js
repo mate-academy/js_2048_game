@@ -12,6 +12,8 @@ startButton.addEventListener('click', () => {
     startButton.textContent = 'Restart';
     game.start();
   } else {
+    // startButton.setAttribute('class', 'button start');
+    // startButton.textContent = 'Start'; 
     game.restart();
   }
 
@@ -24,8 +26,7 @@ document.addEventListener('keydown', (e) => {
   if (game.getStatus() === 'playing') {
     switch (e.key) {
       case 'ArrowLeft':
-        // Якщо натиснута стрілка вліво
-        game.moveLeft(); // Викликаємо метод moveLeft з класу Game
+        game.moveLeft(); 
         game.addRandomTile();
 
         break;
