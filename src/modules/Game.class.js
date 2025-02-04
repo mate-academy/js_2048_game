@@ -84,28 +84,7 @@ class Game {
       }
     }
 
-    return moved; // Повертаємо true, якщо плитки змістилися
-  }
-
-  rotateGrid(board, clockwise = true) {
-    const size = board.length; // Розмір сітки
-    const newBoard = Array(size)
-      .fill(null)
-      .map(() => Array(size).fill(0)); // порожня сітка
-
-    for (let row = 0; row < size; row++) {
-      for (let col = 0; col < size; col++) {
-        if (clockwise) {
-          // Обертання на 90 градусів за годинниковою стрілкою
-          newBoard[col][size - 1 - row] = board[row][col];
-        } else {
-          // Обертання на 90 градусів проти годинникової стрілки
-          newBoard[size - 1 - col][row] = board[row][col];
-        }
-      }
-    }
-
-    this.board = newBoard; // Замінюємо сітку
+    return moved; // Повертаємо true, якщо плитки змістили
   }
 
   moveRight() {
@@ -138,6 +117,27 @@ class Game {
     this.rotateGrid(this.board, false);
 
     return moved;
+  }
+
+  rotateGrid(board, clockwise = true) {
+    const size = board.length; // Розмір сітки
+    const newBoard = Array(size)
+      .fill(null)
+      .map(() => Array(size).fill(0)); // порожня сітка
+
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        if (clockwise) {
+          // Обертання на 90 градусів за годинниковою стрілкою
+          newBoard[col][size - 1 - row] = board[row][col];
+        } else {
+          // Обертання на 90 градусів проти годинникової стрілки
+          newBoard[size - 1 - col][row] = board[row][col];
+        }
+      }
+    }
+
+    this.board = newBoard; // Замінюємо сітку
   }
 
   addRandomTile() {

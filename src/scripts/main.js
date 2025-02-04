@@ -13,7 +13,7 @@ startButton.addEventListener('click', () => {
     game.start();
   } else {
     // startButton.setAttribute('class', 'button start');
-    // startButton.textContent = 'Start'; 
+    // startButton.textContent = 'Start';
     game.restart();
   }
 
@@ -26,7 +26,7 @@ document.addEventListener('keydown', (e) => {
   if (game.getStatus() === 'playing') {
     switch (e.key) {
       case 'ArrowLeft':
-        game.moveLeft(); 
+        game.moveLeft();
         game.addRandomTile();
 
         break;
