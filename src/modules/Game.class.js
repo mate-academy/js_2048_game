@@ -1,4 +1,6 @@
-export class Game {
+'use strict';
+
+class Game {
   constructor(
     initialState = [
       [0, 0, 0, 0],
@@ -34,58 +36,36 @@ export class Game {
   }
 
   getState() {
-    return this.state;
+    return this.state.map((row) => [...row]);
   }
 
   getStatus() {
     return this.status;
   }
 
-  start(buttonStart, buttonRestart) {
-    const startMessage = document.querySelector('.message-start');
-
-    buttonStart.classList.add('hidden');
-    buttonRestart.classList.remove('hidden');
-    startMessage.classList.add('hidden');
+  start() {
     this.status = 'playing';
-    this.resetTable();
 
-    if (this.isEmptyCells()) {
-      const [randomRow, randomColumn, randomNumber] = this.generateNumber();
+    for (let i = 0; i < 2; i++) {
+      if (this.isEmptyCells()) {
+        const [randomRow, randomColumn, randomNumber] = this.generateNumber();
 
-      this.state[randomRow][randomColumn] = randomNumber;
-      this.addNumberToTable(randomRow, randomColumn, randomNumber);
+        this.state[randomRow][randomColumn] = randomNumber;
+      }
     }
   }
 
-  restart(buttonRestart, buttonStart) {
-    const startMessage = document.querySelector('.message-start');
-    const loseMessage = document.querySelector('.message-lose');
-    const winMessage = document.querySelector('.message-win');
-
+  restart() {
     this.state = this.initialState.map((row) => [...row]);
     this.status = 'idle';
-    this.changeScore(0);
-    buttonStart.classList.remove('hidden');
-    buttonRestart.classList.add('hidden');
-    startMessage.classList.remove('hidden');
-    loseMessage.classList.add('hidden');
-    winMessage.classList.add('hidden');
-
-    this.resetTable();
+    this.score = 0;
   }
 
   gameOver() {
-    const loseMessage = document.querySelector('.message-lose');
-
-    loseMessage.classList.remove('hidden');
     this.status = 'lose';
   }
 
   win() {
-    const winMessage = document.querySelector('.message-win');
-
-    winMessage.classList.remove('hidden');
     this.status = 'win';
   }
 
@@ -102,45 +82,6 @@ export class Game {
     return [randomRow, randomColumn, randomNumber];
   }
 
-  addNumberToTable(row, column, number) {
-    const tableRow = document.querySelectorAll('.field-row')[row];
-    const tableColumn = tableRow.querySelectorAll('.field-cell')[column];
-
-    tableColumn.classList.forEach((cls) => {
-      if (cls.startsWith('field-cell--')) {
-        tableColumn.classList.remove(cls);
-      }
-    });
-
-    tableColumn.textContent = number;
-    tableColumn.classList.add(`field-cell--${number}`);
-  }
-
-  removeNumberFromTable(row, column) {
-    const tableRow = document.querySelectorAll('.field-row')[row];
-    const tableColumn = tableRow.querySelectorAll('.field-cell')[column];
-
-    tableColumn.textContent = '';
-
-    tableColumn.classList.forEach((cls) => {
-      if (cls.startsWith('field-cell--')) {
-        tableColumn.classList.remove(cls);
-      }
-    });
-  }
-
-  resetTable() {
-    for (let row = 0; row < 4; row++) {
-      for (let column = 0; column < 4; column++) {
-        if (this.initialState[row][column] !== 0) {
-          this.addNumberToTable(row, column, this.initialState[row][column]);
-        } else {
-          this.removeNumberFromTable(row, column);
-        }
-      }
-    }
-  }
-
   isEqualStates(state1, state2) {
     for (let row = 0; row < 4; row++) {
       for (let column = 0; column < 4; column++) {
@@ -154,6 +95,10 @@ export class Game {
   }
 
   move(direction) {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const previousState = this.state.map((row) => [...row]);
     const isLeftRightDirection = 'left right'.includes(direction);
     const isUpLeft = 'left up'.includes(direction);
@@ -189,12 +134,6 @@ export class Game {
           if (isLeftRightDirection) {
             this.state[firstIndex][firstNeighbour.index] = currentValue * 2;
 
-            this.addNumberToTable(
-              firstIndex,
-              firstNeighbour.index,
-              currentValue * 2,
-            );
-
             emptyCell = isUpLeft
               ? Math.min(emptyCell, secondIndex)
               : Math.max(emptyCell, secondIndex);
@@ -202,20 +141,13 @@ export class Game {
           } else {
             this.state[firstNeighbour.index][secondIndex] = currentValue * 2;
 
-            this.addNumberToTable(
-              firstNeighbour.index,
-              secondIndex,
-              currentValue * 2,
-            );
-
             emptyCell = isUpLeft
               ? Math.min(emptyCell, firstIndex)
               : Math.max(emptyCell, firstIndex);
             emptyCell = emptyCell === -1 ? firstIndex : emptyCell;
           }
           this.state[firstIndex][secondIndex] = 0;
-          this.changeScore(currentValue * 2);
-          this.removeNumberFromTable(firstIndex, secondIndex);
+          this.score += currentValue * 2;
 
           firstNeighbour.index = -1;
           firstNeighbour.number = -1;
@@ -230,14 +162,9 @@ export class Game {
         if (emptyCell !== -1) {
           if (isLeftRightDirection) {
             this.state[firstIndex][emptyCell] = currentValue;
-
-            this.addNumberToTable(firstIndex, emptyCell, currentValue);
           } else {
             this.state[emptyCell][secondIndex] = currentValue;
-
-            this.addNumberToTable(emptyCell, secondIndex, currentValue);
           }
-          this.removeNumberFromTable(firstIndex, secondIndex);
 
           this.state[firstIndex][secondIndex] = 0;
 
@@ -258,7 +185,6 @@ export class Game {
         const [randomRow, randomColumn, randomNumber] = this.generateNumber();
 
         this.state[randomRow][randomColumn] = randomNumber;
-        this.addNumberToTable(randomRow, randomColumn, randomNumber);
       }
     }
 
@@ -267,58 +193,21 @@ export class Game {
     }
   }
 
-  changeScore(newScore) {
-    const score = document.querySelector('.game-score');
-
-    score.textContent = newScore;
-    this.score = newScore;
-  }
-
   isEmptyCells() {
-    for (const row of this.state) {
-      for (const column of row) {
-        if (column === 0) {
-          return true;
-        }
-      }
-    }
-
-    return false;
+    return this.state.flat().includes(0);
   }
 
   hasAvailableMoves() {
-    if (this.isEmptyCells()) {
-      return true;
-    }
-
-    for (let row = 0; row < 4; row++) {
-      for (let column = 0; column < 4; column++) {
-        if (row - 1 >= 0) {
-          if (this.state[row][column] === this.state[row - 1][column]) {
-            return true;
-          }
-        }
-
-        if (row + 1 <= 3) {
-          if (this.state[row][column] === this.state[row + 1][column]) {
-            return true;
-          }
-        }
-
-        if (column - 1 >= 0) {
-          if (this.state[row][column] === this.state[row][column - 1]) {
-            return true;
-          }
-        }
-
-        if (column + 1 <= 3) {
-          if (this.state[row][column] === this.state[row][column + 1]) {
-            return true;
-          }
-        }
-      }
-    }
-
-    return false;
+    return this.state.some(
+      (row, i) =>
+        row.includes(0) ||
+        row.some(
+          (val, j) =>
+            (j < 3 && val === row[j + 1]) ||
+            (i < 3 && val === this.state[i + 1][j]),
+        ),
+    );
   }
 }
+
+module.exports = Game;
