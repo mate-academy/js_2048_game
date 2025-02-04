@@ -1,27 +1,30 @@
 'use strict';
 
 class Game {
-  constructor(initialState) {
-    this.initial = initialState || [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+  static SIDE_LENGTH = 4;
+  static WIN_NUMBER = 2048;
+  static DEFAULT_STATE = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
 
+  constructor(initialState) {
+    this.initial = initialState || Game.DEFAULT_STATE.map((row) => [...row]);
     this.state = JSON.parse(JSON.stringify(this.initial));
     this.score = 0;
     this.status = 'idle';
   }
 
   moveLeft() {
-    if (this.status === 'idle') {
+    if (this.getStatus() !== 'playing') {
       return;
     }
 
-    let flag = false;
+    const stateBeforeMove = this.state.map((row) => [...row]);
 
-    for (let i = 0; i < this.state.length; i++) {
+    for (let i = 0; i < Game.SIDE_LENGTH; i++) {
       const row = [0, 0, 0, 0];
       let count = 0;
 
@@ -39,31 +42,25 @@ class Game {
         }
       }
 
-      for (let j = 0; j < this.state.length; j++) {
-        if (this.state[i][j] !== row[j]) {
-          flag = true;
-        }
-      }
       this.state[i] = row;
     }
 
-    if (this.status === 'playing' && flag) {
-      this.fillRandomPosition();
-    }
-
-    this.checkAndSetStatus();
-
-    return this;
-  }
-
-  moveRight() {
-    if (this.status === 'idle') {
+    if (JSON.stringify(stateBeforeMove) === JSON.stringify(this.state)) {
       return;
     }
 
-    let flag = false;
+    this.addRandomNumber();
+    this.checkAndSetWinStatus();
+  }
 
-    for (let i = 0; i < this.state.length; i++) {
+  moveRight() {
+    if (this.getStatus() !== 'playing') {
+      return;
+    }
+
+    const stateBeforeMove = this.state.map((row) => [...row]);
+
+    for (let i = 0; i < Game.SIDE_LENGTH; i++) {
       const row = [0, 0, 0, 0];
       let count = row.length - 1;
 
@@ -81,37 +78,30 @@ class Game {
         }
       }
 
-      for (let j = 0; j < this.state.length; j++) {
-        if (this.state[i][j] !== row[j]) {
-          flag = true;
-        }
-      }
-
       this.state[i] = row;
     }
 
-    if (this.status === 'playing' && flag) {
-      this.fillRandomPosition();
-    }
-
-    this.checkAndSetStatus();
-
-    return this;
-  }
-
-  moveUp() {
-    if (this.status === 'idle') {
+    if (JSON.stringify(stateBeforeMove) === JSON.stringify(this.state)) {
       return;
     }
 
-    let flag = false;
+    this.addRandomNumber();
+    this.checkAndSetWinStatus();
+  }
 
-    for (let i = 0; i < this.state.length; i++) {
+  moveUp() {
+    if (this.getStatus() !== 'playing') {
+      return;
+    }
+
+    const stateBeforeMove = this.state.map((row) => [...row]);
+
+    for (let i = 0; i < Game.SIDE_LENGTH; i++) {
       const column = [0, 0, 0, 0];
       let count = 0;
       const currentColumn = [];
 
-      for (let j = 0; j < this.state.length; j++) {
+      for (let j = 0; j < Game.SIDE_LENGTH; j++) {
         if (this.state[j][i] === 0) {
           continue;
         }
@@ -130,36 +120,32 @@ class Game {
         }
       }
 
-      for (let j = 0; j < column.length; j++) {
-        if (this.state[j][i] !== column[j]) {
-          flag = true;
-        }
+      for (let j = 0; j < Game.SIDE_LENGTH; j++) {
         this.state[j][i] = column[j];
       }
     }
 
-    if (this.status === 'playing' && flag) {
-      this.fillRandomPosition();
-    }
-
-    this.checkAndSetStatus();
-
-    return this;
-  }
-
-  moveDown() {
-    if (this.status === 'idle') {
+    if (JSON.stringify(stateBeforeMove) === JSON.stringify(this.state)) {
       return;
     }
 
-    let flag = false;
+    this.addRandomNumber();
+    this.checkAndSetWinStatus();
+  }
 
-    for (let i = 0; i < this.state.length; i++) {
+  moveDown() {
+    if (this.getStatus() !== 'playing') {
+      return;
+    }
+
+    const stateBeforeMove = this.state.map((row) => [...row]);
+
+    for (let i = 0; i < Game.SIDE_LENGTH; i++) {
       const column = [0, 0, 0, 0];
-      let count = column.length - 1;
+      let count = Game.SIDE_LENGTH - 1;
       const currentColumn = [];
 
-      for (let j = 0; j < this.state.length; j++) {
+      for (let j = 0; j < Game.SIDE_LENGTH; j++) {
         if (this.state[j][i] === 0) {
           continue;
         }
@@ -178,21 +164,17 @@ class Game {
         }
       }
 
-      for (let j = column.length - 1; j >= 0; j--) {
-        if (this.state[j][i] !== column[j]) {
-          flag = true;
-        }
+      for (let j = Game.SIDE_LENGTH - 1; j >= 0; j--) {
         this.state[j][i] = column[j];
       }
     }
 
-    if (this.status === 'playing' && flag) {
-      this.fillRandomPosition();
+    if (JSON.stringify(stateBeforeMove) === JSON.stringify(this.state)) {
+      return;
     }
 
-    this.checkAndSetStatus();
-
-    return this;
+    this.addRandomNumber();
+    this.checkAndSetWinStatus();
   }
 
   getScore() {
@@ -208,8 +190,8 @@ class Game {
   }
 
   start() {
-    this.fillRandomPosition();
-    this.fillRandomPosition();
+    this.addRandomNumber();
+    this.addRandomNumber();
     this.status = 'playing';
 
     return this;
@@ -223,18 +205,11 @@ class Game {
     return this;
   }
 
-  getRandomNumber() {
-    const numbers = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
-    const randomNumber = Math.floor(Math.random() * 10);
-
-    return numbers[randomNumber];
-  }
-
   getEmptyPositions() {
     const emptyPositions = [];
 
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
+    for (let i = 0; i < Game.SIDE_LENGTH; i++) {
+      for (let j = 0; j < Game.SIDE_LENGTH; j++) {
         if (this.state[i][j] === 0) {
           emptyPositions.push([i, j]);
         }
@@ -244,26 +219,57 @@ class Game {
     return emptyPositions;
   }
 
-  getRandomPosition(emptyPositions) {
+  addRandomNumber() {
+    const emptyPositions = this.getEmptyPositions();
     const randomIndex = Math.floor(Math.random() * emptyPositions.length);
+    const randomPosition = emptyPositions[randomIndex];
+    const randomNumber = Math.floor(Math.random() * 10) === 0 ? 4 : 2;
 
-    return emptyPositions[randomIndex];
+    this.state[randomPosition[0]][randomPosition[1]] = randomNumber;
+
+    return this;
   }
 
-  fillRandomPosition() {
-    const position = this.getRandomPosition(this.getEmptyPositions());
-
-    this.state[position[0]][position[1]] = this.getRandomNumber();
-  }
-
-  checkAndSetStatus() {
-    if (this.getEmptyPositions().length === 0) {
-      this.status = 'lose';
-    }
-
-    if (this.score === 2048) {
+  checkAndSetWinStatus() {
+    if (this.state.some((row) => row.includes(Game.WIN_NUMBER))) {
       this.status = 'win';
     }
+  }
+
+  checkAndSetLoseStatus() {
+    if (this.getEmptyPositions().length > 0) {
+      return;
+    }
+
+    const defaultGame = new Game();
+
+    defaultGame.state = this.state.map((row) => [...row]);
+    defaultGame.status = 'playing';
+    defaultGame.moveDown();
+
+    if (JSON.stringify(defaultGame.state) !== JSON.stringify(this.state)) {
+      return;
+    }
+
+    defaultGame.moveUp();
+
+    if (JSON.stringify(defaultGame.state) !== JSON.stringify(this.state)) {
+      return;
+    }
+
+    defaultGame.moveLeft();
+
+    if (JSON.stringify(defaultGame.state) !== JSON.stringify(this.state)) {
+      return;
+    }
+
+    defaultGame.moveRight();
+
+    if (JSON.stringify(defaultGame.state) !== JSON.stringify(this.state)) {
+      return;
+    }
+
+    this.status = 'lose';
   }
 }
 

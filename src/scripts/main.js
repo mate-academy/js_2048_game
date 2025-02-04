@@ -41,7 +41,7 @@ start.addEventListener('click', () => {
 document.addEventListener('keydown', (ev) => {
   ev.preventDefault();
 
-  if (game.status === 'idle') {
+  if (game.getStatus() !== 'playing') {
     return;
   }
 
@@ -67,6 +67,8 @@ document.addEventListener('keydown', (ev) => {
   if (game.getStatus() === 'win') {
     messageWin.classList.remove('hidden');
   }
+
+  game.checkAndSetLoseStatus();
 
   if (game.getStatus() === 'lose') {
     messageLose.classList.remove('hidden');
