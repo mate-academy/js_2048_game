@@ -117,12 +117,13 @@ h1 {
   color: #776e65;
   box-sizing: border-box;
   font-size: 20px;
-  margin: 0 10px 0 0;
+  margin: 0 5px 0 0;
   gap: 10px;
 }
 
 .controls {
   gap: 15px;
+  font-size: 20px;
   display: flex;
 }
 
@@ -151,6 +152,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  font-size: 20px;
 
   &:hover {
     background: #f87474;
