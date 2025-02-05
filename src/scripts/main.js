@@ -45,20 +45,25 @@ document.addEventListener('keydown', (ev) => {
     return;
   }
 
-  if (ev.key === 'ArrowUp') {
-    game.moveUp();
-  }
+  switch (ev.key) {
+    case 'ArrowUp':
+      game.moveUp();
+      break;
 
-  if (ev.key === 'ArrowDown') {
-    game.moveDown();
-  }
+    case 'ArrowDown':
+      game.moveDown();
+      break;
 
-  if (ev.key === 'ArrowRight') {
-    game.moveRight();
-  }
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
 
-  if (ev.key === 'ArrowLeft') {
-    game.moveLeft();
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+
+    default:
+      break;
   }
 
   fillTable();
