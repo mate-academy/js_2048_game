@@ -80,6 +80,56 @@ document.addEventListener('keydown', (ev) => {
   }
 });
 
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener('touchstart', (e) => {
+  const touch = e.touches[0];
+
+  touchStartX = touch.pageX;
+  touchStartY = touch.pageY;
+});
+
+document.addEventListener('touchend', (e) => {
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
+  const touch = e.changedTouches[0];
+  const touchEndX = touch.pageX;
+  const touchEndY = touch.pageY;
+
+  const diffX = touchEndX - touchStartX;
+  const diffY = touchEndY - touchStartY;
+
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (diffX > 0) {
+      game.moveRight();
+    } else {
+      game.moveLeft();
+    }
+  } else {
+    if (diffY > 0) {
+      game.moveDown();
+    } else {
+      game.moveUp();
+    }
+  }
+
+  fillTable();
+  score.textContent = game.getScore();
+
+  if (game.getStatus() === 'win') {
+    messageWin.classList.remove('hidden');
+  }
+
+  game.checkAndSetLoseStatus();
+
+  if (game.getStatus() === 'lose') {
+    messageLose.classList.remove('hidden');
+  }
+});
+
 function fillTable() {
   for (let i = 0; i < game.state.length; i++) {
     const cells = rows[i].querySelectorAll('td');
