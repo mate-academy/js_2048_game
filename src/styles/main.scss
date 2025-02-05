@@ -84,10 +84,11 @@ body {
 .game-header {
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: left;
   margin-bottom: 24px;
-  padding: 10px;
+  padding: 5px;
   box-sizing: border-box;
+  gap: 10px;
 }
 
 h1 {
@@ -115,11 +116,13 @@ h1 {
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
+  font-size: 20px;
+  margin: 0 10px 0 0;
+  gap: 10px;
 }
 
 .controls {
+  gap: 15px;
   display: flex;
 }
 
@@ -163,6 +166,21 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+}
+
+.message-start {
+  text-align: center;
+  line-height: 1.5;
+}
+
+.message-start::before {
+  content: "Press 'Start' to begin game.";
+  display: block;
+}
+
+.message-start::after {
+  content: 'Good luck!';
+  display: block;
 }
 
 .hidden {
