@@ -37,10 +37,60 @@ class Game {
     return Array.from({ length: this.size }, () => Array(this.size).fill(0));
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    let moved = false;
+
+    for (let row = 0; row < this.board.length; row++) {
+      let newRow = this.board[row].filter((tile) => tile !== 0);
+
+      for (let col = 0; col < newRow.length - 1; col++) {
+        if (newRow[col] !== 0 && newRow[col] === newRow[col + 1]) {
+          newRow[col] *= 2;
+          newRow[col + 1] = 0;
+          this.score += newRow[col];
+          moved = true;
+        }
+      }
+
+      newRow = newRow.filter((tile) => tile !== 0);
+
+      while (newRow.length < this.board[row].length) {
+        newRow.push(0);
+      }
+
+      if (this.board[row].toString() !== newRow.toString()) {
+        moved = true;
+      }
+
+      this.board[row] = newRow;
+
+      if (moved) {
+        this.createRandomTile();
+        this.printTiles();
+      }
+    }
+  }
+  moveRight() {
+    this.board = this.board.map((row) => row.reverse());
+    this.moveLeft();
+    this.board = this.board.map((row) => row.reverse());
+  }
+  moveUp() {
+    this.board.transposeBoard();
+    this.moveLeft();
+    this.board.transposeBoard();
+  }
+  moveDown() {
+    this.board.transposeBoard();
+    this.moveRight();
+    this.board.transposeBoard();
+  }
+
+  transposeBoard() {
+    this.board = this.board[0].map((_, colIndex) => {
+      this.board.map((row) => row[colIndex]);
+    });
+  }
 
   /**
    * @returns {number}
@@ -70,12 +120,8 @@ class Game {
     return this.status;
   }
 
-  /**
-   * Starts the game.
-   */
-  start() {
+  initGame() {
     this.board = this.createEmptyBoard();
-    this.createEmptyBoard();
     this.createRandomTile();
     this.createRandomTile();
     this.score = 0;
@@ -84,15 +130,17 @@ class Game {
   }
 
   /**
+   * Starts the game.
+   */
+  start() {
+    this.initGame();
+  }
+
+  /**
    * Resets the game.
    */
   restart() {
-    this.board = this.createEmptyBoard();
-    this.createRandomTile();
-    this.createRandomTile();
-    this.score = 0;
-    this.status = 'playing';
-    this.printTiles();
+    this.initGame();
   }
 
   // Add your own methods here

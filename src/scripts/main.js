@@ -20,6 +20,27 @@ document.addEventListener('DOMContentLoaded', () => {
       startButton.classList.add('start');
     }
   });
+
+  // eslint-disable-next-line no-shadow
+  document.addEventListener('keydown', (event) => {
+    switch (event.key) {
+      case 'ArrowLeft':
+        game.moveLeft();
+        break;
+
+      case 'ArrowRight':
+        game.moveRight();
+        break;
+
+      case 'ArrowUp':
+        game.moveUp();
+        break;
+
+      case 'ArrowDown':
+        game.moveDown();
+        break;
+    }
+  });
 });
 
 // Write your code here
