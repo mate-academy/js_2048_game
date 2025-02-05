@@ -86,12 +86,15 @@ let touchStartY = 0;
 document.addEventListener(
   'touchstart',
   (e) => {
-    e.preventDefault();
-
     const touch = e.touches[0];
 
     touchStartX = touch.pageX;
     touchStartY = touch.pageY;
+
+    if (start.contains(e.target)) {
+      // eslint-disable-next-line no-useless-return
+      return;
+    }
   },
   { passive: false },
 );
@@ -99,6 +102,13 @@ document.addEventListener(
 document.addEventListener(
   'touchmove',
   (e) => {
+    const touch = e.touches[0];
+    const diffX = Math.abs(touch.pageX - touchStartX);
+    const diffY = Math.abs(touch.pageY - touchStartY);
+
+    if (diffX < 10 && diffY < 10) {
+      return;
+    }
     e.preventDefault();
   },
   { passive: false },
