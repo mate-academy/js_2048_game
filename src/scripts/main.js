@@ -93,8 +93,6 @@ document.addEventListener('touchstart', (e) => {
 });
 
 document.addEventListener('touchend', (e) => {
-  e.preventDefault();
-
   if (game.getStatus() !== 'playing') {
     return;
   }
