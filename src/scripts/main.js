@@ -84,6 +84,8 @@ let touchStartX = 0;
 let touchStartY = 0;
 
 document.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+
   const touch = e.touches[0];
 
   touchStartX = touch.pageX;
@@ -91,6 +93,8 @@ document.addEventListener('touchstart', (e) => {
 });
 
 document.addEventListener('touchend', (e) => {
+  e.preventDefault();
+
   if (game.getStatus() !== 'playing') {
     return;
   }
