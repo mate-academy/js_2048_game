@@ -63,7 +63,7 @@ document.addEventListener('keydown', (ev) => {
       break;
 
     default:
-      break;
+      return;
   }
 
   fillTable();
