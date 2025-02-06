@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
       updateScore(game.getScore());
       startButton.textContent = 'Start';
       startButton.classList.replace('restart', 'start');
+      messageStart.classList.remove('hidden');
     }
   });
 
