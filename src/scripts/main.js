@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       startButton.textContent = 'Start';
       startButton.classList.replace('restart', 'start');
       messageStart.classList.remove('hidden');
+      messageLose.classList.add('hidden');
     }
   });
 
