@@ -5,7 +5,7 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
-class Game {
+export default class Game {
   /**
    * Creates a new game instance.
    *
@@ -21,8 +21,14 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.size = 4;
+    this.board = initialState || this.createEmptyBoard();
+    this.score = 0;
+    this.status = 'idle';
+  }
+
+  createEmptyBoard() {
+    return Array.from({ length: this.size }, () => Array(this.size).fill(0));
   }
 
   moveLeft() {}
@@ -33,12 +39,16 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.board;
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +60,27 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = 'playing';
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.status = 'idle';
+    this.board = this.createEmptyBoard();
+    this.score = 0;
+  }
 
   // Add your own methods here
 }
 
-module.exports = Game;
+// module.exports = Game;
