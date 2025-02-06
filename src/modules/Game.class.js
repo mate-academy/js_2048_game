@@ -136,7 +136,6 @@ class Game {
     this.createRandomTile();
     this.createRandomTile();
     this.status = 'playing';
-    // this.updateTable();
   }
 
   /**
@@ -155,8 +154,6 @@ class Game {
     this.status = 'idle';
   }
 
-  // Add your own methods here
-
   randomNumber(max) {
     return Math.floor(Math.random() * (max + 1));
   }
@@ -164,21 +161,6 @@ class Game {
   generateCellValue() {
     return Math.random() < 0.9 ? 2 : 4;
   }
-
-  // updateTable() {
-  //   const cells = document.querySelectorAll('.field-cell');
-  //   let index = 0;
-
-  //   this.board.forEach((row) => {
-  //     row.forEach((cellValue) => {
-  //       const cell = cells[index++];
-
-  //       cell.textContent = cellValue !== 0 ? cellValue : '';
-  // eslint-disable-next-line max-len
-  //       cell.className = `field-cell ${cellValue ? 'field-cell--' + cellValue : ''}`;
-  //     });
-  //   });
-  // }
 
   createRandomTile() {
     const emptyCells = [];

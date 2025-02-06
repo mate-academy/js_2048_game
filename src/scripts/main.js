@@ -81,5 +81,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
-
-// Write your code here
