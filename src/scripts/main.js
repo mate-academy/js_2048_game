@@ -23,9 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
       game.restart();
       updateTable(game.getState());
       updateScore(game.getScore());
-      // startButton.textContent = 'Start';
-      // startButton.classList.remove('restart');
-      // startButton.classList.add('start');
+      startButton.textContent = 'Start';
+      startButton.classList.replace('restart', 'start');
     }
   });
 

@@ -67,7 +67,6 @@ class Game {
       if (moved) {
         this.createRandomTile();
         this.checkGameStatus();
-        // this.updateTable();
       }
 
       return moved;
@@ -151,8 +150,9 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.initGame();
+    this.board = this.createEmptyBoard();
     this.score = 0;
+    this.status = 'idle';
   }
 
   // Add your own methods here
@@ -204,8 +204,6 @@ class Game {
 
     newBoard[rowIndex][cellIndex] = this.generateCellValue();
     this.board = newBoard;
-    // this.board[rowIndex][cellIndex] = this.generateCellValue();
-    // this.updateTable();
   }
 
   checkGameStatus() {
