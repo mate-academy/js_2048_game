@@ -3,38 +3,34 @@
 // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const game = new Game();
-const startBut = document.querySelector('.button');
-const score = document.querySelector('.game-score');
-const rows = document.querySelectorAll('.field-row');
 
 // Write your code here
-// ArrowUp
-// main.js:12 ArrowDown
-// main.js:12 ArrowRight
-// main.js:12 ArrowLeft
-document.addEventListener('keydown', (e) => {
+
+const startBut = document.querySelector('.button');
+const score = document.querySelector('.game-score');
+
+document.addEventListener('keydown', async (e) => {
   if (game.getStatus() !== 'playing') {
     return;
   }
 
   switch (e.key) {
     case 'ArrowRight':
-      game.moveRight();
+      await game.moveRight();
       break;
     case 'ArrowLeft':
-      game.moveLeft();
+      await game.moveLeft();
       break;
     case 'ArrowUp':
-      game.moveUp();
+      await game.moveUp();
       break;
     case 'ArrowDown':
-      game.moveDown();
+      await game.moveDown();
       break;
     default:
       return;
   }
 
-  drowNewState();
   score.innerText = game.getScore();
 
   if (game.getStatus() === 'win') {
@@ -53,10 +49,13 @@ startBut.addEventListener('click', (e) => {
     startBut.classList.remove('start');
     startBut.classList.add('restart');
     startBut.innerText = 'Restart';
+    game.setNewNumber();
+    game.setNewNumber();
+
+    return;
   }
 
   if (startBut.classList.contains('restart')) {
-    const cells = document.querySelectorAll('.field-cell');
     const messages = document
       .querySelector('.message-container')
       .querySelectorAll('.message');
@@ -67,39 +66,10 @@ startBut.addEventListener('click', (e) => {
       }
     });
 
-    cells.forEach((c) => {
-      if (c.innerText !== '') {
-        c.classList.remove(`field-cell--${c.innerText}`);
-        c.innerText = '';
-      }
-    });
+    score.innerText = 0;
 
     game.restart();
+    game.setNewNumber();
+    game.setNewNumber();
   }
-
-  const row = rows[game.getLastPosition().x];
-  const cell = row.querySelectorAll('.field-cell')[game.getLastPosition().y];
-  const number = game.getLastNumber();
-
-  cell.classList.add(`field-cell--${number}`);
-  cell.innerText = number;
 });
-
-function drowNewState() {
-  const state = game.getState();
-
-  rows.forEach((row, i) => {
-    row.querySelectorAll('.field-cell').forEach((cell, j) => {
-      if (state[i][j] === 0) {
-        if (cell.innerText !== '') {
-          cell.classList.remove(`field-cell--${cell.innerText}`);
-          cell.innerText = '';
-        }
-      } else {
-        cell.classList.remove(`field-cell--${cell.innerText}`);
-        cell.classList.add(`field-cell--${state[i][j]}`);
-        cell.innerText = state[i][j];
-      }
-    });
-  });
-}
