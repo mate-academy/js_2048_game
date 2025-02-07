@@ -10,7 +10,7 @@ const startButton = document.querySelector('.button.start');
 const messageContainer = document.querySelector('.message-container');
 
 function updateUI() {
-  const state = game.getState(); // Отримуємо поточний стан гри
+  const state = game.getState();
 
   const rows = gameField.querySelectorAll('.field-row');
 
@@ -20,21 +20,26 @@ function updateUI() {
     cells.forEach((cellElement, colIndex) => {
       const value = state[rowIndex][colIndex];
 
-      cellElement.textContent = value || ''; // Оновлюємо текст у клітинці
-      cellElement.className = 'field-cell'; // Скидаємо класи клітинки
+      cellElement.textContent = value || '';
+      cellElement.className = 'field-cell';
 
       if (value) {
-        cellElement.classList.add(`field-cell--${value}`); // Додаємо клас для стилізації клітинки
+        cellElement.classList.add(`field-cell--${value}`);
       }
     });
   });
 
-  scoreElement.textContent = game.getScore(); // Оновлюємо елемент з рахунком
+  scoreElement.textContent = game.getScore();
 }
 
 startButton.addEventListener('click', () => {
   game.restart();
   updateUI();
+
+  startButton.classList.remove('start');
+  startButton.classList.add('restart');
+
+  startButton.textContent = 'Restart';
 
   messageContainer.querySelectorAll('.message').forEach((el) => {
     el.classList.add('hidden');
