@@ -69,6 +69,21 @@ function updatedId() {
   }
 }
 
+const restartButton = document.querySelector('.restart');
+
+restartButton.addEventListener('click', () => {
+  game.restart();
+  game.start();
+  messageContainer.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
+  messageStart.classList.add('hidden');
+
+  updatedId();
+});
+
+restartButton.classList.add('hidden');
+
 startButton.addEventListener('click', () => {
   const gameStatus = game.getStatus();
 
@@ -79,6 +94,8 @@ startButton.addEventListener('click', () => {
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
     messageStart.classList.add('hidden');
+
+    restartButton.classList.remove('hidden');
     updatedId();
   }
 });
