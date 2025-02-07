@@ -5,7 +5,7 @@ import Game from '../modules/Game.class.js';
 const game = new Game();
 
 const startButton = document.querySelector('.start');
-const fieldCell = document.querySelector('.field-cell');
+const fieldCell = Array.from(document.querySelectorAll('.field-cell'));
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
@@ -40,19 +40,19 @@ function updatedId() {
 
   gameScore.textContent = score;
 
-  fieldCell.forEach((value, index) => {
+  fieldCell.forEach((cell, index) => {
     const row = Math.floor(index / 4);
     const col = index % 4;
-
     const cellValue = state[row][col];
 
+    cell.className = 'field-cell';
+
     if (cellValue === 0) {
-      value.classList.add('hidden');
-      value.textContent = '';
+      cell.textContent = '';
     } else {
-      value.classList.remove('hidden');
-      value.classList.add(`field-cell--${cellValue}`);
-      value.textContent = cellValue;
+      cell.classList.remove('hidden');
+      cell.classList.add(`field-cell--${cellValue}`);
+      cell.textContent = cellValue;
     }
   });
 
@@ -61,26 +61,23 @@ function updatedId() {
   if (statusGame === 'win') {
     messageContainer.classList.remove('hidden');
     messageWin.classList.remove('hidden');
-  }
-
-  if (statusGame === 'lose') {
+  } else if (statusGame === 'lose') {
     messageContainer.classList.remove('hidden');
     messageLose.classList.remove('hidden');
-  }
-
-  if (statusGame === 'start') {
+  } else if (statusGame === 'start') {
     messageStart.classList.add('hidden');
   }
 }
 
 startButton.addEventListener('click', () => {
-  if (
-    game.getStatus === 'start' ||
-    game.getStatus === 'lose' ||
-    game.getStatus === 'start'
-  ) {
-    game.start();
+  const gameStatus = game.getStatus();
+
+  if (gameStatus === 'idle' || gameStatus === 'lose' || gameStatus === 'win') {
     game.restart();
+    game.start();
+    messageContainer.classList.add('hidden');
+    messageWin.classList.add('hidden');
+    messageLose.classList.add('hidden');
     messageStart.classList.add('hidden');
     updatedId();
   }
