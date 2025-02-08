@@ -5,6 +5,7 @@ const game = new Game();
 
 const score = document.querySelector('.game-score');
 const button = document.querySelector('.button');
+const gameBoard = document.querySelector('.game-field');
 
 const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
@@ -20,6 +21,7 @@ button.addEventListener('click', () => {
   startMessage.classList.add('hidden');
   loseMessage.classList.add('hidden');
   winMessage.classList.add('hidden');
+  button.textContent = 'Restart';
   button.className = 'button restart';
 });
 
@@ -52,15 +54,15 @@ document.addEventListener('keydown', (e) => {
 function updateUi() {
   const curState = game.getState();
   const curStatus = game.getStatus();
-  const boardRows = document.querySelectorAll('.field-row');
+  const boardRows = gameBoard.querySelectorAll('.field-row');
 
   boardRows.forEach((row, rowIndex) => {
-    const rowCells = [...row.cells];
+    const rowCells = row.querySelectorAll('.field-cell');
 
     rowCells.forEach((cell, cellIndex) => {
       const cellValue = curState[rowIndex][cellIndex];
 
-      cell.textContent = cellValue || '';
+      cell.innerHTML = cellValue || '';
       cell.className = 'field-cell';
 
       if (cellValue > 0) {

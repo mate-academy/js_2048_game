@@ -37,6 +37,7 @@ class Game {
     if (this.status === 'idle') {
       this.status = 'playing';
       this.addRandomCell();
+      this.addRandomCell();
     }
   }
 
@@ -103,34 +104,31 @@ class Game {
   }
 
   slideLeft(state) {
-    return state.map((row) => this.proccessRow(row, false));
+    return state.map((row) => this.processRow(row, true));
   }
 
   slideRight(state) {
-    return state.map((row) => this.proccessRow(row, true));
+    return state.map((row) => this.processRow(row, false));
   }
 
-  proccessRow(row, isReversed) {
-    const filteredRow = isReversed ? [...row].reverse() : row;
-    const nonZeroCells = filteredRow.filter((n) => n !== 0);
+  processRow(row, isLeft) {
+    const reversedRow = isLeft ? row : [...row].reverse();
+    const nonZeroCells = reversedRow.filter((n) => n !== 0);
     const mergedRow = this.mergeCells(nonZeroCells);
 
     while (mergedRow.length < BOARD_SIZE) {
       mergedRow.push(0);
     }
 
-    return isReversed ? [...mergedRow].reverse() : mergedRow;
+    return isLeft ? mergedRow : mergedRow.reverse();
   }
 
   mergeCells(row) {
     for (let i = 0; i < row.length - 1; i++) {
-      let curCell = row[i];
-      let nextCell = row[i + 1];
-
-      if (curCell === nextCell) {
-        curCell *= 2;
-        nextCell = 0;
-        this.score += curCell;
+      if (row[i] === row[i + 1]) {
+        row[i] *= 2;
+        row[i + 1] = 0;
+        this.score += row[i];
       }
     }
 
@@ -205,10 +203,10 @@ class Game {
     }
   }
 
-  // UTILYTY METHODS
+  // UTILITY METHODS
 
   copyState(state) {
-    return state.map((row) => [...row]);
+    return state.map((row) => row.slice());
   }
 
   transpose(state) {
