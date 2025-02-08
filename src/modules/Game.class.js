@@ -251,7 +251,7 @@ class Game {
                 i,
                 lastNumberIndex - i,
                 'X',
-                this.#state[n][lastNumberIndex]
+                this.#state[n][lastNumberIndex],
               ),
             );
             isMove = true;
@@ -494,7 +494,6 @@ class Game {
     this.#tiles.forEach((tileRow, i) => {
       tileRow.forEach((tile, j) => {
         if (tile !== 0) {
-
           this.#tiles[i][j].remove();
           this.#tiles[i][j] = 0;
         }
