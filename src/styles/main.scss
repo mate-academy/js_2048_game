@@ -1,22 +1,41 @@
+$field-size: 368px;
+$cell-gap: $field-size / 40;
+$cell-size: ($field-size - $cell-gap * 3) / 4;
+$controll-size: $field-size / 5;
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  background-image: url(../images/wavey-fingerprint.svg);
   font-family: 'Roboto', sans-serif;
   font-size: 24px;
   font-weight: 900;
   overflow: hidden;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.game-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .container {
+  width: calc($field-size + $controll-size * 4);
   position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .title {
@@ -28,12 +47,12 @@ body {
 }
 
 .game-field {
+  justify-self: center;
   box-sizing: border-box;
-  width: 360px;
-  height: 360px;
+  width: $field-size;
+  height: $field-size;
   border-radius: 10px;
   padding: 20px;
-  animation: fadeInUp 1s ease-in-out;
 }
 
 .field-body {
@@ -41,83 +60,93 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 10px;
-  height: 360px;
-  width: 360px;
+  gap: $cell-gap;
+  height: $field-size;
+  width: $field-size;
 }
 
 .field-row {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: $cell-gap;
   margin: 0;
   padding: 0;
-  width: 360px;
-  height: 90px;
+  width: $field-size;
+  height: $cell-size;
 }
 
 .field-cell {
+  font-family: 'Roboto', serif;
+  font-weight: 700;
+  font-style: normal;
   margin: 0;
   padding: 0;
   border: 0.5px solid gray;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-sizing: border-box;
-  font-size: 24px;
-  background: #d6cdc4;
-  width: 82.5px;
-  height: 82.5px;
+  font-size: 32px;
+
+  width: $cell-size;
+  height: $cell-size;
   border-radius: 10px;
-  color: #776e65;
+  color: #755e47;
   text-align: center;
   user-select: none;
-  transition: transform 0.3s ease;
+}
+
+.tile-popping {
+  animation: appear 0.13s ease-out forwards;
 }
 
 .game-header {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-block: 50px;
   width: 100%;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
   box-sizing: border-box;
 }
 
 h1 {
-  background: #edc22e;
+  background: #7d6f60;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
+  width: 4 * $cell-size;
+  height: $cell-size;
+  font-size: 48px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
-  animation: bounceIn 1s ease-in-out;
 }
 
 .info {
+  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: $controll-size;
+  height: $controll-size;
   border-radius: 10px;
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
-  margin: 0 8px 0 0;
   animation: fadeIn 1s ease-in-out;
 }
 
 .controls {
+  position: absolute;
+  top: 0;
+  right: $controll-size / 2;
+
   display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .button {
@@ -128,8 +157,8 @@ h1 {
   font-family: 'Roboto', sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
+  width: $controll-size;
+  height: $controll-size;
   transition:
     0.25s ease background,
     transform 0.25s ease;
@@ -137,6 +166,12 @@ h1 {
   &:hover {
     transform: scale(1.1);
   }
+}
+
+a:focus,
+button:focus,
+input:focus {
+  outline: none;
 }
 
 .start {
@@ -151,7 +186,7 @@ h1 {
 
 .restart {
   display: none;
-  background: #f1b2b2;
+  background: #c66262;
 
   &:hover {
     background: #f87474;
@@ -160,7 +195,6 @@ h1 {
 
 .message {
   box-sizing: border-box;
-  width: 100%;
   background: #d6cdc4;
   color: #776e65;
   padding: 10px;
@@ -174,21 +208,14 @@ h1 {
   display: none;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
-  animation: fadeInUp 1s ease-in-out;
-}
-
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
 }
 
 .message-container {
-  width: 100%;
+  width: $field-size;
+
   height: 150px;
 }
 
@@ -222,17 +249,34 @@ h1 {
     transform: scale(1);
   }
 }
+
+@keyframes appear {
+  0% {
+    transform: scale(0.5); /* Початковий стан: маленька плитка */
+    opacity: 0; /* Початковий стан: невидима */
+  }
+  50% {
+    transform: scale(1.05); /* Середній стан: збільшена плитка */
+    opacity: 0.5; /* Середній стан: напівпрозора плитка */
+  }
+  100% {
+    transform: scale(1); /* Кінцевий стан: нормальний розмір */
+    opacity: 1; /* Кінцевий стан: видима плитка */
+  }
+}
+
 .copy-table {
   position: absolute;
-  top: 119px;
+  top: -1px;
   padding: 20px;
-  width: 360px;
-  height: 360px;
+  width: $field-size;
+  height: $field-size;
   border: 1px solid #705f4d;
-  border-radius: 10px;
-  background-color: #867666;
+  border-radius: 20px;
+  background-color: #7d6f60;
   z-index: -1;
 }
+
 .copy-body {
   width: 100%;
   height: 100%;
@@ -240,23 +284,22 @@ h1 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: $cell-gap;
 }
 
 .copy-row {
-  width: 100%;
-  height: 25%;
+  width: $field-size;
+  height: $cell-size;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: $cell-gap;
 }
 
 .copy-cell {
   border-radius: 10px;
-  width: 82.5px;
-  height: 82.5px;
-  border: 0.2px solid #776e65;
+  width: $cell-size;
+  height: $cell-size;
   color: #776e65;
   background-color: #d6cdc4; /* Колір плитки */
   border-radius: 10px; /* Закруглені краї (якщо потрібно) */

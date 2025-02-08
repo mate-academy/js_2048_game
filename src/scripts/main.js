@@ -23,7 +23,7 @@ restartButton.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if (game.status === 'playing' && !game.isAnimating) {
+  if (game.state.status === 'playing' && !game.state.isAnimating) {
     switch (e.key) {
       case 'ArrowLeft':
         game.moveLeft();
