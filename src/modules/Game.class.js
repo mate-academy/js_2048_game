@@ -301,8 +301,10 @@ class Game {
     let tableChanged = false;
 
     for (let i = 0; i < table.length; i++) {
-      let row = table[i].filter((val) => val > 0);
-
+      let row = table[i].slice();
+      let originalRow = [...row];
+      row = row.filter((val) => val > 0);
+      
       for (let k = 0; k < row.length - 1; k++) {
         if (row[k] === row[k + 1]) {
           row[k] *= 2;
@@ -311,8 +313,8 @@ class Game {
           row[k + 1] = 0;
         }
       }
-
       row = row.filter((val) => val > 0);
+      
 
       while (row.length !== 4) {
         if (direction === 'right') {
@@ -320,9 +322,12 @@ class Game {
         } else if (direction === 'left') {
           row.push(0);
         }
-        tableChanged = true;
       }
       newTable.push(row);
+
+      if (!arraysEqual(originalRow, row)) {
+        tableChanged = true;
+      }
     }
 
     for (let i = 0; i < newTable.length; i++) {
@@ -337,6 +342,7 @@ class Game {
       }
     }
     this.getScore(totalScore);
+
     if (tableChanged) {
       this.addNewCell();
     }
@@ -358,7 +364,9 @@ class Game {
         cell.push(table[j][i]);
       }
 
-      cell = cell.filter((val) => val > 0);
+      cell = cell.slice();
+      let originalCell = [...cell];
+      cell = cell.filter((val) => val > 0)
 
       for (let k = 0; k < cell.length - 1; k++) {
         if (cell[k] === cell[k + 1]) {
@@ -370,6 +378,7 @@ class Game {
       }
 
       cell = cell.filter((val) => val > 0);
+      
 
       while (cell.length !== 4) {
         if (direction === 'down') {
@@ -377,12 +386,15 @@ class Game {
         } else if (direction === 'up') {
           cell.push(0);
         }
-        tableChanged = true;
       }
 
       for (let j = 0; j < table.length; j++) {
         newTable[j] = newTable[j] || [];
         newTable[j][i] = cell[j];
+      }
+
+      if (!arraysEqual(originalCell, cell)) {
+        tableChanged = true;
       }
     }
 
@@ -398,6 +410,7 @@ class Game {
       }
     }
     this.getScore(totalScore);
+
     if (tableChanged) {
       this.addNewCell();
     }
@@ -432,4 +445,8 @@ module.exports = Game;
 
 function getRandomInt(num) {
   return Math.floor(Math.random() * num);
+}
+
+function arraysEqual(arr1, arr2) {
+  return arr1.length === arr2.length && arr1.every((val, index) => val === arr2[index]);
 }
