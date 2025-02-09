@@ -215,6 +215,7 @@ class Game {
     }
 
     const startMessage = document.querySelector('.message-start');
+
     if (startMessage) {
       startMessage.remove();
     }
@@ -260,9 +261,12 @@ class Game {
     this.setStatus('playing');
 
     const startMessage = document.createElement('p');
+
     startMessage.className = 'message message-start';
     startMessage.innerHTML = 'Press "Start" to begin game. Good luck!';
+
     const messageContainer = document.querySelector('.message-container');
+
     messageContainer.appendChild(startMessage);
   }
 
@@ -294,6 +298,7 @@ class Game {
     const tbody = document.querySelector('tbody');
     const rows = tbody.rows;
     let totalScore = 0;
+    let tableChanged = false;
 
     for (let i = 0; i < table.length; i++) {
       let row = table[i].filter((val) => val > 0);
@@ -302,6 +307,7 @@ class Game {
         if (row[k] === row[k + 1]) {
           row[k] *= 2;
           totalScore += row[k];
+          tableChanged = true;
           row[k + 1] = 0;
         }
       }
@@ -314,6 +320,7 @@ class Game {
         } else if (direction === 'left') {
           row.push(0);
         }
+        tableChanged = true;
       }
       newTable.push(row);
     }
@@ -330,7 +337,9 @@ class Game {
       }
     }
     this.getScore(totalScore);
-    this.addNewCell();
+    if (tableChanged) {
+      this.addNewCell();
+    }
   }
 
   moveVertically(direction) {
@@ -340,6 +349,7 @@ class Game {
     const tbody = document.querySelector('tbody');
     const rows = tbody.rows;
     let totalScore = 0;
+    let tableChanged = false;
 
     for (let i = 0; i < table[0].length; i++) {
       let cell = [];
@@ -354,6 +364,7 @@ class Game {
         if (cell[k] === cell[k + 1]) {
           cell[k] *= 2;
           totalScore += cell[k];
+          tableChanged = true;
           cell[k + 1] = 0;
         }
       }
@@ -366,6 +377,7 @@ class Game {
         } else if (direction === 'up') {
           cell.push(0);
         }
+        tableChanged = true;
       }
 
       for (let j = 0; j < table.length; j++) {
@@ -386,7 +398,9 @@ class Game {
       }
     }
     this.getScore(totalScore);
-    this.addNewCell();
+    if (tableChanged) {
+      this.addNewCell();
+    }
   }
 
   loseWindow() {
