@@ -188,3 +188,23 @@ h1 {
   width: 100%;
   height: 150px;
 }
+
+.lose-window {
+  position: absolute;
+  width: 50%;
+  height: 100px;
+  background: #d6cdc4;
+  color: #776e65;
+  text-align: center;
+  align-items: center;
+}
+
+.win-window {
+  position: absolute;
+  width: 50%;
+  height: 100px;
+  background: yellow;
+  color: #fff;
+  text-align: center;
+  align-items: center;
+}

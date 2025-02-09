@@ -12,21 +12,46 @@ if (button) {
   button.addEventListener('click', () => {
     if (button.classList.contains('start')) {
       game.start();
+      game.setStatus('playing');
+      startGameLoop();
     } else if (button.classList.contains('restart')) {
       game.restart();
+      game.setStatus('idle');
+      startGameLoop();
     }
   });
 }
 
-// в дужках повинно бути 'event'     |  тут але виводило помилку в npm run lint
-document.addEventListener('keydown', () => {
-  if (event.key === 'ArrowLeft') {
+let gameLoop;
+
+function startGameLoop() {
+  clearInterval(gameLoop);
+
+  gameLoop = setInterval(() => {
+    const newStatus = game.getStatus();
+
+    if (newStatus === 'win') {
+      game.winWindow();
+      clearInterval(gameLoop);
+    } else if (newStatus === 'lose') {
+      game.loseWindow();
+      clearInterval(gameLoop);
+    }
+  }, 100);
+}
+
+document.addEventListener('keydown', (eve) => {
+  if (!game.isPlaying()) {
+    return;
+  }
+
+  if (eve.key === 'ArrowLeft') {
     game.moveLeft();
-  } else if (event.key === 'ArrowRight') {
+  } else if (eve.key === 'ArrowRight') {
     game.moveRight();
-  } else if (event.key === 'ArrowUp') {
+  } else if (eve.key === 'ArrowUp') {
     game.moveUp();
-  } else if (event.key === 'ArrowDown') {
+  } else if (eve.key === 'ArrowDown') {
     game.moveDown();
   }
 });
