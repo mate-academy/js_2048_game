@@ -23,6 +23,7 @@ class Game {
     this.status = 'playing';
     this.addNewTile();
     this.addNewTile();
+
   }
 
   restart() {
@@ -55,7 +56,10 @@ class Game {
   }
 
   moveRight() {
-    return this.shiftTiles((row) => this.mergeRow(row.reverse()).reverse());
+    return this.shiftTiles((row) => {
+      let mergedRow = this.mergeRow(row.slice().reverse());
+      return mergedRow.reverse();
+    });
   }
 
   moveUp() {
@@ -80,22 +84,23 @@ class Game {
 
   shiftTiles(transform) {
     let moved = false;
-
-    this.board = this.board.map((row) => {
+    let newBoard = this.board.map((row) => {
       const newRow = transform(row);
-
-      moved ||= JSON.stringify(row) !== JSON.stringify(newRow);
-
+      if (JSON.stringify(row) !== JSON.stringify(newRow)) {
+        moved = true;
+      }
       return newRow;
     });
 
     if (moved) {
+      this.board = newBoard;
       this.addNewTile();
       this.checkGameOver();
     }
 
     return moved;
   }
+
 
   mergeRow(row) {
     const filtered = row.filter((val) => val !== 0);
@@ -127,10 +132,10 @@ class Game {
   /* eslint-enable function-paren-newline */
 
   checkGameOver() {
-    if (this.getEmptyCells().length === 0 && !this.canMerge()) {
-      this.status = 'lose';
-    } else if (this.board.some((row) => row.includes(2048))) {
+    if (this.board.some(row => row.includes(2048))) {
       this.status = 'win';
+    } else if (this.getEmptyCells().length === 0 && !this.canMerge()) {
+      this.status = 'lose';
     }
   }
 

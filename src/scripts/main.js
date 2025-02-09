@@ -10,29 +10,26 @@ const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 const startMessage = document.querySelector('.message-start');
 
+function updateCell(r, c, value) {
+  const cell = gameField.rows[r].cells[c];
+  cell.className = "field-cell";
+  if (value) {
+    cell.classList.add(`field-cell--${value}`);
+    cell.textContent = value;
+  } else {
+    cell.textContent = "";
+  }
+}
+
 function updateUI() {
   scoreDisplay.textContent = game.getScore();
-
   const board = game.getState();
 
-  gameField.querySelectorAll('.field-cell').forEach((cell) => {
-    cell.className = 'field-cell';
-    cell.textContent = '';
-  });
+  board.forEach((row, r) => row.forEach((value, c) => updateCell(r, c, value)));
 
-  board.forEach((row, r) => {
-    row.forEach((value, c) => {
-      if (value) {
-        const cell = gameField.rows[r].cells[c];
+  winMessage.classList.toggle("hidden", game.getStatus() !== "win");
+  loseMessage.classList.toggle("hidden", game.getStatus() !== "lose");
 
-        cell.classList.add(`field-cell--${value}`);
-        cell.textContent = value;
-      }
-    });
-  });
-
-  winMessage.classList.toggle('hidden', game.getStatus() !== 'win');
-  loseMessage.classList.toggle('hidden', game.getStatus() !== 'lose');
 }
 
 function handleMove(eventKey) {
@@ -47,9 +44,8 @@ function handleMove(eventKey) {
     ArrowDown: () => game.moveDown(),
   };
 
-  if (moveMap[eventKey]?.()) {
-    updateUI();
-  }
+  const moveMade = moveMap[eventKey] && moveMap[eventKey]();
+  if (moveMade) updateUI();
 }
 
 function startGame() {
