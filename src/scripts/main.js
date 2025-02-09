@@ -11,6 +11,17 @@ const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
 const gameScore = document.querySelector('.game-score');
 const messageContainer = document.querySelector('.message-container');
+const controls = document.querySelector('.controls');
+
+//         <button class="restart button hidden">Перезапуск</button>
+const restartButton = document.createElement('button');
+
+restartButton.textContent = 'Перезапуск';
+
+restartButton.classList.add('restart');
+restartButton.classList.add('button');
+restartButton.classList.add('hidden');
+controls.append(restartButton);
 
 document.addEventListener('keydown', (e) => {
   switch (e.key) {
@@ -69,11 +80,11 @@ function updatedId() {
   }
 }
 
-const restartButton = document.querySelector('.restart');
-
 restartButton.addEventListener('click', () => {
+  restartButton.classList.add('hidden');
+  startButton.classList.remove('hidden');
+
   game.restart();
-  game.start();
   messageContainer.classList.add('hidden');
   messageWin.classList.add('hidden');
   messageLose.classList.add('hidden');
@@ -82,13 +93,13 @@ restartButton.addEventListener('click', () => {
   updatedId();
 });
 
-restartButton.classList.add('hidden');
-
 startButton.addEventListener('click', () => {
+  startButton.classList.add('hidden');
+  restartButton.classList.remove('hidden');
+
   const gameStatus = game.getStatus();
 
   if (gameStatus === 'idle' || gameStatus === 'lose' || gameStatus === 'win') {
-    game.restart();
     game.start();
     messageContainer.classList.add('hidden');
     messageWin.classList.add('hidden');
