@@ -1,10 +1,9 @@
 'use strict';
-import Game from '../modules/Game.class';
+import Game from '../modules/Game.class.js';
 
 const game = new Game();
 
 const startButton = document.querySelector('.button.start');
-const restartButton = document.querySelector('.button.restart');
 const scoreDisplay = document.querySelector('.game-score');
 const gameField = document.querySelector('.game-field');
 const winMessage = document.querySelector('.message-win');
@@ -54,26 +53,23 @@ function handleMove(eventKey) {
 }
 
 function startGame() {
-  if (game.getStatus() === 'idle') {
+  if (
+    game.getStatus() === 'idle' ||
+    game.getStatus() === 'lose' ||
+    game.getStatus() === 'win'
+  ) {
     game.start();
     startMessage.classList.add('hidden');
     startButton.textContent = 'Restart';
+    startButton.classList.add('restart');
   } else {
     game.restart();
-    startButton.textContent = 'Start';
-    startMessage.classList.remove('hidden');
   }
-  updateUI();
-}
 
-// 🚀 Restart Button Click Event
-function restartGame() {
-  game.restart();
   updateUI();
 }
 
 document.addEventListener('keydown', (e) => handleMove(e.key));
 startButton.addEventListener('click', startGame);
-restartButton.addEventListener('click', restartGame); // Add event listener
 
 updateUI();

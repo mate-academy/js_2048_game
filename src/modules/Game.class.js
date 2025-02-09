@@ -84,7 +84,7 @@ class Game {
     this.board = this.board.map((row) => {
       const newRow = transform(row);
 
-      moved ||= !this.areArraysEqual(row, newRow);
+      moved ||= JSON.stringify(row) !== JSON.stringify(newRow);
 
       return newRow;
     });
@@ -105,7 +105,7 @@ class Game {
       if (filtered[i] === filtered[i + 1]) {
         merged.push(filtered[i] * 2);
         this.score += filtered[i] * 2;
-        i++; // Skip next tile
+        i++;
       } else {
         merged.push(filtered[i]);
       }
@@ -117,15 +117,14 @@ class Game {
 
     return merged;
   }
-  // prettier-ignore
+
+  /* eslint-disable function-paren-newline */
   transposeBoard() {
     this.board = this.board[0].map((_, colIndex) =>
-      this.board.map((row) => row[colIndex]));
+      this.board.map((row) => row[colIndex]),
+    );
   }
-
-  areArraysEqual(arr1, arr2) {
-    return JSON.stringify(arr1) === JSON.stringify(arr2);
-  }
+  /* eslint-enable function-paren-newline */
 
   checkGameOver() {
     if (this.getEmptyCells().length === 0 && !this.canMerge()) {
@@ -134,13 +133,19 @@ class Game {
       this.status = 'win';
     }
   }
-  // prettier-ignore
+
+  /* eslint-disable function-paren-newline */
   canMerge() {
-    return this.board.some((row, r) => row.some((val, c) =>
-      val !== 0 &&
-      ((c < 3 && val === row[c + 1]) ||
-      (r < 3 && val === this.board[r + 1][c]))));
+    return this.board.some((row, r) =>
+      row.some(
+        (val, c) =>
+          val !== 0 &&
+          ((c < 3 && val === row[c + 1]) ||
+            (r < 3 && val === this.board[r + 1][c])),
+      ),
+    );
   }
 }
+/* eslint-enable function-paren-newline */
 
 export default Game;

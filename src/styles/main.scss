@@ -12,8 +12,8 @@ body {
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: 80px;
+  height: 80px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
@@ -84,18 +84,29 @@ body {
 .game-header {
   display: flex;
   width: 100%;
-  justify-content: left;
-  margin-bottom: 24px;
+  justify-content: center;
+  margin-bottom: 10px;
   padding: 5px;
   box-sizing: border-box;
-  gap: 10px;
+  align-items: center;
+  gap: 15px;
+}
+
+.title,
+.info,
+.button {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 h1 {
   background: #edc22e;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
+  width: 100px;
+  height: 80px;
   font-size: 24px;
   border-radius: 5px;
   display: flex;
@@ -110,14 +121,14 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: #776e65;
+  width: 100px;
+  height: 80px;
   border-radius: 5px;
-  color: #776e65;
+  color: #f9f6f2;
   box-sizing: border-box;
   font-size: 20px;
-  margin: 0 5px 0 0;
+  margin: 0;
   gap: 10px;
 }
 
@@ -135,10 +146,9 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
-
-  transition: 0.25s ease background;
+  width: 100px;
+  height: 80px;
+  transition: background 0.25s ease;
 }
 
 .start {
