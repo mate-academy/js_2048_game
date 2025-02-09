@@ -11,21 +11,6 @@ const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
 
-
-function updateBoard() {
-  const state = game.getState().flat();
-
-  state.forEach((value, index) => {
-    const cell = cells[index];
-
-    cell.textContent = value || '';
-    cell.className = `field-cell ${value ? `field-cell--${value}` : ''}`;
-  });
-
-  scoreElement.textContent = game.getScore();
-}
-
-
 startButton.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
@@ -46,20 +31,34 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
+  const stackOnly = e.shiftKey;
+
   const actions = {
     ArrowLeft: () => game.moveLeft(),
-    ArrowRight: () => game.moveRight(),
+    ArrowRight: () => game.makeMove('right', stackOnly),
     ArrowUp: () => game.moveUp(),
     ArrowDown: () => game.moveDown(),
   };
 
   if (actions[e.key]) {
-    actions[e.key]();
+    actions[e.key](); // Виконає спочатку stack, потім merge для ArrowRight
     updateBoard();
     checkMessages();
   }
 });
 
+function updateBoard() {
+  const state = game.getState().flat();
+
+  state.forEach((value, index) => {
+    const cell = cells[index];
+
+    cell.textContent = value || '';
+    cell.className = `field-cell ${value ? `field-cell--${value}` : ''}`;
+  });
+
+  scoreElement.textContent = game.getScore();
+}
 
 function checkMessages() {
   if (game.getStatus() === 'win') {

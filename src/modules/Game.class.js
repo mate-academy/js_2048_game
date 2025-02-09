@@ -5,6 +5,7 @@ class Game {
     this.size = 4;
     this.score = 0;
     this.status = 'idle';
+    this.initialState = initialState;
 
     this.board = initialState
       ? initialState.map((row) => [...row])
@@ -41,7 +42,10 @@ class Game {
   restart() {
     this.status = 'idle';
     this.score = 0;
-    this.board = this.createEmptyBoard();
+
+    this.board = this.initialState
+      ? this.initialState.map((row) => [...row])
+      : this.createEmptyBoard();
   }
 
   // Moves
@@ -62,27 +66,33 @@ class Game {
   }
 
   // Implements the game move logic
-  makeMove(direction) {
+  makeMove(direction, stackOnly = false) {
     if (this.status !== 'playing') {
       return;
     }
 
-    // Save a copy of the board for comparisons
+    // Save the state of the board before changes to compare
     this.prevBoard = JSON.stringify(this.board);
 
-    // Transpose or reverse board based on the move direction
+    // Transposition for vertical moves (up/down)
     if (direction === 'up' || direction === 'down') {
       this.board = this.transpose(this.board);
     }
 
+    // Reverse rows for moves to the right (right) and down (down)
     if (direction === 'right' || direction === 'down') {
       this.board = this.board.map((row) => row.reverse());
     }
 
-    // Perform the shift and merge logic
-    this.board = this.board.map((row) => this.mergeRow(this.shiftRow(row)));
+    // Perform only stack (then merge if stackOnly = false)
+    this.board = this.board.map((row) => this.shiftRow(row));
 
-    // Reverse transformations to return board to its original state
+    if (!stackOnly) {
+      // Perform merge (cell merging)
+      this.board = this.board.map((row) => this.mergeRow(row));
+    }
+
+    // Restore the board's appearance after temporary changes
     if (direction === 'right' || direction === 'down') {
       this.board = this.board.map((row) => row.reverse());
     }
@@ -91,7 +101,7 @@ class Game {
       this.board = this.transpose(this.board);
     }
 
-    // Check if the board has changed
+    // If the board has changed, add a new random number
     if (this.prevBoard !== JSON.stringify(this.board)) {
       this.addRandomNumber();
       this.checkGameStatus();
@@ -105,13 +115,19 @@ class Game {
     return [...filteredRow, ...Array(this.size - filteredRow.length).fill(0)];
   }
 
+  stackRow(row) {
+    const filteredRow = row.filter((cell) => cell !== 0);
+
+    return [...Array(this.size - filteredRow.length).fill(0), ...filteredRow];
+  }
+
   // Merge adjacent tiles in a row
   mergeRow(row) {
     for (let i = 0; i < row.length - 1; i++) {
       if (row[i] !== 0 && row[i] === row[i + 1]) {
-        row[i] *= 2; // Merge tiles
-        row[i + 1] = 0; // Clear merged tile
-        this.score += row[i]; // Add score
+        row[i] *= 2;
+        row[i + 1] = 0;
+        this.score += row[i];
       }
     }
 
@@ -141,7 +157,9 @@ class Game {
 
   // Transpose a matrix (swap rows with columns)
   transpose(board) {
-    return board[0].map((_, colIndex) => board.map((row) => row[colIndex]));
+    return board[0].map((_, colIndex) =>
+      // eslint-disable-next-line prettier/prettier
+      this.board.map((row) => row[colIndex]));
   }
 
   // Check if a move is possible (any merges or empty cells)
