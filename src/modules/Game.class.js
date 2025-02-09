@@ -213,6 +213,11 @@ class Game {
       secondElement.classList.add('field-cell--2');
       secondElement.innerHTML = '2';
     }
+
+    const startMessage = document.querySelector('.message-start');
+    if (startMessage) {
+      startMessage.remove();
+    }
   }
 
   /**
@@ -253,6 +258,12 @@ class Game {
     }
 
     this.setStatus('playing');
+
+    const startMessage = document.createElement('p');
+    startMessage.className = 'message message-start';
+    startMessage.innerHTML = 'Press "Start" to begin game. Good luck!';
+    const messageContainer = document.querySelector('.message-container');
+    messageContainer.appendChild(startMessage);
   }
 
   // Add your own methods here
