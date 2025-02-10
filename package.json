@@ -5,6 +5,11 @@
     "parcel": "^2.13.3"
   },
   "scripts": {
-    "start": "parcel src/index.html"
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html --public-url ./",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "dependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
