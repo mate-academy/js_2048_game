@@ -29,12 +29,6 @@ class Game {
       });
     });
 
-    if (freeTiles.length === 0) {
-      this.status = 'lose';
-
-      return;
-    }
-
     const randomIndex = Math.floor(Math.random() * freeTiles.length);
     const [row, col] = freeTiles[randomIndex];
 
@@ -336,9 +330,9 @@ class Game {
           return false;
         }
       }
-
-      return true;
     }
+
+    return true;
   }
 
   checkWin() {
