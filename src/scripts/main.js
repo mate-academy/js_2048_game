@@ -294,7 +294,13 @@ class Game {
   }
 
   start() {
+    buttonStart.className = 'button restart';
+    buttonStart.textContent = 'Restart';
     document.querySelector('.message-start').hidden = true;
+    game.spawnTile();
+    game.spawnTile();
+    updateTile();
+    buttonStart.removeEventListener('click', firstStart)
     this.status = 'playing';
   }
 
@@ -344,24 +350,29 @@ const buttonStart = document.querySelector('.start');
 const game = new Game();
 
 const firstStart = () => {
-  buttonStart.className = 'button restart';
-  buttonStart.textContent = 'Restart';
   game.start();
-  game.spawnTile();
-  updateTile();
+  buttonStart.removeEventListener('click', firstStart);
+  buttonStart.addEventListener('click', restartGame, { once: true });
 };
 
 buttonStart.addEventListener('click', firstStart, { once: true });
 
 const restartGame = () => {
   game.restart();
-  game.spawnTile();
   updateTile();
+
+  buttonStart.className = 'button start';
+  buttonStart.textContent = 'Start';
+
+  document.querySelector('.message-start').classList.remove('hidden');
   document.querySelector('.message').classList.add('hidden');
   document.querySelector('.message-win').classList.add('hidden');
+
+  buttonStart.removeEventListener('click', restartGame);
+  buttonStart.addEventListener('click', firstStart, { once: true });
 };
 
-buttonStart.addEventListener('click', restartGame);
+
 
 document.addEventListener('keydown', (eve) => {
   if (eve.key === 'ArrowRight') {
