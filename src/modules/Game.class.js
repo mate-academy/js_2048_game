@@ -69,6 +69,8 @@ export default class Game {
   }
 
   moveLeft() {
+    let moved = false;
+
     for (let row = 0; row < this.size; row++) {
       let newRow = this.board[row].filter((val) => val !== 0);
 
@@ -77,6 +79,7 @@ export default class Game {
           newRow[i] *= 2;
           this.score += newRow[i];
           newRow[i + 1] = 0;
+          moved = true;
         }
       }
 
@@ -86,10 +89,16 @@ export default class Game {
         newRow.push(0);
       }
 
+      if (JSON.stringify(this.board[row]) !== JSON.stringify(newRow)) {
+        moved = true;
+      }
+
       this.board[row] = newRow;
     }
 
-    this.addRandomTile();
+    if (moved) {
+      this.addRandomTile();
+    }
 
     if (this.isGameOver()) {
       this.status = 'lose';
@@ -99,6 +108,8 @@ export default class Game {
   }
 
   moveRight() {
+    let moved = false;
+
     for (let row = 0; row < this.size; row++) {
       let newRow = this.board[row].filter((val) => val !== 0);
 
@@ -107,6 +118,7 @@ export default class Game {
           newRow[i] *= 2;
           this.score += newRow[i];
           newRow[i - 1] = 0;
+          moved = true;
         }
       }
 
@@ -116,10 +128,16 @@ export default class Game {
         newRow.unshift(0);
       }
 
+      if (JSON.stringify(this.board[row]) !== JSON.stringify(newRow)) {
+        moved = true;
+      }
+
       this.board[row] = newRow;
     }
 
-    this.addRandomTile();
+    if (moved) {
+      this.addRandomTile();
+    }
 
     if (this.isGameOver()) {
       this.status = 'lose';
@@ -129,6 +147,8 @@ export default class Game {
   }
 
   moveUp() {
+    let moved = false;
+
     for (let col = 0; col < this.size; col++) {
       let column = [];
 
@@ -143,6 +163,7 @@ export default class Game {
           column[i] *= 2;
           this.score += column[i];
           column[i + 1] = 0;
+          moved = true;
         }
       }
 
@@ -152,12 +173,18 @@ export default class Game {
         column.push(0);
       }
 
+      if (moved) {
+        moved = true;
+      }
+
       for (let row = 0; row < this.size; row++) {
         this.board[row][col] = column[row];
       }
     }
 
-    this.addRandomTile();
+    if (moved) {
+      this.addRandomTile();
+    }
 
     if (this.isGameOver()) {
       this.status = 'lose';
@@ -167,6 +194,8 @@ export default class Game {
   }
 
   moveDown() {
+    let moved = false;
+
     for (let col = 0; col < this.size; col++) {
       let column = [];
 
@@ -181,6 +210,7 @@ export default class Game {
           column[i] *= 2;
           column[i - 1] = 0;
           this.score += column[i];
+          moved = true;
         }
       }
 
@@ -190,12 +220,18 @@ export default class Game {
         column.unshift(0);
       }
 
+      if (moved) {
+        moved = true;
+      }
+
       for (let row = 0; row < this.size; row++) {
         this.board[row][col] = column[row];
       }
     }
 
-    this.addRandomTile();
+    if (moved) {
+      this.addRandomTile();
+    }
 
     if (this.isGameOver()) {
       this.status = 'lose';
