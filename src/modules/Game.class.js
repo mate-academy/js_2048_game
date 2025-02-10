@@ -135,7 +135,7 @@ class Game {
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.board[row][col] === 0) {
-          emptyCells.push({ row, col });
+          emptyCells.push({ r: row, c: col });
         }
       }
     }
