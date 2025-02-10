@@ -300,7 +300,7 @@ class Game {
     game.spawnTile();
     game.spawnTile();
     updateTile();
-    buttonStart.removeEventListener('click', firstStart)
+    buttonStart.removeEventListener('click', firstStart);
     this.status = 'playing';
   }
 
@@ -371,8 +371,6 @@ const restartGame = () => {
   buttonStart.removeEventListener('click', restartGame);
   buttonStart.addEventListener('click', firstStart, { once: true });
 };
-
-
 
 document.addEventListener('keydown', (eve) => {
   if (eve.key === 'ArrowRight') {
