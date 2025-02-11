@@ -167,20 +167,20 @@ class Game {
 
     const canMergeCells = this.state.some((row, rowIndex) => {
       return row.some((cell, cellIndex) => {
-        const rightNeighbor = row[cellIndex + 1];
-        const downNeighbor = this.state[rowIndex + 1][cellIndex];
-        const maxCellIndex = cellIndex < BOARD_SIZE - 1;
-        const maxRowIndex = rowIndex < BOARD_SIZE - 1;
-
         if (cell === 0) {
           return false;
         }
 
-        if (maxCellIndex && cell === rightNeighbor) {
+        // Check right neighbor
+        if (cellIndex < BOARD_SIZE - 1 && cell === row[cellIndex + 1]) {
           return true;
         }
 
-        if (maxRowIndex && cell === downNeighbor) {
+        // Check down neighbor
+        if (
+          rowIndex < BOARD_SIZE - 1 &&
+          cell === this.state[rowIndex + 1][cellIndex]
+        ) {
           return true;
         }
 
