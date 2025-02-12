@@ -11,7 +11,7 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #c8b9aa;
   width: 75px;
   height: 75px;
   border-radius: 5px;
@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: 0.3s;
 
   &--2 {
     background: #eee4da;
@@ -76,7 +77,7 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: #9a795a;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -131,7 +132,7 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
+  min-width: 75px;
   height: 75px;
 
   transition: 0.25s ease background;
