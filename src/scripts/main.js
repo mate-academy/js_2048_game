@@ -1,14 +1,7 @@
-'use strict';
-
-// Uncomment the next lines to use your game instance in the browser
-
-// document.getElementById('start-restart-btn').addEventListener(
-// 'click', () => {
-
 import Game from '../modules/Game.class.js';
 
 const game2048 = new Game();
-const button = document.querySelector('.start-restart-btn');
+const button = document.querySelector('.button.start');
 
 button.addEventListener('click', () => {
   if (game2048.getStatus() === 'idle') {
@@ -36,9 +29,5 @@ document.addEventListener('keydown', (e) => {
     case 'ArrowDown':
       game2048.moveDown();
       break;
-  }
-
-  if (game2048.getStatus() === 'gameover') {
-    alert('Game Over!');
   }
 });

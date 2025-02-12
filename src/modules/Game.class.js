@@ -1,8 +1,3 @@
-'use strict';
-
-/**
- * Game class implementation for 2048.
- */
 class Game {
   constructor(
     initialState = [
@@ -15,12 +10,19 @@ class Game {
     this.board = initialState;
     this.score = 0;
     this.status = 'idle';
+    this.cells = document.querySelectorAll('.field-cell');
+    this.scoreElement = document.querySelector('.game-score');
+    this.messageLose = document.querySelector('.message-lose');
+    this.messageWin = document.querySelector('.message-win');
+    this.messageStart = document.querySelector('.message-start');
   }
 
   start() {
     this.status = 'playing';
     this.addRandomTile();
     this.addRandomTile();
+    this.updateBoard();
+    this.hideMessages();
   }
 
   restart() {
@@ -51,6 +53,7 @@ class Game {
         emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
       this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
+      this.updateBoard();
     }
   }
 
@@ -94,6 +97,7 @@ class Game {
     if (moved) {
       this.addRandomTile();
       this.checkGameOver();
+      this.updateBoard();
     }
   }
 
@@ -101,25 +105,7 @@ class Game {
     this.transpose();
     this.move(transformCol);
     this.transpose();
-  }
-
-  compressRow(row) {
-    return row
-      .filter((num) => num !== 0)
-      .concat(Array(4 - row.filter((num) => num !== 0).length).fill(0));
-  }
-
-  mergeRow(row) {
-    for (let i = 0; i < 3; i++) {
-      if (row[i] !== 0 && row[i] === row[i + 1]) {
-        row[i] *= 2;
-        this.score += row[i];
-        row[i + 1] = 0;
-        i++;
-      }
-    }
-
-    return row;
+    this.updateBoard();
   }
 
   transpose() {
@@ -146,24 +132,42 @@ class Game {
       }
     }
     this.status = 'gameover';
-    alert('Game Over!');
+    this.showMessage(this.messageLose);
   }
 
-  getScore() {
-    return this.score;
+  updateBoard() {
+    let index = 0;
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        this.cells[index].textContent =
+          this.board[i][j] !== 0 ? this.board[i][j] : '';
+        this.cells[index].className = `field-cell tile-${this.board[i][j]}`;
+        index++;
+      }
+    }
+    this.scoreElement.textContent = this.score;
+    this.checkWin();
   }
 
-  getState() {
-    return this.board;
+  checkWin() {
+    if (this.board.flat().includes(2048)) {
+      this.showMessage(this.messageWin);
+    }
   }
 
-  getStatus() {
-    return this.status;
+  showMessage(message) {
+    this.messageLose.classList.add('hidden');
+    this.messageWin.classList.add('hidden');
+    this.messageStart.classList.add('hidden');
+    message.classList.remove('hidden');
   }
 
-  arraysEqual(a, b) {
-    return a.length === b.length && a.every((val, idx) => val === b[idx]);
+  hideMessages() {
+    this.messageLose.classList.add('hidden');
+    this.messageWin.classList.add('hidden');
+    this.messageStart.classList.add('hidden');
   }
 }
 
-module.exports = Game;
+export default Game;
