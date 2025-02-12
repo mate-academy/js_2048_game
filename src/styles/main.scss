@@ -14,7 +14,7 @@ body {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
+  border-radius: 12px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
@@ -78,7 +78,7 @@ body {
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 12px;
 }
 
 .game-header {
@@ -178,6 +178,11 @@ h1 {
 
 .message-win {
   background: #edc22e;
+  color: #f9f6f2;
+}
+
+.message-lose {
+  background: #f87474;
   color: #f9f6f2;
 }
 

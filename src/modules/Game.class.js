@@ -1,44 +1,159 @@
 'use strict';
-
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.board = initialState;
+    this.score = 0;
+    this.status = 'idle';
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    const shiftAndFilter = (array) => {
+      const filteredArray = array.filter((cell) => cell !== 0);
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+      while (filteredArray.length < 4) {
+        filteredArray.push(0);
+      }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+      return filteredArray;
+    };
+
+    for (let row = 0; row < 4; row++) {
+      this.board[row] = shiftAndFilter(this.board[row]);
+
+      for (let col = 0; col < 3; col++) {
+        if (this.board[row][col] === this.board[row][col + 1]) {
+          this.board[row][col] += this.board[row][col + 1];
+          this.board[row][col + 1] = 0;
+          this.score += this.board[row][col];
+
+          col++;
+        }
+      }
+
+      this.board[row] = shiftAndFilter(this.board[row]);
+    }
+  }
+
+  moveRight() {
+    const shiftAndFilter = (array) => {
+      const filteredArray = array.filter((cell) => cell !== 0);
+
+      while (filteredArray.length < 4) {
+        filteredArray.unshift(0);
+      }
+
+      return filteredArray;
+    };
+
+    for (let row = 0; row < 4; row++) {
+      this.board[row] = shiftAndFilter(this.board[row]);
+
+      for (let col = 0; col < 3; col++) {
+        if (this.board[row][col] === this.board[row][col + 1]) {
+          this.board[row][col] += this.board[row][col + 1];
+          this.board[row][col + 1] = 0;
+          this.score += this.board[row][col];
+
+          col++;
+        }
+      }
+
+      this.board[row] = shiftAndFilter(this.board[row]);
+    }
+  }
+
+  moveUp() {
+    const shiftAndFilter = (array) => {
+      const filteredArray = array.filter((cell) => cell !== 0);
+
+      while (filteredArray.length < 4) {
+        filteredArray.push(0);
+      }
+
+      return filteredArray;
+    };
+
+    for (let col = 0; col < 4; col++) {
+      let column = [];
+
+      for (let row = 0; row < 4; row++) {
+        column.push(this.board[row][col]);
+      }
+
+      column = shiftAndFilter(column);
+
+      for (let r = 0; r < 3; r++) {
+        if (column[r] === column[r + 1]) {
+          column[r] += column[r + 1];
+          column[r + 1] = 0;
+          this.score += column[r];
+
+          r++;
+        }
+      }
+
+      column = shiftAndFilter(column);
+
+      for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
+        this.board[rowIndex][col] = column[rowIndex];
+      }
+    }
+  }
+
+  moveDown() {
+    const shiftAndFilter = (array) => {
+      const filteredArray = array.filter((cell) => cell !== 0);
+
+      while (filteredArray.length < 4) {
+        filteredArray.push(0);
+      }
+
+      return filteredArray;
+    };
+
+    for (let col = 0; col < 4; col++) {
+      let column = [];
+
+      for (let row = 0; row < 4; row++) {
+        column.push(this.board[row][col]);
+      }
+
+      column.reverse();
+      column = shiftAndFilter(column);
+
+      for (let r = 0; r < 3; r++) {
+        if (column[r] === column[r + 1]) {
+          column[r] += column[r + 1];
+          column[r + 1] = 0;
+          this.score += column[r];
+
+          r++;
+        }
+      }
+
+      column = shiftAndFilter(column);
+      column.reverse();
+
+      for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
+        this.board[rowIndex][col] = column[rowIndex];
+      }
+    }
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  getState() {
+    return this.board;
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +165,80 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 2048) {
+          this.status = 'win';
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+          return this.status;
+        }
+      }
+    }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    const hasEmptyTiles = this.board.some((row) => row.includes(0));
 
-  // Add your own methods here
+    if (!hasEmptyTiles) {
+      const canMove = (board) => {
+        for (let row = 0; row < 4; row++) {
+          for (let col = 0; col < 4; col++) {
+            if (
+              (col < 3 && board[row][col] === board[row][col + 1]) ||
+              (row < 3 && board[row][col] === board[row + 1][col])
+            ) {
+              return true;
+            }
+          }
+        }
+
+        return false;
+      };
+
+      if (!canMove(this.board)) {
+        this.status = 'lose';
+
+        return this.status;
+      }
+    }
+
+    return this.status;
+  }
+
+  start() {
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    this.score = 0;
+    this.status = 'playing';
+
+    this.addRandomTiles();
+    this.addRandomTiles();
+  }
+
+  restart() {
+    this.start();
+  }
+
+  addRandomTiles() {
+    const emptyTiles = [];
+
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === 0) {
+          emptyTiles.push({ row, col });
+        }
+      }
+    }
+
+    const randomCell =
+      emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
+
+    this.board[randomCell.row][randomCell.col] = Math.random() < 0.9 ? 2 : 4;
+  }
 }
 
 module.exports = Game;
