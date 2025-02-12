@@ -29,8 +29,6 @@ class Game {
     ];
     this.score = 0;
     this.status = 'idle';
-    // eslint-disable-next-line no-console
-    console.log(initialState);
   }
 
   moveLeft() {
