@@ -17,6 +17,18 @@ class Game {
     this.messageStart = document.querySelector('.message-start');
   }
 
+  getState() {
+    return this.board;
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
   start() {
     this.status = 'playing';
     this.addRandomTile();
@@ -53,7 +65,6 @@ class Game {
         emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
       this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
-      this.updateBoard();
     }
   }
 
@@ -81,17 +92,15 @@ class Game {
     let moved = false;
 
     for (let i = 0; i < 4; i++) {
-      let row = transformRow([...this.board[i]]);
+      const row = transformRow([...this.board[i]]);
       const compressed = this.compressRow(row);
       const merged = this.mergeRow(compressed);
       const finalRow = this.compressRow(merged);
 
       if (row.toString() !== finalRow.toString()) {
         moved = true;
-        row = finalRow;
       }
-
-      this.board[i] = transformRow([...row]);
+      this.board[i] = transformRow([...finalRow]);
     }
 
     if (moved) {
@@ -116,6 +125,25 @@ class Game {
     });
   }
 
+  compressRow(row) {
+    return row
+      .filter((val) => val !== 0)
+      .concat(Array(4).fill(0))
+      .slice(0, 4);
+  }
+
+  mergeRow(row) {
+    for (let i = 0; i < 3; i++) {
+      if (row[i] !== 0 && row[i] === row[i + 1]) {
+        row[i] *= 2;
+        row[i + 1] = 0;
+        this.score += row[i];
+      }
+    }
+
+    return row;
+  }
+
   checkGameOver() {
     if (this.board.flat().includes(0)) {
       return;
@@ -135,6 +163,13 @@ class Game {
     this.showMessage(this.messageLose);
   }
 
+  checkWin() {
+    if (this.board.flat().includes(2048)) {
+      this.status = 'win';
+      this.showMessage(this.messageWin);
+    }
+  }
+
   updateBoard() {
     let index = 0;
 
@@ -142,18 +177,14 @@ class Game {
       for (let j = 0; j < 4; j++) {
         this.cells[index].textContent =
           this.board[i][j] !== 0 ? this.board[i][j] : '';
-        this.cells[index].className = `field-cell tile-${this.board[i][j]}`;
+
+        this.cells[index].className =
+          `field-cell field-cell--${this.board[i][j]}`;
         index++;
       }
     }
     this.scoreElement.textContent = this.score;
     this.checkWin();
-  }
-
-  checkWin() {
-    if (this.board.flat().includes(2048)) {
-      this.showMessage(this.messageWin);
-    }
   }
 
   showMessage(message) {
