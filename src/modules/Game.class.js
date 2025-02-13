@@ -14,6 +14,8 @@ class Game {
   }
 
   moveLeft() {
+    const oldBoard = JSON.stringify(this.board);
+
     const shiftAndFilter = (array) => {
       const filteredArray = array.filter((cell) => cell !== 0);
 
@@ -39,9 +41,15 @@ class Game {
 
       this.board[row] = shiftAndFilter(this.board[row]);
     }
+
+    const newBoard = JSON.stringify(this.board);
+
+    return oldBoard !== newBoard;
   }
 
   moveRight() {
+    const oldBoard = JSON.stringify(this.board);
+
     const shiftAndFilter = (array) => {
       const filteredArray = array.filter((cell) => cell !== 0);
 
@@ -67,9 +75,15 @@ class Game {
 
       this.board[row] = shiftAndFilter(this.board[row]);
     }
+
+    const newBoard = JSON.stringify(this.board);
+
+    return oldBoard !== newBoard;
   }
 
   moveUp() {
+    const oldBoard = JSON.stringify(this.board);
+
     const shiftAndFilter = (array) => {
       const filteredArray = array.filter((cell) => cell !== 0);
 
@@ -105,9 +119,15 @@ class Game {
         this.board[rowIndex][col] = column[rowIndex];
       }
     }
+
+    const newBoard = JSON.stringify(this.board);
+
+    return oldBoard !== newBoard;
   }
 
   moveDown() {
+    const oldBoard = JSON.stringify(this.board);
+
     const shiftAndFilter = (array) => {
       const filteredArray = array.filter((cell) => cell !== 0);
 
@@ -145,6 +165,10 @@ class Game {
         this.board[rowIndex][col] = column[rowIndex];
       }
     }
+
+    const newBoard = JSON.stringify(this.board);
+
+    return oldBoard !== newBoard;
   }
 
   getScore() {

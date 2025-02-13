@@ -55,29 +55,30 @@ function renderGame() {
 document.addEventListener('keydown', (gameEvent) => {
   gameEvent.preventDefault();
 
+  let movePerfomed = false;
+
   switch (gameEvent.key) {
     case 'ArrowUp':
-      game.moveUp();
-      game.addRandomTiles();
+      movePerfomed = game.moveUp();
       break;
 
     case 'ArrowDown':
-      game.moveDown();
-      game.addRandomTiles();
+      movePerfomed = game.moveDown();
       break;
 
     case 'ArrowLeft':
-      game.moveLeft();
-      game.addRandomTiles();
+      movePerfomed = game.moveLeft();
       break;
 
     case 'ArrowRight':
-      game.moveRight();
-      game.addRandomTiles();
+      movePerfomed = game.moveRight();
       break;
   }
 
-  renderGame();
+  if (movePerfomed) {
+    game.addRandomTiles();
+    renderGame();
+  }
 });
 
 renderGame();
