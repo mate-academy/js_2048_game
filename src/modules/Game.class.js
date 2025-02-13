@@ -4,6 +4,7 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
+import { mergeAndShift } from '../utils/mergeAndShift.js';
 
 class Game {
   static STATUS = {
@@ -34,39 +35,17 @@ class Game {
 
     let hasMoved = false;
 
-    const newState = this.state.map((row) => {
-      const filteredRow = row.filter((cell) => cell !== 0);
-      const newRow = [];
-      let merged = false;
+    this.state = this.state.map((row) => {
+      const newRow = mergeAndShift(row);
 
-      for (let i = 0; i < filteredRow.length; i++) {
-        if (!merged && filteredRow[i] === filteredRow[i + 1]) {
-          const mergedValue = filteredRow[i] * 2;
-
-          newRow.push(mergedValue);
-          this.score += mergedValue;
-          i++;
-          merged = true;
-          hasMoved = true;
-        } else {
-          newRow.push(filteredRow[i]);
-          merged = false;
-        }
-      }
-
-      while (newRow.length < row.length) {
-        newRow.push(0);
-      }
-
-      if (!hasMoved) {
-        hasMoved = !row.every((cell, index) => cell === newRow[index]);
+      if (!hasMoved && row.some((val, i) => val !== newRow[i])) {
+        hasMoved = true;
       }
 
       return newRow;
     });
 
     if (hasMoved) {
-      this.state = newState;
       this.addNumbers();
       this.setState();
       this.checkStatus();
@@ -80,43 +59,25 @@ class Game {
       return;
     }
 
-    let canMove = false;
-    const newState = this.state.map((row) => {
-      const filteredRow = row.filter((cell) => cell !== 0);
-      const newRow = [];
+    let hasMoved = false;
 
-      for (let i = filteredRow.length - 1; i >= 0; i--) {
-        if (filteredRow[i] === filteredRow[i - 1]) {
-          const mergedValue = filteredRow[i] * 2;
+    this.state = this.state.map((row) => {
+      const newRow = mergeAndShift(row, true);
 
-          newRow.unshift(mergedValue);
-          this.score += mergedValue;
-          i--;
-          canMove = true;
-        } else {
-          newRow.unshift(filteredRow[i]);
-        }
-      }
-
-      while (newRow.length < row.length) {
-        newRow.unshift(0);
-      }
-
-      if (!canMove && !row.every((cell, index) => cell === newRow[index])) {
-        canMove = true;
+      if (!hasMoved && row.some((val, i) => val !== newRow[i])) {
+        hasMoved = true;
       }
 
       return newRow;
     });
 
-    if (canMove) {
-      this.state = newState;
+    if (hasMoved) {
       this.addNumbers();
       this.setState();
       this.checkStatus();
     }
 
-    return canMove;
+    return hasMoved;
   }
 
   moveUp() {
@@ -124,53 +85,27 @@ class Game {
       return;
     }
 
-    let canMove = false;
-    const newState = this.state.map((row) => [...row]);
+    let hasMoved = false;
+    const transposed = this.transpose(this.state);
 
-    for (let c = 0; c < this.state[0].length; c++) {
-      const filteredColumn = [];
+    const newState = transposed.map((col) => {
+      const newCol = mergeAndShift(col);
 
-      for (let r = 0; r < this.state.length; r++) {
-        if (this.state[r][c] !== 0) {
-          filteredColumn.push(this.state[r][c]);
-        }
+      if (!hasMoved && col.some((val, i) => val !== newCol[i])) {
+        hasMoved = true;
       }
 
-      const newColumn = [];
+      return newCol;
+    });
 
-      for (let i = 0; i < filteredColumn.length; i++) {
-        if (filteredColumn[i] === filteredColumn[i + 1]) {
-          const mergedValue = filteredColumn[i] * 2;
-
-          newColumn.push(mergedValue);
-          this.score += mergedValue;
-          i++;
-          canMove = true;
-        } else {
-          newColumn.push(filteredColumn[i]);
-        }
-      }
-
-      while (newColumn.length < this.state.length) {
-        newColumn.push(0);
-      }
-
-      for (let r = 0; r < this.state.length; r++) {
-        if (newState[r][c] !== newColumn[r]) {
-          newState[r][c] = newColumn[r];
-          canMove = true;
-        }
-      }
-    }
-
-    if (canMove) {
-      this.state = newState;
+    if (hasMoved) {
+      this.state = this.transpose(newState);
       this.addNumbers();
       this.setState();
       this.checkStatus();
     }
 
-    return canMove;
+    return hasMoved;
   }
 
   moveDown() {
@@ -178,53 +113,31 @@ class Game {
       return;
     }
 
-    let canMove = false;
-    const newState = this.state.map((row) => [...row]);
+    let hasMoved = false;
+    const transposed = this.transpose(this.state);
 
-    for (let c = 0; c < this.state[0].length; c++) {
-      const filteredColumn = [];
+    const newState = transposed.map((col) => {
+      const newCol = mergeAndShift(col, true);
 
-      for (let r = this.state.length - 1; r >= 0; r--) {
-        if (this.state[r][c] !== 0) {
-          filteredColumn.push(this.state[r][c]);
-        }
+      if (!hasMoved && col.some((val, i) => val !== newCol[i])) {
+        hasMoved = true;
       }
 
-      const newColumn = [];
+      return newCol;
+    });
 
-      for (let i = 0; i < filteredColumn.length; i++) {
-        if (filteredColumn[i] === filteredColumn[i + 1]) {
-          const mergedValue = filteredColumn[i] * 2;
-
-          newColumn.unshift(mergedValue);
-          this.score += mergedValue;
-          i++;
-          canMove = true;
-        } else {
-          newColumn.unshift(filteredColumn[i]);
-        }
-      }
-
-      while (newColumn.length < this.state.length) {
-        newColumn.unshift(0);
-      }
-
-      for (let r = 0; r < this.state.length; r++) {
-        if (newState[r][c] !== newColumn[r]) {
-          newState[r][c] = newColumn[r];
-          canMove = true;
-        }
-      }
-    }
-
-    if (canMove) {
-      this.state = newState;
+    if (hasMoved) {
+      this.state = this.transpose(newState);
       this.addNumbers();
       this.setState();
       this.checkStatus();
     }
 
-    return canMove;
+    return hasMoved;
+  }
+
+  transpose(matrix) {
+    return matrix[0].map((_, i) => matrix.map((row) => row[i]));
   }
 
   getScore() {
