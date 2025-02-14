@@ -23,27 +23,14 @@ function renderGame() {
 
     if (value) {
       cell.classList.add(`field-cell--${value}`);
+
+      if (value === 2 || value === 4) {
+        cell.classList.add('new');
+      }
     }
   });
 
   mainScore.textContent = game.getScore();
-
-  startButton.addEventListener('click', () => {
-    if (startButton.classList.contains('start')) {
-      game.start();
-      renderGame();
-
-      startButton.classList.remove('start');
-      startButton.classList.add('restart');
-      startButton.textContent = 'Restart';
-    } else if (startButton.classList.contains('restart')) {
-      game.restart();
-      renderGame();
-      startButton.classList.remove('restart');
-      startButton.classList.add('start');
-      startButton.textContent = 'Start';
-    }
-  });
 
   const gameStatus = game.getStatus();
 
@@ -52,30 +39,53 @@ function renderGame() {
   messageStart.classList.toggle('hidden', gameStatus !== 'idle');
 }
 
+startButton.addEventListener('click', () => {
+  if (startButton.classList.contains('start')) {
+    game.start();
+    renderGame();
+
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+    startButton.textContent = 'Restart';
+  } else if (startButton.classList.contains('restart')) {
+    game.restart();
+    renderGame();
+    startButton.classList.remove('restart');
+    startButton.classList.add('start');
+    startButton.textContent = 'Start';
+  }
+});
+
 document.addEventListener('keydown', (gameEvent) => {
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
   gameEvent.preventDefault();
 
-  let movePerfomed = false;
+  const oldBoardState = JSON.stringify(game.getState());
 
   switch (gameEvent.key) {
     case 'ArrowUp':
-      movePerfomed = game.moveUp();
+      game.moveUp();
       break;
 
     case 'ArrowDown':
-      movePerfomed = game.moveDown();
+      game.moveDown();
       break;
 
     case 'ArrowLeft':
-      movePerfomed = game.moveLeft();
+      game.moveLeft();
       break;
 
     case 'ArrowRight':
-      movePerfomed = game.moveRight();
+      game.moveRight();
       break;
   }
 
-  if (movePerfomed) {
+  const newBoardState = JSON.stringify(game.getState());
+
+  if (oldBoardState !== newBoardState) {
     game.addRandomTiles();
     renderGame();
   }
