@@ -3,13 +3,20 @@ import Game from '../modules/Game.class.js';
 const game2048 = new Game();
 const button = document.querySelector('.button.start');
 
+function updateButtonText() {
+  button.textContent = game2048.getStatus() === 'idle' ? 'Start' : 'Restart';
+}
+
 button.addEventListener('click', () => {
   if (game2048.getStatus() === 'idle') {
     game2048.start();
   } else {
     game2048.restart();
   }
+  updateButtonText();
 });
+
+updateButtonText();
 
 document.addEventListener('keydown', (e) => {
   if (game2048.getStatus() !== 'playing') {
