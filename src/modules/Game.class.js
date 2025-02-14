@@ -281,19 +281,28 @@ class Game {
     }
   }
 
-  isLoser(state) {
-    let isStatus = false;
+  isLoser() {
+    let canMove = false;
+    let hasEmptyCells = false;
 
-    for (let row = 0; row < this.state.length; row++) {
-      for (let col = 1; col < this.state[row].length; col++) {
-        if (state[row][col] === 0 || state[row][col] === state[row][col - 1]) {
-          isStatus = true;
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.state[r][c] === 0) {
+          hasEmptyCells = true;
+        }
+
+        if (
+          (r < 3 && this.state[r][c] === this.state[r + 1][c]) ||
+          (c < 3 && this.state[r][c] === this.state[r][c + 1])
+        ) {
+          canMove = true;
         }
       }
     }
 
-    return isStatus;
+    if (!canMove && !hasEmptyCells) {
+      this.status = 'lose';
+    }
   }
 }
-
 module.exports = Game;
