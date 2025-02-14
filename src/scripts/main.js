@@ -3,8 +3,16 @@ import Game from '../modules/Game.class.js';
 const game2048 = new Game();
 const button = document.querySelector('.button.start');
 
-function updateButtonText() {
-  button.textContent = game2048.getStatus() === 'idle' ? 'Start' : 'Restart';
+function updateButton() {
+  if (game2048.getStatus() === 'idle') {
+    button.textContent = 'Start';
+    button.classList.remove('restart');
+    button.classList.add('start');
+  } else {
+    button.textContent = 'Restart';
+    button.classList.remove('start');
+    button.classList.add('restart');
+  }
 }
 
 button.addEventListener('click', () => {
@@ -13,10 +21,10 @@ button.addEventListener('click', () => {
   } else {
     game2048.restart();
   }
-  updateButtonText();
+  updateButton();
 });
 
-updateButtonText();
+updateButton();
 
 document.addEventListener('keydown', (e) => {
   if (game2048.getStatus() !== 'playing') {
