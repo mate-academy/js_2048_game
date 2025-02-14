@@ -32,25 +32,28 @@ class Game {
     if (this.getStatus() !== Game.STATUS.playing) {
       return;
     }
-
+  
+    const previousState = this.state.map(row => [...row]);
     let hasMoved = false;
-
+  
     this.state = this.state.map((row) => {
       const newRow = mergeAndShift(row);
-
+  
       if (!hasMoved && row.some((val, i) => val !== newRow[i])) {
         hasMoved = true;
       }
-
+  
       return newRow;
     });
-
+  
     if (hasMoved) {
-      this.addNumbers();
+      this.addNumbers(); 
       this.setState();
       this.checkStatus();
+    } else {
+      this.state = previousState;
     }
-
+  
     return hasMoved;
   }
 
@@ -58,25 +61,28 @@ class Game {
     if (this.getStatus() !== Game.STATUS.playing) {
       return;
     }
-
+  
+    const previousState = this.state.map(row => [...row]);
     let hasMoved = false;
-
+  
     this.state = this.state.map((row) => {
-      const newRow = mergeAndShift(row, true);
-
+      const newRow = mergeAndShift(row);
+  
       if (!hasMoved && row.some((val, i) => val !== newRow[i])) {
         hasMoved = true;
       }
-
+  
       return newRow;
     });
-
+  
     if (hasMoved) {
       this.addNumbers();
       this.setState();
       this.checkStatus();
+    } else {
+      this.state = previousState;
     }
-
+  
     return hasMoved;
   }
 
@@ -85,7 +91,9 @@ class Game {
       return;
     }
 
+    const previousState = this.state.map(row => [...row])
     let hasMoved = false;
+
     const transposed = this.transpose(this.state);
 
     const newState = transposed.map((col) => {
@@ -103,6 +111,8 @@ class Game {
       this.addNumbers();
       this.setState();
       this.checkStatus();
+    } else {
+      this.state = previousState;
     }
 
     return hasMoved;
@@ -113,11 +123,13 @@ class Game {
       return;
     }
 
+    const previousState = this.state.map(row => [...row])
     let hasMoved = false;
+
     const transposed = this.transpose(this.state);
 
     const newState = transposed.map((col) => {
-      const newCol = mergeAndShift(col, true);
+      const newCol = mergeAndShift(col);
 
       if (!hasMoved && col.some((val, i) => val !== newCol[i])) {
         hasMoved = true;
@@ -131,6 +143,8 @@ class Game {
       this.addNumbers();
       this.setState();
       this.checkStatus();
+    } else {
+      this.state = previousState;
     }
 
     return hasMoved;
