@@ -5,10 +5,14 @@ export function mergeAndShift(cells, reverse = false) {
 
   const filtered = cells.filter((cell) => cell !== 0);
   const merged = [];
+  let mergeSum = 0;
 
   for (let i = 0; i < filtered.length; i++) {
     if (filtered[i] === filtered[i + 1]) {
-      merged.push(filtered[i] * 2);
+      const newValue = filtered[i] * 2;
+
+      merged.push(newValue);
+      mergeSum += newValue;
       i++;
     } else {
       merged.push(filtered[i]);
@@ -23,5 +27,5 @@ export function mergeAndShift(cells, reverse = false) {
     merged.reverse();
   }
 
-  return merged;
+  return { merged, mergeSum };
 }
