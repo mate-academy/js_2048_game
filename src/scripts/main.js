@@ -50,29 +50,21 @@ document.addEventListener('keydown', (e) => {
   switch (e.key) {
     case 'ArrowUp':
       game.moveUp();
-      renderUserScore();
-      isGameOver();
-
       break;
     case 'ArrowDown':
       game.moveDown();
-      renderUserScore();
-      isGameOver();
-
       break;
     case 'ArrowLeft':
       game.moveLeft();
-      renderUserScore();
-      isGameOver();
-
       break;
     case 'ArrowRight':
       game.moveRight();
-      renderUserScore();
-      isGameOver();
-
       break;
   }
+
+  renderUserScore();
+  renderGameBoard();
+  isGameOver();
 });
 
 function renderGameBoard() {
@@ -104,14 +96,7 @@ function renderUserScore() {
 
 function isGameOver() {
   switch (game.getStatus()) {
-    case 'playing': {
-      renderGameBoard();
-      break;
-    }
-
     case 'win': {
-      renderGameBoard();
-
       const loseMessage = document.querySelector('.message-win');
 
       loseMessage.classList.remove('hidden');
@@ -120,8 +105,6 @@ function isGameOver() {
     }
 
     case 'lose': {
-      renderGameBoard();
-
       const loseMessage = document.querySelector('.message-lose');
 
       loseMessage.classList.remove('hidden');
