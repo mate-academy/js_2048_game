@@ -85,10 +85,9 @@ class Game {
       this.spawnDice();
       this.buildTable(this.board);
       this.getScore();
-      this.cantLeft = false;
-    } else {
-      this.cantLeft = true;
     }
+
+    return updatedBoard;
   }
   moveRight() {
     const updatedBoard = [];
@@ -117,10 +116,9 @@ class Game {
       this.spawnDice();
       this.buildTable(this.board);
       this.getScore();
-      this.cantRight = false;
-    } else {
-      this.cantRight = true;
     }
+
+    return updatedBoard;
   }
   moveUp() {
     const updatedBoard = [[], [], [], []];
@@ -151,10 +149,9 @@ class Game {
       this.spawnDice();
       this.buildTable(this.board);
       this.getScore();
-      this.cantUp = false;
-    } else {
-      this.cantUp = true;
     }
+
+    return updatedBoard;
   }
   moveDown() {
     const updatedBoard = [[], [], [], []];
@@ -185,10 +182,9 @@ class Game {
       this.spawnDice();
       this.buildTable(this.board);
       this.getScore();
-      this.cantDown = false;
-    } else {
-      this.cantDown = true;
     }
+
+    return updatedBoard;
   }
 
   /**
@@ -313,20 +309,42 @@ class Game {
 
   checkWin() {
     for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[i].length; j++) {
-        if (this.board[i].includes(2048)) {
-          this.status = 'win';
-          this.getStatus();
-        }
+      if (this.board[i].includes(2048)) {
+        this.status = 'win';
+        this.getStatus();
       }
     }
   }
 
   checkLose() {
-    if (this.cantUp && this.cantDown && this.cantLeft && this.cantRight) {
+    const beforeCheckBoard = this.board;
+    const checkMovesResult = [];
+
+    const movesArr = [
+      () => this.moveUp(),
+      () => this.moveDown(),
+      () => this.moveLeft(),
+      () => this.moveRight(),
+    ];
+
+    for (let i = 0; i < movesArr.length; i++) {
+      const newBoardState = movesArr[i]();
+
+      if (JSON.stringify(newBoardState) !== JSON.stringify(beforeCheckBoard)) {
+        checkMovesResult.push(true);
+      } else {
+        checkMovesResult.push(false);
+      }
+    }
+
+    if (!checkMovesResult.includes(true)) {
       this.status = 'lose';
       this.getStatus();
     }
+
+    this.board = beforeCheckBoard;
+    this.buildTable(this.board);
+    this.getScore();
   }
 }
 
