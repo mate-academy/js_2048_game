@@ -19,7 +19,7 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
-    // deep clopying is required
+    // deep cloning is required
     this.board = initialState.map((row) => [...row]);
     this.startBoard = initialState.map((row) => [...row]);
     this.score = 0;
@@ -90,6 +90,7 @@ class Game {
         }
       });
 
+      // check on useless move
       if (JSON.stringify(newBoard) !== JSON.stringify(copyBoard)) {
         this.board = newBoard;
 
@@ -134,6 +135,7 @@ class Game {
         }
       }
 
+      // check on useless move
       if (JSON.stringify(newBoard) !== JSON.stringify(copyBoard)) {
         this.board = newBoard;
 
@@ -180,6 +182,7 @@ class Game {
 
       this.board = newBoard;
 
+      // check on useless move
       if (JSON.stringify(newBoard) !== JSON.stringify(copyBoard)) {
         this.board = newBoard;
 
@@ -225,6 +228,30 @@ class Game {
     return this.status;
   }
 
+  createNewCellInBoard() {
+    const emptyCells = [];
+    const board = this.board;
+
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board.length; col++) {
+        if (board[row][col] === 0) {
+          emptyCells.push({ row, col });
+        }
+      }
+    }
+
+    if (emptyCells.length === 0) {
+      return;
+    }
+
+    const newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+    board[newCell.row][newCell.col] = Math.random() < 0.9 ? 2 : 4;
+  }
+
+  /**
+   * @returns {boolean}
+   */
   checkWinCell() {
     const WIN_VALUE = 2048;
     const hasWinCell = this.board.some((row) => {
@@ -240,6 +267,9 @@ class Game {
     return false;
   }
 
+  /**
+   * @returns {boolean}
+   */
   checkGameOver() {
     // find 0 in board
     for (let row = 0; row < this.board.length; row++) {
@@ -283,30 +313,9 @@ class Game {
   }
 
   restart() {
+    this.status = 'idle';
     this.board = this.startBoard.map((row) => [...row]);
     this.score = 0;
-    this.status = 'idle';
-  }
-
-  createNewCellInBoard() {
-    const emptyCells = [];
-    const board = this.board;
-
-    for (let row = 0; row < board.length; row++) {
-      for (let col = 0; col < board.length; col++) {
-        if (board[row][col] === 0) {
-          emptyCells.push({ row, col });
-        }
-      }
-    }
-
-    if (emptyCells.length === 0) {
-      return;
-    }
-
-    const newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-    board[newCell.row][newCell.col] = Math.random() < 0.9 ? 2 : 4;
   }
 }
 
