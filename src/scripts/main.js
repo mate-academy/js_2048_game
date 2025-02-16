@@ -9,10 +9,19 @@ const game = new Game();
 // Get references to DOM elements
 const gameField = document.querySelector('.game-field');
 const gameScore = document.querySelector('.game-score');
-const startButton = document.querySelector('.start');
+const restartButton = document.querySelector('.start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
+
+// Змінюємо текст кнопки "Start" на "Restart"
+restartButton.textContent = 'Restart';
+
+// Ховаємо стартове повідомлення
+messageStart.classList.add('hidden');
+
+// Автоматично ініціалізуємо гру без натискання кнопки
+game.start();
 
 // Function to render the game state
 const renderGame = () => {
@@ -42,21 +51,18 @@ const renderGame = () => {
   if (game.getStatus() === 'win') {
     messageWin.classList.remove('hidden');
     messageLose.classList.add('hidden');
-    messageStart.classList.add('hidden');
   } else if (game.getStatus() === 'lose') {
     messageLose.classList.remove('hidden');
     messageWin.classList.add('hidden');
-    messageStart.classList.add('hidden');
   } else {
-    messageStart.classList.remove('hidden');
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
   }
 };
 
-// Function to start a new game
-const startNewGame = () => {
-  game.start();
+// Function to restart the game
+const restartGame = () => {
+  game.restart();
   renderGame();
   updateBoard();
 };
@@ -81,8 +87,8 @@ const handleMovement = (direction) => {
   renderGame();
 };
 
-// Event listener for the start button
-startButton.addEventListener('click', startNewGame);
+// Event listener for the restart button
+restartButton.addEventListener('click', restartGame);
 
 // Event listener for the arrow keys to move tiles
 document.addEventListener('keydown', (e) => {
@@ -102,7 +108,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 function updateBoard() {
-  const gameState = game.getState(); // Отримуємо поточний стан гри
+  const gameState = game.getState();
   const cells = document.querySelectorAll('.field-cell');
 
   let idx = 0;
@@ -110,14 +116,15 @@ function updateBoard() {
   gameState.forEach((row) => {
     row.forEach((cellValue) => {
       const cell = cells[idx];
-      const tileClass = game.getTileClass(cellValue); // Отримуємо клас для плит
+      const tileClass = game.getTileClass(cellValue);
 
-      cell.className = 'field-cell ' + tileClass; // Оновлюємо клас клітинки
+      cell.className = 'field-cell ' + tileClass;
       cell.textContent = cellValue === 0 ? '' : cellValue;
       idx++;
     });
   });
 }
 
-// Initialize the game when the page loads
+// Initialize the game immediately
 renderGame();
+updateBoard();
