@@ -63,11 +63,10 @@ export default class Game {
   // Функція для руху плиток в один напрямок
   moveLeft() {
     const newBoard = this.createEmptyBoard();
-
-    // eslint-disable-next-line function-paren-newline
     const merged = Array.from({ length: this.size }, () =>
       Array(this.size).fill(false),
     );
+    let hasChanged = false; // Додано для перевірки змін
 
     const moveRow = (row, rowIndex) => {
       const tiles = row.filter((value) => value !== 0);
@@ -86,6 +85,7 @@ export default class Game {
           merged[rowIndex][i] = true;
           merged[rowIndex][i + 1] = true;
           i += 2;
+          hasChanged = true; // Якщо плитки злились, то зміни відбулись
         } else {
           newRow.push(tiles[i]);
           i++;
@@ -100,31 +100,50 @@ export default class Game {
     };
 
     for (let rowIndex = 0; rowIndex < this.size; rowIndex++) {
-      newBoard[rowIndex] = moveRow(this.board[rowIndex], rowIndex);
+      const newRow = moveRow(this.board[rowIndex], rowIndex);
+      if (
+        !newRow.every((value, index) => value === this.board[rowIndex][index])
+      ) {
+        hasChanged = true;
+      }
+      newBoard[rowIndex] = newRow;
     }
 
     this.board = newBoard;
-    this.addRandomTile();
+    return hasChanged;
   }
 
   moveRight() {
-    this.board = this.board.map((row) => row.reverse()); // Перевертаємо рядки
-    this.moveLeft();
-    this.board = this.board.map((row) => row.reverse()); // Перевертаємо назад
+    this.board = this.board.map((row) => row.reverse());
+    const hasChanged = this.moveLeft();
+    if (hasChanged) {
+      this.board = this.board.map((row) => row.reverse());
+      this.addRandomTile();
+    } else {
+      this.board = this.board.map((row) => row.reverse());
+    }
   }
 
   moveUp() {
-    // Трансформуємо стовпці в рядки
     this.board = this.transposeBoard();
-    this.moveLeft();
-    this.board = this.transposeBoard(); // Трансформуємо назад
+    const hasChanged = this.moveLeft();
+    if (hasChanged) {
+      this.board = this.transposeBoard();
+      this.addRandomTile();
+    } else {
+      this.board = this.transposeBoard();
+    }
   }
 
   moveDown() {
-    // Трансформуємо стовпці в рядки, перевертаємо, рухаємо, перевертаємо назад
     this.board = this.transposeBoard().map((row) => row.reverse());
-    this.moveLeft();
-    this.board = this.transposeBoard().map((row) => row.reverse());
+    const hasChanged = this.moveLeft();
+    if (hasChanged) {
+      this.board = this.transposeBoard().map((row) => row.reverse());
+      this.addRandomTile();
+    } else {
+      this.board = this.transposeBoard().map((row) => row.reverse());
+    }
   }
 
   // Трансформуємо стовпці в рядки
