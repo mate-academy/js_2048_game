@@ -23,143 +23,76 @@ class Game {
     ],
   ) {
     this.score = 0;
-    this.status = Game.STATUS;
+    this.status = Game.STATUS.waiting;
     this.initialState = initialState;
     this.state = initialState.map((row) => [...row]);
   }
 
+  move(direction) {
+    if (this.status !== Game.STATUS.playing) {
+      return;
+    }
+
+    const previousState = this.state.map((row) => [...row]);
+    let hasMoved = false;
+    let totalMergeSum = 0;
+    let newState = [];
+
+    if (direction === 'left' || direction === 'right') {
+      newState = this.state.map((row) => {
+        const reversed = direction === 'right' ? row.reverse() : row;
+        const { merged, mergeSum } = mergeAndShift(reversed);
+
+        totalMergeSum += mergeSum;
+
+        if (!hasMoved && !merged.every((val, i) => val === row[i])) {
+          hasMoved = true;
+        }
+
+        return direction === 'right' ? merged.reverse() : merged;
+      });
+    } else {
+      const transposed = this.transpose(this.state);
+
+      newState = transposed.map((col) => {
+        const reversed = direction === 'down' ? col.reverse() : col;
+        const { merged, mergeSum } = mergeAndShift(reversed);
+
+        totalMergeSum += mergeSum;
+
+        if (!hasMoved && !merged.every((val, i) => val === col[i])) {
+          hasMoved = true;
+        }
+
+        return direction === 'down' ? merged.reverse() : merged;
+      });
+      newState = this.transpose(newState);
+    }
+
+    if (hasMoved) {
+      this.state = newState;
+      this.score += totalMergeSum;
+      this.addNumbers();
+      this.setState();
+      this.checkStatus();
+    } else {
+      this.state = previousState;
+    }
+
+    return hasMoved;
+  }
+
   moveLeft() {
-    if (this.getStatus() !== Game.STATUS.playing) {
-      return;
-    }
-
-    const previousState = this.state.map((row) => [...row]);
-    let hasMoved = false;
-
-    this.state = this.state.map((row) => {
-      const { merged, mergeSum } = mergeAndShift(row);
-
-      this.score += mergeSum;
-
-      if (!hasMoved && row.some((val, i) => val !== merged[i])) {
-        hasMoved = true;
-      }
-
-      return merged;
-    });
-
-    if (hasMoved) {
-      this.addNumbers();
-      this.setState();
-      this.checkStatus();
-    } else {
-      this.state = previousState;
-    }
-
-    return hasMoved;
+    return this.move('left');
   }
-
   moveRight() {
-    if (this.getStatus() !== Game.STATUS.playing) {
-      return;
-    }
-
-    const previousState = this.state.map((row) => [...row]);
-    let hasMoved = false;
-
-    this.state = this.state.map((row) => {
-      const { merged, mergeSum } = mergeAndShift(row);
-
-      this.score += mergeSum;
-
-      if (!hasMoved && row.some((val, i) => val !== merged[i])) {
-        hasMoved = true;
-      }
-
-      return merged;
-    });
-
-    if (hasMoved) {
-      this.addNumbers();
-      this.setState();
-      this.checkStatus();
-    } else {
-      this.state = previousState;
-    }
-
-    return hasMoved;
+    return this.move('right');
   }
-
   moveUp() {
-    if (this.getStatus() !== Game.STATUS.playing) {
-      return;
-    }
-
-    const previousState = this.state.map((row) => [...row]);
-    let hasMoved = false;
-    let totalMergeSum = 0;
-
-    const transposed = this.transpose(this.state);
-
-    const newState = transposed.map((col) => {
-      const { merged, mergeSum } = mergeAndShift(col);
-
-      totalMergeSum += mergeSum;
-
-      if (!hasMoved && col.some((val, i) => val !== merged[i])) {
-        hasMoved = true;
-      }
-
-      return merged;
-    });
-
-    if (hasMoved) {
-      this.state = this.transpose(newState);
-      this.score += totalMergeSum;
-      this.addNumbers();
-      this.setState();
-      this.checkStatus();
-    } else {
-      this.state = previousState;
-    }
-
-    return hasMoved;
+    return this.move('up');
   }
-
   moveDown() {
-    if (this.getStatus() !== Game.STATUS.playing) {
-      return;
-    }
-
-    const previousState = this.state.map((row) => [...row]);
-    let hasMoved = false;
-    let totalMergeSum = 0;
-
-    const transposed = this.transpose(this.state);
-
-    const newState = transposed.map((col) => {
-      const { merged, mergeSum } = mergeAndShift(col, true);
-
-      totalMergeSum += mergeSum;
-
-      if (!hasMoved && col.some((val, i) => val !== merged[i])) {
-        hasMoved = true;
-      }
-
-      return merged;
-    });
-
-    if (hasMoved) {
-      this.state = this.transpose(newState);
-      this.score += totalMergeSum;
-      this.addNumbers();
-      this.setState();
-      this.checkStatus();
-    } else {
-      this.state = previousState;
-    }
-
-    return hasMoved;
+    return this.move('down');
   }
 
   transpose(matrix) {
@@ -169,14 +102,9 @@ class Game {
   getScore() {
     return this.score;
   }
-
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.state;
   }
-
   getStatus() {
     return this.status;
   }
@@ -187,7 +115,6 @@ class Game {
   start() {
     this.status = Game.STATUS.playing;
     this.state = this.initialState.map((row) => [...row]);
-
     this.addNumbers();
     this.addNumbers();
     this.setState();
@@ -200,114 +127,57 @@ class Game {
     this.score = 0;
     this.status = Game.STATUS.waiting;
     this.state = this.initialState.map((row) => [...row]);
-
     this.setState();
   }
 
-  getRandomCell() {
-    return Math.random() < 0.9 ? 2 : 4;
-  }
-
   addNumbers() {
-    const emptyCells = [];
+    const emptyCells = this.state
+      .flatMap((row, r) => row.map((cell, c) => (cell === 0 ? { r, c } : null)))
+      .filter(Boolean);
 
-    for (let rows = 0; rows < this.state.length; rows++) {
-      for (let cells = 0; cells < this.state[rows].length; cells++) {
-        if (this.state[rows][cells] === 0) {
-          emptyCells.push({ r: rows, c: cells });
-        }
-      }
+    if (emptyCells.length) {
+      const { r, c } =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+      this.state[r][c] = Math.random() < 0.9 ? 2 : 4;
     }
-
-    if (emptyCells.length === 0) {
-      return;
-    }
-
-    const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    const { r, c } = emptyCells[randomIndex];
-
-    this.state[r][c] = this.getRandomCell();
   }
 
   setState() {
-    const cells = document.querySelectorAll('.field-cell');
-    const stateValues = this.state.flat();
+    document.querySelectorAll('.field-cell').forEach((cell, i) => {
+      const value = this.state.flat()[i];
 
-    if (cells.length === 0) {
-      return;
-    }
+      cell.className = 'field-cell';
+      cell.textContent = value || '';
 
-    for (let i = 0; i < stateValues.length; i++) {
-      const currentCell = cells[i];
-      const currentValue = stateValues[i];
-
-      if (!currentCell) {
-        continue;
+      if (value) {
+        cell.classList.add(`field-cell--${value}`);
       }
-
-      currentCell.className = 'field-cell';
-
-      if (currentValue > 0) {
-        currentCell.textContent = currentValue;
-        currentCell.classList.add(`field-cell--${currentValue}`);
-      } else {
-        currentCell.textContent = '';
-      }
-    }
+    });
   }
 
   checkStatus() {
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (this.state[i][j] === 2048) {
-          this.status = Game.STATUS.win;
+    if (this.state.some((row) => row.includes(2048))) {
+      this.status = Game.STATUS.win;
 
+      return;
+    }
+
+    if (this.state.some((row) => row.includes(0))) {
+      return;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (
+          this.state[i][j] === this.state[i][j + 1] ||
+          this.state[j][i] === this.state[j + 1][i]
+        ) {
           return;
         }
       }
     }
-
-    let canMerge = false;
-
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (this.state[i][j] === 0) {
-          this.status = Game.STATUS.playing;
-
-          return;
-        }
-      }
-    }
-
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length - 1; j++) {
-        if (this.state[i][j] === this.state[i][j + 1]) {
-          canMerge = true;
-          break;
-        }
-      }
-
-      if (canMerge) {
-        break;
-      }
-    }
-
-    for (let i = 0; i < this.state.length - 1; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (this.state[i][j] === this.state[i + 1][j]) {
-          canMerge = true;
-          break;
-        }
-      }
-
-      if (canMerge) {
-        break;
-      }
-    }
-
-    if (!canMerge) {
-      this.status = Game.STATUS.lose;
-    }
+    this.status = Game.STATUS.lose;
   }
 }
 
