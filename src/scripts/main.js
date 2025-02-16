@@ -1,5 +1,6 @@
 'use strict';
 
+
 import Game from '../modules/Game.class.js';
 
 let game;
@@ -15,16 +16,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function initializeGame() {
     game = new Game();
-    updateUI();
     startButton.classList.remove('hidden');
     restartButton.classList.add('hidden');
     messageStart.classList.remove('hidden');
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
+    gameScore.textContent = 0;
+
+    const cells = gameField.getElementsByClassName('field-cell');
+
+    for (const cell of cells) {
+      cell.className = 'field-cell field-cell--empty';
+      cell.textContent = '';
+    }
   }
 
   function updateUI() {
     gameScore.textContent = game.getScore();
+
+    if (game.getStatus() === 'idle') {
+      return;
+    }
 
     const boardState = game.getState();
     const cells = gameField.getElementsByClassName('field-cell');
@@ -73,6 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
       }
       updateUI();
+
+      if (game.getStatus() === 'lose') {
+        messageLose.classList.remove('hidden');
+      }
     }
   });
 
