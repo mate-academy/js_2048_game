@@ -7,9 +7,24 @@ const game = new Game();
 const button = document.getElementsByClassName('button start')[0];
 const fieldRow = document.getElementsByClassName('field-row');
 const score = document.getElementsByClassName('info')[0];
+const message = document.getElementsByClassName('message-container')[0];
+
+console.log(message);
+console.log(message.children[0]);
+console.log(message.children[1]);
+console.log(message.children[2]);
 
 function scoreGame() {
   score.innerHTML = `Score: <br>${game.getScore()}`;
+}
+
+function showStatus() {
+  console.log(game.getStatus());
+
+  if (game.getStatus() === 'playing') {
+
+    message.style.display = 'none';
+  }
 }
 
 function showNumbers(startState = [[], [], [], []]) {
@@ -60,6 +75,7 @@ button.addEventListener('click', () => {
     const startState = game.getState();
 
     showNumbers(startState);
+    showStatus();
 
     button.textContent = 'Restart';
   } else {

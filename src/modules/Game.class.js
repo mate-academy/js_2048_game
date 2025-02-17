@@ -168,8 +168,8 @@ class Game {
       return !hasEmptyCells && !canMergeCells;
     };
 
-    let youWin = false;
-    let gameOver = false;
+    // let youWin = false;
+    // let gameOver = false;
   }
 
   moveLeft() {
@@ -179,9 +179,9 @@ class Game {
       resultNumbers,
       leftCoordinates,
       stateChanged,
-      isGameOver,
-      gameOver,
-      youWin,
+      // isGameOver,
+      // gameOver,
+      // youWin,
     } = this;
     const copyState = JSON.parse(JSON.stringify(initialState));
     const copyCoordinates = JSON.parse(JSON.stringify(coordinates));
@@ -199,9 +199,10 @@ class Game {
           initialState[i][j] = 0;
         }
 
-        if (initialState[i][j] === 2048) {
-          youWin = true;
-        }
+        // if (initialState[i][j] === 2048) {
+        //   const win = true;
+        //   youWin = win;
+        // }
       }
 
       resultNumbers(results, numArr);
@@ -247,7 +248,7 @@ class Game {
       ] = Math.random() < 0.9 ? 2 : 4;
     }
 
-    gameOver = isGameOver(initialState);
+    // gameOver = isGameOver(initialState);
   }
   moveRight() {
     const {
@@ -512,15 +513,27 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
-    const { gameOver, youWin } = this;
+    // const { gameOver, youWin, coordinates } = this;
 
-    if (gameOver) {
-      return 'lose';
-    }
+    // console.log(coordinates.length);
 
-    if (youWin) {
-      return 'win';
-    }
+    // const startButton = document.getElementsByClassName('button start')[0];
+
+    // console.log(startButton.textContent);
+
+    // if (startButton.textContent === 'Restart') {
+    //   return 'playing';
+    // }
+
+    // if (gameOver) {
+    //   return 'lose';
+    // }
+
+    // if (youWin) {
+    //   return 'win';
+    // }
+
+    return 'idle';
   }
 
   /**
@@ -533,6 +546,7 @@ class Game {
 
     function randomCoordinates() {
       const random = Math.random() * coordinates.length;
+
       return Math.ceil(random) - 1;
     }
 
