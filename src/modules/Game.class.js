@@ -49,6 +49,20 @@ class Game {
 
     this.createEmptyArray(initialState);
 
+    this.stateChanged = (initialSt, copyState) => {
+      let isArrayChenged = false;
+
+      for (let i = 0; i < initialSt.length; i++) {
+        for (let j = 0; j < initialSt[i].length; j++) {
+          if (copyState[i][j] !== initialSt[i][j]) {
+            isArrayChenged = true;
+          }
+        }
+      }
+
+      return isArrayChenged;
+    };
+
     this.fourInRow = (
       fourNumbers = [],
       copyState,
@@ -131,71 +145,69 @@ class Game {
       }
     };
 
-    console.log(this);
+    this.isGameOver = (state) => {
+      const hasEmptyCells = state.some((row) => row.includes(0));
+      const canMergeCells = state.some((row, rowIndex) => {
+        return row.some((cell, cellIndex) => {
+          if (cell === 0) {
+            return false;
+          }
+
+          if (cellIndex < 3 && cell === row[cellIndex + 1]) {
+            return true;
+          }
+
+          if (rowIndex < 3 && cell === state[rowIndex + 1][cellIndex]) {
+            return true;
+          }
+
+          return false;
+        });
+      });
+
+      return !hasEmptyCells && !canMergeCells;
+    };
+
+    let youWin = false;
+    let gameOver = false;
   }
 
   moveLeft() {
-    const { initialState, coordinates } = this;
-    const copyState = [];
-
-    for (let i = 0; i < 4; i++) {
-      let row = [];
-
-      for (let j = 0; j < 4; j++) {
-        row.push(0);
-      }
-
-      copyState.push(row);
-    }
+    const {
+      initialState,
+      coordinates,
+      resultNumbers,
+      leftCoordinates,
+      stateChanged,
+      isGameOver,
+      gameOver,
+      youWin,
+    } = this;
+    const copyState = JSON.parse(JSON.stringify(initialState));
+    const copyCoordinates = JSON.parse(JSON.stringify(coordinates));
 
     for (let i = 0; i < initialState.length; i++) {
       const numArr = [];
       const results = [];
 
       for (let j = 0; j < initialState[i].length; j++) {
-        console.log(initialState[i]);
-        numArr.push(initialState[i][j]);
-        copyState[i][j] = initialState[i][j];
-        // console.log(copyState[i][j]);
-        initialState[i][j] = 0;
-      }
-
-      // console.log(copyState);
-      console.log(numArr);
-
-      const newArr = [];
-
-      numArr.forEach((el) => {
-        if (el !== 0) {
-          newArr.push(el);
+        if (initialState[i][j] > 0) {
+          console.log(initialState[i]);
+          numArr.push(initialState[i][j]);
+          copyState[i][j] = initialState[i][j];
+          // console.log(copyState[i][j]);
+          initialState[i][j] = 0;
         }
-      });
 
-      for (let j = 0; j < newArr.length;) {
-        if (newArr[j] === newArr[j + 1] && newArr[j + 1] === newArr[j + 2]) {
-          results.push(newArr[j]);
-          results.push(newArr[j] * 2);
-          j += 3;
-        } else if (newArr[j] === newArr[j + 1]) {
-          results.push(newArr[j] * 2);
-          j += 2;
-          continue;
-        } else if (
-          newArr[0] === newArr[0 + 1] &&
-          newArr[0 + 2] === newArr[0 + 3]
-        ) {
-          results.length = 0;
-          results.push(newArr[1] * 2);
-          results.push(newArr[2] * 2);
-          j += 2;
-          continue;
-        } else {
-          results.push(newArr[j]);
-          j++;
+        if (initialState[i][j] === 2048) {
+          youWin = true;
         }
       }
+
+      resultNumbers(results, numArr);
 
       let indexResult = 0;
+
       console.log(results);
 
       if (results.length > 0) {
@@ -216,67 +228,56 @@ class Game {
 
     console.log(copyState);
     console.log(initialState);
+
+    leftCoordinates(initialState, copyCoordinates);
+
+    const isArrayChenged = stateChanged(initialState, copyState);
+
+    function randomCoordinates() {
+      const random = Math.random() * copyCoordinates.length;
+
+      return Math.ceil(random) - 1;
+    }
+
+    if (isArrayChenged) {
+      const firstCoordinate = randomCoordinates();
+
+      initialState[copyCoordinates[firstCoordinate][0]][
+        copyCoordinates[firstCoordinate][1]
+      ] = Math.random() < 0.9 ? 2 : 4;
+    }
+
+    gameOver = isGameOver(initialState);
   }
   moveRight() {
-    const { initialState, coordinates } = this;
-    const copyState = [];
-
-    for (let i = 0; i < 4; i++) {
-      let row = [];
-
-      for (let j = 0; j < 4; j++) {
-        row.push(0);
-      }
-
-      copyState.push(row);
-    }
+    const {
+      initialState,
+      coordinates,
+      resultNumbers,
+      leftCoordinates,
+      stateChanged,
+    } = this;
+    const copyState = JSON.parse(JSON.stringify(initialState));
+    const copyCoordinates = JSON.parse(JSON.stringify(coordinates));
 
     for (let i = 0; i < initialState.length; i++) {
       const numArr = [];
       const results = [];
 
       for (let j = 0; j < initialState[i].length; j++) {
-        console.log(initialState[i]);
-        numArr.push(initialState[i][j]);
-        copyState[i][j] = initialState[i][j];
-        // console.log(copyState[i][j]);
-        initialState[i][j] = 0;
+        if (initialState[i][j] > 0) {
+          console.log(initialState[i]);
+          numArr.push(initialState[i][j]);
+          copyState[i][j] = initialState[i][j];
+          // console.log(copyState[i][j]);
+          initialState[i][j] = 0;
+        }
       }
 
       // console.log(copyState);
       console.log(numArr);
 
-      const newArr = [];
-
-      numArr.forEach((el) => {
-        if (el !== 0) {
-          newArr.push(el);
-        }
-      });
-
-      for (let j = 0; j < newArr.length;) {
-        if (newArr[j] === newArr[j + 1] && newArr[j + 1] === newArr[j + 2]) {
-          results.push(newArr[j]);
-          results.push(newArr[j] * 2);
-          j += 3;
-        } else if (newArr[j] === newArr[j + 1]) {
-          results.push(newArr[j] * 2);
-          j += 2;
-          continue;
-        } else if (
-          newArr[0] === newArr[0 + 1] &&
-          newArr[0 + 2] === newArr[0 + 3]
-        ) {
-          results.length = 0;
-          results.push(newArr[1] * 2);
-          results.push(newArr[2] * 2);
-          j += 2;
-          continue;
-        } else {
-          results.push(newArr[j]);
-          j++;
-        }
-      }
+      resultNumbers(results, numArr);
 
       let indexResult = 0;
       console.log(results);
@@ -299,11 +300,36 @@ class Game {
 
     console.log(copyState);
     console.log(initialState);
+    console.log(coordinates);
+
+    leftCoordinates(initialState, copyCoordinates);
+
+    const isArrayChenged = stateChanged(initialState, copyState);
+
+    function randomCoordinates() {
+      const random = Math.random() * copyCoordinates.length;
+
+      return Math.ceil(random) - 1;
+    }
+
+    if (isArrayChenged) {
+      const firstCoordinate = randomCoordinates();
+
+      initialState[copyCoordinates[firstCoordinate][0]][
+        copyCoordinates[firstCoordinate][1]
+      ] = Math.random() < 0.9 ? 2 : 4;
+    }
   }
   moveUp() {
-    const { initialState, coordinates, resultNumbers } = this;
+    const {
+      initialState,
+      coordinates,
+      resultNumbers,
+      leftCoordinates,
+      stateChanged,
+    } = this;
     const copyState = JSON.parse(JSON.stringify(initialState));
-    const copyCoords = coordinates.map((el) => el);
+    const copyCoords = JSON.parse(JSON.stringify(coordinates));
 
     for (let i = 0; i < initialState.length; i++) {
       const numArr = [];
@@ -338,50 +364,38 @@ class Game {
       }
     }
 
+    leftCoordinates(initialState, copyCoords);
+
     console.log(initialState);
     console.log(coordinates);
 
-    for (let i = 0; i < initialState.length; i++) {
-      const coords = [];
+    // for (let i = 0; i < initialState.length; i++) {
+    //   const coords = [];
 
-      for (let j = 0; j < initialState.length; j++) {
-        let index = -1;
+    //   for (let j = 0; j < initialState.length; j++) {
+    //     let index = -1;
 
-        if (initialState[i][j] > 0) {
-          coords[0] = i;
-          coords[1] = j;
+    //     if (initialState[i][j] > 0) {
+    //       coords[0] = i;
+    //       coords[1] = j;
 
-          index = copyCoords.findIndex((place) => {
-            if (place[0] === coords[0] && place[1] === coords[1]) {
-              return true;
-            }
-          });
-        }
+    //       index = copyCoords.findIndex((place) => {
+    //         if (place[0] === coords[0] && place[1] === coords[1]) {
+    //           return true;
+    //         }
+    //       });
+    //     }
 
-        if (index >= 0) {
-          copyCoords.splice(index, 1);
-        }
-      }
-    }
+    //     if (index >= 0) {
+    //       copyCoords.splice(index, 1);
+    //     }
+    //   }
+    // }
 
     console.log(copyCoords);
     console.log(coordinates);
 
-    let isArrayChenged = false;
-
-    for (let i = 0; i < initialState.length; i++) {
-      for (let j = 0; j < initialState[i].length; j++) {
-        if (copyState[i][j] !== initialState[i][j]) {
-          isArrayChenged = true;
-        }
-      }
-    }
-
-    // function randomCoordinates() {
-    //   const random = Math.random() * coordinates.length;
-
-    //   return Math.ceil(random) - 1;
-    // }
+    const isArrayChenged = stateChanged(initialState, copyState);
 
     function randomCoordinates() {
       const random = Math.random() * copyCoords.length;
@@ -399,12 +413,15 @@ class Game {
   }
 
   moveDown() {
-    const { initialState, coordinates, resultNumbers } = this;
+    const {
+      initialState,
+      coordinates,
+      resultNumbers,
+      leftCoordinates,
+      stateChanged,
+    } = this;
     const copyState = JSON.parse(JSON.stringify(initialState));
     const copyCoordinates = JSON.parse(JSON.stringify(coordinates));
-
-    console.log(copyState);
-    console.log(initialState);
 
     for (let i = 0; i < initialState.length; i++) {
       const numArr = [];
@@ -421,13 +438,9 @@ class Game {
 
       resultNumbers(results, numArr);
 
-      console.log(numArr);
-      console.log(results);
-
       let indexResult = 0;
 
       if (results.length > 0) {
-        console.log(results);
         indexResult = results.length - 1;
 
         for (let j = initialState.length - 1; j >= 0; j--) {
@@ -441,69 +454,9 @@ class Game {
       }
     }
 
-    console.log(initialState);
-    console.log(copyState);
+    leftCoordinates(initialState, copyCoordinates);
 
-    const arrLength = copyState.length * copyState.length;
-    let copyLength = 0;
-    const bigNumber = [];
-
-    // for (let i = 0; i < initialState.length; i++) {
-    //   for (let j = 0; j < initialState.length; j++) {
-    //     if (initialState[i][j] === copyState[i][j]) {
-    //       // console.log(initialState[i][j]);
-    //       // console.log(copyState[i][j]);
-    //       copyLength++;
-    //     }
-
-    //     if (copyState[i][j] > 0) {
-    //       bigNumber.push(copyState[i][j]);
-    //     }
-    //   }
-    // }
-    console.log((bigNumber));
-    console.log((copyLength));
-    console.log((arrLength));
-
-    // if (copyLength === arrLength) {
-    //   console.log(';;;;;;;;;;;;;');
-    // } else {
-    //   console.log(('-------------------'));
-    //   return;
-    // }
-
-    for (let i = 0; i < initialState.length; i++) {
-      const coords = [];
-
-      for (let j = 0; j < initialState.length; j++) {
-        let index = -1;
-
-        if (initialState[i][j] > 0) {
-          coords[0] = i;
-          coords[1] = j;
-
-          index = copyCoordinates.findIndex((place) => {
-            if (place[0] === coords[0] && place[1] === coords[1]) {
-              return true;
-            }
-          });
-        }
-
-        if (index >= 0) {
-          copyCoordinates.splice(index, 1);
-        }
-      }
-    }
-
-    let isArrayChenged = false;
-
-    for (let i = 0; i < initialState.length; i++) {
-      for (let j = 0; j < initialState[i].length; j++) {
-        if (copyState[i][j] !== initialState[i][j]) {
-          isArrayChenged = true;
-        }
-      }
-    }
+    const isArrayChenged = stateChanged(initialState, copyState);
 
     function randomCoordinates() {
       const random = Math.random() * copyCoordinates.length;
@@ -530,8 +483,8 @@ class Game {
 
     for (let i = 0; i < initialState.length; i++) {
       for (let j = 0; j < initialState[i].length; j++) {
-        if (maxScore < initialState[i][j]) {
-          maxScore = initialState[i][j];
+        if (initialState[i][j] > 0) {
+          maxScore += initialState[i][j];
         }
       }
     }
@@ -558,7 +511,17 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() { }
+  getStatus() {
+    const { gameOver, youWin } = this;
+
+    if (gameOver) {
+      return 'lose';
+    }
+
+    if (youWin) {
+      return 'win';
+    }
+  }
 
   /**
    * Starts the game.
