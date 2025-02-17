@@ -179,7 +179,7 @@ class Game {
       resultNumbers,
       leftCoordinates,
       stateChanged,
-      // isGameOver,
+      isGameOver,
       // gameOver,
       // youWin,
     } = this;
@@ -199,10 +199,11 @@ class Game {
           initialState[i][j] = 0;
         }
 
-        // if (initialState[i][j] === 2048) {
-        //   const win = true;
-        //   youWin = win;
-        // }
+        if (initialState[i][j] === 2048) {
+          const win = true;
+
+          this.youWin = win;
+        }
       }
 
       resultNumbers(results, numArr);
@@ -248,7 +249,7 @@ class Game {
       ] = Math.random() < 0.9 ? 2 : 4;
     }
 
-    // gameOver = isGameOver(initialState);
+    this.gameOver = isGameOver(initialState);
   }
   moveRight() {
     const {
@@ -513,25 +514,31 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
-    // const { gameOver, youWin, coordinates } = this;
+    const { gameOver, youWin, initialState } = this;
 
-    // console.log(coordinates.length);
+    console.log(initialState);
 
-    // const startButton = document.getElementsByClassName('button start')[0];
+    const startButton = document.getElementsByClassName('button start')[0];
 
-    // console.log(startButton.textContent);
+    console.log(startButton.innerHTML);
 
-    // if (startButton.textContent === 'Restart') {
-    //   return 'playing';
-    // }
+    const lol = initialState.some((line) => {
+      line.some((symbol) => symbol > 0);
+    });
 
-    // if (gameOver) {
-    //   return 'lose';
-    // }
+    console.log(lol);
 
-    // if (youWin) {
-    //   return 'win';
-    // }
+    if (startButton.textContent === 'Restart') {
+      return 'playing';
+    }
+
+    if (gameOver) {
+      return 'lose';
+    }
+
+    if (youWin) {
+      return 'win';
+    }
 
     return 'idle';
   }

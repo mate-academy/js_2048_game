@@ -15,14 +15,11 @@ console.log(message.children[1]);
 console.log(message.children[2]);
 
 function scoreGame() {
-  score.innerHTML = `Score: <br>${game.getScore()}`;
+  score.innerHTML = `Score: ${game.getScore()}`;
 }
 
 function showStatus() {
-  console.log(game.getStatus());
-
   if (game.getStatus() === 'playing') {
-
     message.style.display = 'none';
   }
 }
@@ -68,6 +65,7 @@ function rewriteNumbers(startState) {
 
 button.addEventListener('click', () => {
   scoreGame();
+  showStatus();
 
   if (button.textContent === 'Start') {
     game.start();
@@ -75,7 +73,6 @@ button.addEventListener('click', () => {
     const startState = game.getState();
 
     showNumbers(startState);
-    showStatus();
 
     button.textContent = 'Restart';
   } else {
