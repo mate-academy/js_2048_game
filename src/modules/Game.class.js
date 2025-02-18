@@ -32,7 +32,7 @@ class Game {
     // eslint-disable-next-line no-console
     // console.log(initialState);
     this.initialState = initialState.map((row) => [...row]);
-    this.board = initialState;
+    this.board = JSON.parse(JSON.stringify(initialState));
     this.status = 'idle';
     this.score = 0;
   }
@@ -88,9 +88,9 @@ class Game {
       }
 
       if (JSON.stringify(newBoard) !== JSON.stringify(this.board)) {
-        this.board = newBoard; // Обновляем доску
+        this.board = newBoard;
         this.renderBoard(this.board);
-        this.createCell(); // Создаём новую плитку
+        this.createCell();
       } else {
         this.renderBoard(this.board);
       }
@@ -212,7 +212,7 @@ class Game {
         }, []);
 
         while (column.length < 4) {
-          column.push(0); // Добавляем 0 в конец, а не в середину
+          column.push(0);
         }
 
         for (let j = 0; j < 4; j++) {
@@ -274,7 +274,7 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.board = this.initialState;
+    this.board = JSON.parse(JSON.stringify(this.initialState));
     this.status = 'idle';
     this.score = 0;
 
