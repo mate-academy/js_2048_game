@@ -6,65 +6,114 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <title>2048</title>
+    <title>2048 Game</title>
     <link
       rel="stylesheet"
-      href="./styles/main.scss"
+      href="styles/main.css"
     />
   </head>
   <body>
-    <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score:
-            <span class="game-score">0</span>
-          </p>
-          <button class="button start">Start</button>
+    <div class="game-container">
+      <h1>2048</h1>
+      <div class="status"></div>
+      <div class="board">
+        <div class="row">
+          <div
+            class="cell"
+            data-row="0"
+            data-col="0"
+          ></div>
+          <div
+            class="cell"
+            data-row="0"
+            data-col="1"
+          ></div>
+          <div
+            class="cell"
+            data-row="0"
+            data-col="2"
+          ></div>
+          <div
+            class="cell"
+            data-row="0"
+            data-col="3"
+          ></div>
+        </div>
+        <div class="row">
+          <div
+            class="cell"
+            data-row="1"
+            data-col="0"
+          ></div>
+          <div
+            class="cell"
+            data-row="1"
+            data-col="1"
+          ></div>
+          <div
+            class="cell"
+            data-row="1"
+            data-col="2"
+          ></div>
+          <div
+            class="cell"
+            data-row="1"
+            data-col="3"
+          ></div>
+        </div>
+        <div class="row">
+          <div
+            class="cell"
+            data-row="2"
+            data-col="0"
+          ></div>
+          <div
+            class="cell"
+            data-row="2"
+            data-col="1"
+          ></div>
+          <div
+            class="cell"
+            data-row="2"
+            data-col="2"
+          ></div>
+          <div
+            class="cell"
+            data-row="2"
+            data-col="3"
+          ></div>
+        </div>
+        <div class="row">
+          <div
+            class="cell"
+            data-row="3"
+            data-col="0"
+          ></div>
+          <div
+            class="cell"
+            data-row="3"
+            data-col="1"
+          ></div>
+          <div
+            class="cell"
+            data-row="3"
+            data-col="2"
+          ></div>
+          <div
+            class="cell"
+            data-row="3"
+            data-col="3"
+          ></div>
         </div>
       </div>
-
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">
-          Press "Start" to begin game. Good luck!
-        </p>
-      </div>
+      <div class="score">Score: 0</div>
+      <button class="start">Start Game</button>
+      <button class="restart">Restart</button>
     </div>
-    <script src="scripts/main.js"></script>
+
+    <script
+      type="module"
+      src="./scripts/main.js"
+    ></script>
   </body>
 </html>
