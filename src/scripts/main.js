@@ -8,11 +8,9 @@ const button = document.getElementsByClassName('button start')[0];
 const fieldRow = document.getElementsByClassName('field-row');
 const score = document.getElementsByClassName('info')[0];
 const message = document.getElementsByClassName('message-container')[0];
-
-console.log(message);
-console.log(message.children[0]);
-console.log(message.children[1]);
-console.log(message.children[2]);
+const loseMessage = message.children[0];
+const winMessage = message.children[1];
+const startMessage = message.children[2];
 
 function scoreGame() {
   score.innerHTML = `Score: ${game.getScore()}`;
@@ -20,7 +18,19 @@ function scoreGame() {
 
 function showStatus() {
   if (game.getStatus() === 'playing') {
-    message.style.display = 'none';
+    startMessage.classList.add('hidden');
+  }
+
+  if (game.getStatus() === 'win') {
+    winMessage.classList.remove('hidden');
+  }
+
+  if (game.getStatus() === 'lose') {
+    loseMessage.classList.remove('hidden');
+  }
+
+  if (game.getStatus() === 'idle') {
+    startMessage.classList.remove('hidden');
   }
 }
 
@@ -65,7 +75,6 @@ function rewriteNumbers(startState) {
 
 button.addEventListener('click', () => {
   scoreGame();
-  showStatus();
 
   if (button.textContent === 'Start') {
     game.start();
@@ -75,13 +84,20 @@ button.addEventListener('click', () => {
     showNumbers(startState);
 
     button.textContent = 'Restart';
+    button.classList.remove('start');
+    button.classList.add('restart');
   } else {
     const startState = game.getState();
 
     game.restart();
 
     rewriteNumbers(startState);
+    button.textContent = 'Start';
+    button.classList.remove('restart');
+    button.classList.add('start');
   }
+
+  showStatus();
 });
 
 document.addEventListener('keydown', (e) => {
@@ -118,4 +134,6 @@ document.addEventListener('keydown', (e) => {
 
     rewriteNumbers(startState);
   }
+
+  showStatus();
 });

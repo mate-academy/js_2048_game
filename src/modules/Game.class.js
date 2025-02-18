@@ -20,9 +20,19 @@ class Game {
    * initial state.
    */
 
-  constructor(initialState = [], coordinates = []) {
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    coordinates = [],
+  ) {
     this.initialState = initialState;
     this.coordinates = coordinates;
+    this.gameStatus = 'idle';
+    this.score = '0';
 
     // eslint-disable-next-line no-console
 
@@ -47,7 +57,9 @@ class Game {
       }
     };
 
-    this.createEmptyArray(initialState);
+    // this.createEmptyArray(initialState);
+
+    console.log(initialState);
 
     this.stateChanged = (initialSt, copyState) => {
       let isArrayChenged = false;
@@ -183,6 +195,13 @@ class Game {
       // gameOver,
       // youWin,
     } = this;
+
+    console.log(this.gameStatus);
+
+    if (this.gameStatus === 'idle') {
+      return;
+    }
+
     const copyState = JSON.parse(JSON.stringify(initialState));
     const copyCoordinates = JSON.parse(JSON.stringify(coordinates));
 
@@ -192,7 +211,6 @@ class Game {
 
       for (let j = 0; j < initialState[i].length; j++) {
         if (initialState[i][j] > 0) {
-          console.log(initialState[i]);
           numArr.push(initialState[i][j]);
           copyState[i][j] = initialState[i][j];
           // console.log(copyState[i][j]);
@@ -200,9 +218,7 @@ class Game {
         }
 
         if (initialState[i][j] === 2048) {
-          const win = true;
-
-          this.youWin = win;
+          this.gameStatus = 'win';
         }
       }
 
@@ -210,10 +226,7 @@ class Game {
 
       let indexResult = 0;
 
-      console.log(results);
-
       if (results.length > 0) {
-        console.log(results);
         indexResult = 0;
 
         for (let j = 0; j < results.length; j++) {
@@ -227,9 +240,6 @@ class Game {
         }
       }
     }
-
-    console.log(copyState);
-    console.log(initialState);
 
     leftCoordinates(initialState, copyCoordinates);
 
@@ -252,6 +262,10 @@ class Game {
     this.gameOver = isGameOver(initialState);
   }
   moveRight() {
+    if (this.gameStatus === 'idle') {
+      return;
+    }
+
     const {
       initialState,
       coordinates,
@@ -268,24 +282,17 @@ class Game {
 
       for (let j = 0; j < initialState[i].length; j++) {
         if (initialState[i][j] > 0) {
-          console.log(initialState[i]);
           numArr.push(initialState[i][j]);
           copyState[i][j] = initialState[i][j];
-          // console.log(copyState[i][j]);
           initialState[i][j] = 0;
         }
       }
 
-      // console.log(copyState);
-      console.log(numArr);
-
       resultNumbers(results, numArr);
 
       let indexResult = 0;
-      console.log(results);
 
       if (results.length > 0) {
-        console.log(results);
         indexResult = results.length - 1;
 
         for (let j = initialState.length - 1; j >= 0; j--) {
@@ -299,10 +306,6 @@ class Game {
         }
       }
     }
-
-    console.log(copyState);
-    console.log(initialState);
-    console.log(coordinates);
 
     leftCoordinates(initialState, copyCoordinates);
 
@@ -323,6 +326,10 @@ class Game {
     }
   }
   moveUp() {
+    if (this.gameStatus === 'idle') {
+      return;
+    }
+
     const {
       initialState,
       coordinates,
@@ -353,8 +360,6 @@ class Game {
       if (results.length > 0) {
         indexResult = 0;
 
-        console.log(results);
-
         for (let j = 0; j < results.length; j++) {
           initialState[j][i] = results[indexResult];
           indexResult++;
@@ -367,35 +372,6 @@ class Game {
     }
 
     leftCoordinates(initialState, copyCoords);
-
-    console.log(initialState);
-    console.log(coordinates);
-
-    // for (let i = 0; i < initialState.length; i++) {
-    //   const coords = [];
-
-    //   for (let j = 0; j < initialState.length; j++) {
-    //     let index = -1;
-
-    //     if (initialState[i][j] > 0) {
-    //       coords[0] = i;
-    //       coords[1] = j;
-
-    //       index = copyCoords.findIndex((place) => {
-    //         if (place[0] === coords[0] && place[1] === coords[1]) {
-    //           return true;
-    //         }
-    //       });
-    //     }
-
-    //     if (index >= 0) {
-    //       copyCoords.splice(index, 1);
-    //     }
-    //   }
-    // }
-
-    console.log(copyCoords);
-    console.log(coordinates);
 
     const isArrayChenged = stateChanged(initialState, copyState);
 
@@ -415,6 +391,10 @@ class Game {
   }
 
   moveDown() {
+    if (this.gameStatus === 'idle') {
+      return;
+    }
+
     const {
       initialState,
       coordinates,
@@ -481,17 +461,17 @@ class Game {
   getScore() {
     const { initialState } = this;
 
-    let maxScore = 0;
+    this.score = 0;
 
     for (let i = 0; i < initialState.length; i++) {
       for (let j = 0; j < initialState[i].length; j++) {
         if (initialState[i][j] > 0) {
-          maxScore += initialState[i][j];
+          this.score += initialState[i][j];
         }
       }
     }
 
-    return maxScore;
+    return this.score;
   }
 
   /**
@@ -504,7 +484,7 @@ class Game {
   }
 
   /**
-   * Returns the current game status.
+   * Returns the current game gameStatus.
    *
    * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
    *
@@ -514,33 +494,11 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
-    const { gameOver, youWin, initialState } = this;
+    const { gameStatus } = this;
 
-    console.log(initialState);
+    // console.log(gameStatus);
 
-    const startButton = document.getElementsByClassName('button start')[0];
-
-    console.log(startButton.innerHTML);
-
-    const lol = initialState.some((line) => {
-      line.some((symbol) => symbol > 0);
-    });
-
-    console.log(lol);
-
-    if (startButton.textContent === 'Restart') {
-      return 'playing';
-    }
-
-    if (gameOver) {
-      return 'lose';
-    }
-
-    if (youWin) {
-      return 'win';
-    }
-
-    return 'idle';
+    return gameStatus;
   }
 
   /**
@@ -548,8 +506,6 @@ class Game {
    */
   start() {
     const { initialState, coordinates } = this;
-
-    // const copyCoords = coordinates.map((coord) => (coord));
 
     function randomCoordinates() {
       const random = Math.random() * coordinates.length;
@@ -571,7 +527,10 @@ class Game {
     initialState[coordinates[secondCoordinate][0]][
       coordinates[secondCoordinate][1]
     ] = Math.random() < 0.9 ? 2 : 4;
-    console.log(initialState);
+
+    this.gameStatus = 'playing';
+
+    // return initialState;
   }
 
   /**
@@ -584,9 +543,8 @@ class Game {
       initialState[i] = [0, 0, 0, 0];
     }
 
-    // console.log(initialState);
-
-    this.start();
+    this.score = 0;
+    this.gameStatus = 'idle';
   }
 
   // Add your own methods here
