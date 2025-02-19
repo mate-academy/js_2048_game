@@ -22,10 +22,10 @@ class Game {
 
   constructor(
     initialState = [
-      [2, 0, 0, 0],
-      [0, 4, 0, 0],
-      [0, 0, 8, 0],
-      [0, 0, 0, 16],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
     ],
     coordinates = [],
   ) {
@@ -178,6 +178,24 @@ class Game {
       return !hasEmptyCells && !canMergeCells;
     };
 
+    this.statusWin = (inState) => {
+      const win = inState.some((line) => {
+        line.some((number) => number >= 100);
+      });
+
+      for (let i = 0; i < inState.length; i++) {
+        for (let j = 0; j < inState; j++) {
+          if (inState[i][j] >= 100) {
+            this.gameStatus = 'win';
+          }
+        }
+      }
+
+      if (win) {
+        this.gameStatus = 'win';
+      }
+    };
+
     // let youWin = false;
     // let gameOver = false;
   }
@@ -190,6 +208,7 @@ class Game {
       leftCoordinates,
       stateChanged,
       isGameOver,
+      statusWin,
       // gameOver,
       // youWin,
     } = this;
@@ -211,10 +230,6 @@ class Game {
           copyState[i][j] = initialState[i][j];
           // console.log(copyState[i][j]);
           initialState[i][j] = 0;
-        }
-
-        if (initialState[i][j] === 148) {
-          this.gameStatus = 'win';
         }
       }
 
@@ -260,6 +275,8 @@ class Game {
     if (gameOver === true) {
       this.gameStatus = 'lose';
     }
+
+    statusWin(initialState);
   }
   moveRight() {
     if (this.gameStatus === 'idle') {
@@ -273,6 +290,7 @@ class Game {
       leftCoordinates,
       stateChanged,
       isGameOver,
+      statusWin,
     } = this;
     const copyState = JSON.parse(JSON.stringify(initialState));
     const copyCoordinates = JSON.parse(JSON.stringify(coordinates));
@@ -286,10 +304,6 @@ class Game {
           numArr.push(initialState[i][j]);
           copyState[i][j] = initialState[i][j];
           initialState[i][j] = 0;
-        }
-
-        if (initialState[i][j] === 148) {
-          this.gameStatus = 'win';
         }
       }
 
@@ -335,6 +349,8 @@ class Game {
     if (gameOver === true) {
       this.gameStatus = 'lose';
     }
+
+    statusWin(initialState);
   }
   moveUp() {
     if (this.gameStatus === 'idle') {
@@ -348,6 +364,7 @@ class Game {
       leftCoordinates,
       stateChanged,
       isGameOver,
+      statusWin,
     } = this;
     const copyState = JSON.parse(JSON.stringify(initialState));
     const copyCoords = JSON.parse(JSON.stringify(coordinates));
@@ -362,10 +379,6 @@ class Game {
           copyState[j][i] = initialState[j][i];
 
           initialState[j][i] = 0;
-        }
-
-        if (initialState[i][j] === 148) {
-          this.gameStatus = 'win';
         }
       }
 
@@ -410,6 +423,8 @@ class Game {
     if (gameOver === true) {
       this.gameStatus = 'lose';
     }
+
+    statusWin(initialState);
   }
 
   moveDown() {
@@ -424,6 +439,7 @@ class Game {
       leftCoordinates,
       stateChanged,
       isGameOver,
+      statusWin,
     } = this;
     const copyState = JSON.parse(JSON.stringify(initialState));
     const copyCoordinates = JSON.parse(JSON.stringify(coordinates));
@@ -438,10 +454,6 @@ class Game {
           copyState[j][i] = initialState[j][i];
 
           initialState[j][i] = 0;
-        }
-
-        if (initialState[i][j] === 148) {
-          this.gameStatus = 'win';
         }
       }
 
@@ -486,6 +498,8 @@ class Game {
     if (gameOver === true) {
       this.gameStatus = 'lose';
     }
+
+    statusWin(initialState);
   }
 
   /**
@@ -543,6 +557,13 @@ class Game {
    */
   start() {
     const { initialState, coordinates } = this;
+
+    // this.initialState = [
+    //   [8, 8, 16, 16],
+    //   [16, 16, 8, 8],
+    //   [32, 32, 0, 0],
+    //   [16, 16, 64, 64],
+    // ];
 
     function randomCoordinates() {
       const random = Math.random() * coordinates.length;

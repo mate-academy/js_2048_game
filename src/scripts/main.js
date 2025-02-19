@@ -95,6 +95,8 @@ button.addEventListener('click', () => {
     button.textContent = 'Start';
     button.classList.remove('restart');
     button.classList.add('start');
+    loseMessage.classList.add('hidden');
+    winMessage.classList.add('hidden');
   }
 
   showStatus();
