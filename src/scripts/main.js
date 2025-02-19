@@ -9,7 +9,6 @@ const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 
-// 🏗 Функція рендерингу гри
 function renderBoard() {
   const state = game.getState();
   const cells = document.querySelectorAll('.field-cell');
@@ -31,7 +30,6 @@ function renderBoard() {
   checkGameStatus();
 }
 
-// 🎮 Функція перевірки статусу гри
 function checkGameStatus() {
   if (game.getStatus() === 'win') {
     messageWin.classList.remove('hidden');
@@ -40,7 +38,6 @@ function checkGameStatus() {
   }
 }
 
-// 🎯 Обробник натискання клавіш для руху плиток
 document.addEventListener('keydown', (e) => {
   if (game.getStatus() !== 'playing') {
     return;
@@ -68,7 +65,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// 🔄 Обробник кнопки Start/Restart
 startButton.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
@@ -87,5 +83,4 @@ startButton.addEventListener('click', () => {
   renderBoard();
 });
 
-// 🔄 Виконуємо початковий рендер
 renderBoard();

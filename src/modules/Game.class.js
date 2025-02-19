@@ -77,7 +77,7 @@ class Game {
           newRow[i] *= 2;
           newRow[i + 1] = 0;
           this.score += newRow[i];
-          moved = true; // Помічаємо, що була зміна
+          moved = true;
         }
       }
 
@@ -157,19 +157,19 @@ class Game {
         }
 
         if (this.board[row][col] === 0) {
-          return; // Гра ще не закінчена
+          return;
         }
 
         if (col < 3 && this.board[row][col] === this.board[row][col + 1]) {
-          return; // Можливий хід
+          return;
         }
 
         if (row < 3 && this.board[row][col] === this.board[row + 1][col]) {
-          return; // Можливий хід
+          return;
         }
       }
     }
-    this.status = 'lose'; // Гра програна
+    this.status = 'lose';
   }
 }
 
