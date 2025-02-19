@@ -20,9 +20,19 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
     // eslint-disable-next-line no-console
     console.log(initialState);
+
+    this.state = initialState;
+    this.score = 0;
   }
 
   moveLeft() {}
@@ -63,6 +73,13 @@ class Game {
   restart() {}
 
   // Add your own methods here
+
+  getRandomNumber() {}
+  addNumber() {}
+  canMove() {}
+  getEmptyCells() {}
+  fillCells() {}
+  moveUtil() {}
 }
 
 module.exports = Game;
