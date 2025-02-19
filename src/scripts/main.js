@@ -283,11 +283,13 @@ Game.prototype.getEmptyCells = function () {
 };
 
 Game.prototype.start = function () {
-  this.addNumber();
-  this.addNumber();
-  this.fillCells();
-  this.getState();
-  messageStart.className = 'message message-start hidden';
+  if (this.getEmptyCells().length === this.state.length ** 2) {
+    this.addNumber();
+    this.addNumber();
+    this.fillCells();
+    this.getState();
+    messageStart.className = 'message message-start hidden';
+  }
 };
 
 Game.prototype.fillCells = function () {
@@ -316,7 +318,7 @@ Game.prototype.toggleButton = function () {
   if (this.getStatus() === 'idle') {
     startButton.className = 'button start';
     startButton.innerHTML = 'Start';
-  } else {
+  } else if (this.getEmptyCells().length !== this.state.length ** 2) {
     startButton.className = 'button restart';
     startButton.innerHTML = 'Restart';
   }
