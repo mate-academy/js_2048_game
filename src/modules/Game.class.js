@@ -68,6 +68,10 @@ class Game {
         newRow.push(0);
       }
 
+      if (!this.board[r].every((val, i) => val === newRow[i])) {
+        moved = true;
+      }
+
       this.board[r] = newRow;
     }
 
@@ -97,6 +101,10 @@ class Game {
 
       while (newRow.length < 4) {
         newRow.unshift(0);
+      }
+
+      if (!this.board[r].every((val, i) => val === newRow[i])) {
+        moved = true;
       }
 
       this.board[r] = newRow;
