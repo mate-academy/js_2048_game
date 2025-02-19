@@ -10,8 +10,6 @@ const messageStart = document.querySelector('.message-start');
 const table = document.querySelector('.game-field');
 const startButton = document.querySelector('.start');
 
-document.addEventListener('keydown', keyMove);
-
 function keyMove(ev) {
   if (ev.key === 'ArrowDown') {
     game.moveDown();
@@ -101,6 +99,8 @@ startButton.addEventListener('click', () => {
     game.restart();
     vizRestart();
   }
+
+  document.addEventListener('keydown', keyMove);
 
   vizualized();
 });
