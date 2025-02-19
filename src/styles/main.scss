@@ -8,6 +8,7 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  background-color: #cc3a3a;
 }
 
 .field-cell {
@@ -109,11 +110,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #8bcf8e;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #fff;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -138,16 +139,17 @@ h1 {
 }
 
 .start {
-  background: #1dae28;
+  background: #104fe1;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: #908bd3;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  text-align: center;
+  background: #7484bf;
 
   &:hover {
     background: #f87474;
@@ -157,8 +159,8 @@ h1 {
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #83c1cf;
+  color: #fff;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
