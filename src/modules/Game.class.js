@@ -6,12 +6,10 @@ class Game {
     this.mergedThisMove = [];
   }
 
-  // Create an empty 4x4 board
   createEmptyBoard() {
     return Array.from({ length: 4 }, () => Array(4).fill(0));
   }
 
-  // Get the current game state (board and score)
   getState() {
     return {
       board: this.board,
@@ -20,17 +18,14 @@ class Game {
     };
   }
 
-  // Get the current score
   getScore() {
     return this.score;
   }
 
-  // Get the current status (running, won, game over)
   getStatus() {
     return this.status;
   }
 
-  // Start the game (initialize the board and reset score)
   start() {
     this.board = this.createEmptyBoard();
     this.score = 0;
@@ -41,16 +36,13 @@ class Game {
     this.updateUI();
   }
 
-  // Restart the game
   restart() {
     this.start();
   }
 
-  // Add a random tile (2 or 4) in a random empty cell
   addRandomTile() {
     const emptyCells = [];
 
-    // Loop to find all empty cells
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         if (this.board[i][j] === 0) {
@@ -59,7 +51,6 @@ class Game {
       }
     }
 
-    // If there are any empty cells, place a random tile
     if (emptyCells.length > 0) {
       const [x, y] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
       const newValue = Math.random() < 0.9 ? 2 : 4;
@@ -68,12 +59,10 @@ class Game {
     }
   }
 
-  // Check if a move is valid (if any tile moves or merges)
   isValidMove() {
     return this.board.some((row) => row.some((cell) => cell === 0));
   }
 
-  // Check win or game over
   checkGameStatus() {
     if (this.board.some((row) => row.includes(2048))) {
       this.status = 'won';
@@ -86,14 +75,20 @@ class Game {
     }
   }
 
-  // Move left
+  slideAndMergeRow(row) {
+    const newRow = this.slideAndMerge(row);
+    const moved = newRow !== row;
+
+    return { newRow, moved };
+  }
+
   moveLeft() {
     let moved = false;
 
     this.board.forEach((row, rowIndex) => {
-      const newRow = this.slideAndMerge(row);
+      const { newRow, moved: rowMoved } = this.slideAndMergeRow(row);
 
-      if (newRow !== row) {
+      if (rowMoved) {
         moved = true;
       }
       this.board[rowIndex] = newRow;
@@ -107,18 +102,17 @@ class Game {
     this.updateUI();
   }
 
-  // Move right (reverse left movement)
   moveRight() {
     let moved = false;
 
     this.board.forEach((row, rowIndex) => {
       const reversedRow = row.reverse();
-      const newRow = this.slideAndMerge(reversedRow).reverse();
+      const { newRow, moved: rowMoved } = this.slideAndMergeRow(reversedRow);
 
-      if (newRow !== row) {
+      if (rowMoved) {
         moved = true;
       }
-      this.board[rowIndex] = newRow;
+      this.board[rowIndex] = newRow.reverse();
     });
 
     if (moved) {
@@ -129,16 +123,15 @@ class Game {
     this.updateUI();
   }
 
-  // Move up (transpose, move left, then transpose back)
   moveUp() {
     let moved = false;
 
     this.board = this.transposeBoard();
 
     this.board.forEach((row, rowIndex) => {
-      const newRow = this.slideAndMerge(row);
+      const { newRow, moved: rowMoved } = this.slideAndMergeRow(row);
 
-      if (newRow !== row) {
+      if (rowMoved) {
         moved = true;
       }
       this.board[rowIndex] = newRow;
@@ -154,7 +147,6 @@ class Game {
     this.updateUI();
   }
 
-  // Move down (transpose, move right, then transpose back)
   moveDown() {
     let moved = false;
 
@@ -162,12 +154,12 @@ class Game {
 
     this.board.forEach((row, rowIndex) => {
       const reversedRow = row.reverse();
-      const newRow = this.slideAndMerge(reversedRow).reverse();
+      const { newRow, moved: rowMoved } = this.slideAndMergeRow(reversedRow);
 
-      if (newRow !== row) {
+      if (rowMoved) {
         moved = true;
       }
-      this.board[rowIndex] = newRow;
+      this.board[rowIndex] = newRow.reverse();
     });
 
     this.board = this.transposeBoard();
@@ -180,7 +172,6 @@ class Game {
     this.updateUI();
   }
 
-  // Transpose the board (swap rows and columns)
   transposeBoard() {
     return this.board[0].map((_, colIndex) => {
       return this.board.map((row) => row[colIndex]);
@@ -242,7 +233,6 @@ class Game {
       this.status === 'running' ? 'inline-block' : 'none';
   }
 
-  // Add keyboard listener to control movement
   addKeyboardListeners() {
     document.addEventListener('keydown', (eve) => {
       if (this.status !== 'running') {

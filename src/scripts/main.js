@@ -18,12 +18,10 @@ document.addEventListener('keydown', (eve) => {
   }
 });
 
-// Start the game
 document.querySelector('.start').addEventListener('click', () => {
   game.start();
 });
 
-// Restart the game
 document.querySelector('.restart').addEventListener('click', () => {
   game.restart();
 });
