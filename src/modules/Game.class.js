@@ -84,6 +84,7 @@ class Game {
 
   moveLeft() {
     let moved = false;
+    const oldBoard = JSON.stringify(this.board);
 
     this.board.forEach((row, rowIndex) => {
       const { newRow, moved: rowMoved } = this.slideAndMergeRow(row);
@@ -95,7 +96,9 @@ class Game {
     });
 
     if (moved) {
-      this.addRandomTile();
+      if (JSON.stringify(this.board) !== oldBoard) {
+        this.addRandomTile();
+      }
     }
 
     this.checkGameStatus();
@@ -104,9 +107,10 @@ class Game {
 
   moveRight() {
     let moved = false;
+    const oldBoard = JSON.stringify(this.board);
 
     this.board.forEach((row, rowIndex) => {
-      const reversedRow = row.reverse();
+      const reversedRow = row ? row.reverse() : [];
       const { newRow, moved: rowMoved } = this.slideAndMergeRow(reversedRow);
 
       if (rowMoved) {
@@ -116,7 +120,9 @@ class Game {
     });
 
     if (moved) {
-      this.addRandomTile();
+      if (JSON.stringify(this.board) !== oldBoard) {
+        this.addRandomTile();
+      }
     }
 
     this.checkGameStatus();
@@ -125,6 +131,7 @@ class Game {
 
   moveUp() {
     let moved = false;
+    const oldBoard = JSON.stringify(this.board);
 
     this.board = this.transposeBoard();
 
@@ -140,7 +147,9 @@ class Game {
     this.board = this.transposeBoard();
 
     if (moved) {
-      this.addRandomTile();
+      if (JSON.stringify(this.board) !== oldBoard) {
+        this.addRandomTile();
+      }
     }
 
     this.checkGameStatus();
@@ -149,11 +158,12 @@ class Game {
 
   moveDown() {
     let moved = false;
+    const oldBoard = JSON.stringify(this.board);
 
     this.board = this.transposeBoard();
 
     this.board.forEach((row, rowIndex) => {
-      const reversedRow = row.reverse();
+      const reversedRow = row ? row.reverse() : [];
       const { newRow, moved: rowMoved } = this.slideAndMergeRow(reversedRow);
 
       if (rowMoved) {
@@ -165,7 +175,9 @@ class Game {
     this.board = this.transposeBoard();
 
     if (moved) {
-      this.addRandomTile();
+      if (JSON.stringify(this.board) !== oldBoard) {
+        this.addRandomTile();
+      }
     }
 
     this.checkGameStatus();
