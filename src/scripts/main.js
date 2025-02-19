@@ -101,7 +101,9 @@ button.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  scoreGame();
+  if (button.textContent === 'Restart') {
+    scoreGame();
+  }
 
   if (e.key === 'ArrowDown' && button.textContent === 'Restart') {
     game.moveDown();

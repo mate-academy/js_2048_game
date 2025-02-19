@@ -59,8 +59,6 @@ class Game {
 
     // this.createEmptyArray(initialState);
 
-    console.log(initialState);
-
     this.stateChanged = (initialSt, copyState) => {
       let isArrayChenged = false;
 
@@ -196,8 +194,6 @@ class Game {
       // youWin,
     } = this;
 
-    console.log(this.gameStatus);
-
     if (this.gameStatus === 'idle') {
       return;
     }
@@ -259,7 +255,11 @@ class Game {
       ] = Math.random() < 0.9 ? 2 : 4;
     }
 
-    this.gameOver = isGameOver(initialState);
+    const gameOver = isGameOver(initialState);
+
+    if (gameOver === true) {
+      this.gameStatus = 'lose';
+    }
   }
   moveRight() {
     if (this.gameStatus === 'idle') {
@@ -272,6 +272,7 @@ class Game {
       resultNumbers,
       leftCoordinates,
       stateChanged,
+      isGameOver,
     } = this;
     const copyState = JSON.parse(JSON.stringify(initialState));
     const copyCoordinates = JSON.parse(JSON.stringify(coordinates));
@@ -324,6 +325,12 @@ class Game {
         copyCoordinates[firstCoordinate][1]
       ] = Math.random() < 0.9 ? 2 : 4;
     }
+
+    const gameOver = isGameOver(initialState);
+
+    if (gameOver === true) {
+      this.gameStatus = 'lose';
+    }
   }
   moveUp() {
     if (this.gameStatus === 'idle') {
@@ -336,6 +343,7 @@ class Game {
       resultNumbers,
       leftCoordinates,
       stateChanged,
+      isGameOver,
     } = this;
     const copyState = JSON.parse(JSON.stringify(initialState));
     const copyCoords = JSON.parse(JSON.stringify(coordinates));
@@ -388,6 +396,12 @@ class Game {
         copyCoords[firstCoordinate][1]
       ] = Math.random() < 0.9 ? 2 : 4;
     }
+
+    const gameOver = isGameOver(initialState);
+
+    if (gameOver === true) {
+      this.gameStatus = 'lose';
+    }
   }
 
   moveDown() {
@@ -401,6 +415,7 @@ class Game {
       resultNumbers,
       leftCoordinates,
       stateChanged,
+      isGameOver,
     } = this;
     const copyState = JSON.parse(JSON.stringify(initialState));
     const copyCoordinates = JSON.parse(JSON.stringify(coordinates));
@@ -453,6 +468,12 @@ class Game {
         copyCoordinates[firstCoordinate][1]
       ] = Math.random() < 0.9 ? 2 : 4;
     }
+
+    const gameOver = isGameOver(initialState);
+
+    if (gameOver === true) {
+      this.gameStatus = 'lose';
+    }
   }
 
   /**
@@ -467,9 +488,13 @@ class Game {
       for (let j = 0; j < initialState[i].length; j++) {
         if (initialState[i][j] > 0) {
           this.score += initialState[i][j];
+          console.log(initialState[i][j]);
         }
       }
     }
+
+    console.log(this.score);
+    console.log(initialState);
 
     return this.score;
   }
@@ -496,7 +521,7 @@ class Game {
   getStatus() {
     const { gameStatus } = this;
 
-    // console.log(gameStatus);
+    console.log(gameStatus);
 
     return gameStatus;
   }
@@ -544,6 +569,8 @@ class Game {
     }
 
     this.score = 0;
+    console.log(this.score);
+
     this.gameStatus = 'idle';
   }
 
