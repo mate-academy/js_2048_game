@@ -24,11 +24,47 @@ startButton.addEventListener('click', () => {
   }
 });
 
-document.addEventListener('keydown', (ev) => {
-  if (game.status === 'lose') {
-    // eslint-disable-next-line no-console
-    console.log('Кнопки натискати не можна, гра закінчена!');
+document.addEventListener('keydown', handleMove);
 
+// Додаємо обробку свайпів
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+document.addEventListener('touchstart', (ev) => {
+  touchStartX = ev.touches[0].clientX;
+  touchStartY = ev.touches[0].clientY;
+});
+
+document.addEventListener('touchend', (ev) => {
+  touchEndX = ev.changedTouches[0].clientX;
+  touchEndY = ev.changedTouches[0].clientY;
+  handleSwipe();
+});
+
+function handleSwipe() {
+  const diffX = touchEndX - touchStartX;
+  const diffY = touchEndY - touchStartY;
+
+  // Визначаємо, горизонтальний чи вертикальний свайп сильніший
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (diffX > 50) {
+      handleMove({ key: 'ArrowRight' });
+    } else if (diffX < -50) {
+      handleMove({ key: 'ArrowLeft' });
+    }
+  } else {
+    if (diffY > 50) {
+      handleMove({ key: 'ArrowDown' });
+    } else if (diffY < -50) {
+      handleMove({ key: 'ArrowUp' });
+    }
+  }
+}
+
+function handleMove(ev) {
+  if (game.status === 'lose') {
     return;
   }
 
@@ -38,56 +74,30 @@ document.addEventListener('keydown', (ev) => {
     switch (ev.key) {
       case 'ArrowLeft':
         game.moveLeft();
-        score.textContent = game.score;
-        game.checkWin();
-
-        if (game.status === 'win') {
-          winMessage.classList.remove('hidden');
-        } else if (game.status === 'lose') {
-          loseMessage.classList.remove('hidden');
-        }
         break;
-
       case 'ArrowRight':
         game.moveRight();
-        score.textContent = game.score;
-        game.checkWin();
-
-        if (game.status === 'win') {
-          winMessage.classList.remove('hidden');
-        } else if (game.status === 'lose') {
-          loseMessage.classList.remove('hidden');
-        }
         break;
-
       case 'ArrowUp':
         game.moveUp();
-        score.textContent = game.score;
-        game.checkWin();
-
-        if (game.status === 'win') {
-          winMessage.classList.remove('hidden');
-        } else if (game.status === 'lose') {
-          loseMessage.classList.remove('hidden');
-        }
         break;
-
       case 'ArrowDown':
         game.moveDown();
-        score.textContent = game.score;
-        game.checkWin();
-
-        if (game.status === 'win') {
-          winMessage.classList.remove('hidden');
-        } else if (game.status === 'lose') {
-          loseMessage.classList.remove('hidden');
-        }
         break;
+    }
+
+    score.textContent = game.score;
+    game.checkWin();
+
+    if (game.status === 'win') {
+      winMessage.classList.remove('hidden');
+    } else if (game.status === 'lose') {
+      loseMessage.classList.remove('hidden');
     }
 
     updateBoard();
   }
-});
+}
 
 function updateBoard() {
   const currentState = game.getState();
