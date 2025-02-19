@@ -22,10 +22,10 @@ class Game {
 
   constructor(
     initialState = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
+      [2, 0, 0, 0],
+      [0, 4, 0, 0],
+      [0, 0, 8, 0],
+      [0, 0, 0, 16],
     ],
     coordinates = [],
   ) {
@@ -213,7 +213,7 @@ class Game {
           initialState[i][j] = 0;
         }
 
-        if (initialState[i][j] === 2048) {
+        if (initialState[i][j] === 148) {
           this.gameStatus = 'win';
         }
       }
@@ -287,6 +287,10 @@ class Game {
           copyState[i][j] = initialState[i][j];
           initialState[i][j] = 0;
         }
+
+        if (initialState[i][j] === 148) {
+          this.gameStatus = 'win';
+        }
       }
 
       resultNumbers(results, numArr);
@@ -359,6 +363,10 @@ class Game {
 
           initialState[j][i] = 0;
         }
+
+        if (initialState[i][j] === 148) {
+          this.gameStatus = 'win';
+        }
       }
 
       resultNumbers(results, numArr);
@@ -430,6 +438,10 @@ class Game {
           copyState[j][i] = initialState[j][i];
 
           initialState[j][i] = 0;
+        }
+
+        if (initialState[i][j] === 148) {
+          this.gameStatus = 'win';
         }
       }
 
