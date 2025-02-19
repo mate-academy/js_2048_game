@@ -12,10 +12,13 @@ button.addEventListener('click', (e) => {
     game2048.start();
     e.target.classList.replace('start', 'restart');
     e.target.textContent = 'Restart';
+    checkStatus(game2048.status);
   } else if (e.target.classList.contains('restart')) {
     game2048.restart();
     e.target.classList.replace('restart', 'start');
     e.target.textContent = 'Start';
+    score.textContent = game2048.score;
+    checkStatus(game2048.status);
   }
 });
 
@@ -49,17 +52,20 @@ document.addEventListener('keydown', (e) => {
 
 function checkStatus(st) {
   const start = document.querySelector('.message.message-start');
-  const win = document.querySelector('.message.message-win.hidden');
-  const lose = document.querySelector('.message.message-lose.hidden');
+  const win = document.querySelector('.message.message-win');
+  const lose = document.querySelector('.message.message-lose');
 
   if (st === 'win') {
-    start.className = 'message message-start hidden';
-    win.className = 'message message-win';
-  }
-
-  if (st === 'lose') {
-    start.className = 'message message-start hidden';
-    win.className = 'message message-start hidden';
-    lose.className = 'message message-lose';
+    win.classList.remove('hidden');
+    start.classList.add('hidden');
+    lose.classList.add('hidden');
+  } else if (st === 'lose') {
+    lose.classList.remove('hidden');
+    start.classList.add('hidden');
+    win.classList.add('hidden');
+  } else if (st === 'idle' || st === 'playing') {
+    start.classList.remove('hidden');
+    win.classList.add('hidden');
+    lose.classList.add('hidden');
   }
 }
