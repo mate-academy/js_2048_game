@@ -1,187 +1,110 @@
+
 body {
-  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #faf8ef;
   display: flex;
-  align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
-  font-size: 24px;
-  font-weight: 900;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
 }
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
+.game-container {
   text-align: center;
-  vertical-align: center;
-  user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
-}
-
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
-}
-
-.game-header {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
-  box-sizing: border-box;
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  margin: 0;
+  font-size: 3rem;
 }
 
-.info {
+.board {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
+  margin: 20px auto;
 }
 
-.controls {
+.row {
   display: flex;
 }
 
-.button {
-  border: none;
+.cell {
+  width: 90px;
+  height: 90px;
+  margin: 5px;
+  background-color: #ccc0b3;
   border-radius: 5px;
-  cursor: pointer;
-  color: #f9f6f2;
-  font-family: sans-serif;
-  font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
+  font-size: 36px;
+  color: #776e65;
+  text-align: center;
+  line-height: 90px;
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 
-  transition: 0.25s ease background;
+  &--2 {
+    background-color: #eee4da;
+  }
+
+  &--4 {
+    background-color: #ede0c8;
+  }
+
+  &--8 {
+    background-color: #f2b179;
+  }
+
+  &--16 {
+    background-color: #f59563;
+  }
+
+  &--32 {
+    background-color: #f67c5f;
+  }
+
+  &--64 {
+    background-color: #f65e3b;
+  }
+
+  &--128 {
+    background-color: #edcf72;
+  }
+
+  &--256 {
+    background-color: #edcc61;
+  }
+
+  &--512 {
+    background-color: #edc850;
+  }
+
+  &--1024 {
+    background-color: #edc53f;
+  }
+
+  &--2048 {
+    background-color: #edc22e;
+  }
 }
 
-.start {
-  background: #1dae28;
-  font-size: 20px;
-
-  &:hover {
-    background: #179921;
-  }
+.score {
+  font-size: 2rem;
+  margin: 10px 0;
 }
 
 .restart {
-  background: #f1b2b2;
-
-  &:hover {
-    background: #f87474;
-  }
-}
-
-.message {
-  box-sizing: border-box;
-  width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
-  padding: 10px;
-  text-align: center;
-  border-radius: 5px;
-  font-size: 20px;
-}
-
-.hidden {
   display: none;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
-}
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  border: none;
+  background-color: #8f7a66;
+  color: white;
+  border-radius: 5px;
 
-.message-win {
-  background: #edc22e;
-  color: #f9f6f2;
-}
-
-.message-container {
-  width: 100%;
-  height: 150px;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
 }
