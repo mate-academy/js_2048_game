@@ -15,7 +15,7 @@ function startGame() {
   startMessage.classList.add('hidden');
   winMessage.classList.add('hidden');
   loseMessage.classList.add('hidden');
-  this.status = 'ongoing';
+  game.status = 'ongoing';
   button.classList.add('restart');
   button.textContent = 'Restart';
 }
@@ -42,12 +42,12 @@ function updateBoard() {
   });
 
   if (game.hasWon()) {
-    this.status = 'win';
+    game.status = 'win';
     winMessage.classList.remove('hidden');
   }
 
   if (game.hasLost()) {
-    this.status = 'lose';
+    game.status = 'lose';
     loseMessage.classList.remove('hidden');
   }
 }
