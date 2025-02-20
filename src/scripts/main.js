@@ -42,7 +42,6 @@ function keyMove(ev) {
 
 function vizStart() {
   game.start();
-  game.start();
 
   startButton.textContent = 'Restart';
   startButton.style.fontSize = '17px';

@@ -268,6 +268,7 @@ class Game {
     }
 
     this.generateCell();
+    this.generateCell();
 
     this.score = 0;
     this.getScore();
