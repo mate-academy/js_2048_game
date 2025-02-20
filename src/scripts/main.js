@@ -11,23 +11,29 @@ const table = document.querySelector('.game-field');
 const startButton = document.querySelector('.start');
 
 function keyMove(ev) {
-  if (ev.key === 'ArrowDown') {
-    game.moveDown();
+  const previousField = JSON.stringify(game.getState());
+
+  switch (ev.key) {
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    default:
+      return;
   }
 
-  if (ev.key === 'ArrowUp') {
-    game.moveUp();
+  if (game.isMoveMade(previousField)) {
+    game.generateCell();
   }
 
-  if (ev.key === 'ArrowLeft') {
-    game.moveLeft();
-  }
-
-  if (ev.key === 'ArrowRight') {
-    game.moveRight();
-  }
-
-  game.genereteCell();
   game.getStatus();
   game.getScore();
   vizualized();
@@ -35,6 +41,7 @@ function keyMove(ev) {
 }
 
 function vizStart() {
+  game.start();
   game.start();
 
   startButton.textContent = 'Restart';
@@ -71,6 +78,14 @@ function vizualized() {
   }
 
   colorCells();
+
+  if (!game.canMove()) {
+    messageLose.style.display = 'block';
+  }
+
+  if (game.winerGame()) {
+    messageWin.style.display = 'block';
+  }
 }
 
 function colorCells() {

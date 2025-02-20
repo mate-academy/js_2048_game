@@ -30,7 +30,8 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
-    this.isStart = true;
+
+    this.arr = this.field.map((row) => [...row]);
   }
 
   shiftLeft() {
@@ -148,7 +149,6 @@ class Game {
           this.field[j + 1][i] = 0;
 
           this.score += newVal;
-          this.getScore();
         }
       }
     }
@@ -229,13 +229,6 @@ class Game {
 
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        if (this.field[i][j] === 2048) {
-          document.querySelector('.message-win').style.display = 'block';
-          document.removeEventListener('keydown', this.keyMove);
-
-          return 'win';
-        }
-
         if (this.field[i][j] !== 0) {
           emptyField = false;
         }
@@ -246,7 +239,11 @@ class Game {
       return 'idle';
     }
 
-    if (this.gameOver()) {
+    if (this.winerGame()) {
+      return 'win';
+    }
+
+    if (!this.canMove()) {
       return 'lose';
     }
 
@@ -257,29 +254,27 @@ class Game {
    * Starts the game.
    */
   start() {
-    this.genereteCell();
+    this.generateCell();
   }
 
   /**
    * Resets the game.
    */
   restart() {
-    this.isStart = true;
-
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         this.field[i][j] = 0;
       }
     }
 
-    this.genereteCell();
+    this.generateCell();
 
     this.score = 0;
     this.getScore();
   }
 
   // Add your own methods here
-  genereteCell() {
+  generateCell() {
     const emptyCells = [];
 
     for (let i = 0; i < 4; i++) {
@@ -296,23 +291,11 @@ class Game {
 
       if (this.field[x][y] === 0) {
         this.field[x][y] = Math.random() < 0.9 ? 2 : 4;
-
-        if (this.isStart === true) {
-          const z = Math.floor(Math.random() * 3) + 1;
-
-          if (x + z <= 3 && y + z <= 3) {
-            this.field[x + z][y + z] = Math.random() < 0.9 ? 2 : 4;
-          }
-
-          this.isStart = false;
-        }
       }
-    } else {
-      this.getStatus();
     }
   }
 
-  gameOver() {
+  canMove() {
     let game = false;
 
     for (let i = 0; i < 4; i++) {
@@ -347,10 +330,27 @@ class Game {
       }
     }
 
-    if (!game) {
-      document.querySelector('.message-lose').style.display = 'block';
-      document.removeEventListener('keydown', this.keyMove);
+    return game;
+  }
+
+  winerGame() {
+    let win = false;
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.field[i][j] === 2048) {
+          win = true;
+        }
+      }
     }
+
+    return win;
+  }
+
+  isMoveMade(previousField) {
+    const moved = previousField !== JSON.stringify(this.field);
+
+    return moved;
   }
 }
 
