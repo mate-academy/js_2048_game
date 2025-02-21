@@ -28,21 +28,22 @@ document.addEventListener('keydown', function (e) {
 
 function renderMatrix(matrix) {
   const cells = [...document.querySelectorAll('td')];
-  matrix = matrix.flat();
 
-  for (let i = 0; i < matrix.length; i++) {
-    if (matrix[i] === 0) {
+  const m = matrix.flat();
+
+  for (let i = 0; i < m.length; i++) {
+    if (m[i] === 0) {
       cells[i].innerText = '';
       continue;
     }
 
-    cells[i].innerText = matrix[i];
+    cells[i].innerText = m[i];
   }
 }
 
 const startButton = document.querySelector('.start');
 
-startButton.addEventListener('click', e => {
+startButton.addEventListener('click', (e) => {
   if (e.target.innerText === 'Restart') {
     clickRestart();
   }
@@ -52,7 +53,7 @@ startButton.addEventListener('click', e => {
   }
 
   renderMatrix(game.getState());
-})
+});
 
 function clickStart() {
   game.start();

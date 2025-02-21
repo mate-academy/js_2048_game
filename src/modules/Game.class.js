@@ -38,6 +38,14 @@ class Game {
         }
       }
     }
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state.length; j++) {
+        if (j !== 3 && this.state[i][j] === this.state[i][j + 1]) {
+          this.sumCells(i, j, i, j + 1);
+        }
+      }
+    }
   }
 
   moveRight() {
@@ -45,6 +53,14 @@ class Game {
       for (let j = this.state.length - 1; j >= 0; j--) {
         if (this.state[i][j] !== 0) {
           this.moveCellRight(i, j);
+        }
+      }
+    }
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = this.state.length - 1; j >= 0; j--) {
+        if (j !== 0 && this.state[i][j] === this.state[i][j - 1]) {
+          this.sumCells(i, j, i, j - 1);
         }
       }
     }
@@ -58,6 +74,14 @@ class Game {
         }
       }
     }
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state.length; j++) {
+        if (i !== 3 && this.state[i][j] === this.state[i + 1][j]) {
+          this.sumCells(i, j, i + 1, j);
+        }
+      }
+    }
   }
 
   moveDown() {
@@ -65,6 +89,14 @@ class Game {
       for (let j = 0; j < this.state.length; j++) {
         if (this.state[i][j] !== 0) {
           this.moveCellDown(i, j);
+        }
+      }
+    }
+
+    for (let i = this.state.length - 1; i >= 0; i--) {
+      for (let j = 0; j < this.state.length; j++) {
+        if (i !== 0 && this.state[i][j] === this.state[i - 1][j]) {
+          this.sumCells(i, j, i - 1, j);
         }
       }
     }
@@ -108,6 +140,11 @@ class Game {
       this.state[row][c] = 0;
       c++;
     }
+  }
+
+  sumCells(rToSum, cToSum, rToClear, cToClear) {
+    this.state[rToSum][cToSum] += this.state[rToClear][cToClear];
+    this.state[rToClear][cToClear] = 0;
   }
 
   /**
