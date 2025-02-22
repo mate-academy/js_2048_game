@@ -46,6 +46,16 @@ class Game {
         }
       }
     }
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state.length; j++) {
+        if (this.state[i][j] !== 0) {
+          this.moveCellLeft(i, j);
+        }
+      }
+    }
+
+    this.addRandom();
   }
 
   moveRight() {
@@ -64,6 +74,16 @@ class Game {
         }
       }
     }
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = this.state.length - 1; j >= 0; j--) {
+        if (this.state[i][j] !== 0) {
+          this.moveCellRight(i, j);
+        }
+      }
+    }
+
+    this.addRandom();
   }
 
   moveUp() {
@@ -82,6 +102,16 @@ class Game {
         }
       }
     }
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state.length; j++) {
+        if (this.state[i][j] !== 0) {
+          this.moveCellUp(i, j);
+        }
+      }
+    }
+
+    this.addRandom();
   }
 
   moveDown() {
@@ -100,6 +130,16 @@ class Game {
         }
       }
     }
+
+    for (let i = this.state.length - 1; i >= 0; i--) {
+      for (let j = 0; j < this.state.length; j++) {
+        if (this.state[i][j] !== 0) {
+          this.moveCellDown(i, j);
+        }
+      }
+    }
+
+    this.addRandom();
   }
 
   moveCellUp(row, column) {
@@ -208,13 +248,16 @@ class Game {
    * Starts the game.
    */
   start() {
-    const row1 = Math.floor(Math.random() * 4);
-    const column1 = Math.floor(Math.random() * 4);
-    const row2 = Math.floor(Math.random() * 4);
-    const column2 = Math.floor(Math.random() * 4);
+    // const row1 = Math.floor(Math.random() * 4);
+    // const column1 = Math.floor(Math.random() * 4);
+    // const row2 = Math.floor(Math.random() * 4);
+    // const column2 = Math.floor(Math.random() * 4);
 
-    this.state[row1][column1] = 2;
-    this.state[row2][column2] = 2;
+    // this.state[row1][column1] = 2;
+    // this.state[row2][column2] = 2;
+
+    this.addRandom();
+    this.addRandom();
   }
 
   /**
@@ -225,7 +268,27 @@ class Game {
     this.start();
   }
 
-  // Add your own methods here
+  addRandom() {
+    const emptyCells = this.getEmptyCells();
+    const randomEmptyCellIndex = Math.floor(Math.random() * emptyCells.length);
+    const [row, col] = emptyCells[randomEmptyCellIndex];
+
+    this.state[row][col] = 2;
+  }
+
+  getEmptyCells() {
+    const emptyCells = [];
+
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state.length; j++) {
+        if (this.state[i][j] === 0) {
+          emptyCells.push([i, j]);
+        }
+      }
+    }
+
+    return emptyCells;
+  }
 }
 
 module.exports = Game;
