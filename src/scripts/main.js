@@ -24,6 +24,7 @@ document.addEventListener('keydown', function (e) {
   }
 
   renderMatrix(game.getState());
+  addClasses(game.getState());
   updateScore();
 });
 
@@ -42,7 +43,23 @@ function renderMatrix(matrix) {
   }
 }
 
+function addClasses(matrix) {
+  const cells = [...document.querySelectorAll('td')];
+
+  const m = matrix.flat();
+
+  for (let i = 0; i < m.length; i++) {
+    cells[i].className = '';
+    cells[i].classList.add('field-cell');
+
+    if (m[i] !== 0) {
+      cells[i].classList.add(`field-cell--${m[i]}`);
+    }
+  }
+}
+
 const startButton = document.querySelector('.start');
+const startMessage = document.querySelector('.message-start');
 
 startButton.addEventListener('click', (e) => {
   if (e.target.innerText === 'Restart') {
@@ -51,9 +68,11 @@ startButton.addEventListener('click', (e) => {
 
   if (e.target.innerText === 'Start') {
     clickStart();
+    startMessage.style.display = 'none';
   }
 
   renderMatrix(game.getState());
+  addClasses(game.getState());
 });
 
 function clickStart() {
