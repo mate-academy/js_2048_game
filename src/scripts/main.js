@@ -24,6 +24,7 @@ document.addEventListener('keydown', function (e) {
   }
 
   renderMatrix(game.getState());
+  updateScore();
 });
 
 function renderMatrix(matrix) {
@@ -64,4 +65,10 @@ function clickStart() {
 
 function clickRestart() {
   game.restart();
+}
+
+function updateScore() {
+  const score = document.querySelector('.game-score');
+
+  score.innerText = game.getScore();
 }

@@ -248,14 +248,6 @@ class Game {
    * Starts the game.
    */
   start() {
-    // const row1 = Math.floor(Math.random() * 4);
-    // const column1 = Math.floor(Math.random() * 4);
-    // const row2 = Math.floor(Math.random() * 4);
-    // const column2 = Math.floor(Math.random() * 4);
-
-    // this.state[row1][column1] = 2;
-    // this.state[row2][column2] = 2;
-
     this.addRandom();
     this.addRandom();
   }
