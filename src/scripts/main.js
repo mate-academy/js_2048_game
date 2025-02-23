@@ -23,6 +23,9 @@ document.addEventListener('keydown', function (e) {
     game.moveRight();
   }
 
+  game.addRandom();
+  checkLoose();
+
   renderMatrix(game.getState());
   addClasses(game.getState());
   updateScore();
@@ -84,10 +87,19 @@ function clickStart() {
 
 function clickRestart() {
   game.restart();
+  loseMessage.classList.add('hidden');
 }
 
 function updateScore() {
   const score = document.querySelector('.game-score');
 
   score.innerText = game.getScore();
+}
+
+const loseMessage = document.querySelector('.message-lose');
+
+function checkLoose() {
+  if (game.getStatus() === 'lose') {
+    loseMessage.classList.remove('hidden');
+  }
 }

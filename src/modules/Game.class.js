@@ -54,8 +54,6 @@ class Game {
         }
       }
     }
-
-    this.addRandom();
   }
 
   moveRight() {
@@ -82,8 +80,6 @@ class Game {
         }
       }
     }
-
-    this.addRandom();
   }
 
   moveUp() {
@@ -110,8 +106,6 @@ class Game {
         }
       }
     }
-
-    this.addRandom();
   }
 
   moveDown() {
@@ -138,8 +132,6 @@ class Game {
         }
       }
     }
-
-    this.addRandom();
   }
 
   moveCellUp(row, column) {
@@ -234,14 +226,15 @@ class Game {
 
     for (const item of this.state) {
       for (const i of item) {
-        if (i === 0) {
+        if (i === 0 || this.hasPairs()) {
           return 'playing';
         }
       }
     }
-    // TODO: add check for similar cells
 
-    return 'lose';
+    if (!this.hasPairs()) {
+      return 'lose';
+    }
   }
 
   /**
@@ -265,7 +258,10 @@ class Game {
     const randomEmptyCellIndex = Math.floor(Math.random() * emptyCells.length);
     const [row, col] = emptyCells[randomEmptyCellIndex];
 
-    this.state[row][col] = 2;
+    const randomValues = [4, 2, 2, 2, 2, 2, 2, 2, 2, 2];
+    const randomValueIndex = Math.floor(Math.random() * randomValues.length);
+
+    this.state[row][col] = randomValues[randomValueIndex];
   }
 
   getEmptyCells() {
@@ -280,6 +276,22 @@ class Game {
     }
 
     return emptyCells;
+  }
+
+  hasPairs() {
+    for (let i = 0; i < this.state.length - 1; i++) {
+      for (let j = 0; j < this.state.length - 1; j++) {
+        if (this.state[i][j] === this.state[i][j + 1]) {
+          return true;
+        }
+
+        if (this.state[i][j] === this.state[i + 1][j]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }
 
