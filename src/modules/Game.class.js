@@ -72,10 +72,6 @@ class Game {
       this.status = 'win';
     }
 
-    if (!this.checkAvailableMoves()) {
-      this.status = 'lose';
-    }
-
     if (
       currectScore === this.score &&
       this.getEmptyCells().length === 0 &&
@@ -87,6 +83,13 @@ class Game {
     }
 
     this.setRandomNumberOnCell();
+
+    if (
+      this.getEmptyCells().length === 0 &&
+      this.checkAvailableMoves() === false
+    ) {
+      this.status = 'lose';
+    }
   }
 
   moveRight() {
@@ -127,10 +130,6 @@ class Game {
       this.status = 'win';
     }
 
-    if (this.checkAvailableMoves() === false) {
-      this.status = 'lose';
-    }
-
     if (
       currectScore === this.score &&
       this.getEmptyCells().length === 0 &&
@@ -142,6 +141,13 @@ class Game {
     }
 
     this.setRandomNumberOnCell();
+
+    if (
+      this.getEmptyCells().length === 0 &&
+      this.checkAvailableMoves() === false
+    ) {
+      this.status = 'lose';
+    }
   }
 
   moveUp() {
@@ -195,10 +201,6 @@ class Game {
       this.status = 'win';
     }
 
-    if (!this.checkAvailableMoves()) {
-      this.status = 'lose';
-    }
-
     if (
       currectScore === this.score &&
       this.getEmptyCells().length === 0 &&
@@ -210,6 +212,13 @@ class Game {
     }
 
     this.setRandomNumberOnCell();
+
+    if (
+      this.getEmptyCells().length === 0 &&
+      this.checkAvailableMoves() === false
+    ) {
+      this.status = 'lose';
+    }
   }
 
   moveDown() {
@@ -276,6 +285,13 @@ class Game {
     }
 
     this.setRandomNumberOnCell();
+
+    if (
+      this.getEmptyCells().length === 0 &&
+      this.checkAvailableMoves() === false
+    ) {
+      this.status = 'lose';
+    }
   }
 
   /**

@@ -26,7 +26,6 @@ startButton.addEventListener('click', () => {
 
 document.addEventListener('keydown', handleMove);
 
-// Додаємо обробку свайпів
 let touchStartX = 0;
 let touchStartY = 0;
 let touchEndX = 0;
@@ -70,6 +69,7 @@ function handleMove(ev) {
 
   if (startMessage.classList.contains('hidden')) {
     startButton.setAttribute('class', 'button restart');
+    startButton.textContent = 'Restart';
 
     switch (ev.key) {
       case 'ArrowLeft':
