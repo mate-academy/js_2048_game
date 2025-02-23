@@ -25,6 +25,7 @@ document.addEventListener('keydown', function (e) {
 
   game.addRandom();
   checkLoose();
+  checkWin();
 
   renderMatrix(game.getState());
   addClasses(game.getState());
@@ -88,6 +89,7 @@ function clickStart() {
 function clickRestart() {
   game.restart();
   loseMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
 }
 
 function updateScore() {
@@ -97,9 +99,16 @@ function updateScore() {
 }
 
 const loseMessage = document.querySelector('.message-lose');
+const winMessage = document.querySelector('.message-win');
 
 function checkLoose() {
   if (game.getStatus() === 'lose') {
     loseMessage.classList.remove('hidden');
+  }
+}
+
+function checkWin() {
+  if (game.getStatus() === 'win') {
+    winMessage.classList.remove('hidden');
   }
 }
