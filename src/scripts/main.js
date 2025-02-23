@@ -87,9 +87,9 @@ button.addEventListener('click', () => {
     button.classList.remove('start');
     button.classList.add('restart');
   } else {
-    const startState = game.getState();
-
     game.restart();
+
+    const startState = game.getState();
 
     rewriteNumbers(startState);
     button.textContent = 'Start';
@@ -97,6 +97,7 @@ button.addEventListener('click', () => {
     button.classList.add('start');
     loseMessage.classList.add('hidden');
     winMessage.classList.add('hidden');
+    score.innerHTML = `Score: 0`;
   }
 
   showStatus();
@@ -140,4 +141,5 @@ document.addEventListener('keydown', (e) => {
   }
 
   showStatus();
+  scoreGame();
 });
