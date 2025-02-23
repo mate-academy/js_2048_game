@@ -1,69 +1,47 @@
 # 2048 game
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+## Key Features:
+- Game Initialization: Sets up a 4×4 grid with two random tiles (2 or 4) at the start.
+- Movement Handling: Supports tile movement in four directions (left, right, up, down) with proper merging and score calculation.
+- Score Tracking: Maintains the total score, increasing when tiles merge.
+- Win & Lose Conditions: Checks if a player reaches 2048 (win) or if no more moves are possible (lose).
+- Restart Functionality: Resets the game to its initial state.
+- Helper Functions: Includes methods for flipping the grid (for movement logic), comparing arrays, and inserting random tiles.
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+## Functionality
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
-  - constructor with `initialState` parameter (value is optional, defaults to the empty board)
-  - `getState()`
-  - `getScore()`
-  - `getStatus()`
-  - `moveLeft()`
-  - `moveRight()`
-  - `moveUp()`
-  - `moveDown()`
-  - `start()`
-  - `restart()`
+### Movement Methods
+These methods handle tile movement and merging. If movement occurs, a new random tile is added, and the game status is checked.
 
-3) Reference.
+moveLeft() - Moves all tiles to the left, merging identical tiles. Updates the score when tiles merge. If any tile moved, adds a random tile and checks win/lose status.<br>
+moveRight() - Reverses each row, calls moveLeft(), then reverses back. This simulates a rightward movement using the leftward logic.<br>
+moveUp() - Transposes the grid (flips rows into columns), calls moveLeft(), then flips back. This simulates an upward movement.<br>
+moveDown() - Transposes the grid, calls moveRight(), then flips back. This simulates a downward movement.<br>
 
-That's it!
+### Game State Methods
 
-Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) `Restart` button should reset the game to the initial state.
-12) Increase score with each move. The score should be increased by the sum of all merged cells.
-13) The game consists of 2 main parts:
-  - game logic written in `src/modules/Game.class.js` module that exports `Game` class
-  - game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
+getScore() - Returns the current game score.<br>
+getState() - Returns the current game board (2D array).<br>
+getStatus() - Returns the game status ("idle", "win", or "lose").<br>
 
-Hints:
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
-- Use `keydown` event and `event.key` property to handle arrow buttons presses
-    ```js
-    document.addEventListener('keydown', event => console.log(event.key));
-    ```
-- Adding animation to the game is optional. It is a bit tricky, but you can try it if you want. Probably, you will need to extend the Game class with additional methods and create a separate board storage with Tile entities to operate their corresponding DOM elements' positions.
+### Game Control Methods
 
-You can change the HTML/CSS layout if you need it.
+restart() - Resets the game: clears the board, resets score and status, and adds two random tiles.<br>
+addRandomTile() - Finds all empty spaces on the board. Randomly places a 2 (90%) or a 4 (10%) in one of those spaces.<br>
 
-![Preview](./src/images/reference.png)
+### Utility Methods
+flip(matrix) - Transposes the grid (flips rows into columns). Used to help with up/down movement logic.<br>
+arraysEqual(a, b) - Compares two arrays to check if they are identical.<br>
 
-## Deploy and Pull Request
+### Win/Lose Check Methods
+checkGameStatus() - Calls checkWin() and checkLose() to update the game status.<br>
+checkWin() - Checks if 2048 exists on the board → If yes, game status = "win".<br>
+checkLose() - If there are no empty tiles and no possible merges, the game is over ("lose").<br>
 
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+## How to Run the Project Locally
+- 1️⃣ Clone the repository git clone [https://github.com/MOODDDII/kickstarter-landing](https://github.com/MOODDDII/js_2048_game/tree/develop)
+- 2️⃣ Navigate to the project folder
+- 3️⃣ Install dependencies with npm install
+- 4️⃣ Open the project in a browser with npm start
 
+## [DEMO LINK](https://moodddii.github.io/js_2048_game/)
