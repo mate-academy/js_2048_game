@@ -21,23 +21,22 @@ buttonStart.addEventListener('click', () => {
   game.start();
   bild();
   mStart.classList.add('hidden');
+
+  buttonStart.remove(); // Видаляємо кнопку Start
+  controls.append(buttonRestart); // Додаємо кнопку Restart
 });
 
 buttonRestart.addEventListener('click', () => {
-  mStart.classList.remove('hidden');
-  controls.append(buttonStart);
-  buttonRestart.remove();
-
-  if (game.status === 'win') {
-    mWin.classList.add('hidden');
-  }
-
-  if (game.status === 'lose') {
-    mLose.classList.add('hidden');
-  }
-
   game.restart();
+  game.start(); // Одразу стартуємо гру
+
   bild();
+  mWin.classList.add('hidden');
+  mLose.classList.add('hidden');
+
+  if (!controls.contains(buttonRestart)) {
+    controls.append(buttonRestart);
+  }
 });
 
 document.addEventListener('keydown', (e) => {
