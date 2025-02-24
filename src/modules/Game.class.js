@@ -229,19 +229,24 @@ class Game {
   }
 
   checkLose() {
-    let count = 0;
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state[i][j] === 0) {
+          return; // Є порожні клітинки → гра ще не програна
+        }
 
-    for (let i = 0; i <= 3; i++) {
-      for (let n = 0; n <= 3; n++) {
-        if (this.state[i][n] === 0) {
-          count++;
+        // Перевіряємо сусідні клітинки
+        if (
+          (i < 3 && this.state[i][j] === this.state[i + 1][j]) || // Вниз
+          (j < 3 && this.state[i][j] === this.state[i][j + 1]) // Вправо
+        ) {
+          return; // Є можливі злиття → гра ще не програна
         }
       }
     }
 
-    if (count === 0) {
-      this.lose();
-    }
+    // Якщо жодних варіантів немає — програш
+    this.lose();
   }
 
   lose() {
