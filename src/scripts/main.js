@@ -15,7 +15,11 @@ function renderGameBoard(state) {
 
     cell.textContent = value !== 0 ? value : '';
 
-    cell.classList.add = `field-cell field-cell--${value}`;
+    cell.className = 'field-cell';
+
+    if (value !== 0) {
+      cell.classList.add(`field-cell--${value}`);
+    }
   });
 }
 

@@ -60,18 +60,23 @@ class Game {
     return filteredRow;
   }
 
-  moveLeft() {
+  move(direction) {
     if (this.status === 'playing') {
       let changed = false;
 
-      for (let r = 0; r < 4; r++) {
-        const originalRow = [...this.state[r]];
+      for (let i = 0; i < 4; i++) {
+        const original = [...this.state[i]];
 
-        this.state[r] = Game.moveRowLeft(this.state[r], this);
+        const newRow =
+          direction === 'left'
+            ? Game.moveRowLeft(original, this)
+            : Game.moveRowRight(original, this);
 
-        if (!changed && originalRow.toString() !== this.state[r].toString()) {
+        if (!changed && newRow.toString() !== original.toString()) {
           changed = true;
         }
+
+        this.state[i] = newRow;
       }
 
       if (changed) {
@@ -83,7 +88,15 @@ class Game {
       }
     }
   }
-  static moveRowRigth(row, game) {
+
+  moveLeft() {
+    this.move('left');
+  }
+
+  moveRight() {
+    this.move('right');
+  }
+  static moveRowRight(row, game) {
     let filteredRow = row.filter((value) => value !== 0);
 
     for (let i = filteredRow.length - 1; i > 0; i--) {
@@ -105,29 +118,6 @@ class Game {
     }
 
     return filteredRow;
-  }
-  moveRight() {
-    if (this.status === 'playing') {
-      let changed = false;
-
-      for (let r = 0; r < 4; r++) {
-        const originalRow = [...this.state[r]];
-
-        this.state[r] = Game.moveRowRigth(this.state[r], this);
-
-        if (!changed && originalRow.toString() !== this.state[r].toString()) {
-          changed = true;
-        }
-      }
-
-      if (changed) {
-        this.addRandomTile();
-
-        if (!this.canMove()) {
-          this.status = 'lose';
-        }
-      }
-    }
   }
 
   canMove() {
@@ -315,11 +305,8 @@ class Game {
   start() {
     this.score = 0;
     this.status = 'playing';
-
-    // if (this.state.every((row) => row.every((cell) => cell === 0))) {
     this.addRandomTile(2);
     this.addRandomTile(2);
-    // }
   }
 
   /**
