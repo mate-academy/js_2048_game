@@ -142,6 +142,55 @@ class Game {
       }
     };
 
+    this.resultNumbersRightDown = (numbersResult, fourNumbers) => {
+      for (let j = 0; j < fourNumbers.length;) {
+        if (
+          fourNumbers[j] === fourNumbers[j + 1] &&
+          fourNumbers[j + 1] === fourNumbers[j + 2]
+        ) {
+          // when we have three in a row the same numbers
+          // at first we add a number twice as large as one of them
+          // after that we add one of them
+          numbersResult.push(fourNumbers[j]);
+          numbersResult.push(fourNumbers[j] * 2);
+
+          this.score += fourNumbers[j] * 2;
+
+          j += 3;
+        } else if (fourNumbers[j] === fourNumbers[j + 1]) {
+          numbersResult.push(fourNumbers[j] * 2);
+          // when we have two in a row the same numbers
+          // we add a number twice as large as one of them
+
+          this.score += fourNumbers[j] * 2;
+
+          j += 2;
+
+          continue;
+        } else if (
+          fourNumbers[0] === fourNumbers[0 + 1] &&
+          fourNumbers[0 + 2] === fourNumbers[0 + 3]
+        ) {
+          // when we have four in a row the same numbers
+          // we add two numbers twice as large as one of them
+          // and delete all elements we get before
+          numbersResult.length = 0;
+          numbersResult.push(fourNumbers[1] * 2);
+          numbersResult.push(fourNumbers[2] * 2);
+
+          this.score += fourNumbers[j] * 2;
+          this.score += fourNumbers[j] * 2;
+
+          j += 2;
+          continue;
+        } else {
+          numbersResult.push(fourNumbers[j]);
+          // just add this number because we haven't the same
+          j++;
+        }
+      }
+    };
+
     this.leftCoordinates = (initialSt, copyCoords) => {
       for (let i = 0; i < initialSt.length; i++) {
         const coords = [];
@@ -317,7 +366,7 @@ class Game {
         }
       }
 
-      resultNumbers(results, numArr);
+      this.resultNumbersRightDown(results, numArr);
 
       let indexResult = 0;
 
@@ -474,7 +523,7 @@ class Game {
         }
       }
 
-      resultNumbers(results, numArr);
+      this.resultNumbersRightDown(results, numArr);
 
       let indexResult = 0;
 
@@ -482,9 +531,17 @@ class Game {
         indexResult = results.length - 1;
 
         console.log(results);
+        console.log(results.length);
+
+        // for (let j = 0; j < state.length; j++) {
+        //   state[j][i] = results[j];
+        // }
 
         for (let j = state.length - 1; j >= 0; j--) {
           state[j][i] = results[indexResult];
+
+          console.log();
+
           indexResult--;
 
           if (indexResult < 0) {
