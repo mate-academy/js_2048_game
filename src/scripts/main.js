@@ -106,34 +106,22 @@ button.addEventListener('click', () => {
 document.addEventListener('keydown', (e) => {
   if (button.textContent === 'Restart') {
     scoreGame();
-  }
 
-  if (e.key === 'ArrowDown' && button.textContent === 'Restart') {
-    game.moveDown();
+    switch (e.key) {
+      case 'ArrowDown':
+        game.moveDown();
+        break;
+      case 'ArrowUp':
+        game.moveUp();
+        break;
+      case 'ArrowRight':
+        game.moveRight();
+        break;
 
-    const startState = game.getState();
-
-    rewriteNumbers(startState);
-  }
-
-  if (e.key === 'ArrowUp' && button.textContent === 'Restart') {
-    game.moveUp();
-
-    const startState = game.getState();
-
-    rewriteNumbers(startState);
-  }
-
-  if (e.key === 'ArrowRight' && button.textContent === 'Restart') {
-    game.moveRight();
-
-    const startState = game.getState();
-
-    rewriteNumbers(startState);
-  }
-
-  if (e.key === 'ArrowLeft' && button.textContent === 'Restart') {
-    game.moveLeft();
+      case 'ArrowLeft':
+        game.moveLeft();
+        break;
+    }
 
     const startState = game.getState();
 
