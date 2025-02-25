@@ -2,6 +2,7 @@
 
 const Game = require('../modules/Game.class');
 
+// Write your code here
 const game = new Game();
 const startButton = document.querySelector('.button.start');
 const score = document.querySelector('.game-score');

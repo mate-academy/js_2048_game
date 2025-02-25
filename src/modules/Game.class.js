@@ -32,7 +32,6 @@ class Game {
     this.score = 0;
     this.status = 'idle';
   }
-
   moveLeft() {
     this.move((row) => this.mergeLeft(row));
   }
@@ -98,7 +97,7 @@ class Game {
       [0, 0, 0, 0],
     ];
     this.score = 0;
-    this.status = 'idle';
+    this.status = 'playing';
     this.addRandomTile();
     this.addRandomTile();
   }
