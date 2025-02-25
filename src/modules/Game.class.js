@@ -143,7 +143,7 @@ class Game {
     };
 
     this.resultNumbersRightDown = (numbersResult, fourNumbers) => {
-      for (let j = 0; j < fourNumbers.length;) {
+      for (let j = 0; j < fourNumbers.length; ) {
         if (
           fourNumbers[j] === fourNumbers[j + 1] &&
           fourNumbers[j + 1] === fourNumbers[j + 2]
@@ -345,7 +345,6 @@ class Game {
     const {
       state,
       coordinates,
-      resultNumbers,
       leftCoordinates,
       stateChanged,
       isGameOver,
@@ -501,7 +500,6 @@ class Game {
     const {
       state,
       coordinates,
-      resultNumbers,
       leftCoordinates,
       stateChanged,
       isGameOver,
@@ -530,17 +528,8 @@ class Game {
       if (results.length > 0) {
         indexResult = results.length - 1;
 
-        console.log(results);
-        console.log(results.length);
-
-        // for (let j = 0; j < state.length; j++) {
-        //   state[j][i] = results[j];
-        // }
-
         for (let j = state.length - 1; j >= 0; j--) {
           state[j][i] = results[indexResult];
-
-          console.log();
 
           indexResult--;
 
@@ -611,8 +600,6 @@ class Game {
   getStatus() {
     const { gameStatus } = this;
 
-    console.log(gameStatus);
-
     return gameStatus;
   }
 
@@ -626,13 +613,8 @@ class Game {
 
     leftCoordinates(state, copyCoordinates);
 
-    console.log(copyCoordinates);
-    console.log(copyCoordinates.length);
-
     function randomCoordinates() {
       const random = Math.random() * copyCoordinates.length;
-
-      console.log(Math.ceil(random) - 1);
 
       return Math.ceil(random) - 1;
     }
@@ -644,9 +626,6 @@ class Game {
       secondCoordinate = randomCoordinates();
     }
 
-    console.log(copyCoordinates[firstCoordinate][0]);
-    console.log(copyCoordinates[firstCoordinate][1]);
-
     state[copyCoordinates[firstCoordinate][0]][
       copyCoordinates[firstCoordinate][1]
     ] = Math.random() < 0.9 ? 2 : 4;
@@ -656,8 +635,6 @@ class Game {
     ] = Math.random() < 0.9 ? 2 : 4;
 
     this.gameStatus = 'playing';
-
-    // return initialState;
   }
 
   /**
