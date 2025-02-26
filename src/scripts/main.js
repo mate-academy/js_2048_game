@@ -44,6 +44,10 @@ restartButton.addEventListener('click', () => {
   restartButton.remove();
   controlPanel.append(startButton);
   document.querySelector('.message-start').classList.remove('hidden');
+
+  if (document.querySelector('.message-lose')) {
+    document.querySelector('.message-lose').classList.add('hidden');
+  }
 });
 
 document.addEventListener('keydown', (e) => {
