@@ -63,7 +63,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 restartButton.addEventListener('click', () => {
-  game.restart();
+  game.start();
   updateUI();
 });
 
