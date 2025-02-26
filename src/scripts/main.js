@@ -1,82 +1,44 @@
 import Game from '../modules/Game.class';
+import { GAME_STATUS } from '../constants';
 
 const game = new Game();
 
-const gameButton = document.querySelector('.button');
-const gameField = document.querySelector('.game-field');
 const score = document.querySelector('.game-score');
-
-const messageStart = document.querySelector('.message-start');
+const buttonStart = document.querySelector('.button.start');
+const gameCells = document.querySelectorAll('.field-cell');
+const messages = document.querySelectorAll('.message');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
+const messageStart = document.querySelector('.message-start');
 
-gameButton.addEventListener('click', () => {
-  const hasStarted = gameButton.textContent === 'Start';
+buttonStart.addEventListener('click', () => {
+  const gameStatus = game.getStatus();
 
-  if (hasStarted) {
-    game.start();
-
-    document.addEventListener('keydown', handleKeyDown);
-  } else {
-    game.restart();
-
-    document.removeEventListener('keydown', handleKeyDown);
-
-    [messageWin, messageLose].forEach((message) => {
-      message.classList.add('hidden');
-    });
-
-    updateGameScore();
+  switch (gameStatus) {
+    case GAME_STATUS.IDLE:
+    case GAME_STATUS.LOSE:
+    case GAME_STATUS.WIN:
+      game.start();
+      buttonStart.textContent = 'Restart';
+      buttonStart.classList.remove('start');
+      buttonStart.classList.add('restart');
+      break;
+    default:
+      game.restart();
+      buttonStart.textContent = 'Start';
+      buttonStart.classList.remove('restart');
+      buttonStart.classList.add('start');
+      break;
   }
 
-  gameButton.textContent = hasStarted ? 'Restart' : 'Start';
-  gameButton.classList.toggle('start', !hasStarted);
-  gameButton.classList.toggle('restart', hasStarted);
-  messageStart.classList.toggle('hidden', hasStarted);
-
-  updateGameBoard();
+  updateUI();
 });
 
-const updateGameBoard = () => {
-  gameField.innerHTML = '';
-
-  const state = game.getState();
-
-  state.forEach((row) => {
-    const tableRow = document.createElement('tr');
-
-    row.forEach((cell) => {
-      const tableCell = document.createElement('td');
-
-      tableCell.textContent = cell || '';
-      tableCell.classList.add('field-cell');
-
-      if (cell) {
-        tableCell.classList.add(`field-cell--${cell}`);
-      }
-
-      tableRow.appendChild(tableCell);
-    });
-
-    gameField.appendChild(tableRow);
-  });
-};
-
-const updateGameScore = () => {
-  score.textContent = game.getScore();
-};
-
-const updateGameMessage = () => {
-  if (game.getStatus() === Game.STATUS.WIN) {
-    messageWin.classList.remove('hidden');
+document.addEventListener('keydown', (e) => {
+  if (game.getStatus() !== GAME_STATUS.PLAYING) {
+    return;
   }
 
-  if (game.getStatus() === Game.STATUS.LOSE) {
-    messageLose.classList.remove('hidden');
-  }
-};
-
-const handleKeyDown = (e) => {
   switch (e.key) {
     case 'ArrowLeft':
       game.moveLeft();
@@ -90,9 +52,46 @@ const handleKeyDown = (e) => {
     case 'ArrowDown':
       game.moveDown();
       break;
+    default:
+      return;
   }
 
-  updateGameBoard();
-  updateGameScore();
-  updateGameMessage();
-};
+  updateUI();
+});
+
+function updateUI() {
+  const state = game.getState();
+
+  gameCells.forEach((cell, index) => {
+    const row = Math.floor(index / 4);
+    const col = index % 4;
+    const value = state[row][col];
+
+    cell.textContent = value || '';
+    cell.className = 'field-cell';
+
+    if (value) {
+      cell.classList.add(`field-cell--${value}`);
+    }
+  });
+
+  score.textContent = game.getScore();
+
+  const gameStatus = game.getStatus();
+
+  messages.forEach((msg) => msg.classList.add('hidden'));
+
+  switch (gameStatus) {
+    case GAME_STATUS.WIN:
+      messageWin.classList.remove('hidden');
+      break;
+    case GAME_STATUS.LOSE:
+      messageLose.classList.remove('hidden');
+      break;
+    case GAME_STATUS.IDLE:
+      messageStart.classList.remove('hidden');
+      break;
+  }
+}
+
+updateUI();
