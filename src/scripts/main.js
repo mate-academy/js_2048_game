@@ -12,6 +12,10 @@ const restartButton = document.querySelector('.button.restart');
 function renderBoard() {
   scoreElement.textContent = game.getScore();
 
+  if (game.status === 'lose') {
+    messageLose.classList.remove('hidden');
+  }
+
   game.board.forEach((row, rowIndex) => {
     row.forEach((cell, colIndex) => {
       const cellElement = cells[rowIndex * 4 + colIndex];
@@ -28,10 +32,6 @@ function renderBoard() {
       }
     });
   });
-
-  if (game.status === 'lose') {
-    messageLose.classList.remove('hidden');
-  }
 }
 
 startButton.addEventListener('click', () => {
@@ -44,6 +44,7 @@ startButton.addEventListener('click', () => {
 });
 
 restartButton.addEventListener('click', () => {
+  messageLose.classList.add('hidden');
   restartButton.classList.add('hidden');
   startButton.classList.remove('hidden');
   game.restart();
@@ -67,4 +68,5 @@ document.addEventListener('keydown', (e) => {
       break;
   }
   renderBoard();
+  game.getStatus();
 });

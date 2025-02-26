@@ -28,13 +28,17 @@ class Game {
     let hasMoves = false;
 
     if (this.status === 'idle') {
-      return 'idle';
+      this.status = 'idle';
+
+      return this.status;
     }
 
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.board[row][col] === 2048) {
-          return 'win';
+          this.status = 'win';
+
+          return this.status;
         }
 
         if (this.board[row][col] === 0) {
@@ -51,10 +55,14 @@ class Game {
     }
 
     if (hasEmpty || hasMoves) {
+      this.status = 'playing';
+
       return 'playing';
     }
 
-    return 'lose';
+    this.status = 'lose';
+
+    return this.status;
   }
 
   addRandomTile() {
