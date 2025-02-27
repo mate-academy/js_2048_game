@@ -66,16 +66,16 @@ button {
     background-color: #312e81;
   }
   &--256 {
-    background-color: #0d9488;
+    background-color: #14b8a6;
   }
   &--512 {
-    background-color: #0f766e;
+    background-color: #0d9488;
   }
   &--1024 {
-    background-color: #115e59;
+    background-color: #0f766e;
   }
   &--2048 {
-    background-color: #134e4a;
+    background-color: #115e59;
   }
 }
 
@@ -100,7 +100,7 @@ h1 {
   height: 85px;
 
   font-size: 24px;
-  background-color: #134e4a;
+  background-color: #115e59;
 }
 
 .info {
@@ -123,7 +123,7 @@ h1 {
 }
 
 .button {
-  background-color: #28a745;
+  background-color: #15803d;
   color: #f9f6f2;
   border: none;
   border-radius: 5px;
@@ -133,17 +133,18 @@ h1 {
   width: 85px;
   height: 85px;
 
-  transition: background-color 0.2s ease;
+  transition: opacity 0.2s ease;
 
   &.restart {
-    background-color: #dc3545;
+    background-color: #dc2424;
 
     &:hover {
-      background-color: #c82333;
+      opacity: 0.8;
     }
   }
+
   &:hover {
-    background-color: #218838;
+    opacity: 0.8;
   }
 }
 
@@ -156,10 +157,10 @@ h1 {
   background-color: #4a4a4a;
 
   &-win {
-    background-color: #134e4a;
+    background-color: #115e59;
   }
   &-lose {
-    background-color: #dc3545;
+    background-color: #dc2424;
   }
 }
 
