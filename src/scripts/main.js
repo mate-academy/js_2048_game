@@ -14,12 +14,12 @@ buttonStart.addEventListener('click', () => {
   if (buttonStart.classList.contains('start')) {
     game.start();
 
-    buttonStart.textContent = 'Restart';
+    buttonStart.textContent = 'RESTART';
     buttonStart.classList.replace('start', 'restart');
   } else {
     game.restart();
 
-    buttonStart.textContent = 'Start';
+    buttonStart.textContent = 'START';
     buttonStart.classList.replace('restart', 'start');
   }
 
