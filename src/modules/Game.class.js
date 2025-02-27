@@ -74,6 +74,28 @@ class Game {
   }
 
   /**
+   * Fills in the cells of the '.game-field' element
+   * with the content of this.state.
+   *
+   * @returns {void}
+   */
+  renderState() {
+    const gameField = document.querySelector('.game-field');
+    const rowsArray = [...gameField.querySelectorAll('.field-row')];
+
+    rowsArray.forEach((row, rowIndex) => {
+      [...row.cells].forEach((cell, cellIndex) => {
+        const cellValue = this.getState()[rowIndex][cellIndex];
+
+        if (cellValue) {
+          cell.textContent = cellValue;
+          cell.classList.add(`field-cell--${cellValue}`);
+        }
+      });
+    });
+  }
+
+  /**
    * Starts the game.
    */
   start() {}
