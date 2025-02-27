@@ -30,66 +30,81 @@ export default class Game {
   }
 
   move(direction) {
-    const newState = this.processDirection(direction);
+    const newState = this.calculateNewState(direction);
 
-    if (!this.arraysEqual(this.state, newState)) {
+    if (!this.areStatesEqual(this.state, newState)) {
       this.state = newState;
       this.addNewTile();
       this.updateGameStatus();
     }
   }
 
-  processDirection(direction) {
+  calculateNewState(direction) {
     switch (direction) {
       case 'left':
-        return this.state.map((row) => this.processRow(row));
-
+        return this.handleHorizontalMove(false);
       case 'right':
-        return this.state.map((row) => {
-          return this.processRow(row.reverse()).reverse();
-        });
-
+        return this.handleHorizontalMove(true);
       case 'up':
-        return this.transpose(
-          this.transpose(this.state).map((row) => this.processRow(row)),
-        );
-
+        return this.handleVerticalMove(false);
       case 'down':
-        return this.transpose(
-          this.transpose(this.state).map((row) => {
-            return this.processRow(row.reverse()).reverse();
-          }),
-        );
-
+        return this.handleVerticalMove(true);
       default:
         return this.state;
     }
   }
 
-  processRow(row) {
-    const filtered = row.filter((cell) => cell !== 0);
+  handleHorizontalMove(reverse) {
+    return this.state.map((row) => {
+      const processed = reverse ? [...row].reverse() : [...row];
+      const merged = this.mergeTiles(processed);
 
-    for (let i = 0; i < filtered.length - 1; i++) {
-      if (filtered[i] === filtered[i + 1]) {
-        filtered[i] *= 2;
-        this.score += filtered[i];
-        filtered.splice(i + 1, 1);
+      return reverse ? merged.reverse() : merged;
+    });
+  }
+
+  handleVerticalMove(reverse) {
+    const newState = Array.from({ length: 4 }, () => []);
+
+    for (let col = 0; col < 4; col++) {
+      let column = this.state.map((row) => row[col]);
+
+      column = reverse ? column.reverse() : column;
+
+      const merged = this.mergeTiles(column);
+
+      column = reverse ? merged.reverse() : merged;
+
+      column.forEach((value, row) => {
+        newState[row][col] = value;
+      });
+    }
+
+    return newState;
+  }
+
+  mergeTiles(line) {
+    const merged = line.filter((tile) => tile !== 0);
+
+    for (let i = 0; i < merged.length - 1; i++) {
+      if (merged[i] === merged[i + 1]) {
+        merged[i] *= 2;
+        this.score += merged[i];
+        merged.splice(i + 1, 1);
       }
     }
 
-    while (filtered.length < 4) {
-      filtered.push(0);
+    while (merged.length < 4) {
+      merged.push(0);
     }
 
-    return filtered;
+    return merged;
   }
 
-  transpose(matrix) {
-    return matrix[0].map((_, col) => matrix.map((row) => row[col]));
-  }
-
-  arraysEqual(a, b) {
-    return a.every((row, i) => row.every((cell, j) => cell === b[i][j]));
+  areStatesEqual(stateA, stateB) {
+    return stateA.every((row, i) => {
+      return row.every((tile, j) => tile === stateB[i][j]);
+    });
   }
 
   getScore() {
