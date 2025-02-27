@@ -39,9 +39,8 @@ export default class Game {
     if (!this.arraysEqual(this.state, newState)) {
       this.state = newState;
       this.addNewTile();
+      this.updateGameStatus();
     }
-
-    this.updateGameStatus();
   }
 
   processDirection(direction) {
