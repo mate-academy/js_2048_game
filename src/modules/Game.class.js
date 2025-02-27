@@ -30,10 +30,6 @@ export default class Game {
   }
 
   move(direction) {
-    if (this.status !== GAME_STATUS.PLAYING) {
-      return;
-    }
-
     const newState = this.processDirection(direction);
 
     if (!this.arraysEqual(this.state, newState)) {
@@ -116,7 +112,7 @@ export default class Game {
   }
 
   restart() {
-    this.state = this.initialState;
+    this.state = this.initialState.map((row) => [...row]);
     this.score = 0;
     this.status = GAME_STATUS.IDLE;
   }
