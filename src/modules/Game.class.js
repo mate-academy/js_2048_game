@@ -2,8 +2,6 @@
 
 /**
  * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
  */
 class Game {
   /**
@@ -20,9 +18,13 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(initialState = null) {
+    this.size = 4;
+    this.score = 0;
+    this.status = 'idle';
+
+    this.state =
+      initialState || Array(this.size).fill(Array(this.size).fill(0));
   }
 
   moveLeft() {}
@@ -33,12 +35,16 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.state;
+  }
 
   /**
    * Returns the current game status.
@@ -50,7 +56,9 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
