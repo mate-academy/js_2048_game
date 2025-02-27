@@ -54,28 +54,37 @@ export default class Game {
     }
   }
 
-  handleHorizontalMove(reverse) {
+  handleHorizontalMove(isReversed) {
     return this.state.map((row) => {
-      const processed = reverse ? [...row].reverse() : [...row];
-      const merged = this.mergeTiles(processed);
+      let processed = [...row];
 
-      return reverse ? merged.reverse() : merged;
+      if (isReversed) {
+        processed.reverse();
+      }
+
+      processed = this.mergeTiles(processed);
+
+      return isReversed ? processed.reverse() : processed;
     });
   }
 
-  handleVerticalMove(reverse) {
+  handleVerticalMove(isReversed) {
     const newState = Array.from({ length: 4 }, () => []);
 
     for (let col = 0; col < 4; col++) {
-      let column = this.state.map((row) => row[col]);
+      const column = this.state.map((row) => row[col]);
 
-      column = reverse ? column.reverse() : column;
+      if (isReversed) {
+        column.reverse();
+      }
 
       const merged = this.mergeTiles(column);
 
-      column = reverse ? merged.reverse() : merged;
+      if (isReversed) {
+        merged.reverse();
+      }
 
-      column.forEach((value, row) => {
+      merged.forEach((value, row) => {
         newState[row][col] = value;
       });
     }
@@ -102,9 +111,7 @@ export default class Game {
   }
 
   areStatesEqual(stateA, stateB) {
-    return stateA.every((row, i) => {
-      return row.every((tile, j) => tile === stateB[i][j]);
-    });
+    return JSON.stringify(stateA) === JSON.stringify(stateB);
   }
 
   getScore() {
@@ -171,11 +178,10 @@ export default class Game {
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         const current = this.state[i][j];
+        const hasHorizontalMerge = j < 3 && current === this.state[i][j + 1];
+        const hasVerticalMerge = i < 3 && current === this.state[i + 1][j];
 
-        if (
-          (j < 3 && current === this.state[i][j + 1]) ||
-          (i < 3 && current === this.state[i + 1][j])
-        ) {
+        if (hasHorizontalMerge || hasVerticalMerge) {
           return true;
         }
       }

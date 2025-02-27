@@ -41,7 +41,7 @@ button {
   user-select: none;
   background-color: #4a4a4a;
 
-  transition: background-color 0.15s ease;
+  transition: all 0.15s ease;
 
   &--2 {
     background-color: #778da9;
@@ -155,7 +155,7 @@ h1 {
   background-color: #4a4a4a;
 
   &-win {
-    background-color: #edc22e;
+    background-color: #134e4a;
   }
   &-lose {
     background-color: #dc3545;
@@ -175,4 +175,5 @@ h1 {
 
 .message-container {
   height: 150px;
+  width: 100%;
 }
