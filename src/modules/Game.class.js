@@ -2,18 +2,15 @@ import { GAME_STATUS } from '../constants';
 
 export default class Game {
   constructor() {
-    this.reset();
-  }
-
-  reset() {
-    this.state = [
+    this.initialState = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
+    this.state = this.initialState.map((row) => [...row]);
     this.score = 0;
-    this.status = 'idle';
+    this.status = GAME_STATUS.IDLE;
   }
 
   moveLeft() {
@@ -113,18 +110,16 @@ export default class Game {
   }
 
   start() {
-    if (this.status === GAME_STATUS.PLAYING) {
-      return;
-    }
-
-    this.reset();
     this.status = GAME_STATUS.PLAYING;
+
     this.addNewTile();
     this.addNewTile();
   }
 
   restart() {
-    this.reset();
+    this.state = this.initialState;
+    this.score = 0;
+    this.status = GAME_STATUS.IDLE;
   }
 
   addNewTile() {
