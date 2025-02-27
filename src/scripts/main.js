@@ -46,7 +46,7 @@ startButton.addEventListener('click', () => {
   }
 });
 
-document.addEventListener('keydown', (events) => {
+document.addEventListener('keyup', (events) => {
   const boardBeforeMove = game.board.map((row) => [...row]);
 
   if (game.getStatus() === 'playing') {
