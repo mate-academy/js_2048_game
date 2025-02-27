@@ -268,7 +268,7 @@ class Game {
 
   isGameOver() {
     // eslint-disable-next-line no-console
-    console.log(this.isBoardFull(), this.canMerge());
+    console.log(this.status);
 
     return this.isBoardFull() && !this.canMerge() && this.getWin();
   }

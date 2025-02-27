@@ -8,17 +8,8 @@ const game = new Game();
 const startButton = document.querySelector('.start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
-
 const messageStart = document.querySelector('.message-start');
-
-startButton.addEventListener('click', (e) => {
-  if (e) {
-    startButton.classList.add('restart');
-    startButton.innerHTML = 'Ress';
-    game.restart();
-    updateBoard(game);
-  }
-});
+const gameField = document.querySelector('.game-field');
 
 function updateMaxTileDisplay() {
   const maxTile = game.getMaxTile();
@@ -32,10 +23,27 @@ function startGame() {
 }
 
 startButton.addEventListener('click', () => {
-  startGame();
-  messageStart.classList.add('hidden');
-  messageLose.classList.add('hidden');
-  messageWin.classList.add('hidden');
+  if (startButton.classList.contains('restart')) {
+    startButton.classList.remove('restart');
+    startButton.innerHTML = 'Start';
+    game.restart();
+    updateBoard(game);
+  } else {
+    startButton.classList.add('restart');
+    startButton.innerHTML = 'Reset';
+    startGame();
+    updateBoard(game);
+  }
+
+  if (game.getStatus() === 'playing') {
+    messageStart.classList.add('hidden');
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
+  }
+
+  if (game.getStatus() === 'idle') {
+    messageStart.classList.remove('hidden');
+  }
 });
 
 document.addEventListener('keydown', (events) => {
@@ -75,15 +83,53 @@ document.addEventListener('keydown', (events) => {
     }
   }
 
-  // Якщо дошка змінилася, додаємо нову плитку
   if (hasChanged) {
     game.getWin();
     updateBoard(game);
-    // game.addRandomTile();
+    game.addRandomTile();
     updateMaxTileDisplay();
     // eslint-disable-next-line no-console
     console.log(game.board);
     // eslint-disable-next-line no-console
     console.log(game.getStatus());
+  }
+});
+
+let startX = 0;
+let startY = 0;
+
+gameField.addEventListener('touchstart', (e) => {
+  const touch = e.touches[0];
+
+  startX = touch.pageX;
+  startY = touch.pageY;
+});
+
+gameField.addEventListener('touchend', (e) => {
+  if (game.getStatus() === 'playing') {
+    const touch = e.changedTouches[0];
+    const endX = touch.pageX;
+    const endY = touch.pageY;
+
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX > 0) {
+        game.moveRight();
+      } else {
+        game.moveLeft();
+      }
+    } else {
+      if (deltaY > 0) {
+        game.moveDown();
+      } else {
+        game.moveUp();
+      }
+    }
+
+    updateBoard(game);
+    game.addRandomTile();
+    updateMaxTileDisplay();
   }
 });

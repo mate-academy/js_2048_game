@@ -17,7 +17,6 @@ export default function updateBoard(game) {
 
   board.forEach((row, rowIndex) => {
     row.forEach((cell, colIndex) => {
-      // Знайдемо відповідну клітинку на екрані
       const currentCell = cells[rowIndex * board[0].length + colIndex];
 
       if (currentCell) {
@@ -28,13 +27,16 @@ export default function updateBoard(game) {
           currentCell.classList.add(`tile-${cell}`);
           currentCell.classList.add(`field-cell--${cell}`);
         }
+
+        if (cell > 2048) {
+          currentCell.classList.add(`over`);
+        }
       }
     });
   });
 
   scoreElement.textContent = game.getScore();
 
-  // Перевіряємо на виграш або програш
   if (game.isGameOver()) {
     game.status = 'lose';
   }
