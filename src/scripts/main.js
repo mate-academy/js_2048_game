@@ -12,6 +12,8 @@ const loseMessage = message.children[0];
 const winMessage = message.children[1];
 const startMessage = message.children[2];
 
+score.style = 'text-align: center';
+
 function scoreGame() {
   score.innerHTML = `Score: ${game.getScore()}`;
 }
