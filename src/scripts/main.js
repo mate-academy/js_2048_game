@@ -113,6 +113,8 @@ function checkStatus() {
     case gameStatus.idle:
       if (startMessage.hasAttribute('class', hiddenClass)) {
         startMessage.classList.remove(hiddenClass);
+        winMessage.classList.add(hiddenClass);
+        loseMessage.classList.add(hiddenClass);
       }
 
       if (controlBtn.hasAttribute('class', 'restart')) {
@@ -144,6 +146,8 @@ function checkStatus() {
 }
 
 function move(moveDirection) {
+  const current = game.board.map((row) => [...row]);
+
   switch (moveDirection) {
     case moves.up:
       game.moveUp();
@@ -162,8 +166,13 @@ function move(moveDirection) {
       break;
   }
 
+  const moved = game.board.map((row) => [...row]);
+
   checkStatus();
 
-  game.setNum();
+  if (game.moveDone(current, moved)) {
+    game.setNum();
+  }
+
   setValues();
 }

@@ -135,6 +135,12 @@ class Game {
     }
   }
 
+  moveDone(initial, current) {
+    const toStr = (arr) => arr.flat().join('');
+
+    return toStr(initial) !== toStr(current);
+  }
+
   /**
    * @returns {number}
    */
@@ -162,7 +168,7 @@ class Game {
   getStatus() {
     const openedBoard = this.openBoard();
 
-    if (!this.isEqual()) {
+    if (!this.isEqual() && !openedBoard.includes(0)) {
       return 'lose';
     }
 
