@@ -108,8 +108,7 @@ class Game {
     }
 
     let changed = false;
-
-    this.board = this.board.map((row) => {
+    const newBoard = this.board.map((row) => {
       const newRow = transform([...row]);
 
       if (newRow.toString() !== row.toString()) {
@@ -120,8 +119,9 @@ class Game {
     });
 
     if (changed) {
+      this.board = newBoard; // Apply only if something changed
       this.addRandomTile();
-      this.checkGameStatus();
+      this.checkGameStatus(); // Check only after a valid move
     }
   }
 
@@ -199,16 +199,23 @@ class Game {
   }
 
   canMove() {
-    return (
-      this.board.flat().includes(0) ||
-      this.board.some((row, i) => {
-        row.some(
-          (cell, j) =>
-            (j < 3 && cell === row[j + 1]) ||
-            (i < 3 && cell === this.board[i + 1][j]),
-        );
-      })
-    );
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.board[i][j] === 0) {
+          return true;
+        }
+
+        if (j < 3 && this.board[i][j] === this.board[i][j + 1]) {
+          return true;
+        }
+
+        if (i < 3 && this.board[i][j] === this.board[i + 1][j]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }
 
