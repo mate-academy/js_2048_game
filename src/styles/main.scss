@@ -1,15 +1,3 @@
-@media (max-width: 430px) {
-  .button {
-    width: 90px;
-    font-size: 18px;
-    padding-left: 6px;
-  }
-
-  .info {
-    width: 90px;
-  }
-}
-
 body {
   margin: 0;
   display: flex;
@@ -139,6 +127,7 @@ h1 {
 }
 
 .button {
+  text-align: center;
   border: none;
   border-radius: 5px;
   cursor: pointer;
