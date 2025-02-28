@@ -127,6 +127,9 @@ h1 {
 }
 
 .button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   border: none;
   border-radius: 5px;
