@@ -23,15 +23,21 @@ class Game {
     this.score = 0;
     this.status = 'idle';
 
-    this.state =
-      initialState ||
-      Array.from({ length: this.size }, () => Array(this.size).fill(0));
+    this.state = initialState || this.getEmptyBoard();
+    this._renderedState = this.getEmptyBoard();
   }
 
   moveLeft() {}
   moveRight() {}
   moveUp() {}
   moveDown() {}
+
+  /**
+   * Returns matrix with size === this.size filled with 0.
+   */
+  getEmptyBoard() {
+    return Array.from({ length: this.size }, () => Array(this.size).fill(0));
+  }
 
   /**
    * @returns {number}
@@ -76,24 +82,37 @@ class Game {
 
   /**
    * Fills in the cells of the '.game-field' element
-   * with the content of this.state.
+   * with the values of this.state that are not equal to 0.
+   *
+   * Assigns class `field-cell--${value}` to the not empty cells.
    *
    * @returns {void}
    */
   renderState() {
     const gameField = document.querySelector('.game-field');
     const rowsArray = [...gameField.querySelectorAll('.field-row')];
+    const newState = this.state;
+    const prevState = this._renderedState;
 
     rowsArray.forEach((row, rowIndex) => {
       [...row.cells].forEach((cell, cellIndex) => {
-        const cellValue = this.getState()[rowIndex][cellIndex];
+        const newCellValue = newState[rowIndex][cellIndex];
+        const prevCellValue = prevState[rowIndex][cellIndex];
 
-        if (cellValue) {
-          cell.textContent = cellValue;
-          cell.classList.add(`field-cell--${cellValue}`);
+        if (newCellValue !== prevCellValue) {
+          cell.classList.remove(cell.classList[1]);
+
+          if (newCellValue) {
+            cell.textContent = newCellValue;
+            cell.classList.add(`field-cell--${newCellValue}`);
+          } else {
+            cell.textContent = '';
+          }
         }
       });
     });
+
+    this._renderedState = newState.map((row) => [...row]);
   }
 
   /**
