@@ -115,15 +115,34 @@ class Game {
     this._renderedState = newState.map((row) => [...row]);
   }
 
+  hideMessage(message) {
+    if (!message.classList.contains('hidden')) {
+      message.classList.add('hidden');
+    }
+  }
+
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = 'playing';
+    this.addRandomTile();
+    this.addRandomTile();
+    this.renderState();
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.state = this.getEmptyBoard();
+    this.score = 0;
+    this.start();
+
+    document
+      .querySelectorAll('.message-win, .message-lose')
+      .forEach((message) => this.hideMessage(message));
+  }
 
   /**
    * Returns array of coordinates (row index and column index)
@@ -157,6 +176,32 @@ class Game {
     const [rowIndex, cellIndex] = emptyCells[newTileIndex];
 
     this.updateState(rowIndex, cellIndex, newTileValue);
+  }
+
+  /**
+   * Sets this.state to the starting state (board with 2 random
+   * tiles with values 2 or 4).
+   *
+   * If previous status is 'idle', also updates this.status, main
+   * button classes and textContent, and hides start message.
+   */
+  handleMainButtonClicks(e) {
+    const targetClasses = e.target.classList;
+
+    switch (targetClasses[1]) {
+      case 'start':
+        this.start();
+        targetClasses.replace('start', 'restart');
+        e.target.textContent = 'Restart';
+
+        const messageStart = document.querySelector('.message-start');
+
+        this.hideMessage(messageStart);
+
+        break;
+      case 'restart':
+        this.restart();
+    }
   }
 }
 
