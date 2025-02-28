@@ -83,8 +83,10 @@ body {
 
 .game-header {
   display: flex;
-  width: 100%;
   justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 350px;
   margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
@@ -115,8 +117,9 @@ h1 {
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  font-size: 16px;
+  font-size: 18px;
   margin: 0 8px 0 0;
+  padding: 5px;
 }
 
 .controls {
@@ -124,10 +127,15 @@ h1 {
 }
 
 .button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   color: #f9f6f2;
+  white-space: nowrap;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
