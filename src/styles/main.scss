@@ -57,8 +57,6 @@ p {
   user-select: none;
   background-color: #4a4a4a;
 
-  transition: all 0.15s ease;
-
   &--2 {
     background-color: #778da9;
   }
@@ -95,10 +93,11 @@ p {
 }
 
 .game-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 85px 155px 85px;
   justify-content: space-between;
 
-  padding-inline: 10px;
+  height: 85px;
 }
 
 h1 {
@@ -109,33 +108,34 @@ h1 {
   justify-content: center;
 
   border-radius: 5px;
-  width: 85px;
-  height: 85px;
 
   font-size: 24px;
   background-color: #115e59;
 }
 
-.info {
+.controls {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  width: 85px;
-  height: 85px;
-  border-radius: 5px;
+  row-gap: 2px;
 
   font-size: 16px;
+}
+
+.info {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-content: center;
+  height: 100%;
+
+  padding-left: 5px;
+  border-radius: 5px;
+
   background-color: #4a4a4a;
 }
 
-.controls {
-  display: flex;
-  column-gap: 10px;
-}
-
 .button {
+  align-self: stretch;
+
   background-color: #15803d;
   color: #f9f6f2;
   border: none;
@@ -143,8 +143,6 @@ h1 {
 
   font-size: 16px;
   letter-spacing: 0.5px;
-  width: 85px;
-  height: 85px;
 
   transition: opacity 0.2s ease;
 

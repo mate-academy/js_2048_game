@@ -4,11 +4,14 @@ import { GAME_STATUS } from '../constants';
 const game = new Game();
 
 const gameScore = document.querySelector('.game-score');
+const gameBest = document.querySelector('.game-best');
 const buttonStart = document.querySelector('.button.start');
 const gameCells = document.querySelectorAll('.field-cell');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
+
+gameBest.textContent = localStorage.getItem('bestScore') || 0;
 
 buttonStart.addEventListener('click', () => {
   if (buttonStart.classList.contains('start')) {
@@ -64,8 +67,19 @@ function updateUI() {
     cell.className = 'field-cell' + (value ? ` field-cell--${value}` : '');
   });
 
-  // Update score
+  // Update current score
   gameScore.textContent = game.getScore();
+
+  // Update best score
+  const currentScore = game.getScore();
+  const best = Number(localStorage.getItem('bestScore')) || 0;
+
+  if (currentScore > best) {
+    localStorage.setItem('bestScore', currentScore);
+    gameBest.textContent = currentScore;
+  } else {
+    gameBest.textContent = best;
+  }
 
   // Update messages
   const gameStatus = game.getStatus();
