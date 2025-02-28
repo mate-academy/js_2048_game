@@ -116,10 +116,31 @@ class Game {
     return this.board;
   }
 
+  hasAvailableMove() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        const cell = this.board[row][col];
+
+        if (cell === 0) {
+          return true;
+        }
+
+        if (
+          (col < 3 && cell === this.board[row][col + 1]) ||
+          (row < 3 && cell === this.board[row + 1][col])
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   updateStatus() {
     if (this.board.some((row) => row.includes(2048))) {
       this.status = 'win';
-    } else if (!this.board.some((row) => row.includes(0))) {
+    } else if (!this.hasAvailableMove()) {
       this.status = 'lose';
     } else {
       this.status = 'playing';

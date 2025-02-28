@@ -39,7 +39,7 @@ function updateButtonState() {
   if (gameStatus === 'idle') {
     startButton.textContent = 'Start';
     startButton.classList.add('start');
-    startButton.classList.restart('restart');
+    startButton.classList.remove('restart');
   } else {
     startButton.textContent = 'Restart';
     startButton.classList.remove('start');
