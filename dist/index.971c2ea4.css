@@ -1,7 +1,7 @@
-@media (width <= 414px) {
+@media (width <= 430px) {
   .button {
     width: 90px;
-    padding-right: 2px;
+    padding-left: 2px;
     font-size: 18px;
   }
 
