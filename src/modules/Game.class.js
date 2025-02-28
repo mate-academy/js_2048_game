@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 'use strict';
 
 /**
@@ -21,24 +22,132 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.board = initialState;
+    this.score = 0;
+
+    this.rows = 4;
+    this.columns = 4;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  filterRow(row) {
+    return [...row].filter((el) => el !== 0);
+  }
+
+  finishRow(row) {
+    const filteredRow = this.filterRow(row);
+
+    for (let i = filteredRow.length; i < this.columns; i++) {
+      filteredRow.push(0);
+    }
+
+    return filteredRow;
+  }
+
+  isEqual = () => {
+    for (let r = 0; r < this.rows - 1; r++) {
+      for (let c = 0; c < this.columns - 1; c++) {
+        const current = this.board[r][c];
+
+        if (current === this.board[r][c + 1]) {
+          return true;
+        }
+
+        if (current === this.board[r + 1][c]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
+  addValues(rowValues) {
+    const filteredRow = this.filterRow(rowValues);
+
+    if (filteredRow.length > 1) {
+      for (let c = 0; c <= filteredRow.length - 1; c++) {
+        if (filteredRow[c] === filteredRow[c + 1]) {
+          const newValue = filteredRow[c] * 2;
+
+          filteredRow[c] = newValue;
+          filteredRow[c + 1] = 0;
+
+          this.score += newValue;
+          c++;
+        }
+      }
+    }
+
+    const finished = this.finishRow(filteredRow);
+
+    return finished;
+  }
+
+  moveLeft() {
+    for (let r = 0; r < this.rows; r++) {
+      const row = [...this.board[r]];
+
+      const newRow = this.addValues(row);
+
+      this.board[r] = newRow;
+    }
+  }
+
+  moveRight() {
+    for (let r = 0; r < this.rows; r++) {
+      const row = [...this.board[r]].reverse();
+
+      const newRow = this.addValues(row).reverse();
+
+      this.board[r] = newRow;
+    }
+  }
+
+  moveUp() {
+    for (let c = 0; c < this.columns; c++) {
+      const column = [];
+
+      for (let r = 0; r < this.rows; r++) {
+        column.push(this.board[r][c]);
+      }
+
+      const newColumn = this.addValues(column);
+
+      for (let r = 0; r < this.rows; r++) {
+        this.board[r][c] = newColumn[r];
+      }
+    }
+  }
+
+  moveDown() {
+    for (let c = 0; c < this.columns; c++) {
+      const column = [];
+
+      for (let r = this.rows - 1; r >= 0; r--) {
+        column.push(this.board[r][c]);
+      }
+
+      const newColumn = this.addValues(column).reverse();
+
+      for (let r = this.rows - 1; r >= 0; r--) {
+        this.board[r][c] = newColumn[r];
+      }
+    }
+  }
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.board.map((row) => [...row]);
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +159,96 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    const openedBoard = this.openBoard();
+
+    if (!this.isEqual()) {
+      return 'lose';
+    }
+
+    if (openedBoard.includes(2048)) {
+      return 'win';
+    }
+
+    if (openedBoard.every((num) => num === 0)) {
+      return 'idle';
+    }
+
+    return 'playing';
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.setNum();
+    this.setNum();
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.score = 0;
+  }
 
   // Add your own methods here
+  openBoard() {
+    return this.getState().flat();
+  }
+
+  getNum() {
+    const probability = Math.random();
+
+    if (probability <= 0.1) {
+      return 4;
+    }
+
+    return 2;
+  }
+
+  setNum() {
+    const cell = this.getCell();
+
+    if (!cell) {
+      return;
+    }
+
+    const x = cell[0];
+    const y = cell[1];
+
+    const num = this.getNum();
+
+    this.board[x][y] = num;
+  }
+
+  getCell() {
+    let x;
+    let y;
+
+    const openedBoard = this.openBoard();
+
+    if (!openedBoard.includes(0)) {
+      return null;
+    }
+
+    do {
+      x = Math.floor(Math.random() * this.rows);
+      y = Math.floor(Math.random() * this.columns);
+    } while (!this.isEmpty(x, y));
+
+    return [x, y];
+  }
+
+  isEmpty(x, y) {
+    return this.board[x][y] === 0;
+  }
 }
 
 module.exports = Game;
