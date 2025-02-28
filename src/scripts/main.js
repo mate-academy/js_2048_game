@@ -36,6 +36,14 @@ document.addEventListener('touchstart', (ev) => {
   touchStartY = ev.touches[0].clientY;
 });
 
+document.addEventListener(
+  'touchmove',
+  (ev) => {
+    ev.preventDefault();
+  },
+  { passive: false },
+);
+
 document.addEventListener('touchend', (ev) => {
   touchEndX = ev.changedTouches[0].clientX;
   touchEndY = ev.changedTouches[0].clientY;
@@ -46,7 +54,6 @@ function handleSwipe() {
   const diffX = touchEndX - touchStartX;
   const diffY = touchEndY - touchStartY;
 
-  // Визначаємо, горизонтальний чи вертикальний свайп сильніший
   if (Math.abs(diffX) > Math.abs(diffY)) {
     if (diffX > 50) {
       handleMove({ key: 'ArrowRight' });
