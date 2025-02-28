@@ -3,27 +3,29 @@ import { GAME_STATUS } from '../constants';
 
 const game = new Game();
 
-const gameScore = document.querySelector('.game-score');
-const gameBest = document.querySelector('.game-best');
-const buttonStart = document.querySelector('.button.start');
-const gameCells = document.querySelectorAll('.field-cell');
+const score = document.querySelector('.game-score');
+const best = document.querySelector('.game-best');
+const startButton = document.querySelector('.button.start');
+const cells = document.querySelectorAll('.field-cell');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
 
-gameBest.textContent = localStorage.getItem('bestScore') || 0;
+let bestScore = localStorage.getItem('bestScore') || 0;
 
-buttonStart.addEventListener('click', () => {
-  if (buttonStart.classList.contains('start')) {
+best.textContent = bestScore;
+
+startButton.addEventListener('click', () => {
+  const isNewGame = startButton.classList.contains('start');
+
+  if (isNewGame) {
     game.start();
-
-    buttonStart.textContent = 'RESTART';
-    buttonStart.classList.replace('start', 'restart');
+    startButton.textContent = 'RESTART';
+    startButton.classList.replace('start', 'restart');
   } else {
     game.restart();
-
-    buttonStart.textContent = 'START';
-    buttonStart.classList.replace('restart', 'start');
+    startButton.textContent = 'START';
+    startButton.classList.replace('restart', 'start');
   }
 
   updateUI();
@@ -32,6 +34,10 @@ buttonStart.addEventListener('click', () => {
 document.addEventListener('keydown', (e) => {
   if (game.getStatus() !== GAME_STATUS.PLAYING) {
     return;
+  }
+
+  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+    e.preventDefault();
   }
 
   switch (e.key) {
@@ -55,33 +61,37 @@ document.addEventListener('keydown', (e) => {
 });
 
 function updateUI() {
-  // Update cells
-  const state = game.getState();
+  updateGrid();
+  updateScores();
+  updateMessages();
+}
 
-  gameCells.forEach((cell, index) => {
+function updateGrid() {
+  const grid = game.getState();
+
+  cells.forEach((cell, index) => {
     const row = Math.floor(index / 4);
     const col = index % 4;
-    const value = state[row][col];
+    const value = grid[row][col];
 
     cell.textContent = value || '';
-    cell.className = 'field-cell' + (value ? ` field-cell--${value}` : '');
+    cell.className = `field-cell${value ? ` field-cell--${value}` : ''}`;
   });
+}
 
-  // Update current score
-  gameScore.textContent = game.getScore();
-
-  // Update best score
+function updateScores() {
   const currentScore = game.getScore();
-  const best = Number(localStorage.getItem('bestScore')) || 0;
 
-  if (currentScore > best) {
-    localStorage.setItem('bestScore', currentScore);
-    gameBest.textContent = currentScore;
-  } else {
-    gameBest.textContent = best;
+  score.textContent = currentScore;
+
+  if (currentScore > bestScore) {
+    bestScore = currentScore;
+    localStorage.setItem('bestScore', bestScore);
+    best.textContent = bestScore;
   }
+}
 
-  // Update messages
+function updateMessages() {
   const gameStatus = game.getStatus();
 
   messageWin.classList.toggle('hidden', gameStatus !== GAME_STATUS.WIN);

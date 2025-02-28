@@ -1,3 +1,17 @@
+$tile-colors: (
+  2: #778da9,
+  4: #415a77,
+  8: #6366f1,
+  16: #4f46e5,
+  32: #4338ca,
+  64: #3730a3,
+  128: #312e81,
+  256: #14b8a6,
+  512: #0d9488,
+  1024: #0f766e,
+  2048: #115e59,
+);
+
 * {
   box-sizing: border-box;
 }
@@ -57,38 +71,10 @@ p {
   user-select: none;
   background-color: #4a4a4a;
 
-  &--2 {
-    background-color: #778da9;
-  }
-  &--4 {
-    background-color: #415a77;
-  }
-  &--8 {
-    background-color: #6366f1;
-  }
-  &--16 {
-    background-color: #4f46e5;
-  }
-  &--32 {
-    background-color: #4338ca;
-  }
-  &--64 {
-    background-color: #3730a3;
-  }
-  &--128 {
-    background-color: #312e81;
-  }
-  &--256 {
-    background-color: #14b8a6;
-  }
-  &--512 {
-    background-color: #0d9488;
-  }
-  &--1024 {
-    background-color: #0f766e;
-  }
-  &--2048 {
-    background-color: #115e59;
+  @each $value, $color in $tile-colors {
+    &--#{$value} {
+      background-color: $color;
+    }
   }
 }
 
@@ -134,8 +120,6 @@ h1 {
 }
 
 .button {
-  align-self: stretch;
-
   background-color: #15803d;
   color: #f9f6f2;
   border: none;
@@ -144,7 +128,7 @@ h1 {
   font-size: 16px;
   letter-spacing: 0.5px;
 
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s;
 
   &.restart {
     background-color: #dc2424;
