@@ -24,7 +24,8 @@ class Game {
     this.status = 'idle';
 
     this.state =
-      initialState || Array(this.size).fill(Array(this.size).fill(0));
+      initialState ||
+      Array.from({ length: this.size }, () => Array(this.size).fill(0));
   }
 
   moveLeft() {}
