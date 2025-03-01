@@ -63,29 +63,31 @@ document.addEventListener('keydown', (gameEvent) => {
 
   gameEvent.preventDefault();
 
+  let moved = false;
+
   const oldBoardState = JSON.stringify(game.getState());
 
   switch (gameEvent.key) {
     case 'ArrowUp':
-      game.moveUp();
+      moved = game.moveUp();
       break;
 
     case 'ArrowDown':
-      game.moveDown();
+      moved = game.moveDown();
       break;
 
     case 'ArrowLeft':
-      game.moveLeft();
+      moved = game.moveLeft();
       break;
 
     case 'ArrowRight':
-      game.moveRight();
+      moved = game.moveRight();
       break;
   }
 
   const newBoardState = JSON.stringify(game.getState());
 
-  if (oldBoardState !== newBoardState) {
+  if (moved && oldBoardState !== newBoardState) {
     game.addRandomTiles();
     renderGame();
   }
