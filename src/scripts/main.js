@@ -109,6 +109,8 @@ document.addEventListener('click', (e) => {
 function checkStatus() {
   const currentStatus = game.getStatus();
 
+  console.log(currentStatus);
+
   switch (currentStatus) {
     case gameStatus.idle:
       if (startMessage.hasAttribute('class', hiddenClass)) {
@@ -168,11 +170,11 @@ function move(moveDirection) {
 
   const moved = game.board.map((row) => [...row]);
 
-  checkStatus();
-
   if (game.moveDone(current, moved)) {
     game.setNum();
   }
 
   setValues();
+
+  checkStatus();
 }

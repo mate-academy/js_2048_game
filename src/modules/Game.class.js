@@ -44,16 +44,20 @@ class Game {
   }
 
   isEqual = () => {
-    for (let r = 0; r < this.rows - 1; r++) {
-      for (let c = 0; c < this.columns - 1; c++) {
+    for (let r = 0; r < this.rows; r++) {
+      for (let c = 0; c < this.columns; c++) {
         const current = this.board[r][c];
 
-        if (current === this.board[r][c + 1]) {
-          return true;
+        if (c < this.columns - 1) {
+          if (current === this.board[r][c + 1]) {
+            return true;
+          }
         }
 
-        if (current === this.board[r + 1][c]) {
-          return true;
+        if (r < this.rows - 1) {
+          if (current === this.board[r + 1][c]) {
+            return true;
+          }
         }
       }
     }
