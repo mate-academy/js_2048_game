@@ -6,12 +6,7 @@
 
 const Game = require('../modules/Game.class');
 
-const game = new Game([
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-]);
+const game = new Game();
 
 // Write your code here
 
@@ -55,39 +50,32 @@ const moves = {
   left: 'left',
 };
 
-const gameStatus = {
-  idle: 'idle',
-  playing: 'playing',
-  win: 'win',
-  lose: 'lose',
-};
+const gameStatus = game.gameStatus;
 
 document.addEventListener('keydown', (e) => {
+  if (game.getStatus() !== game.gameStatus.playing) {
+    return;
+  }
+
   if (e.key === 'ArrowDown') {
     move(moves.down);
-    console.log('move', moves.down);
   }
 
   if (e.key === 'ArrowUp') {
     move(moves.up);
-    console.log('move', moves.up);
   }
 
   if (e.key === 'ArrowRight') {
     move(moves.right);
-    console.log('move', moves.right);
   }
 
   if (e.key === 'ArrowLeft') {
     move(moves.left);
-    console.log('move', moves.left);
   }
 });
 
 document.addEventListener('click', (e) => {
   if (e.target.matches('.start')) {
-    console.log('start');
-
     if (game.getStatus() === gameStatus.idle) {
       game.start();
       startMessage.classList.add(hiddenClass);
@@ -97,19 +85,14 @@ document.addEventListener('click', (e) => {
   }
 
   if (e.target.matches('.restart')) {
-    console.log('restart');
-
     game.restart();
-
-    checkStatus();
     setValues();
+    checkStatus();
   }
 });
 
 function checkStatus() {
   const currentStatus = game.getStatus();
-
-  console.log(currentStatus);
 
   switch (currentStatus) {
     case gameStatus.idle:
@@ -172,6 +155,14 @@ function move(moveDirection) {
 
   if (game.moveDone(current, moved)) {
     game.setNum();
+  }
+
+  if (moved.flat().includes(2048)) {
+    game.status = gameStatus.win;
+  }
+
+  if (!game.isEqual() && !game.board.flat().includes(0)) {
+    game.status = gameStatus.lose;
   }
 
   setValues();

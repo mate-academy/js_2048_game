@@ -21,12 +21,31 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
     this.board = initialState;
+
     this.score = 0;
 
     this.rows = 4;
     this.columns = 4;
+
+    this.gameStatus = {
+      idle: 'idle',
+      playing: 'playing',
+      win: 'win',
+      lose: 'lose',
+    };
+
+    this.started = this.gameStatus.playing;
+
+    this.status = this.gameStatus.idle;
   }
 
   filterRow(row) {
@@ -156,7 +175,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.board.map((row) => [...row]);
+    return this.board;
   }
 
   /**
@@ -170,27 +189,14 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
-    const openedBoard = this.openBoard();
-
-    if (!this.isEqual() && !openedBoard.includes(0)) {
-      return 'lose';
-    }
-
-    if (openedBoard.includes(2048)) {
-      return 'win';
-    }
-
-    if (openedBoard.every((num) => num === 0)) {
-      return 'idle';
-    }
-
-    return 'playing';
+    return this.status;
   }
 
   /**
    * Starts the game.
    */
   start() {
+    this.status = this.gameStatus.playing;
     this.setNum();
     this.setNum();
   }
@@ -198,19 +204,22 @@ class Game {
   /**
    * Resets the game.
    */
-  restart() {
-    this.board = [
+  restart(
+    initialState = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-    ];
+    ],
+  ) {
+    this.status = this.gameStatus.idle;
+    this.board = initialState;
     this.score = 0;
   }
 
   // Add your own methods here
-  openBoard() {
-    return this.getState().flat();
+  openBoard(currentBoard = this.board) {
+    return currentBoard.flat();
   }
 
   getNum() {
