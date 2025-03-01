@@ -51,47 +51,27 @@ export class Game {
   }
 
   moveLeft() {
-    for (let k = 1; k < 4; k++) {
-      if (this.initialState !== 'win') {
-        this.shiftLeft();
-      } else {
-        this.messageWin.classList.toggle('hidden');
-        break;
-      }
-    }
+    this.shiftLeft();
+    this.shiftLeft();
+    this.shiftLeft();
   }
 
   moveRight() {
-    for (let k = 1; k < 4; k++) {
-      if (this.initialState !== 'win') {
-        this.shiftRight();
-      } else {
-        this.messageWin.classList.toggle('hidden');
-        break;
-      }
-    }
+    this.shiftRight();
+    this.shiftRight();
+    this.shiftRight();
   }
 
   moveUp() {
-    for (let k = 1; k < 4; k++) {
-      if (this.initialState !== 'win') {
-        this.shiftUp();
-      } else {
-        this.messageWin.classList.toggle('hidden');
-        break;
-      }
-    }
+    this.shiftUp();
+    this.shiftUp();
+    this.shiftUp();
   }
 
   moveDown() {
-    for (let k = 1; k < 4; k++) {
-      if (this.initialState !== 'win') {
-        this.shiftDown();
-      } else {
-        this.messageWin.classList.toggle('hidden');
-        break;
-      }
-    }
+    this.shiftDown();
+    this.shiftDown();
+    this.shiftDown();
   }
 
   /**
@@ -143,7 +123,8 @@ export class Game {
       this.messageWin.classList.toggle('hidden');
     }
 
-    this.score = 0;
+    this.count = 0;
+    this.getScore();
     this.fieldClearing();
 
     this.randomChip();
@@ -154,8 +135,6 @@ export class Game {
    * Resets the game.
    */
   restart() {
-    this.fieldClearing();
-    this.count = 0;
     this.start();
   }
 
@@ -171,8 +150,12 @@ export class Game {
 
       this.board.rows[x].cells[y].classList.toggle(this.name + num);
       this.board.rows[x].cells[y].textContent = num;
-    } else if (this.gameBoard.includes(0)) {
-      this.randomChip();
+    } else {
+      this.isEmpty();
+
+      if (this.initialState !== 'lose') {
+        this.randomChip();
+      }
     }
   }
 
@@ -193,13 +176,13 @@ export class Game {
 
   shiftRight() {
     for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 3; j++) {
+      for (let j = 2; j >= 0; j--) {
         if (this.gameBoard[i][j] === 0) {
           continue;
         } else {
           const n = this.gameBoard[i][j];
 
-          if (j < 3 && this.gameBoard[i][j + 1] === 0) {
+          if (this.gameBoard[i][j + 1] === 0) {
             this.gameBoard[i][j + 1] = n;
             this.gameBoard[i][j] = 0;
 
@@ -208,7 +191,7 @@ export class Game {
 
             this.board.rows[i].cells[j + 1].textContent = n;
             this.board.rows[i].cells[j + 1].classList.toggle(this.name + n);
-          } else if (j < 3 && this.gameBoard[i][j + 1] === n) {
+          } else if (this.gameBoard[i][j + 1] === n) {
             this.gameBoard[i][j + 1] = n * 2;
             this.gameBoard[i][j] = 0;
 
@@ -273,7 +256,7 @@ export class Game {
         } else {
           const n = this.gameBoard[i][j];
 
-          if (i > 0 && this.gameBoard[i - 1][j] === 0) {
+          if (this.gameBoard[i - 1][j] === 0) {
             this.gameBoard[i - 1][j] = n;
             this.gameBoard[i][j] = 0;
 
@@ -282,7 +265,7 @@ export class Game {
 
             this.board.rows[i - 1].cells[j].textContent = n;
             this.board.rows[i - 1].cells[j].classList.toggle(this.name + n);
-          } else if (i > 0 && this.gameBoard[i - 1][j] === n) {
+          } else if (this.gameBoard[i - 1][j] === n) {
             this.gameBoard[i - 1][j] = n * 2;
             this.gameBoard[i][j] = 0;
 
@@ -303,14 +286,14 @@ export class Game {
   }
 
   shiftDown() {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 2; i >= 0; i--) {
       for (let j = 0; j < 4; j++) {
         if (this.gameBoard[i][j] === 0) {
           continue;
         } else {
           const n = this.gameBoard[i][j];
 
-          if (i < 3 && this.gameBoard[i + 1][j] === 0) {
+          if (this.gameBoard[i + 1][j] === 0) {
             this.gameBoard[i + 1][j] = n;
             this.gameBoard[i][j] = 0;
 
@@ -319,7 +302,7 @@ export class Game {
 
             this.board.rows[i + 1].cells[j].textContent = n;
             this.board.rows[i + 1].cells[j].classList.toggle(this.name + n);
-          } else if (i < 3 && this.gameBoard[i + 1][j] === n) {
+          } else if (this.gameBoard[i + 1][j] === n) {
             this.gameBoard[i + 1][j] = n * 2;
             this.gameBoard[i][j] = 0;
 
