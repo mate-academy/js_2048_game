@@ -11,10 +11,14 @@ body {
 }
 
 .field-cell {
+  position: relative;
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
@@ -75,10 +79,14 @@ body {
   }
 }
 
+.field-cell.new {
+  animation: appear 0.3s ease-in-out;
+}
+
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 12px;
 }
 
 .game-header {
@@ -181,7 +189,23 @@ h1 {
   color: #f9f6f2;
 }
 
+.message-lose {
+  background: #f87474;
+  color: #f9f6f2;
+}
+
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes appear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
