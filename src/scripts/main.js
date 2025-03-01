@@ -53,6 +53,7 @@ startButton.addEventListener('click', () => {
   messageLose.classList.add('hidden');
   messageStart.classList.add('hidden');
   startButton.textContent = 'Restart';
+  startButton.classList.add('restart');
 });
 
 document.addEventListener('keydown', (ev) => {

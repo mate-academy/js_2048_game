@@ -131,7 +131,6 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
   height: 75px;
 
   transition: 0.25s ease background;
@@ -140,6 +139,7 @@ h1 {
 .start {
   background: #1dae28;
   font-size: 20px;
+  width: 75px;
 
   &:hover {
     background: #179921;
@@ -148,7 +148,8 @@ h1 {
 
 .restart {
   background: #f1b2b2;
-
+  width: auto;
+  
   &:hover {
     background: #f87474;
   }
