@@ -14,6 +14,10 @@ class Game {
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return false;
+    }
+
     const oldBoard = JSON.stringify(this.board);
 
     const shiftAndFilter = (array) => {
@@ -229,14 +233,17 @@ class Game {
   }
 
   start() {
-    this.board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    if (this.status === 'idle') {
+      this.board = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
 
-    this.score = 0;
+      this.score = 0;
+    }
+
     this.status = 'playing';
 
     this.addRandomTiles();
