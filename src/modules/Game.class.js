@@ -105,6 +105,12 @@ export class Game {
     this.initialState = 'idle';
   }
 
+  statusCheck() {
+    if (this.initialState === 'lose') {
+      this.getStatus();
+    }
+  }
+
   /**
    * Starts the game.
    */

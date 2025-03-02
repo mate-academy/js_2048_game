@@ -2,7 +2,6 @@
 
 // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
-// import { Game } from '../modules/Game.class';
 
 const game = new Game();
 
@@ -17,59 +16,43 @@ function handleInput(e) {
       game.randomChip();
       game.isEmpty();
 
-      if (game.initialState === 'lose') {
-        game.getStatus();
-        break;
-      } else {
-        setupInputOnce();
-        break;
-      }
+      game.statusCheck();
+      setupInputOnce();
+      break;
 
     case 'ArrowDown':
       game.moveDown();
       game.randomChip();
       game.isEmpty();
 
-      if (game.initialState === 'lose') {
-        game.getStatus();
-        break;
-      } else {
-        setupInputOnce();
-        break;
-      }
+      game.statusCheck();
+      setupInputOnce();
+      break;
 
     case 'ArrowLeft':
       game.moveLeft();
       game.randomChip();
       game.isEmpty();
 
-      if (game.initialState === 'lose') {
-        game.getStatus();
-        break;
-      } else {
-        setupInputOnce();
-        break;
-      }
+      game.statusCheck();
+      setupInputOnce();
+      break;
 
     case 'ArrowRight':
       game.moveRight();
       game.randomChip();
       game.isEmpty();
 
-      if (game.initialState === 'lose') {
-        game.getStatus();
-        break;
-      } else {
-        setupInputOnce();
-        break;
-      }
+      game.statusCheck();
+      setupInputOnce();
+      break;
 
     default:
       setupInputOnce();
   }
 }
 
-game.buttonStart.onclick = () => {
+game.buttonStart.addEventListener('click', (e) => {
   if (game.buttonStart.textContent === 'Start') {
     game.buttonStart.textContent = 'Restart';
     game.buttonStart.classList.toggle('start');
@@ -81,4 +64,4 @@ game.buttonStart.onclick = () => {
     game.restart();
     setupInputOnce();
   }
-};
+});
