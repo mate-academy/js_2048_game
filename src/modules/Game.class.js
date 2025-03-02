@@ -1,11 +1,7 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
+
   /**
    * Creates a new game instance.
    *
@@ -20,49 +16,163 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
+
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.board = initialState || this.createEmptyBoard();
+    this.score = 0;
+    this.status = 'idle';
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  createEmptyBoard() {
+    return Array(4).fill(null).map(() => Array(4).fill(0))
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  addRandomTitle() {
+    let emptyCells = [];
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; J++) {
+        emptyCells.push([i, j])
+      }
+    }
+    if (emptyCells.length > 0) {
+      const [x, y] = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+      this.board[x], [y] = Math.random < 0.9 ? 2 : 4;
+    }
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  start() {
+    this.board = this.createEmptyBoard();
+    this.addRandomTitle();
+    this.addRandomTitle();
+    this.score = 0;
+    this.status = 'playing';
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  restart() {
+    this.start();
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  getState() {
+    return this.board;
+  }
 
-  // Add your own methods here
+  getStatus() {
+    return this.status;
+  }
+
+  moveLeft() {
+    let moved = false;
+
+    for (let i = 0; i < 4; i++) {
+      let newRow = this.board[i].filter(num => num);
+
+      for (let j = 0; j < 4; j++) {
+        if (newRow[j] === newRow[j + 1]) {
+          newRow[j] *= 2;
+          this.score += newRow[j];
+          newRow[j + 1] = 0;
+        }
+      }
+
+      newRow = newRow.filter(num => num);
+
+      while (newRow.length < 4) newRow.push(0);
+
+      if (newRow.join('') !== this.board[i].join('')) moved = true;
+      this.board[i] = newRow;
+    }
+    if (moved) this.addRandomTitle();
+  }
+
+  moveUp() {
+    let moved = false;
+
+    for (let j = 0; j < 4; j++) {
+      let newCol = [];
+      for (let i = 0; i < 4; i++) {
+        if (this.board[i][j] !== 0) {
+          newCol.push(this.board[i][j]);
+        }
+      }
+
+      for (let i = 0; i < newCol.length - 1; i++) {
+        if (newCol[i] === newCol[i + 1]) {
+          newCol[i] *= 2;
+          this.score += newCol[i];
+          newCol[i + 1] = 0;
+        }
+      }
+
+      newCol = newCol.filter(num => num);
+
+      while (newCol.length < 4) newCol.push(0);
+
+      for (let i = 0; i < 4; i++) {
+        if (newCol[i] !== this.board[i][j]) {
+          moved = true;
+        }
+        this.board[i][j] = newCol[i];
+      }
+    }
+
+    if (moved) this.addRandomTile();
+  }
+
+  moveDown() {
+    let moved = false;
+
+    for (let j = 0; j < 4; j++) {
+      let newCol = [];
+      for (let i = 0; i < 4; i++) {
+        if (this.board[i][j] !== 0) {
+          newCol.push(this.board[i][j]);
+        }
+      }
+      for (let i = newCol.length - 1; i > 0; i--) {
+        if (newCol[i] === newCol[i - 1]) {
+          newCol[i] *= 2;
+          this.score += newCol[i];
+          newCol[i - 1] = 0;
+        }
+      }
+      newCol = newCol.filter(num => num);
+      while (newCol.length < 4) newCol.unshift(0);
+
+      for (let i = 0; i < 4; i++) {
+        if (this.board[i][j] !== newCol[i]) moved = true;
+        this.board[i][j] = newCol[i];
+      }
+    }
+
+    if (moved) this.addRandomTile();
+  }
+
+  moveRight() {
+    let moved = false;
+
+    for (let i = 0; i < 4; i++) {
+      let newRow = this.board[i].filter(num => num);
+      for (let j = newRow.length - 1; j > 0; j--) {
+        if (newRow[j] === newRow[j - 1]) {
+          newRow[j] *= 2;
+          this.score += newRow[j];
+          newRow[j - 1] = 0;
+        }
+      }
+      newRow = newRow.filter(num => num);
+      while (newRow.length < 4) newRow.unshift(0);
+
+      if (newRow.join('') !== this.board[i].join('')) moved = true;
+      this.board[i] = newRow;
+    }
+
+    if (moved) this.addRandomTile();
+  }
+
 }
 
 module.exports = Game;
