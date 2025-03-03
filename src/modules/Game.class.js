@@ -28,29 +28,17 @@ export class Game {
   ];
 
   fieldChange = [];
-
   count = 0;
-
   counter = 0;
-
   coutChange = 0;
-
   emptyCell = 0;
-
   name = 'field-cell--';
-
   num2048 = 2048;
-
   buttonStart = document.querySelector('button');
-
   messageLose = document.querySelector('.message-lose');
-
   messageWin = document.querySelector('.message-win');
-
   messageStart = document.querySelector('.message-start');
-
   score = document.querySelector('.game-score');
-
   board = document.querySelector('tbody');
 
   constructor(initialState = 'idle') {
