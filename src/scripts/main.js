@@ -13,7 +13,6 @@ function handleInput(e) {
   switch (e.key) {
     case 'ArrowUp':
       game.moveUp();
-      game.randomChip();
       game.isEmpty();
 
       game.statusCheck();
@@ -22,7 +21,6 @@ function handleInput(e) {
 
     case 'ArrowDown':
       game.moveDown();
-      game.randomChip();
       game.isEmpty();
 
       game.statusCheck();
@@ -31,7 +29,6 @@ function handleInput(e) {
 
     case 'ArrowLeft':
       game.moveLeft();
-      game.randomChip();
       game.isEmpty();
 
       game.statusCheck();
@@ -40,7 +37,6 @@ function handleInput(e) {
 
     case 'ArrowRight':
       game.moveRight();
-      game.randomChip();
       game.isEmpty();
 
       game.statusCheck();

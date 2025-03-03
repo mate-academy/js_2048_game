@@ -27,7 +27,11 @@ export class Game {
     [0, 0, 0, 0],
   ];
 
+  fieldChange = [];
+
   count = 0;
+
+  coutChange = 0;
 
   name = 'field-cell--';
 
@@ -54,24 +58,32 @@ export class Game {
     this.shiftLeft();
     this.shiftLeft();
     this.shiftLeft();
+
+    this.fieldChangeCheck();
   }
 
   moveRight() {
     this.shiftRight();
     this.shiftRight();
     this.shiftRight();
+
+    this.fieldChangeCheck();
   }
 
   moveUp() {
     this.shiftUp();
     this.shiftUp();
     this.shiftUp();
+
+    this.fieldChangeCheck();
   }
 
   moveDown() {
     this.shiftDown();
     this.shiftDown();
     this.shiftDown();
+
+    this.fieldChangeCheck();
   }
 
   /**
@@ -144,6 +156,13 @@ export class Game {
     this.start();
   }
 
+  fieldChangeCheck() {
+    if (this.coutChange > 0) {
+      this.randomChip();
+      this.coutChange = 0;
+    }
+  }
+
   // Add your own methods here
   randomChip() {
     const index = Math.floor(Math.random() * 16);
@@ -189,6 +208,7 @@ export class Game {
           const n = this.gameBoard[i][j];
 
           if (this.gameBoard[i][j + 1] === 0) {
+            this.coutChange++;
             this.gameBoard[i][j + 1] = n;
             this.gameBoard[i][j] = 0;
 
@@ -198,6 +218,7 @@ export class Game {
             this.board.rows[i].cells[j + 1].textContent = n;
             this.board.rows[i].cells[j + 1].classList.toggle(this.name + n);
           } else if (this.gameBoard[i][j + 1] === n) {
+            this.coutChange++;
             this.gameBoard[i][j + 1] = n * 2;
             this.gameBoard[i][j] = 0;
 
@@ -226,6 +247,7 @@ export class Game {
           const n = this.gameBoard[i][j];
 
           if (this.gameBoard[i][j - 1] === 0) {
+            this.coutChange++;
             this.gameBoard[i][j - 1] = n;
             this.gameBoard[i][j] = 0;
 
@@ -235,6 +257,7 @@ export class Game {
             this.board.rows[i].cells[j - 1].textContent = n;
             this.board.rows[i].cells[j - 1].classList.toggle(this.name + n);
           } else if (this.gameBoard[i][j - 1] === n) {
+            this.coutChange++;
             this.gameBoard[i][j - 1] = n * 2;
             this.gameBoard[i][j] = 0;
 
@@ -263,6 +286,7 @@ export class Game {
           const n = this.gameBoard[i][j];
 
           if (this.gameBoard[i - 1][j] === 0) {
+            this.coutChange++;
             this.gameBoard[i - 1][j] = n;
             this.gameBoard[i][j] = 0;
 
@@ -272,6 +296,7 @@ export class Game {
             this.board.rows[i - 1].cells[j].textContent = n;
             this.board.rows[i - 1].cells[j].classList.toggle(this.name + n);
           } else if (this.gameBoard[i - 1][j] === n) {
+            this.coutChange++;
             this.gameBoard[i - 1][j] = n * 2;
             this.gameBoard[i][j] = 0;
 
@@ -300,6 +325,7 @@ export class Game {
           const n = this.gameBoard[i][j];
 
           if (this.gameBoard[i + 1][j] === 0) {
+            this.coutChange++;
             this.gameBoard[i + 1][j] = n;
             this.gameBoard[i][j] = 0;
 
@@ -309,6 +335,7 @@ export class Game {
             this.board.rows[i + 1].cells[j].textContent = n;
             this.board.rows[i + 1].cells[j].classList.toggle(this.name + n);
           } else if (this.gameBoard[i + 1][j] === n) {
+            this.coutChange++;
             this.gameBoard[i + 1][j] = n * 2;
             this.gameBoard[i][j] = 0;
 
