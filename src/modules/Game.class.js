@@ -16,87 +16,19 @@ class Game {
   }
 
   moveDown() {
-    const oldBoard = JSON.stringify(this.board);
-
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    for (let col = 0; col < 4; col++) {
-      let column = this.board.map((row) => row[col]).reverse();
-
-      column = this.combineTiles(column).reverse();
-
-      for (let row = 0; row < 4; row++) {
-        this.board[row][col] = column[row];
-      }
-    }
-
-    if (oldBoard !== JSON.stringify(this.board)) {
-      this.addRandomTile();
-    }
-
-    this.endGame();
+    this.move('down');
   }
 
   moveUp() {
-    const oldBoard = JSON.stringify(this.board);
-
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    for (let col = 0; col < 4; col++) {
-      let column = this.board.map((row) => row[col]);
-
-      column = this.combineTiles(column);
-
-      for (let row = 0; row < 4; row++) {
-        this.board[row][col] = column[row];
-      }
-    }
-
-    if (oldBoard !== JSON.stringify(this.board)) {
-      this.addRandomTile();
-    }
-
-    this.endGame();
+    this.move('up');
   }
 
   moveRight() {
-    const oldBoard = JSON.stringify(this.board);
-
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    for (let row = 0; row < 4; row++) {
-      this.board[row] = this.combineTiles(this.board[row].reverse()).reverse();
-    }
-
-    if (oldBoard !== JSON.stringify(this.board)) {
-      this.addRandomTile();
-    }
-
-    this.endGame();
+    this.move('right');
   }
 
   moveLeft() {
-    const oldBoard = JSON.stringify(this.board);
-
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    for (let row = 0; row < 4; row++) {
-      this.board[row] = this.combineTiles(this.board[row]);
-    }
-
-    if (oldBoard !== JSON.stringify(this.board)) {
-      this.addRandomTile();
-    }
-
-    this.endGame();
+    this.move('left');
   }
 
   getScore() {
@@ -115,6 +47,48 @@ class Game {
     this.board = JSON.parse(JSON.stringify(this.initialState));
     this.status = 'idle';
     this.score = 0;
+  }
+
+  move(direction) {
+    const oldBoard = JSON.stringify(this.board);
+
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    if (direction === 'up' || direction === 'down') {
+      for (let col = 0; col < 4; col++) {
+        let column =
+          direction === 'up'
+            ? this.board.map((row) => row[col])
+            : this.board.map((row) => row[col]).reverse();
+
+        column =
+          direction === 'up'
+            ? this.combineTiles(column)
+            : this.combineTiles(column).reverse();
+
+        for (let row = 0; row < 4; row++) {
+          this.board[row][col] = column[row];
+        }
+      }
+    } else if (direction === 'left' || direction === 'right') {
+      for (let row = 0; row < 4; row++) {
+        if (direction === 'left') {
+          this.board[row] = this.combineTiles(this.board[row]);
+        } else {
+          this.board[row] = this.combineTiles(
+            this.board[row].reverse(),
+          ).reverse();
+        }
+      }
+    }
+
+    if (oldBoard !== JSON.stringify(this.board)) {
+      this.addRandomTile();
+    }
+
+    this.endGame();
   }
 
   combineTiles(row) {
