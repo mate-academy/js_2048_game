@@ -2,7 +2,6 @@
 
 // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
-
 const game = new Game();
 
 function setupInputOnce() {
@@ -14,32 +13,48 @@ function handleInput(e) {
     case 'ArrowUp':
       game.moveUp();
       game.isEmpty();
-
       game.statusCheck();
+
+      if (game.initialState === 'idle') {
+        break;
+      }
+
       setupInputOnce();
       break;
 
     case 'ArrowDown':
       game.moveDown();
       game.isEmpty();
-
       game.statusCheck();
+
+      if (game.initialState === 'idle') {
+        break;
+      }
+
       setupInputOnce();
       break;
 
     case 'ArrowLeft':
       game.moveLeft();
       game.isEmpty();
-
       game.statusCheck();
+
+      if (game.initialState === 'idle') {
+        break;
+      }
+
       setupInputOnce();
       break;
 
     case 'ArrowRight':
       game.moveRight();
       game.isEmpty();
-
       game.statusCheck();
+
+      if (game.initialState === 'idle') {
+        break;
+      }
+
       setupInputOnce();
       break;
 

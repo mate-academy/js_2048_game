@@ -31,7 +31,11 @@ export class Game {
 
   count = 0;
 
+  counter = 0;
+
   coutChange = 0;
+
+  emptyCell = 0;
 
   name = 'field-cell--';
 
@@ -111,6 +115,8 @@ export class Game {
    * `lose` - the game is lost
    */
   getStatus() {
+    this.messageLose.classList.toggle('hidden');
+    this.messageStart.classList.toggle('hidden');
     this.buttonStart.textContent = 'Start';
     this.buttonStart.classList.toggle('start');
     this.buttonStart.classList.toggle('restart');
@@ -178,7 +184,7 @@ export class Game {
     } else {
       this.isEmpty();
 
-      if (this.initialState !== 'lose') {
+      if (this.emptyCell > 0) {
         this.randomChip();
       }
     }
@@ -355,21 +361,57 @@ export class Game {
     }
   }
 
+  checkingForMoves() {
+    this.counter = 0;
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (i === 0 && j < 3) {
+          if (
+            this.gameBoard[i][j] === this.gameBoard[i][j + 1] ||
+            this.gameBoard[i][j] === this.gameBoard[i + 1][j]
+          ) {
+            this.counter++;
+          }
+        } else if (i < 3 && j < 3) {
+          if (
+            this.gameBoard[i][j] === this.gameBoard[i - 1][j] ||
+            this.gameBoard[i][j] === this.gameBoard[i][j + 1] ||
+            this.gameBoard[i][j] === this.gameBoard[i + 1][j]
+          ) {
+            this.counter++;
+          }
+        } else if (i === 3 && j < 3) {
+          if (this.gameBoard[i][j] === this.gameBoard[i][j + 1]) {
+            this.counter++;
+          }
+        } else if (j === 3 && i === 3) {
+          if (this.gameBoard[i][j] === this.gameBoard[i - 1][j]) {
+            this.counter++;
+          }
+        } else if (j === 3 && i === 1) {
+          if (this.gameBoard[i][j] === this.gameBoard[i + 1][j]) {
+            this.counter++;
+          }
+        }
+      }
+    }
+  }
+
   isEmpty() {
-    let emptyCell = 0;
+    this.emptyCell = 0;
 
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         if (this.gameBoard[i][j] === 0) {
-          emptyCell++;
+          this.emptyCell++;
         }
       }
     }
 
-    if (emptyCell === 0) {
-      this.messageLose.classList.toggle('hidden');
-      this.messageStart.classList.toggle('hidden');
+    this.checkingForMoves();
 
+    if (this.emptyCell === 0 && this.counter === 0) {
       this.initialState = 'lose';
     }
   }
