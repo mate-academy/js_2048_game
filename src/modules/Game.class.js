@@ -41,7 +41,7 @@ class Game {
         console.error(`Row at index ${rowIndex} is invalid:`, row);
       }
     });
-    this.addRandomTile();
+    // this.addRandomTile();
   }
   moveRight() {
     this.board.forEach((row, rowIndex) => {
@@ -67,7 +67,7 @@ class Game {
         console.error(`Row at index ${rowIndex} is invalid:`, row);
       }
     });
-    this.addRandomTile();
+    // this.addRandomTile();
   }
 
   moveUp() {
@@ -98,7 +98,7 @@ class Game {
         this.board[rowIndex][colIndex] = mergedColumn[rowIndex];
       }
     }
-    this.addRandomTile();
+    // this.addRandomTile();
   }
 
   moveDown() {
@@ -136,7 +136,7 @@ class Game {
         this.board[rowIndex][colIndex] = finalColumn[rowIndex];
       }
     }
-    this.addRandomTile();
+    // this.addRandomTile();
   }
 
   getScore() {
@@ -218,20 +218,40 @@ class Game {
   }
 
   addRandomTile() {
+    // const emptyCells = [];
+
+    // for (let row = 0; row < 4; row++) {
+    //   for (let col = 0; col < 4; col++) {
+    //     if (this.board[row][col] === 0) {
+    //       emptyCells.push({ row, col });
+    //     }
+    //   }
+    // }
+
+    // if (emptyCells.length > 0) {
+    //   const randomCell =
+    //     emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+    //   this.board[randomCell.row][randomCell.col] =
+    // Math.random() < 0.9 ? 2 : 4;
+    // }
+
     const emptyCells = [];
 
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        if (this.board[row][col] === 0) {
-          emptyCells.push({ row, col });
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.board[i][j] === 0) {
+          emptyCells.push({ row: i, col: j });
         }
       }
     }
 
     if (emptyCells.length > 0) {
-      const randomCell =
-        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      // Вибираємо випадкову порожню клітинку
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+      const randomCell = emptyCells[randomIndex];
 
+      // Генеруємо плитку 2 або 4
       this.board[randomCell.row][randomCell.col] = Math.random() < 0.9 ? 2 : 4;
     }
   }

@@ -6,7 +6,6 @@ export default function updateBoard(game) {
     return;
   }
 
-  const scoreElement = document.querySelector('.game-score');
   const messageWin = document.querySelector('.message-win');
   const messageLose = document.querySelector('.message-lose');
   const board = game.getState();
@@ -35,7 +34,7 @@ export default function updateBoard(game) {
     });
   });
 
-  scoreElement.textContent = game.getScore();
+  // scoreElement.textContent = game.getScore();
 
   if (game.isGameOver()) {
     game.status = 'lose';

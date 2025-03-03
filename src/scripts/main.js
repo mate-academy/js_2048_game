@@ -83,11 +83,15 @@ document.addEventListener('keyup', (events) => {
     }
   }
 
+  // eslint-disable-next-line no-console
+  console.log(`Has ${hasChanged}`);
+
   if (hasChanged) {
     game.getWin();
-    updateBoard(game);
     game.addRandomTile();
     updateMaxTileDisplay();
+    updateBoard(game);
+
     // eslint-disable-next-line no-console
     console.log(game.board);
     // eslint-disable-next-line no-console
@@ -130,6 +134,5 @@ gameField.addEventListener('touchend', (e) => {
 
     updateBoard(game);
     game.addRandomTile();
-    updateMaxTileDisplay();
   }
 });
