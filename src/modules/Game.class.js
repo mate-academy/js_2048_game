@@ -29,63 +29,77 @@ class Game {
   }
 
   move(key) {
-    if (this.status === this.statusValues.playing) {
-      const lastStateVersion = Game.copyState(this.state);
-
-      switch (key) {
-        case 'ArrowLeft':
-          this.moveLeft();
-          break;
-        case 'ArrowRight':
-          this.moveRight();
-          break;
-        case 'ArrowUp':
-          this.moveUp();
-          break;
-        case 'ArrowDown':
-          this.moveDown();
-          break;
-        default:
-          return;
-      }
-
-      const isIdentic = Game.checkStatesAreTheSame(
-        lastStateVersion,
-        this.state,
-      );
-
-      if (isIdentic) {
-        return;
-      }
-
-      Game.addRandomTile(this.state);
+    if (this.status !== this.statusValues.playing) {
+      return;
     }
 
-    Game.checkGameStatus(this);
+    switch (key) {
+      case 'ArrowLeft':
+        this.moveLeft();
+        break;
+      case 'ArrowRight':
+        this.moveRight();
+        break;
+      case 'ArrowUp':
+        this.moveUp();
+        break;
+      case 'ArrowDown':
+        this.moveDown();
+        break;
+      default:
+    }
   }
 
   moveLeft() {
+    const lastStateVersion = Game.copyState(this.state);
+
     Game.moveNumbersToLeft(this.state);
     Game.combineTilesLeft(this.state, this);
     Game.moveNumbersToLeft(this.state);
+
+    if (!Game.checkStatesAreTheSame(lastStateVersion, this.state)) {
+      Game.addRandomTile(this.state);
+      Game.checkGameStatus(this);
+    }
   }
 
   moveRight() {
+    const lastStateVersion = Game.copyState(this.state);
+
     Game.moveNumbersToRight(this.state);
     Game.combineTilesRight(this.state, this);
     Game.moveNumbersToRight(this.state);
+
+    if (!Game.checkStatesAreTheSame(lastStateVersion, this.state)) {
+      Game.addRandomTile(this.state);
+      Game.checkGameStatus(this);
+    }
   }
 
   moveUp() {
+    const lastStateVersion = Game.copyState(this.state);
+
     Game.moveNumbersUp(this.state);
     Game.combineTilesUp(this.state, this);
     Game.moveNumbersUp(this.state);
+
+    if (!Game.checkStatesAreTheSame(lastStateVersion, this.state)) {
+      Game.addRandomTile(this.state);
+      Game.checkGameStatus(this);
+    }
   }
 
   moveDown() {
+    const lastStateVersion = Game.copyState(this.state);
+
     Game.moveNumbersDown(this.state);
     Game.combineTilesDown(this.state, this);
     Game.moveNumbersDown(this.state);
+
+    if (!Game.checkStatesAreTheSame(lastStateVersion, this.state)) {
+      Game.addRandomTile(this.state);
+      Game.checkGameStatus(this);
+    }
   }
 
   getScore() {
@@ -112,6 +126,12 @@ class Game {
     Game.clearState(this);
     this.score = this.SCORE_START_VALUE;
     this.start();
+  }
+
+  reset() {
+    this.state = Game.copyState(this.initialState);
+    this.status = this.statusValues.idle;
+    this.score = this.SCORE_START_VALUE;
   }
 
   static clearState(gameInstance) {
@@ -245,6 +265,8 @@ class Game {
   static checkGameStatus(gameInstance) {
     const state = gameInstance.state;
     const values = gameInstance.statusValues;
+    let hasEmptyCell = false;
+    let hasMove = false;
 
     for (let r = 0; r < state.length; r++) {
       for (let c = 0; c < state[r].length; c++) {
@@ -254,19 +276,23 @@ class Game {
           return;
         }
 
+        if (state[r][c] === 0) {
+          hasEmptyCell = true;
+        }
+
         if (
-          state[r][c] === 0 ||
-          (c < state.length - 1 && state[r][c] === state[r][c + 1]) ||
+          (c < state[r].length - 1 && state[r][c] === state[r][c + 1]) ||
           (r < state.length - 1 && state[r][c] === state[r + 1][c])
         ) {
-          gameInstance.status = values.playing;
-
-          return;
+          hasMove = true;
         }
       }
     }
 
-    gameInstance.status = values.lose;
+    if (gameInstance.status !== values.win) {
+      gameInstance.status =
+        hasEmptyCell || hasMove ? values.playing : values.lose;
+    }
   }
 }
 
