@@ -1,6 +1,6 @@
 # 2048 game
 
-🪄*I wrote this game in three days without any help. It took the same amount of time to write this game for the person who created it*
+⭐ _I wrote this game in three days without any help. It took the same amount of time to write this game for the person who created it_ ⭐
 
 # DEMO
 
