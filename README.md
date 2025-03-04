@@ -11,7 +11,7 @@ Okay, what do we have?
 2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
   - constructor with `initialState` parameter (value is optional, defaults to the empty board)
   - `getState()`
-  - `getScore()`
+  - `getScore()` +
   - `getStatus()`
   - `moveLeft()`
   - `moveRight()`
