@@ -12,8 +12,6 @@
 
 # Getting Started
 
-Follow these steps to set up the project locally
-
 1. Clone the repo
    git clone https://github.com/barbanihor/js_2048_game.git
    cd project-name
