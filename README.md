@@ -19,9 +19,9 @@ Follow these steps to set up the project locally
    cd project-name
 2. Install dependencies
    npm install
-
-or
-yarn install 3. Run the project locally
-npm start
-or
-yarn start
+   or
+   yarn install
+3. Run the project locally
+   npm start
+   or
+   yarn start
