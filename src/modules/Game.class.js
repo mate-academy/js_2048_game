@@ -104,10 +104,6 @@ export class Game {
    */
   getStatus() {
     this.messageLose.classList.toggle('hidden');
-    this.messageStart.classList.toggle('hidden');
-    this.buttonStart.textContent = 'Start';
-    this.buttonStart.classList.toggle('start');
-    this.buttonStart.classList.toggle('restart');
     this.initialState = 'idle';
   }
 
@@ -369,7 +365,7 @@ export class Game {
           ) {
             this.counter++;
           }
-        } else if (i === 3 && j < 3) {
+        } else if (i === 0 && j === 3) {
           if (this.gameBoard[i][j] === this.gameBoard[i][j + 1]) {
             this.counter++;
           }
