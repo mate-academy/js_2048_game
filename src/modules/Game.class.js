@@ -29,10 +29,6 @@ class Game {
   }
 
   move(key) {
-    if (this.status !== this.statusValues.playing) {
-      return;
-    }
-
     switch (key) {
       case 'ArrowLeft':
         this.moveLeft();
@@ -51,6 +47,10 @@ class Game {
   }
 
   moveLeft() {
+    if (this.status !== this.statusValues.playing) {
+      return;
+    }
+
     const lastStateVersion = Game.copyState(this.state);
 
     Game.moveNumbersToLeft(this.state);
@@ -64,6 +64,10 @@ class Game {
   }
 
   moveRight() {
+    if (this.status !== this.statusValues.playing) {
+      return;
+    }
+
     const lastStateVersion = Game.copyState(this.state);
 
     Game.moveNumbersToRight(this.state);
@@ -77,6 +81,10 @@ class Game {
   }
 
   moveUp() {
+    if (this.status !== this.statusValues.playing) {
+      return;
+    }
+
     const lastStateVersion = Game.copyState(this.state);
 
     Game.moveNumbersUp(this.state);
@@ -90,6 +98,10 @@ class Game {
   }
 
   moveDown() {
+    if (this.status !== this.statusValues.playing) {
+      return;
+    }
+
     const lastStateVersion = Game.copyState(this.state);
 
     Game.moveNumbersDown(this.state);
@@ -123,9 +135,9 @@ class Game {
   }
 
   restart() {
-    Game.clearState(this);
     this.score = this.SCORE_START_VALUE;
-    this.start();
+    this.status = this.statusValues.idle;
+    this.state = Game.copyState(this.initialState);
   }
 
   reset() {
