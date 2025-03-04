@@ -8,6 +8,18 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  background-image: url(../images/background-image_2048.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  backdrop-filter: blur(2px);
+}
+
+.animation-appear {
+  animation: appear 0.2s ease-out;
+}
+
+.animation-connect {
+  animation: connect 0.2s ease-out;
 }
 
 .field-cell {
@@ -109,7 +121,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #fff2e6;
   width: 75px;
   height: 75px;
   border-radius: 5px;
@@ -117,10 +129,28 @@ h1 {
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+  position: relative;
+}
+
+.game-score-number {
+  color: #776e65;
+  opacity: 0;
+  font-size: 26px;
+  position: absolute;
+  transform: translate(50%, 50%);
+  z-index: 1;
+}
+
+.animation-number-slide {
+  animation: number-slide 0.8s ease-out;
 }
 
 .controls {
   display: flex;
+  position: relative;
+  transition:
+    all,
+    1s ease-out;
 }
 
 .button {
@@ -133,8 +163,8 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-
-  transition: 0.25s ease background;
+  outline: none;
+  box-shadow: none;
 }
 
 .start {
@@ -163,6 +193,13 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+
+  &-start {
+    position: absolute;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 1s ease-out;
+  }
 }
 
 .hidden {
@@ -174,14 +211,65 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
+  position: relative;
 }
 
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
+  position: absolute;
+  bottom: 0%;
+  transform: scale(1);
+  transition: all 1s ease-in;
+  animation: appear 0.8s ease-out;
+}
+
+.message-lose {
+  background: #f87474;
+  color: #f9f6f2;
+  position: absolute;
+  bottom: 0%;
+  transform: scale(1);
+  transition: all 1s ease-in;
+  animation: appear 0.8s ease-out;
 }
 
 .message-container {
   width: 100%;
   height: 150px;
+  opacity: 1;
+  transition: all 1s ease-in;
+}
+
+@keyframes appear {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes button-bloom {
+  from {
+    box-shadow: none;
+    background-color: #1dae28;
+  }
+  to {
+    background-color: #f87474;
+    box-shadow: 0 0 20px 5px #f87474;
+  }
+}
+
+@keyframes number-slide {
+  from {
+    transform: translate(50%, 50%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(50%, -120%);
+    opacity: 1;
+  }
 }
