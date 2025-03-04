@@ -142,7 +142,7 @@ class Game {
   static moveNumbersToLeft(state) {
     state.forEach((row) => {
       for (let k = 0; k < row.length; k++) {
-        for (let i = 0; i < row[k].length; i++) {
+        for (let i = 0; i < row.length; i++) {
           if (row[i] === 0 && i < row.length - 1) {
             row[i] = row[i + 1];
             row[i + 1] = 0;
