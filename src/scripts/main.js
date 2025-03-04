@@ -27,6 +27,7 @@ startButton.addEventListener('click', () => {
     startButton.classList.remove('restart');
     startButton.innerHTML = 'Start';
     game.restart();
+    hiden();
     updateBoard(game);
   } else {
     startButton.classList.add('restart');
@@ -45,6 +46,12 @@ startButton.addEventListener('click', () => {
     messageStart.classList.remove('hidden');
   }
 });
+
+const hiden = () => {
+  messageStart.classList.add('hidden');
+  messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
+};
 
 document.addEventListener('keyup', (events) => {
   const boardBeforeMove = game.board.map((row) => [...row]);
