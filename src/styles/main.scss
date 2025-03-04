@@ -15,11 +15,11 @@ body {
   align-items: center;
   justify-content: center;
   background-image: url(../images/wavey-fingerprint.svg);
-  font-family: 'Roboto', sans-serif;
+  font-family: Roboto, sans-serif;
   font-size: 24px;
   font-weight: 900;
   overflow: hidden;
-  animation: fadeIn 1s ease-in-out;
+  animation: fadein 1s ease-in-out;
 }
 
 .game-box {
@@ -43,7 +43,7 @@ body {
   padding: 10px 20px;
   background-color: #f1b2b2;
   border-radius: 10px;
-  animation: fadeIn 1s ease-in-out;
+  animation: fadein 1s ease-in-out;
 }
 
 .game-field {
@@ -77,7 +77,7 @@ body {
 }
 
 .field-cell {
-  font-family: 'Roboto', serif;
+  font-family: Roboto, serif;
   font-weight: 700;
   font-style: normal;
   margin: 0;
@@ -112,8 +112,8 @@ body {
 h1 {
   background: #7d6f60;
   color: #f9f6f2;
-  width: 4 * $cell-size;
-  height: $cell-size;
+  width: 5 * $cell-size;
+  height: 1.5 * $cell-size;
   font-size: 48px;
   border-radius: 10px;
   display: flex;
@@ -136,7 +136,7 @@ h1 {
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
-  animation: fadeIn 1s ease-in-out;
+  animation: fadein 1s ease-in-out;
 }
 
 .controls {
@@ -154,7 +154,7 @@ h1 {
   border-radius: 10px;
   cursor: pointer;
   color: #f9f6f2;
-  font-family: 'Roboto', sans-serif;
+  font-family: Roboto, sans-serif;
   font-weight: 700;
   font-size: 16px;
   width: $controll-size;
@@ -201,7 +201,7 @@ input:focus {
   text-align: center;
   border-radius: 10px;
   font-size: 20px;
-  animation: fadeIn 1s ease-in-out;
+  animation: fadein 1s ease-in-out;
 }
 
 .hidden {
@@ -219,7 +219,7 @@ input:focus {
   height: 150px;
 }
 
-@keyframes fadeIn {
+@keyframes fadein {
   from {
     opacity: 0;
   }
@@ -228,18 +228,7 @@ input:focus {
   }
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes bounceIn {
+@keyframes bouncein {
   from {
     opacity: 0;
     transform: scale(0.3);
@@ -297,7 +286,6 @@ input:focus {
 }
 
 .copy-cell {
-  border-radius: 10px;
   width: $cell-size;
   height: $cell-size;
   color: #776e65;

@@ -189,7 +189,7 @@ class Game {
             sortedRow[i] += sortedRow[i + 1];
             this.state.score += sortedRow[i];
 
-            if (sortedRow[i] === 2048) {
+            if (sortedRow[i] === 137156) {
               this.endGame('win');
             }
 
