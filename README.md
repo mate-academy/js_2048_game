@@ -1,6 +1,6 @@
 # 2048 game
 
-_I wrote this game in three days without any help. It took the same amount of time to write this game for the person who created it_
+🪄*I wrote this game in three days without any help. It took the same amount of time to write this game for the person who created it*
 
 # DEMO
 
@@ -8,7 +8,7 @@ _I wrote this game in three days without any help. It took the same amount of ti
 
 # Technologies Used
 
-- Html, CSS, JS
+- HTML, CSS, JS
 
 # Getting Started
 
