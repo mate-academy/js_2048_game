@@ -48,7 +48,14 @@ function updateTable(state, score) {
     const row = [...rows[i].querySelectorAll('td')];
 
     for (let k = 0; k < state[i].length; k++) {
-      row[k].innerText = state[i][k] ? state[i][k] : '';
+      const value = state[i][k];
+      row[k].innerText = value ? value : '';
+
+      row[k].className = 'field-cell';
+
+      if (value) {
+        row[k].classList.add(`field-cell--${value}`);
+      }
     }
   }
 
