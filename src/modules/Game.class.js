@@ -1,6 +1,7 @@
 'use strict';
 
 class Game {
+  movedCells = [];
   #NUMBER_OF_ROWS_CELLS = 4;
   initialState = [
     [0, 0, 0, 0],
@@ -20,8 +21,21 @@ class Game {
       return;
     }
 
+    this.resetMovedCells();
+
     const mergeLeft = (i, j, k) => {
       if (this.gameState[i][k] !== 0) {
+        for (const movedCell of this.movedCells) {
+          if (movedCell.y === i && movedCell.x === j) {
+            movedCell.newX = j;
+            movedCell.changed = true;
+          }
+
+          if (movedCell.y === i && movedCell.x === k) {
+            movedCell.newX = j;
+            movedCell.changed = true;
+          }
+        }
         this.gameState[i][j] *= 2;
         this.gameScore += this.gameState[i][j];
         this.gameState[i][k] = 0;
@@ -53,6 +67,24 @@ class Game {
       for (let i = 0; i < this.#NUMBER_OF_ROWS_CELLS; i++) {
         for (let j = 0; j < this.#NUMBER_OF_ROWS_CELLS - 1; j++) {
           if (this.gameState[i][j] === 0 && this.gameState[i][j + 1] !== 0) {
+            for (const movedCell of this.movedCells) {
+              if (
+                movedCell.changed &&
+                movedCell.y === i &&
+                movedCell.newX === j + 1
+              ) {
+                movedCell.newX = j;
+              }
+
+              if (
+                !movedCell.changed &&
+                movedCell.y === i &&
+                movedCell.x === j + 1
+              ) {
+                movedCell.newX = j;
+                movedCell.changed = true;
+              }
+            }
             this.gameState[i][j] = this.gameState[i][j + 1];
             this.gameState[i][j + 1] = 0;
           }
@@ -68,8 +100,21 @@ class Game {
       return;
     }
 
+    this.resetMovedCells();
+
     const mergeRight = (i, j, k) => {
       if (this.gameState[i][k] !== 0) {
+        for (const movedCell of this.movedCells) {
+          if (movedCell.y === i && movedCell.x === j) {
+            movedCell.newX = j;
+            movedCell.changed = true;
+          }
+
+          if (movedCell.y === i && movedCell.x === k) {
+            movedCell.newX = j;
+            movedCell.changed = true;
+          }
+        }
         this.gameState[i][j] *= 2;
         this.gameScore += this.gameState[i][j];
         this.gameState[i][k] = 0;
@@ -101,6 +146,24 @@ class Game {
       for (let i = this.#NUMBER_OF_ROWS_CELLS - 1; i >= 0; i--) {
         for (let j = this.#NUMBER_OF_ROWS_CELLS - 1; j > 0; j--) {
           if (this.gameState[i][j] === 0 && this.gameState[i][j - 1] !== 0) {
+            for (const movedCell of this.movedCells) {
+              if (
+                movedCell.changed &&
+                movedCell.y === i &&
+                movedCell.newX === j - 1
+              ) {
+                movedCell.newX = j;
+              }
+
+              if (
+                !movedCell.changed &&
+                movedCell.y === i &&
+                movedCell.x === j - 1
+              ) {
+                movedCell.newX = j;
+                movedCell.changed = true;
+              }
+            }
             this.gameState[i][j] = this.gameState[i][j - 1];
             this.gameState[i][j - 1] = 0;
           }
@@ -116,8 +179,21 @@ class Game {
       return;
     }
 
+    this.resetMovedCells();
+
     const mergeUp = (i, j, k) => {
       if (this.gameState[k][j] !== 0) {
+        for (const movedCell of this.movedCells) {
+          if (movedCell.x === j && movedCell.y === i) {
+            movedCell.newY = i;
+            movedCell.changed = true;
+          }
+
+          if (movedCell.x === j && movedCell.y === k) {
+            movedCell.newY = i;
+            movedCell.changed = true;
+          }
+        }
         this.gameState[i][j] *= 2;
         this.gameScore += this.gameState[i][j];
         this.gameState[k][j] = 0;
@@ -149,6 +225,24 @@ class Game {
       for (let j = 0; j < this.#NUMBER_OF_ROWS_CELLS; j++) {
         for (let i = 0; i < this.#NUMBER_OF_ROWS_CELLS - 1; i++) {
           if (this.gameState[i][j] === 0 && this.gameState[i + 1][j] !== 0) {
+            for (const movedCell of this.movedCells) {
+              if (
+                movedCell.changed &&
+                movedCell.newY === i + 1 &&
+                movedCell.x === j
+              ) {
+                movedCell.newY = i;
+              }
+
+              if (
+                !movedCell.changed &&
+                movedCell.y === i + 1 &&
+                movedCell.x === j
+              ) {
+                movedCell.newY = i;
+                movedCell.changed = true;
+              }
+            }
             this.gameState[i][j] = this.gameState[i + 1][j];
             this.gameState[i + 1][j] = 0;
           }
@@ -164,8 +258,21 @@ class Game {
       return;
     }
 
+    this.resetMovedCells();
+
     const mergeDown = (i, j, k) => {
       if (this.gameState[k][j] !== 0) {
+        for (const movedCell of this.movedCells) {
+          if (movedCell.x === j && movedCell.y === i) {
+            movedCell.newY = i;
+            movedCell.changed = true;
+          }
+
+          if (movedCell.x === j && movedCell.y === k) {
+            movedCell.newY = i;
+            movedCell.changed = true;
+          }
+        }
         this.gameState[i][j] *= 2;
         this.gameScore += this.gameState[i][j];
         this.gameState[k][j] = 0;
@@ -197,6 +304,24 @@ class Game {
       for (let j = this.#NUMBER_OF_ROWS_CELLS - 1; j >= 0; j--) {
         for (let i = this.#NUMBER_OF_ROWS_CELLS - 1; i > 0; i--) {
           if (this.gameState[i][j] === 0 && this.gameState[i - 1][j] !== 0) {
+            for (const movedCell of this.movedCells) {
+              if (
+                movedCell.changed &&
+                movedCell.newY === i - 1 &&
+                movedCell.x === j
+              ) {
+                movedCell.newY = i;
+              }
+
+              if (
+                !movedCell.changed &&
+                movedCell.y === i - 1 &&
+                movedCell.x === j
+              ) {
+                movedCell.newY = i;
+                movedCell.changed = true;
+              }
+            }
             this.gameState[i][j] = this.gameState[i - 1][j];
             this.gameState[i - 1][j] = 0;
           }
@@ -214,6 +339,22 @@ class Game {
 
   getState() {
     return this.gameState;
+  }
+
+  resetMovedCells() {
+    this.movedCells = [];
+
+    for (let i = 0; i < this.#NUMBER_OF_ROWS_CELLS; i++) {
+      for (let j = 0; j < this.#NUMBER_OF_ROWS_CELLS; j++) {
+        if (this.gameState[i][j] !== 0) {
+          this.movedCells.push({ x: j, y: i, changed: false });
+        }
+      }
+    }
+  }
+
+  getMovedCells() {
+    return this.movedCells;
   }
 
   /**
