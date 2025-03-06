@@ -6,6 +6,11 @@ const game = new Game();
 const tbody = document.querySelector('tbody');
 const buttonStart = document.querySelector('.button');
 const ANIMATION_DURATION = 200;
+const ANIMATION_OPTIONS = {
+  duration: ANIMATION_DURATION,
+  fill: 'forwards',
+  easing: 'ease',
+};
 let isStarted = false;
 
 function generatePlayingTilesContainer(isCreate) {
@@ -15,9 +20,11 @@ function generatePlayingTilesContainer(isCreate) {
     playingTiles.classList.add('generated-field');
 
     document.querySelector('.container').prepend(playingTiles);
+
     return;
   }
 
+  document.querySelector('.game-score').textContent = game.getScore();
   document.querySelector('.generated-field').remove();
 }
 
@@ -99,7 +106,9 @@ document.addEventListener('keydown', (e) => {
 });
 
 function updateField() {
-  document.querySelector('.generated-field').innerHTML = '';
+  if (document.querySelector('.generated-field') !== null) {
+    document.querySelector('.generated-field').innerHTML = '';
+  }
 
   const newTop = document.createDocumentFragment();
   const score = game.getScore();
@@ -124,17 +133,17 @@ function updateField() {
 
         newTop.lastElementChild.animate(
           {
-            transform: ['scale(1)', 'scale(1.1)', 'scale(1)'],
+            transform: ['scale(1)', 'scale(1.03)', 'scale(1)'],
           },
-          {
-            duration: ANIMATION_DURATION,
-            fill: 'forwards',
-          },
+          ANIMATION_OPTIONS,
         );
       }
     }
   }
-  document.querySelector('.generated-field').append(newTop);
+
+  if (document.querySelector('.generated-field') !== null) {
+    document.querySelector('.generated-field').append(newTop);
+  }
   document.querySelector('.game-score').textContent = score;
 }
 
@@ -180,10 +189,7 @@ function moveAnimation(arrow) {
           {
             transform: ['translateX(0)', `translateX(${-x}px)`],
           },
-          {
-            duration: ANIMATION_DURATION,
-            fill: 'forwards',
-          },
+          ANIMATION_OPTIONS,
         );
       }
       break;
@@ -212,10 +218,7 @@ function moveAnimation(arrow) {
           {
             transform: ['translateX(0)', `translateX(${x}px)`],
           },
-          {
-            duration: ANIMATION_DURATION,
-            fill: 'forwards',
-          },
+          ANIMATION_OPTIONS,
         );
       }
       break;
@@ -244,10 +247,7 @@ function moveAnimation(arrow) {
           {
             transform: ['translateY(0)', `translateY(${-y}px)`],
           },
-          {
-            duration: ANIMATION_DURATION,
-            fill: 'forwards',
-          },
+          ANIMATION_OPTIONS,
         );
       }
       break;
@@ -276,10 +276,7 @@ function moveAnimation(arrow) {
           {
             transform: ['translateY(0)', `translateY(${y}px)`],
           },
-          {
-            duration: ANIMATION_DURATION,
-            fill: 'forwards',
-          },
+          ANIMATION_OPTIONS,
         );
       }
       break;
