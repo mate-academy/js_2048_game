@@ -447,10 +447,16 @@ class Game {
     }
 
     for (let i = 0; i < this.#NUMBER_OF_ROWS_CELLS - 1; i++) {
-      for (let j = 0; j < this.#NUMBER_OF_ROWS_CELLS - 1; j++) {
+      for (let j = 0; j < this.#NUMBER_OF_ROWS_CELLS; j++) {
         if (this.gameState[i][j] === this.gameState[i + 1][j]) {
           return true;
-        } else if (this.gameState[i][j] === this.gameState[i][j + 1]) {
+        }
+      }
+    }
+
+    for (let i = 0; i < this.#NUMBER_OF_ROWS_CELLS; i++) {
+      for (let j = 0; j < this.#NUMBER_OF_ROWS_CELLS - 1; j++) {
+        if (this.gameState[i][j] === this.gameState[i][j + 1]) {
           return true;
         }
       }
