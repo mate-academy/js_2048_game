@@ -9,29 +9,41 @@ const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 
-startBtn.addEventListener(
-  'click',
-  () => {
+function startGame() {
+  if (!game.isStarted) {
     game.start();
-
     updateTable(game.getState(), game.score);
-
     startMessage.classList.add('hidden');
-
     startBtn.innerText = 'Restart';
     startBtn.classList.remove('start');
     startBtn.classList.add('restart');
+  } else {
+    restartGame();
+  }
 
-    startBtn.addEventListener('click', () => {
-      winMessage.classList.add('hidden');
-      loseMessage.classList.add('hidden');
+  startBtn.removeEventListener('click', startGame);
+  startBtn.addEventListener('click', restartGame);
+}
 
-      game.restart();
-      updateTable(game.getState(), game.score);
-    });
-  },
-  { once: true },
-);
+function restartGame() {
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
+
+  game.restart();
+
+  updateTable(game.getState(), game.score);
+
+  startBtn.innerText = 'Start';
+  startBtn.classList.remove('restart');
+  startBtn.classList.add('start');
+
+  startBtn.removeEventListener('click', restartGame);
+  startBtn.addEventListener('click', startGame);
+}
+
+startBtn.addEventListener('click', startGame);
+
+startBtn.addEventListener('click', startGame);
 
 document.addEventListener('keydown', (e) => {
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
@@ -49,11 +61,12 @@ function updateTable(state, score) {
 
     for (let k = 0; k < state[i].length; k++) {
       const value = state[i][k];
-      row[k].innerText = value ? value : '';
 
+      row[k].innerText = '';
       row[k].className = 'field-cell';
 
       if (value) {
+        row[k].innerText = value;
         row[k].classList.add(`field-cell--${value}`);
       }
     }
