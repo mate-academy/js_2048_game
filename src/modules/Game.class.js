@@ -52,21 +52,22 @@ class Game {
   }
 
   /**
-   * Returns matrix with size === this.size filled with 0.
+  /**
+   * @returns {number[][]} Matrix with size === this.size filled with 0.
    */
   getEmptyBoard() {
     return Array.from({ length: this.size }, () => Array(this.size).fill(0));
   }
 
   /**
-   * @returns {number}
+   * @returns {number} Current score
    */
   getScore() {
     return this.score;
   }
 
   /**
-   * @returns {number[][]}
+   * @returns {number[][]} Current board state
    */
   getState() {
     return this.state;
@@ -99,6 +100,23 @@ class Game {
     return this.status;
   }
 
+  /**
+   * Processes a move on the board.
+   * The move is possible if at least one cell is changed after the move.
+   *
+   * Steps:
+   * - Optionally applies a pre-compression transformation.
+   * - Compresses the board (merges cells, shifts left, pads with zeros).
+   * - Optionally applies a post-compression transformation.
+   * - Aborts the move if no changes occurred.
+   * - Otherwise, updates the board state, score, adds a random tile,
+   *   re-renders the board, and checks win/loss.
+   *
+   * @param {function} [fnBeforeCompressing] - Function to transform the board
+   * before compression.
+   * @param {function} [fnAfterCompressing] - Function to transform the board
+   * after compression.
+   */
   moveBoard(fnBeforeCompressing = undefined, fnAfterCompressing = undefined) {
     let updatedBoard = fnBeforeCompressing
       ? fnBeforeCompressing(this.state)
@@ -123,6 +141,19 @@ class Game {
     this.checkHasWon();
   }
 
+  /**
+   * Compresses the board to the left by merging and shifting cells.
+   *
+   * Compression logic:
+   * - Merges adjacent equal cells into one cell with double the value.
+   * - Prevents a cell from merging more than once per move.
+   * - Increases the score by the sum of all merged cells.
+   * - Shifts non-zero values to the left and pads with zeros
+   *   so each row has a length of {@link this.size}.
+   *
+   * @param {number[][]} board - The current game board state
+   * @returns {number[][]} The new board state after compressing
+   */
   compressBoard(board) {
     return board.map((row) => {
       const shiftedRow = [];
@@ -155,6 +186,10 @@ class Game {
     });
   }
 
+  /**
+   * @param {number[][]} matrix
+   * @returns {number[][]} Copy of the matrix with each row reversed
+   */
   flipHorizontally(matrix) {
     return matrix.map((row) => {
       return row.map((value, index, arr) => {
@@ -163,6 +198,10 @@ class Game {
     });
   }
 
+  /**
+   * @param {number[][]} matrix
+   * @returns {number[][]} Copy of the matrix rotated counterwise
+   */
   rotateLeft(matrix) {
     const rotatedMatrix = Array.from({ length: this.size }, () => []);
 
@@ -175,6 +214,10 @@ class Game {
     return rotatedMatrix;
   }
 
+  /**
+   * @param {number[][]} matrix
+   * @returns {number[][]} Copy of the matrix rotated clockwise
+   */
   rotateRight(matrix) {
     const rotatedMatrix = Array.from({ length: this.size }, () => []);
 
@@ -226,6 +269,12 @@ class Game {
     return false;
   }
 
+  /**
+   * If no more moves can be made, sets this.status to 'lose'
+   * and displays 'message-lose'.
+   *
+   * @returns {bool} True is this.status === 'lose'
+   */
   checkHasLost() {
     if (!this.hasEmptyCells() && !this.hasAvailableMoves()) {
       this.status = 'lose';
@@ -237,6 +286,12 @@ class Game {
     return false;
   }
 
+  /**
+   * If at least one cell contains 2048, sets this.status to 'win'
+   * and displays 'message-win'.
+   *
+   * @returns {void}
+   */
   checkHasWon() {
     if (this.state.some((row) => row.includes(2048))) {
       this.status = 'won';
@@ -244,6 +299,11 @@ class Game {
     }
   }
 
+  /**
+   * Replaces the textContent of the '.game-score' element with this.score.
+   *
+   * @returns {void}
+   */
   updateScoreDisplay() {
     document.querySelector('.game-score').innerHTML = this.score;
   }
@@ -283,12 +343,25 @@ class Game {
     this._renderedState = newState.map((row) => [...row]);
   }
 
-  hideMessage(message) {
-    if (!message.classList.contains('hidden')) {
-      message.classList.add('hidden');
+  /**
+   * If the given element doesn't have 'hidden' class, adds it.
+   *
+   * @param {HTMLElement} messageElement
+   * @returns {void}
+   */
+  hideMessage(messageElement) {
+    if (!messageElement.classList.contains('hidden')) {
+      messageElement.classList.add('hidden');
     }
   }
 
+  /**
+   * Finds message element by the given selector
+   * and removes 'hidden' class from its classList.
+   *
+   * @param {string} selector
+   * @returns {void}
+   */
   showMessage(selector) {
     document.querySelector(selector).classList.remove('hidden');
   }
@@ -361,6 +434,8 @@ class Game {
    *
    * If previous status is 'idle', also updates this.status, main
    * button classes and textContent, and hides start message.
+   *
+   * @returns {void}
    */
   handleMainButtonClicks(e) {
     const targetClasses = e.target.classList;
