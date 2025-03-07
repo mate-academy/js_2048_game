@@ -71,7 +71,7 @@ p {
   text-align: center;
   user-select: none;
   background-color: #fff5f5;
-  background-size: 50%;
+  background-size: 100%;
 
   @each $value, $color in $tile-colors {
     &--#{$value} {

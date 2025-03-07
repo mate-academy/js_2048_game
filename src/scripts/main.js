@@ -79,7 +79,7 @@ function updateGrid() {
     const col = index % 4;
     const value = grid[row][col];
 
-    cell.textContent = value || '';
+    cell.textContent = '';
     cell.className = `field-cell${value ? ` field-cell--${value}` : ''}`;
   });
 }
