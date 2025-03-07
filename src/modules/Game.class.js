@@ -9,7 +9,6 @@ class Game {
     this.status = 'idle';
   }
 
-  // Método genérico de movimento que centraliza a lógica comum
   move(transformBoardFn) {
     if (this.status !== 'playing') {
       return;

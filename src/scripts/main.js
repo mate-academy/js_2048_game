@@ -9,22 +9,6 @@ const game = new Game([
   [0, 0, 0, 0],
 ]);
 
-/*
-const game = new Game([
-  [0, 0, 0, 0],
-  [0, 0, 1024, 1024],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-]);
-
-const game = new Game([
-  [2, 0, 0, 0],
-  [0, 4, 0, 0],
-  [0, 0, 8, 0],
-  [0, 0, 0, 16],
-]);
-*/
-
 function renderGame(gameState) {
   const cells = document.querySelectorAll('.field-cell');
   const scoreElement = document.querySelector('.game-score');
