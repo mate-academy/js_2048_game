@@ -11,20 +11,26 @@
       rel="stylesheet"
       href="./styles/main.scss"
     />
+    <link
+      rel="icon"
+      href="./images/2048Dvoris.png"
+    />
   </head>
+
   <body>
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
+
         <div class="controls">
           <p class="info">
-            Score:
+            SCORE:
             <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
         </div>
-      </div>
 
+        <button class="button start">START</button>
+      </div>
       <table class="game-field">
         <tbody>
           <tr class="field-row">
@@ -57,14 +63,28 @@
         </tbody>
       </table>
 
-      <div class="message-container">
+      <div>
+        <p class="message message-win hidden">You Win!</p>
         <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
         <p class="message message-start">
-          Press "Start" to begin game. Good luck!
+          Press
+          <span>START</span>
+          to begin!
         </p>
       </div>
+
+      <p class="instructions">
+        <span>HOW TO PLAY:</span>
+        Use arrow keys (
+        <span>↑ ↓ ← →</span>
+        ) to move tiles. Merge tiles with the same numbers into one until you
+        reach 2048!
+      </p>
     </div>
-    <script src="scripts/main.js"></script>
+
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
