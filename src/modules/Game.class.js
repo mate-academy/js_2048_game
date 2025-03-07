@@ -25,12 +25,31 @@ class Game {
 
     this.state = initialState || this.getEmptyBoard();
     this._renderedState = this.getEmptyBoard();
+
+    this.flipHorizontally = this.flipHorizontally.bind(this);
+    this.rotateLeft = this.rotateLeft.bind(this);
+    this.rotateRight = this.rotateRight.bind(this);
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  canMakeMove() {
+    return this.status === 'playing';
+  }
+
+  moveLeft() {
+    this.moveBoard();
+  }
+
+  moveRight() {
+    this.moveBoard(this.flipHorizontally, this.flipHorizontally);
+  }
+
+  moveUp() {
+    this.moveBoard(this.rotateLeft, this.rotateRight);
+  }
+
+  moveDown() {
+    this.moveBoard(this.rotateRight, this.rotateLeft);
+  }
 
   /**
    * Returns matrix with size === this.size filled with 0.
@@ -80,6 +99,155 @@ class Game {
     return this.status;
   }
 
+  moveBoard(fnBeforeCompressing = undefined, fnAfterCompressing = undefined) {
+    let updatedBoard = fnBeforeCompressing
+      ? fnBeforeCompressing(this.state)
+      : this.state;
+
+    updatedBoard = this.compressBoard(updatedBoard);
+
+    updatedBoard = fnAfterCompressing
+      ? fnAfterCompressing(updatedBoard)
+      : updatedBoard;
+
+    if (JSON.stringify(updatedBoard) === JSON.stringify(this.state)) {
+      return;
+    }
+
+    this.state = updatedBoard;
+
+    this.updateScoreDisplay();
+    this.addRandomTile();
+    this.renderState();
+    this.checkHasLost();
+    this.checkHasWon();
+  }
+
+  compressBoard(board) {
+    return board.map((row) => {
+      const shiftedRow = [];
+      const values = row.filter((item) => item > 0);
+
+      for (let i = 0; i < values.length; i++) {
+        const currValue = values[i];
+
+        if (i === this.size - 1) {
+          shiftedRow.push(currValue);
+          continue;
+        }
+
+        const nextValue = values[i + 1];
+
+        if (currValue === nextValue) {
+          const multipliedValue = currValue * 2;
+
+          shiftedRow.push(multipliedValue);
+          this.score += multipliedValue;
+          i++;
+        } else {
+          shiftedRow.push(currValue);
+        }
+      }
+
+      const zerosNeeded = this.size - shiftedRow.length;
+
+      return shiftedRow.concat(Array(zerosNeeded).fill(0));
+    });
+  }
+
+  flipHorizontally(matrix) {
+    return matrix.map((row) => {
+      return row.map((value, index, arr) => {
+        return arr[this.size - 1 - index];
+      });
+    });
+  }
+
+  rotateLeft(matrix) {
+    const rotatedMatrix = Array.from({ length: this.size }, () => []);
+
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        rotatedMatrix[this.size - 1 - j].push(matrix[i][j]);
+      }
+    }
+
+    return rotatedMatrix;
+  }
+
+  rotateRight(matrix) {
+    const rotatedMatrix = Array.from({ length: this.size }, () => []);
+
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        rotatedMatrix[j].push(matrix[this.size - 1 - i][j]);
+      }
+    }
+
+    return rotatedMatrix;
+  }
+
+  /**
+   * @returns {boolean} True if at least one cell has value === 0.
+   */
+  hasEmptyCells() {
+    const board = this.state;
+
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        if (board[i][j] === 0) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * @returns {boolean} True if at least 2 neighbour cells have the same value.
+   */
+  hasAvailableMoves() {
+    const board = this.state;
+
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        const hasSameRightNeighbour =
+          j >= this.size - 1 ? false : board[i][j] === board[i][j + 1];
+        const hasSameBottomNeighbour =
+          i >= this.size - 1 ? false : board[i][j] === board[i + 1][j];
+
+        if (hasSameRightNeighbour || hasSameBottomNeighbour) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  checkHasLost() {
+    if (!this.hasEmptyCells() && !this.hasAvailableMoves()) {
+      this.status = 'lose';
+      this.showMessage('.message-lose');
+
+      return true;
+    }
+
+    return false;
+  }
+
+  checkHasWon() {
+    if (this.state.some((row) => row.includes(2048))) {
+      this.status = 'won';
+      this.showMessage('.message-win');
+    }
+  }
+
+  updateScoreDisplay() {
+    document.querySelector('.game-score').innerHTML = this.score;
+  }
+
   /**
    * Fills in the cells of the '.game-field' element
    * with the values of this.state that are not equal to 0.
@@ -121,6 +289,10 @@ class Game {
     }
   }
 
+  showMessage(selector) {
+    document.querySelector(selector).classList.remove('hidden');
+  }
+
   /**
    * Starts the game.
    */
@@ -137,6 +309,7 @@ class Game {
   restart() {
     this.state = this.getEmptyBoard();
     this.score = 0;
+    this.updateScoreDisplay();
     this.start();
 
     document
@@ -170,6 +343,10 @@ class Game {
    * @returns {void}
    */
   addRandomTile() {
+    if (!this.hasEmptyCells()) {
+      return;
+    }
+
     const emptyCells = this.getEmptyCellsCoordinates();
     const newTileValue = Math.floor(Math.random() * 10) > 8 ? 4 : 2;
     const newTileIndex = Math.floor(Math.random() * emptyCells.length);
