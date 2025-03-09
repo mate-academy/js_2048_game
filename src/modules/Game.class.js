@@ -61,7 +61,7 @@ class Game {
           const mergedColumn = this.mergeRow(column);
 
           for (let row = 0; row < size; row++) {
-            board[row][col] = mergedColumn[row];
+            board[row][col] = mergedColumn[size - row - 1];
           }
         }
         break;
