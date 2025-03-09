@@ -130,17 +130,9 @@ class Game {
   }
 
   getEmptyCells() {
-    const emptyCells = [];
-
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
-        if (this.#board[r][c] === 0) {
-          emptyCells.push({ r, c });
-        }
-      }
-    }
-
-    return emptyCells;
+    return this.#board
+      .flatMap((row, r) => row.map((cell, c) => (cell === 0 ? { r, c } : null)))
+      .filter(Boolean);
   }
 
   addRandomTile() {
