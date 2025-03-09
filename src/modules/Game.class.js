@@ -22,13 +22,15 @@ class Game {
     this.size = 4;
     this.score = 0;
     this.status = 'idle';
+    this.initialState = initialState;
 
-    this.state = initialState || this.getEmptyBoard();
+    this.setInitialBoard();
     this._renderedState = this.getEmptyBoard();
 
     this.flipHorizontally = this.flipHorizontally.bind(this);
     this.rotateLeft = this.rotateLeft.bind(this);
     this.rotateRight = this.rotateRight.bind(this);
+    this.cacheRenderedState = this.cacheRenderedState.bind(this);
   }
 
   canMakeMove() {
@@ -52,6 +54,17 @@ class Game {
   }
 
   /**
+   * Sets the board state to a copy of initialState or an empty board.
+   * @returns {void}
+   */
+  setInitialBoard() {
+    if (this.initialState) {
+      this.state = this.initialState.map((row) => [...row]);
+    } else {
+      this.state = this.getEmptyBoard();
+    }
+  }
+
   /**
    * @returns {number[][]} Matrix with size === this.size filled with 0.
    */
@@ -100,6 +113,10 @@ class Game {
     return this.status;
   }
 
+  cacheRenderedState(newState) {
+    this._renderedState = newState.map((row) => [...row]);
+  }
+
   /**
    * Processes a move on the board.
    * The move is possible if at least one cell is changed after the move.
@@ -118,6 +135,10 @@ class Game {
    * after compression.
    */
   moveBoard(fnBeforeCompressing = undefined, fnAfterCompressing = undefined) {
+    if (!this.canMakeMove()) {
+      return;
+    }
+
     let updatedBoard = fnBeforeCompressing
       ? fnBeforeCompressing(this.state)
       : this.state;
@@ -137,8 +158,14 @@ class Game {
     this.updateScoreDisplay();
     this.addRandomTile();
     this.renderState();
-    this.checkHasLost();
-    this.checkHasWon();
+
+    if (this.checkHasLost()) {
+      this.status = 'lose';
+      this.showMessage('.message-lose');
+    } else if (this.checkHasWon()) {
+      this.status = 'win';
+      this.showMessage('.message-win');
+    }
   }
 
   /**
@@ -157,7 +184,7 @@ class Game {
   compressBoard(board) {
     return board.map((row) => {
       const shiftedRow = [];
-      const values = row.filter((item) => item > 0);
+      const values = [...row].filter((item) => item > 0);
 
       for (let i = 0; i < values.length; i++) {
         const currValue = values[i];
@@ -236,15 +263,9 @@ class Game {
   hasEmptyCells() {
     const board = this.state;
 
-    for (let i = 0; i < this.size; i++) {
-      for (let j = 0; j < this.size; j++) {
-        if (board[i][j] === 0) {
-          return true;
-        }
-      }
-    }
-
-    return false;
+    return board.some(
+      (row) => Array.isArray(row) && row.some((cell) => cell === 0),
+    );
   }
 
   /**
@@ -276,14 +297,7 @@ class Game {
    * @returns {bool} True is this.status === 'lose'
    */
   checkHasLost() {
-    if (!this.hasEmptyCells() && !this.hasAvailableMoves()) {
-      this.status = 'lose';
-      this.showMessage('.message-lose');
-
-      return true;
-    }
-
-    return false;
+    return !this.hasEmptyCells() && !this.hasAvailableMoves();
   }
 
   /**
@@ -293,10 +307,7 @@ class Game {
    * @returns {void}
    */
   checkHasWon() {
-    if (this.state.some((row) => row.includes(2048))) {
-      this.status = 'won';
-      this.showMessage('.message-win');
-    }
+    return this.state.some((row) => row.includes(2048));
   }
 
   /**
@@ -305,7 +316,11 @@ class Game {
    * @returns {void}
    */
   updateScoreDisplay() {
-    document.querySelector('.game-score').innerHTML = this.score;
+    const gameScoreElement = document.querySelector('.game-score');
+
+    if (gameScoreElement) {
+      gameScoreElement.textContent = this.score;
+    }
   }
 
   /**
@@ -317,8 +332,7 @@ class Game {
    * @returns {void}
    */
   renderState() {
-    const gameField = document.querySelector('.game-field');
-    const rowsArray = [...gameField.querySelectorAll('.field-row')];
+    const rowsArray = [...document.querySelectorAll('.field-row')];
     const newState = this.state;
     const prevState = this._renderedState;
 
@@ -340,7 +354,9 @@ class Game {
       });
     });
 
-    this._renderedState = newState.map((row) => [...row]);
+    if (newState) {
+      this.cacheRenderedState(newState);
+    }
   }
 
   /**
@@ -350,7 +366,10 @@ class Game {
    * @returns {void}
    */
   hideMessage(messageElement) {
-    if (!messageElement.classList.contains('hidden')) {
+    if (
+      messageElement.classList &&
+      !messageElement.classList.contains('hidden')
+    ) {
       messageElement.classList.add('hidden');
     }
   }
@@ -363,7 +382,11 @@ class Game {
    * @returns {void}
    */
   showMessage(selector) {
-    document.querySelector(selector).classList.remove('hidden');
+    const messageElement = document.querySelector(selector);
+
+    if (messageElement) {
+      document.querySelector(selector).classList.remove('hidden');
+    }
   }
 
   /**
@@ -382,12 +405,16 @@ class Game {
   restart() {
     this.state = this.getEmptyBoard();
     this.score = 0;
+    this.status = 'idle';
+
     this.updateScoreDisplay();
-    this.start();
+    this.renderState();
+    this.cacheRenderedState(this.state);
 
     document
       .querySelectorAll('.message-win, .message-lose')
       .forEach((message) => this.hideMessage(message));
+    this.showMessage('.message-start');
   }
 
   /**
@@ -453,6 +480,8 @@ class Game {
         break;
       case 'restart':
         this.restart();
+        targetClasses.replace('restart', 'start');
+        e.target.textContent = 'Start';
     }
   }
 }
