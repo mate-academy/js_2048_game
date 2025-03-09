@@ -185,3 +185,70 @@ h1 {
   width: 100%;
   height: 150px;
 }
+
+.dialog {
+  border: none;
+  border-radius: 20px;
+  background-color: #fbf8ef;
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    color: #776e65;
+    text-align: center;
+  }
+
+  &__title {
+    margin: 0;
+    font-weight: 600;
+    font-size: 40px;
+  }
+
+  &__desc {
+    margin: 0;
+    font-weight: 400;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    margin-top: 40px;
+    user-select: none;
+  }
+
+  &__button {
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #776e65;
+    color: #fff;
+    font-size: 18px;
+    transition: background-color 0.25s, color 0.25s;
+
+    &:hover {
+      cursor: pointer;
+      border: 2px solid #776e65;
+      background-color: #fbf8ef;
+      color: #776e65;
+    }
+
+    &--cancel {
+      border: 2px solid #776e65;
+      background-color: #fbf8ef;
+      color: #776e65;
+
+      &:hover {
+        color: #fff;
+        background-color: #776e65;
+      }
+    }
+  }
+
+  &::backdrop {
+    background-color: #00000080;
+  }
+}
