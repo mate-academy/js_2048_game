@@ -18,13 +18,15 @@ function updateBoard() {
   cells.forEach((cell, index) => {
     const row = Math.floor(index / 4);
     const col = index % 4;
-    const value = board[row][col];
+    const value = board[row] ? board[row][col] : 0;
 
     cell.textContent = value > 0 ? value : '';
 
-    cell.classList.remove(
-      ...cell.classList.filter((c) => c.startsWith('field-cell--')),
-    ); // remove old classes
+    const oldClasses = Array.from(cell.classList).filter(function (c) {
+      return c.startsWith('field-cell--');
+    });
+
+    cell.classList.remove(...oldClasses); // remove old classes
 
     if (value > 0) {
       cell.classList.add(`field-cell--${value}`);

@@ -4,7 +4,6 @@ class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0],
     ],
   ) {
     this.board = initialState;
@@ -79,6 +78,7 @@ class Game {
   mergeRow(row) {
     const mergedRow = [];
     let skipNext = false;
+    let moved = false;
 
     for (let i = 0; i < row.length; i++) {
       if (row[i] === 0) {
@@ -94,14 +94,23 @@ class Game {
         mergedRow.push(row[i] * 2);
         this.score += row[i] * 2;
         this.hasMoved = true;
+        moved = true;
         skipNext = true;
       } else {
         mergedRow.push(row[i]);
+
+        if (mergedRow.length - 1 !== i) {
+          moved = true;
+        }
       }
     }
 
     while (mergedRow.length < row.length) {
       mergedRow.push(0);
+    }
+
+    if (moved) {
+      this.hasMoved = true;
     }
 
     return mergedRow;
@@ -112,7 +121,7 @@ class Game {
 
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        if (this.board[i][j] === 0) {
+        if (this.board[i] && this.board[i][j] === 0) {
           emptyCells.push([i, j]);
         }
       }
@@ -122,25 +131,51 @@ class Game {
       const randomIndex = Math.floor(Math.random() * emptyCells.length);
       const [row, col] = emptyCells[randomIndex];
 
-      this.board[row][col] = Math.random() < 0.1 ? 4 : 2;
+      if (this.board[row] && this.board[row][col] === 0) {
+        this.board[row][col] = Math.random() < 0.1 ? 4 : 2;
+      }
     }
   }
 
   checkWinLose() {
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 4; j++) {
-        if (this.board[i][j] === 2048) {
-          this.status = 'win';
+    if (this.isWin()) {
+      this.status = 'win';
+      this.updateStatus();
 
-          return;
-        }
-      }
+      return;
     }
 
     if (!this.canMove()) {
       this.status = 'lose';
     } else {
       this.status = 'playing';
+    }
+    this.updateStatus();
+  }
+
+  isWin() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.board[i][j] === 2048) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  updateStatus() {
+    const statusElement = document.querySelector('.message');
+
+    if (this.status === 'win') {
+      statusElement.innerHTML = 'Winner! Congrats! You did it!';
+      statusElement.classList.remove('hidden');
+    } else if (this.status === 'lose') {
+      statusElement.innerHTML = 'Game Over!';
+      statusElement.classList.remove('hidden');
+    } else {
+      statusElement.classList.add('hidden');
     }
   }
 
@@ -172,60 +207,42 @@ class Game {
     return false;
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
     return this.score;
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.board;
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     return this.status;
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ]; // Ensure the board is initialized
     this.addRandomTile();
     this.addRandomTile();
     this.status = 'playing';
     this.hasMoved = false;
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     this.board = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-    ];
+    ]; // Ensure the board is initialized
     this.score = 0;
     this.status = 'idle';
     this.start();
   }
-
-  // Add your own methods here
 }
 
 module.exports = Game;
