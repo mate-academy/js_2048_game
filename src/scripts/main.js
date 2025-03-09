@@ -1,13 +1,15 @@
 import Game from '../modules/Game.class.js';
 
-// const game = new Game();
+const game = new Game();
 
+/*
 const game = new Game([
   [0, 0, 0, 0],
   [0, 0, 0, 0],
-  [0, 0, 0, 0],
+  [0, 0, 1024, 1024],
   [0, 0, 0, 0],
 ]);
+*/
 
 function renderGame(gameState) {
   const cells = document.querySelectorAll('.field-cell');
@@ -27,6 +29,7 @@ function renderGame(gameState) {
   });
 
   scoreElement.textContent = game.score;
+  // console.log(game.status);
 }
 
 function updateMessage() {
@@ -66,7 +69,7 @@ function updateButton() {
   }
 }
 
-document.querySelector('.start').addEventListener('click', () => {
+document.querySelector('#start-restart').addEventListener('click', () => {
   if (game.status === 'idle') {
     game.start();
   } else {
@@ -78,7 +81,7 @@ document.querySelector('.start').addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if (game.getStatus() === 'playing') {
+  if (game.status === 'playing') {
     switch (e.key) {
       case 'ArrowLeft':
         game.moveLeft();
