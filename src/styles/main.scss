@@ -21,6 +21,16 @@ body {
   vertical-align: center;
   user-select: none;
 
+  transition: transform 0.15s ease-in-out, background-color 0.3s ease-in-out;
+
+  &--new {
+    animation: pop-in 0.2s ease-in-out;
+  }
+
+  &--merged {
+    animation: merge 0.2s ease-in-out;
+  }
+
   &--2 {
     background: #eee4da;
   }
@@ -250,5 +260,28 @@ h1 {
 
   &::backdrop {
     background-color: #00000080;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(1);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
   }
 }

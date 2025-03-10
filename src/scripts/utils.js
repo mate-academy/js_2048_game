@@ -4,7 +4,7 @@ export function start(args) {
 
   if (game.getStatus() === Game.STATUSES.idle) {
     game.start();
-  } else {
+  } else if (game.getStatus() === Game.STATUSES.playing) {
     dialog.showModal();
 
     document.removeEventListener('keydown', controlHandler);
@@ -20,13 +20,15 @@ export function start(args) {
       dialog.close();
       document.addEventListener('keydown', controlHandler);
     });
+  } else {
+    game.restart();
   }
 
   updateGame(args);
 }
 
 export function control(e, args) {
-  const { game } = args;
+  const { game, button } = args;
 
   switch (e.key) {
     case 'ArrowLeft':
@@ -47,6 +49,7 @@ export function control(e, args) {
   }
 
   updateGame(args);
+  button.blur();
 }
 
 function updateGame(args) {
@@ -119,17 +122,28 @@ function updateMessage(args) {
 function updateGameField(args) {
   const { game } = args;
   const cells = document.querySelectorAll('.field-cell');
+  const newState = game.getState();
+  const prevState = game.getPrevState();
   let index = 0;
 
   for (let r = 0; r < 4; r++) {
     for (let c = 0; c < 4; c++) {
       const cell = cells[index];
-      const state = game.getState();
+      const prevValue = prevState ? prevState[r][c] : 0;
+      const newValue = newState[r][c];
 
-      cell.textContent = state[r][c] || '';
-      cell.className = `field-cell field-cell--${state[r][c]}`;
+      cell.textContent = newValue || '';
+      cell.className = `field-cell field-cell--${newValue}`;
+
+      if (newValue !== 0 && prevValue === 0) {
+        cell.classList.add('field-cell--new');
+      } else if (newValue !== 0 && newValue !== prevValue) {
+        cell.classList.add('field-cell--merged');
+      }
 
       index++;
     }
   }
+
+  game.setPrevState(structuredClone(newState));
 }

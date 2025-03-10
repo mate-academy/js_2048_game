@@ -19,6 +19,7 @@ class Game {
   #board;
   #status = Game.STATUSES.idle;
   #score = 0;
+  #prevBoard = null;
 
   constructor(initialState) {
     this.#initialState =
@@ -41,6 +42,14 @@ class Game {
 
   getState() {
     return this.#board;
+  }
+
+  getPrevState() {
+    return this.#prevBoard;
+  }
+
+  setPrevState(prevBoard) {
+    this.#prevBoard = prevBoard;
   }
 
   getScore() {
