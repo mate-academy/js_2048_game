@@ -242,9 +242,9 @@ class Game {
   restart() {
     this.board = this.copyState(INITIAL_STATE);
     this.score = 0;
-    this.status = "playing";
-    this.board = this.addRandomCell(this.board);
-    this.board = this.addRandomCell(this.board);
+    this.status = "idle";
+    // this.board = this.addRandomCell(this.board);
+    // this.board = this.addRandomCell(this.board);
   }
 
   merge(line) {
