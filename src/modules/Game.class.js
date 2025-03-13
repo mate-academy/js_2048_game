@@ -168,7 +168,7 @@ class Game {
       for (let i = 0; i < newColumn.length - 1; i++) {
         if (newColumn[i] === newColumn[i + 1]) {
           newColumn[i] *= 2;
-          this.score += newColumn[i]; // Atualiza a pontuação
+          this.score += newColumn[i];
           newColumn[i + 1] = 0;
         }
       }
