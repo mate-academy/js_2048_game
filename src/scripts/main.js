@@ -5,8 +5,6 @@ import Game from '../modules/Game.class.js';
 
 const game = new Game();
 
-let shouldRestart = false;
-
 // Write your code here
 document.addEventListener('DOMContentLoaded', () => {
   const boardElement = document.querySelector('.game-field');
@@ -23,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelector('.game-score').textContent = game.score;
 
-    if (shouldRestart) {
+    if (game.getStatus() === 'playing') {
       startButton.classList.remove('start');
       startButton.classList.add('restart');
       startButton.textContent = 'Restart';
@@ -87,8 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   startButton.addEventListener('click', () => {
-    if (!shouldRestart) {
-      shouldRestart = true;
+    if (game.getStatus() !== 'playing') {
       game.start();
     } else {
       game.restart();
