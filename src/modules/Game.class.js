@@ -7,13 +7,13 @@
  * Feel free to add more props and methods if needed.
  */
 const INITIAL_STATE = [
-  [2, 2, 4, 4],
-  [2, 2, 4, 4],
-  [2, 2, 4, 4],
-  [0, 0, 4, 4],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
 ];
 
-class Game {
+export default class Game {
   /**
    * Creates a new game instance.
    *
@@ -242,7 +242,9 @@ class Game {
   restart() {
     this.board = this.copyState(INITIAL_STATE);
     this.score = 0;
-    this.status = "idle";
+    this.status = "playing";
+    this.board = this.addRandomCell(this.board);
+    this.board = this.addRandomCell(this.board);
   }
 
   // Add your own methods here
@@ -394,5 +396,3 @@ class Game {
     return false;
   }
 }
-
-module.exports = Game;
