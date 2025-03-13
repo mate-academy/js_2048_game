@@ -47,7 +47,7 @@ export default class Game {
   }
 
   moveLeft(board = this.board) {
-    if (!this.isGameStarted) {
+    if (this.status !== 'playing') {
       return;
     }
 
@@ -77,7 +77,7 @@ export default class Game {
   }
 
   moveRight(board = this.board) {
-    if (!this.isGameStarted) {
+    if (this.status !== 'playing') {
       return;
     }
 
@@ -107,8 +107,8 @@ export default class Game {
   }
 
   moveUp(board = this.board) {
-    if (!this.isGameStarted) {
-      return; // Não faz nada se o jogo não começou
+    if (this.status !== 'playing') {
+      return;
     }
 
     // Cria uma nova matriz para o tabuleiro modificado
@@ -148,7 +148,7 @@ export default class Game {
   }
 
   moveDown(board = this.board) {
-    if (!this.isGameStarted) {
+    if (this.status !== 'playing') {
       return;
     }
 
@@ -247,11 +247,6 @@ export default class Game {
     this.board = this.addRandomCell(this.board);
   }
 
-  // Add your own methods here
-  get isGameStarted() {
-    return this.status === 'playing';
-  }
-
   merge(line) {
     const newLine = line.filter((val) => val !== null);
 
@@ -332,9 +327,9 @@ export default class Game {
 
     // Verifica se o tabuleiro mudou
     if (JSON.stringify(newBoard) !== prevBoard) {
-      this.board = newBoard; // Atualiza o estado do tabuleiro
-      this.addRandomCell(this.board); // Adiciona uma nova célula ao tabuleiro
-      this.checkGameState(); // Verifica o estado do jogo
+      this.board = newBoard;
+      this.addRandomCell(this.board);
+      this.checkGameState();
     }
   }
 
