@@ -13,11 +13,11 @@ class Cell {
   }
 
   get coordRow() {
-    return Math.floor(this.numCell / 4);
+    return Math.floor(this.numCell / WIDTH);
   }
 
   get coordColumn() {
-    return this.numCell % 4;
+    return this.numCell % WIDTH;
   }
 }
 
