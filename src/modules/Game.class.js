@@ -241,152 +241,59 @@ class Game {
     }
   }
 
+  move(direction) {
+    if (!this.gameStarted) return;
+
+    const isHorizontal = direction === 'left' || direction === 'right';
+    const isReverse = direction === 'right' || direction === 'down';
+
+    for (let i = 0; i < 4; i++) {
+      let line = isHorizontal
+        ? this.boardState[i].slice()
+        : this.boardState.map((row) => row[i]);
+
+      if (isReverse) line.reverse();
+
+      let filtered = line.filter((val) => val !== 0);
+      let merged = [];
+
+      for (let j = 0; j < filtered.length; j++) {
+        if (filtered[j] === filtered[j + 1]) {
+          merged.push(filtered[j] * 2);
+          this.score += filtered[j] * 2;
+          j++;
+        } else {
+          merged.push(filtered[j]);
+        }
+      }
+      while (merged.length < 4) merged.push(0);
+      if (isReverse) merged.reverse();
+
+      if (isHorizontal) {
+        this.boardState[i] = merged;
+      } else {
+        for (let j = 0; j < 4; j++) {
+          this.boardState[j][i] = merged[j];
+        }
+      }
+    }
+
+    this.updateBoard();
+    this.generate();
+    this.getStatus();
+  }
+
   moveLeft() {
-    if (!this.gameStarted) {
-      return;
-    }
-
-    for (let rowIdx = 0; rowIdx < 4; rowIdx++) {
-      const newRow = this.boardState[rowIdx].filter((val) => val !== 0);
-      const mergedRow = [];
-
-      for (let i = 0; i < newRow.length; i++) {
-        if (newRow[i] === newRow[i + 1]) {
-          mergedRow.push(newRow[i] * 2);
-          this.score += newRow[i] * 2;
-          i++;
-        } else {
-          mergedRow.push(newRow[i]);
-        }
-      }
-
-      while (mergedRow.length < 4) {
-        mergedRow.push(0);
-      }
-
-      this.boardState[rowIdx] = mergedRow;
-    }
-
-    this.updateBoard();
-    this.generate();
-    this.getStatus();
+    this.move('left');
   }
-
   moveRight() {
-    if (!this.gameStarted) {
-      return;
-    }
-
-    for (let rowIdx = 0; rowIdx < 4; rowIdx++) {
-      const newRow = this.boardState[rowIdx].filter((val) => val !== 0);
-      const mergedRow = [];
-
-      newRow.reverse();
-
-      for (let i = 0; i < newRow.length; i++) {
-        if (newRow[i] === newRow[i + 1]) {
-          mergedRow.push(newRow[i] * 2);
-          this.score += newRow[i] * 2;
-          i++;
-        } else {
-          mergedRow.push(newRow[i]);
-        }
-      }
-
-      while (mergedRow.length < 4) {
-        mergedRow.push(0);
-      }
-
-      this.boardState[rowIdx] = mergedRow.reverse();
-    }
-
-    this.updateBoard();
-    this.generate();
-    this.getStatus();
+    this.move('right');
   }
-
   moveUp() {
-    if (!this.gameStarted) {
-      return;
-    }
-
-    for (let colIdx = 0; colIdx < 4; colIdx++) {
-      const newColumn = [];
-
-      for (let rowIdx = 0; rowIdx < 4; rowIdx++) {
-        if (this.boardState[rowIdx][colIdx] !== 0) {
-          newColumn.push(this.boardState[rowIdx][colIdx]);
-        }
-      }
-
-      const mergedColumn = [];
-
-      for (let i = 0; i < newColumn.length; i++) {
-        if (newColumn[i] === newColumn[i + 1]) {
-          mergedColumn.push(newColumn[i] * 2);
-          this.score += newColumn[i] * 2;
-          i++;
-        } else {
-          mergedColumn.push(newColumn[i]);
-        }
-      }
-
-      while (mergedColumn.length < 4) {
-        mergedColumn.push(0);
-      }
-
-      for (let rowIdx = 0; rowIdx < 4; rowIdx++) {
-        this.boardState[rowIdx][colIdx] = mergedColumn[rowIdx];
-      }
-    }
-
-    this.updateBoard();
-    this.generate();
-    this.getStatus();
+    this.move('up');
   }
-
   moveDown() {
-    if (!this.gameStarted) {
-      return;
-    }
-
-    for (let colIdx = 0; colIdx < 4; colIdx++) {
-      const newColumn = [];
-
-      for (let rowIdx = 0; rowIdx < 4; rowIdx++) {
-        if (this.boardState[rowIdx][colIdx] !== 0) {
-          newColumn.push(this.boardState[rowIdx][colIdx]);
-        }
-      }
-
-      const mergedColumn = [];
-
-      newColumn.reverse();
-
-      for (let i = 0; i < newColumn.length; i++) {
-        if (newColumn[i] === newColumn[i + 1]) {
-          mergedColumn.push(newColumn[i] * 2);
-          this.score += newColumn[i] * 2;
-          i++;
-        } else {
-          mergedColumn.push(newColumn[i]);
-        }
-      }
-
-      while (mergedColumn.length < 4) {
-        mergedColumn.push(0);
-      }
-
-      mergedColumn.reverse();
-
-      for (let rowIdx = 0; rowIdx < 4; rowIdx++) {
-        this.boardState[rowIdx][colIdx] = mergedColumn[rowIdx];
-      }
-    }
-
-    this.updateBoard();
-    this.generate();
-    this.getStatus();
+    this.move('down');
   }
 }
 
