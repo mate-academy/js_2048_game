@@ -242,20 +242,24 @@ class Game {
   }
 
   move(direction) {
-    if (!this.gameStarted) return;
+    if (!this.gameStarted) {
+      return;
+    }
 
     const isHorizontal = direction === 'left' || direction === 'right';
     const isReverse = direction === 'right' || direction === 'down';
 
     for (let i = 0; i < 4; i++) {
-      let line = isHorizontal
+      const line = isHorizontal
         ? this.boardState[i].slice()
         : this.boardState.map((row) => row[i]);
 
-      if (isReverse) line.reverse();
+      if (isReverse) {
+        line.reverse();
+      }
 
-      let filtered = line.filter((val) => val !== 0);
-      let merged = [];
+      const filtered = line.filter((val) => val !== 0);
+      const merged = [];
 
       for (let j = 0; j < filtered.length; j++) {
         if (filtered[j] === filtered[j + 1]) {
@@ -266,8 +270,14 @@ class Game {
           merged.push(filtered[j]);
         }
       }
-      while (merged.length < 4) merged.push(0);
-      if (isReverse) merged.reverse();
+
+      while (merged.length < 4) {
+        merged.push(0);
+      }
+
+      if (isReverse) {
+        merged.reverse();
+      }
 
       if (isHorizontal) {
         this.boardState[i] = merged;
