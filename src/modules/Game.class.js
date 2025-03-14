@@ -25,8 +25,7 @@ class Game {
 
     this.createGameBoard();
 
-    document.addEventListener('keydown', (userEvent) =>
-      this.handleKeydown(userEvent),);
+    document.addEventListener('keydown', (userEvent) => this.handleKeydown(userEvent));
 
     this.addTouchEvents();
     this.getState();
@@ -126,10 +125,10 @@ class Game {
 
     const emptySquares = [];
 
-    for (let rowIdx = 0; rowIdx < 4; rowIdx++) {
-      for (let colIdx = 0; colIdx < 4; colIdx++) {
-        if (this.boardState[rowIdx][colIdx] === 0) {
-          emptySquares.push({ rowIdx, colIdx });
+    for (let outerRowIdx = 0; outerRowIdx < 4; outerRowIdx++) {
+      for (let innerColIdx = 0; innerColIdx < 4; innerColIdx++) {
+        if (this.boardState[outerRowIdx][innerColIdx] === 0) {
+          emptySquares.push({ rowIdx: outerRowIdx, colIdx: innerColIdx });
         }
       }
     }
