@@ -25,7 +25,9 @@ class Game {
 
     this.createGameBoard();
 
-    document.addEventListener('keydown', (userEvent) => this.handleKeydown(userEvent));
+    // prettier-ignore
+    document.addEventListener('keydown', (userEvent) =>
+      this.handleKeydown(userEvent));
 
     this.addTouchEvents();
     this.getState();
