@@ -1,8 +1,8 @@
 'use strict';
 
 // Uncomment the next lines to use your game instance in the browser
-// import Game from '../modules/Game.class.js';
-const Game = require('../modules/Game.class.js');
+import Game from '../modules/Game.class.js';
+// const Game = require('../modules/Game.class.cjs');
 
 const game = new Game();
 

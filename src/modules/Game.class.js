@@ -13,7 +13,7 @@ const INITIAL_STATE = [
   [0, 0, 0, 0],
 ];
 
-class Game {
+export default class Game {
   /**
    * Creates a new game instance.
    *
@@ -391,5 +391,3 @@ class Game {
     return false;
   }
 }
-
-module.exports = Game;
