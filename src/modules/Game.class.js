@@ -246,6 +246,8 @@ class Game {
       return;
     }
 
+    let boardChanged = false;
+
     const isHorizontal = direction === 'left' || direction === 'right';
     const isReverse = direction === 'right' || direction === 'down';
 
@@ -266,6 +268,7 @@ class Game {
           merged.push(filtered[j] * 2);
           this.score += filtered[j] * 2;
           j++;
+          boardChanged = true;
         } else {
           merged.push(filtered[j]);
         }
@@ -280,17 +283,33 @@ class Game {
       }
 
       if (isHorizontal) {
-        this.boardState[i] = merged;
+        if (!this.arraysAreEqual(this.boardState[i], merged)) {
+          this.boardState[i] = merged;
+          boardChanged = true;
+        }
       } else {
         for (let j = 0; j < 4; j++) {
-          this.boardState[j][i] = merged[j];
+          if (this.boardState[j][i] !== merged[j]) {
+            this.boardState[j][i] = merged[j];
+            boardChanged = true;
+          }
         }
       }
     }
 
-    this.updateBoard();
-    this.generate();
+    if (boardChanged) {
+      this.updateBoard();
+      this.generate();
+    }
+
     this.getStatus();
+  }
+
+  arraysAreEqual(arr1, arr2) {
+    return (
+      arr1.length === arr2.length &&
+      arr1.every((value, index) => value === arr2[index])
+    );
   }
 
   moveLeft() {
