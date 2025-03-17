@@ -20,6 +20,8 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all 0.2s ease-in-out; // Плавний перехід для всіх змін
+  position: relative; // Для позиціонування
 
   &--2 {
     background: #eee4da;
@@ -73,6 +75,25 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  &--new {
+    animation: tile-appear 0.2s ease-in-out;
+  }
+
+  &--merged {
+    animation: tile-merge 0.2s ease-in-out;
+  }
+}
+
+@keyframes tile-appear {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes tile-merge {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }
 
 .game-field {

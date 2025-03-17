@@ -1,10 +1,5 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
   /**
    * Creates a new game instance.
@@ -29,19 +24,23 @@ class Game {
       [0, 0, 0, 0],
     ];
 
-    this.score = 0;
-    this.isStarted = false;
-    this.wonTheGame = false;
-    this.prevBoardState = JSON.stringify(this.board);
+    this.score = 0; // Initial game score
+    this.isStarted = false; // Flag indicating if the game has started
+    this.wonTheGame = false; // Flag indicating if 2048 has been reached
+    this.prevBoardState = JSON.stringify(this.board); // Store initial board state as a string
   }
 
   moveLeft() {
+    // Save the previous board state for comparison after the move
     this.prevBoardState = JSON.stringify(this.board);
 
+     // Process each row to shift tiles left
     this.board = this.board.map((row) => this.processRow(row));
 
+    // Check if the board changed after the move
     const boardChanged = JSON.stringify(this.board) !== this.prevBoardState;
 
+    // If the board changed, add a new random tile
     if (boardChanged) {
       this.addRandomTile();
     }
@@ -50,6 +49,7 @@ class Game {
   moveRight() {
     this.prevBoardState = JSON.stringify(this.board);
 
+    // Shift right: process rows with reverse enabled
     this.board = this.board.map((row) => this.processRow(row, true));
 
     const boardChanged = JSON.stringify(this.board) !== this.prevBoardState;
@@ -61,12 +61,12 @@ class Game {
 
   moveUp() {
     this.prevBoardState = JSON.stringify(this.board);
-
+    // Transpose the board so moving up becomes like moving left
     this.transposeBoard();
 
     this.board = this.board.map((row) => this.processRow(row));
 
-    this.transposeBoard();
+    this.transposeBoard(); // Restore the board to its original orientation
 
     const boardChanged = JSON.stringify(this.board) !== this.prevBoardState;
 
@@ -117,23 +117,18 @@ class Game {
    */
   getStatus() {
     if (this.wonTheGame) {
-      return 'win';
+      return 'win'; // Player reached 2048
     }
 
     if (!this.isStarted) {
-      return 'idle';
+      return 'idle'; // Game hasn’t started yet
     }
-
-    // To decrease number of hasMoves() method calling
-    // if (JSON.stringify(this.board) !== this.prevBoardState) {
-    //   return 'playing';
-    // }
 
     if (!this.hasMoves()) {
-      return 'lose';
+      return 'lose'; // No moves are possible, game over
     }
 
-    return 'playing';
+    return 'playing'; // Game is ongoing
   }
 
   /**
@@ -141,6 +136,7 @@ class Game {
    */
   start() {
     if (!this.isStarted) {
+      // Add two initial tiles and start the game
       this.addRandomTile();
       this.addRandomTile();
       this.isStarted = true;
@@ -152,8 +148,9 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.score = 0;
+    this.score = 0; // Reset the score
 
+    // Reset the board to its initial empty state
     this.board = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -162,24 +159,29 @@ class Game {
     ];
     this.isStarted = false;
     this.wonTheGame = false;
-    this.start();
+    this.start(); // Restart the game
   }
 
+  // Transpose the board: swap rows and columns
   transposeBoard() {
     this.board = this.board[0].map((_, colIndex) =>
       this.board.map((row) => row[colIndex]),
     );
   }
 
+  // Process a row: shift and merge tiles
   processRow(row, reverse = false) {
     let currentRow = row;
 
+    // Reverse the row if shifting right or down
     if (reverse) {
       currentRow.reverse();
     }
 
+    // Remove zeros to simplify merging
     currentRow = row.filter((num) => num !== 0);
 
+    // Merge identical adjacent tiles
     for (let i = 0; i < currentRow.length - 1; i++) {
       const currentNumber = currentRow[i];
       const nextNumber = currentRow[i + 1];
@@ -187,30 +189,33 @@ class Game {
       if (currentNumber === nextNumber) {
         const nextNumberIndex = i + 1;
 
-        currentRow[i] *= 2;
+        currentRow[i] *= 2; // Double the value on merge
 
-        currentRow.splice(nextNumberIndex, 1);
+        currentRow.splice(nextNumberIndex, 1); // Remove the merged tile
 
-        // Score updating
+        // Update the score with the merged value
         this.score += currentNumber * 2;
 
-        // If won the game
+        // Check if the game is won (reached 2048)
         if (currentRow[i] === 2048) {
           this.wonTheGame = true;
         }
       }
     }
 
+    // Add zeros to make it length 4 if necessary
     const zerosToAdd = new Array(4 - currentRow.length).fill(0);
-
     currentRow = currentRow.concat(zerosToAdd);
 
+    // Reverse back if needed
     return reverse ? currentRow.reverse() : currentRow;
   }
 
+  // Add a random tile (2 or 4) to an empty cell
   addRandomTile() {
     const emptyCells = [];
 
+    // Collect all empty cells
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.board[row][col] === 0) {
@@ -219,25 +224,29 @@ class Game {
       }
     }
 
+    // If no empty cells are available, do nothing
     if (emptyCells.length === 0) {
       return undefined;
     }
 
+    // Pick a random empty cell
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
-
     const { row: randomRow, col: randomCol } = emptyCells[randomIndex];
 
+    // 90% chance of 2, 10% chance of 4
     this.board[randomRow][randomCol] = Math.random() <= 0.1 ? 4 : 2;
   }
 
+  // Check if there are any possible moves left
   hasMoves() {
     const allCells = this.board.flat();
 
-    // Zeros check
+    // If there’s at least one zero, moves are possible
     if (allCells.includes(0)) {
       return true;
     }
 
+    // Check for possible horizontal merges
     const canMergeHorizontally = this.board.some((row) =>
       row.some((cell, i) => i < 3 && cell !== 0 && cell === row[i + 1]),
     );
@@ -246,7 +255,7 @@ class Game {
       return true;
     }
 
-    // Can merge vertically
+     // Check for possible vertical merges
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 4; col++) {
         if (
@@ -258,7 +267,7 @@ class Game {
       }
     }
 
-    return false;
+    return false; // No moves available
   }
 }
 
