@@ -47,12 +47,14 @@ function updateUI() {
       // If the tile has a value, apply styles and check for animations
       if (cellValue !== 0) {
         cell.classList.add(`field-cell--${cellValue}`); // Add class based on tile value
+
         const isNewTile = prevValue === 0 && cellValue !== 0; // Check if tile is new
         const isTileMerged = prevValue !== 0 && prevValue !== cellValue; // Check if tile merged
 
         // Animate new tiles
         if (isNewTile) {
           cell.classList.add('field-cell--new'); // Add class to trigger appearance animation
+
           setTimeout(
             () => cell.classList.remove('field-cell--new'), // Remove after animation
             ANIMATION_DELAY_MS,
@@ -61,6 +63,7 @@ function updateUI() {
         // Animate merged tiles
         else if (isTileMerged) {
           cell.classList.add('field-cell--merged');
+
           setTimeout(
             () => cell.classList.remove('field-cell--merged'),
             ANIMATION_DELAY_MS,

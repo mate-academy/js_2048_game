@@ -34,7 +34,7 @@ class Game {
     // Save the previous board state for comparison after the move
     this.prevBoardState = JSON.stringify(this.board);
 
-     // Process each row to shift tiles left
+    // Process each row to shift tiles left
     this.board = this.board.map((row) => this.processRow(row));
 
     // Check if the board changed after the move
@@ -165,8 +165,7 @@ class Game {
   // Transpose the board: swap rows and columns
   transposeBoard() {
     this.board = this.board[0].map((_, colIndex) =>
-      this.board.map((row) => row[colIndex]),
-    );
+      this.board.map((row) => row[colIndex]),);
   }
 
   // Process a row: shift and merge tiles
@@ -205,6 +204,7 @@ class Game {
 
     // Add zeros to make it length 4 if necessary
     const zerosToAdd = new Array(4 - currentRow.length).fill(0);
+
     currentRow = currentRow.concat(zerosToAdd);
 
     // Reverse back if needed
@@ -248,14 +248,13 @@ class Game {
 
     // Check for possible horizontal merges
     const canMergeHorizontally = this.board.some((row) =>
-      row.some((cell, i) => i < 3 && cell !== 0 && cell === row[i + 1]),
-    );
+      row.some((cell, i) => i < 3 && cell !== 0 && cell === row[i + 1]),);
 
     if (canMergeHorizontally) {
       return true;
     }
 
-     // Check for possible vertical merges
+    // Check for possible vertical merges
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 4; col++) {
         if (
