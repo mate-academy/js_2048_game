@@ -32,7 +32,7 @@ class Game {
     this.score = 0;
     this.isStarted = false;
     this.wonTheGame = false;
-    this.prevBoardState = JSON.stringify(this.board)
+    this.prevBoardState = JSON.stringify(this.board);
   }
 
   moveLeft() {
@@ -125,9 +125,9 @@ class Game {
     }
 
     // To decrease number of hasMoves() method calling
-    if (JSON.stringify(this.board) !== this.prevBoardState) {
-      return 'playing';
-    }
+    // if (JSON.stringify(this.board) !== this.prevBoardState) {
+    //   return 'playing';
+    // }
 
     if (!this.hasMoves()) {
       return 'lose';
@@ -172,7 +172,13 @@ class Game {
   }
 
   processRow(row, reverse = false) {
-    let currentRow = row.filter((num) => num !== 0);
+    let currentRow = row;
+
+    if (reverse) {
+      currentRow.reverse();
+    }
+
+    currentRow = row.filter((num) => num !== 0);
 
     for (let i = 0; i < currentRow.length - 1; i++) {
       const currentNumber = currentRow[i];
