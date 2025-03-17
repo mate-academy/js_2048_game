@@ -49,7 +49,7 @@
       "bem": false
     },
     "tests": {
-      "jest": true,
+      "jest": false,
       "backstop": false,
       "cypress": true
     }
