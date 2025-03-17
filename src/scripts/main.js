@@ -1,11 +1,13 @@
 'use strict';
 
+import Hammer from 'hammerjs';
+
 // Import the Game class and create a new game instance
 const Game = require('../modules/Game.class');
 const game = new Game();
 
 // Select DOM elements for the game UI
-// const gameField = document.querySelector('.game-field');
+const gameField = document.querySelector('.game-field');
 // const rows = document.querySelectorAll('.field-row');
 const cells = document.querySelectorAll('.field-cell');
 const scoreElement = document.querySelector('.game-score');
@@ -14,6 +16,12 @@ const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 const ANIMATION_DELAY_MS = 200;
+
+// Initialize Hammer.js for game field to handle swipes on mobile
+const hammer = new Hammer(gameField);
+
+// Recognize swipes in all directions
+hammer.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
 
 // Update the UI based on the current game state
 function updateUI() {
@@ -143,6 +151,34 @@ document.addEventListener('keydown', (e) => {
     updateUI();
   }
 });
+
+// Handling swipe gestures using Hammer.js
+hammer.on('swipeleft', () => {
+  // Bind the game.moveLeft function to the correct context before calling moveOnSwipe
+  moveOnSwipe(game.moveLeft.bind(game));
+});
+
+hammer.on('swiperight', () => {
+  moveOnSwipe(game.moveRight.bind(game));
+});
+
+hammer.on('swipeup', () => {
+  moveOnSwipe(game.moveUp.bind(game));
+});
+
+hammer.on('swipedown', () => {
+  moveOnSwipe(game.moveDown.bind(game));
+});
+
+// Move based on swiped direction
+function moveOnSwipe(moveInDirection) {
+  const gameStatus = game.getStatus();
+
+  if (gameStatus === 'playing' || gameStatus === 'win') {
+    moveInDirection();
+    updateUI();
+  }
+}
 
 // Initialize the game UI on page load
 function initGame() {
