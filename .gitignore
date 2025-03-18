@@ -16,3 +16,5 @@ raw_reports
 cypress/screenshots
 cypress/videos
 reports
+styles/main.css
+styles/main.css.map

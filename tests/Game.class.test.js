@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 'use strict';
 
-const Game = require('../src/modules/Game.class');
+import Game from '../modules/Game.class.js';
+Game = new Game();
 
 function sum(game) {
   let result = 0;
@@ -921,12 +922,20 @@ describe('Game', () => {
   });
 
   describe('reset', () => {
+    // const INITIAL_STATE = [
+    //   [2, 2, 4, 4],
+    //   [2, 2, 4, 4],
+    //   [2, 2, 4, 4],
+    //   [0, 0, 4, 4],
+    // ];
+
     const INITIAL_STATE = [
-      [2, 2, 4, 4],
-      [2, 2, 4, 4],
-      [2, 2, 4, 4],
-      [0, 0, 4, 4],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
     ];
+
 
     let game2048;
 
