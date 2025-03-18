@@ -10,6 +10,24 @@ body {
   font-weight: 900;
 }
 
+@keyframes scale {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animation {
+  animation: scale 1s ease 0s 1;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
