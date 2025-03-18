@@ -4,81 +4,85 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #888;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #d6cdc4cf;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #332f2a;
+  border: 1px solid #332f2a;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
+  line-height: 75px;
   user-select: none;
+}
 
-  &--2 {
-    background: #eee4da;
-  }
+.field-cell--2 {
+  background: #f8ac60;
+}
 
-  &--4 {
-    background: #ede0c8;
-  }
+.field-cell--4 {
+  background: #f8be9f;
+}
 
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
+.field-cell--8 {
+  background: #e76a5f;
+  color: #4d0000;
+}
 
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
+.field-cell--16 {
+  background: #c92426;
+  color: #4d0000;
+}
 
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
+.field-cell--32 {
+  background: #81c995;
+  color: #1a3300;
+}
 
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
+.field-cell--64 {
+  background: #428000;
+  color: #1a3300;
+}
 
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
+.field-cell--128 {
+  background: #a00606;
+  color: #300;
+}
 
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
+.field-cell--256 {
+  background: #641f1f;
+  color: #300;
+}
 
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
+.field-cell--512 {
+  background: #8080ff;
+  color: #002933;
+}
 
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
+.field-cell--1024 {
+  background: #006680;
+  color: #002933;
+}
 
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
+.field-cell--2048 {
+  background: gold;
+  color: #f9f6f2;
+  border: 2px solid #fbff0c;
+  box-shadow: 0 0 25px #fbff0c;
 }
 
 .game-field {
-  background: #bbada0;
+  background: #800000;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .game-header {
@@ -91,12 +95,14 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background: gold;
   color: #f9f6f2;
   width: 75px;
   height: 75px;
   font-size: 24px;
   border-radius: 5px;
+  border: 2px solid #fbff0c;
+  box-shadow: 0 0 25px #fbff0c;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,11 +115,12 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #8080ff;
+  border: 1px solid #49443f;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #49443f;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -124,49 +131,67 @@ h1 {
 }
 
 .button {
-  border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
-  font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
   width: 75px;
   height: 75px;
-
+  color: #49443f;
+  border: 1px solid #49443f;
   transition: 0.25s ease background;
 }
 
 .start {
-  background: #1dae28;
-  font-size: 20px;
+  background: #65d16e;
+  font-size: 16px;
+}
 
-  &:hover {
-    background: #179921;
-  }
+.start:hover {
+  background: #179921;
 }
 
 .restart {
   background: #f1b2b2;
+}
 
-  &:hover {
-    background: #f87474;
-  }
+.restart:hover {
+  background: #f87474;
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
   background: #d6cdc4;
-  color: #776e65;
+  color: #300;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+  border: 1px solid #300;
+  animation: welcome-animation 1s ease-in-out;
+}
+
+.message-start {
+  background: #65d16e;
+  box-shadow: 0 0 25px #179921;
+}
+
+.message-lose {
+  background: #f87474;
+  box-shadow: 0 0 25px #fbff0c;
+  animation: lose-animation 0.5s ease-in-out;
 }
 
 .hidden {
   display: none;
+}
+
+.message-win {
+  background: gold;
+  color: #f9f6f2;
+  box-shadow: 0 0 25px #fbff0c;
+  animation: win-animation 1s infinite;
 }
 
 .container {
@@ -176,12 +201,47 @@ h1 {
   width: 350px;
 }
 
-.message-win {
-  background: #edc22e;
-  color: #f9f6f2;
-}
-
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+/* Анімації */
+@keyframes welcome-animation {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes win-animation {
+  0% {
+    box-shadow: 0 0 10px gold;
+  }
+  50% {
+    box-shadow: 0 0 30px gold;
+  }
+  100% {
+    box-shadow: 0 0 10px gold;
+  }
+}
+
+@keyframes lose-animation {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
 }
