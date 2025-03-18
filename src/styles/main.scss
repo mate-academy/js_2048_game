@@ -12,8 +12,8 @@ body {
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: 80px;
+  height: 80px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
@@ -84,17 +84,29 @@ body {
 .game-header {
   display: flex;
   width: 100%;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+  padding: 5px;
   box-sizing: border-box;
+  align-items: center;
+  gap: 15px;
+}
+
+.title,
+.info,
+.button {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 h1 {
   background: #edc22e;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
+  width: 100px;
+  height: 80px;
   font-size: 24px;
   border-radius: 5px;
   display: flex;
@@ -109,17 +121,20 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: #776e65;
+  width: 100px;
+  height: 80px;
   border-radius: 5px;
-  color: #776e65;
+  color: #f9f6f2;
   box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
+  font-size: 20px;
+  margin: 0;
+  gap: 10px;
 }
 
 .controls {
+  gap: 15px;
+  font-size: 20px;
   display: flex;
 }
 
@@ -131,10 +146,9 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
-
-  transition: 0.25s ease background;
+  width: 100px;
+  height: 80px;
+  transition: background 0.25s ease;
 }
 
 .start {
@@ -148,6 +162,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  font-size: 20px;
 
   &:hover {
     background: #f87474;
@@ -163,6 +178,21 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+}
+
+.message-start {
+  text-align: center;
+  line-height: 1.5;
+}
+
+.message-start::before {
+  content: "Press 'Start' to begin game";
+  display: block;
+}
+
+.message-start::after {
+  content: 'Good luck!';
+  display: block;
 }
 
 .hidden {
