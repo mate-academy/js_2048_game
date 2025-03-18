@@ -20,62 +20,10 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
 }
 
 .game-field {
+  position: relative;
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
@@ -184,4 +132,110 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.tile {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  color: #776e65;
+  box-sizing: border-box;
+  transition: 100ms;
+  animation: appear 100ms;
+
+  &--2 {
+    background: #eee4da;
+  }
+
+  &--4 {
+    background: #ede0c8;
+  }
+
+  &--8 {
+    background: #f2b179;
+    color: #f9f6f2;
+  }
+
+  &--16 {
+    background: #f59563;
+    color: #f9f6f2;
+  }
+
+  &--32 {
+    background: #f67c5f;
+    color: #f9f6f2;
+  }
+
+  &--64 {
+    background: #f65e3b;
+    color: #f9f6f2;
+  }
+
+  &--128 {
+    background: #edcf72;
+    color: #f9f6f2;
+  }
+
+  &--256 {
+    background: #edcc61;
+    color: #f9f6f2;
+  }
+
+  &--512 {
+    background: #edc850;
+    color: #f9f6f2;
+  }
+
+  &--1024 {
+    background: #edc53f;
+    color: #f9f6f2;
+  }
+
+  &--2048 {
+    background: #edc22e;
+    color: #f9f6f2;
+  }
+
+  &--column--0 {
+    left: 10px;
+  }
+
+  &--column--1 {
+    left: 95px;
+  }
+
+  &--column--2 {
+    left: 180px;
+  }
+
+  &--column--3 {
+    left: 265px;
+  }
+
+  &--row--0 {
+    top: 10px;
+  }
+
+  &--row--1 {
+    top: 95px;
+  }
+
+  &--row--2 {
+    top: 180px;
+  }
+
+  &--row--3 {
+    top: 265px;
+  }
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
 }
