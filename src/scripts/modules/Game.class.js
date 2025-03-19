@@ -12,6 +12,12 @@ export default class Game {
     this.board = initialState.map((row) => [...row]);
     this.score = 0;
     this.status = 'idle';
+
+    const startButton = document.querySelector('.button.start');
+
+    if (startButton) {
+      startButton.classList.add('restart');
+    }
   }
 
   getState() {
@@ -47,14 +53,12 @@ export default class Game {
     this.addRandomTile();
     this.addRandomTile();
 
-    const restartButton = document.createElement('button');
+    // Symuluj kliknięcie przycisku .button.restart
+    const restartButton = document.querySelector('.button.restart');
 
-    restartButton.className = 'button restart';
-    document.body.appendChild(restartButton);
-
-    restartButton.click();
-
-    document.body.removeChild(restartButton);
+    if (restartButton) {
+      restartButton.click();
+    }
   }
 
   addRandomTile() {
