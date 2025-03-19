@@ -23,7 +23,7 @@
     "@mate-academy/eslint-config": "latest",
     "@mate-academy/jest-mochawesome-reporter": "^1.0.0",
     "@mate-academy/linthtml-config": "latest",
-    "@mate-academy/scripts": "^1.8.5",
+    "@mate-academy/scripts": "^1.2.8",
     "@mate-academy/stylelint-config": "latest",
     "@parcel/transformer-sass": "^2.12.0",
     "cypress": "^13.13.0",
@@ -35,7 +35,7 @@
     "mochawesome": "^7.1.3",
     "mochawesome-merge": "^4.3.0",
     "mochawesome-report-generator": "^6.2.0",
-    "parcel": "^2.12.0",
+    "parcel": "^1.12.3",
     "prettier": "^3.3.2",
     "stylelint": "^16.7.0",
     "stylelint-scss": "^6.4.1"
