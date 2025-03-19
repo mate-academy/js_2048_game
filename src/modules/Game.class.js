@@ -23,14 +23,14 @@ class Game {
     this.score = 0;
     this.status = 'idle';
     this.initialState = initialState;
+    this.initialTiles = this.getInitialTiles();
 
     this.setInitialBoard();
-    this._renderedState = this.getEmptyBoard();
+    this.renderInitialBoard();
 
     this.flipHorizontally = this.flipHorizontally.bind(this);
     this.rotateLeft = this.rotateLeft.bind(this);
     this.rotateRight = this.rotateRight.bind(this);
-    this.cacheRenderedState = this.cacheRenderedState.bind(this);
   }
 
   canMakeMove() {
@@ -113,8 +113,22 @@ class Game {
     return this.status;
   }
 
-  cacheRenderedState(newState) {
-    this._renderedState = newState.map((row) => [...row]);
+  addScaleAnimation(element, initialSize = 1) {
+    const animation = element.animate(
+      [
+        { transform: `scale(${initialSize})` },
+        { transform: 'scale(1.05)' },
+        { transform: 'scale(1)' },
+      ],
+      {
+        duration: 250,
+        easing: 'ease-out',
+      },
+    );
+
+    animation.addEventListener('finish', () => {
+      animation.cancel();
+    });
   }
 
   /**
@@ -140,16 +154,28 @@ class Game {
     }
 
     let updatedBoard = fnBeforeCompressing
-      ? fnBeforeCompressing(this.state)
+      ? fnBeforeCompressing(this.state)[0]
       : this.state;
 
-    updatedBoard = this.compressBoard(updatedBoard);
+    const results = this.compressBoard(updatedBoard);
 
-    updatedBoard = fnAfterCompressing
-      ? fnAfterCompressing(updatedBoard)
-      : updatedBoard;
+    let movedTiles = results[1];
+
+    updatedBoard = results[0];
+
+    if (fnAfterCompressing) {
+      [updatedBoard, movedTiles] = fnAfterCompressing(updatedBoard, movedTiles);
+    }
 
     if (JSON.stringify(updatedBoard) === JSON.stringify(this.state)) {
+      const cells = Array.from(document.querySelectorAll('.field-cell')).filter(
+        (cell) => cell.textContent,
+      );
+
+      cells.forEach((cell) => {
+        this.addScaleAnimation(cell);
+      });
+
       return;
     }
 
@@ -157,7 +183,7 @@ class Game {
 
     this.updateScoreDisplay();
     this.addRandomTile();
-    this.renderState();
+    this.renderState(movedTiles);
 
     if (this.checkHasLost()) {
       this.status = 'lose';
@@ -182,54 +208,109 @@ class Game {
    * @returns {number[][]} The new board state after compressing
    */
   compressBoard(board) {
-    return board.map((row) => {
+    const movedTiles = [];
+    const shiftedBoard = [];
+
+    board.forEach((row, rowIndex) => {
       const shiftedRow = [];
-      const values = [...row].filter((item) => item > 0);
+      const movedRowTiles = [];
+      const mergedIndexes = [];
 
-      for (let i = 0; i < values.length; i++) {
-        const currValue = values[i];
+      row.forEach((cellValue, cellIndex) => {
+        if (cellValue !== 0) {
+          if (cellIndex === 0) {
+            shiftedRow.push(cellValue);
+          } else {
+            const prevIndex = shiftedRow.length - 1;
+            const previousValue = shiftedRow[prevIndex];
 
-        if (i === this.size - 1) {
-          shiftedRow.push(currValue);
-          continue;
+            if (
+              cellValue === previousValue &&
+              !mergedIndexes.includes(prevIndex)
+            ) {
+              const multipliedValue = previousValue * 2;
+
+              shiftedRow[prevIndex] = multipliedValue;
+              this.score += multipliedValue;
+              mergedIndexes.push(prevIndex);
+
+              movedRowTiles.push({
+                oldRowIndex: rowIndex,
+                newRowIndex: rowIndex,
+                oldCellIndex: cellIndex,
+                newCellIndex: prevIndex,
+                isMerged: true,
+                oldCellValue: cellValue,
+                cellValue: multipliedValue,
+              });
+            } else {
+              shiftedRow.push(cellValue);
+
+              if (shiftedRow.length < cellIndex + 1) {
+                movedRowTiles.push({
+                  oldRowIndex: rowIndex,
+                  newRowIndex: rowIndex,
+                  oldCellIndex: cellIndex,
+                  newCellIndex: prevIndex + 1,
+                  isMerged: false,
+                  cellValue,
+                });
+              }
+            }
+          }
         }
+      });
 
-        const nextValue = values[i + 1];
-
-        if (currValue === nextValue) {
-          const multipliedValue = currValue * 2;
-
-          shiftedRow.push(multipliedValue);
-          this.score += multipliedValue;
-          i++;
-        } else {
-          shiftedRow.push(currValue);
-        }
-      }
+      movedTiles.push(...movedRowTiles);
 
       const zerosNeeded = this.size - shiftedRow.length;
 
-      return shiftedRow.concat(Array(zerosNeeded).fill(0));
+      shiftedBoard.push(shiftedRow.concat(Array(zerosNeeded).fill(0)));
     });
+
+    return [shiftedBoard, movedTiles];
   }
 
   /**
    * @param {number[][]} matrix
    * @returns {number[][]} Copy of the matrix with each row reversed
    */
-  flipHorizontally(matrix) {
-    return matrix.map((row) => {
+  flipHorizontally(matrix, movedTiles = []) {
+    const shiftedMovedTiles = movedTiles.map((tile) => {
+      return {
+        oldRowIndex: tile.oldRowIndex,
+        newRowIndex: tile.newRowIndex,
+        oldCellIndex: 3 - tile.oldCellIndex,
+        newCellIndex: 3 - tile.newCellIndex,
+        cellValue: tile.cellValue,
+      };
+    });
+
+    const shiftedMatrix = matrix.map((row) => {
       return row.map((value, index, arr) => {
         return arr[this.size - 1 - index];
       });
     });
+
+    return [shiftedMatrix, shiftedMovedTiles];
   }
 
   /**
    * @param {number[][]} matrix
    * @returns {number[][]} Copy of the matrix rotated counterwise
    */
-  rotateLeft(matrix) {
+  rotateLeft(matrix, movedTiles = []) {
+    const rotatedMovedTiles = movedTiles.map((tile) => {
+      return {
+        oldRowIndex: 3 - tile.oldCellIndex,
+        newRowIndex: 3 - tile.newCellIndex,
+        oldCellIndex: tile.oldRowIndex,
+        newCellIndex: tile.newRowIndex,
+        cellValue: tile.cellValue,
+        isMerged: tile.isMerged,
+      };
+    });
+
     const rotatedMatrix = Array.from({ length: this.size }, () => []);
 
     for (let i = 0; i < this.size; i++) {
@@ -238,14 +319,24 @@ class Game {
       }
     }
 
-    return rotatedMatrix;
+    return [rotatedMatrix, rotatedMovedTiles];
   }
 
   /**
    * @param {number[][]} matrix
    * @returns {number[][]} Copy of the matrix rotated clockwise
    */
-  rotateRight(matrix) {
+  rotateRight(matrix, movedTiles = []) {
+    const rotatedMovedTiles = movedTiles.map((tile) => {
+      return {
+        oldRowIndex: tile.oldCellIndex,
+        newRowIndex: tile.newCellIndex,
+        oldCellIndex: 3 - tile.oldRowIndex,
+        newCellIndex: 3 - tile.newRowIndex,
+        cellValue: tile.cellValue,
+      };
+    });
+
     const rotatedMatrix = Array.from({ length: this.size }, () => []);
 
     for (let i = 0; i < this.size; i++) {
@@ -254,7 +345,7 @@ class Game {
       }
     }
 
-    return rotatedMatrix;
+    return [rotatedMatrix, rotatedMovedTiles];
   }
 
   /**
@@ -331,32 +422,182 @@ class Game {
    *
    * @returns {void}
    */
-  renderState() {
-    const rowsArray = [...document.querySelectorAll('.field-row')];
-    const newState = this.state;
-    const prevState = this._renderedState;
+  renderState(movedTiles = []) {
+    if (!movedTiles.length) {
+      if (this.newTiles.length) {
+        this.renderNewTiles();
+      }
+    } else {
+      this.renderMovedTiles(movedTiles).then(() => {
+        if (this.newTiles.length) {
+          this.renderNewTiles();
+        }
+      });
+    }
+  }
 
-    rowsArray.forEach((row, rowIndex) => {
-      [...row.cells].forEach((cell, cellIndex) => {
-        const newCellValue = newState[rowIndex][cellIndex];
-        const prevCellValue = prevState[rowIndex][cellIndex];
+  renderNewTiles() {
+    const fieldRows = [...document.querySelectorAll('.field-row')];
 
-        if (newCellValue !== prevCellValue) {
-          cell.classList.remove(cell.classList[1]);
+    this.newTiles.forEach(({ rowIndex, cellIndex, cellValue }) => {
+      if (fieldRows[rowIndex]?.cells[cellIndex]) {
+        const newCell = fieldRows[rowIndex].cells[cellIndex];
 
-          if (newCellValue) {
-            cell.textContent = newCellValue;
-            cell.classList.add(`field-cell--${newCellValue}`);
-          } else {
-            cell.textContent = '';
-          }
+        this.updateTableCell(newCell, cellValue);
+        this.addScaleAnimation(newCell, 0);
+      }
+    });
+
+    this.newTiles = [];
+  }
+
+  renderMovedTiles(movedTiles) {
+    const fieldRows = [...document.querySelectorAll('.field-row')];
+
+    const animationPromises = movedTiles.map(
+      ({
+        oldRowIndex,
+        newRowIndex,
+        oldCellIndex,
+        newCellIndex,
+        isMerged,
+        cellValue,
+      }) => {
+        const oldTilePosition = fieldRows[oldRowIndex]?.cells[oldCellIndex];
+        const newTilePosition = fieldRows[newRowIndex]?.cells[newCellIndex];
+
+        if (oldTilePosition && newTilePosition) {
+          const { left: startX, top: startY } =
+            oldTilePosition.getBoundingClientRect();
+          const { left: endX, top: endY } =
+            newTilePosition.getBoundingClientRect();
+
+          const floatingTile = oldTilePosition.cloneNode(true);
+
+          floatingTile.style.setProperty('--translate-x', `${endX - startX}px`);
+          floatingTile.style.setProperty('--translate-y', `${endY - startY}px`);
+
+          Object.assign(floatingTile.style, {
+            position: 'absolute',
+            left: `${startX}px`,
+            top: `${startY}px`,
+            lineHeight: '75px',
+            animation: 'tile-move 0.25s ease-out',
+            zIndex: '1',
+          });
+
+          document.body.appendChild(floatingTile);
+          this.updateTableCell(oldTilePosition, '');
+
+          const cleanupTile = () => {
+            this.updateRenderedBoard();
+
+            if (floatingTile.parentNode) {
+              floatingTile.remove();
+            }
+            this.updateTableCell(newTilePosition, cellValue);
+            newTilePosition.removeAttribute('style');
+
+            if (isMerged) {
+              this.addScaleAnimation(newTilePosition);
+            }
+          };
+
+          const fallbackTimeout = setTimeout(() => {
+            cleanupTile();
+          }, 250);
+
+          return new Promise((resolve) => {
+            floatingTile.addEventListener('animationend', () => {
+              clearTimeout(fallbackTimeout);
+              cleanupTile();
+              resolve();
+            });
+          });
+        }
+
+        return Promise.resolve();
+      },
+    );
+
+    return Promise.all(animationPromises);
+  }
+
+  updateTableCell(cellElement, value) {
+    const cellValue = value || '';
+
+    cellElement.textContent = cellValue;
+
+    if (cellValue) {
+      cellElement.className = `field-cell field-cell--${cellValue}`;
+    } else {
+      cellElement.className = 'field-cell';
+    }
+  }
+
+  updateRenderedBoard() {
+    const fieldRows = [...document.querySelectorAll('.field-row')];
+
+    this.state.forEach((row, rowIndex) => {
+      row.forEach((cellValue, cellIndex) => {
+        const cellElement = fieldRows[rowIndex]?.cells[cellIndex];
+        const formattedCellValue = cellValue ? cellValue.toString() : '';
+
+        if (cellElement && cellElement.textContent !== formattedCellValue) {
+          this.updateTableCell(cellElement, cellValue);
+        }
+      });
+    });
+  }
+
+  renderInitialBoard() {
+    const table = document.querySelector('.game-field');
+    const tBody = document.createElement('tbody');
+
+    for (let i = 0; i < this.size; i++) {
+      const tr = document.createElement('tr');
+
+      tr.classList = 'field-row';
+
+      for (let j = 0; j < this.size; j++) {
+        const td = document.createElement('td');
+
+        td.classList = 'field-cell';
+        tr.appendChild(td);
+      }
+
+      tBody.appendChild(tr);
+    }
+
+    if (table) {
+      table.innerHTML = '';
+      table.appendChild(tBody);
+    }
+
+    this.newTiles = [...this.initialTiles];
+    this.renderNewTiles();
+  }
+
+  getInitialTiles() {
+    if (!this.initialState) {
+      return [];
+    }
+
+    const initialTiles = [];
+
+    this.initialState.forEach((row, rowIndex) => {
+      row.forEach((cellValue, cellIndex) => {
+        if (cellValue) {
+          initialTiles.push({
+            rowIndex: rowIndex,
+            cellIndex: cellIndex,
+            cellValue: cellValue,
+          });
         }
       });
     });
 
-    if (newState) {
-      this.cacheRenderedState(newState);
-    }
+    return initialTiles;
   }
 
   /**
@@ -394,6 +635,7 @@ class Game {
    */
   start() {
     this.status = 'playing';
+    this.newTiles = [];
     this.addRandomTile();
     this.addRandomTile();
     this.renderState();
@@ -403,13 +645,12 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.state = this.getEmptyBoard();
     this.score = 0;
     this.status = 'idle';
 
+    this.setInitialBoard();
     this.updateScoreDisplay();
-    this.renderState();
-    this.cacheRenderedState(this.state);
+    this.renderInitialBoard();
 
     document
       .querySelectorAll('.message-win, .message-lose')
@@ -450,7 +691,15 @@ class Game {
     const emptyCells = this.getEmptyCellsCoordinates();
     const newTileValue = Math.floor(Math.random() * 10) > 8 ? 4 : 2;
     const newTileIndex = Math.floor(Math.random() * emptyCells.length);
-    const [rowIndex, cellIndex] = emptyCells[newTileIndex];
+
+    const newTileCoordinates = emptyCells[newTileIndex];
+    const [rowIndex, cellIndex] = newTileCoordinates;
+
+    this.newTiles.push({
+      rowIndex: rowIndex,
+      cellIndex: cellIndex,
+      cellValue: newTileValue,
+    });
 
     this.updateState(rowIndex, cellIndex, newTileValue);
   }
