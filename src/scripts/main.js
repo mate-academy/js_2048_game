@@ -1,46 +1,50 @@
 'use strict';
 
-const Game = require('../modules/Game.class');
+import Game from './modules/Game.class.js';
 
 const game = new Game();
 
-const boardElement = document.getElementById('game-board');
-const scoreElement = document.getElementById('score');
-const statusElement = document.getElementById('status');
-const startButton = document.getElementById('start-button');
+const scoreElement = document.querySelector('.game-score');
+const statusElement = document.querySelector('.message-container');
+const startButton = document.querySelector('.button.start');
 
 function renderBoard() {
-  boardElement.innerHTML = '';
-
+  const cells = document.querySelectorAll('.field-cell');
   const state = game.getState();
 
   state.forEach((row, i) => {
     row.forEach((cell, j) => {
-      const cellElement = document.createElement('div');
+      const cellElement = cells[i * 4 + j];
 
-      cellElement.classList.add('field-cell');
+      cellElement.textContent = cell !== 0 ? cell : '';
+      cellElement.className = 'field-cell';
 
       if (cell !== 0) {
         cellElement.classList.add(`field-cell--${cell}`);
-        cellElement.textContent = cell;
       }
-
-      boardElement.appendChild(cellElement);
     });
   });
 }
 
 function updateScore() {
-  scoreElement.textContent = `Score: ${game.getScore()}`;
+  scoreElement.textContent = game.getScore();
 }
 
 function updateStatus() {
   const currentStatus = game.getStatus();
 
-  statusElement.textContent = `Status: ${currentStatus}`;
-
-  if (currentStatus === 'win' || currentStatus === 'lose') {
-    startButton.textContent = 'Restart';
+  if (currentStatus === 'win') {
+    statusElement.querySelector('.message-win').classList.remove('hidden');
+    statusElement.querySelector('.message-lose').classList.add('hidden');
+    statusElement.querySelector('.message-start').classList.add('hidden');
+  } else if (currentStatus === 'lose') {
+    statusElement.querySelector('.message-lose').classList.remove('hidden');
+    statusElement.querySelector('.message-win').classList.add('hidden');
+    statusElement.querySelector('.message-start').classList.add('hidden');
+  } else {
+    statusElement.querySelector('.message-start').classList.remove('hidden');
+    statusElement.querySelector('.message-win').classList.add('hidden');
+    statusElement.querySelector('.message-lose').classList.add('hidden');
   }
 }
 
@@ -99,6 +103,8 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-renderBoard();
-updateScore();
-updateStatus();
+document.addEventListener('DOMContentLoaded', () => {
+  renderBoard();
+  updateScore();
+  updateStatus();
+});

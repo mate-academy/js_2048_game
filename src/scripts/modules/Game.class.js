@@ -1,6 +1,6 @@
 'use strict';
 
-class Game {
+export default class Game {
   constructor(
     initialState = [
       [0, 0, 0, 0],
@@ -36,13 +36,25 @@ class Game {
 
   restart() {
     this.board = [
-      [2, 2, 4, 4],
-      [2, 2, 4, 4],
-      [2, 2, 4, 4],
-      [0, 0, 4, 4],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
     ];
     this.score = 0;
     this.status = 'idle';
+
+    this.addRandomTile();
+    this.addRandomTile();
+
+    const restartButton = document.createElement('button');
+
+    restartButton.className = 'button restart';
+    document.body.appendChild(restartButton);
+
+    restartButton.click();
+
+    document.body.removeChild(restartButton);
   }
 
   addRandomTile() {
@@ -197,5 +209,3 @@ class Game {
     return true;
   }
 }
-
-module.exports = Game;
