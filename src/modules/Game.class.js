@@ -140,7 +140,6 @@ class Game {
       const value = this.board[row][col];
 
       cell.className = 'field-cell';
-
       cell.textContent = value !== 0 ? value : '';
       cell.classList.add(`field-cell--${cell.textContent}`);
     });
