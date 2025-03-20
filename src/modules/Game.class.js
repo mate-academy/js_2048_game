@@ -174,24 +174,28 @@ class Game {
   }
 
   updateMessage() {
+    const messageLose = document.querySelector('.message-lose');
+    const messageWin = document.querySelector('.message-win');
+    const messageStart = document.querySelector('.message-start');
+
     switch (this.status) {
       case 'idle':
-        document.querySelector('.message-lose').classList.add('hidden');
-        document.querySelector('.message-win').classList.add('hidden');
+        messageLose.classList.add('hidden');
+        messageWin.classList.add('hidden');
         break;
 
       case 'playing':
-        document.querySelector('.message-start').classList.add('hidden');
-        document.querySelector('.message-lose').classList.add('hidden');
-        document.querySelector('.message-win').classList.add('hidden');
+        messageStart.classList.add('hidden');
+        messageLose.classList.add('hidden');
+        messageWin.classList.add('hidden');
         break;
 
       case 'win':
-        document.querySelector('.message-win').classList.remove('hidden');
+        messageWin.classList.remove('hidden');
         break;
 
       case 'lose':
-        document.querySelector('.message-lose').classList.remove('hidden');
+        messageLose.classList.remove('hidden');
     }
   }
 }
