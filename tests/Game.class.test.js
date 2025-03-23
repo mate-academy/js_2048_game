@@ -221,8 +221,20 @@ describe('Game', () => {
 
       const rows = game2048.getState();
 
+      console.log({
+        rowsBefore,
+        rows,
+      });
+
+
       for (let i = 0; i < 4; i++) {
         const nonEmptyCells = rowsBefore[i].filter(Boolean);
+
+        console.log({
+          row: rows[i].slice(0, nonEmptyCells.length),
+          nonEmptyCells,
+        });
+
 
         expect(rows[i].slice(0, nonEmptyCells.length))
           .toEqual(nonEmptyCells);
