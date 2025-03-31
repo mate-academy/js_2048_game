@@ -19,9 +19,19 @@
         <div class="controls">
           <p class="info">
             Score:
-            <span class="game-score">0</span>
+            <span
+              id="score"
+              class="game-score"
+            >
+              0
+            </span>
           </p>
-          <button class="button start">Start</button>
+          <button
+            id="startButton"
+            class="button start"
+          >
+            Start
+          </button>
         </div>
       </div>
 
@@ -65,6 +75,13 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="./scripts/game.js"
+    ></script>
+    <script
+      type="module"
+      src="./scripts/main.js"
+    ></script>
   </body>
 </html>
