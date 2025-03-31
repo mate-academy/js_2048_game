@@ -21,6 +21,14 @@ body {
   vertical-align: center;
   user-select: none;
 
+  &--new {
+    border: 3px solid #0080006e;
+  }
+
+  &--join {
+    border: 3px solid #8029008e;
+  }
+
   &--2 {
     background: #eee4da;
   }
