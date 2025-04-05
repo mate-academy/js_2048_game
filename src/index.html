@@ -25,7 +25,10 @@
         </div>
       </div>
 
-      <table class="game-field">
+      <table
+        id="board"
+        class="game-field"
+      >
         <tbody>
           <tr class="field-row">
             <td class="field-cell"></td>
@@ -65,6 +68,15 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="modules/Game.class.js"
+      defer
+    ></script>
+    <script
+      type="module"
+      src="scripts/main.js"
+      defer
+    ></script>
   </body>
 </html>
