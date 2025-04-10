@@ -20,6 +20,9 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  transform-origin: center;
 
   &--2 {
     background: #eee4da;
@@ -73,12 +76,28 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  &--new {
+    animation: appear 0.3s ease-in-out;
+  }
+
+  &--merged {
+    animation: merge 0.4s ease-in-out;
+  }
 }
 
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .game-header {
@@ -140,6 +159,7 @@ h1 {
 .start {
   background: #1dae28;
   font-size: 20px;
+  text-align: center;
 
   &:hover {
     background: #179921;
@@ -163,6 +183,7 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+  display: block;
 }
 
 .hidden {
@@ -184,4 +205,38 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+// Animation for new tiles
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Animation for merging tiles
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.1);
+  }
+  40% {
+    transform: scale(0.9);
+  }
+  80% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
