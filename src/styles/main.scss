@@ -20,6 +20,9 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  display: flex;
+  align-items: center; /* Vertical centering */
+  justify-content: center;
 
   &--2 {
     background: #eee4da;
@@ -184,4 +187,15 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.game-board {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.board-row {
+  display: flex;
+  gap: 5px;
 }
