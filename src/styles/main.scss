@@ -11,6 +11,8 @@ body {
 }
 
 .field-cell {
+  opacity: 1;
+  transition: opacity 75ms ease-in-out;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
@@ -73,6 +75,11 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+}
+
+.hide {
+  opacity: 0;
+  transition: opacity 75ms ease-in-out;
 }
 
 .game-field {
