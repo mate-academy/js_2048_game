@@ -1,7 +1,6 @@
 'use strict';
+import * as Handlers from '../modules/functions';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const start = document.querySelector('.start');
 
-// Write your code here
+start.addEventListener('click', Handlers.handleStartClickWrapper);
