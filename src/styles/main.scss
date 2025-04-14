@@ -11,61 +11,61 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #c6ccd2;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #f9f6f2;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #c2d7ee;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #9fbfdc;
   }
 
   &--8 {
-    background: #f2b179;
+    background: #5b90ba;
     color: #f9f6f2;
   }
 
   &--16 {
-    background: #f59563;
+    background: #3a7aa9;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #26679c;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
+    background: #15558f;
     color: #f9f6f2;
   }
 
   &--128 {
-    background: #edcf72;
+    background: #114a82;
     color: #f9f6f2;
   }
 
   &--256 {
-    background: #edcc61;
+    background: #0e3f75;
     color: #f9f6f2;
   }
 
   &--512 {
-    background: #edc850;
+    background: #0b3568;
     color: #f9f6f2;
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #082b5b;
     color: #f9f6f2;
   }
 
@@ -76,7 +76,7 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: #8e979e;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -109,11 +109,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #c6ccd2;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #6b747a;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -138,27 +138,27 @@ h1 {
 }
 
 .start {
-  background: #1dae28;
+  background: #15558f;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: #3a7aa9;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #f87474;
 
   &:hover {
-    background: #f87474;
+    background: #ef8a8a;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #c6ccd2;
+  color: #6b747a;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
