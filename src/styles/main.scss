@@ -79,6 +79,8 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  width: 100%;
+  height: auto;
 }
 
 .game-header {
@@ -148,6 +150,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  font-size: 18px;
 
   &:hover {
     background: #f87474;
