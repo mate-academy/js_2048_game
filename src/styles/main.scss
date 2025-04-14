@@ -4,79 +4,79 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #ae7fb9;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #d3c4d6;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #766577;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #eedaea;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #edc8ea;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #f079f2;
+    color: #f8f2f9;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: #f563e6;
+    color: #f9f2f6;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #ec5ff6;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
+    background: #dd3bf6;
     color: #f9f6f2;
   }
 
   &--128 {
-    background: #edcf72;
+    background: #b872ed;
     color: #f9f6f2;
   }
 
   &--256 {
-    background: #edcc61;
+    background: #df61ed;
     color: #f9f6f2;
   }
 
   &--512 {
-    background: #edc850;
+    background: #8750ed;
     color: #f9f6f2;
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #bc3fed;
     color: #f9f6f2;
   }
 
   &--2048 {
-    background: #edc22e;
+    background: #ed2ead;
     color: #f9f6f2;
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: #b5a0bb;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -91,7 +91,7 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background: #9d57d2;
   color: #f9f6f2;
   width: 75px;
   height: 75px;
@@ -109,11 +109,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #c79dd7;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #fff;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -157,8 +157,8 @@ h1 {
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #dd92e97e;
+  color: #f3d8f3;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
