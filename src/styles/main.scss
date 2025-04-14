@@ -147,6 +147,9 @@ h1 {
 }
 
 .restart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: #f1b2b2;
 
   &:hover {
