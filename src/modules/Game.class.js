@@ -1,68 +1,201 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  static initialState = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
+  static status = {
+    idle: 'idle',
+    playing: 'playing',
+    win: 'win',
+    lose: 'lose',
+  };
+
+  constructor(initialState = Game.initialState) {
+    this.initialState = JSON.parse(JSON.stringify(initialState));
+    this.state = JSON.parse(JSON.stringify(initialState));
+    this.status = Game.status.idle;
+    this.score = 0;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    if (this.getStatus() === 'playing') {
+      this.state = this.moveAndMerge(this.state, 'left');
+    }
+  }
+  moveRight() {
+    if (this.getStatus() === 'playing') {
+      this.state = this.moveAndMerge(this.state, 'right');
+    }
+  }
+  moveUp() {
+    if (this.getStatus() === 'playing') {
+      this.state = this.moveAndMerge(this.state, 'up');
+    }
+  }
+  moveDown() {
+    if (this.getStatus() === 'playing') {
+      this.state = this.moveAndMerge(this.state, 'down');
+    }
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getState() {
+    return this.state;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  start() {
+    this.status = Game.status.playing;
+    this.addRandomTile(this.state);
+    this.addRandomTile(this.state);
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  restart() {
+    this.status = Game.status.idle;
+    this.state = JSON.parse(JSON.stringify(this.initialState));
+    this.score = 0;
+  }
 
-  // Add your own methods here
+  moveAndMerge(prevGameState, direction) {
+    const grid = JSON.parse(JSON.stringify(prevGameState));
+    const size = grid.length;
+
+    const moveRow = (row, reverse = false) => {
+      if (reverse) {
+        row.reverse();
+      }
+
+      const nonZeroElements = row.filter((value) => value !== 0);
+
+      for (let i = 0; i < nonZeroElements.length - 1; i++) {
+        if (nonZeroElements[i] === nonZeroElements[i + 1]) {
+          nonZeroElements[i] *= 2;
+          nonZeroElements[i + 1] = 0;
+
+          this.score += nonZeroElements[i];
+
+          if (this.score === 2048) {
+            this.status = Game.status.win;
+          }
+        }
+      }
+
+      const mergedElements = nonZeroElements.filter((value) => value !== 0);
+
+      while (mergedElements.length < row.length) {
+        mergedElements.push(0);
+      }
+
+      if (reverse) {
+        mergedElements.reverse();
+      }
+
+      return mergedElements;
+    };
+
+    const getColumn = (gridToGetFrom, colIndex) =>
+      gridToGetFrom.map((row) => row[colIndex]);
+
+    const setColumn = (gridToSetTo, colIndex, newCol) => {
+      newCol.forEach((value, rowIndex) => {
+        gridToSetTo[rowIndex][colIndex] = value;
+      });
+    };
+
+    if (direction === 'left' || direction === 'right') {
+      const reverse = direction === 'right';
+
+      for (let row = 0; row < size; row++) {
+        grid[row] = moveRow(grid[row], reverse);
+      }
+    } else if (direction === 'up' || direction === 'down') {
+      const reverse = direction === 'down';
+
+      for (let col = 0; col < size; col++) {
+        const column = getColumn(grid, col);
+        const newColumn = moveRow(column, reverse);
+
+        setColumn(grid, col, newColumn);
+      }
+    }
+
+    if (JSON.stringify(prevGameState) === JSON.stringify(grid)) {
+      if (!this.movesAvailable(prevGameState)) {
+        this.status = Game.status.lose;
+      }
+
+      return prevGameState;
+    }
+
+    if (this.status === 'win') {
+      return prevGameState;
+    }
+
+    return this.addRandomTile(grid);
+  }
+
+  addRandomTile(resGrid) {
+    const size = resGrid.length;
+    const emptyCells = [];
+
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        if (resGrid[row][col] === 0) {
+          emptyCells.push([row, col]);
+        }
+      }
+    }
+
+    if (emptyCells.length === 0) {
+      return resGrid;
+    }
+
+    const [randomRow, randomCol] =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+    resGrid[randomRow][randomCol] = Math.random() < 0.1 ? 4 : 2;
+
+    return resGrid;
+  }
+
+  movesAvailable(grid) {
+    const size = grid.length;
+
+    // Check for empty cells
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        if (grid[row][col] === 0) {
+          return true;
+        }
+      }
+    }
+
+    // Check for possible merges
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        if (col < size - 1 && grid[row][col] === grid[row][col + 1]) {
+          return true; // horizontally
+        }
+
+        if (row < size - 1 && grid[row][col] === grid[row + 1][col]) {
+          return true; // vertically
+        }
+      }
+    }
+
+    return false;
+  }
 }
 
 module.exports = Game;
