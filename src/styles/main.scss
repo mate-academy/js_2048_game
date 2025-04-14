@@ -21,55 +21,55 @@ body {
   vertical-align: center;
   user-select: none;
 
-  &--2 {
+  &[data-value='2'] {
     background: #eee4da;
   }
 
-  &--4 {
+  &[data-value='4'] {
     background: #ede0c8;
   }
 
-  &--8 {
+  &[data-value='8'] {
     background: #f2b179;
     color: #f9f6f2;
   }
 
-  &--16 {
+  &[data-value='16'] {
     background: #f59563;
     color: #f9f6f2;
   }
 
-  &--32 {
+  &[data-value='32'] {
     background: #f67c5f;
     color: #f9f6f2;
   }
 
-  &--64 {
+  &[data-value='64'] {
     background: #f65e3b;
     color: #f9f6f2;
   }
 
-  &--128 {
+  &[data-value='128'] {
     background: #edcf72;
     color: #f9f6f2;
   }
 
-  &--256 {
+  &[data-value='256'] {
     background: #edcc61;
     color: #f9f6f2;
   }
 
-  &--512 {
+  &[data-value='512'] {
     background: #edc850;
     color: #f9f6f2;
   }
 
-  &--1024 {
+  &[data-value='1024'] {
     background: #edc53f;
     color: #f9f6f2;
   }
 
-  &--2048 {
+  &[data-value='2048'] {
     background: #edc22e;
     color: #f9f6f2;
   }
