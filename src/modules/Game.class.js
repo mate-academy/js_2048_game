@@ -1,68 +1,66 @@
-'use strict';
+import Game from './modules/Game.class.js';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
-class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  const game = new Game();
+  const scoreElement = document.getElementById('score');
+  const startRestartButton = document.getElementById('start-restart-btn');
+  const statusMessage = document.getElementById('status-message');
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  const render = () => {
+    const board = game.getState();
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        const cell = document.getElementById(`cell-${r}-${c}`);
+        const value = board[r][c];
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+        cell.textContent = value === 0 ? '' : value;
+        cell.className = `game-cell game-cell--${value}`;
+      }
+    }
+    scoreElement.textContent = game.getScore();
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+    const gameStatus = game.getStatus();
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+    if (gameStatus === 'won') {
+      statusMessage.textContent = 'You won!';
+      statusMessage.classList.remove('hidden');
+    } else if (gameStatus === 'lost') {
+      statusMessage.textContent = 'Game Over!';
+      statusMessage.classList.remove('hidden');
+    } else {
+      statusMessage.classList.add('hidden');
+    }
+  };
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  startRestartButton.addEventListener('click', () => {
+    game.restart();
+    startRestartButton.textContent = 'Restart';
+    render();
+  });
 
-  // Add your own methods here
-}
+  document.addEventListener('keydown', function (evt) {
+    if (game.getStatus() !== 'playing') {
+      return;
+    }
 
-module.exports = Game;
+    switch (evt.key) {
+      case 'ArrowLeft':
+        game.moveLeft();
+        break;
+      case 'ArrowRight':
+        game.moveRight();
+        break;
+      case 'ArrowUp':
+        game.moveUp();
+        break;
+      case 'ArrowDown':
+        game.moveDown();
+        break;
+    }
+    render();
+  });
+
+  game.start();
+  render();
+});
