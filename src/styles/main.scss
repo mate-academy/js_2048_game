@@ -23,55 +23,132 @@ body {
 
   &--2 {
     background: #eee4da;
+    width: 75px;
+    height: 75px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
   }
 
   &--4 {
     background: #ede0c8;
+    width: 75px;
+    height: 75px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
+    width: 75px;
+    height: 75px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
   }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+    width: 75px;
+    height: 75px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+    width: 75px;
+    height: 75px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+    width: 75px;
+    height: 75px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    width: 75px;
+    height: 75px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    width: 75px;
+    height: 75px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    width: 75px;
+    height: 75px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+    width: 75px;
+    height: 75px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    width: 75px;
+    height: 75px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+    user-select: none;
   }
 }
 
@@ -176,8 +253,18 @@ h1 {
   width: 350px;
 }
 
+.message-restart {
+  background: #776e65;
+  color: #d6cdc4;
+}
+
 .message-win {
   background: #edc22e;
+  color: #f9f6f2;
+}
+
+.message-lose {
+  background: #f87474;
   color: #f9f6f2;
 }
 
