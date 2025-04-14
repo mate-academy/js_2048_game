@@ -18,11 +18,12 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
 
   &--2 {
     background: #eee4da;
+    color: #776e65;
   }
 
   &--4 {
@@ -148,6 +149,8 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  width: 85px;
+  font-size: 20px;
 
   &:hover {
     background: #f87474;
@@ -184,4 +187,24 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.lose-window {
+  position: absolute;
+  width: 50%;
+  height: 100px;
+  background: #d6cdc4;
+  color: #776e65;
+  text-align: center;
+  align-items: center;
+}
+
+.win-window {
+  position: absolute;
+  width: 50%;
+  height: 100px;
+  background: yellow;
+  color: #fff;
+  text-align: center;
+  align-items: center;
 }
