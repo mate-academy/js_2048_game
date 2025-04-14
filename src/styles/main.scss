@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  box-shadow: 1px 1px 10px black;
 
   &--2 {
     background: #eee4da;
@@ -79,6 +80,8 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+
+  box-shadow: 1px 1px 5px black;
 }
 
 .game-header {
@@ -146,6 +149,18 @@ h1 {
   }
 }
 
+.cheat-button {
+  background: #803939;
+  color: #fff;
+  font-size: 18px;
+  margin-left: 10px;
+
+  &:hover {
+    background: #350c0c;
+    color: #fff;
+  }
+}
+
 .restart {
   background: #f1b2b2;
 
@@ -177,11 +192,87 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
+  background: #ccff14;
+  color: #36440f;
+}
+
+.message-lose {
+  background: #9b3314;
   color: #f9f6f2;
+}
+
+.message-tatal__score {
+  box-sizing: border-box;
+  width: 100%;
+  background: #d6cdc4;
+  color: #776e65;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  font-size: 20px;
 }
 
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.cheat-menu-container {
+  position: relative;
+  margin-bottom: 170px;
+  margin-left: 20px;
+  background: #d6cdc4;
+  color: #776e65;
+  border: #bbada0 solid 8px;
+  border-radius: 10px;
+
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: fit-content;
+  height: fit-content;
+  box-sizing: border-box;
+}
+
+// Don't ask me why i didn't use SCSS advantages (im talking about &)
+.apply-cheat-button {
+  margin-top: 16px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 10px;
+  background: #705d58;
+  color: #ddcac9;
+  font-size: 24px;
+  cursor: pointer;
+  transition:
+    0.25s ease color,
+    0.25s ease background,
+    0.25s ease border;
+  font-weight: 700;
+
+  &:hover {
+    border: 2px solid transparent;
+    background: #200;
+    color: #682c2c;
+  }
+}
+
+.cheat-menu__option {
+  border: 2px solid transparent;
+  background: #5f5953;
+  font-size: 16px;
+  font-weight: bold;
+  color: #dbcfc3;
+}
+
+.cheat-menu__input {
+  border: 2px solid transparent;
+  padding: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  background: #5f5953;
+  color: #dbcfc3;
 }
