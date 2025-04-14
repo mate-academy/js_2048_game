@@ -134,9 +134,10 @@ class Game {
   rotateCounterClockwise(board) {
     const newBoard = this.createEmptyBoard();
 
-    for (let rowTwo = 0; rowTwo < this.size; rowTwo++) {
-      for (let colTwo = 0; colTwo < this.size; colTwo++) {
-        newBoard[this.size - 1 - colTwo][rowTwo] = board[rowTwo][colTwo];
+    for (let rolSecond = 0; rolSecond < this.size; rolSecond++) {
+      for (let colSecond = 0; colSecond < this.size; colSecond++) {
+        newBoard[this.size - 1 - colSecond][rolSecond] =
+          board[rolSecond][colSecond];
       }
     }
 
