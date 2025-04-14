@@ -1,68 +1,266 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.score = 0;
+    this.status = 'idle';
+    this.initialState = initialState;
+    this.state = this.cloneState(this.initialState);
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getState() {
+    return this.state;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  start() {
+    if (this.status === 'idle') {
+      this.status = 'playing';
+      this.addRandomTile();
+      this.addRandomTile();
+    }
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  restart() {
+    this.state = this.cloneState(this.initialState);
+    this.score = 0;
+    this.status = 'idle';
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  cloneState(state) {
+    return state.map((row) => [...row]);
+  }
 
-  // Add your own methods here
+  addRandomTile() {
+    const emptyCells = [];
+
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.state[row][col] === 0) {
+          emptyCells.push([row, col]);
+        }
+      }
+    }
+
+    if (emptyCells.length > 0) {
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+
+      const [row, col] = emptyCells[randomIndex];
+
+      this.state[row][col] = Math.random() < 0.9 ? 2 : 4;
+    }
+  }
+
+  moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const moved = this.move('left');
+
+    if (moved) {
+      this.addRandomTile();
+      this.checkState();
+    }
+  }
+
+  moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const moved = this.move('right');
+
+    if (moved) {
+      this.addRandomTile();
+      this.checkState();
+    }
+  }
+
+  moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const moved = this.move('up');
+
+    if (moved) {
+      this.addRandomTile();
+      this.checkState();
+    }
+  }
+
+  moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const moved = this.move('down');
+
+    if (moved) {
+      this.addRandomTile();
+      this.checkState();
+    }
+  }
+
+  move(course) {
+    const originalState = this.cloneState(this.state);
+
+    const combineRow = (row) => {
+      const newRow = row.filter((n) => n !== 0);
+
+      for (let i = 0; i < newRow.length - 1; i++) {
+        if (newRow[i] === newRow[i + 1]) {
+          newRow[i] *= 2;
+          newRow[i + 1] = 0;
+          this.score += newRow[i];
+        }
+      }
+
+      return newRow.filter((n) => n !== 0);
+    };
+
+    const moveRowLeft = (row) => {
+      const newRow = combineRow(row);
+
+      while (newRow.length < 4) {
+        newRow.push(0);
+      }
+
+      return newRow;
+    };
+
+    const moveRowRight = (row) => {
+      const copyRow = [...row];
+
+      const newRow = combineRow(copyRow.reverse());
+
+      while (newRow.length < 4) {
+        newRow.push(0);
+      }
+
+      return newRow.reverse();
+    };
+
+    const moveStateLeft = (state) => {
+      return state.map((row) => moveRowLeft(row));
+    };
+
+    const moveStateRight = (state) => {
+      return state.map((row) => moveRowRight(row));
+    };
+
+    switch (course) {
+      case 'left':
+        this.state = moveStateLeft(this.state);
+        break;
+
+      case 'right':
+        this.state = moveStateRight(this.state);
+        break;
+
+      case 'up':
+        this.state = this.transposeState(
+          moveStateLeft(this.transposeState(this.state)),
+        );
+        break;
+
+      case 'down':
+        this.state = this.transposeState(
+          moveStateRight(this.transposeState(this.state)),
+        );
+        break;
+    }
+
+    return !this.areStatesEqual(this.state, originalState);
+  }
+
+  hasEmptyCells() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.state[row][col] === 0) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  canCombined() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        const current = this.state[row][col];
+
+        if (col < 3 && current === this.state[row][col + 1]) {
+          return true;
+        }
+
+        if (row < 3 && current === this.state[row + 1][col]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  checkState() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.state[row][col] === 2048) {
+          this.status = 'win';
+
+          return;
+        }
+      }
+    }
+
+    if (this.hasEmptyCells() || this.canCombined()) {
+      return;
+    }
+    this.status = 'lose';
+  }
+
+  transposeState(state) {
+    const result = [];
+
+    for (let col = 0; col < 4; col++) {
+      result[col] = [];
+
+      for (let row = 0; row < 4; row++) {
+        result[col].push(state[row][col]);
+      }
+    }
+
+    return result;
+  }
+
+  areStatesEqual(state1, state2) {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (state1[row][col] !== state2[row][col]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
 }
 
 module.exports = Game;
