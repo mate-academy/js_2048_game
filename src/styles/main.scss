@@ -1,47 +1,98 @@
-body {
+* {
+  box-sizing: border-box;
+}
+
+body,
+h3,
+h4,
+h5,
+h6,
+ol,
+ul,
+li,
+form,
+p {
   margin: 0;
+  padding: 0;
+}
+
+body {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
+  background: #272626;
+  font-family: 'Archivo Black', sans-serif;
   font-size: 24px;
-  font-weight: 900;
+  overflow: hidden;
+}
+
+p {
+  font-family: Manrope, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #262626;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-block: 24px;
+  width: 350px;
+}
+
+.game-field {
+  width: 350px;
+  height: 350px;
+  padding: 12px;
+  background: #212121;
+  border-spacing: 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .field-cell {
-  background: #d6cdc4;
   width: 75px;
   height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #323232;
   border-radius: 5px;
-  color: #776e65;
+  font-size: 40px;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
-  user-select: none;
+  transition-property:
+    top left color,
+    background-color;
+  transition-duration: 0.1s;
 
   &--2 {
-    background: #eee4da;
+    background: #fff;
+    color: #323232;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #3f4347;
+    color: #fff;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #704e50;
+    color: #fff;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: #cd4247;
+    color: #fff;
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    background: #d0d148;
+    color: #fff;
   }
 
   &--64 {
@@ -50,87 +101,101 @@ body {
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    font-size: 36px;
+    background: #4a95d0;
+    color: #fff;
   }
 
   &--256 {
+    font-size: 36px;
     background: #edcc61;
-    color: #f9f6f2;
+    color: #fff;
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    font-size: 36px;
+    background: #a4353a;
+    color: #fff;
   }
 
   &--1024 {
+    font-size: 28px;
     background: #edc53f;
-    color: #f9f6f2;
+    color: #fff;
   }
 
   &--2048 {
+    font-size: 28px;
     background: #edc22e;
-    color: #f9f6f2;
+    color: #fff;
   }
-}
-
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
 }
 
 .game-header {
   display: flex;
+  flex-direction: column;
+  gap: 24px;
   width: 100%;
   justify-content: space-between;
   margin-bottom: 24px;
-  padding: 10px;
   box-sizing: border-box;
 }
 
-h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
+.title-wrapper {
   display: flex;
-  align-items: center;
   justify-content: center;
-  box-sizing: border-box;
-  margin: 0;
+  align-items: center;
 }
 
-.info {
+.title {
+  width: 300px;
+}
+
+.information {
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.scores {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  border-radius: 8px;
+}
+
+.score {
+  display: flex;
+  padding: 0 10px;
+  justify-content: center;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
   height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
+  align-items: center;
+  border-radius: 8px;
+  background-color: white;
 }
 
-.controls {
-  display: flex;
+.game-score {
+  font-family: Manrope, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.game-score-best {
+  font-family: Manrope, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
 }
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  color: #f9f6f2;
-  font-family: sans-serif;
-  font-weight: 700;
+  color: #fff;
+  font-family: Manrope, sans-serif;
   font-size: 16px;
+  font-weight: 400;
   width: 75px;
   height: 75px;
 
@@ -138,50 +203,42 @@ h1 {
 }
 
 .start {
-  background: #1dae28;
-  font-size: 20px;
+  background: #db3d3e;
 
   &:hover {
-    background: #179921;
+    background: #922929;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #945053;
 
   &:hover {
-    background: #f87474;
+    background: #6a393c;
   }
+}
+
+.message-container {
+  margin-top: 24px;
+  width: 100%;
+  min-height: 100px;
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #fff;
+  color: #262626;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
-  font-size: 20px;
 }
 
 .hidden {
   display: none;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
-}
-
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
-}
-
-.message-container {
-  width: 100%;
-  height: 150px;
+  background: #d0d148;
+  color: #fff;
 }

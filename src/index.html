@@ -11,60 +11,79 @@
       rel="stylesheet"
       href="./styles/main.scss"
     />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="../src/images/favicon.png"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="container">
       <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score:
-            <span class="game-score">0</span>
-          </p>
+        <div class="title-wrapper">
+          <img
+            class="title"
+            src="./images/title.svg"
+            alt="title"
+          />
+        </div>
+        <div class="information">
           <button class="button start">Start</button>
+          <button class="button restart hidden">Restart</button>
+          <div class="scores">
+            <div class="score">
+              <p>Best Score:</p>
+              <span class="game-score-best">0</span>
+            </div>
+            <div class="score">
+              <p>Score:</p>
+              <span class="game-score">0</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="game-field"></div>
 
       <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">
-          Press "Start" to begin game. Good luck!
+        <p class="message message-lose hidden">
+          You lose :(
+          <br />
+          Restart the game?
+        </p>
+        <p class="message message-win hidden">
+          Winner! Congrats!
+          <br />
+          You did it!
+        </p>
+        <p class="message message-start visible">
+          Press
+          <strong>"Start"</strong>
+          to begin game.
+          <br />
+          Good luck!
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
