@@ -1,3 +1,5 @@
+/* eslint-disable function-paren-newline */
+/* eslint-disable comma-dangle */
 'use strict';
 
 /**
@@ -5,64 +7,164 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
-class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+export class Game {
+  constructor(initialState = null) {
+    this.board = initialState || this.createEmptyBoard();
+    this.score = 0;
+    this.status = 'ready';
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  createEmptyBoard() {
+    return Array.from({ length: 4 }, () => Array(4).fill(null));
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  spawnTile() {
+    const emptyCells = [];
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+    this.board.forEach((row, rIndex) => {
+      row.forEach((cell, cIndex) => {
+        if (!cell) {
+          emptyCells.push({ rowIndex: rIndex, colIndex: cIndex });
+        }
+      });
+    });
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+    if (emptyCells.length === 0) {
+      return;
+    }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+    const { rowIndex, colIndex } =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    this.board[rowIndex][colIndex] = Math.random() < 0.1 ? 4 : 2;
+  }
 
-  // Add your own methods here
+  getState() {
+    return this.board;
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
+  canMove() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.board[row][col] === null) {
+          return true;
+        }
+
+        if (
+          (col < 3 && this.board[row][col] === this.board[row][col + 1]) ||
+          (row < 3 && this.board[row][col] === this.board[row + 1][col])
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  slideAndMerge(row) {
+    const filteredRow = row.filter((val) => val !== null);
+    const mergedRow = [];
+    let skip = false;
+
+    for (let i = 0; i < filteredRow.length; i++) {
+      if (
+        !skip &&
+        i < filteredRow.length - 1 &&
+        filteredRow[i] === filteredRow[i + 1]
+      ) {
+        mergedRow.push(filteredRow[i] * 2);
+        this.score += filteredRow[i] * 2;
+        skip = true;
+      } else {
+        mergedRow.push(filteredRow[i]);
+        skip = false;
+      }
+    }
+
+    while (mergedRow.length < 4) {
+      mergedRow.push(null);
+    }
+
+    return mergedRow;
+  }
+  moveLeft() {
+    const previousState = JSON.stringify(this.board);
+
+    this.board = this.board.map((row) => this.slideAndMerge(row));
+
+    if (JSON.stringify(this.board) !== previousState) {
+      this.spawnTile();
+      this.checkGameOver();
+    }
+  }
+  moveRight() {
+    const previousState = JSON.stringify(this.board);
+
+    this.board = this.board.map((row) =>
+      // eslint-disable-next-line prettier/prettier
+      this.slideAndMerge(row.slice().reverse()).reverse());
+
+    if (JSON.stringify(this.board) !== previousState) {
+      this.spawnTile();
+      this.checkGameOver();
+    }
+  }
+
+  moveUp() {
+    const previousState = JSON.stringify(this.board);
+
+    this.transpose();
+    this.moveLeft();
+    this.transpose();
+
+    if (JSON.stringify(this.board) !== previousState) {
+      this.spawnTile();
+      this.checkGameOver();
+    }
+  }
+  moveDown() {
+    const previousState = JSON.stringify(this.board);
+
+    this.transpose();
+    this.board = this.board.map((row) =>
+    this.slideAndMerge(row.slice().reverse()).reverse()
+  );
+    this.transpose();
+
+    if (JSON.stringify(this.board) !== previousState) {
+      this.spawnTile();
+      this.checkGameOver();
+    }
+  }
+  transpose() {
+    this.board = this.board[0].map((_, colIndex) =>
+      // eslint-disable-next-line prettier/prettier
+      this.board.map((row) => row[colIndex]));
+  }
+  checkGameOver() {
+    if (!this.canMove()) {
+      this.status = 'lost';
+    } else if (this.board.flat().includes(2048)) {
+      this.status = 'won';
+    }
+  }
+  start() {
+    this.board = this.createEmptyBoard();
+    this.score = 0;
+    this.status = 'in_progress';
+    this.spawnTile();
+    this.spawnTile();
+  }
+  restart() {
+    this.start();
+  }
 }
-
-module.exports = Game;
