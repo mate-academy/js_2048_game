@@ -1,68 +1,169 @@
-'use strict';
-
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(initialState = null) {
+    this.size = 4;
+
+    this.board =
+      initialState ||
+      Array(this.size)
+        .fill()
+        .map(() => Array(this.size).fill(0));
+    this.score = 0;
+    this.status = 'idle';
+    this.addRandomTile();
+    this.addRandomTile();
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  addRandomTile() {
+    const emptyCells = [];
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+    for (let r = 0; r < this.size; r++) {
+      for (let c = 0; c < this.size; c++) {
+        if (this.board[r][c] === 0) {
+          emptyCells.push({ row: r, col: c });
+        }
+      }
+    }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+    if (emptyCells.length === 0) {
+      return;
+    }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+    const { row, col } =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    const value = Math.random() < 0.9 ? 2 : 4;
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+    this.board[row][col] = value;
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  moveLeft() {
+    let moved = false;
 
-  // Add your own methods here
+    for (let r = 0; r < this.size; r++) {
+      const rowValues = this.board[r].filter(val => val !== 0);
+      const newRow = [];
+
+      for (let i = 0; i < rowValues.length; i++) {
+        if (i < rowValues.length - 1 && rowValues[i] === rowValues[i + 1]) {
+          newRow.push(rowValues[i] * 2);
+          this.score += rowValues[i] * 2;
+          i++;
+          moved = true;
+        } else {
+          newRow.push(rowValues[i]);
+        }
+      }
+
+      while (newRow.length < this.size) {
+        newRow.push(0);
+      }
+
+      this.board[r] = newRow;
+    }
+
+    if (moved) {
+      this.addRandomTile();
+      this.checkGameStatus();
+    }
+  }
+
+  moveRight() {
+    this.board.forEach(row => row.reverse());
+    this.moveLeft();
+    this.board.forEach(row => row.reverse());
+  }
+
+  moveUp() {
+    this.board = this.transposeBoard();
+    this.moveLeft();
+    this.board = this.transposeBoard(true);
+  }
+
+  moveDown() {
+    this.board = this.transposeBoard();
+    this.moveRight();
+    this.board = this.transposeBoard(true);
+  }
+
+  transposeBoard(reverse = false) {
+    const transposed = [];
+
+    for (let c = 0; c < this.size; c++) {
+      const newRow = [];
+
+      for (let r = 0; r < this.size; r++) {
+        newRow.push(this.board[r][c]);
+      }
+
+      if (reverse) {
+        newRow.reverse();
+      }
+      transposed.push(newRow);
+    }
+
+    return transposed;
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  getState() {
+    return this.board;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
+  start() {
+    this.status = 'playing';
+  }
+
+  restart() {
+    this.board = Array(this.size)
+      .fill()
+      .map(() => Array(this.size).fill(0));
+    this.score = 0;
+    this.status = 'idle';
+    this.addRandomTile();
+    this.addRandomTile();
+  }
+
+  checkGameStatus() {
+    if (this.isWin()) {
+      this.status = 'win';
+    } else if (this.isLose()) {
+      this.status = 'lose';
+    }
+  }
+
+  isWin() {
+    return this.board.some(row => row.includes(2048));
+  }
+
+  isLose() {
+    const noEmptyCells = this.board.every(row => row.every(cell => cell !== 0));
+
+    if (noEmptyCells) {
+      for (let r = 0; r < this.size; r++) {
+        for (let c = 0; c < this.size - 1; c++) {
+          if (this.board[r][c] === this.board[r][c + 1]) {
+            return false;
+          }
+        }
+      }
+
+      for (let c = 0; c < this.size; c++) {
+        for (let r = 0; r < this.size - 1; r++) {
+          if (this.board[r][c] === this.board[r + 1][c]) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
+  }
 }
 
 module.exports = Game;
