@@ -1,0 +1,25 @@
+.message-container {
+  width: 100%;
+  height: $message-height;
+
+  .message {
+    box-sizing: border-box;
+    width: 100%;
+    background: $bg-light;
+    color: $font-color-dark;
+    padding: 2vmin;
+    text-align: center;
+    border-radius: $cell-border-radius;
+    font-size: 3vmin;
+
+    &-win {
+      background: #edc22e;
+      color: $font-color-light;
+    }
+
+    &-lose {
+      background: #f65e3b;
+      color: $font-color-light;
+    }
+  }
+}

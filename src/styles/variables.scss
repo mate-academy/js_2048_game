@@ -1,0 +1,12 @@
+$board-size: 60vmin;
+$cell-border-spacing: calc(0.03 * #{$board-size});
+$cell-size: calc(0.21 * #{$board-size});
+$cell-border-radius: calc(0.07 * #{$cell-size});
+$message-height: calc(0.8 * $cell-size);
+$font-color-dark: #776e65;
+$font-color-light: #f9f6f2;
+$bg-light: #d6cdc4;
+$bg-dark: #bbada0;
+$move-duration: 0.15s;
+$merge-duration: 0.1s;
+$new-cell-duration: 0.1s;

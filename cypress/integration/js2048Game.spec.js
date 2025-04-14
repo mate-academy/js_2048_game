@@ -16,7 +16,7 @@ describe('2048 game UI', () => {
 
   it('should show the initial score', () => {
     cy.get('.button.start').click();
-    cy.get('.game-score').should('have.value', '');
+    cy.get('.game-score').should('have.text', '0');
   });
 
   it('should show the score shuffling to the left and up only', () => {
@@ -43,7 +43,7 @@ describe('2048 game UI', () => {
     cy.shuffleBoxes('{leftArrow}', '{downArrow}', 3);
     cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
     cy.get('.button.restart').click();
-    cy.get('.game-score').should('have.value', '');
+    cy.get('.game-score').should('have.text', '0');
   });
 
   it('should show message in case of the loss', () => {
@@ -56,6 +56,6 @@ describe('2048 game UI', () => {
       cy.get('body').type('{upArrow}');
     }
 
-    cy.contains('You lose! Restart the game?').should('be.visible');
+    cy.get('.message-lose').should('be.visible');
   });
 });
