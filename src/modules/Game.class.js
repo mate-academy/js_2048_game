@@ -1,68 +1,139 @@
-'use strict';
-
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.state = initialState || this.createInitialState();
+    this.score = 0;
+    this.status = 'idle';
+    this.start();
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  createInitialState() {
+    return Array.from({ length: 4 }, () => Array(4).fill(0));
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  generateRandomTile() {
+    const emptyCells = [];
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+    this.state.forEach((currentRow, r) => {
+      currentRow.forEach((cell, c) => {
+        if (cell === 0) {
+          emptyCells.push([r, c]);
+        }
+      });
+    });
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+    if (emptyCells.length === 0) {
+      return this.updateStatus();
+    }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+    const [row, col] =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    this.state[row][col] = Math.random() < 0.9 ? 2 : 4;
+  }
 
-  // Add your own methods here
+  updateStatus() {
+    this.status = this.state.flat().includes(2048)
+      ? 'win'
+      : this.canMove()
+        ? 'playing'
+        : 'lose';
+  }
+
+  canMove() {
+    return this.state.some(
+      (currentRow, r) =>
+        currentRow.some(
+          (cell, c) =>
+            cell === 0 ||
+            (c < 3 && cell === currentRow[c + 1]) ||
+            (r < 3 && cell === this.state[r + 1][c]),
+        ),
+      // eslint-disable-next-line function-paren-newline
+    );
+  }
+
+  move(direction) {
+    const moveRow = (row) => {
+      const newRow = row.filter(Boolean);
+      const mergedRow = [];
+
+      for (let i = 0; i < newRow.length; i++) {
+        if (newRow[i] === newRow[i + 1]) {
+          mergedRow.push(newRow[i] * 2);
+          this.score += newRow[i] * 2;
+          i++;
+        } else {
+          mergedRow.push(newRow[i]);
+        }
+      }
+
+      return [...mergedRow, ...Array(4 - mergedRow.length).fill(0)];
+    };
+
+    const moveOperations = {
+      left: () => {
+        this.state = this.state.map(moveRow);
+      },
+      right: () => {
+        this.state = this.state
+          .map((row) => moveRow(row.reverse()))
+          .map((row) => row.reverse());
+      },
+      up: () => {
+        this.transpose();
+        this.state = this.state.map(moveRow);
+        this.transpose();
+      },
+      down: () => {
+        this.transpose();
+
+        this.state = this.state
+          .map((row) => moveRow(row.reverse()))
+          .map((row) => row.reverse());
+        this.transpose();
+      },
+    };
+
+    const previousState = JSON.stringify(this.state);
+
+    moveOperations[direction]();
+
+    if (previousState !== JSON.stringify(this.state)) {
+      this.generateRandomTile();
+      this.updateStatus();
+    }
+  }
+
+  transpose() {
+    this.state = this.state[0].map(
+      (_, colIndex) => this.state.map((row) => row[colIndex]),
+      // eslint-disable-next-line function-paren-newline
+    );
+  }
+
+  start() {
+    this.score = 0;
+    this.state = this.createInitialState();
+    this.status = 'playing';
+    this.generateRandomTile();
+    this.generateRandomTile();
+  }
+
+  restart() {
+    this.start();
+  }
+
+  getState() {
+    return this.state;
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  getStatus() {
+    return this.status;
+  }
 }
 
-module.exports = Game;
+export default Game;
