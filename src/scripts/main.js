@@ -1,7 +1,21 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../modules/Game.class');
+const game = new Game();
 
-// Write your code here
+function initializeGame() {
+  const startButton = document.querySelector('.button');
+
+  if (startButton) {
+    startButton.addEventListener('click', () => {
+      // Перевірка статусу гри перед запуском або перезапуском
+      if (game.getStatus() === 'idle') {
+        game.start(); // Запускає гру
+      } else if (game.getStatus() === 'playing') {
+        game.restart(); // Перезапускає гру
+      }
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initializeGame);
