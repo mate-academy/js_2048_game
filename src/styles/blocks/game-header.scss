@@ -1,0 +1,81 @@
+.game-header {
+  display: grid;
+  grid-template-columns: repeat(4, $cell-size);
+  grid-template-rows: repeat(1, $cell-size);
+  gap: 1vmin;
+  box-sizing: border-box;
+  margin-bottom: 1vmin;
+}
+
+.title {
+  background: $title-bg-color;
+  color: $title-text-color;
+  border: 1px solid $title-text-color;
+  grid-column: 1;
+  font-size: 24px;
+  border-radius: 1vmin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.info {
+  margin: 0;
+  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $title-text-color;
+  font-weight: bold;
+  border-radius: 5px;
+  color: $title-bg-color;
+  box-sizing: border-box;
+  font-size: 28px;
+  height: $cell-size;
+}
+
+.controls {
+  grid-column: span 3;
+  display: grid;
+  grid-template-columns: repeat(3, $cell-size);
+  grid-template-rows: repeat(1, $cell-size);
+  gap: 1vmin;
+}
+
+.button {
+  border-radius: 5px;
+  cursor: pointer;
+  color: #f9f6f2;
+  font-family: sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  border: 1px solid $title-text-color;
+
+  transition: 0.25s ease background;
+}
+
+.start {
+  background: $start-color;
+  font-size: 20px;
+
+  &:hover {
+    background: $start-hover-color;
+  }
+}
+
+.restart {
+  background: $title-bg-color;
+  color: $title-text-color;
+  transition: all $tile-transition;
+
+  &:hover {
+    background: $title-text-color;
+    color: $title-bg-color;
+  }
+}
+
+.game-score {
+  margin-left: 10px;
+}
