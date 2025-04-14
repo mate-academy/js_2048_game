@@ -36,7 +36,7 @@ Okay, okay. Also, we have some rules:
 7) When 2048 value is displayed in any cell, win message should be shown.
 8) The `game over` message should be shown if there are no more available moves.
 9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
+10) Change the `Start` button to `Restart` after click on `Start` button.
 11) `Restart` button should reset the game to the initial state.
 12) Increase score with each move. The score should be increased by the sum of all merged cells.
 13) The game consists of 2 main parts:
@@ -61,7 +61,7 @@ You can change the HTML/CSS layout if you need it.
 ## Deploy and Pull Request
 
 1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
+    - [DEMO LINK](https://Razsinxron.github.io/js_2048_game/)
 2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
     - Run `npm run test` command to test your code;
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
