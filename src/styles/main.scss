@@ -18,7 +18,7 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
 
   &--2 {
@@ -134,7 +134,7 @@ h1 {
   width: 75px;
   height: 75px;
 
-  transition: 0.25s ease background;
+  transition: background 0.25s ease;
 }
 
 .start {
