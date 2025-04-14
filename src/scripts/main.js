@@ -1,7 +1,110 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../modules/Game.class');
+// eslint-disable-next-line no-unused-vars
+const game = new Game();
 
-// Write your code here
+const getButtonStart = document.querySelector('button');
+const getCell = document.querySelectorAll('.field-cell');
+const scoreElement = document.querySelector('.game-score');
+const addLose = document.querySelector('.message.message-lose');
+const divContainer = document.querySelector('.message-container');
+
+let click = 0;
+
+// eslint-disable-next-line no-shadow
+getButtonStart.addEventListener('click', function (event) {
+  if (event.target.tagName === 'BUTTON') {
+    click++;
+
+    getButtonStart.classList.add('start');
+
+    if (click === 1) {
+      game.start();
+      renderField(game.state);
+
+      const startM = document.querySelector('.message.message-start');
+
+      startM.classList.add('hidden');
+    }
+
+    if (click > 1) {
+      if (!divContainer.contains(addLose)) {
+        divContainer.append(addLose);
+      } else {
+        addLose.classList.add('hidden');
+      }
+
+      game.restart();
+      renderField(game.state);
+      scoreElement.textContent = 0;
+    }
+  }
+});
+
+function renderField(state) {
+  getCell.forEach((cell) => {
+    cell.textContent = '';
+
+    cell.classList.remove(
+      'field-cell--2',
+      'field-cell--4',
+      'field-cell--8',
+      'field-cell--16',
+      'field-cell--32',
+      'field-cell--64',
+      'field-cell--128',
+      'field-cell--256',
+      'field-cell--512',
+      'field-cell--1024',
+      'field-cell--2048',
+    );
+  });
+
+  state.forEach((row, rowIndex) => {
+    row.forEach((cell, cellIndex) => {
+      const cellElement = getCell[rowIndex * 4 + cellIndex];
+
+      if (cell !== 0) {
+        cellElement.textContent = cell;
+        cellElement.classList.add(`field-cell--${cell}`);
+      }
+    });
+  });
+}
+
+document.addEventListener('keydown', function (e) {
+  if (e) {
+    if (
+      e.key === 'ArrowRight' ||
+      e.key === 'ArrowLeft' ||
+      e.key === 'ArrowUp' ||
+      e.key === 'ArrowDown'
+    ) {
+      getButtonStart.classList.remove('start');
+      getButtonStart.classList.add('restart');
+      getButtonStart.textContent = 'Restart';
+    }
+
+    switch (e.key) {
+      case 'ArrowRight':
+        game.moveRight();
+        break;
+      case 'ArrowLeft':
+        game.moveLeft();
+        break;
+      case 'ArrowUp':
+        game.moveUp();
+        break;
+      case 'ArrowDown':
+        game.moveDown();
+        break;
+      default:
+        return;
+    }
+
+    renderField(game.state);
+    scoreElement.textContent = game.getScore();
+    game.getStatus();
+  }
+});
