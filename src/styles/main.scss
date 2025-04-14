@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all 0.3s ease;
 
   &--2 {
     background: #eee4da;
@@ -184,4 +185,48 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.field-cell.appear {
+  animation: appear 0.3s ease-out;
+}
+
+@keyframes appear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.field-cell.merge {
+  animation: merge 0.3s ease-out;
+}
+
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.score.updated {
+  animation: score-update 0.3s ease-out;
+}
+
+@keyframes score-update {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
 }
