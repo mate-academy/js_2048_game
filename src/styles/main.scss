@@ -1,187 +1,154 @@
-body {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
-  font-size: 24px;
-  font-weight: 900;
-}
+// Variables
+$tile-size: 80px; // Size of each tile
+$tile-gap: 10px; // Gap between tiles
+$font-size: 24px; // Font size for the numbers in the tiles
+$font-color: #fff; // Default font color for tile numbers
+$background-color: #faf8ef; // Game board background color
+$button-radius: 5px; // Button border radius
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
+$colors: (
+  2: #eee4da,
+  4: #ede0c8,
+  8: #f2b179,
+  16: #f59563,
+  32: #f67c5f,
+  64: #f65e3b,
+  128: #edcf72,
+  256: #edcc61,
+  512: #edc850,
+  1024: #edc53f,
+  2048: #edc22e,
+);
+
+// Game container
+#game {
   text-align: center;
-  vertical-align: center;
-  user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
+  margin: 0 auto;
+  padding: 20px;
+  width: 360px;
+  background-color: $background-color;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+// Game board grid
+#game-board {
+  display: grid;
+  grid-template-columns: repeat(4, $tile-size);
+  grid-template-rows: repeat(4, $tile-size);
+  grid-gap: $tile-gap;
+  margin: 0 auto;
+  width: calc(4 * $tile-size + 3 * $tile-gap); // Width of the game board
 }
 
-.game-header {
+// Tiles
+.tile {
+  width: $tile-size;
+  height: $tile-size;
   display: flex;
-  width: 100%;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  box-sizing: border-box;
-  margin: 0;
-}
-
-.info {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
+  font-size: $font-size;
+  background-color: $background-color;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out; // Smooth transition for tile movements and changes
+  font-weight: bold;
+
+  // For tile text color
+  color: $font-color;
 }
 
-.controls {
-  display: flex;
+// Tile value color classes
+@each $value, $color in $colors {
+  .tile-#{$value} {
+    background-color: $color;
+    color: if(
+      $value == 2 or $value == 4,
+      #776e65,
+      $font-color
+    ); // Lighter color for small values
+  }
 }
 
-.button {
-  border: none;
-  border-radius: 5px;
+// Button styles
+button {
+  padding: 10px 20px;
+  font-size: 18px;
   cursor: pointer;
-  color: #f9f6f2;
-  font-family: sans-serif;
-  font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
-
-  transition: 0.25s ease background;
+  border: none;
+  border-radius: $button-radius;
+  transition: background-color 0.3s ease;
+  margin: 10px;
+  width: 120px;
 }
 
+// Start and Restart buttons
 .start {
-  background: #1dae28;
-  font-size: 20px;
-
+  background-color: #4caf50;
+  color: white;
   &:hover {
-    background: #179921;
+    background-color: #45a049;
   }
 }
 
 .restart {
-  background: #f1b2b2;
-
+  background-color: #f44336;
+  color: white;
   &:hover {
-    background: #f87474;
+    background-color: #d32f2f;
   }
 }
 
-.message {
-  box-sizing: border-box;
-  width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
-  padding: 10px;
-  text-align: center;
-  border-radius: 5px;
-  font-size: 20px;
-}
-
+// Hidden elements (like the restart button before the game starts)
 .hidden {
   display: none;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
+// Game status display (win/lose/playing/idle)
+#status {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
-.message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+// Score display
+#score {
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #333;
 }
 
-.message-container {
-  width: 100%;
-  height: 150px;
+// Game over and win messages
+#game-over,
+#win {
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 20px;
+  color: #e74c3c;
+  display: none;
+}
+
+// Animations for tile merging and moving
+.tile-moving {
+  animation: moveTile 0.2s ease-in-out;
+}
+
+@keyframes moveTile {
+  0% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Responsive design for smaller screens
+@media (max-width: 600px) {
+  #game {
+    width: 280px;
+  }
+  #game-board {
+    width: calc(4 * $tile-size + 3 * $tile-gap);
+  }
 }
