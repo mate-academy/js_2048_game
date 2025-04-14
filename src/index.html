@@ -19,9 +19,19 @@
         <div class="controls">
           <p class="info">
             Score:
-            <span class="game-score">0</span>
+            <span
+              class="game-score"
+              id="score"
+            >
+              0
+            </span>
           </p>
-          <button class="button start">Start</button>
+          <button
+            class="button start"
+            id="start"
+          >
+            Start
+          </button>
         </div>
       </div>
 
@@ -58,13 +68,29 @@
       </table>
 
       <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">
+        <p
+          class="message message-lose hidden"
+          id="container-lose"
+        >
+          You lose! Restart the game?
+        </p>
+        <p
+          class="message message-win hidden"
+          id="container-win"
+        >
+          Winner! Congrats! You did it!
+        </p>
+        <p
+          class="message message-start"
+          id="container-start"
+        >
           Press "Start" to begin game. Good luck!
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
