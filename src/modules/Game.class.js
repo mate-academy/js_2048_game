@@ -1,68 +1,174 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.initialState = initialState;
+    this.score = 0;
+    this.state = this.copyBoard(initialState);
+    this.status = 'idle';
+    this.addRandomTile();
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  copyBoard(board) {
+    return board.map((row) => row.slice());
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  addRandomTile() {
+    const emptyCells = [];
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.state[row][col] === 0) {
+          emptyCells.push({ row, col });
+        }
+      }
+    }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+    if (emptyCells.length > 0) {
+      const { row, col } =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+      this.state[row][col] = Math.random() < 0.1 ? 4 : 2;
+    }
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  moveLeft() {
+    const previousState = this.copyBoard(this.state);
 
-  // Add your own methods here
+    for (let row = 0; row < 4; row++) {
+      const newRow = this.state[row].filter((val) => val !== 0);
+      const mergedRow = this.mergeTiles(newRow);
+
+      this.state[row] = mergedRow.concat(Array(4 - mergedRow.length).fill(0));
+    }
+    this.checkForChanges(previousState);
+  }
+
+  mergeTiles(row) {
+    const merged = [];
+
+    for (let i = 0; i < row.length; i++) {
+      if (row[i] === row[i + 1]) {
+        merged.push(row[i] * 2);
+        this.score += row[i] * 2;
+        i++;
+      } else {
+        merged.push(row[i]);
+      }
+    }
+
+    return merged;
+  }
+
+  checkForChanges(previousState) {
+    if (this.state.toString() !== previousState.toString()) {
+      this.addRandomTile();
+      this.checkWin();
+      this.checkLose();
+      this.status = 'playing';
+    }
+  }
+
+  checkWin() {
+    for (const row of this.state) {
+      if (row.includes(2048)) {
+        this.status = 'win';
+        break;
+      }
+    }
+  }
+
+  checkLose() {
+    const hasEmptyCells = this.state.some((row) => row.includes(0));
+    const canMerge = this.canMerge();
+
+    if (!hasEmptyCells && !canMerge) {
+      this.status = 'lose';
+    }
+  }
+
+  canMerge() {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        const current = this.state[row][col];
+
+        if (current === 0) {
+          continue;
+        }
+
+        if (col < 3 && current === this.state[row][col + 1]) {
+          return true;
+        }
+
+        if (row < 3 && current === this.state[row + 1][col]) {
+          return true;
+        }
+
+        if (col > 0 && current === this.state[row][col - 1]) {
+          return true;
+        }
+
+        if (row > 0 && current === this.state[row - 1][col]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  getState() {
+    return this.state;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
+  start() {
+    this.state = this.copyBoard(this.initialState);
+    this.score = 0;
+    this.status = 'playing';
+    this.addRandomTile();
+    this.addRandomTile();
+  }
+
+  restart() {
+    this.start();
+  }
+
+  moveRight() {
+    this.state.forEach((row) => row.reverse());
+    this.moveLeft();
+    this.state.forEach((row) => row.reverse());
+  }
+
+  moveUp() {
+    this.state = this.transpose(this.state);
+    this.moveLeft();
+    this.state = this.transpose(this.state);
+  }
+
+  moveDown() {
+    this.state = this.transpose(this.state);
+    this.moveRight();
+    this.state = this.transpose(this.state);
+  }
+
+  transpose(matrix) {
+    return matrix[0].map((_, index) => matrix.map((row) => row[index]));
+  }
 }
 
 module.exports = Game;
