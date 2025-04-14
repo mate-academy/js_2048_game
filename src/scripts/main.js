@@ -1,7 +1,225 @@
-'use strict';
+import Grid from '../modules/Game.class';
+import Tile from '../modules/Tile';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const gameBoard = document.getElementById('game-board');
+const button = document.querySelector('.button');
+const scoreField = document.querySelector('.game-score');
+const bestField = document.querySelector('.game-best');
 
-// Write your code here
+const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
+const endMessage = document.querySelector('.message-end');
+
+let grid = new Grid(gameBoard);
+let score = 0;
+let currentScore = 0;
+let bestScore = getBestScore();
+
+bestField.textContent = bestScore;
+button.addEventListener('click', loadGame);
+
+function loadGame() {
+  while (gameBoard.firstChild) {
+    gameBoard.removeChild(gameBoard.firstChild);
+  }
+
+  grid = new Grid(gameBoard);
+
+  grid.randomEmptyCell().tile = new Tile(gameBoard);
+  grid.randomEmptyCell().tile = new Tile(gameBoard);
+
+  score = 0;
+  scoreField.textContent = score;
+  button.classList.replace('start', 'restart');
+  button.textContent = 'Restart';
+
+  startMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  endMessage.classList.add('hidden');
+  button.blur();
+
+  setupInput();
+}
+
+function getBestScore() {
+  return +localStorage.getItem('bestScore') || 0;
+}
+
+function setupInput() {
+  window.addEventListener('keydown', handleInput, { once: true });
+}
+
+async function handleInput(e) {
+  switch (e.key) {
+    case 'ArrowUp':
+      if (!canMoveUp()) {
+        setupInput();
+
+        return;
+      }
+      await moveUp();
+      break;
+
+    case 'ArrowDown':
+      if (!canMoveDown()) {
+        setupInput();
+
+        return;
+      }
+      await moveDown();
+      break;
+
+    case 'ArrowLeft':
+      if (!canMoveLeft()) {
+        setupInput();
+
+        return;
+      }
+      await moveLeft();
+      break;
+
+    case 'ArrowRight':
+      if (!canMoveRight()) {
+        setupInput();
+
+        return;
+      }
+      await moveRight();
+      break;
+
+    default:
+      setupInput();
+
+      return;
+  }
+
+  grid.cells.forEach((cell) => cell.mergeTiles());
+
+  const newTile = new Tile(gameBoard);
+
+  grid.randomEmptyCell().tile = newTile;
+
+  if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()) {
+    if (!winMessage.classList.contains('hidden')) {
+      endMessage.classList.remove('hidden');
+
+      return;
+    }
+
+    loseMessage.classList.remove('hidden');
+
+    return;
+  }
+
+  setupInput();
+}
+
+function moveUp() {
+  return slideTiles(grid.cellsByColumn);
+}
+
+function moveDown() {
+  return slideTiles(grid.cellsByColumn.map((column) => [...column].reverse()));
+}
+
+function moveLeft() {
+  return slideTiles(grid.cellsByRow);
+}
+
+function moveRight() {
+  return slideTiles(grid.cellsByRow.map((row) => [...row].reverse()));
+}
+
+function slideTiles(cells) {
+  return Promise.all(
+    cells.flatMap((group) => {
+      const promises = [];
+
+      for (let i = 1; i < group.length; i++) {
+        const cell = group[i];
+
+        if (cell.tile == null) {
+          continue;
+        }
+
+        let lastValidCell;
+
+        for (let j = i - 1; j >= 0; j--) {
+          const moveToCell = group[j];
+
+          if (!moveToCell.canAccept(cell.tile)) {
+            break;
+          }
+
+          lastValidCell = moveToCell;
+        }
+
+        if (lastValidCell != null) {
+          promises.push(cell.tile.waitForTransition());
+
+          if (lastValidCell.tile != null) {
+            lastValidCell.mergeTile = cell.tile;
+
+            const mergeScore = lastValidCell.tile.value + cell.tile.value;
+
+            currentScore += mergeScore;
+
+            scoreField.textContent = currentScore;
+
+            if (currentScore > bestScore) {
+              bestScore = currentScore;
+              localStorage.setItem('bestScore', bestScore);
+              bestField.textContent = bestScore;
+            }
+
+            // Перевірка на перемогу
+            if (mergeScore === 2048) {
+              winMessage.classList.remove('hidden');
+            }
+          } else {
+            lastValidCell.tile = cell.tile;
+          }
+          cell.tile = null;
+        }
+      }
+
+      return promises;
+    }),
+  );
+}
+
+function canMoveUp() {
+  return canMove(grid.cellsByColumn);
+}
+
+function canMoveDown() {
+  return canMove(grid.cellsByColumn.map((column) => [...column].reverse()));
+}
+
+function canMoveLeft() {
+  return canMove(grid.cellsByRow);
+}
+
+function canMoveRight() {
+  return canMove(grid.cellsByRow.map((row) => [...row].reverse()));
+}
+
+function canMove(cells) {
+  return cells.some((group) => {
+    return group.some((cell, index) => {
+      if (index === 0) {
+        return false;
+      }
+
+      if (cell.tile == null) {
+        return false;
+      }
+
+      const moveToCell = group[index - 1];
+
+      return moveToCell.canAccept(cell.tile);
+    });
+  });
+}
