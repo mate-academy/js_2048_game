@@ -8,9 +8,15 @@
     />
     <title>2048</title>
     <link
+      rel="icon"
+      href="./images/2048icon.png"
+      type="image/png"
+    />
+    <link
       rel="stylesheet"
       href="./styles/main.scss"
     />
+    <script src="./scripts/main.js"></script>
   </head>
   <body>
     <div class="container">
@@ -22,6 +28,7 @@
             <span class="game-score">0</span>
           </p>
           <button class="button start">Start</button>
+          <button class="button restart hidden">Restart</button>
         </div>
       </div>
 
@@ -65,6 +72,23 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+
+    <footer class="footer">
+      <p class="footer__text">
+        Made by
+        <a
+          href="https://github.com/Abdrakhmanov-Renat"
+          class="footer__link"
+        >
+          Abdrakhmanov Renat
+        </a>
+      </p>
+      <p class="footer__text">Product Version: 2.1</p>
+    </footer>
+
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
