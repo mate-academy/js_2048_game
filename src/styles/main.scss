@@ -185,3 +185,38 @@ h1 {
   width: 100%;
   height: 150px;
 }
+
+@keyframes spawn {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.field-cell.spawn {
+  animation: spawn 0.2s ease-out;
+}
+
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.field-cell.merge {
+  animation: merge 0.15s ease-in-out;
+}
+
+.field-cell.merge {
+  animation: merge 0.15s ease-in-out;
+}
