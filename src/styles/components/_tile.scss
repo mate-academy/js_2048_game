@@ -1,0 +1,63 @@
+@use '../base/variables';
+@use '../utilities/helpers';
+
+.field-cell {
+  @extend %tile-base;
+
+  background: helpers.color(tile-bg);
+  color: helpers.color(text-primary);
+  text-align: center;
+
+  &--2 {
+    background: helpers.tile(2);
+  }
+
+  &--4 {
+    background: helpers.tile(4);
+  }
+
+  &--8 {
+    background: helpers.tile(8);
+    color: helpers.color(text-tile);
+  }
+
+  &--16 {
+    background: helpers.tile(16);
+    color: helpers.color(text-tile);
+  }
+
+  &--32 {
+    background: helpers.tile(32);
+    color: helpers.color(text-tile);
+  }
+
+  &--64 {
+    background: helpers.tile(64);
+    color: helpers.color(text-tile);
+  }
+
+  &--128 {
+    background: helpers.tile(128);
+    color: helpers.color(text-tile);
+  }
+
+  &--256 {
+    background: helpers.tile(256);
+    color: helpers.color(text-tile);
+  }
+
+  &--512 {
+    background: helpers.tile(512);
+    color: helpers.color(text-tile);
+  }
+
+  &--1024 {
+    background: helpers.tile(1024);
+    color: helpers.color(text-tile);
+  }
+
+  &--2048 {
+    background: helpers.tile(2048);
+    color: helpers.color(text-tile);
+  }
+}

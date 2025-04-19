@@ -1,0 +1,11 @@
+@use '../base/variables';
+@use '../utilities/mixins';
+
+main {
+  @include mixins.flex(column);
+
+  position: relative;
+  width: 350px;
+  border-radius: variables.$radius * 1.7;
+  overflow: hidden;
+}

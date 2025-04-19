@@ -8,63 +8,207 @@
     />
     <title>2048</title>
     <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
       rel="stylesheet"
       href="./styles/main.scss"
     />
   </head>
   <body>
-    <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score:
-            <span class="game-score">0</span>
-          </p>
-          <button class="button start">Start</button>
-        </div>
+    <header class="header">
+      <button
+        class="button button--theme"
+        aria-label="Toggle Theme (T)"
+        title="Toggle Theme (T)"
+      >
+        <span class="icon icon--sun">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-sun-icon"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="4"
+            />
+            <path
+              d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+            />
+          </svg>
+        </span>
+        <span class="icon icon--moon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-moon-star-icon"
+          >
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9m8 0v4m2-2h-4" />
+          </svg>
+        </span>
+      </button>
+
+      <div class="header__left">
+        <a
+          href="/"
+          class="button"
+        >
+          <h1 class="brand">2048</h1>
+        </a>
       </div>
 
-      <table class="game-field">
+      <div class="stats">
+        <p class="stats__label">
+          Score
+          <span class="stats__score game-score"></span>
+        </p>
+        <p class="stats__label">
+          Best
+          <span class="stats__best">0</span>
+        </p>
+      </div>
+
+      <div class="header__right">
+        <button
+          class="button button--start button--restart start restart"
+          title="New Game (N or R)"
+        >
+          <svg
+            class="icon icon--rotate"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+            <path d="M21 3v5h-5" />
+          </svg>
+          <span class="visually-hidden">New Game</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <table class="board">
         <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+          <tr>
+            <td class="tile"></td>
+            <td class="tile"></td>
+            <td class="tile"></td>
+            <td class="tile"></td>
           </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+          <tr>
+            <td class="tile"></td>
+            <td class="tile"></td>
+            <td class="tile"></td>
+            <td class="tile"></td>
           </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+          <tr>
+            <td class="tile"></td>
+            <td class="tile"></td>
+            <td class="tile"></td>
+            <td class="tile"></td>
           </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
+          <tr>
+            <td class="tile"></td>
+            <td class="tile"></td>
+            <td class="tile"></td>
+            <td class="tile"></td>
           </tr>
         </tbody>
       </table>
 
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">
-          Press "Start" to begin game. Good luck!
-        </p>
+      <div class="popup hidden">
+        <p class="popup__text"></p>
+        <button class="button popup__button">Try Again</button>
       </div>
-    </div>
-    <script src="scripts/main.js"></script>
+    </main>
+
+    <footer class="footer">
+      <p class="credits">
+        <span>
+          This project is a student-made clone of the original
+          <a
+            href="https://play2048.co/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            2048 game
+          </a>
+          .
+        </span>
+        <br />
+        <span>
+          All rights to the original game © 2014–2025
+          <a
+            href="https://github.com/gabrielecirulli"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Gabriele Cirulli
+          </a>
+          .
+        </span>
+        <br />
+        <span>
+          This version is not affiliated with or endorsed by
+          <a
+            href="https://github.com/gabrielecirulli"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Gabriele Cirulli
+          </a>
+          .
+        </span>
+        <br />
+        <span>
+          Created as a practice project during a
+          <a
+            href="https://mate.academy/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Mate Academy
+          </a>
+          course.
+        </span>
+      </p>
+    </footer>
+
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
+    <script
+      type="module"
+      src="scripts/theme/toggle-theme.js"
+    ></script>
   </body>
 </html>

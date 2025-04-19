@@ -1,0 +1,8 @@
+@use '../base/variables';
+@use '../utilities/helpers';
+
+.board {
+  background: helpers.color(board-bg);
+  border-spacing: 10px;
+  border-radius: variables.$radius * 1.7;
+}

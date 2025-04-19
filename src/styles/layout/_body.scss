@@ -1,0 +1,14 @@
+@use '../base/variables';
+@use '../utilities/helpers';
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding-top: calc(variables.$padding * 1.5);
+  gap: calc(variables.$gap * 1.5);
+  background: helpers.color(background);
+  user-select: none;
+}

@@ -1,0 +1,78 @@
+$font-family: Rubik, Arial, system-ui, sans-serif;
+$base-font-size: 1rem;
+$tile-weight: 700;
+$radius: 12px;
+$padding: 1rem;
+$gap: 1rem;
+$height: 1rem;
+$theme-light: (
+  'text-primary': rgb(117, 100, 82),
+  'text-secondary': #776e65,
+  'text-tile': #f9f6f2,
+  'brand': rgb(117, 100, 82),
+  'brand-bg': rgb(224, 218, 209),
+  'message-bg': rgba(238, 228, 218, 0.73),
+  'background': rgb(250, 248, 240),
+  'surface': rgb(224, 218, 209),
+  'board-bg': rgb(155, 139, 124),
+  'tile-bg': rgb(189, 172, 151),
+  'score-bg': #d6cdc4,
+  'tile-2': rgb(238, 228, 218),
+  'tile-4': rgb(235, 216, 182),
+  'tile-8': rgb(241, 173, 114),
+  'tile-16': rgb(245, 142, 90),
+  'tile-32': rgb(245, 119, 89),
+  'tile-64': rgb(244, 89, 53),
+  'tile-128': rgb(242, 206, 84),
+  'tile-256': rgb(244, 203, 69),
+  'tile-512': #edc850,
+  'tile-1024': #edc53f,
+  'tile-2048': #edc22e,
+);
+$theme-dark: (
+  'text-primary': #ad9c8a,
+  'text-secondary': #897967,
+  'text-tile': #14060f,
+  'brand': #ad9c8a,
+  'brand-bg': #2e281f,
+  'message-bg': #261c12ba,
+  'background': #0f0d05,
+  'surface': #2e281f,
+  'board-bg': #877464,
+  'tile-bg': #675542,
+  'score-bg': #272416,
+  'tile-2': rgb(38, 28, 18),
+  'tile-4': rgb(72, 53, 20),
+  'tile-8': rgb(139, 72, 14),
+  'tile-16': rgb(164, 61, 10),
+  'tile-32': rgb(169, 42, 10),
+  'tile-64': rgb(203, 46, 11),
+  'tile-128': rgb(171, 134, 13),
+  'tile-256': rgb(188, 147, 11),
+  'tile-512': #af8b12,
+  'tile-1024': #bf9712,
+  'tile-2048': #d3a612,
+);
+
+:root {
+  /* Typography */
+  --font-body: 'Rubik', Arial, system-ui, sans-serif;
+  --font-size-base: 1rem;
+  --font-weight-bold: 700;
+
+  /* Spacing & Layout */
+  --radius: 12px;
+  --spacing-base: 1rem;
+  --spacing-gap: 1rem;
+  --height-base: 1rem;
+
+  @each $key, $val in $theme-light {
+    --color-#{$key}: #{$val};
+  }
+}
+
+[data-theme='dark'] {
+  @each $key, $val in $theme-dark {
+    --color-#{$key}: #{$val};
+  }
+}

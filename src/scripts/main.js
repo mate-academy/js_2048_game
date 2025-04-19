@@ -1,7 +1,5 @@
-'use strict';
+import { initEvents } from './ui/events.js';
+import { startGame } from './core/gameManager.js';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
-
-// Write your code here
+startGame();
+initEvents();

@@ -1,0 +1,22 @@
+@use '../base/variables';
+@use '../utilities/helpers';
+
+.footer {
+  .credits {
+    opacity: 0.5;
+    font-size: 12px;
+    font-weight: 400;
+    color: helpers.color(text-primary);
+    text-align: center;
+
+    a {
+      color: helpers.color(text-primary);
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        color: helpers.tile(32);
+      }
+    }
+  }
+}

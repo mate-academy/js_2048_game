@@ -1,0 +1,28 @@
+@use '../base/variables';
+@use '../utilities/mixins';
+@use '../utilities/helpers';
+
+.stats {
+  @include mixins.flex(row);
+
+  gap: variables.$gap;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 500;
+
+  &__label {
+    @include mixins.flex(column);
+
+    background: helpers.color(score-bg);
+    height: 52px;
+    min-width: 90px;
+    padding: 0 variables.$padding;
+    border-radius: variables.$radius;
+    color: helpers.color(text-primary);
+
+    span {
+      font-size: variables.$base-font-size * 1.25;
+      font-weight: 700;
+    }
+  }
+}

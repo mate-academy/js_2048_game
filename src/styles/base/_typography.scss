@@ -1,0 +1,9 @@
+@use '../base/variables';
+@use '../utilities/helpers';
+
+body {
+  font-family: variables.$font-family;
+  font-size: 24px;
+  font-weight: variables.$tile-weight;
+  color: helpers.color(font);
+}

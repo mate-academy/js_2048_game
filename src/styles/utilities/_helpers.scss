@@ -1,0 +1,19 @@
+@use '../base/variables';
+@use '../utilities/mixins';
+
+%tile-base {
+  width: 75px;
+  height: 75px;
+  border-radius: variables.$radius;
+  font-weight: variables.$tile-weight;
+  user-select: none;
+  font-size: clamp(1rem, calc(2.5rem - 0.3rem * var(--digits, 1)), 2rem);
+}
+
+@function color($key) {
+  @return var(--color-#{$key});
+}
+
+@function tile($value) {
+  @return var(--color-tile-#{$value});
+}

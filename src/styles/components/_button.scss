@@ -1,0 +1,66 @@
+@use '../base/variables';
+@use '../utilities/helpers';
+
+.button {
+  border: none;
+  background: transparent;
+  border-radius: variables.$radius;
+  cursor: pointer;
+  font-family: variables.$font-family;
+
+  &--start {
+    color: #f9f6f2;
+    background: helpers.color(board-bg);
+    font-size: 16px;
+    padding: 0 variables.$padding;
+    font-weight: 400;
+    height: variables.$height * 2.5;
+  }
+
+  &:has(.brand) {
+    padding: variables.$padding * 0.25 variables.$padding * 0.5;
+    margin: 0 variables.$padding * -0.5;
+    text-decoration: none;
+    display: block;
+
+    &:hover {
+      background-color: helpers.color(brand-bg);
+      color: white;
+    }
+  }
+
+  .brand {
+    color: helpers.color(brand);
+    font-size: 3rem;
+    line-height: 1;
+    margin: 0;
+  }
+
+  &--theme {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    width: 3rem;
+    height: 3rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-primary);
+    transition: color 0.3s ease;
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        width: 24px;
+        height: 24px;
+        transition: stroke 0.3s ease;
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+@use '../base/variables';
+@use '../utilities/mixins';
+@use '../utilities/helpers';
+
+.popup {
+  @include mixins.flex(column);
+
+  position: absolute;
+  inset: 0;
+  background: helpers.color(message-bg);
+  gap: variables.$gap;
+  opacity: 1;
+  transition: 0.3s all;
+
+  &__text {
+    margin: 0;
+    color: helpers.color(brand);
+    text-align: center;
+    border-radius: variables.$radius;
+    font-size: variables.$base-font-size * 1.25;
+  }
+
+  &__button {
+    color: #f9f6f2;
+    background: helpers.color(board-bg);
+    font-size: 16px;
+    padding: 0 variables.$padding;
+    font-weight: 400;
+    height: variables.$height * 2.5;
+  }
+}
+
+.hidden {
+  pointer-events: none !important;
+  user-select: none !important;
+  opacity: 0 !important;
+}
