@@ -30,10 +30,106 @@ class Game {
     // console.log(initialState);
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    const newBoard = this.board.map((row) => {
+      let filtered = row.filter((num) => num !== 0);
+
+      for (let i = 0; i < filtered.length - 1; i++) {
+        if (filtered[i] === filtered[i + 1]) {
+          filtered[i] *= 2;
+          filtered[i + 1] = 0;
+          this.score += filtered[i];
+        }
+      }
+      filtered = filtered.filter((num) => num !== 0);
+
+      while (filtered.length < this.size) {
+        filtered.push(0);
+      }
+
+      return filtered;
+    });
+
+    this.board = newBoard;
+  }
+
+  moveRight() {
+    const newBoard = this.board.map((row) => {
+      const reversed = [...row].reverse();
+      let filtered = reversed.filter((num) => num !== 0);
+
+      for (let i = 0; i < filtered.length - 1; i++) {
+        if (filtered[i] === filtered[i + 1]) {
+          filtered[i] *= 2;
+          filtered[i + 1] = 0;
+          this.score += filtered[i];
+        }
+      }
+      filtered = filtered.filter((num) => num !== 0);
+
+      while (filtered.length < this.size) {
+        filtered.push(0);
+      }
+
+      return filtered.reverse();
+    });
+
+    this.board = newBoard;
+  }
+
+  moveUp() {
+    const newBoard = [];
+
+    for (let col = 0; col < this.size; col++) {
+      const column = this.board.map((row) => row[col]);
+      let filtered = column.filter((num) => num !== 0);
+
+      for (let i = 0; i < filtered.length - 1; i++) {
+        if (filtered[i] === filtered[i + 1]) {
+          filtered[i] *= 2;
+          filtered[i + 1] = 0;
+        }
+      }
+      filtered = filtered.filter((num) => num !== 0);
+
+      while (filtered.length < this.size) {
+        filtered.push(0);
+      }
+
+      filtered.forEach((num, row) => {
+        if (!newBoard[row]) {
+          newBoard[row] = [];
+          newBoard[row][col] = num;
+        }
+      });
+    }
+    this.board = newBoard;
+  }
+
+  moveDown() {
+    const newBoard = [];
+
+    for (let col = 0; col < this.size; col++) {
+      const column = this.board.map((row) => row[col]).reverse();
+      let filtered = column.filter((num) => num !== 0);
+
+      for (let i = 0; i < filtered.length - 1; i++) {
+        if (filtered[i] === filtered[i + 1]) {
+          filtered[i] *= 2;
+          filtered[i + 1] = 0;
+        }
+      }
+      filtered = filtered.reverse();
+
+      filtered.forEach((num, row) => {
+        if (!newBoard[row]) {
+          newBoard[row] = [];
+          newBoard[row][col] = num;
+        }
+      });
+    }
+    this.board = newBoard;
+  }
 
   /**
    * @returns {number}
