@@ -10,7 +10,12 @@ body {
   font-weight: 900;
 }
 
+.field-row {
+  position: relative;
+}
+
 .field-cell {
+  // position: absolute;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
@@ -20,6 +25,22 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+
+  transition: transform 0.5s ease;
+
+  // position: absolute; /* ключ для анімації переміщення */
+  // width: 75px;
+  // height: 75px;
+  // background-color: #d6cdc4;
+  // border-radius: 5px;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  // font-size: 24px;
+  // font-weight: bold;
+  // color: #776e65;
+
+  // transition: transform 0.2s ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -76,9 +97,22 @@ body {
 }
 
 .game-field {
+  position: relative;
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+
+  // position: relative;
+  // width: 320px;
+  // height: 320px;
+  // background-color: #bbada0;
+  // padding: 5px;
+  // display: grid;
+  // grid-template-columns: repeat(4, 75px);
+  // grid-template-rows: repeat(4, 75px);
+  // gap: 5px;
+  // margin: 0 auto;
+  // border-radius: 10px;
 }
 
 .game-header {
