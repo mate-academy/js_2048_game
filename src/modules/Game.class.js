@@ -119,6 +119,11 @@ class Game {
           filtered[i + 1] = 0;
         }
       }
+      filtered = filtered.filter((num) => num !== 0);
+
+      while (filtered.length < this.size) {
+        filtered.push(0);
+      }
       filtered = filtered.reverse();
 
       filtered.forEach((num, row) => {
@@ -134,7 +139,9 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
@@ -153,7 +160,15 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    if (this.board.flat().includes(2048)) {
+      this.status = 'win';
+    } else if (!this.canMove()) {
+      this.status = 'lose';
+    }
+
+    return this.status;
+  }
 
   /**
    * Starts the game.
@@ -169,7 +184,9 @@ class Game {
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.start();
+  }
 
   // Add your own methods here
   createEmptyBoard() {
@@ -186,6 +203,8 @@ class Game {
         }
       }
     }
+
+    return emptyCells;
   }
 
   addRandomTile() {
@@ -200,6 +219,28 @@ class Game {
     const value = Math.random() < 0.9 ? 2 : 4;
 
     this.board[row][col] = value;
+  }
+
+  canMove() {
+    for (let row = 0; row < this.size; row++) {
+      for (let col = 0; col < this.size; col++) {
+        const current = this.board[row][col];
+
+        if (current === 0) {
+          return true;
+        }
+
+        if (col < this.size - 1 && current === this.board[row][col + 1]) {
+          return true;
+        }
+
+        if (row < this.size - 1 && current === this.board[row + 1][col]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }
 
