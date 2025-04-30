@@ -1,7 +1,15 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+import Game from '../modules/Game.class.js';
 
-// Write your code here
+const game = new Game();
+
+const startButton = document.querySelector('.start');
+
+startButton.addEventListener('click', () => {
+  if (!game.hasStarted) {
+    game.start();
+  } else {
+    game.restart();
+  }
+});
