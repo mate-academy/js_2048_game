@@ -31,6 +31,7 @@ class Game {
   }
 
   moveLeft() {
+    let moved = false;
     const newBoard = this.board.map((row) => {
       let filtered = row.filter((num) => num !== 0);
 
@@ -39,6 +40,7 @@ class Game {
           filtered[i] *= 2;
           filtered[i + 1] = 0;
           this.score += filtered[i];
+          moved = true;
         }
       }
       filtered = filtered.filter((num) => num !== 0);
@@ -47,13 +49,23 @@ class Game {
         filtered.push(0);
       }
 
+      if (filtered.join(',') !== row.join(',')) {
+        moved = true;
+      }
+
       return filtered;
     });
 
-    this.board = newBoard;
+    if (moved) {
+      this.board = newBoard;
+      this.addRandomTile();
+    }
+
+    return moved;
   }
 
   moveRight() {
+    let moved = false;
     const newBoard = this.board.map((row) => {
       const reversed = [...row].reverse();
       let filtered = reversed.filter((num) => num !== 0);
@@ -63,6 +75,7 @@ class Game {
           filtered[i] *= 2;
           filtered[i + 1] = 0;
           this.score += filtered[i];
+          moved = true;
         }
       }
       filtered = filtered.filter((num) => num !== 0);
@@ -71,14 +84,27 @@ class Game {
         filtered.push(0);
       }
 
-      return filtered.reverse();
+      const result = filtered.reverse();
+
+      if (result.join(',') !== row.join(',')) {
+        moved = true;
+      }
+
+      return result;
     });
 
-    this.board = newBoard;
+    if (moved) {
+      this.board = newBoard;
+      this.addRandomTile();
+    }
+
+    return moved;
   }
 
   moveUp() {
-    const newBoard = [];
+    let moved = false;
+    const emptyRow = Array(this.size).fill(0);
+    const newBoard = Array.from({ length: this.size }, () => [...emptyRow]);
 
     for (let col = 0; col < this.size; col++) {
       const column = this.board.map((row) => row[col]);
@@ -88,6 +114,8 @@ class Game {
         if (filtered[i] === filtered[i + 1]) {
           filtered[i] *= 2;
           filtered[i + 1] = 0;
+          this.score += filtered[i];
+          moved = true;
         }
       }
       filtered = filtered.filter((num) => num !== 0);
@@ -96,18 +124,26 @@ class Game {
         filtered.push(0);
       }
 
-      filtered.forEach((num, row) => {
-        if (!newBoard[row]) {
-          newBoard[row] = [];
-          newBoard[row][col] = num;
+      for (let row = 0; row < this.size; row++) {
+        if (this.board[row][col] !== filtered[row]) {
+          moved = true;
         }
-      });
+        newBoard[row][col] = filtered[row];
+      }
     }
-    this.board = newBoard;
+
+    if (moved) {
+      this.board = newBoard;
+      this.addRandomTile();
+    }
+
+    return moved;
   }
 
   moveDown() {
-    const newBoard = [];
+    let moved = false;
+    const emptyRow = Array(this.size).fill(0);
+    const newBoard = Array.from({ length: this.size }, () => [...emptyRow]);
 
     for (let col = 0; col < this.size; col++) {
       const column = this.board.map((row) => row[col]).reverse();
@@ -117,6 +153,8 @@ class Game {
         if (filtered[i] === filtered[i + 1]) {
           filtered[i] *= 2;
           filtered[i + 1] = 0;
+          this.score += filtered[i];
+          moved = true;
         }
       }
       filtered = filtered.filter((num) => num !== 0);
@@ -126,14 +164,20 @@ class Game {
       }
       filtered = filtered.reverse();
 
-      filtered.forEach((num, row) => {
-        if (!newBoard[row]) {
-          newBoard[row] = [];
-          newBoard[row][col] = num;
+      for (let row = 0; row < this.size; row++) {
+        if (this.board[row][col] !== filtered[row]) {
+          moved = true;
         }
-      });
+        newBoard[row][col] = filtered[row];
+      }
     }
-    this.board = newBoard;
+
+    if (moved) {
+      this.board = newBoard;
+      this.addRandomTile();
+    }
+
+    return moved;
   }
 
   /**
