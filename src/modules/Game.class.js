@@ -1,68 +1,204 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
-class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
+export class Game {
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.field = initialState || [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.score = 0;
+    this.status = 'idle';
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  getState() {
+    return this.field;
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  start() {
+    this.status = 'playing';
+    this.addRandomCube();
+    this.addRandomCube();
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  addRandomCube() {
+    const emptyCells = [];
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.field[row][col] === 0) {
+          emptyCells.push({ row, col });
+        }
+      }
+    }
 
-  // Add your own methods here
+    if (emptyCells.length !== 0) {
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+      const { row, col } = emptyCells[randomIndex];
+
+      const randomValue = Math.random() < 0.9 ? 2 : 4;
+
+      this.field[row][col] = randomValue;
+    }
+  }
+
+  restart() {
+    this.field = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.score = 0;
+    this.status = 'idle';
+  }
+
+  moveLeft() {
+    let fieldChanged = false;
+
+    for (let row = 0; row < 4; row++) {
+      const newRow = this.rowSlideCombine(this.field[row]);
+
+      if (!this.arraysAreEqual(newRow, this.field[row])) {
+        this.field[row] = newRow;
+        fieldChanged = true;
+      }
+    }
+
+    if (fieldChanged) {
+      this.addRandomCube();
+    }
+
+    this.checkStatus();
+  }
+
+  moveRight() {
+    let fieldChanged = false;
+
+    for (let row = 0; row < 4; row++) {
+      const reversedRow = [...this.field[row]].reverse();
+
+      const newRow = this.rowSlideCombine(reversedRow).reverse();
+
+      if (!this.arraysAreEqual(newRow, this.field[row])) {
+        this.field[row] = newRow;
+        fieldChanged = true;
+      }
+    }
+
+    if (fieldChanged) {
+      this.addRandomCube();
+    }
+
+    this.checkStatus();
+  }
+
+  moveUp() {
+    let fieldChanged = false;
+
+    for (let col = 0; col < 4; col++) {
+      const column = this.field.map((row) => row[col]);
+      const newColumn = this.rowSlideCombine(column);
+
+      for (let row = 0; row < 4; row++) {
+        if (this.field[row][col] !== newColumn[row]) {
+          this.field[row][col] = newColumn[row];
+          fieldChanged = true;
+        }
+      }
+    }
+
+    if (fieldChanged) {
+      this.addRandomCube();
+    }
+
+    this.checkStatus();
+  }
+
+  moveDown() {
+    let fieldChanged = false;
+
+    for (let col = 0; col < 4; col++) {
+      const reversedColumn = this.field.map((row) => row[col]).reverse();
+      const newColumn = this.rowSlideCombine(reversedColumn).reverse();
+
+      for (let row = 0; row < 4; row++) {
+        if (this.field[row][col] !== newColumn[row]) {
+          this.field[row][col] = newColumn[row];
+          fieldChanged = true;
+        }
+      }
+    }
+
+    if (fieldChanged) {
+      this.addRandomCube();
+    }
+
+    this.checkStatus();
+  }
+
+  rowSlideCombine(row) {
+    const nonZeroCubes = row.filter((el) => el !== 0);
+
+    for (let i = 0; i < nonZeroCubes.length - 1; i++) {
+      if (nonZeroCubes[i] === nonZeroCubes[i + 1]) {
+        nonZeroCubes[i] *= 2;
+        this.score += nonZeroCubes[i];
+        nonZeroCubes[i + 1] = 0;
+      }
+    }
+
+    const newRow = nonZeroCubes.filter((el) => el !== 0);
+
+    while (newRow.length < 4) {
+      newRow.push(0);
+    }
+
+    return newRow;
+  }
+
+  arraysAreEqual(a, b) {
+    return a.every((value, index) => value === b[index]);
+  }
+
+  checkStatus() {
+    for (const row of this.field) {
+      for (const col of row) {
+        if (col === 2048) {
+          this.status = 'win';
+
+          return;
+        }
+      }
+    }
+
+    for (const row of this.field) {
+      if (row.includes(0)) {
+        return;
+      }
+    }
+
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        if (this.field[row][col] === this.field[row][col + 1]) {
+          return;
+        }
+
+        if (this.field[row][col] === this.field[row + 1][col]) {
+          return;
+        }
+      }
+    }
+
+    this.status = 'lose';
+  }
 }
-
-module.exports = Game;
