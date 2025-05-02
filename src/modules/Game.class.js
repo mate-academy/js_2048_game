@@ -1,68 +1,179 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.size = 4;
+    this.score = 0;
+    this.status = 'idle';
+
+    // Initialize board
+    this.board =
+      initialState ||
+      Array(this.size)
+        .fill()
+        .map(() => Array(this.size).fill(0));
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  // Get current game state
+  getState() {
+    return this.board;
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  // Get current score
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  // Get current game status
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  // Start new game
+  start() {
+    this.status = 'playing';
+    this.addNewNumber();
+    this.addNewNumber();
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  // Restart game
+  restart() {
+    this.board = Array(this.size)
+      .fill()
+      .map(() => Array(this.size).fill(0));
+    this.score = 0;
+    this.status = 'idle';
+    this.start();
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  // Add new number (2 or 4) to random empty cell
+  addNewNumber() {
+    const emptyCells = [];
 
-  // Add your own methods here
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        if (this.board[i][j] === 0) {
+          emptyCells.push({ x: i, y: j });
+        }
+      }
+    }
+
+    if (emptyCells.length > 0) {
+      const randomCell =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+      // 10% chance for 4, 90% chance for 2
+      this.board[randomCell.x][randomCell.y] = Math.random() < 0.1 ? 4 : 2;
+    }
+  }
+
+  // Check if game is over
+  checkGameOver() {
+    // Check for 2048
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        if (this.board[i][j] === 2048) {
+          this.status = 'win';
+
+          return;
+        }
+      }
+    }
+
+    // Check for empty cells
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        if (this.board[i][j] === 0) {
+          return;
+        }
+      }
+    }
+
+    // Check for possible merges
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        const current = this.board[i][j];
+
+        if (
+          (i < this.size - 1 && this.board[i + 1][j] === current) ||
+          (j < this.size - 1 && this.board[i][j + 1] === current)
+        ) {
+          return;
+        }
+      }
+    }
+
+    this.status = 'lose';
+  }
+
+  // Move functions
+  moveLeft() {
+    let moved = false;
+
+    for (let i = 0; i < this.size; i++) {
+      const row = this.board[i].filter((cell) => cell !== 0);
+      const merged = [];
+
+      for (let j = 0; j < row.length - 1; j++) {
+        if (row[j] === row[j + 1]) {
+          row[j] *= 2;
+          this.score += row[j];
+          row.splice(j + 1, 1);
+          merged.push(j);
+          moved = true;
+        }
+      }
+
+      const newRow = row.concat(Array(this.size - row.length).fill(0));
+
+      if (JSON.stringify(this.board[i]) !== JSON.stringify(newRow)) {
+        moved = true;
+      }
+
+      this.board[i] = newRow;
+    }
+
+    if (moved) {
+      this.addNewNumber();
+      this.checkGameOver();
+    }
+
+    return moved;
+  }
+
+  moveRight() {
+    this.board = this.board.map((row) => row.reverse());
+
+    const moved = this.moveLeft();
+
+    this.board = this.board.map((row) => row.reverse());
+
+    return moved;
+  }
+
+  moveUp() {
+    this.board = this.transpose(this.board);
+
+    const moved = this.moveLeft();
+
+    this.board = this.transpose(this.board);
+
+    return moved;
+  }
+
+  moveDown() {
+    this.board = this.transpose(this.board);
+
+    const moved = this.moveRight();
+
+    this.board = this.transpose(this.board);
+
+    return moved;
+  }
+
+  transpose(matrix) {
+    return matrix[0].map((_, i) => matrix.map((row) => row[i]));
+  }
 }
 
-module.exports = Game;
+export default Game;
