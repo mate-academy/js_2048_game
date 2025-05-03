@@ -229,6 +229,7 @@ class Game {
     this.status = 'playing';
     this.board = this.createEmptyBoard();
     this.spawnTile();
+    this.spawnTile();
   }
 
   /**
