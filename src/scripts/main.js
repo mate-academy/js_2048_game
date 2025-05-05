@@ -1,92 +1,102 @@
-import { Game } from '../modules/Game.class';
+'use strict';
 
+const Game = require('../modules/Game.class');
 const game = new Game();
 
-game.start();
+const score = document.querySelector('.game-score');
+const button = document.querySelector('.button');
+const messageWin = document.querySelector('.message-win');
+const messageLose = document.querySelector('.message-lose');
+const messageStart = document.querySelector('.message-start');
 
-const startButton = document.querySelector('.button');
+const updateScore = () => {
+  score.textContent = game.getScore();
+};
+const updateStatus = () => {
+  if (game.getStatus() === Game.statuses.LOSE) {
+    messageLose.classList.remove('hidden');
+  }
 
-startButton.addEventListener('click', () => {
-  game.restart();
-  game.start();
-  renderGame();
+  if (game.getStatus() === Game.statuses.WIN) {
+    messageWin.classList.remove('hidden');
+  }
+};
 
-  startButton.classList.remove('start');
-  startButton.classList.add('restart');
-  startButton.textContent = 'Restart';
+function updateBoard() {
+  const table = document.querySelector('.game-field');
 
-  hideMessages();
-});
+  table.innerHTML = '';
 
-document.addEventListener('keydown', handleKeyDown);
+  game.getState().forEach((row) => {
+    const newRow = document.createElement('tr');
 
-function renderGame() {
-  const cells = document.querySelectorAll('.field-cell');
-  const state = game.getState();
+    newRow.classList.add('game-field');
 
-  let cellIndex = 0;
+    row.forEach((cell) => {
+      const newCell = document.createElement('td');
 
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
-      const cell = cells[cellIndex];
+      newCell.classList.add('field-cell');
 
-      cell.className = 'field-cell';
-
-      const value = state[row][col];
-
-      if (value !== 0) {
-        cell.classList.add(`field-cell--${value}`);
-        cell.textContent = value;
-
-        cell.classList.add('field-cell--appear');
-
-        setTimeout(() => {
-          cell.classList.remove('field-cell--appear');
-        }, 200);
-      } else {
-        cell.textContent = '';
+      if (cell > 0) {
+        newCell.classList.add(`field-cell--${cell}`);
+        newCell.textContent = cell;
       }
 
-      cellIndex++;
-    }
-  }
+      newRow.append(newCell);
+    });
 
-  document.querySelector('.game-score').textContent = game.getScore();
-
-  if (game.status === 'win') {
-    document.querySelector('.message-win').classList.remove('hidden');
-  } else if (game.status === 'lose') {
-    document.querySelector('.message-lose').classList.remove('hidden');
-  }
+    table.append(newRow);
+  });
 }
 
-function hideMessages() {
-  document.querySelector('.message-start').classList.add('hidden');
-  document.querySelector('.message-win').classList.add('hidden');
-  document.querySelector('.message-lose').classList.add('hidden');
-}
+button.addEventListener('click', () => {
+  if (button.classList.contains('start')) {
+    game.start();
+    updateScore();
+    updateBoard();
 
-function handleKeyDown(ev) {
-  if (game.status !== 'playing') {
-    return;
+    button.classList.remove('start');
+    button.classList.add('restart');
+    button.textContent = 'Restart';
+
+    messageStart.classList.add('hidden');
+  } else {
+    game.restart();
+    updateScore();
+    updateBoard();
+
+    button.classList.remove('restart');
+    button.classList.add('start');
+    button.textContent = 'Start';
+
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
+    messageStart.classList.remove('hidden');
   }
+});
 
-  switch (ev.key) {
-    case 'ArrowLeft':
-      game.moveLeft();
-      break;
-    case 'ArrowRight':
-      game.moveRight();
-      break;
+document.addEventListener('keydown', (e) => {
+  e.preventDefault();
+
+  switch (e.key) {
     case 'ArrowUp':
       game.moveUp();
       break;
+
     case 'ArrowDown':
       game.moveDown();
       break;
-    default:
+
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+
+    case 'ArrowRight':
+      game.moveRight();
       break;
   }
 
-  renderGame();
-}
+  updateBoard();
+  updateScore();
+  updateStatus();
+});

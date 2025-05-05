@@ -1,23 +1,165 @@
 'use strict';
 
-export class Game {
-  constructor(initialState) {
-    this.field = initialState || [
+class Game {
+  static statuses = {
+    IDLE: 'idle',
+    PLAYING: 'playing',
+    WIN: 'win',
+    LOSE: 'lose',
+  };
+
+  constructor(
+    initialState = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-    ];
+    ],
+  ) {
+    this.size = 4;
     this.score = 0;
-    this.status = 'idle';
+    this.status = Game.statuses.IDLE;
+    this.initialState = initialState;
+    this.state = initialState.map((row) => [...row]);
   }
 
-  getState() {
-    return this.field;
+  merge(line) {
+    for (let i = 0; i < this.size - 1; i++) {
+      if (line[i] !== 0 && line[i] === line[i + 1]) {
+        line[i] *= 2;
+        this.updateScore(line[i]);
+        line[i + 1] = 0;
+      }
+    }
+
+    return this.compress(line);
+  }
+
+  compress(line) {
+    return line
+      .filter((value) => value !== 0)
+      .concat(Array(this.size).fill(0))
+      .slice(0, this.size);
+  }
+
+  transpose(state) {
+    return state[0].map((_, index) => state.map((row) => row[index]));
+  }
+
+  areBoardMoves(prev, current) {
+    return prev.every((row, r) => {
+      return row.every((cell, c) => cell === current[r][c]);
+    });
+  }
+
+  moveLeft() {
+    if (this.status !== Game.statuses.PLAYING) {
+      return;
+    }
+
+    const prev = this.state.map((r) => [...r]);
+
+    this.state = this.state.map((line) => this.merge(this.compress(line)));
+
+    if (!this.areBoardMoves(prev, this.state)) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
+  }
+
+  moveRight() {
+    if (this.status !== Game.statuses.PLAYING) {
+      return;
+    }
+
+    const prev = this.state.map((r) => [...r]);
+
+    this.state = this.state.map((line) => {
+      const reversed = line.slice().reverse();
+
+      return this.merge(this.compress(reversed)).reverse();
+    });
+
+    if (!this.areBoardMoves(prev, this.state)) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
+  }
+
+  moveUp() {
+    if (this.status !== Game.statuses.PLAYING) {
+      return;
+    }
+
+    const prev = this.state.map((r) => [...r]);
+    let transposed = this.transpose(this.state);
+
+    transposed = transposed.map((line) => this.merge(this.compress(line)));
+    this.state = this.transpose(transposed);
+
+    if (!this.areBoardMoves(prev, this.state)) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
+  }
+
+  moveDown() {
+    if (this.status !== Game.statuses.PLAYING) {
+      return;
+    }
+
+    const prev = this.state.map((r) => [...r]);
+    let transposed = this.transpose(this.state);
+
+    transposed = transposed.map((line) => {
+      return this.merge(this.compress(line.reverse()));
+    });
+
+    this.state = this.transpose(transposed).reverse();
+
+    if (!this.areBoardMoves(prev, this.state)) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
+  }
+
+  updateScore(value) {
+    this.score += value;
+  }
+
+  updateStatus() {
+    for (let row = 0; row < this.size; row++) {
+      for (let cell = 0; cell < this.size; cell++) {
+        const currentValue = this.state[row][cell];
+
+        if (currentValue === 2048) {
+          this.status = Game.statuses.WIN;
+
+          return;
+        }
+
+        if (currentValue === 0) {
+          return;
+        }
+
+        if (
+          (row < this.size - 1 && currentValue === this.state[row + 1][cell]) ||
+          (cell < this.size - 1 && currentValue === this.state[row][cell + 1])
+        ) {
+          return;
+        }
+      }
+    }
+
+    this.status = Game.statuses.LOSE;
   }
 
   getScore() {
     return this.score;
+  }
+
+  getState() {
+    return this.state;
   }
 
   getStatus() {
@@ -25,180 +167,37 @@ export class Game {
   }
 
   start() {
-    this.status = 'playing';
-    this.addRandomCube();
-    this.addRandomCube();
+    this.addRandomTile();
+    this.addRandomTile();
+    this.status = Game.statuses.PLAYING;
   }
 
-  addRandomCube() {
+  addRandomTile() {
     const emptyCells = [];
 
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        if (this.field[row][col] === 0) {
-          emptyCells.push({ row, col });
+    this.state.forEach((rows, rowIndex) => {
+      rows.forEach((col, cellIndex) => {
+        if (col === 0) {
+          emptyCells.push({ row: rowIndex, cell: cellIndex });
         }
-      }
+      });
+    });
+
+    if (emptyCells.length === 0) {
+      return;
     }
 
-    if (emptyCells.length !== 0) {
-      const randomIndex = Math.floor(Math.random() * emptyCells.length);
-      const { row, col } = emptyCells[randomIndex];
+    const { row, cell } =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-      const randomValue = Math.random() < 0.9 ? 2 : 4;
-
-      this.field[row][col] = randomValue;
-    }
+    this.state[row][cell] = Math.random() < 0.9 ? 2 : 4;
   }
 
   restart() {
-    this.field = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.state = this.initialState.map((row) => [...row]);
     this.score = 0;
-    this.status = 'idle';
-  }
-
-  moveLeft() {
-    let fieldChanged = false;
-
-    for (let row = 0; row < 4; row++) {
-      const newRow = this.rowSlideCombine(this.field[row]);
-
-      if (!this.arraysAreEqual(newRow, this.field[row])) {
-        this.field[row] = newRow;
-        fieldChanged = true;
-      }
-    }
-
-    if (fieldChanged) {
-      this.addRandomCube();
-    }
-
-    this.checkStatus();
-  }
-
-  moveRight() {
-    let fieldChanged = false;
-
-    for (let row = 0; row < 4; row++) {
-      const reversedRow = [...this.field[row]].reverse();
-
-      const newRow = this.rowSlideCombine(reversedRow).reverse();
-
-      if (!this.arraysAreEqual(newRow, this.field[row])) {
-        this.field[row] = newRow;
-        fieldChanged = true;
-      }
-    }
-
-    if (fieldChanged) {
-      this.addRandomCube();
-    }
-
-    this.checkStatus();
-  }
-
-  moveUp() {
-    let fieldChanged = false;
-
-    for (let col = 0; col < 4; col++) {
-      const column = this.field.map((row) => row[col]);
-      const newColumn = this.rowSlideCombine(column);
-
-      for (let row = 0; row < 4; row++) {
-        if (this.field[row][col] !== newColumn[row]) {
-          this.field[row][col] = newColumn[row];
-          fieldChanged = true;
-        }
-      }
-    }
-
-    if (fieldChanged) {
-      this.addRandomCube();
-    }
-
-    this.checkStatus();
-  }
-
-  moveDown() {
-    let fieldChanged = false;
-
-    for (let col = 0; col < 4; col++) {
-      const reversedColumn = this.field.map((row) => row[col]).reverse();
-      const newColumn = this.rowSlideCombine(reversedColumn).reverse();
-
-      for (let row = 0; row < 4; row++) {
-        if (this.field[row][col] !== newColumn[row]) {
-          this.field[row][col] = newColumn[row];
-          fieldChanged = true;
-        }
-      }
-    }
-
-    if (fieldChanged) {
-      this.addRandomCube();
-    }
-
-    this.checkStatus();
-  }
-
-  rowSlideCombine(row) {
-    const nonZeroCubes = row.filter((el) => el !== 0);
-
-    for (let i = 0; i < nonZeroCubes.length - 1; i++) {
-      if (nonZeroCubes[i] === nonZeroCubes[i + 1]) {
-        nonZeroCubes[i] *= 2;
-        this.score += nonZeroCubes[i];
-        nonZeroCubes[i + 1] = 0;
-      }
-    }
-
-    const newRow = nonZeroCubes.filter((el) => el !== 0);
-
-    while (newRow.length < 4) {
-      newRow.push(0);
-    }
-
-    return newRow;
-  }
-
-  arraysAreEqual(a, b) {
-    return a.every((value, index) => value === b[index]);
-  }
-
-  checkStatus() {
-    for (const row of this.field) {
-      for (const col of row) {
-        if (col === 2048) {
-          this.status = 'win';
-
-          return;
-        }
-      }
-    }
-
-    for (const row of this.field) {
-      if (row.includes(0)) {
-        return;
-      }
-    }
-
-    for (let row = 0; row < 3; row++) {
-      for (let col = 0; col < 3; col++) {
-        if (this.field[row][col] === this.field[row][col + 1]) {
-          return;
-        }
-
-        if (this.field[row][col] === this.field[row + 1][col]) {
-          return;
-        }
-      }
-    }
-
-    this.status = 'lose';
+    this.status = Game.statuses.IDLE;
   }
 }
+
+module.exports = Game;
