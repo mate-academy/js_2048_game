@@ -20,27 +20,27 @@ describe('2048 game UI', () => {
   });
 
   it('should show the score shuffling to the left and up only', () => {
-    cy.shuffleBoxes('{leftArrow}', '{upArrow}', 3);
+    cy.shuffleBoxes('{leftArrow}', '{upArrow}', 4);
     cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
   });
 
   it('should show the score shuffling to the right and up only', () => {
-    cy.shuffleBoxes('{rightArrow}', '{upArrow}', 3);
+    cy.shuffleBoxes('{rightArrow}', '{upArrow}', 4);
     cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
   });
 
   it('should show the score shuffling to the right and down only', () => {
-    cy.shuffleBoxes('{rightArrow}', '{downArrow}', 3);
+    cy.shuffleBoxes('{rightArrow}', '{downArrow}', 4);
     cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
   });
 
   it('should show the score shuffling to the left and down only', () => {
-    cy.shuffleBoxes('{leftArrow}', '{downArrow}', 3);
+    cy.shuffleBoxes('{leftArrow}', '{downArrow}', 4);
     cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
   });
 
   it('should reset the score', () => {
-    cy.shuffleBoxes('{leftArrow}', '{downArrow}', 3);
+    cy.shuffleBoxes('{leftArrow}', '{downArrow}', 4);
     cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
     cy.get('.button.restart').click();
     cy.get('.game-score').should('have.value', '');
