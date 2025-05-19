@@ -1,3 +1,5 @@
+$text-color: #f9f6f2;
+
 body {
   margin: 0;
   display: flex;
@@ -11,7 +13,7 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #e1d7ce;
   width: 75px;
   height: 75px;
   border-radius: 5px;
@@ -31,47 +33,47 @@ body {
 
   &--8 {
     background: #f2b179;
-    color: #f9f6f2;
+    color: $text-color;
   }
 
   &--16 {
     background: #f59563;
-    color: #f9f6f2;
+    color: $text-color;
   }
 
   &--32 {
     background: #f67c5f;
-    color: #f9f6f2;
+    color: $text-color;
   }
 
   &--64 {
     background: #f65e3b;
-    color: #f9f6f2;
+    color: $text-color;
   }
 
   &--128 {
     background: #edcf72;
-    color: #f9f6f2;
+    color: $text-color;
   }
 
   &--256 {
     background: #edcc61;
-    color: #f9f6f2;
+    color: $text-color;
   }
 
   &--512 {
     background: #edc850;
-    color: #f9f6f2;
+    color: $text-color;
   }
 
   &--1024 {
     background: #edc53f;
-    color: #f9f6f2;
+    color: $text-color;
   }
 
   &--2048 {
     background: #edc22e;
-    color: #f9f6f2;
+    color: $text-color;
   }
 }
 
@@ -90,9 +92,9 @@ body {
   box-sizing: border-box;
 }
 
-h1 {
+.game-title {
   background: #edc22e;
-  color: #f9f6f2;
+  color: $text-color;
   width: 75px;
   height: 75px;
   font-size: 24px;
@@ -127,7 +129,7 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: $text-color;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
@@ -135,6 +137,10 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+
+  &:focus-visible {
+    outline: #f8f0d8 auto 1px;
+  }
 }
 
 .start {
@@ -177,8 +183,8 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: #f6c72d;
+  color: $text-color;
 }
 
 .message-container {
