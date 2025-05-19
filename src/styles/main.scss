@@ -1,164 +1,195 @@
+@import './vars';
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: $background-game;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: $background-cell;
+  width: $cell-side;
+  height: $cell-side;
   border-radius: 5px;
-  color: #776e65;
+  color: $cell-text;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
+  @media screen and (min-width: 600px) {
+    width: $cell-side-l;
+    height: $cell-side-l;
+  }
+
   &--2 {
-    background: #eee4da;
+    background: $background-cell--2;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: $background-cell--4;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: $background-cell--8;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: $background-cell--16;
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    background: $background-cell--32;
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    background: $background-cell--64;
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    background: $background-cell--128;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: $background-cell--256;
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    background: $background-cell--512;
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    background: $background-cell--1024;
   }
 
   &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    background: $background-cell--2048;
   }
 }
 
 .game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+  background: $game-field;
+  border-spacing: $gap;
+  border-radius: $gap;
+
+  @media screen and (min-width: 600px) {
+    border-spacing: $gap-l;
+    border-radius: $gap-l;
+  }
 }
 
 .game-header {
   display: flex;
-  width: 100%;
+  width: 283px;
   justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
+  align-items: center;
+  margin: 25px 0;
+  padding: 0 $gap;
   box-sizing: border-box;
+
+  @media screen and (min-width: 600px) {
+    padding: 0 $gap-l;
+    width: 100%;
+  }
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
+  margin: 0;
+  background: $game-name-background;
+  color: $game-name-text;
+  width: $cell-side;
+  height: $cell-side;
   font-size: 24px;
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  margin: 0;
+
+  @media screen and (min-width: 600px) {
+    width: $cell-side-l;
+    height: $cell-side-l;
+  }
 }
 
 .info {
+  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: $info-background;
+  width: $cell-side;
+  height: $cell-side;
   border-radius: 5px;
-  color: #776e65;
+  color: $info-text;
   box-sizing: border-box;
   font-size: 16px;
-  margin: 0 8px 0 0;
+
+  @media screen and (min-width: 600px) {
+    width: $cell-side-l;
+    height: $cell-side-l;
+  }
 }
 
 .controls {
   display: flex;
+  align-items: center;
+  gap: $gap;
+
+  @media screen and (min-width: 600px) {
+    gap: $gap-l;
+  }
 }
 
 .button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: $start-text;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
+  width: $cell-side;
+  height: $cell-side;
+  padding: 0;
 
   transition: 0.25s ease background;
+
+  @media screen and (min-width: 600px) {
+    width: $cell-side-l;
+    height: $cell-side-l;
+  }
 }
 
 .start {
-  background: #1dae28;
+  background: $start-background;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: $start-background-hover;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: $restart-background;
 
   &:hover {
-    background: #f87474;
+    background: $restart-background-hover;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: $bottom-message-background;
+  color: $bottom-message-tex;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
@@ -173,15 +204,75 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
 }
 
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: $message-win-background;
+  color: $message-win-text;
 }
 
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.game-hint {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: $cell-side;
+  height: $cell-side;
+  background-color: $game-hint-background;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: $game-hint-background-hover;
+  }
+
+  @media screen and (min-width: 600px) {
+    width: $cell-side-l;
+    height: $cell-side-l;
+  }
+}
+
+.game-hint-image {
+  width: 120%;
+  height: 120%;
+}
+
+.game-hint-body {
+  display: none;
+  position: absolute;
+  left: 25%;
+  top: 25%;
+  width: 50%;
+  align-items: center;
+  justify-content: center;
+  background-color: $game-hint-body;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 20px;
+
+  @media screen and (min-width: 600px) {
+    font-size: 24px;
+  }
+}
+
+.game-hint-text {
+  @media screen and (min-width: 1024px) {
+    display: none;
+  }
+
+  &--l {
+    display: none;
+
+    @media screen and (min-width: 1024px) {
+      display: flex;
+    }
+  }
+}
+
+.game-hint:hover + .game-hint-body {
+  display: flex;
 }
