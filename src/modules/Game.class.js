@@ -184,7 +184,7 @@ export default class Game {
 
     for (let i = 0; i < this.size; i++) {
       for (let j = 0; j < this.size; j++) {
-        transpose[i][j] = this.board[j][i];
+        transpose[j][i] = this.board[i][j];
       }
     }
     this.board = transpose;
