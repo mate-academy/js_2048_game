@@ -16,6 +16,8 @@ class Game {
       return;
     }
 
+    const prevBoard = this.board.map((row) => [...row]);
+
     for (let i = 0; i < this.size; i++) {
       let row = this.board[i].filter((val) => val !== 0);
       const merged = Array(this.size).fill(false);
@@ -37,7 +39,13 @@ class Game {
       this.board[i] = row;
     }
 
-    this.addRandomTile();
+    const changed = !this.board.every((row, i) =>
+      // eslint-disable-next-line
+      row.every((val, j) => val === prevBoard[i][j]),);
+
+    if (changed) {
+      this.addRandomTile();
+    }
     this.checkGameStatus();
   }
 
@@ -45,6 +53,8 @@ class Game {
     if (this.status !== 'playing') {
       return;
     }
+
+    const prevBoard = this.board.map((row) => [...row]);
 
     for (let i = 0; i < this.size; i++) {
       let row = this.board[i].filter((val) => val !== 0);
@@ -77,7 +87,13 @@ class Game {
       this.board[i] = row;
     }
 
-    this.addRandomTile();
+    const changed = !this.board.every((row, i) =>
+      // eslint-disable-next-line
+      row.every((val, j) => val === prevBoard[i][j]),);
+
+    if (changed) {
+      this.addRandomTile();
+    }
     this.checkGameStatus();
   }
 
@@ -85,6 +101,8 @@ class Game {
     if (this.status !== 'playing') {
       return;
     }
+
+    const prevBoard = this.board.map((row) => [...row]);
 
     for (let col = 0; col < this.size; col++) {
       let column = [];
@@ -117,7 +135,13 @@ class Game {
       }
     }
 
-    this.addRandomTile();
+    const changed = !this.board.every((row, i) =>
+      // eslint-disable-next-line
+      row.every((val, j) => val === prevBoard[i][j]),);
+
+    if (changed) {
+      this.addRandomTile();
+    }
     this.checkGameStatus();
   }
 
@@ -125,6 +149,8 @@ class Game {
     if (this.status !== 'playing') {
       return;
     }
+
+    const prevBoard = this.board.map((row) => [...row]);
 
     for (let col = 0; col < this.size; col++) {
       let column = [];
@@ -157,7 +183,13 @@ class Game {
       }
     }
 
-    this.addRandomTile();
+    const changed = !this.board.every((row, i) =>
+      // eslint-disable-next-line
+      row.every((val, j) => val === prevBoard[i][j]),);
+
+    if (changed) {
+      this.addRandomTile();
+    }
     this.checkGameStatus();
   }
 
@@ -211,7 +243,7 @@ class Game {
   checkGameStatus() {
     for (let i = 0; i < this.size; i++) {
       for (let j = 0; j < this.size; j++) {
-        if (this.board[i][j] === 2056) {
+        if (this.board[i][j] === 2048) {
           this.status = 'win';
 
           return;
