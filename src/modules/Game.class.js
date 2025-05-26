@@ -17,6 +17,7 @@ export default class Game {
     const move = this.makeMoves(this.board);
 
     if (move) {
+      this.board = move;
       this.afterMove();
     }
   }
