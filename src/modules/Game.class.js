@@ -35,7 +35,21 @@ class Game {
     this.started = false;
   }
 
+  boardsEqual(b1, b2) {
+    for (let row = 0; row < b1.length; row++) {
+      for (let col = 0; col < b1[row].length; col++) {
+        if (b1[row][col] !== b2[row][col]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   moveLeft() {
+    const previous = this.board.map((row) => [...row]);
+
     for (let row = 0; row < this.board.length; row++) {
       const currentRow = this.board[row];
 
@@ -57,11 +71,17 @@ class Game {
 
       this.board[row] = filtered;
     }
-    this.addRandomBlock();
-    this.render();
-    this.getScore();
+
+    if (!this.boardsEqual(previous, this.board)) {
+      this.addRandomBlock();
+      this.render();
+      this.getScore();
+    }
   }
+
   moveRight() {
+    const previous = this.board.map((row) => [...row]);
+
     for (let row = 0; row < this.board.length; row++) {
       const currentRow = this.board[row];
 
@@ -83,11 +103,16 @@ class Game {
 
       this.board[row] = filtered;
     }
-    this.addRandomBlock();
-    this.render();
-    this.getScore();
+
+    if (!this.boardsEqual(previous, this.board)) {
+      this.addRandomBlock();
+      this.render();
+      this.getScore();
+    }
   }
   moveUp() {
+    const previous = this.board.map((row) => [...row]);
+
     const colamns = [];
 
     while (colamns.length < this.board.length) {
@@ -126,11 +151,15 @@ class Game {
       }
     }
 
-    this.addRandomBlock();
-    this.render();
-    this.getScore();
+    if (!this.boardsEqual(previous, this.board)) {
+      this.addRandomBlock();
+      this.render();
+      this.getScore();
+    }
   }
   moveDown() {
+    const previous = this.board.map((row) => [...row]);
+
     const colamns = [];
 
     while (colamns.length < this.board.length) {
@@ -169,9 +198,11 @@ class Game {
       }
     }
 
-    this.addRandomBlock();
-    this.render();
-    this.getScore();
+    if (!this.boardsEqual(previous, this.board)) {
+      this.addRandomBlock();
+      this.render();
+      this.getScore();
+    }
   }
 
   /**

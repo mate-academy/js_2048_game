@@ -6,12 +6,15 @@ const game = new Game();
 
 const startButton = document.querySelector('.button.start');
 const restartButton = document.querySelector('.button.restart');
+const startMessage = document.querySelector('.message-start');
+const loseMessage = document.querySelector('.message-lose');
 
 startButton.addEventListener('click', () => {
   game.start();
 
   startButton.classList.add('hidden');
   restartButton.classList.remove('hidden');
+  startMessage.classList.add('hidden');
 });
 
 const dialog = document.getElementById('confirm-restart');
@@ -69,14 +72,10 @@ document.addEventListener('keydown', (e) => {
 });
 
 restartButton.addEventListener('click', () => {
-  dialog.showModal();
+  game.restart();
 
-  dialog.addEventListener('close', () => {
-    if (dialog.returnValue === 'confirm') {
-      game.restart();
-
-      restartButton.classList.add('hidden');
-      startButton.classList.remove('hidden');
-    }
-  });
+  restartButton.classList.add('hidden');
+  startButton.classList.remove('hidden');
+  loseMessage.classList.add('hidden');
+  startMessage.classList.remove('hidden');
 });
