@@ -22,40 +22,67 @@
             <span class="game-score">0</span>
           </p>
           <button class="button start">Start</button>
+          <button class="button restart hidden">Restart</button>
         </div>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+      <div class="wrapper">
+        <div class="wrapper-restart">
+          <dialog
+            id="confirm-restart"
+            class="restart-dialog"
+          >
+            <form method="dialog">
+              <p class="dialog__message">Are you sure?</p>
+              <div class="dialog__buttons">
+                <button
+                  class="dialog__button"
+                  value="confirm"
+                >
+                  Yes
+                </button>
+                <button
+                  class="dialog__button"
+                  value="cancel"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </dialog>
+        </div>
+        <table class="game-field">
+          <tbody>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
