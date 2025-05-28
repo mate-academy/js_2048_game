@@ -36,32 +36,30 @@ class Game {
   }
 
   moveLeft() {
-    if (this.canWeStart()) {
-      for (let row = 0; row < this.board.length; row++) {
-        const currentRow = this.board[row];
+    for (let row = 0; row < this.board.length; row++) {
+      const currentRow = this.board[row];
 
-        let filtered = currentRow.filter((n) => n !== 0);
+      let filtered = currentRow.filter((n) => n !== 0);
 
-        for (let i = 0; i < filtered.length; i++) {
-          if (filtered[i] === filtered[i + 1]) {
-            filtered[i] *= 2;
-            this.score += filtered[i];
-            filtered[i + 1] = 0;
-          }
+      for (let i = 0; i < filtered.length; i++) {
+        if (filtered[i] === filtered[i + 1]) {
+          filtered[i] *= 2;
+          this.score += filtered[i];
+          filtered[i + 1] = 0;
         }
-
-        filtered = filtered.filter((n) => n !== 0);
-
-        while (filtered.length < this.board.length) {
-          filtered.push(0);
-        }
-
-        this.board[row] = filtered;
       }
-      this.addRandomBlock();
-      this.render();
-      this.getScore();
+
+      filtered = filtered.filter((n) => n !== 0);
+
+      while (filtered.length < this.board.length) {
+        filtered.push(0);
+      }
+
+      this.board[row] = filtered;
     }
+    this.addRandomBlock();
+    this.render();
+    this.getScore();
   }
   moveRight() {
     for (let row = 0; row < this.board.length; row++) {
@@ -357,6 +355,25 @@ class Game {
       }
     }
   }
+
+  canWeStart() {
+    let count = 0;
+
+    for (let row = 0; row < this.board.length; row++) {
+      for (let col = 0; col < this.board[row].length; col++) {
+        if (this.board[row][col] > 0) {
+          count++;
+        }
+      }
+    }
+
+    if (count >= 2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   /**
    * Resets the game.
    */
