@@ -64,5 +64,4 @@ class Game {
 
   // Add your own methods here
 }
-
 export { Game };
