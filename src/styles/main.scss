@@ -73,6 +73,16 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  animation: show 0.2s ease-in-out;
+  transition: all 0.1s ease-in-out;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
 }
 
 .game-field {
