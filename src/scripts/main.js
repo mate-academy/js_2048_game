@@ -5,7 +5,6 @@
 // const game = new Game();
 
 // Write your code here
-'use strict';
 
 import Game from '../modules/Game.class.js';
 
@@ -17,15 +16,30 @@ const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 
+let previousState = game.getState();
+
 function updateUI() {
-  game.getState().forEach((row, y) => {
+  const newState = game.getState();
+
+  newState.forEach((row, y) => {
     row.forEach((value, x) => {
       const cell = fieldCells[y * 4 + x];
+      const prevValue = previousState[y][x];
 
       cell.textContent = value || '';
       cell.className = `field-cell${value ? ` field-cell--${value}` : ''}`;
+
+      if (value !== prevValue) {
+        cell.classList.add('appear');
+
+        setTimeout(() => {
+          cell.classList.remove('appear');
+        }, 150);
+      }
     });
   });
+
+  previousState = newState.map((row) => [...row]);
 
   gameScore.textContent = game.getScore();
   messageStart.classList.toggle('hidden', game.getStatus() !== 'idle');
