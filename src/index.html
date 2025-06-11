@@ -11,6 +11,11 @@
       rel="stylesheet"
       href="./styles/main.scss"
     />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' ry='10' fill='%23f9c74f'/%3E%3Ctext x='50%25' y='56%25' font-size='24' text-anchor='middle' fill='%23222222' font-family='Arial'%3E2048%3C/text%3E%3C/svg%3E"
+    />
   </head>
   <body>
     <div class="container">
@@ -21,41 +26,11 @@
             Score:
             <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button class="button start restart-btn restart">Start</button>
         </div>
       </div>
-
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Контейнер для динамічних плиток -->
+      <div class="grid"></div>
 
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
@@ -65,6 +40,10 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+
+    <script
+      type="module"
+      src="./scripts/main.js"
+    ></script>
   </body>
 </html>
