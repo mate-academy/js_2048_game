@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: transform 0.3s ease;
 
   &--2 {
     background: #eee4da;
@@ -73,6 +74,10 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+}
+
+.field-cell[data-value]:not([data-value='0']) {
+  transition: transform 0.3s ease;
 }
 
 .game-field {
@@ -131,7 +136,7 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
+  width: 85px;
   height: 75px;
 
   transition: 0.25s ease background;
