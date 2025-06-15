@@ -1,3 +1,6 @@
+$cell-size: 75px;
+$gap: 10px;
+
 body {
   margin: 0;
   display: flex;
@@ -12,8 +15,8 @@ body {
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: $cell-size;
+  height: $cell-size;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
@@ -73,11 +76,31 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  &--move-up {
+    transition: transform ease-in-out 3s;
+    transform: translateY(-$cell-size - $gap);
+  }
+
+  &--move-down {
+    transition: transform ease-in-out 3s;
+    transform: translateY($cell-size + $gap);
+  }
+
+  &--move-right {
+    transition: transform ease-in-out 3s;
+    transform: translateX($cell-size + $gap);
+  }
+
+  &--move-left {
+    transition: transform ease-in-out 3s;
+    transform: translateY(-$cell-size - $gap);
+  }
 }
 
 .game-field {
   background: #bbada0;
-  border-spacing: 10px;
+  border-spacing: $gap;
   border-radius: 5px;
 }
 
@@ -116,11 +139,13 @@ h1 {
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
-  margin: 0 8px 0 0;
+  margin: 0;
 }
 
 .controls {
   display: flex;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .button {
@@ -130,7 +155,7 @@ h1 {
   color: #f9f6f2;
   font-family: sans-serif;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 20px;
   width: 75px;
   height: 75px;
 
@@ -139,7 +164,6 @@ h1 {
 
 .start {
   background: #1dae28;
-  font-size: 20px;
 
   &:hover {
     background: #179921;
