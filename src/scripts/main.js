@@ -44,7 +44,8 @@ function rerenderGrid() {
   game.getState().forEach((row, index) => {
     row.forEach((value, innerIndex) => {
       // eslint-disable-next-line max-len
-      const element = document.querySelectorAll('.field-row')[index].children[innerIndex];
+      const element =
+        document.querySelectorAll('.field-row')[index].children[innerIndex];
 
       element.innerText = value;
 

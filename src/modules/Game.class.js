@@ -1,4 +1,5 @@
 'use strict';
+// disable-eslint/
 
 /**
  * This class represents the game.
@@ -7,7 +8,7 @@
  */
 
 function copyState(state) {
-  return state.map(row => [...row]);
+  return state.map((row) => [...row]);
 }
 
 class Game {
@@ -26,12 +27,14 @@ class Game {
    * initial state.
    */
 
-  constructor(initialState = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ]) {
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
     this.size = 4;
     this.score = 0;
     this.status = 'idle';
@@ -54,7 +57,9 @@ class Game {
 
   checkLose() {
     // eslint-disable-next-line max-len
-    const isFull = this.initialState.every(row => row.every(cell => cell !== 0));
+    const isFull = this.initialState.every((row) =>
+      // eslint-disable-next-line
+      row.every((cell) => cell !== 0),);
 
     if (!isFull) {
       return;
@@ -63,12 +68,18 @@ class Game {
     for (let row = 0; row < this.size; row++) {
       for (let col = 0; col < this.size; col++) {
         // eslint-disable-next-line max-len
-        if (col < this.size - 1 && this.initialState[row][col] === this.initialState[row][col + 1]) {
+        if (
+          col < this.size - 1 &&
+          this.initialState[row][col] === this.initialState[row][col + 1]
+        ) {
           return;
         }
 
         // eslint-disable-next-line max-len
-        if (row < this.size - 1 && this.initialState[row][col] === this.initialState[row + 1][col]) {
+        if (
+          row < this.size - 1 &&
+          this.initialState[row][col] === this.initialState[row + 1][col]
+        ) {
           return;
         }
       }
@@ -89,7 +100,11 @@ class Game {
     for (let row = 0; row < this.size; row++) {
       for (let col = 0; col < this.size; col++) {
         // eslint-disable-next-line max-len
-        for (let innerColumn = col + 1; innerColumn < this.size; innerColumn++) {
+        for (
+          let innerColumn = col + 1;
+          innerColumn < this.size;
+          innerColumn++
+        ) {
           const currentItem = this.initialState[row][col];
           const nextItem = this.initialState[row][innerColumn];
 
@@ -371,7 +386,8 @@ class Game {
       for (let col = 0; col < this.size; col++) {
         if (this.initialState[row][col] === 0) {
           emptyCells.push({
-            row, col,
+            row,
+            col,
           });
         }
       }
