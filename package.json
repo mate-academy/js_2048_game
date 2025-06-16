@@ -53,5 +53,8 @@
       "backstop": false,
       "cypress": true
     }
+  },
+  "volta": {
+    "node": "20.19.2"
   }
 }
