@@ -134,7 +134,7 @@ describe('Game', () => {
     it('should generate the board with cells in random positions', () => {
       const positions = new Set();
 
-      for (let interation = 0; interation < 50; interation++) {
+      for (let iteration = 0; iteration < 50; iteration++) {
         const game2048 = new Game();
 
         game2048.start();
