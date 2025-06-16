@@ -1,17 +1,22 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const game = new Game();
 
 window.game = game;
-// Write your code here
+rerenderGrid();
 
 const startButton = document.querySelector('.start');
 
 startButton.addEventListener('click', () => {
-  game.start();
-  rerenderGrid();
+  const isRestart = game.button.innerHTML === 'Restart';
+
+  if (isRestart) {
+    game.restart();
+    rerenderGrid();
+  } else {
+    game.start();
+  }
 });
 
 document.addEventListener('keydown', ({ key }) => {
@@ -38,8 +43,8 @@ document.addEventListener('keydown', ({ key }) => {
 function rerenderGrid() {
   game.getState().forEach((row, index) => {
     row.forEach((value, innerIndex) => {
-      const element
-      = document.querySelectorAll('.field-row')[index].children[innerIndex];
+      // eslint-disable-next-line max-len
+      const element = document.querySelectorAll('.field-row')[index].children[innerIndex];
 
       element.innerText = value;
 
