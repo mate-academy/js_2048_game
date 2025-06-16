@@ -9,7 +9,7 @@ Cypress.Commands.add('shuffleBoxes', (arrow1, arrow2, times) => {
   }
 });
 
-describe.skip('2048 game UI', () => {
+describe('2048 game UI', () => {
   beforeEach(() => {
     cy.visit('/');
   });
