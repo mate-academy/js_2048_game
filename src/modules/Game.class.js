@@ -111,27 +111,27 @@ class Game {
     return result;
   }
 
-  moveLeft() {
-    if (this.status !== 'playing') {
-      return;
-    }
+  applyMove({ transpose = false, reverse = false }) {
+    if (this.status !== 'playing') return;
 
     let moved = false;
     let totalScore = 0;
 
-    const newState = this.state.map((row) => {
-      const { row: newRow, scoreDelta } = this.moveRow(row);
+    let currentRows = transpose ? this.transpose(this.state) : this.state;
+
+    const newState = currentRows.map((row) => {
+      const { row: newRow, scoreDelta } = this.moveRow(row, reverse);
 
       if (!this.arraysEqual(row, newRow)) {
         moved = true;
       }
-      totalScore += scoreDelta;
 
+      totalScore += scoreDelta;
       return newRow;
     });
 
     if (moved) {
-      this.state = newState;
+      this.state = transpose ? this.transpose(newState) : newState;
       this.addRandomTile();
       this.score += totalScore;
       this.checkWin();
@@ -139,98 +139,22 @@ class Game {
     }
 
     return moved;
+  }
+
+  moveLeft() {
+    return this.applyMove({ transpose: false, reverse: false });
   }
 
   moveRight() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let moved = false;
-    let totalScore = 0;
-
-    const newState = this.state.map((row) => {
-      const { row: newRow, scoreDelta } = this.moveRow(row, true);
-
-      if (!this.arraysEqual(row, newRow)) {
-        moved = true;
-      }
-      totalScore += scoreDelta;
-
-      return newRow;
-    });
-
-    if (moved) {
-      this.state = newState;
-      this.addRandomTile();
-      this.score += totalScore;
-      this.checkWin();
-      this.checkLose();
-    }
-
-    return moved;
+    return this.applyMove({ transpose: false, reverse: true });
   }
 
   moveUp() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let moved = false;
-    let totalScore = 0;
-    const transposed = this.transpose(this.state);
-
-    const newState = transposed.map((row) => {
-      const { row: newRow, scoreDelta } = this.moveRow(row);
-
-      if (!this.arraysEqual(row, newRow)) {
-        moved = true;
-      }
-      totalScore += scoreDelta;
-
-      return newRow;
-    });
-
-    if (moved) {
-      this.state = this.transpose(newState);
-      this.addRandomTile();
-      this.score += totalScore;
-      this.checkWin();
-      this.checkLose();
-    }
-
-    return moved;
+    return this.applyMove({ transpose: true, reverse: false });
   }
 
   moveDown() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let moved = false;
-    let totalScore = 0;
-    const transposed = this.transpose(this.state);
-
-    const newState = transposed.map((row) => {
-      const { row: newRow, scoreDelta } = this.moveRow(row, true);
-
-      if (!this.arraysEqual(row, newRow)) {
-        moved = true;
-      }
-      totalScore += scoreDelta;
-
-      return newRow;
-    });
-
-    if (moved) {
-      this.state = this.transpose(newState);
-      this.addRandomTile();
-      this.score += totalScore;
-      this.checkWin();
-      this.checkLose();
-    }
-
-    return moved;
+    return this.applyMove({ transpose: true, reverse: true });
   }
 
   /**
