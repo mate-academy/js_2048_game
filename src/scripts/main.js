@@ -2,6 +2,8 @@
 
 import Game from '../modules/Game.class.js';
 
+let startX = 0;
+let startY = 0;
 const startBtn = document.querySelector('.button.start');
 const scoreEl = document.querySelector('.game-score');
 const cells = document.querySelectorAll('.field-cell');
@@ -73,4 +75,37 @@ document.addEventListener('keydown', (e) => {
     render();
     updateMessages();
   }
+
+  document.addEventListener('touchstart', (x) => {
+    startX = x.touches[0].clientX;
+    startY = x.touches[0].clientY;
+  });
+
+  document.addEventListener('touchend', (x) => {
+    const endX = x.changedTouches[0].clientX;
+    const endY = x.changedTouches[0].clientY;
+    const dx = endX - startX;
+    const dy = endY - startY;
+
+    if (game.getStatus() !== 'playing') {
+      return;
+    }
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      if (dx > 30) {
+        game.moveRight();
+      } else if (dx < -30) {
+        game.moveLeft();
+      }
+    } else {
+      if (dy > 30) {
+        game.moveDown();
+      } else if (dy < -30) {
+        game.moveUp();
+      }
+    }
+
+    render();
+    updateMessages();
+  });
 });

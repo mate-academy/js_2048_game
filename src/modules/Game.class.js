@@ -149,9 +149,38 @@ class Game {
   }
 
   moveDown() {
-    this.state.reverse();
+    // Transpor e inverter colunas
+    for (let j = 0; j < this.state[0].length; j++) {
+      const col = [];
+
+      for (let i = 0; i < this.state.length; i++) {
+        col.push(this.state[i][j]);
+      }
+
+      col.reverse();
+
+      for (let i = 0; i < this.state.length; i++) {
+        this.state[i][j] = col[i];
+      }
+    }
+
     this.moveUp();
-    this.state.reverse();
+
+    // Reverter colunas novamente
+    for (let j = 0; j < this.state[0].length; j++) {
+      const col = [];
+
+      for (let i = 0; i < this.state.length; i++) {
+        col.push(this.state[i][j]);
+      }
+      col.reverse();
+
+      for (let i = 0; i < this.state.length; i++) {
+        this.state[i][j] = col[i];
+      }
+    }
+
+    this.checkGameStatus();
   }
 
   /**
