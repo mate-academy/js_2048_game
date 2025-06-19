@@ -72,6 +72,7 @@ class Game {
     if (!compareStates(copy, this.state)) {
       this.addRandomTile();
     }
+    this.checkGameStatus();
   }
 
   moveRight() {
@@ -84,6 +85,7 @@ class Game {
     for (const row of this.state) {
       row.reverse();
     }
+    this.checkGameStatus();
   }
 
   moveUp() {
@@ -143,25 +145,13 @@ class Game {
     if (!compareStates(copy, coluns)) {
       this.addRandomTile();
     }
+    this.checkGameStatus();
   }
 
   moveDown() {
-    const coluns = [];
-
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (!coluns[j]) {
-          coluns[j] = [];
-        }
-        coluns[j][i] = this.state[i][j];
-      }
-    }
-
-    coluns.forEach((row) => row.reverse());
-
-    this.state = coluns;
+    this.state.reverse();
     this.moveUp();
-    this.state.forEach((row) => row.reverse());
+    this.state.reverse();
   }
 
   /**
@@ -202,7 +192,18 @@ class Game {
     this.addRandomTile();
     this.addRandomTile();
   }
+  /**
+   * Resets the game.
+   */
+  restart() {
+    this.status = 'playing';
+    this.score = 0;
+    this.state = this.initialState.map((row) => row.slice());
+    this.addRandomTile();
+    this.addRandomTile();
+  }
 
+  // Add your own methods here
   addRandomTile() {
     const emptyCells = [];
 
@@ -219,18 +220,36 @@ class Game {
 
     this.state[x][y] = Math.random() < 0.9 ? 2 : 4;
   }
-  /**
-   * Resets the game.
-   */
-  restart() {
-    this.status = 'idle';
-    this.score = 0;
-    this.state = this.initialState.map((row) => row.slice());
-    this.addRandomTile();
-    this.addRandomTile();
-  }
 
-  // Add your own methods here
+  checkGameStatus() {
+    const has2048 = this.state.some((row) => row.includes(2048));
+
+    if (has2048) {
+      this.status = 'win';
+
+      return;
+    }
+
+    const has0 = this.state.some((row) => row.includes(0));
+
+    if (has0) {
+      return;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        const current = this.state[i][j];
+        const right = this.state[i][j + 1];
+        const down = this.state[i + 1]?.[j];
+
+        if (current === right || current === down) {
+          return;
+        }
+      }
+    }
+
+    this.status = 'lose';
+  }
 }
 
 export default Game;
