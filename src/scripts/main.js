@@ -53,6 +53,7 @@ startBtn.addEventListener('click', () => {
   } else {
     game.restart();
   }
+
   render();
 });
 
@@ -75,37 +76,37 @@ document.addEventListener('keydown', (e) => {
     render();
     updateMessages();
   }
+});
 
-  document.addEventListener('touchstart', (x) => {
-    startX = x.touches[0].clientX;
-    startY = x.touches[0].clientY;
-  });
+document.addEventListener('touchstart', (e) => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+});
 
-  document.addEventListener('touchend', (x) => {
-    const endX = x.changedTouches[0].clientX;
-    const endY = x.changedTouches[0].clientY;
-    const dx = endX - startX;
-    const dy = endY - startY;
+document.addEventListener('touchend', (e) => {
+  const endX = e.changedTouches[0].clientX;
+  const endY = e.changedTouches[0].clientY;
+  const dx = endX - startX;
+  const dy = endY - startY;
 
-    if (game.getStatus() !== 'playing') {
-      return;
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    if (dx > 30) {
+      game.moveRight();
+    } else if (dx < -30) {
+      game.moveLeft();
     }
-
-    if (Math.abs(dx) > Math.abs(dy)) {
-      if (dx > 30) {
-        game.moveRight();
-      } else if (dx < -30) {
-        game.moveLeft();
-      }
-    } else {
-      if (dy > 30) {
-        game.moveDown();
-      } else if (dy < -30) {
-        game.moveUp();
-      }
+  } else {
+    if (dy > 30) {
+      game.moveDown();
+    } else if (dy < -30) {
+      game.moveUp();
     }
+  }
 
-    render();
-    updateMessages();
-  });
+  render();
+  updateMessages();
 });
