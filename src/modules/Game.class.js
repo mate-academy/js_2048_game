@@ -28,7 +28,7 @@ class Game {
       [0, 0, 0, 0],
     ];
     this.score = 0;
-    this.state = this.initialState;
+    this.state = this.initialState.map((row) => row.slice());
     this.status = 'idle';
   }
 
@@ -89,19 +89,19 @@ class Game {
   }
 
   moveUp() {
-    const coluns = [];
+    const columns = [];
 
     for (let i = 0; i < this.state.length; i++) {
       for (let j = 0; j < this.state[i].length; j++) {
-        if (!coluns[j]) {
-          coluns[j] = [];
+        if (!columns[j]) {
+          columns[j] = [];
         }
-        coluns[j][i] = this.state[i][j];
+        columns[j][i] = this.state[i][j];
       }
     }
 
     // progress check
-    const copy = coluns.map((row) => row.slice());
+    const copy = columns.map((row) => row.slice());
 
     function compareStates(state1, state2) {
       for (let i = 0; i < state1.length; i++) {
@@ -115,7 +115,7 @@ class Game {
       return true;
     }
 
-    for (const row of coluns) {
+    for (const row of columns) {
       // Remove zeros from the row
       const newRow = row.filter((tile) => tile !== 0);
       // Combine tiles
@@ -138,11 +138,11 @@ class Game {
 
     for (let i = 0; i < this.state.length; i++) {
       for (let j = 0; j < this.state[i].length; j++) {
-        this.state[i][j] = coluns[j][i];
+        this.state[i][j] = columns[j][i];
       }
     }
 
-    if (!compareStates(copy, coluns)) {
+    if (!compareStates(copy, columns)) {
       this.addRandomTile();
     }
     this.checkGameStatus();
@@ -243,6 +243,11 @@ class Game {
         }
       }
     }
+
+    if (emptyCells.length === 0) {
+      return;
+    }
+
     emptyCells.sort(() => Math.random() - 0.5);
 
     const [x, y] = emptyCells[0];
