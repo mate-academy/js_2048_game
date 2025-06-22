@@ -2,7 +2,7 @@
 
 import Game from '../modules/Game.class.js';
 
-const game = new Game();
+let game = null;
 
 const table = document.querySelector('.game-field');
 const scoreEl = document.querySelector('.game-score');
@@ -12,6 +12,10 @@ const msgWin = document.querySelector('.message-win');
 const msgLose = document.querySelector('.message-lose');
 
 function updateBoard() {
+  if (!game) {
+    return;
+  }
+
   const state = game.getState();
   const cells = table.querySelectorAll('.field-cell');
 
@@ -33,20 +37,26 @@ function updateBoard() {
 }
 
 function updateMessages() {
-  const gameStatus = game.getStatus();
+  const messageStatus = game?.getStatus?.() ?? 'idle';
 
   msgStart.classList.add('hidden');
   msgWin.classList.add('hidden');
   msgLose.classList.add('hidden');
 
-  if (gameStatus === 'win') {
+  if (messageStatus === 'idle') {
+    msgStart.classList.remove('hidden');
+  } else if (messageStatus === 'win') {
     msgWin.classList.remove('hidden');
-  } else if (gameStatus === 'lose') {
+  } else if (messageStatus === 'lose') {
     msgLose.classList.remove('hidden');
   }
 }
 
 function handleMove(key) {
+  if (!game || game.getStatus() !== 'playing') {
+    return;
+  }
+
   const handleBefore = JSON.stringify(game.getState());
 
   switch (key) {
@@ -66,9 +76,9 @@ function handleMove(key) {
       return;
   }
 
-  const handeAfter = JSON.stringify(game.getState());
+  const handleAfter = JSON.stringify(game.getState());
 
-  if (handleBefore !== handeAfter) {
+  if (handleBefore !== handleAfter) {
     updateBoard();
     startBtn.classList.remove('start');
     startBtn.classList.add('restart');
@@ -77,8 +87,13 @@ function handleMove(key) {
 }
 
 startBtn.addEventListener('click', () => {
-  game.restart();
+  if (!game) {
+    game = new Game();
+  }
+
+  game.start();
   updateBoard();
+
   startBtn.classList.remove('start');
   startBtn.classList.add('restart');
   startBtn.textContent = 'Restart';
@@ -90,4 +105,4 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-updateBoard();
+updateMessages();
