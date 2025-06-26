@@ -185,3 +185,19 @@ h1 {
   width: 100%;
   height: 150px;
 }
+
+.field-cell--2,
+.field-cell--4,
+.field-cell--8,
+.field-cell--16,
+.field-cell--32,
+.field-cell--64,
+.field-cell--128,
+.field-cell--256,
+.field-cell--512,
+.field-cell--1024,
+.field-cell--2048 {
+  transition:
+    background-color 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+}
