@@ -4,81 +4,98 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
+  background: radial-gradient(circle at center, #1f1c2c, #2b5876);
   font-size: 24px;
   font-weight: 900;
+  color: #f0f0f0;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  opacity: 1;
+  background:#1a1a1a;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  border-radius: 8px;
+  color: #00e0ff;
   box-sizing: border-box;
+  box-shadow: 0 0 8px #00e0ff44, inset 0 0 4px #00e0ff22;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #0f2027;
+    color: #2ecc71;
+    box-shadow: 0 0 8px #2ecc7144;
   }
 
   &--4 {
-    background: #ede0c8;
+   background: #203a43;
+   color: #27ae60;
+   box-shadow: 0 0 8px #27ae6044;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #2c5364;
+    color: #f39c12;
+    box-shadow: 0 0 8px #f39c1244;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: #1a2a6c;
+    color: #e67e22;
+    box-shadow: 0 0 8px #e67e2244;
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    background: #b21f1f;
+    color: #f1c40f;
+    box-shadow: 0 0 8px #f1c40f44;
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    background: #fdbb2d;
+    color: #e74c3c;
+    box-shadow: 0 0 8px #e74c3c44;
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    background: #833ab4;
+    color: #ffffff;
+    box-shadow: 0 0 10px #833ab444;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: #c13584;
+    color: #ffffff;
+    box-shadow: 0 0 10px #c1358444;
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    background: #e1306c;
+    color: #ffffff;
+    box-shadow: 0 0 10px #e1306c44;
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    background: #fd1d1d;
+    color: #ffffff;
+    box-shadow: 0 0 10px #fd1d1d44;
   }
 
   &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    background: #fcb045;
+    color: #ffffff;
+    box-shadow: 0 0 12px #fcb045aa;
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: rgba(0,0,0,0.3);
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,255,255,0.15);
 }
 
 .game-header {
@@ -91,11 +108,11 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  background: linear-gradient(45deg, #6ac1fa, #0518be);
   color: #f9f6f2;
   width: 75px;
   height: 75px;
-  font-size: 24px;
+  font-size: 18px;
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -109,11 +126,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #111;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #ccc;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -127,38 +144,40 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
-  font-family: sans-serif;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
   width: 75px;
   height: 75px;
 
   transition: 0.25s ease background;
-}
 
-.start {
-  background: #1dae28;
-  font-size: 20px;
+  &--start {
+    background: #00e0ff;
+    color: #111;
 
-  &:hover {
-    background: #179921;
+    &:hover {
+      background: #00bcd4;
+    }
+  }
+
+  &--restart {
+    background: #ff0066;
+
+    &:hover {
+      background: #e6005c;
+    }
   }
 }
 
-.restart {
-  background: #f1b2b2;
 
-  &:hover {
-    background: #f87474;
-  }
-}
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #222;
+  color: #eee;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
@@ -177,8 +196,8 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: #00ff88;
+  color: #000;
 }
 
 .message-container {
