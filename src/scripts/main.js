@@ -92,6 +92,3 @@ buttonStart.addEventListener('click', () => {
 
   renderBoard();
 });
-
-game.start();
-renderBoard();
