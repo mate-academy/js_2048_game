@@ -21,12 +21,16 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    this.state = initialState || [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    this.initialState = initialState
+      ? initialState.map((row) => [...row])
+      : [
+          [0, 0, 0, 0],
+          [0, 0, 0, 0],
+          [0, 0, 0, 0],
+          [0, 0, 0, 0],
+        ];
+
+    this.state = this.initialState.map((row) => [...row]);
     this.score = 0;
     this.status = 'idle';
   }
@@ -35,6 +39,8 @@ class Game {
     if (this.getStatus() === 'idle') {
       return;
     }
+
+    const oldState = JSON.stringify(this.state);
 
     for (let i = 0; i < this.state.length; i++) {
       let row = this.state[i].filter((el) => el !== 0);
@@ -55,12 +61,20 @@ class Game {
 
       this.state[i] = row;
     }
+
+    const newState = JSON.stringify(this.state);
+
+    if (oldState !== newState) {
+      this.random();
+    }
   }
 
   moveRight() {
     if (this.getStatus() === 'idle') {
       return;
     }
+
+    const oldState = JSON.stringify(this.state);
 
     for (let i = 0; i < this.state.length; i++) {
       let row = this.state[i].filter((el) => el !== 0);
@@ -70,6 +84,7 @@ class Game {
           row[j] *= 2;
           row[j - 1] = 0;
           this.score += row[j];
+          j++;
         }
       }
 
@@ -81,6 +96,12 @@ class Game {
 
       this.state[i] = row;
     }
+
+    const newState = JSON.stringify(this.state);
+
+    if (oldState !== newState) {
+      this.random();
+    }
   }
 
   moveUp() {
@@ -89,6 +110,7 @@ class Game {
     }
 
     const size = this.state.length;
+    const oldState = JSON.stringify(this.state);
 
     for (let col = 0; col < size; col++) {
       let column = [];
@@ -117,6 +139,12 @@ class Game {
       for (let row = 0; row < size; row++) {
         this.state[row][col] = column[row];
       }
+    }
+
+    const newState = JSON.stringify(this.state);
+
+    if (oldState !== newState) {
+      this.random();
     }
   }
 
@@ -126,6 +154,7 @@ class Game {
     }
 
     const size = this.state.length;
+    const oldState = JSON.stringify(this.state);
 
     for (let col = 0; col < size; col++) {
       let column = [];
@@ -158,6 +187,12 @@ class Game {
       for (let row = 0; row < size; row++) {
         this.state[row][col] = column[row];
       }
+    }
+
+    const newState = JSON.stringify(this.state);
+
+    if (oldState !== newState) {
+      this.random();
     }
   }
 
@@ -217,12 +252,7 @@ class Game {
    * Resets the game.
    */
   restart() {
-    // this.state = [
-    //   [0, 0, 0, 0],
-    //   [0, 0, 0, 0],
-    //   [0, 0, 0, 0],
-    //   [0, 0, 0, 0],
-    // ];
+    this.state = this.initialState.map((row) => [...row]);
     this.score = 0;
     this.status = 'idle';
   }

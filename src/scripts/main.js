@@ -47,8 +47,6 @@ button.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  const oldState = JSON.stringify(game.getState());
-
   if (e.key === 'ArrowLeft') {
     game.moveLeft();
   } else if (e.key === 'ArrowRight') {
@@ -59,12 +57,6 @@ document.addEventListener('keydown', (e) => {
     game.moveDown();
   } else {
     return;
-  }
-
-  const newState = JSON.stringify(game.getState());
-
-  if (oldState !== newState) {
-    game.random();
   }
 
   game.render();
