@@ -1,7 +1,59 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+import Game from '../modules/Game.class';
 
-// Write your code here
+const initialState = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+
+const game = new Game(initialState);
+
+const btnStartElement = document.querySelector('.button.start');
+const messageElementStart = document.querySelector('.message.message-start');
+
+btnStartElement.addEventListener('click', () => {
+  const statusButton = game.getStatus();
+
+  if (statusButton === 'idle') {
+    game.start();
+    game.renderBoard(game.board);
+    messageElementStart.classList.add('hidden');
+
+    btnStartElement.classList.remove('start');
+    btnStartElement.classList.add('restart');
+    btnStartElement.textContent = 'Restart';
+  } else {
+    game.restart();
+    game.renderBoard(game.board);
+
+    btnStartElement.classList.remove('restart');
+    btnStartElement.classList.add('start');
+    btnStartElement.textContent = 'Start';
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  document.activeElement.blur();
+
+  switch (e.key) {
+    case 'ArrowUp':
+      game.moveUp();
+      game.renderBoard(game.board);
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      game.renderBoard(game.board);
+      break;
+    case 'ArrowLeft':
+      game.moveLeft();
+      game.renderBoard(game.board);
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      game.renderBoard(game.board);
+      break;
+  }
+});
