@@ -23,7 +23,7 @@ class Game {
   constructor(initialState) {
     this.size = 4;
     this.score = 0;
-    this.status = 'playing';
+    this.status = 'idle';
 
     this.board = [
       [0, 0, 0, 0],
@@ -34,7 +34,7 @@ class Game {
 
     if (initialState) {
       this.board = initialState.board;
-      this.score = initialState.board;
+      this.score = initialState.score;
       this.status = initialState.status;
     } else {
       this.addRandomTile();
@@ -70,13 +70,13 @@ class Game {
         moved = true;
         this.board[y] = row;
       }
+    }
 
-      if (moved) {
-        this.addRandomTile();
+    if (moved) {
+      this.addRandomTile();
 
-        if (this.canMove() === false) {
-          this.status = 'lost';
-        }
+      if (this.canMove() === false) {
+        this.status = 'lost';
       }
     }
   }

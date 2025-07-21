@@ -41,6 +41,7 @@ function renderBoard(state) {
 }
 
 startButton.addEventListener('click', () => {
+  messageLose.classList.add('hidden');
   game.restart();
   startButton.textContent = 'Restart';
   startButton.classList.remove('start');
