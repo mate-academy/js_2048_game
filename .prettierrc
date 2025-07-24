@@ -3,7 +3,7 @@
   "useTabs": false,
   "semi": true,
   "singleQuote": true,
-  "trailingComma": "all",
+  "trailingComma": "none",
   "printWidth": 80,
   "overrides": [
     {
