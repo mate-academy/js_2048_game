@@ -1,278 +1,9 @@
 'use strict';
 
-/**
- * Game Class - 2048 Implementation
- */
-class Game {
-  constructor(initialState) {
-    this.size = 4;
-    this.score = 0;
-    this.status = 'idle';
-    this.board = initialState || this.createEmptyBoard();
+// Import Game class from modules
+import Game from '../modules/Game.class.js';
 
-    if (initialState) {
-      this.status = 'playing';
-    }
-  }
-
-  createEmptyBoard() {
-    return Array(this.size)
-      .fill()
-      .map(() => Array(this.size).fill(0));
-  }
-
-  addRandomTile() {
-    const emptyCells = [];
-
-    for (let row = 0; row < this.size; row++) {
-      for (let col = 0; col < this.size; col++) {
-        if (this.board[row][col] === 0) {
-          emptyCells.push({ row, col });
-        }
-      }
-    }
-
-    if (emptyCells.length > 0) {
-      const randomIndex = Math.floor(Math.random() * emptyCells.length);
-      const { row, col } = emptyCells[randomIndex];
-
-      this.board[row][col] = Math.random() < 0.1 ? 4 : 2;
-    }
-  }
-
-  moveRowLeft(row) {
-    const newRow = [...row];
-    let scoreIncrease = 0;
-    let moved = false;
-
-    const filteredRow = newRow.filter((cell) => cell !== 0);
-
-    for (let i = 0; i < filteredRow.length - 1; i++) {
-      if (filteredRow[i] === filteredRow[i + 1]) {
-        filteredRow[i] *= 2;
-        scoreIncrease += filteredRow[i];
-        filteredRow[i + 1] = 0;
-      }
-    }
-
-    const mergedRow = filteredRow.filter((cell) => cell !== 0);
-
-    while (mergedRow.length < this.size) {
-      mergedRow.push(0);
-    }
-
-    for (let i = 0; i < this.size; i++) {
-      if (row[i] !== mergedRow[i]) {
-        moved = true;
-        break;
-      }
-    }
-
-    return { newRow: mergedRow, scoreIncrease, moved };
-  }
-
-  moveLeft() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let totalScoreIncrease = 0;
-    let boardChanged = false;
-    const newBoard = [];
-
-    for (let row = 0; row < this.size; row++) {
-      const result = this.moveRowLeft(this.board[row]);
-
-      newBoard.push(result.newRow);
-      totalScoreIncrease += result.scoreIncrease;
-
-      if (result.moved) {
-        boardChanged = true;
-      }
-    }
-
-    if (boardChanged) {
-      this.board = newBoard;
-      this.score += totalScoreIncrease;
-      this.addRandomTile();
-      this.updateStatus();
-    }
-  }
-
-  moveRight() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let totalScoreIncrease = 0;
-    let boardChanged = false;
-    const newBoard = [];
-
-    for (let row = 0; row < this.size; row++) {
-      const reversedRow = [...this.board[row]].reverse();
-      const result = this.moveRowLeft(reversedRow);
-
-      newBoard.push(result.newRow.reverse());
-      totalScoreIncrease += result.scoreIncrease;
-
-      if (result.moved) {
-        boardChanged = true;
-      }
-    }
-
-    if (boardChanged) {
-      this.board = newBoard;
-      this.score += totalScoreIncrease;
-      this.addRandomTile();
-      this.updateStatus();
-    }
-  }
-
-  moveUp() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let totalScoreIncrease = 0;
-    let boardChanged = false;
-
-    for (let col = 0; col < this.size; col++) {
-      const column = [];
-
-      for (let row = 0; row < this.size; row++) {
-        column.push(this.board[row][col]);
-      }
-
-      const result = this.moveRowLeft(column);
-
-      for (let row = 0; row < this.size; row++) {
-        this.board[row][col] = result.newRow[row];
-      }
-
-      totalScoreIncrease += result.scoreIncrease;
-
-      if (result.moved) {
-        boardChanged = true;
-      }
-    }
-
-    if (boardChanged) {
-      this.score += totalScoreIncrease;
-      this.addRandomTile();
-      this.updateStatus();
-    }
-  }
-
-  moveDown() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let totalScoreIncrease = 0;
-    let boardChanged = false;
-
-    for (let col = 0; col < this.size; col++) {
-      const column = [];
-
-      for (let row = 0; row < this.size; row++) {
-        column.push(this.board[row][col]);
-      }
-
-      const reversedColumn = column.reverse();
-      const result = this.moveRowLeft(reversedColumn);
-      const finalColumn = result.newRow.reverse();
-
-      for (let row = 0; row < this.size; row++) {
-        this.board[row][col] = finalColumn[row];
-      }
-
-      totalScoreIncrease += result.scoreIncrease;
-
-      if (result.moved) {
-        boardChanged = true;
-      }
-    }
-
-    if (boardChanged) {
-      this.score += totalScoreIncrease;
-      this.addRandomTile();
-      this.updateStatus();
-    }
-  }
-
-  updateStatus() {
-    for (let row = 0; row < this.size; row++) {
-      for (let col = 0; col < this.size; col++) {
-        if (this.board[row][col] === 2048) {
-          this.status = 'win';
-
-          return;
-        }
-      }
-    }
-
-    if (!this.canMove()) {
-      this.status = 'lose';
-
-      return;
-    }
-
-    this.status = 'playing';
-  }
-
-  canMove() {
-    for (let row = 0; row < this.size; row++) {
-      for (let col = 0; col < this.size; col++) {
-        if (this.board[row][col] === 0) {
-          return true;
-        }
-      }
-    }
-
-    for (let row = 0; row < this.size; row++) {
-      for (let col = 0; col < this.size; col++) {
-        const current = this.board[row][col];
-
-        if (col < this.size - 1 && this.board[row][col + 1] === current) {
-          return true;
-        }
-
-        if (row < this.size - 1 && this.board[row + 1][col] === current) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  getScore() {
-    return this.score;
-  }
-
-  getState() {
-    return this.board.map((row) => [...row]);
-  }
-
-  getStatus() {
-    return this.status;
-  }
-
-  start() {
-    this.board = this.createEmptyBoard();
-    this.score = 0;
-    this.status = 'playing';
-
-    this.addRandomTile();
-    this.addRandomTile();
-  }
-
-  restart() {
-    this.start();
-  }
-}
-
-// Game UI Implementation
+// Create game instance
 const game = new Game();
 
 // DOM elements
@@ -287,6 +18,9 @@ const gameField = document.querySelector('.game-field');
 let gameStarted = false;
 let gameWon = false;
 
+/**
+ * Updates the visual board based on game state
+ */
 function updateBoard() {
   const state = game.getState();
   const rows = gameField.querySelectorAll('.field-row');
@@ -311,10 +45,16 @@ function updateBoard() {
   }
 }
 
+/**
+ * Updates the score display
+ */
 function updateScore() {
   scoreElement.textContent = game.getScore();
 }
 
+/**
+ * Updates the game status messages
+ */
 function updateMessages() {
   // eslint-disable-next-line no-shadow
   const status = game.getStatus();
@@ -340,6 +80,9 @@ function updateMessages() {
   }
 }
 
+/**
+ * Updates the start/restart button
+ */
 function updateButton() {
   if (gameStarted) {
     startButton.textContent = 'Restart';
@@ -350,6 +93,9 @@ function updateButton() {
   }
 }
 
+/**
+ * Updates the entire game display
+ */
 function updateDisplay() {
   updateBoard();
   updateScore();
@@ -357,11 +103,16 @@ function updateDisplay() {
   updateButton();
 }
 
+/**
+ * Handles game start/restart
+ */
 function handleStartRestart() {
   if (gameStarted) {
+    // Restart game
     game.restart();
     gameWon = false;
   } else {
+    // Start game
     game.start();
     gameStarted = true;
   }
@@ -369,8 +120,12 @@ function handleStartRestart() {
   updateDisplay();
 }
 
+/**
+ * Handles keyboard input for game moves
+ */
 // eslint-disable-next-line no-shadow
 function handleKeyPress(event) {
+  // Only handle moves if game is playing
   if (game.getStatus() !== 'playing') {
     return;
   }
@@ -396,9 +151,10 @@ function handleKeyPress(event) {
       game.moveDown();
       break;
     default:
-      return;
+      return; // Don't update display for other keys
   }
 
+  // Check if a move was made
   const currentState = JSON.stringify(game.getState());
   const currentScore = game.getScore();
 
@@ -407,10 +163,15 @@ function handleKeyPress(event) {
   }
 }
 
+/**
+ * Initialize the game interface
+ */
 function init() {
+  // Set up event listeners
   startButton.addEventListener('click', handleStartRestart);
   document.addEventListener('keydown', handleKeyPress);
 
+  // Initial display update
   updateDisplay();
 }
 

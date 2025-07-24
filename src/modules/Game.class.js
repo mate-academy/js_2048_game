@@ -4,7 +4,6 @@
  * This class represents the game.
  * Complete implementation of 2048 game logic.
  */
-// eslint-disable-next-line no-unused-vars
 class Game {
   /**
    * Creates a new game instance.
@@ -87,9 +86,7 @@ class Game {
     }
 
     // Remove zeros again after merging
-    const mergedRow = filteredRow.filter(function (cell) {
-      return cell !== 0;
-    });
+    const mergedRow = filteredRow.filter((cell) => cell !== 0);
 
     // Fill with zeros to maintain row length
     while (mergedRow.length < this.size) {
@@ -344,8 +341,8 @@ class Game {
   restart() {
     this.start();
   }
+
+  // Add your own methods here
 }
 
-// Para uso no browser, a classe Game fica disponível globalmente
-// Para testes Node.js, descomente a linha abaixo:
-// module.exports = Game;
+export default Game;
