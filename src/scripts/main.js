@@ -82,11 +82,14 @@ document.addEventListener('keydown', (e) => {
 
     const gameStatus = game.getStatus();
 
-    if (gameStatus === 'won') {
-      alert('You win!');
-    } else if (gameStatus === 'gameover') {
-      alert('Game over!');
-    }
+    statusEl.textContent =
+      gameStatus === 'won'
+        ? 'You win!'
+        : gameStatus === 'gameover'
+          ? 'Game over!'
+          : gameStatus === 'start'
+            ? 'Press "Start" to begin the game. Good luck!'
+            : '';
   }
 });
 
