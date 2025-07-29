@@ -28,6 +28,8 @@ class Game {
   }
 
   moveLeft() {
+    const prevState = JSON.stringify(this.initialState);
+
     for (let i = 0; i < this.state.length; i += 1) {
       const row = this.state[i];
       const filteredRow = row.filter((el) => el !== 0);
@@ -55,10 +57,16 @@ class Game {
 
       this.state[i] = newRow;
     }
-    this.addRandomToState();
-    this.checkWin();
+
+    if (JSON.stringify(this.state) !== prevState) {
+      this.addRandomToState();
+      this.checkWin();
+    }
   }
+
   moveRight() {
+    const prevState = JSON.stringify(this.initialState);
+
     for (let i = 0; i < this.state.length; i += 1) {
       const row = this.state[i];
       const filteredRow = row.filter((el) => el !== 0);
@@ -86,10 +94,16 @@ class Game {
 
       this.state[i] = newRow;
     }
-    this.addRandomToState();
-    this.checkWin();
+
+    if (JSON.stringify(this.state) !== prevState) {
+      this.addRandomToState();
+      this.checkWin();
+    }
+
   }
   moveUp() {
+    const prevState = JSON.stringify(this.initialState);
+
     for (let i = 0; i < this.state[0].length; i += 1) {
       const col = [];
 
@@ -124,10 +138,16 @@ class Game {
         this.state[row][i] = newCol[row];
       }
     }
-    this.addRandomToState();
-    this.checkWin();
+
+    if (JSON.stringify(this.state) !== prevState) {
+      this.addRandomToState();
+      this.checkWin();
+    }
+
   }
   moveDown() {
+    const prevState = JSON.stringify(this.initialState);
+
     for (let i = 0; i < this.state[0].length; i += 1) {
       const col = [];
 
@@ -162,8 +182,12 @@ class Game {
         this.state[row][i] = newCol[row];
       }
     }
-    this.addRandomToState();
-    this.checkWin();
+
+    if (JSON.stringify(this.state) !== prevState) {
+      this.addRandomToState();
+      this.checkWin();
+    }
+
   }
 
   /**
