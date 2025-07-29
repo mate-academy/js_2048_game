@@ -99,7 +99,6 @@ class Game {
       this.addRandomToState();
       this.checkWin();
     }
-
   }
   moveUp() {
     const prevState = JSON.stringify(this.initialState);
@@ -143,7 +142,6 @@ class Game {
       this.addRandomToState();
       this.checkWin();
     }
-
   }
   moveDown() {
     const prevState = JSON.stringify(this.initialState);
@@ -187,7 +185,6 @@ class Game {
       this.addRandomToState();
       this.checkWin();
     }
-
   }
 
   /**

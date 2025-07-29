@@ -27,25 +27,28 @@ if (startBtn) {
 }
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') {
-    game.moveLeft();
+  if (game.getStatus() === 'playing'){
+    if (e.key === 'ArrowLeft') {
+      game.moveLeft();
+    }
+
+    if (e.key === 'ArrowRight') {
+      game.moveRight();
+    }
+
+    if (e.key === 'ArrowDown') {
+      game.moveDown();
+    }
+
+    if (e.key === 'ArrowUp') {
+      game.moveUp();
+    }
+
+    getGameStatus();
+    displayActualState();
+    gameScore.textContent = game.getScore();
   }
 
-  if (e.key === 'ArrowRight') {
-    game.moveRight();
-  }
-
-  if (e.key === 'ArrowDown') {
-    game.moveDown();
-  }
-
-  if (e.key === 'ArrowUp') {
-    game.moveUp();
-  }
-
-  getGameStatus();
-  displayActualState();
-  gameScore.textContent = game.getScore();
 });
 
 function displayActualState() {
@@ -56,11 +59,6 @@ function displayActualState() {
 
     for (let j = 0; j < cells.length; j += 1) {
       cells[j].textContent = state[i][j] || '';
-
-      // cells[j].className = cell.className
-      //   .split(' ')
-      //   .filter(cl => !cl.startsWidth('field-cell--'))
-      //   .join(' ');
       cells[j].className = 'field-cell';
 
       if (cells[j].textContent) {
