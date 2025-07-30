@@ -185,3 +185,14 @@ h1 {
   width: 100%;
   height: 150px;
 }
+
+.keep-playing {
+  background: #eee4da;
+  color: #776e65;
+  margin-top: 10px;
+  font-size: 14px;
+
+  &:hover {
+    background: #ede0c8;
+  }
+}
