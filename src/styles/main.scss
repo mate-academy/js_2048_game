@@ -20,10 +20,6 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
-  transition:
-    background-color 0.3s ease,
-    transform 0.3s ease;
-  transform: scale(1);
 
   &--2 {
     background: #eee4da;
@@ -190,65 +186,13 @@ h1 {
   height: 150px;
 }
 
-.game-tools {
-  display: flex;
-  gap: 16px;
-  background-color: #e9e4d8;
-  border-radius: 16px;
-  padding: 12px 16px;
-  margin-top: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  &.hidden {
-    visibility: hidden;
-  }
-
-  justify-content: center;
-}
-
-.tool-button {
-  background-color: #d6cdc4;
-  border: none;
-  border-radius: 12px;
-  width: 60px;
-  height: 60px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  transition: background 0.3s ease;
+.keep-playing {
+  background: #eee4da;
+  color: #776e65;
+  margin-top: 10px;
+  font-size: 14px;
 
   &:hover {
-    background-color: #c8beb4;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
-
-  .icon {
-    font-size: 24px;
-    margin-bottom: 4px;
-    pointer-events: none;
-  }
-
-  .uses {
-    display: flex;
-    gap: 4px;
-  }
-
-  .use-slot {
-    width: 10px;
-    height: 4px;
-    background-color: #b1a89f;
-    border-radius: 2px;
-    opacity: 0.3;
-
-    &.used {
-      opacity: 1;
-    }
+    background: #ede0c8;
   }
 }

@@ -1,121 +1,138 @@
 'use strict';
 
-const Game = require('../modules/Game.class');
+import Game from '../modules/Game.class.js';
+
 const game = new Game();
 
-const boardElement = document.querySelector('.game-field');
 const scoreElement = document.querySelector('.game-score');
-const statusElement = document.querySelector('.message-lose');
-const startButton = document.querySelector('.button.start');
-const messageStart = document.querySelector('.message-start');
-const toolsContainer = document.querySelector('.game-tools');
-const undoButton = document.querySelector('.undo-button');
-const shuffleButton = document.querySelector('.shuffle-button');
-const removeButton = document.querySelector('.remove-button');
+const button = document.querySelector('.button');
+const tableBody = document.querySelector('tbody');
+const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
 
-function updateToolButtons() {
-  const updateSlots = (button, count, max) => {
-    const slots = Array.from(button.querySelectorAll('.use-slot'));
+const render = () => {
+  const board = game.getState();
+  const score = game.getScore();
+  const rows = tableBody.querySelectorAll('tr');
 
-    slots.forEach((slot, index) => {
-      slot.classList.toggle('used', index < count);
+  scoreElement.textContent = score;
+
+  rows.forEach((row, rowIndex) => {
+    row.querySelectorAll('td').forEach((cell, colIndex) => {
+      const value = board[rowIndex][colIndex];
+
+      cell.textContent = value === 0 ? '' : value;
+      cell.className = `field-cell field-cell--${value}`;
     });
-
-    button.disabled = count === 0;
-  };
-
-  updateSlots(undoButton, game.undoCount, 2);
-  updateSlots(shuffleButton, game.shuffleCount, 2);
-  updateSlots(removeButton, game.removeCount, 2);
-}
-
-function render() {
-  const state = game.getState();
-  // eslint-disable-next-line no-shadow
-  const status = game.getStatus();
-  const cells = boardElement.querySelectorAll('.field-cell');
-
-  cells.forEach((cell, index) => {
-    const row = Math.floor(index / 4);
-    const col = index % 4;
-    const value = state[row][col];
-
-    cell.textContent = value === 0 ? '' : value;
-    cell.className = 'field-cell';
-
-    if (value > 0) {
-      cell.classList.add(`field-cell--${value}`);
-    }
   });
+};
 
-  scoreElement.textContent = game.getScore();
+const updateUi = () => {
+  const gameStatus = game.getStatus();
 
-  switch (status) {
-    case 'win':
-      statusElement.textContent = 'You win!';
-      statusElement.classList.remove('hidden');
-      break;
-    case 'lose':
-      statusElement.textContent = 'You lose! Restart the game?';
-      statusElement.classList.remove('hidden');
-      break;
-    default:
-      statusElement.classList.add('hidden');
+  startMessage.classList.toggle('hidden', gameStatus !== 'idle');
+  winMessage.classList.toggle('hidden', gameStatus !== 'win');
+  loseMessage.classList.toggle('hidden', gameStatus !== 'game over');
+
+  if (gameStatus === 'playing') {
+    button.textContent = 'Restart';
+    button.className = 'button restart';
   }
+};
 
-  updateToolButtons();
-}
-
-document.addEventListener('keydown', (e) => {
-  if (game.getStatus() !== 'playing') {
+const handleMove = (direction) => {
+  if (game.getStatus() === 'game over') {
     return;
   }
 
-  const keyActions = {
-    ArrowLeft: () => game.moveLeft(),
-    ArrowRight: () => game.moveRight(),
-    ArrowUp: () => game.moveUp(),
-    ArrowDown: () => game.moveDown(),
-  };
+  const moved = game.move(direction);
 
-  const action = keyActions[e.key];
-
-  if (action) {
-    action();
+  if (moved) {
     render();
+    updateUi();
   }
+};
+
+button.addEventListener('click', () => {
+  game.start();
+  render();
+  updateUi();
 });
 
-startButton.addEventListener('click', () => {
-  const isIdle = game.getStatus() === 'idle';
+document.addEventListener('keydown', (e) => {
+  let direction;
 
-  if (isIdle) {
-    game.start();
-    messageStart.classList.add('hidden');
-    startButton.classList.remove('start');
-    startButton.classList.add('restart');
-    startButton.textContent = 'Restart';
-    toolsContainer.classList.remove('hidden');
+  switch (e.key) {
+    case 'ArrowUp':
+      direction = 'Up';
+      break;
+    case 'ArrowDown':
+      direction = 'Down';
+      break;
+    case 'ArrowLeft':
+      direction = 'Left';
+      break;
+    case 'ArrowRight':
+      direction = 'Right';
+      break;
+    default:
+      return;
+  }
+
+  e.preventDefault();
+
+  handleMove(direction);
+});
+
+const continueButton = winMessage.querySelector('.keep-playing');
+
+continueButton.addEventListener('click', () => {
+  game.continuePlaying();
+  winMessage.classList.add('hidden');
+});
+
+// MOBILA
+
+let touchStartX = 0;
+let touchStartY = 0;
+const gameTable = document.querySelector('.game-field');
+
+gameTable.addEventListener(
+  'touchstart',
+  (e) => {
+    e.preventDefault();
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  },
+  { passive: false },
+);
+
+gameTable.addEventListener('touchend', (e) => {
+  e.preventDefault();
+
+  const touchEndX = e.changedTouches[0].clientX;
+  const touchEndY = e.changedTouches[0].clientY;
+
+  handleSwipe(touchEndX, touchEndY);
+});
+
+function handleSwipe(endX, endY) {
+  const deltaX = endX - touchStartX;
+  const deltaY = endY - touchStartY;
+  const swipeThreshold = 50;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > swipeThreshold) {
+      handleMove('Right');
+    } else if (deltaX < -swipeThreshold) {
+      handleMove('Left');
+    }
   } else {
-    game.restart();
+    if (deltaY > swipeThreshold) {
+      handleMove('Down');
+    } else if (deltaY < -swipeThreshold) {
+      handleMove('Up');
+    }
   }
-
-  render();
-});
-
-undoButton?.addEventListener('click', () => {
-  game.undo?.();
-  render();
-});
-
-shuffleButton?.addEventListener('click', () => {
-  game.shuffle?.();
-  render();
-});
-
-removeButton?.addEventListener('click', () => {
-  game.remove?.();
-  render();
-});
-
-render();
+}

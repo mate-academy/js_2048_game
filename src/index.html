@@ -57,42 +57,20 @@
         </tbody>
       </table>
 
-      <div class="game-tools hidden">
-        <button class="tool-button undo-button">
-          <span class="icon">↩</span>
-          <div class="uses">
-            <div class="use-slot"></div>
-            <div class="use-slot"></div>
-          </div>
-        </button>
-
-        <button class="tool-button shuffle-button">
-          <span class="icon">🔀</span>
-          <div class="uses">
-            <div class="use-slot"></div>
-            <div class="use-slot"></div>
-          </div>
-        </button>
-
-        <button class="tool-button remove-button">
-          <span class="icon">❌</span>
-          <div class="uses">
-            <div class="use-slot"></div>
-            <div class="use-slot"></div>
-          </div>
-        </button>
-      </div>
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
+        <p class="message message-win hidden">
+          Winner! Congrats! You did it!
+          <button class="button keep-playing">Keep going</button>
+        </p>
         <p class="message message-start">
           Press "Start" to begin game. Good luck!
         </p>
       </div>
     </div>
     <script
-      src="scripts/main.js"
       type="module"
+      src="scripts/main.js"
     ></script>
   </body>
 </html>
