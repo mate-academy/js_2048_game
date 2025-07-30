@@ -131,7 +131,7 @@ export default class Game {
     const newBoard = JSON.stringify(this.board);
 
     if (oldBoard !== newBoard) {
-      this.__spawnNewTile();
+      this._spawnNewTile();
       this._checkForGameOver();
     }
   }
