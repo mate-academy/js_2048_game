@@ -18,10 +18,11 @@ class Game {
       return;
     }
 
+    const previousState = this.getState();
+
     for (let i = 0; i < this.state.length; i++) {
       const row = this.state[i];
       const filtered = row.filter((cell) => cell !== 0);
-
       const merged = [];
 
       for (let j = 0; j < filtered.length; j++) {
@@ -45,7 +46,10 @@ class Game {
       this.state[i] = final;
     }
 
-    this.addRandomCell();
+    if (this.hasStateChanged(previousState)) {
+      this.addRandomCell();
+    }
+
     this.updateStatus();
   }
 
@@ -54,10 +58,11 @@ class Game {
       return;
     }
 
+    const previousState = this.getState();
+
     for (let i = 0; i < this.state.length; i++) {
       const row = this.state[i];
       const filtered = row.filter((cell) => cell !== 0);
-
       const merged = [];
 
       for (let j = filtered.length - 1; j >= 0; j--) {
@@ -83,7 +88,10 @@ class Game {
       this.state[i] = final;
     }
 
-    this.addRandomCell();
+    if (this.hasStateChanged(previousState)) {
+      this.addRandomCell();
+    }
+
     this.updateStatus();
   }
 
@@ -92,10 +100,11 @@ class Game {
       return;
     }
 
+    const previousState = this.getState();
+
     for (let j = 0; j < 4; j++) {
       const column = this.state.map((row) => row[j]);
       const filtered = column.filter((cell) => cell !== 0);
-
       const merged = [];
 
       for (let k = 0; k < filtered.length; k++) {
@@ -121,7 +130,10 @@ class Game {
       }
     }
 
-    this.addRandomCell();
+    if (this.hasStateChanged(previousState)) {
+      this.addRandomCell();
+    }
+
     this.updateStatus();
   }
 
@@ -130,10 +142,11 @@ class Game {
       return;
     }
 
+    const previousState = this.getState();
+
     for (let j = 0; j < 4; j++) {
       const column = this.state.map((row) => row[j]);
       const filtered = column.filter((cell) => cell !== 0);
-
       const merged = [];
 
       for (let k = filtered.length - 1; k >= 0; k--) {
@@ -161,7 +174,10 @@ class Game {
       }
     }
 
-    this.addRandomCell();
+    if (this.hasStateChanged(previousState)) {
+      this.addRandomCell();
+    }
+
     this.updateStatus();
   }
 
