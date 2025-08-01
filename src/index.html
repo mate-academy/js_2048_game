@@ -1,28 +1,44 @@
 <!doctype html>
 <html lang="en">
+
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>2048</title>
-    <link
-      rel="stylesheet"
-      href="./styles/main.scss"
-    />
+    <link rel="stylesheet" href="./styles/main.scss" />
   </head>
+
   <body>
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
         <div class="controls">
           <p class="info">
+    Moves:
+            <span class="game-moves">0</span>
+          </p>
+          <p class="info">
             Score:
             <span class="game-score">0</span>
           </p>
           <button class="button start">Start</button>
         </div>
+      </div>
+
+      <div class="game-settings">
+        <div class="settings-row">
+          <label for="board-size-slider">Board Size: <span id="board-size-value">4</span>x<span
+              id="board-size-value-2">4</span>
+          </label>
+          <input type="range" min="4"
+          max="9" value="4"
+          class="slider" id="board-size-slider">
+        </div>
+        <p class="instructions">
+          Use arrow keys or swipe to move the tiles.
+          <br>
+          Two tiles with the same number merge into one!
+        </p>
       </div>
 
       <table class="game-field">
@@ -59,12 +75,15 @@
 
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
+        <p class="message message-win hidden">Winner! Congrats! You did it!
+          <button class="button keep-playing">Keep going</button>
+        </p>
         <p class="message message-start">
           Press "Start" to begin game. Good luck!
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script type="module" src="scripts/main.js"></script>
   </body>
+
 </html>
