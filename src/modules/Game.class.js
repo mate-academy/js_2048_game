@@ -27,12 +27,7 @@ export default class Game {
 
     this.board = this.initialState
       ? this.initialState.map((row) => [...row])
-      : [
-          [0, 0, 0, 0],
-          [0, 0, 0, 0],
-          [0, 0, 0, 0],
-          [0, 0, 0, 0],
-        ];
+      : (this.board = Array.from({ length: 4 }, () => [0, 0, 0, 0]));
     this.score = 0;
     this.status = 'playing';
   }
@@ -41,16 +36,17 @@ export default class Game {
     const emptyCells = [];
 
     // Крок 1: знайди всі порожні клітинки
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        if (this.board[row][col] === 0) {
-          emptyCells.push({ row, col });
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.board[r][c] === 0) {
+          emptyCells.push({ row: r, col: c });
         }
       }
     }
 
-    // Якщо немає вільних клітинок — виходимо
-    if (emptyCells.length === 0) return;
+    if (emptyCells.length === 0) {
+      return;
+    }
 
     // Крок 2: вибери випадкову порожню клітинку
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
@@ -58,6 +54,7 @@ export default class Game {
 
     // Крок 3: встав 2 або 4
     const newValue = Math.random() < 0.9 ? 2 : 4;
+
     this.board[row][col] = newValue;
   }
 
@@ -65,7 +62,7 @@ export default class Game {
     let anyChanged = false;
 
     this.board.forEach((row, index) => {
-      const before = [...row];
+      const beforeRes = [...row];
       const withoutZeros = row.filter((num) => num !== 0);
 
       for (let i = 0; i < withoutZeros.length - 1; i++) {
@@ -83,7 +80,9 @@ export default class Game {
         withoutZerosFinal.push(0);
       }
 
-      const changed = before.some((val, idx) => val !== withoutZerosFinal[idx]);
+      const changed = beforeRes.some(
+        (val, idx) => val !== withoutZerosFinal[idx],
+      );
 
       if (changed) {
         anyChanged = true;
@@ -101,7 +100,7 @@ export default class Game {
     let anyChanged = false;
 
     this.board.forEach((row, index) => {
-      const before = [...row];
+      const beforeRes = [...row];
       const reversed = [...row].reverse();
       const withoutZeros = reversed.filter((num) => num !== 0);
 
@@ -122,7 +121,9 @@ export default class Game {
 
       withoutZerosFinal = withoutZerosFinal.reverse();
 
-      const changed = before.some((val, idx) => val !== withoutZerosFinal[idx]);
+      const changed = beforeRes.some(
+        (val, idx) => val !== withoutZerosFinal[idx],
+      );
 
       if (changed) {
         anyChanged = true;
@@ -147,7 +148,7 @@ export default class Game {
     }
 
     transposed.forEach((row, index) => {
-      const before = [...row];
+      const beforeRes = [...row];
       const withoutZeros = row.filter((num) => num !== 0);
 
       for (let i = 0; i < withoutZeros.length - 1; i++) {
@@ -165,7 +166,9 @@ export default class Game {
         withoutZerosFinal.push(0);
       }
 
-      const changed = before.some((val, idx) => val !== withoutZerosFinal[idx]);
+      const changed = beforeRes.some(
+        (val, idx) => val !== withoutZerosFinal[idx],
+      );
 
       if (changed) {
         anyChanged = true;
@@ -196,7 +199,7 @@ export default class Game {
     }
 
     transposed.forEach((row, index) => {
-      const before = [...row];
+      const beforeRes = [...row];
       const reversed = [...row].reverse();
       const withoutZeros = reversed.filter((num) => num !== 0);
 
@@ -217,7 +220,9 @@ export default class Game {
 
       withoutZerosFinal = withoutZerosFinal.reverse();
 
-      const changed = before.some((val, idx) => val !== withoutZerosFinal[idx]);
+      const changed = beforeRes.some(
+        (val, idx) => val !== withoutZerosFinal[idx],
+      );
 
       if (changed) {
         anyChanged = true;
@@ -252,28 +257,29 @@ export default class Game {
       for (let col = 0; col < 4; col++) {
         // Перевірка по горизонталі (крім останньої колонки)
         if (col < 3 && this.board[row][col] === this.board[row][col + 1]) {
-          return false; // Можна об'єднати — гра не програна
+          return false;
         }
+
         // Перевірка по вертикалі (крім останнього рядка)
         if (row < 3 && this.board[row][col] === this.board[row + 1][col]) {
-          return false; // Можна об'єднати — гра не програна
+          return false;
         }
       }
     }
 
     // Якщо немає ні порожніх клітинок, ні можливості об'єднання — програш
-    document.querySelector('.message-start').classList.add('hidden');
-    document.querySelector('.message-lose').classList.remove('hidden');
-    document.querySelector('.message-lose').classList.remove('restart');
+    this.status = 'lose';
+
     return true;
   }
 
   checkWin() {
-    for (let row of this.board) {
-      for (let cell of row) {
+    for (const row of this.board) {
+      for (const cell of row) {
         if (cell === 2048) {
           this.status = 'win';
           document.querySelector('.message-win').classList.remove('hidden');
+
           return;
         }
       }
@@ -326,25 +332,14 @@ export default class Game {
     this.addRandomTile();
     this.addRandomTile();
 
-    const loseMessage = document.querySelector('.message-lose');
-    const winMessage = document.querySelector('.message-win');
-    const startMessage = document.querySelector('.message-start');
+    const start = document.querySelector('.start');
+    const startMsg = document.querySelector('.message-start');
 
-    startMessage.classList.remove('restart');
-    startMessage.textContent = 'Press "Start" to begin game. Good luck!';
+    start.classList.remove('start');
+    start.classList.add('restart');
+    start.textContent = 'Restart';
 
-    if (loseMessage) {
-      loseMessage.classList.add('hidden');
-      loseMessage.classList.remove('restart');
-    }
-
-    if (winMessage) {
-      winMessage.classList.add('hidden');
-    }
-
-    if (!startMessage) {
-      startMessage.classList.remove('hidden');
-    }
+    startMsg.classList.add('hidden');
   }
 
   /**
@@ -354,53 +349,23 @@ export default class Game {
     this.score = 0;
     this.status = 'playing';
 
-    if (this.initialState) {
-      this.board = this.initialState.map((row) => [...row]);
-    } else {
-      this.board = Array.from({ length: 4 }, () => [0, 0, 0, 0]);
-      this.addRandomTile();
-      this.addRandomTile();
-    }
+    // Скидаємо поле (незалежно від initialState)
+    this.board = Array.from({ length: 4 }, () => [0, 0, 0, 0]);
 
-    const loseMessage = document.querySelector('.message-lose');
-    const winMessage = document.querySelector('.message-win');
-    const startMessage = document.querySelector('.message-start');
+    const restart = document.querySelector('.restart');
+    const startMsg = document.querySelector('.message-start');
+    const loseMsg = document.querySelector('.message-lose');
+    const winMsg = document.querySelector('.message-win');
 
-    startMessage.classList.remove('restart');
-    startMessage.textContent = 'Press "Start" to begin game. Good luck!';
+    // Сховай всі повідомлення
+    loseMsg.classList.add('hidden');
+    startMsg.classList.remove('hidden');
+    winMsg?.classList.add('hidden');
 
-    if (loseMessage) {
-      loseMessage.classList.add('hidden');
-      loseMessage.classList.remove('restart');
-    }
-
-    if (winMessage) {
-      winMessage.classList.add('hidden');
-    }
-
-    startMessage.classList.remove('hidden');
-  }
-
-  render() {
-    const cells = document.querySelectorAll('.field-cell');
-
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        const index = row * 4 + col;
-        const value = this.board[row][col];
-        const cell = cells[index];
-
-        // Ставимо текст
-        cell.textContent = value === 0 ? '' : value;
-
-        cell.className = 'field-cell';
-
-        // Додаємо клас-модифікатор з числом
-        if (value !== 0) {
-          cell.classList.add(`field-cell--${value}`);
-        }
-      }
-    }
+    // Зміни кнопку на Start
+    restart.classList.add('start');
+    restart.classList.remove('restart');
+    restart.textContent = 'Start';
   }
 }
 
