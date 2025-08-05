@@ -26,7 +26,7 @@ function renderBoard() {
 
   cells.forEach((cell, i) => {
     const row = Math.floor(i / 4);
-    const col = 1 % 4;
+    const col = i % 4;
     const value = board[row][col];
 
     cell.textContent = value || '';
