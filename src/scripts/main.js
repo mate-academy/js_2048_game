@@ -1,75 +1,108 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
+/* global Game */
 
-const Game = require('../modules/Game.class');
-const game = new Game();
+document.addEventListener('DOMContentLoaded', () => {
+  const game = new Game();
 
-const startButton = document.querySelector('.button.start');
-const scoreElement = document.querySelector('.game-score');
-const cells = document.querySelectorAll('.field-cell');
-const messageWin = document.querySelector('.message-win');
-const messageLose = document.querySelector('.message-lose');
-const messageStart = document.querySelector('.message-start');
+  const gameField = document.querySelector('.game-field');
+  const gameScore = document.querySelector('.game-score');
+  const gameButton = document.querySelector('.button.start');
+  const messageLose = document.querySelector('.message-lose');
+  const messageWin = document.querySelector('.message-win');
+  const messageStart = document.querySelector('.message-start');
 
-function renderBoard(state) {
-  const flatBoard = state.board.flat();
+  function updateField() {
+    const state = game.getState();
+    const rows = gameField.querySelectorAll('.field-row');
 
-  flatBoard.forEach((value, index) => {
-    const cell = cells[index];
+    for (let i = 0; i < 4; i++) {
+      const cells = rows[i].querySelectorAll('.field-cell');
 
-    cell.textContent = value === 0 ? '' : value;
+      for (let j = 0; j < 4; j++) {
+        const value = state[i][j];
 
-    cell.className = 'field-cell';
+        cells[j].textContent = value === 0 ? '' : value;
 
-    if (value) {
-      cell.classList.add(`field-cell--${value}`);
+        cells[j].className =
+          value === 0 ? 'field-cell' : `field-cell field-cell--${value}`;
+      }
     }
+  }
+
+  function updateScore() {
+    gameScore.textContent = game.getScore();
+  }
+
+  function updateButton() {
+    if (game.getStatus() === 'idle') {
+      gameButton.textContent = 'Start';
+      gameButton.className = 'button start';
+    } else {
+      gameButton.textContent = 'Restart';
+      gameButton.className = 'button restart';
+    }
+  }
+
+  function updateMessages() {
+    const gameStatus = game.getStatus();
+
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
+    messageStart.classList.add('hidden');
+
+    if (gameStatus === 'idle') {
+      messageStart.classList.remove('hidden');
+    } else if (gameStatus === 'lose') {
+      messageLose.classList.remove('hidden');
+    } else if (gameStatus === 'win') {
+      messageWin.classList.remove('hidden');
+    }
+  }
+
+  gameButton.addEventListener('click', () => {
+    if (game.getStatus() === 'idle') {
+      game.start();
+    } else {
+      game.restart();
+    }
+
+    updateField();
+    updateScore();
+    updateButton();
+    updateMessages();
   });
 
-  scoreElement.textContent = state.score;
-
-  messageStart.classList.add('hidden');
-
-  if (state.status === 'won') {
-    messageWin.classList.remove('hidden');
-  }
-
-  if (state.status === 'lost') {
-    messageLose.classList.remove('hidden');
-  }
-}
-
-startButton.addEventListener('click', () => {
-  messageLose.classList.add('hidden');
-  game.restart();
-  startButton.textContent = 'Restart';
-  startButton.classList.remove('start');
-  startButton.classList.add('restart');
-  renderBoard(game.getState());
-});
-
-document.addEventListener('keydown', (e) => {
-  if (game.getStatus() !== 'playing') {
-    return;
-  }
-
-  switch (e.key) {
-    case 'ArrowLeft':
-      game.moveLeft();
-      break;
-    case 'ArrowRight':
-      game.moveRight();
-      break;
-    case 'ArrowUp':
-      game.moveUp();
-      break;
-    case 'ArrowDown':
-      game.moveDown();
-      break;
-    default:
+  document.addEventListener('keydown', (e) => {
+    if (game.getStatus() !== 'playing') {
       return;
-  }
+    }
 
-  renderBoard(game.getState());
+    switch (e.key) {
+      case 'ArrowLeft':
+        game.moveLeft();
+        break;
+      case 'ArrowRight':
+        game.moveRight();
+        break;
+      case 'ArrowUp':
+        game.moveUp();
+        break;
+      case 'ArrowDown':
+        game.moveDown();
+        break;
+      default:
+        return;
+    }
+
+    updateField();
+    updateScore();
+    updateButton();
+    updateMessages();
+  });
+
+  updateField();
+  updateScore();
+  updateButton();
+  updateMessages();
 });

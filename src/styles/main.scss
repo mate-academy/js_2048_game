@@ -12,8 +12,8 @@ body {
 
 .field-cell {
   background: #d6cdc4;
-  width: 100px;
-  height: 100px;
+  width: 75px;
+  height: 75px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
@@ -78,7 +78,7 @@ body {
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 .game-header {
@@ -173,6 +173,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 350px;
 }
 
 .message-win {
