@@ -37,27 +37,22 @@ class Game {
     let scoreIncrease = 0;
 
     for (let row = 0; row < 4; row++) {
-      // Remove zeros and create working array
       const nonZeros = this.board[row].filter((val) => val !== 0);
       const merged = [];
       
-      // Merge logic: process pairs from left to right
       let i = 0;
       while (i < nonZeros.length) {
         if (i < nonZeros.length - 1 && nonZeros[i] === nonZeros[i + 1]) {
-          // Merge the two equal tiles
           const mergedValue = nonZeros[i] * 2;
           merged.push(mergedValue);
           scoreIncrease += mergedValue;
-          i += 2; // Skip both tiles that were merged
+          i += 2; 
         } else {
-          // No merge, just move the tile
           merged.push(nonZeros[i]);
           i += 1;
         }
       }
       
-      // Fill remaining positions with zeros
       while (merged.length < 4) {
         merged.push(0);
       }
@@ -83,27 +78,22 @@ class Game {
     let scoreIncrease = 0;
 
     for (let row = 0; row < 4; row++) {
-      // Remove zeros and create working array
       const nonZeros = this.board[row].filter((val) => val !== 0);
       const merged = [];
       
-      // Merge logic: process pairs from right to left
       let i = nonZeros.length - 1;
       while (i >= 0) {
         if (i > 0 && nonZeros[i] === nonZeros[i - 1]) {
-          // Merge the two equal tiles
           const mergedValue = nonZeros[i] * 2;
           merged.unshift(mergedValue);
           scoreIncrease += mergedValue;
-          i -= 2; // Skip both tiles that were merged
+          i -= 2; 
         } else {
-          // No merge, just move the tile
           merged.unshift(nonZeros[i]);
           i -= 1;
         }
       }
       
-      // Fill remaining positions with zeros at the beginning
       while (merged.length < 4) {
         merged.unshift(0);
       }
@@ -139,28 +129,23 @@ class Game {
       
       const merged = [];
       
-      // Merge logic: process pairs from top to bottom
       let i = 0;
       while (i < nonZeros.length) {
         if (i < nonZeros.length - 1 && nonZeros[i] === nonZeros[i + 1]) {
-          // Merge the two equal tiles
           const mergedValue = nonZeros[i] * 2;
           merged.push(mergedValue);
           scoreIncrease += mergedValue;
-          i += 2; // Skip both tiles that were merged
+          i += 2; 
         } else {
-          // No merge, just move the tile
           merged.push(nonZeros[i]);
           i += 1;
         }
       }
       
-      // Fill remaining positions with zeros
       while (merged.length < 4) {
         merged.push(0);
       }
       
-      // Put the merged column back into the board
       for (let row = 0; row < 4; row++) {
         this.board[row][col] = merged[row];
       }
@@ -184,7 +169,6 @@ class Game {
     let scoreIncrease = 0;
 
     for (let col = 0; col < 4; col++) {
-      // Extract column values and remove zeros
       const nonZeros = [];
       for (let row = 0; row < 4; row++) {
         if (this.board[row][col] !== 0) {
@@ -194,28 +178,23 @@ class Game {
       
       const merged = [];
       
-      // Merge logic: process pairs from bottom to top
       let i = nonZeros.length - 1;
       while (i >= 0) {
         if (i > 0 && nonZeros[i] === nonZeros[i - 1]) {
-          // Merge the two equal tiles
           const mergedValue = nonZeros[i] * 2;
           merged.unshift(mergedValue);
           scoreIncrease += mergedValue;
-          i -= 2; // Skip both tiles that were merged
+          i -= 2; 
         } else {
-          // No merge, just move the tile
           merged.unshift(nonZeros[i]);
           i -= 1;
         }
       }
       
-      // Fill remaining positions with zeros at the beginning
       while (merged.length < 4) {
         merged.unshift(0);
       }
       
-      // Put the merged column back into the board
       for (let row = 0; row < 4; row++) {
         this.board[row][col] = merged[row];
       }
@@ -245,15 +224,9 @@ class Game {
   }
 
   /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
+  @returns {string}
    */
+
   getStatus() {
     return this.status;
   }
@@ -304,7 +277,6 @@ class Game {
   }
 
   updateStatus() {
-    // Check for win condition (2048 tile)
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.board[row][col] === 2048) {
@@ -314,18 +286,15 @@ class Game {
       }
     }
 
-    // Check for lose condition (no available moves)
     if (!this.hasAvailableMoves()) {
       this.status = 'lose';
       return;
     }
 
-    // Otherwise, game continues
     this.status = 'playing';
   }
 
   hasAvailableMoves() {
-    // Check for empty cells
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.board[row][col] === 0) {
@@ -334,7 +303,6 @@ class Game {
       }
     }
 
-    // Check for possible horizontal merges
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 3; col++) {
         if (this.board[row][col] === this.board[row][col + 1]) {
@@ -343,7 +311,6 @@ class Game {
       }
     }
 
-    // Check for possible vertical merges
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.board[row][col] === this.board[row + 1][col]) {
@@ -356,12 +323,10 @@ class Game {
   }
 }
 
-// Browser compatibility: make Game available globally
 if (typeof window !== 'undefined') {
   window.Game = Game;
 }
 
-// Node.js compatibility: export for testing
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = Game;
 }
