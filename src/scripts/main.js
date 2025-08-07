@@ -42,21 +42,25 @@ function cleanDisplayStyles() {
   });
 }
 
-window.addEventListener('keydown', (e) => {
-  if (game.getStatus() === 'lose') {
-    cleanDisplayStyles();
-    messageLose.style.display = 'block';
+function updateUI() {
+  const board = game.getState();
 
-    return;
-  }
+  newBlocks(board);
+  score.textContent = String(game.getScore());
+  cleanDisplayStyles();
 
-  if (game.getStatus() === 'win') {
-    cleanDisplayStyles();
+  const gameStatus = game.getStatus(); // Renomeado para evitar conflito
+
+  if (gameStatus === 'win') {
     messageWin.style.display = 'block';
-
-    return;
+  } else if (gameStatus === 'lose') {
+    messageLose.style.display = 'block';
+  } else if (gameStatus === 'idle') {
+    messageStart.style.display = 'block';
   }
+}
 
+window.addEventListener('keydown', (e) => {
   if (!game.isGame) {
     return;
   }
@@ -74,90 +78,45 @@ window.addEventListener('keydown', (e) => {
     case 'ArrowDown':
       game.moveDown();
       break;
+    default:
+      return;
   }
 
-  const board = game.getState();
-
-  newBlocks(board);
-
-  score.textContent = String(game.getScore());
+  updateUI();
 });
 
 button.addEventListener('click', () => {
-  button.classList.toggle('start');
-  button.classList.toggle('restart');
-
-  cleanDisplayStyles();
-
-  if (button.textContent === 'Start') {
+  if (button.classList.contains('start')) {
+    button.classList.remove('start');
+    button.classList.add('restart');
     button.textContent = 'Restart';
     game.start();
-
-    if (game.getStatus() === 'playing') {
-      messageStart.style.display = 'none';
-    }
-  } else if (button.textContent === 'Restart') {
+  } else if (button.classList.contains('restart')) {
+    button.classList.remove('restart');
+    button.classList.add('start');
     button.textContent = 'Start';
     game.restart();
-
-    if (game.getStatus() === 'idle') {
-      messageStart.style.display = 'block';
-    }
   }
-  score.textContent = String(game.getScore());
 
-  const board = game.getState();
-
-  newBlocks(board);
+  updateUI();
 });
-
-// вставив з чату GPT щоб управління працювало на телефоні
 
 let touchStartX = 0;
 let touchStartY = 0;
 let touchEndX = 0;
 let touchEndY = 0;
 
-const threshold = 30; // Мінімальна відстань для свайпу
+const threshold = 30;
 
 document.addEventListener('touchstart', (e) => {
-  if (game.getStatus() === 'lose') {
-    cleanDisplayStyles();
-    messageLose.style.display = 'block';
-
-    return;
-  }
-
-  if (game.getStatus() === 'win') {
-    cleanDisplayStyles();
-    messageWin.style.display = 'block';
-
-    return;
-  }
-
   if (!game.isGame) {
     return;
   }
-
   touchStartX = e.changedTouches[0].screenX;
   touchStartY = e.changedTouches[0].screenY;
 });
 
 document.addEventListener('touchend', (e) => {
-  if (game.getStatus() === 'lose') {
-    cleanDisplayStyles();
-    messageLose.style.display = 'block';
-
-    return;
-  }
-
-  if (game.getStatus() === 'win') {
-    cleanDisplayStyles();
-    messageWin.style.display = 'block';
-
-    return;
-  }
-
   if (!game.isGame) {
     return;
   }
@@ -165,6 +124,7 @@ document.addEventListener('touchend', (e) => {
   touchEndY = e.changedTouches[0].screenY;
 
   handleGesture();
+  updateUI();
 });
 
 function handleGesture() {
@@ -176,7 +136,6 @@ function handleGesture() {
   const diffY = touchEndY - touchStartY;
 
   if (Math.abs(diffX) > Math.abs(diffY)) {
-    // Горизонтальний свайп
     if (Math.abs(diffX) > threshold) {
       if (diffX > 0) {
         game.moveRight();
@@ -185,7 +144,6 @@ function handleGesture() {
       }
     }
   } else {
-    // Вертикальний свайп
     if (Math.abs(diffY) > threshold) {
       if (diffY > 0) {
         game.moveDown();
@@ -194,9 +152,4 @@ function handleGesture() {
       }
     }
   }
-
-  const board = game.getState();
-
-  newBlocks(board);
-  score.textContent = String(game.getScore());
 }

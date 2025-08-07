@@ -9,46 +9,62 @@ class Game {
     ],
   ) {
     this.initialState = initialState;
-
-    if (initialState) {
-      this.board = initialState.map((row) => [...row]);
-    } else {
-      this.board = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ];
-    }
+    this.board = initialState.map((row) => [...row]);
 
     this.score = 0;
     this.isGame = false;
   }
 
-  moveLeft() {
-    const beforeArray = this.board.map((row) => [...row]);
+  // Função utilitária para transpor a matriz
+  transpose(board) {
+    return board[0].map((_, colIndex) => board.map((row) => row[colIndex]));
+  }
 
-    for (let i = 0; i < this.board.length; i++) {
-      let row = this.board[i].filter((val) => val !== 0);
+  // Função utilitária para inverter as linhas
+  reverseRows(board) {
+    return board.map((row) => [...row].reverse());
+  }
 
-      for (let j = 0; j < row.length; j++) {
-        if (row[j] === row[j + 1]) {
-          row[j] *= 2;
-          row[j + 1] = 0;
-          this.score += row[j];
+  // Lógica centralizada de movimento para a esquerda
+  shiftAndMergeLeft(board) {
+    let moved = false;
+    let scoreGained = 0;
+    const newBoard = board.map((row) => {
+      let arr = row.filter((val) => val !== 0);
+
+      for (let j = 0; j < arr.length - 1; j++) {
+        if (arr[j] === arr[j + 1]) {
+          arr[j] *= 2;
+          scoreGained += arr[j];
+          arr[j + 1] = 0;
           j++;
         }
       }
-      row = row.filter((val) => val !== 0);
+      arr = arr.filter((val) => val !== 0);
 
-      while (row.length < 4) {
-        row.push(0);
+      while (arr.length < 4) {
+        arr.push(0);
       }
 
-      this.board[i] = row;
-    }
+      if (!moved && arr.some((val, idx) => val !== row[idx])) {
+        moved = true;
+      }
 
-    this.hasChanged(beforeArray);
+      return arr;
+    });
+
+    return { newBoard, moved, scoreGained };
+  }
+
+  moveLeft() {
+    const { newBoard, moved, scoreGained } = this.shiftAndMergeLeft(this.board);
+
+    this.board = newBoard;
+    this.score += scoreGained;
+
+    if (moved) {
+      this.createNewBlock();
+    }
 
     if (this.isGameLose() || this.isGameWin()) {
       this.isGame = false;
@@ -56,28 +72,15 @@ class Game {
   }
 
   moveRight() {
-    const beforeArray = this.board.map((row) => [...row]);
+    const reversed = this.reverseRows(this.board);
+    const { newBoard, moved, scoreGained } = this.shiftAndMergeLeft(reversed);
 
-    for (let i = 0; i < this.board.length; i++) {
-      let row = this.board[i].filter((val) => val !== 0);
+    this.board = this.reverseRows(newBoard);
+    this.score += scoreGained;
 
-      for (let j = row.length - 1; j >= 0; j--) {
-        if (row[j] === row[j - 1]) {
-          row[j] *= 2;
-          row[j - 1] = 0;
-          this.score += row[j];
-          j--;
-        }
-      }
-      row = row.filter((val) => val !== 0);
-
-      while (row.length < 4) {
-        row.unshift(0);
-      }
-      this.board[i] = row;
+    if (moved) {
+      this.createNewBlock();
     }
-
-    this.hasChanged(beforeArray);
 
     if (this.isGameLose() || this.isGameWin()) {
       this.isGame = false;
@@ -85,37 +88,15 @@ class Game {
   }
 
   moveUp() {
-    const beforeArray = this.board.map((row) => [...row]);
+    const transposed = this.transpose(this.board);
+    const { newBoard, moved, scoreGained } = this.shiftAndMergeLeft(transposed);
 
-    for (let col = 0; col < 4; col++) {
-      let column = [];
+    this.board = this.transpose(newBoard);
+    this.score += scoreGained;
 
-      for (let row = 0; row < 4; row++) {
-        column.push(this.board[row][col]);
-      }
-      column = column.filter((val) => val !== 0);
-
-      for (let i = 0; i < column.length - 1; i++) {
-        if (column[i] === column[i + 1]) {
-          column[i] *= 2;
-          column[i + 1] = 0;
-          this.score += column[i];
-          i++;
-        }
-      }
-
-      column = column.filter((val) => val !== 0);
-
-      while (column.length < 4) {
-        column.push(0);
-      }
-
-      for (let row = 0; row < 4; row++) {
-        this.board[row][col] = column[row];
-      }
+    if (moved) {
+      this.createNewBlock();
     }
-
-    this.hasChanged(beforeArray);
 
     if (this.isGameLose() || this.isGameWin()) {
       this.isGame = false;
@@ -123,37 +104,16 @@ class Game {
   }
 
   moveDown() {
-    const beforeArray = this.board.map((row) => [...row]);
+    const transposed = this.transpose(this.board);
+    const reversed = this.reverseRows(transposed);
+    const { newBoard, moved, scoreGained } = this.shiftAndMergeLeft(reversed);
 
-    for (let col = 0; col < 4; col++) {
-      let column = [];
+    this.board = this.transpose(this.reverseRows(newBoard));
+    this.score += scoreGained;
 
-      for (let row = 0; row < 4; row++) {
-        column.push(this.board[row][col]);
-      }
-      column = column.filter((val) => val !== 0);
-
-      for (let i = column.length - 1; i >= 0; i--) {
-        if (column[i] === column[i - 1]) {
-          column[i] *= 2;
-          column[i - 1] = 0;
-          this.score += column[i];
-          i--;
-        }
-      }
-
-      column = column.filter((val) => val !== 0);
-
-      while (column.length < 4) {
-        column.unshift(0);
-      }
-
-      for (let row = 0; row < 4; row++) {
-        this.board[row][col] = column[row];
-      }
+    if (moved) {
+      this.createNewBlock();
     }
-
-    this.hasChanged(beforeArray);
 
     if (this.isGameLose() || this.isGameWin()) {
       this.isGame = false;
@@ -272,11 +232,7 @@ class Game {
   }
 
   restart() {
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 4; j++) {
-        this.board[i][j] = this.initialState[i][j];
-      }
-    }
+    this.board = this.initialState.map((row) => [...row]);
     this.isGame = false;
     this.score = 0;
   }
