@@ -33,21 +33,13 @@ class Game {
     return Array.from({ length: this.size }, () => Array(this.size).fill(0));
   }
 
-  moveLeft() {
+  performMove(transformFn) {
     if (this.status !== 'playing') {
-      return; // Cannot move if the game is not in progress
+      return; // Cannot perform move if the game is not in progress
     }
 
     const oldBoard = JSON.stringify(this.board);
-    const newBoard = [];
-
-    for (const row of this.board) {
-      let newRow = this.compressRow(row);
-
-      newRow = this.mergeRow(newRow);
-      newRow = this.compressRow(newRow);
-      newBoard.push(newRow);
-    }
+    const newBoard = transformFn(this.board.map((row) => [...row]));
 
     const boardChanged = JSON.stringify(newBoard) !== oldBoard;
 
@@ -59,106 +51,79 @@ class Game {
         this.status = 'lose'; // No moves left, game over
       }
     }
+  }
+
+  moveLeft() {
+    this.performMove((board) => {
+      return board.map((row) => {
+        let newRow = this.compressRow(row);
+
+        newRow = this.mergeRow(newRow);
+
+        return this.compressRow(newRow);
+      });
+    });
   }
   moveRight() {
-    if (this.status !== 'playing') {
-      return; // Cannot move if the game is not in progress
-    }
+    this.performMove((board) => {
+      return board.map((row) => {
+        let reversed = [...row].reverse();
 
-    const oldBoard = JSON.stringify(this.board);
-    const newBoard = [];
+        reversed = this.compressRow(reversed);
+        reversed = this.mergeRow(reversed);
+        reversed = this.compressRow(reversed);
 
-    for (const row of this.board) {
-      let reversedRow = [...row].reverse();
-
-      reversedRow = this.compressRow(reversedRow);
-      reversedRow = this.mergeRow(reversedRow);
-      reversedRow = this.compressRow(reversedRow);
-      newBoard.push(reversedRow.reverse());
-    }
-
-    const boardChanged = JSON.stringify(newBoard) !== oldBoard;
-
-    if (boardChanged) {
-      this.board = newBoard;
-      this.addRandomTile();
-
-      if (this.isGameOver()) {
-        this.status = 'lose'; // No moves left, game over
-      }
-    }
+        return reversed.reverse();
+      });
+    });
   }
   moveUp() {
-    if (this.status !== 'playing') {
-      return;
-    }
+    this.performMove((board) => {
+      const newBoard = this.createEmptyBoard();
 
-    const oldBoard = JSON.stringify(this.board);
-    const newBoard = this.createEmptyBoard();
+      for (let col = 0; col < this.size; col++) {
+        let column = [];
 
-    for (let col = 0; col < this.size; col++) {
-      let column = [];
+        for (let row = 0; row < this.size; row++) {
+          column.push(board[row][col]);
+        }
 
-      for (let row = 0; row < this.size; row++) {
-        column.push(this.board[row][col]);
+        column = this.compressRow(column);
+        column = this.mergeRow(column);
+        column = this.compressRow(column);
+
+        for (let row = 0; row < this.size; row++) {
+          newBoard[row][col] = column[row];
+        }
       }
 
-      column = this.compressRow(column);
-      column = this.mergeRow(column);
-      column = this.compressRow(column);
-
-      for (let row = 0; row < this.size; row++) {
-        newBoard[row][col] = column[row];
-      }
-    }
-
-    const boardChanged = JSON.stringify(newBoard) !== oldBoard;
-
-    if (boardChanged) {
-      this.board = newBoard;
-      this.addRandomTile();
-
-      if (this.isGameOver()) {
-        this.status = 'lose';
-      }
-    }
+      return newBoard;
+    });
   }
   moveDown() {
-    if (this.status !== 'playing') {
-      return; // Cannot move if the game is not in progress
-    }
+    this.performMove((board) => {
+      const newBoard = this.createEmptyBoard();
 
-    const oldBoard = JSON.stringify(this.board);
-    const newBoard = this.createEmptyBoard();
+      for (let col = 0; col < this.size; col++) {
+        let column = [];
 
-    for (let col = 0; col < this.size; col++) {
-      let column = [];
+        for (let row = 0; row < this.size; row++) {
+          column.push(board[row][col]);
+        }
 
-      for (let row = 0; row < this.size; row++) {
-        column.push(this.board[row][col]);
+        column = column.reverse();
+        column = this.compressRow(column);
+        column = this.mergeRow(column);
+        column = this.compressRow(column);
+        column = column.reverse();
+
+        for (let row = 0; row < this.size; row++) {
+          newBoard[row][col] = column[row];
+        }
       }
 
-      column.reverse();
-      column = this.compressRow(column);
-      column = this.mergeRow(column);
-      column = this.compressRow(column);
-      column.reverse();
-
-      for (let row = 0; row < this.size; row++) {
-        newBoard[row][col] = column[row];
-      }
-    }
-
-    const boardChanged = JSON.stringify(newBoard) !== oldBoard;
-
-    if (boardChanged) {
-      this.board = newBoard;
-      this.addRandomTile();
-
-      if (this.isGameOver()) {
-        this.status = 'lose'; // No moves left, game over
-      }
-    }
+      return newBoard;
+    });
   }
 
   /**
