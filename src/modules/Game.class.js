@@ -1,184 +1,242 @@
-export default class Game {
-  constructor(initialState) {
-    this.size = 4;
-    this.grid = initialState || this.createEmptyGrid();
+'use strict';
+class Game {
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.initialState = initialState;
+
+    if (initialState) {
+      this.board = initialState.map((row) => [...row]);
+    } else {
+      this.board = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
+    }
+
     this.score = 0;
-    this.status = 'start';
+    this.isGame = false;
   }
 
-  createEmptyGrid() {
-    return Array.from({ length: this.size }, () => Array(this.size).fill(0));
+  moveLeft() {
+    const beforeArray = this.board.map((row) => [...row]);
+
+    for (let i = 0; i < this.board.length; i++) {
+      let row = this.board[i].filter((val) => val !== 0);
+
+      for (let j = 0; j < row.length; j++) {
+        if (row[j] === row[j + 1]) {
+          row[j] *= 2;
+          row[j + 1] = 0;
+          this.score += row[j];
+          j++;
+        }
+      }
+      row = row.filter((val) => val !== 0);
+
+      while (row.length < 4) {
+        row.push(0);
+      }
+
+      this.board[i] = row;
+    }
+
+    this.hasChanged(beforeArray);
+
+    if (this.isGameLose() || this.isGameWin()) {
+      this.isGame = false;
+    }
   }
 
-  getState() {
-    return this.grid;
+  moveRight() {
+    const beforeArray = this.board.map((row) => [...row]);
+
+    for (let i = 0; i < this.board.length; i++) {
+      let row = this.board[i].filter((val) => val !== 0);
+
+      for (let j = row.length - 1; j >= 0; j--) {
+        if (row[j] === row[j - 1]) {
+          row[j] *= 2;
+          row[j - 1] = 0;
+          this.score += row[j];
+          j--;
+        }
+      }
+      row = row.filter((val) => val !== 0);
+
+      while (row.length < 4) {
+        row.unshift(0);
+      }
+      this.board[i] = row;
+    }
+
+    this.hasChanged(beforeArray);
+
+    if (this.isGameLose() || this.isGameWin()) {
+      this.isGame = false;
+    }
+  }
+
+  moveUp() {
+    const beforeArray = this.board.map((row) => [...row]);
+
+    for (let col = 0; col < 4; col++) {
+      let column = [];
+
+      for (let row = 0; row < 4; row++) {
+        column.push(this.board[row][col]);
+      }
+      column = column.filter((val) => val !== 0);
+
+      for (let i = 0; i < column.length - 1; i++) {
+        if (column[i] === column[i + 1]) {
+          column[i] *= 2;
+          column[i + 1] = 0;
+          this.score += column[i];
+          i++;
+        }
+      }
+
+      column = column.filter((val) => val !== 0);
+
+      while (column.length < 4) {
+        column.push(0);
+      }
+
+      for (let row = 0; row < 4; row++) {
+        this.board[row][col] = column[row];
+      }
+    }
+
+    this.hasChanged(beforeArray);
+
+    if (this.isGameLose() || this.isGameWin()) {
+      this.isGame = false;
+    }
+  }
+
+  moveDown() {
+    const beforeArray = this.board.map((row) => [...row]);
+
+    for (let col = 0; col < 4; col++) {
+      let column = [];
+
+      for (let row = 0; row < 4; row++) {
+        column.push(this.board[row][col]);
+      }
+      column = column.filter((val) => val !== 0);
+
+      for (let i = column.length - 1; i >= 0; i--) {
+        if (column[i] === column[i - 1]) {
+          column[i] *= 2;
+          column[i - 1] = 0;
+          this.score += column[i];
+          i--;
+        }
+      }
+
+      column = column.filter((val) => val !== 0);
+
+      while (column.length < 4) {
+        column.unshift(0);
+      }
+
+      for (let row = 0; row < 4; row++) {
+        this.board[row][col] = column[row];
+      }
+    }
+
+    this.hasChanged(beforeArray);
+
+    if (this.isGameLose() || this.isGameWin()) {
+      this.isGame = false;
+    }
+  }
+
+  hasChanged(beforeArray) {
+    let hasChanged = false;
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.board[i][j] !== beforeArray[i][j]) {
+          hasChanged = true;
+          break;
+        }
+      }
+
+      if (hasChanged) {
+        break;
+      }
+    }
+
+    if (!hasChanged) {
+      return;
+    }
+
+    this.createNewBlock();
+  }
+
+  createNewBlock() {
+    const empty = [];
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.board[i][j] === 0) {
+          empty.push([i, j]);
+        }
+      }
+    }
+
+    if (empty.length > 0) {
+      const [x, y] = empty[Math.floor(Math.random() * empty.length)];
+
+      if (Math.random() < 0.1) {
+        this.board[x][y] = 4;
+      } else {
+        this.board[x][y] = 2;
+      }
+    }
   }
 
   getScore() {
     return this.score;
   }
 
+  getState() {
+    return this.board.map((row) => [...row]);
+  }
+
   getStatus() {
-    return this.status;
-  }
-
-  start() {
-    this.grid = this.createEmptyGrid();
-    this.score = 0;
-    this.status = 'playing';
-    this.addRandomTile();
-    this.addRandomTile();
-  }
-
-  restart() {
-    this.start();
-  }
-
-  addRandomTile() {
-    const emptyCells = [];
-
-    // eslint-disable-next-line no-shadow
-    this.grid.forEach((row, r) => {
-      // eslint-disable-next-line no-shadow
-      row.forEach((cell, c) => {
-        if (cell === 0) {
-          emptyCells.push([r, c]);
-        }
-      });
-    });
-
-    if (emptyCells.length === 0) {
-      return;
-    }
-
-    const [r, c] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-    this.grid[r][c] = Math.random() < 0.9 ? 2 : 4;
-  }
-
-  move(direction) {
-    let needAddTile = false;
-    let rotated = false;
-    let flipped = false;
-
-    let newGrid = this.grid.map((row) => [...row]); // create deep copy
-
-    switch (direction) {
-      case 'up':
-        newGrid = this.rotateLeft(newGrid);
-        rotated = true;
-        break;
-      case 'down':
-        newGrid = this.rotateRight(newGrid);
-        rotated = true;
-        break;
-      case 'right':
-        newGrid = this.flip(newGrid);
-        flipped = true;
-        break;
-    }
-
-    const oldGridStr = JSON.stringify(newGrid);
-
-    newGrid = newGrid.map((row) => this.slideAndCombineRow(row));
-
-    const newGridStr = JSON.stringify(newGrid);
-
-    if (oldGridStr !== newGridStr) {
-      needAddTile = true;
-    }
-
-    if (flipped) {
-      newGrid = this.flip(newGrid);
-    }
-
-    if (rotated && direction === 'up') {
-      newGrid = this.rotateRight(newGrid);
-    }
-
-    if (rotated && direction === 'down') {
-      newGrid = this.rotateLeft(newGrid);
-    }
-
-    this.grid = newGrid;
-
-    if (needAddTile) {
-      this.addRandomTile();
-    }
-
-    if (this.isWin()) {
-      this.status = 'win';
-    } else if (this.isGameOver()) {
-      this.status = 'lose';
+    if (this.isGame) {
+      return 'playing';
+    } else if (this.isGameLose()) {
+      return 'lose';
+    } else if (this.isGameWin()) {
+      return 'win';
+    } else {
+      return 'idle';
     }
   }
 
-  slideAndCombineRow(row) {
-    // eslint-disable-next-line no-param-reassign
-    row = row.filter((val) => val !== 0);
-
-    for (let i = 0; i < row.length - 1; i++) {
-      if (row[i] === row[i + 1]) {
-        row[i] *= 2;
-        this.score += row[i];
-        row[i + 1] = 0;
-      }
-    }
-
-    // eslint-disable-next-line no-param-reassign
-    row = row.filter((val) => val !== 0);
-
-    while (row.length < this.size) {
-      row.push(0);
-    }
-
-    return row;
-  }
-
-  rotateLeft(matrix) {
-    const result = this.createEmptyGrid();
-
-    for (let r = 0; r < this.size; r++) {
-      for (let c = 0; c < this.size; c++) {
-        result[this.size - 1 - c][r] = matrix[r][c];
-      }
-    }
-
-    return result;
-  }
-
-  rotateRight(matrix) {
-    const result = this.createEmptyGrid();
-
-    for (let r = 0; r < this.size; r++) {
-      for (let c = 0; c < this.size; c++) {
-        result[c][this.size - 1 - r] = matrix[r][c];
-      }
-    }
-
-    return result;
-  }
-
-  flip(matrix) {
-    return matrix.map((row) => [...row].reverse());
-  }
-
-  isGameOver() {
-    if (this.grid.flat().includes(0)) {
-      return false;
-    }
-
-    for (let r = 0; r < this.size; r++) {
-      for (let c = 0; c < this.size - 1; c++) {
-        if (this.grid[r][c] === this.grid[r][c + 1]) {
+  isGameLose() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.board[i][j] === 0) {
           return false;
         }
-      }
-    }
 
-    for (let c = 0; c < this.size; c++) {
-      for (let r = 0; r < this.size - 1; r++) {
-        if (this.grid[r][c] === this.grid[r + 1][c]) {
+        if (j < 3 && this.board[i][j] === this.board[i][j + 1]) {
+          return false;
+        }
+
+        if (i < 3 && this.board[i][j] === this.board[i + 1][j]) {
           return false;
         }
       }
@@ -187,7 +245,43 @@ export default class Game {
     return true;
   }
 
-  isWin() {
-    return this.grid.flat().includes(2048);
+  isGameWin() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.board[i][j] === 2048) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
+
+  start() {
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    this.createNewBlock();
+    this.createNewBlock();
+    this.score = 0;
+    this.isGame = true;
+  }
+
+  restart() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        this.board[i][j] = this.initialState[i][j];
+      }
+    }
+    this.isGame = false;
+    this.score = 0;
+  }
+
+  // Add your own methods here
 }
+
+export default Game;
