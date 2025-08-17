@@ -1,104 +1,94 @@
 'use strict';
 
-const Game = require('../modules/Game.class');
+import { Game } from '../modules/Game.class.js';
 
+const boardElement = document.querySelector('.game-field tbody');
 const startButton = document.querySelector('.button.start');
-const score = document.querySelector('.game-score');
-const msgStart = document.querySelector('.message-start');
-const msgWin = document.querySelector('.message-win');
-const msgLose = document.querySelector('.message-lose');
-const fieldRows = document.querySelectorAll('.field-rows');
+const scoreElement = document.querySelector('.game-score');
+const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
 
 let game;
 
-function renderBoard(board) {
-  fieldRows.forEach((rowEl, r) => {
-    const cells = rowEl.querySelectorAll('.field-cell');
+const updateBoard = () => {
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      const cell = boardElement.children[r].children[c];
+      const value = game.board[r][c];
 
-    cells.forEach((cellEl, c) => {
-      const value = board[r][c];
-
-      cellEl.textContent = value === 0 ? '' : value;
-
-      cellEl.className = 'field-cell';
+      cell.className = 'field-cell';
+      cell.textContent = '';
 
       if (value > 0) {
-        cellEl.classList.add(`${value}`);
+        cell.textContent = value;
+        cell.classList.add(`field-cell--${value}`);
       }
-    });
-  });
-}
-
-function updateUI() {
-  score.textContent = game.getScore();
-
-  renderBoard(game.getState());
-
-  const statusEl = game.getStatus();
-
-  msgStart.classList.add('hidden');
-  msgWin.classList.add('hidden');
-  msgLose.classList.add('hidden');
-
-  if (statusEl === 'win') {
-    msgWin.classList.remove('hidden');
-  } else if (statusEl === 'lose') {
-    msgLose.classList.remove('hidden');
+    }
   }
-}
+};
 
-function handleMove(direction) {
-  if (game.getStatus() !== 'plaing') {
-    return;
-  }
+const updateScore = () => {
+  scoreElement.textContent = game.score;
+};
 
-  let moved = false;
-
-  switch (direction) {
-    case 'ArrowLeft':
-      moved = game.moveLeft();
-
-      break;
-
-    case 'ArrowRight':
-      moved = game.moveRight();
-
-      break;
-
-    case 'ArrowUp':
-      moved = game.moveUp();
-
-      break;
-
-    case 'ArrowDown':
-      moved = game.moveDown();
-
-      break;
-  }
-
-  if (moved) {
-    updateUI();
-
-    startButton.textContent = 'Restart';
-    startButton.classList.remove('start');
-    startButton.classList.add('restart');
-  }
-}
-
-function startGame() {
-  game = new Game();
-  game.start();
-  updateUI();
-
+const handleStartButton = () => {
   startButton.textContent = 'Restart';
   startButton.classList.remove('start');
   startButton.classList.add('restart');
-}
 
-startButton.addEventListener('click', startGame);
+  startMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
 
-document.addEventListener('keydown', (e) => {
-  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-    handleMove(e.key);
+  game.restart();
+  updateBoard();
+  updateScore();
+};
+
+const handleRestartButton = () => {
+  game.restart();
+  updateBoard();
+  updateScore();
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
+};
+
+const checkGameState = () => {
+  if (game.hasWon) {
+    winMessage.classList.remove('hidden');
+  } else if (game.isGameOver()) {
+    loseMessage.classList.remove('hidden');
   }
-});
+};
+
+const handleMove = (direction) => {
+  const moved = game.move(direction);
+
+  if (moved) {
+    updateBoard();
+    updateScore();
+    checkGameState();
+  }
+};
+
+(() => {
+  game = new Game();
+
+  startButton.addEventListener('click', () => {
+    if (startButton.classList.contains('start')) {
+      handleStartButton();
+    } else {
+      handleRestartButton();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const directions = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+
+    if (directions.includes(e.key)) {
+      e.preventDefault();
+      handleMove(e.key);
+    }
+  });
+})();
