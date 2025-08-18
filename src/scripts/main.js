@@ -1,9 +1,14 @@
 'use strict';
 // Uncomment the next lines to use your game instance in the browser
-
-const Game = require('../modules/Game.class');
-const game = new Game();
+// const Game = require('../modules/Game.class');
+// const game = new Game();
 // Write your code here
+
+import Game from '../modules/Game.class.js';
+
+const game = new Game();
+
+window.game = game;
 
 const startButton = document.querySelector('.button.start');
 const scoreDisplay = document.querySelector('.game-score');
@@ -89,7 +94,7 @@ function render() {
     startButton.textContent = 'Start';
     startButton.classList.remove('restart');
     startButton.classList.add('start');
-  } else if (currentStatus === 'win' || currentStatus === 'lose') {
+  } else {
     startButton.textContent = 'Restart';
     startButton.classList.remove('start');
     startButton.classList.add('restart');
