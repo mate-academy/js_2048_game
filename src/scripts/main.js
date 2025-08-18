@@ -8,8 +8,6 @@ import Game from '../modules/Game.class.js';
 
 const game = new Game();
 
-window.game = game;
-
 const startButton = document.querySelector('.button.start');
 const scoreDisplay = document.querySelector('.game-score');
 
