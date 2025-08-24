@@ -77,8 +77,13 @@ body {
 
 .game-field {
   background: #bbada0;
-  border-spacing: 10px;
   border-radius: 5px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 75px);
+  grid-template-rows: repeat(4, 75px);
+  gap: 10px;
+  box-sizing: border-box;
 }
 
 .game-header {
