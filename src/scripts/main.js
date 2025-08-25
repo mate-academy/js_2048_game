@@ -33,6 +33,7 @@ function render() {
       boardEl.appendChild(div);
     });
   });
+
   scoreEl.textContent = game.getScore();
 
   if (game.getStatus() === 'won') {
@@ -69,7 +70,6 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') {
       game.moveDown();
     }
-
     render();
   }
 });
@@ -83,6 +83,7 @@ startBtn.addEventListener('click', () => {
   } else {
     game.restart();
   }
+
   messageStart.classList.add('hidden');
   render();
 });

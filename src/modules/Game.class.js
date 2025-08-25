@@ -94,12 +94,12 @@ class Game {
         moved = true;
       }
       this.score += scoreGained;
-
-      if (moved) {
-        this.addRandomTile();
-      }
-      this.checkGameStatus();
     }
+
+    if (moved) {
+      this.addRandomTile();
+    }
+    this.checkGameStatus();
   }
 
   addRandomTile() {
@@ -151,7 +151,6 @@ class Game {
     const filtered = row.filter((v) => v !== 0);
     const result = [];
     let scoreGained = 0;
-    let changed = false;
 
     for (let i = 0; i < filtered.length; i++) {
       if (filtered[i] === filtered[i + 1]) {
@@ -164,7 +163,6 @@ class Game {
           this.status = 'won';
         }
         i++;
-        changed = true;
       } else {
         result.push(filtered[i]);
       }
@@ -174,9 +172,7 @@ class Game {
       result.push(0);
     }
 
-    if (result.toString() !== row.toString()) {
-      changed = true;
-    }
+    const changed = row.some((val, i) => val !== result[i]);
 
     return { newRow: result, scoreGained, changed };
   }
