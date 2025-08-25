@@ -17,6 +17,9 @@ body {
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   vertical-align: center;
   user-select: none;
@@ -77,8 +80,13 @@ body {
 
 .game-field {
   background: #bbada0;
-  border-spacing: 10px;
   border-radius: 5px;
+  padding: 10px;
+  display: grid !important;
+  grid-template-columns: repeat(4, 75px);
+  grid-template-rows: repeat(4, 75px);
+  gap: 10px;
+  box-sizing: border-box;
 }
 
 .game-header {
