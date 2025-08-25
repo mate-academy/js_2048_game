@@ -12,6 +12,7 @@ const game = new Game();
 const boardEl = document.querySelector('.game-field');
 const scoreEl = document.querySelector('.game-score');
 const messageEl = document.querySelector('.message');
+const messageStart = document.querySelector('.message-start');
 const startBtn = document.querySelector('.button.start');
 
 function render() {
@@ -82,6 +83,6 @@ startBtn.addEventListener('click', () => {
   } else {
     game.restart();
   }
-
+  messageStart.classList.add('hidden');
   render();
 });

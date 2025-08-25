@@ -160,7 +160,7 @@ class Game {
         result.push(merged);
         scoreGained += merged;
 
-        if (merged === 2048) {
+        if (result.some((cell) => cell >= 2048)) {
           this.status = 'won';
         }
         i++;

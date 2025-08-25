@@ -17,14 +17,14 @@ body {
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  text-align: center;
   vertical-align: center;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 
 .field-cell--2 {
@@ -193,4 +193,4 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
-} /*# sourceMappingURL=main.css.map */
+}/*# sourceMappingURL=main.css.map */
