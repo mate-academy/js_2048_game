@@ -21,8 +21,17 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
+    this.board =
+      initialState || Array.from({ length: 4 }, () => Array(4).fill(0));
+    this.status = 'idle';
+
+    // this.board =
+    //  [[1, 2, 3, 4],
+    //   [5, 2, 7, 8],
+    //   [9, 10, 11, 12],
+    //   [13, 14, 15, 16]];
     // eslint-disable-next-line no-console
-    console.log(initialState);
+    // console.log(this.board);
   }
 
   moveLeft() {}
