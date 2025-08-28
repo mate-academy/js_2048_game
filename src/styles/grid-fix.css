@@ -1,0 +1,83 @@
+/* Reset the styling for the game field */
+.game-field {
+  border-collapse: separate !important;
+  border-spacing: 10px !important;
+  margin: 0 auto !important;
+  background-color: #bbada0 !important;
+  border-radius: 5px !important;
+  table-layout: fixed !important;
+}
+
+/* Reset row styling */
+.field-row {
+  display: table-row !important;
+}
+
+/* Reset cell styling */
+.field-cell {
+  display: table-cell !important;
+  width: 75px !important;
+  height: 75px !important;
+  border-radius: 5px !important;
+  vertical-align: middle !important;
+  line-height: 75px !important;
+  text-align: center !important;
+  font-size: 24px !important;
+  font-weight: bold !important;
+  position: relative !important;
+  background: #d6cdc4 !important;
+}
+
+/* Tile colors - define them directly here to ensure they are applied */
+.field-cell.field-cell--2 {
+  background-color: #eee4da !important;
+}
+
+.field-cell.field-cell--4 {
+  background-color: #ede0c8 !important;
+}
+
+.field-cell.field-cell--8 {
+  background-color: #f2b179 !important;
+  color: #f9f6f2 !important;
+}
+
+.field-cell.field-cell--16 {
+  background-color: #f59563 !important;
+  color: #f9f6f2 !important;
+}
+
+.field-cell.field-cell--32 {
+  background-color: #f67c5f !important;
+  color: #f9f6f2 !important;
+}
+
+.field-cell.field-cell--64 {
+  background-color: #f65e3b !important;
+  color: #f9f6f2 !important;
+}
+
+.field-cell.field-cell--128 {
+  background-color: #edcf72 !important;
+  color: #f9f6f2 !important;
+}
+
+.field-cell.field-cell--256 {
+  background-color: #edcc61 !important;
+  color: #f9f6f2 !important;
+}
+
+.field-cell.field-cell--512 {
+  background-color: #edc850 !important;
+  color: #f9f6f2 !important;
+}
+
+.field-cell.field-cell--1024 {
+  background-color: #edc53f !important;
+  color: #f9f6f2 !important;
+}
+
+.field-cell.field-cell--2048 {
+  background-color: #edc22e !important;
+  color: #f9f6f2 !important;
+}
