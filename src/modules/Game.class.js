@@ -48,9 +48,11 @@ class Game {
   }
 
   moveLeft() {
-    if (this.checkLose() === true) {
+    if (this.gameStatus !== this.status.PLAYING) {
       return;
     }
+
+    let moved = false;
 
     for (let row = 0; row < this.board.length; row++) {
       for (let col = 1; col < this.board[row].length; col++) {
@@ -68,12 +70,12 @@ class Game {
             this.board[row][currentCol - 1] = currentCellValue;
             this.board[row][currentCol] = 0;
             currentCol--;
+            moved = true;
           } else if (currentCellValue === leftCellValue) {
             this.board[row][currentCol - 1] *= 2;
             this.board[row][currentCol] = 0;
             this.score += this.board[row][currentCol - 1];
-            this.checkWin();
-            this.checkLose();
+            moved = true;
             break;
           } else {
             break;
@@ -81,12 +83,20 @@ class Game {
         }
       }
     }
-    this.checkWin();
+
+    if (moved) {
+      this.addRandomTile();
+      this.checkWin();
+      this.checkLose();
+    }
   }
+
   moveRight() {
-    if (this.checkLose() === true) {
+    if (this.gameStatus !== this.status.PLAYING) {
       return;
     }
+
+    let moved = false;
 
     for (let row = 0; row < this.board.length; row++) {
       for (let col = this.board[row].length - 2; col >= 0; col--) {
@@ -104,10 +114,12 @@ class Game {
             this.board[row][currentCol + 1] = currentCellValue;
             this.board[row][currentCol] = 0;
             currentCol++;
+            moved = true;
           } else if (currentCellValue === rightCellValue) {
             this.board[row][currentCol + 1] *= 2;
             this.board[row][currentCol] = 0;
             this.score += this.board[row][currentCol + 1];
+            moved = true;
             break;
           } else {
             break;
@@ -115,12 +127,20 @@ class Game {
         }
       }
     }
-    this.checkWin();
+
+    if (moved) {
+      this.addRandomTile();
+      this.checkWin();
+      this.checkLose();
+    }
   }
+
   moveUp() {
-    if (this.checkLose() === true) {
+    if (this.gameStatus !== this.status.PLAYING) {
       return;
     }
+
+    let moved = false;
 
     for (let col = 0; col < this.board[0].length; col++) {
       for (let row = 1; row < this.board.length; row++) {
@@ -138,10 +158,12 @@ class Game {
             this.board[currentRow - 1][col] = currentCellValue;
             this.board[currentRow][col] = 0;
             currentRow--;
+            moved = true;
           } else if (currentCellValue === upCellValue) {
             this.board[currentRow - 1][col] *= 2;
             this.board[currentRow][col] = 0;
             this.score += this.board[currentRow - 1][col];
+            moved = true;
             break;
           } else {
             break;
@@ -149,12 +171,20 @@ class Game {
         }
       }
     }
-    this.checkWin();
+
+    if (moved) {
+      this.addRandomTile();
+      this.checkWin();
+      this.checkLose();
+    }
   }
+
   moveDown() {
-    if (this.checkLose() === true) {
+    if (this.gameStatus !== this.status.PLAYING) {
       return;
     }
+
+    let moved = false;
 
     for (let col = 0; col < this.board[0].length; col++) {
       for (let row = this.board.length - 2; row >= 0; row--) {
@@ -172,10 +202,12 @@ class Game {
             this.board[currentRow + 1][col] = currentCellValue;
             this.board[currentRow][col] = 0;
             currentRow++;
+            moved = true;
           } else if (currentCellValue === downCellValue) {
             this.board[currentRow + 1][col] *= 2;
             this.board[currentRow][col] = 0;
             this.score += this.board[currentRow + 1][col];
+            moved = true;
             break;
           } else {
             break;
@@ -183,7 +215,12 @@ class Game {
         }
       }
     }
-    this.checkWin();
+
+    if (moved) {
+      this.addRandomTile();
+      this.checkWin();
+      this.checkLose();
+    }
   }
 
   /**

@@ -72,7 +72,6 @@ document.addEventListener('keydown', (e) => {
   if (game.getStatus() === 'playing') {
     if (e.code === 'ArrowLeft') {
       game.moveLeft();
-      game.addRandomTile();
 
       updateScore();
       initiateCells(game.getState());
@@ -80,7 +79,6 @@ document.addEventListener('keydown', (e) => {
 
     if (e.code === 'ArrowRight') {
       game.moveRight();
-      game.addRandomTile();
 
       updateScore();
       initiateCells(game.getState());
@@ -88,7 +86,6 @@ document.addEventListener('keydown', (e) => {
 
     if (e.code === 'ArrowUp') {
       game.moveUp();
-      game.addRandomTile();
 
       updateScore();
       initiateCells(game.getState());
@@ -96,7 +93,6 @@ document.addEventListener('keydown', (e) => {
 
     if (e.code === 'ArrowDown') {
       game.moveDown();
-      game.addRandomTile();
 
       updateScore();
       initiateCells(game.getState());
