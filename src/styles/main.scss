@@ -8,6 +8,7 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  overflow: hidden;
 }
 
 .field-cell {
@@ -76,9 +77,15 @@ body {
 }
 
 .game-field {
+  overflow: visible;
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  transition: transform 2s;
+
+  &--lose {
+    transform: scale(1.3);
+  }
 }
 
 .game-header {
@@ -88,6 +95,26 @@ body {
   margin-bottom: 24px;
   padding: 10px;
   box-sizing: border-box;
+}
+
+.game-over {
+  font-size: 100px;
+  pointer-events: none;
+  letter-spacing: 3px;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  opacity: 0;
+  transition: 1s;
+
+  &--visible {
+    opacity: 1;
+    transition: opacity 6s ease-out;
+  }
 }
 
 h1 {
@@ -163,6 +190,7 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+  margin: 0;
 }
 
 .hidden {
@@ -170,7 +198,10 @@ h1 {
 }
 
 .container {
+  position: relative;
+  height: 100vh;
   display: flex;
+  justify-content: space-between;
   flex-direction: column;
   align-items: center;
   width: 350px;
@@ -181,7 +212,17 @@ h1 {
   color: #f9f6f2;
 }
 
+.message-lose {
+  cursor: pointer;
+  background: #f00;
+  color: black;
+
+  &:hover {
+    background-color: #c00000;
+  }
+}
+
 .message-container {
   width: 100%;
-  height: 150px;
+  height: 100px;
 }
