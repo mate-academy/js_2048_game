@@ -22,9 +22,17 @@ function gerarNumero() {
   tabuleiro[r][c] = Math.random() < 0.1 ? 4 : 2;
 }
 
-function getState() { return tabuleiro.map(row => [...row]); }
-function getScore() { return score; }
-function getStatus() { return gameStatus; }
+function getState() {
+  return tabuleiro.map(row => [...row]);
+}
+
+function getScore() {
+  return score;
+}
+
+function getStatus() {
+  return gameStatus;
+}
 
 function checkWin() {
   for (let r = 0; r < 4; r++) {
@@ -74,7 +82,6 @@ function move(direction) {
 
     if (direction === "right" || direction === "down") compacta.reverse();
 
-    // Checa se houve mudança
     for (let j = 0; j < 4; j++) {
       if (compacta[j] !== original[j]) mudou = true;
       if (direction === "up" || direction === "down") tabuleiro[j][i] = compacta[j];
@@ -87,12 +94,10 @@ function move(direction) {
   checkGameOver();
 }
 
-const movimentos = {
-  left: () => move("left"),
-  right: () => move("right"),
-  up: () => move("up"),
-  down: () => move("down")
-};
+function moveLeft() { move("left"); }
+function moveRight() { move("right"); }
+function moveUp() { move("up"); }
+function moveDown() { move("down"); }
 
 function start() {
   tabuleiro = Array.from({ length: 4 }, () => [0, 0, 0, 0]);
@@ -102,4 +107,6 @@ function start() {
   gerarNumero();
 }
 
-function restart() { start(); }
+function restart() {
+  start();
+}
