@@ -185,3 +185,39 @@ h1 {
   width: 100%;
   height: 150px;
 }
+
+@mixin animate($name, $duration: 0.2s, $ease: ease) {
+  animation: $name $duration $ease;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.cell-new {
+  @include animate(popIn);
+}
+
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.cell-merge {
+  @include animate(mergePop);
+}
