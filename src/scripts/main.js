@@ -12,20 +12,11 @@ export default class Game {
   }
 
   emptyBoard() {
-    return [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    return Array.from({ length: 4 }, () => [0, 0, 0, 0]);
   }
 
   clone(board) {
-    let copia = [];
-    for (let i = 0; i < 4; i++) {
-      copia.push([...board[i]]);
-    }
-    return copia;
+    return board.map(row => [...row]);
   }
 
   start() {
@@ -53,153 +44,72 @@ export default class Game {
   }
 
   gerarNumero() {
-    let vazio = [];
+    const vazio = [];
+    this.tabuleiro.forEach((row, i) => row.forEach((val, j) => {
+      if (val === 0) vazio.push([i, j]);
+    }));
+
+    if (!vazio.length) return;
+
+    const [i, j] = vazio[Math.floor(Math.random() * vazio.length)];
+    this.tabuleiro[i][j] = Math.random() < 0.9 ? 2 : 4;
+  }
+
+  moveLeft() { return this.moveHorizontal(true); }
+  moveRight() { return this.moveHorizontal(false); }
+
+  moveHorizontal(left = true) {
+    let mudou = false;
+    const range = left ? [0, 4, 1] : [3, -1, -1];
+
     for (let i = 0; i < 4; i++) {
+      let row = this.tabuleiro[i];
+      const compacted = row.filter(v => v !== 0);
+
+      for (let j = 0; j < compacted.length - 1; j++) {
+        if (compacted[j] === compacted[j + 1]) {
+          compacted[j] *= 2;
+          this.somar += compacted[j];
+          compacted[j + 1] = 0;
+        }
+      }
+
+      const newRow = compacted.filter(v => v !== 0);
+      while (newRow.length < 4) left ? newRow.push(0) : newRow.unshift(0);
+
+      if (row.some((v, idx) => v !== newRow[idx])) mudou = true;
+      this.tabuleiro[i] = newRow;
+    }
+
+    if (mudou) {
+      this.gerarNumero();
+      this.checkStatus();
+    }
+    return mudou;
+  }
+
+  moveUp() { return this.moveVertical(true); }
+  moveDown() { return this.moveVertical(false); }
+
+  moveVertical(up = true) {
+    let mudou = false;
+    for (let i = 0; i < 4; i++) {
+      const col = this.tabuleiro.map(row => row[i]).filter(v => v !== 0);
+      for (let j = 0; j < col.length - 1; j++) {
+        if (col[j] === col[j + 1]) {
+          col[j] *= 2;
+          this.somar += col[j];
+          col[j + 1] = 0;
+        }
+      }
+      const newCol = col.filter(v => v !== 0);
+      while (newCol.length < 4) up ? newCol.push(0) : newCol.unshift(0);
       for (let j = 0; j < 4; j++) {
-        if (this.tabuleiro[i][j] === 0) vazio.push([i, j]);
+        if (this.tabuleiro[j][i] !== newCol[j]) mudou = true;
+        this.tabuleiro[j][i] = newCol[j];
       }
     }
-    if (vazio.length === 0) return;
-    let [primeiro, segundo] = vazio[Math.floor(Math.random() * vazio.length)];
-    let numero = Math.ceil(Math.random() * 10);
-    this.tabuleiro[primeiro][segundo] = numero === 10 ? 4 : 2;
-  }
 
-  moveLeft() {
-    let mudou = false;
-    for (let i = 0; i < 4; i++) {
-      for (let o = 0; o < 4; o++) {
-        if (this.tabuleiro[i][o] === 0) {
-          for (let k = o + 1; k < 4; k++) {
-            if (this.tabuleiro[i][k] !== 0) {
-              this.tabuleiro[i][o] = this.tabuleiro[i][k];
-              this.tabuleiro[i][k] = 0;
-              mudou = true;
-              break;
-            }
-          }
-        }
-      }
-      for (let o = 0; o < 3; o++) {
-        if (this.tabuleiro[i][o] !== 0 && this.tabuleiro[i][o] === this.tabuleiro[i][o + 1]) {
-          this.tabuleiro[i][o] *= 2;
-          this.somar += this.tabuleiro[i][o];
-          this.tabuleiro[i][o + 1] = 0;
-          mudou = true;
-        }
-      }
-      for (let o = 0; o < 4; o++) {
-        if (this.tabuleiro[i][o] === 0) {
-          for (let k = o + 1; k < 4; k++) {
-            if (this.tabuleiro[i][k] !== 0) {
-              this.tabuleiro[i][o] = this.tabuleiro[i][k];
-              this.tabuleiro[i][k] = 0;
-              mudou = true;
-              break;
-            }
-          }
-        }
-      }
-    }
-    if (mudou) {
-      this.gerarNumero();
-      this.checkStatus();
-    }
-    return mudou;
-  }
-
-  moveRight() {
-    let mudou = false;
-    for (let i = 0; i < 4; i++) {
-      for (let o = 3; o >= 0; o--) {
-        if (this.tabuleiro[i][o] === 0) {
-          for (let k = o - 1; k >= 0; k--) {
-            if (this.tabuleiro[i][k] !== 0) {
-              this.tabuleiro[i][o] = this.tabuleiro[i][k];
-              this.tabuleiro[i][k] = 0;
-              mudou = true;
-              break;
-            }
-          }
-        }
-      }
-      for (let o = 3; o > 0; o--) {
-        if (this.tabuleiro[i][o] !== 0 && this.tabuleiro[i][o] === this.tabuleiro[i][o - 1]) {
-          this.tabuleiro[i][o] *= 2;
-          this.somar += this.tabuleiro[i][o];
-          this.tabuleiro[i][o - 1] = 0;
-          mudou = true;
-        }
-      }
-      for (let o = 3; o >= 0; o--) {
-        if (this.tabuleiro[i][o] === 0) {
-          for (let k = o - 1; k >= 0; k--) {
-            if (this.tabuleiro[i][k] !== 0) {
-              this.tabuleiro[i][o] = this.tabuleiro[i][k];
-              this.tabuleiro[i][k] = 0;
-              mudou = true;
-              break;
-            }
-          }
-        }
-      }
-    }
-    if (mudou) {
-      this.gerarNumero();
-      this.checkStatus();
-    }
-    return mudou;
-  }
-
-  moveUp() {
-    let mudou = false;
-    for (let i = 0; i < 4; i++) {
-      for (let o = 1; o < 4; o++) {
-        if (this.tabuleiro[o][i] !== 0) {
-          let k = o;
-          while (k > 0 && this.tabuleiro[k - 1][i] === 0) {
-            this.tabuleiro[k - 1][i] = this.tabuleiro[k][i];
-            this.tabuleiro[k][i] = 0;
-            k--;
-            mudou = true;
-          }
-          if (k > 0 && this.tabuleiro[k][i] === this.tabuleiro[k - 1][i]) {
-            this.tabuleiro[k - 1][i] *= 2;
-            this.somar += this.tabuleiro[k - 1][i];
-            this.tabuleiro[k][i] = 0;
-            mudou = true;
-          }
-        }
-      }
-    }
-    if (mudou) {
-      this.gerarNumero();
-      this.checkStatus();
-    }
-    return mudou;
-  }
-
-  moveDown() {
-    let mudou = false;
-    for (let i = 0; i < 4; i++) {
-      for (let o = 2; o >= 0; o--) {
-        if (this.tabuleiro[o][i] !== 0) {
-          let k = o;
-          while (k < 3 && this.tabuleiro[k + 1][i] === 0) {
-            this.tabuleiro[k + 1][i] = this.tabuleiro[k][i];
-            this.tabuleiro[k][i] = 0;
-            k++;
-            mudou = true;
-          }
-          if (k < 3 && this.tabuleiro[k][i] === this.tabuleiro[k + 1][i]) {
-            this.tabuleiro[k + 1][i] *= 2;
-            this.somar += this.tabuleiro[k + 1][i];
-            this.tabuleiro[k][i] = 0;
-            mudou = true;
-          }
-        }
-      }
-    }
     if (mudou) {
       this.gerarNumero();
       this.checkStatus();
@@ -216,6 +126,7 @@ export default class Game {
         }
       }
     }
+
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         if (this.tabuleiro[i][j] === 0) return;
@@ -223,6 +134,7 @@ export default class Game {
         if (i < 3 && this.tabuleiro[i][j] === this.tabuleiro[i + 1][j]) return;
       }
     }
+
     this.status = "over";
   }
 }
