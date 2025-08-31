@@ -5,7 +5,6 @@ export default class Game {
     this.somar = 0;
     this.status = "playing";
     this.tabuleiro = initialState ? this.clone(initialState) : this.emptyBoard();
-
     if (!initialState) {
       this.gerarNumero();
       this.gerarNumero();
@@ -55,32 +54,20 @@ export default class Game {
 
   gerarNumero() {
     let vazio = [];
-
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        if (this.tabuleiro[i][j] === 0) {
-          vazio.push([i, j]);
-        }
+        if (this.tabuleiro[i][j] === 0) vazio.push([i, j]);
       }
     }
-
     if (vazio.length === 0) return;
-
     let [primeiro, segundo] = vazio[Math.floor(Math.random() * vazio.length)];
     let numero = Math.ceil(Math.random() * 10);
-
-    if (numero === 10) {
-      this.tabuleiro[primeiro][segundo] = 4;
-    } else {
-      this.tabuleiro[primeiro][segundo] = 2;
-    }
+    this.tabuleiro[primeiro][segundo] = numero === 10 ? 4 : 2;
   }
 
   moveLeft() {
     let mudou = false;
-
     for (let i = 0; i < 4; i++) {
-      // compacta
       for (let o = 0; o < 4; o++) {
         if (this.tabuleiro[i][o] === 0) {
           for (let k = o + 1; k < 4; k++) {
@@ -93,8 +80,6 @@ export default class Game {
           }
         }
       }
-
-     
       for (let o = 0; o < 3; o++) {
         if (this.tabuleiro[i][o] !== 0 && this.tabuleiro[i][o] === this.tabuleiro[i][o + 1]) {
           this.tabuleiro[i][o] *= 2;
@@ -103,8 +88,6 @@ export default class Game {
           mudou = true;
         }
       }
-
-     
       for (let o = 0; o < 4; o++) {
         if (this.tabuleiro[i][o] === 0) {
           for (let k = o + 1; k < 4; k++) {
@@ -118,16 +101,15 @@ export default class Game {
         }
       }
     }
-
     if (mudou) {
       this.gerarNumero();
       this.checkStatus();
     }
+    return mudou;
   }
 
   moveRight() {
     let mudou = false;
-
     for (let i = 0; i < 4; i++) {
       for (let o = 3; o >= 0; o--) {
         if (this.tabuleiro[i][o] === 0) {
@@ -141,7 +123,6 @@ export default class Game {
           }
         }
       }
-
       for (let o = 3; o > 0; o--) {
         if (this.tabuleiro[i][o] !== 0 && this.tabuleiro[i][o] === this.tabuleiro[i][o - 1]) {
           this.tabuleiro[i][o] *= 2;
@@ -150,7 +131,6 @@ export default class Game {
           mudou = true;
         }
       }
-
       for (let o = 3; o >= 0; o--) {
         if (this.tabuleiro[i][o] === 0) {
           for (let k = o - 1; k >= 0; k--) {
@@ -164,16 +144,15 @@ export default class Game {
         }
       }
     }
-
     if (mudou) {
       this.gerarNumero();
       this.checkStatus();
     }
+    return mudou;
   }
 
   moveUp() {
     let mudou = false;
-
     for (let i = 0; i < 4; i++) {
       for (let o = 1; o < 4; o++) {
         if (this.tabuleiro[o][i] !== 0) {
@@ -193,16 +172,15 @@ export default class Game {
         }
       }
     }
-
     if (mudou) {
       this.gerarNumero();
       this.checkStatus();
     }
+    return mudou;
   }
 
   moveDown() {
     let mudou = false;
-
     for (let i = 0; i < 4; i++) {
       for (let o = 2; o >= 0; o--) {
         if (this.tabuleiro[o][i] !== 0) {
@@ -222,11 +200,11 @@ export default class Game {
         }
       }
     }
-
     if (mudou) {
       this.gerarNumero();
       this.checkStatus();
     }
+    return mudou;
   }
 
   checkStatus() {
@@ -238,7 +216,6 @@ export default class Game {
         }
       }
     }
-
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         if (this.tabuleiro[i][j] === 0) return;
@@ -246,7 +223,6 @@ export default class Game {
         if (i < 3 && this.tabuleiro[i][j] === this.tabuleiro[i + 1][j]) return;
       }
     }
-
     this.status = "over";
   }
 }
