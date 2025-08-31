@@ -12,20 +12,34 @@ let tabuleiro = [
 
 function gerarNumero() {
   let vazio = [];
-  for (let row = 0; row < 4; row++)
-    for (let col = 0; col < 4; col++)
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
       if (tabuleiro[row][col] === 0) vazio.push([row, col]);
+    }
+  }
   if (vazio.length === 0) return;
   let [row, col] = vazio[Math.floor(Math.random() * vazio.length)];
   tabuleiro[row][col] = Math.random() < 0.1 ? 4 : 2;
 }
 
-function getState() { return tabuleiro.map(row => [...row]); }
-function getScore() { return score; }
-function getStatus() { return gameStatus; }
+function getState() {
+  return tabuleiro.map(row => [...row]);
+}
+
+function getScore() {
+  return score;
+}
+
+function getStatus() {
+  return gameStatus;
+}
 
 function checkWin() {
-  if (tabuleiro.flat().includes(2048)) gameStatus = "win";
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      if (tabuleiro[row][col] === 2048) gameStatus = "win";
+    }
+  }
 }
 
 function checkGameOver() {
@@ -39,26 +53,23 @@ function checkGameOver() {
   gameStatus = "over";
 }
 
-// Função genérica para movimentos
 function move(direction) {
   let mudou = false;
 
-  const getLine = i => direction === "up" || direction === "down"
-    ? [tabuleiro[0][i], tabuleiro[1][i], tabuleiro[2][i], tabuleiro[3][i]]
-    : [...tabuleiro[i]];
-
-  const setLine = (i, line) => {
-    if (direction === "up" || direction === "down")
-      for (let j = 0; j < 4; j++) tabuleiro[j][i] = line[j];
-    else tabuleiro[i] = line;
-  };
-
   for (let i = 0; i < 4; i++) {
-    const originalLine = getLine(i); // salvar linha original
-    let linha = originalLine.filter(x => x !== 0);
+    let linha;
+    if (direction === "up" || direction === "down") {
+      linha = [tabuleiro[0][i], tabuleiro[1][i], tabuleiro[2][i], tabuleiro[3][i]];
+    } else {
+      linha = [...tabuleiro[i]];
+    }
+
+    const original = [...linha];
 
     if (direction === "right" || direction === "down") linha.reverse();
 
+    // Compacta e mescla
+    linha = linha.filter(x => x !== 0);
     for (let j = 0; j < linha.length - 1; j++) {
       if (linha[j] === linha[j + 1]) {
         linha[j] *= 2;
@@ -66,15 +77,26 @@ function move(direction) {
         linha[j + 1] = 0;
       }
     }
-
     linha = linha.filter(x => x !== 0);
     while (linha.length < 4) linha.push(0);
 
     if (direction === "right" || direction === "down") linha.reverse();
 
-    if (!mudou && linha.some((v, idx) => v !== originalLine[idx])) mudou = true;
+    // Checa se houve mudança
+    if (!mudou) {
+      for (let k = 0; k < 4; k++) {
+        if (linha[k] !== original[k]) {
+          mudou = true;
+          break;
+        }
+      }
+    }
 
-    setLine(i, linha);
+    if (direction === "up" || direction === "down") {
+      for (let j = 0; j < 4; j++) tabuleiro[j][i] = linha[j];
+    } else {
+      tabuleiro[i] = linha;
+    }
   }
 
   if (mudou) gerarNumero();
@@ -82,7 +104,6 @@ function move(direction) {
   checkGameOver();
 }
 
-// Movimentos específicos
 function moveLeft() { move("left"); }
 function moveRight() { move("right"); }
 function moveUp() { move("up"); }
