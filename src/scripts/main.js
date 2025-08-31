@@ -161,16 +161,3 @@ function start() {
 function restart() {
   start();
 }
-
-// exportando funções para testes ou uso externo
-export {
-  getState,
-  getScore,
-  getStatus,
-  moveLeft,
-  moveRight,
-  moveUp,
-  moveDown,
-  restart,
-  start,
-};
