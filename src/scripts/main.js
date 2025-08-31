@@ -11,43 +11,35 @@ let tabuleiro = [
 ];
 
 function gerarNumero() {
-  let vazio = [];
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
-      if (tabuleiro[row][col] === 0) vazio.push([row, col]);
+  const vazio = [];
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      if (tabuleiro[r][c] === 0) vazio.push([r, c]);
     }
   }
   if (vazio.length === 0) return;
-  let [row, col] = vazio[Math.floor(Math.random() * vazio.length)];
-  tabuleiro[row][col] = Math.random() < 0.1 ? 4 : 2;
+  const [r, c] = vazio[Math.floor(Math.random() * vazio.length)];
+  tabuleiro[r][c] = Math.random() < 0.1 ? 4 : 2;
 }
 
-function getState() {
-  return tabuleiro.map(row => [...row]);
-}
-
-function getScore() {
-  return score;
-}
-
-function getStatus() {
-  return gameStatus;
-}
+function getState() { return tabuleiro.map(row => [...row]); }
+function getScore() { return score; }
+function getStatus() { return gameStatus; }
 
 function checkWin() {
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
-      if (tabuleiro[row][col] === 2048) gameStatus = "win";
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      if (tabuleiro[r][c] === 2048) gameStatus = "win";
     }
   }
 }
 
 function checkGameOver() {
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
-      if (tabuleiro[row][col] === 0) return;
-      if (row < 3 && tabuleiro[row][col] === tabuleiro[row + 1][col]) return;
-      if (col < 3 && tabuleiro[row][col] === tabuleiro[row][col + 1]) return;
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      if (tabuleiro[r][c] === 0) return;
+      if (r < 3 && tabuleiro[r][c] === tabuleiro[r + 1][c]) return;
+      if (c < 3 && tabuleiro[r][c] === tabuleiro[r][c + 1]) return;
     }
   }
   gameStatus = "over";
@@ -57,45 +49,36 @@ function move(direction) {
   let mudou = false;
 
   for (let i = 0; i < 4; i++) {
-    let linha;
-    if (direction === "up" || direction === "down") {
-      linha = [tabuleiro[0][i], tabuleiro[1][i], tabuleiro[2][i], tabuleiro[3][i]];
-    } else {
-      linha = [...tabuleiro[i]];
-    }
+    const original = [];
+    const linha = [];
 
-    const original = [...linha];
+    for (let j = 0; j < 4; j++) {
+      const valor = direction === "up" || direction === "down" ? tabuleiro[j][i] : tabuleiro[i][j];
+      linha.push(valor);
+      original.push(valor);
+    }
 
     if (direction === "right" || direction === "down") linha.reverse();
 
     // Compacta e mescla
-    linha = linha.filter(x => x !== 0);
-    for (let j = 0; j < linha.length - 1; j++) {
-      if (linha[j] === linha[j + 1]) {
-        linha[j] *= 2;
-        score += linha[j];
-        linha[j + 1] = 0;
+    let compacta = linha.filter(x => x !== 0);
+    for (let j = 0; j < compacta.length - 1; j++) {
+      if (compacta[j] === compacta[j + 1]) {
+        compacta[j] *= 2;
+        score += compacta[j];
+        compacta[j + 1] = 0;
       }
     }
-    linha = linha.filter(x => x !== 0);
-    while (linha.length < 4) linha.push(0);
+    compacta = compacta.filter(x => x !== 0);
+    while (compacta.length < 4) compacta.push(0);
 
-    if (direction === "right" || direction === "down") linha.reverse();
+    if (direction === "right" || direction === "down") compacta.reverse();
 
     // Checa se houve mudança
-    if (!mudou) {
-      for (let k = 0; k < 4; k++) {
-        if (linha[k] !== original[k]) {
-          mudou = true;
-          break;
-        }
-      }
-    }
-
-    if (direction === "up" || direction === "down") {
-      for (let j = 0; j < 4; j++) tabuleiro[j][i] = linha[j];
-    } else {
-      tabuleiro[i] = linha;
+    for (let j = 0; j < 4; j++) {
+      if (compacta[j] !== original[j]) mudou = true;
+      if (direction === "up" || direction === "down") tabuleiro[j][i] = compacta[j];
+      else tabuleiro[i][j] = compacta[j];
     }
   }
 
@@ -104,10 +87,12 @@ function move(direction) {
   checkGameOver();
 }
 
-function moveLeft() { move("left"); }
-function moveRight() { move("right"); }
-function moveUp() { move("up"); }
-function moveDown() { move("down"); }
+const movimentos = {
+  left: () => move("left"),
+  right: () => move("right"),
+  up: () => move("up"),
+  down: () => move("down")
+};
 
 function start() {
   tabuleiro = Array.from({ length: 4 }, () => [0, 0, 0, 0]);
