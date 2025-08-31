@@ -12,34 +12,20 @@ let tabuleiro = [
 
 function gerarNumero() {
   let vazio = [];
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
+  for (let row = 0; row < 4; row++)
+    for (let col = 0; col < 4; col++)
       if (tabuleiro[row][col] === 0) vazio.push([row, col]);
-    }
-  }
   if (vazio.length === 0) return;
   let [row, col] = vazio[Math.floor(Math.random() * vazio.length)];
   tabuleiro[row][col] = Math.random() < 0.1 ? 4 : 2;
 }
 
-function getState() {
-  return tabuleiro.map(row => [...row]);
-}
-
-function getScore() {
-  return score;
-}
-
-function getStatus() {
-  return gameStatus;
-}
+function getState() { return tabuleiro.map(row => [...row]); }
+function getScore() { return score; }
+function getStatus() { return gameStatus; }
 
 function checkWin() {
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
-      if (tabuleiro[row][col] === 2048) gameStatus = "win";
-    }
-  }
+  if (tabuleiro.flat().includes(2048)) gameStatus = "win";
 }
 
 function checkGameOver() {
@@ -53,10 +39,25 @@ function checkGameOver() {
   gameStatus = "over";
 }
 
-function moveLeft() {
+// Função genérica para movimentos
+function move(direction) {
   let mudou = false;
-  for (let row = 0; row < 4; row++) {
-    let linha = tabuleiro[row].filter(x => x !== 0);
+
+  const getLine = i => direction === "up" || direction === "down"
+    ? [tabuleiro[0][i], tabuleiro[1][i], tabuleiro[2][i], tabuleiro[3][i]]
+    : [...tabuleiro[i]];
+
+  const setLine = (i, line) => {
+    if (direction === "up" || direction === "down")
+      for (let j = 0; j < 4; j++) tabuleiro[j][i] = line[j];
+    else tabuleiro[i] = line;
+  };
+
+  for (let i = 0; i < 4; i++) {
+    let linha = getLine(i).filter(x => x !== 0);
+
+    if (direction === "right" || direction === "down") linha.reverse();
+
     for (let j = 0; j < linha.length - 1; j++) {
       if (linha[j] === linha[j + 1]) {
         linha[j] *= 2;
@@ -64,100 +65,34 @@ function moveLeft() {
         linha[j + 1] = 0;
       }
     }
+
     linha = linha.filter(x => x !== 0);
     while (linha.length < 4) linha.push(0);
-    if (!mudou && linha.some((v, idx) => v !== tabuleiro[row][idx])) mudou = true;
-    tabuleiro[row] = linha;
+
+    if (direction === "right" || direction === "down") linha.reverse();
+
+    if (!mudou && linha.some((v, idx) => v !== getLine(i)[idx])) mudou = true;
+
+    setLine(i, linha);
   }
+
   if (mudou) gerarNumero();
   checkWin();
   checkGameOver();
 }
 
-function moveRight() {
-  let mudou = false;
-  for (let row = 0; row < 4; row++) {
-    let linha = tabuleiro[row].filter(x => x !== 0);
-    for (let j = linha.length - 1; j > 0; j--) {
-      if (linha[j] === linha[j - 1]) {
-        linha[j] *= 2;
-        score += linha[j];
-        linha[j - 1] = 0;
-      }
-    }
-    linha = linha.filter(x => x !== 0);
-    while (linha.length < 4) linha.unshift(0);
-    if (!mudou && linha.some((v, idx) => v !== tabuleiro[row][idx])) mudou = true;
-    tabuleiro[row] = linha;
-  }
-  if (mudou) gerarNumero();
-  checkWin();
-  checkGameOver();
-}
-
-function moveUp() {
-  let mudou = false;
-  for (let col = 0; col < 4; col++) {
-    let coluna = [];
-    for (let row = 0; row < 4; row++) coluna.push(tabuleiro[row][col]);
-    coluna = coluna.filter(x => x !== 0);
-    for (let j = 0; j < coluna.length - 1; j++) {
-      if (coluna[j] === coluna[j + 1]) {
-        coluna[j] *= 2;
-        score += coluna[j];
-        coluna[j + 1] = 0;
-      }
-    }
-    coluna = coluna.filter(x => x !== 0);
-    while (coluna.length < 4) coluna.push(0);
-    for (let row = 0; row < 4; row++) {
-      if (tabuleiro[row][col] !== coluna[row]) mudou = true;
-      tabuleiro[row][col] = coluna[row];
-    }
-  }
-  if (mudou) gerarNumero();
-  checkWin();
-  checkGameOver();
-}
-
-function moveDown() {
-  let mudou = false;
-  for (let col = 0; col < 4; col++) {
-    let coluna = [];
-    for (let row = 0; row < 4; row++) coluna.push(tabuleiro[row][col]);
-    coluna = coluna.filter(x => x !== 0);
-    for (let j = coluna.length - 1; j > 0; j--) {
-      if (coluna[j] === coluna[j - 1]) {
-        coluna[j] *= 2;
-        score += coluna[j];
-        coluna[j - 1] = 0;
-      }
-    }
-    coluna = coluna.filter(x => x !== 0);
-    while (coluna.length < 4) coluna.unshift(0);
-    for (let row = 0; row < 4; row++) {
-      if (tabuleiro[row][col] !== coluna[row]) mudou = true;
-      tabuleiro[row][col] = coluna[row];
-    }
-  }
-  if (mudou) gerarNumero();
-  checkWin();
-  checkGameOver();
-}
+// Movimentos específicos
+function moveLeft() { move("left"); }
+function moveRight() { move("right"); }
+function moveUp() { move("up"); }
+function moveDown() { move("down"); }
 
 function start() {
-  tabuleiro = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  tabuleiro = Array.from({ length: 4 }, () => [0, 0, 0, 0]);
   score = 0;
   gameStatus = "playing";
   gerarNumero();
   gerarNumero();
 }
 
-function restart() {
-  start();
-}
+function restart() { start(); }
