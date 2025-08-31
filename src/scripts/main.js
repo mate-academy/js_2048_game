@@ -1,7 +1,8 @@
 "use strict";
 
-let somar = 0;
-let status = "playing";
+let score = 0;
+let gameStatus = "playing";
+
 let tabuleiro = [
   [0, 0, 0, 0],
   [0, 0, 0, 0],
@@ -11,14 +12,14 @@ let tabuleiro = [
 
 function gerarNumero() {
   let vazio = [];
-  for (let i = 0; i < 4; i++) {
-    for (let o = 0; o < 4; o++) {
-      if (tabuleiro[i][o] === 0) vazio.push([i, o]);
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      if (tabuleiro[row][col] === 0) vazio.push([row, col]);
     }
   }
   if (vazio.length === 0) return;
-  let [i, o] = vazio[Math.floor(Math.random() * vazio.length)];
-  tabuleiro[i][o] = Math.random() < 0.1 ? 4 : 2;
+  let [row, col] = vazio[Math.floor(Math.random() * vazio.length)];
+  tabuleiro[row][col] = Math.random() < 0.1 ? 4 : 2;
 }
 
 function getState() {
@@ -26,47 +27,47 @@ function getState() {
 }
 
 function getScore() {
-  return somar;
+  return score;
 }
 
 function getStatus() {
-  return status;
+  return gameStatus;
 }
 
 function checkWin() {
-  for (let i = 0; i < 4; i++) {
-    for (let o = 0; o < 4; o++) {
-      if (tabuleiro[i][o] === 2048) status = "win";
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      if (tabuleiro[row][col] === 2048) gameStatus = "win";
     }
   }
 }
 
 function checkGameOver() {
-  for (let i = 0; i < 4; i++) {
-    for (let o = 0; o < 4; o++) {
-      if (tabuleiro[i][o] === 0) return;
-      if (i < 3 && tabuleiro[i][o] === tabuleiro[i + 1][o]) return;
-      if (o < 3 && tabuleiro[i][o] === tabuleiro[i][o + 1]) return;
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      if (tabuleiro[row][col] === 0) return;
+      if (row < 3 && tabuleiro[row][col] === tabuleiro[row + 1][col]) return;
+      if (col < 3 && tabuleiro[row][col] === tabuleiro[row][col + 1]) return;
     }
   }
-  status = "over";
+  gameStatus = "over";
 }
 
 function moveLeft() {
   let mudou = false;
-  for (let i = 0; i < 4; i++) {
-    let linha = tabuleiro[i].filter(x => x !== 0);
+  for (let row = 0; row < 4; row++) {
+    let linha = tabuleiro[row].filter(x => x !== 0);
     for (let j = 0; j < linha.length - 1; j++) {
       if (linha[j] === linha[j + 1]) {
         linha[j] *= 2;
-        somar += linha[j];
+        score += linha[j];
         linha[j + 1] = 0;
       }
     }
     linha = linha.filter(x => x !== 0);
     while (linha.length < 4) linha.push(0);
-    if (!mudou && linha.some((v, idx) => v !== tabuleiro[i][idx])) mudou = true;
-    tabuleiro[i] = linha;
+    if (!mudou && linha.some((v, idx) => v !== tabuleiro[row][idx])) mudou = true;
+    tabuleiro[row] = linha;
   }
   if (mudou) gerarNumero();
   checkWin();
@@ -75,19 +76,19 @@ function moveLeft() {
 
 function moveRight() {
   let mudou = false;
-  for (let i = 0; i < 4; i++) {
-    let linha = tabuleiro[i].filter(x => x !== 0);
+  for (let row = 0; row < 4; row++) {
+    let linha = tabuleiro[row].filter(x => x !== 0);
     for (let j = linha.length - 1; j > 0; j--) {
       if (linha[j] === linha[j - 1]) {
         linha[j] *= 2;
-        somar += linha[j];
+        score += linha[j];
         linha[j - 1] = 0;
       }
     }
     linha = linha.filter(x => x !== 0);
     while (linha.length < 4) linha.unshift(0);
-    if (!mudou && linha.some((v, idx) => v !== tabuleiro[i][idx])) mudou = true;
-    tabuleiro[i] = linha;
+    if (!mudou && linha.some((v, idx) => v !== tabuleiro[row][idx])) mudou = true;
+    tabuleiro[row] = linha;
   }
   if (mudou) gerarNumero();
   checkWin();
@@ -96,22 +97,22 @@ function moveRight() {
 
 function moveUp() {
   let mudou = false;
-  for (let i = 0; i < 4; i++) {
+  for (let col = 0; col < 4; col++) {
     let coluna = [];
-    for (let j = 0; j < 4; j++) coluna.push(tabuleiro[j][i]);
+    for (let row = 0; row < 4; row++) coluna.push(tabuleiro[row][col]);
     coluna = coluna.filter(x => x !== 0);
     for (let j = 0; j < coluna.length - 1; j++) {
       if (coluna[j] === coluna[j + 1]) {
         coluna[j] *= 2;
-        somar += coluna[j];
+        score += coluna[j];
         coluna[j + 1] = 0;
       }
     }
     coluna = coluna.filter(x => x !== 0);
     while (coluna.length < 4) coluna.push(0);
-    for (let j = 0; j < 4; j++) {
-      if (tabuleiro[j][i] !== coluna[j]) mudou = true;
-      tabuleiro[j][i] = coluna[j];
+    for (let row = 0; row < 4; row++) {
+      if (tabuleiro[row][col] !== coluna[row]) mudou = true;
+      tabuleiro[row][col] = coluna[row];
     }
   }
   if (mudou) gerarNumero();
@@ -121,22 +122,22 @@ function moveUp() {
 
 function moveDown() {
   let mudou = false;
-  for (let i = 0; i < 4; i++) {
+  for (let col = 0; col < 4; col++) {
     let coluna = [];
-    for (let j = 0; j < 4; j++) coluna.push(tabuleiro[j][i]);
+    for (let row = 0; row < 4; row++) coluna.push(tabuleiro[row][col]);
     coluna = coluna.filter(x => x !== 0);
     for (let j = coluna.length - 1; j > 0; j--) {
       if (coluna[j] === coluna[j - 1]) {
         coluna[j] *= 2;
-        somar += coluna[j];
+        score += coluna[j];
         coluna[j - 1] = 0;
       }
     }
     coluna = coluna.filter(x => x !== 0);
     while (coluna.length < 4) coluna.unshift(0);
-    for (let j = 0; j < 4; j++) {
-      if (tabuleiro[j][i] !== coluna[j]) mudou = true;
-      tabuleiro[j][i] = coluna[j];
+    for (let row = 0; row < 4; row++) {
+      if (tabuleiro[row][col] !== coluna[row]) mudou = true;
+      tabuleiro[row][col] = coluna[row];
     }
   }
   if (mudou) gerarNumero();
@@ -151,8 +152,8 @@ function start() {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ];
-  somar = 0;
-  status = "playing";
+  score = 0;
+  gameStatus = "playing";
   gerarNumero();
   gerarNumero();
 }
@@ -160,3 +161,16 @@ function start() {
 function restart() {
   start();
 }
+
+// exportando funções para testes ou uso externo
+export {
+  getState,
+  getScore,
+  getStatus,
+  moveLeft,
+  moveRight,
+  moveUp,
+  moveDown,
+  restart,
+  start,
+};
