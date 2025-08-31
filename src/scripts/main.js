@@ -54,7 +54,8 @@ function move(direction) {
   };
 
   for (let i = 0; i < 4; i++) {
-    let linha = getLine(i).filter(x => x !== 0);
+    const originalLine = getLine(i); // salvar linha original
+    let linha = originalLine.filter(x => x !== 0);
 
     if (direction === "right" || direction === "down") linha.reverse();
 
@@ -71,7 +72,7 @@ function move(direction) {
 
     if (direction === "right" || direction === "down") linha.reverse();
 
-    if (!mudou && linha.some((v, idx) => v !== getLine(i)[idx])) mudou = true;
+    if (!mudou && linha.some((v, idx) => v !== originalLine[idx])) mudou = true;
 
     setLine(i, linha);
   }
