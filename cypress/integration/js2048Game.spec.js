@@ -1,7 +1,7 @@
 'use strict';
 
 Cypress.Commands.add('shuffleBoxes', (arrow1, arrow2, times) => {
-  cy.get('.button.start').click();
+  cy.get('#main-button').click();
 
   for (let n = 0; n < times; n++) {
     cy.get('body').type(arrow1);
@@ -15,7 +15,7 @@ describe('2048 game UI', () => {
   });
 
   it('should show the initial score', () => {
-    cy.get('.button.start').click();
+    cy.get('#main-button').click();
     cy.get('.game-score').should('have.value', '');
   });
 
@@ -42,12 +42,12 @@ describe('2048 game UI', () => {
   it('should reset the score', () => {
     cy.shuffleBoxes('{leftArrow}', '{downArrow}', 3);
     cy.get('.game-score').invoke('text').then(parseFloat).should('be.gt', 1);
-    cy.get('.button.restart').click();
+    cy.get('#main-button').click();
     cy.get('.game-score').should('have.value', '');
   });
 
   it('should show message in case of the loss', () => {
-    cy.get('.button.start').click();
+    cy.get('#main-button').click();
 
     for (let n = 0; n < 100; n++) {
       cy.get('body').type('{rightArrow}');
