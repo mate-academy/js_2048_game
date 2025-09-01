@@ -14,6 +14,7 @@ class Game {
 
     if (!initialState) {
       this.addRandomTile();
+      this.addRandomTile();
     }
   }
 
@@ -26,23 +27,30 @@ class Game {
           emptyCells.push([row, col]);
         }
       }
-
-      if (emptyCells.length) {
-        const [r, c] =
-          emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-        this.board[r][c] = Math.random() < 0.1 ? 4 : 2;
-      }
     }
+
+    if (emptyCells.length > 0) {
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+      const [row, col] = emptyCells[randomIndex];
+
+      this.board[row][col] = Math.random() < 0.1 ? 4 : 2;
+
+      return true;
+    }
+
+    return false;
   }
 
   getState() {
     return this.board.map((row) => [...row]);
   }
+
   getScore() {
     return this.score;
   }
+
   getStatus() {
+    // Check for win
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.board[row][col] === 2048) {
@@ -53,6 +61,7 @@ class Game {
       }
     }
 
+    // Check for empty cells
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.board[row][col] === 0) {
@@ -60,7 +69,12 @@ class Game {
 
           return 'playing';
         }
+      }
+    }
 
+    // Check for possible merges
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
         if (col < 3 && this.board[row][col] === this.board[row][col + 1]) {
           this.status = 'playing';
 
@@ -81,39 +95,45 @@ class Game {
   }
 
   processRow(row) {
-    let arr = row.filter((v) => v !== 0);
+    // Filter out zeros
+    let filtered = row.filter((cell) => cell !== 0);
 
-    for (let i = 0; i < arr.length - 1; i++) {
-      if (arr[i] === arr[i + 1]) {
-        arr[i] *= 2;
-        arr[i + 1] = 0;
-        this.score += arr[i];
+    // Merge adjacent equal values
+    for (let i = 0; i < filtered.length - 1; i++) {
+      if (filtered[i] === filtered[i + 1]) {
+        filtered[i] *= 2;
+        this.score += filtered[i];
+        filtered[i + 1] = 0;
       }
     }
 
-    arr = arr.filter((v) => v !== 0);
+    // Filter out zeros again
+    filtered = filtered.filter((cell) => cell !== 0);
 
-    while (arr.length < 4) {
-      arr.push(0);
+    // Pad with zeros
+    while (filtered.length < 4) {
+      filtered.push(0);
     }
 
-    return arr;
+    return filtered;
   }
 
   moveLeft() {
-    const oldBoard = this.board.map((row) => [...row]);
+    const oldBoard = JSON.stringify(this.board);
 
     for (let row = 0; row < 4; row++) {
       this.board[row] = this.processRow(this.board[row]);
     }
 
-    if (JSON.stringify(oldBoard) !== JSON.stringify(this.board)) {
+    if (JSON.stringify(this.board) !== oldBoard) {
       this.addRandomTile();
     }
+
+    this.getStatus();
   }
 
   moveRight() {
-    const oldBoard = this.board.map((row) => [...row]);
+    const oldBoard = JSON.stringify(this.board);
 
     for (let row = 0; row < 4; row++) {
       const reversed = [...this.board[row]].reverse();
@@ -122,12 +142,15 @@ class Game {
       this.board[row] = processed.reverse();
     }
 
-    if (JSON.stringify(oldBoard) !== JSON.stringify(this.board)) {
+    if (JSON.stringify(this.board) !== oldBoard) {
       this.addRandomTile();
     }
+
+    this.getStatus();
   }
+
   moveUp() {
-    const oldBoard = this.board.map((row) => [...row]);
+    const oldBoard = JSON.stringify(this.board);
 
     for (let col = 0; col < 4; col++) {
       const column = [];
@@ -143,12 +166,15 @@ class Game {
       }
     }
 
-    if (JSON.stringify(oldBoard) !== JSON.stringify(this.board)) {
+    if (JSON.stringify(this.board) !== oldBoard) {
       this.addRandomTile();
     }
+
+    this.getStatus();
   }
+
   moveDown() {
-    const oldBoard = this.board.map((row) => [...row]);
+    const oldBoard = JSON.stringify(this.board);
 
     for (let col = 0; col < 4; col++) {
       const column = [];
@@ -158,19 +184,21 @@ class Game {
       }
 
       const reversed = column.reverse();
-      let processed = this.processRow(reversed);
-
-      processed = processed.reverse();
+      const processed = this.processRow(reversed);
+      const result = processed.reverse();
 
       for (let row = 0; row < 4; row++) {
-        this.board[row][col] = processed[row];
+        this.board[row][col] = result[row];
       }
     }
 
-    if (JSON.stringify(oldBoard) !== JSON.stringify(this.board)) {
+    if (JSON.stringify(this.board) !== oldBoard) {
       this.addRandomTile();
     }
+
+    this.getStatus();
   }
+
   start() {
     this.board = Array.from({ length: 4 }, () => Array(4).fill(0));
     this.score = 0;
@@ -178,8 +206,10 @@ class Game {
     this.addRandomTile();
     this.addRandomTile();
   }
+
   restart() {
     this.start();
   }
 }
-module.exports = Game;
+
+window.Game = Game;
