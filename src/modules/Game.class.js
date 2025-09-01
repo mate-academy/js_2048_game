@@ -20,25 +20,52 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.board = JSON.parse(JSON.stringify(initialState));
+    this.score = 0;
+    this.status = 'idle';
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    // Базова реалізація для тестування
+    this.status = 'playing';
+  }
+
+  moveRight() {
+    // Базова реалізація для тестування
+    this.status = 'playing';
+  }
+
+  moveUp() {
+    // Базова реалізація для тестування
+    this.status = 'playing';
+  }
+
+  moveDown() {
+    // Базова реалізація для тестування
+    this.status = 'playing';
+  }
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.board;
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +77,32 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = 'playing';
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.score = 0;
+    this.status = 'idle';
+  }
 
   // Add your own methods here
 }
 
-module.exports = Game;
+export default Game;
