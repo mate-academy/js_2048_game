@@ -1,7 +1,21 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../modules/Game.class');
 
-// Write your code here
+const buttonStart = document.querySelector('.start');
+const game = new Game();
+
+buttonStart.addEventListener('click', () => {
+  if (buttonStart.classList.contains('start')) {
+    game.start();
+    game.bindControls();
+  } else {
+    game.restart();
+
+    buttonStart.classList.remove('restart');
+    buttonStart.classList.add('start');
+    buttonStart.textContent = 'Start';
+  }
+});
+
+export { buttonStart };
