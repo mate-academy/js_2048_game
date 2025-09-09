@@ -71,4 +71,4 @@ document.addEventListener('keydown', (event) => {
   update();
 });
 
-//comentando para alterar o arquivo e solicitar um novo PR
+// comentando para alterar o arquivo e solicitar um novo PR
