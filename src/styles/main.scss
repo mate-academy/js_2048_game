@@ -86,15 +86,15 @@ body {
   width: 100%;
   justify-content: space-between;
   margin-bottom: 24px;
-  padding: 10px;
+  padding-top: 10px;
   box-sizing: border-box;
 }
 
 h1 {
   background: #edc22e;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
+  width: 80px;
+  height: 80px;
   font-size: 24px;
   border-radius: 5px;
   display: flex;
@@ -110,8 +110,8 @@ h1 {
   align-items: center;
   justify-content: center;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: 80px;
+  height: 80px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
@@ -131,8 +131,8 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
+  width: 80px;
+  height: 80px;
 
   transition: 0.25s ease background;
 }
