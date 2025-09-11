@@ -28,7 +28,7 @@ class Game {
       [0, 0, 0, 0],
     ],
   ) {
-    this.board = [...initialState];
+    this.board = initialState.map((row) => [...row]);
     // eslint-disable-next-line no-console
     console.log(this.board);
   }
@@ -158,7 +158,9 @@ class Game {
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.board.map((row) => [...row]);
+  }
 
   /**
    * Returns the current game status.
@@ -179,7 +181,7 @@ class Game {
       return 'lose';
     }
 
-    if (this.getScore() >= 2048) {
+    if (this.board.flat().includes(2048)) {
       return 'win';
     }
 
