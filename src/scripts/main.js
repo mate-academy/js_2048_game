@@ -1,271 +1,90 @@
 'use strict';
 
-const startButton = document.querySelector('.start');
-const gameScore = document.querySelector('.game-score');
-const gameStatus = document.querySelector('.message-container');
-const table = document.querySelector('.game-field');
-const rows = table.rows;
-let score = 0;
-let startY;
-let startX;
-let moveY;
-let moveX;
+// Uncomment the next lines to use your game instance in the browser
+const Game = require('../modules/Game.class');
+const game = new Game();
 
-const gameField = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
+const restartBtn = document.querySelector('.button.restart');
+const scoreEl = document.querySelector('.game-score');
+const startBtn = document.querySelector('.start');
+const cells = document.querySelectorAll('.field-cell');
 
-function resetTheGame() {
-  score = 0;
+const msgStart = document.querySelector('.message-start');
+const msgWin = document.querySelector('.message-win');
+const msgLose = document.querySelector('.message-lose');
 
-  for (let row = 0; row < gameField.length; row++) {
-    for (let cell = 0; cell < gameField.length; cell++) {
-      gameField[row][cell] = 0;
-    }
-  }
-}
+function render() {
+  const state = game.getState();
+  const score = game.getScore();
+  const statusOfGame = game.getStatus();
 
-function changingDivMessage(value) {
-  for (const child of gameStatus.children) {
-    if (child.classList.contains(`message-${value}`)) {
-      child.classList.remove('hidden');
+  scoreEl.textContent = score;
+
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / 4);
+    const column = i % 4;
+    const value = state[row][column];
+
+    cell.className = 'field-cell';
+
+    if (value > 0) {
+      cell.classList.add(`field-cell--${value}`);
+      cell.textContent = value;
     } else {
-      child.classList.add('hidden');
+      cell.textContent = '';
     }
-  }
-}
-
-function randomNumber() {
-  let randomNum = Math.floor(Math.random() * (10 - 1) + 1);
-  let randomRowIndex = Math.floor(Math.random() * 4);
-  let randomColumnIndex = Math.floor(Math.random() * 4);
-
-  while (gameField[randomRowIndex][randomColumnIndex] !== 0) {
-    randomRowIndex = Math.floor(Math.random() * 4);
-    randomColumnIndex = Math.floor(Math.random() * 4);
-  }
-
-  if (randomNum < 2) {
-    randomNum = 4;
-  } else {
-    randomNum = 2;
-  }
-
-  gameField[randomRowIndex][randomColumnIndex] = randomNum;
-}
-
-function renderGameField() {
-  gameScore.innerText = score;
-
-  for (let x = 0; x < gameField.length; x++) {
-    for (let y = 0; y < gameField.length; y++) {
-      if (gameField[x][y] !== 0) {
-        rows[x].children[y].className = 'field-cell';
-        rows[x].children[y].innerText = gameField[x][y];
-
-        if (gameField[x][y] > 2048) {
-          rows[x].children[y].classList.add(`field-cell--2048`);
-        } else {
-          rows[x].children[y].classList.add(`field-cell--${gameField[x][y]}`);
-        }
-      } else {
-        rows[x].children[y].className = 'field-cell';
-        rows[x].children[y].innerText = '';
-      }
-    }
-  }
-}
-
-function checkRowForGameOver(field) {
-  let rowStatus = false;
-
-  field.map((r) => {
-    return r.filter((digit) => {
-      for (let i = 0; i < gameField.length; i++) {
-        if (r[i] === r[i + 1] || r[i] === 0) {
-          rowStatus = true;
-
-          return;
-        }
-      }
-    });
   });
 
-  return rowStatus;
-}
+  msgStart.classList.toggle('hidden', statusOfGame !== 'idle');
+  msgWin.classList.toggle('hidden', statusOfGame !== 'win');
+  msgLose.classList.toggle('hidden', statusOfGame !== 'lose');
+  restartBtn.classList.toggle('hidden', statusOfGame === 'idle');
+  startBtn.classList.toggle('hidden', statusOfGame === 'playing');
 
-function gameOver() {
-  const columns = [];
-
-  for (let r = 0; r < gameField.length; r++) {
-    const transformToColumn = [
-      gameField[0][r],
-      gameField[1][r],
-      gameField[2][r],
-      gameField[3][r],
-    ];
-
-    columns.push(transformToColumn);
-  }
-
-  const checkRows = checkRowForGameOver(gameField);
-  const checkColumns = checkRowForGameOver(columns);
-
-  if (!checkRows && !checkColumns) {
-    changingDivMessage('lose');
-
-    return false;
-  }
-
-  return true;
-}
-
-function slidingSum(row, key) {
-  let fieldRow = row.filter((digit) => digit !== 0);
-
-  if (key === 'ArrowRight' || key === 'ArrowDown') {
-    fieldRow.reverse();
-  }
-
-  for (let cell = 0; cell < fieldRow.length; cell++) {
-    if (fieldRow[cell] === fieldRow[cell + 1]) {
-      fieldRow[cell] *= 2;
-      fieldRow[cell + 1] = 0;
-      score += fieldRow[cell];
-    }
-  }
-
-  fieldRow = fieldRow.filter((digit) => digit !== 0);
-
-  while (fieldRow.length < gameField.length) {
-    fieldRow.push(0);
-  }
-
-  return key === 'ArrowRight' || key === 'ArrowDown'
-    ? fieldRow.reverse()
-    : fieldRow;
-}
-
-function moveLeftAndRight(key) {
-  for (let r = 0; r < gameField.length; r++) {
-    let row = gameField[r];
-
-    row = slidingSum(row, key);
-    gameField[r] = row;
+  if (statusOfGame === 'lose') {
+    startBtn.classList.toggle('hidden');
   }
 }
 
-function moveUpAndDown(key) {
-  for (let r = 0; r < gameField.length; r++) {
-    let transformRow = [
-      gameField[0][r],
-      gameField[1][r],
-      gameField[2][r],
-      gameField[3][r],
-    ];
-
-    transformRow = slidingSum(transformRow, key);
-
-    for (let c = 0; c < gameField.length; c++) {
-      gameField[c][r] = transformRow[c];
-    }
-  }
-}
-
-function simulateKeyPress(code) {
-  document.dispatchEvent(new KeyboardEvent('keyup', { code: code }));
-}
-
-startButton.addEventListener('click', (e) => {
-  if (startButton.classList.contains('start')) {
-    startButton.classList.remove('start');
-    startButton.classList.add('restart');
-    startButton.innerText = 'restart';
-  }
-
-  changingDivMessage('restart');
-  resetTheGame();
-  randomNumber();
-  randomNumber();
-  renderGameField();
+startBtn.addEventListener('click', (e) => {
+  game.start();
+  render();
 });
 
-document.addEventListener('keyup', (key) => {
-  const lose = document.querySelector('.message-lose');
+restartBtn.addEventListener('click', (e) => {
+  game.restart();
+  render();
+});
 
-  if (startButton.classList.contains('start')) {
+document.addEventListener('keydown', (e) => {
+  if (game.getStatus() !== 'playing') {
     return;
   }
 
-  if (!lose.classList.contains('hidden')) {
-    return;
-  }
+  let moved = false;
 
-  const copyTableGame = JSON.parse(JSON.stringify(gameField));
-
-  switch (key.code) {
+  switch (e.key) {
     case 'ArrowLeft':
-      moveLeftAndRight(key.code);
+      game.moveLeft();
+      moved = true;
       break;
-
     case 'ArrowRight':
-      moveLeftAndRight(key.code);
+      game.moveRight();
+      moved = true;
       break;
-
     case 'ArrowUp':
-      moveUpAndDown(key.code);
+      game.moveUp();
+      moved = true;
       break;
-
     case 'ArrowDown':
-      moveUpAndDown(key.code);
+      game.moveDown();
+      moved = true;
       break;
   }
 
-  if (JSON.stringify(copyTableGame) === JSON.stringify(gameField)) {
-    return;
-  }
-
-  randomNumber();
-
-  renderGameField();
-
-  const loseStatus = gameOver();
-
-  if (!loseStatus) {
-    changingDivMessage('lose');
+  if (moved) {
+    render();
   }
 });
 
-document.addEventListener('touchstart', (e) => {
-  startY = e.touches[0].clientY;
-  startX = e.touches[0].clientX;
-});
-
-document.addEventListener('touchmove', (e) => {
-  moveY = e.touches[0].clientY;
-  moveX = e.touches[0].clientX;
-});
-
-document.addEventListener('touchend', (e) => {
-  const endY = Math.abs(startY - moveY);
-  const endX = Math.abs(startX - moveX);
-
-  if (startY - moveY < 0 && endY > endX) {
-    simulateKeyPress('ArrowDown');
-  }
-
-  if (startY - moveY > 0 && endY > endX) {
-    simulateKeyPress('ArrowUp');
-  }
-
-  if (startX - moveX < 0 && endX > endY) {
-    simulateKeyPress('ArrowRight');
-  }
-
-  if (startX - moveX > 0 && endX > endY) {
-    simulateKeyPress('ArrowLeft');
-  }
-});
+render();
