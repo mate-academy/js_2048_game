@@ -34,6 +34,8 @@ class Game {
   }
 
   moveLeft() {
+    const prevBoard = JSON.parse(JSON.stringify(this.board));
+
     for (let line = 0; line < this.board.length; line++) {
       let noZero = this.board[line].filter((a) => a !== 0);
 
@@ -53,9 +55,14 @@ class Game {
       this.board[line] = noZero;
     }
     // eslint-disable-next-line no-console
-    this.addTie();
+
+    if (!this.boardsEqual(prevBoard, this.board)) {
+      this.addTie();
+    }
   }
   moveRight() {
+    const prevBoard = JSON.parse(JSON.stringify(this.board));
+
     for (let line = 0; line < this.board.length; line++) {
       let noZero = this.board[line].filter((a) => a !== 0);
 
@@ -76,9 +83,14 @@ class Game {
     }
     // eslint-disable-next-line no-console
     console.log(this.board);
-    this.addTie();
+
+    if (!this.boardsEqual(prevBoard, this.board)) {
+      this.addTie();
+    }
   }
   moveUp() {
+    const prevBoard = JSON.parse(JSON.stringify(this.board));
+
     for (let element = 0; element < 4; element++) {
       const switchDer = [];
 
@@ -107,9 +119,14 @@ class Game {
     }
     // eslint-disable-next-line no-console
     console.log(this.board);
-    this.addTie();
+
+    if (!this.boardsEqual(prevBoard, this.board)) {
+      this.addTie();
+    }
   }
   moveDown() {
+    const prevBoard = JSON.parse(JSON.stringify(this.board));
+
     for (let element = 0; element < 4; element++) {
       const switchDer = [];
 
@@ -137,7 +154,10 @@ class Game {
         this.board[changer][element] = noZero[changer];
       }
     }
-    this.addTie();
+
+    if (!this.boardsEqual(prevBoard, this.board)) {
+      this.addTie();
+    }
   }
   // eslint-disable-next-line no-console
 
@@ -249,6 +269,18 @@ class Game {
         }
 
         if (r < size - 1 && val === this.board[r + 1][c]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  boardsEqual(a, b) {
+    for (let i = 0; i < a.length; i++) {
+      for (let j = 0; j < a[i].length; j++) {
+        if (a[i][j] !== b[i][j]) {
           return false;
         }
       }
