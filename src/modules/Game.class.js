@@ -1,5 +1,7 @@
 'use strict';
 
+import { resetScore } from '../scripts/main';
+
 const BOARD_SIZE = 4;
 const FOUR_SPAWN_CHANCE = 0.1;
 const scoreColEls = [...document.querySelectorAll('.score-col')];
@@ -414,20 +416,11 @@ class Game {
    */
   updateHtmlScore() {
     if (scoreColEls.length) {
+      resetScore();
+
       const score = String(this.score).padStart(4, '0');
 
       for (let i = 0; i < scoreColEls.length; i++) {
-        // Remove class that starts with score-col-- if it exists
-        const classToRemove = [...scoreColEls[i].classList].find(
-          (className) => {
-            return className.startsWith('score-col--');
-          },
-        );
-
-        if (classToRemove) {
-          scoreColEls[i].classList.remove(classToRemove);
-        }
-
         // Add new class score-col--<i>
         scoreColEls[i].classList.add(`score-col--${score[i]}`);
       }
