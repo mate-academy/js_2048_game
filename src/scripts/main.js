@@ -38,6 +38,21 @@ export function stopBgMusic(bgMusic) {
   }
 }
 
+function initializeScoreCounter() {
+  if (!scoreColEls.length) {
+    return;
+  }
+
+  for (const el of scoreColEls) {
+    for (let i = 0; i < 9; i++) {
+      const span = document.createElement('span');
+
+      span.textContent = i;
+      el.append(span);
+    }
+  }
+}
+
 window.addEventListener('load', () => {
   const startBtn = document.querySelector('.button.start');
   const startMsg = document.querySelector('.message.message-start');
@@ -49,6 +64,8 @@ window.addEventListener('load', () => {
   if (!startBtn) {
     throw new Error('Start button is not found!');
   }
+
+  initializeScoreCounter();
 
   function initializeGame() {
     const game = new Game();
