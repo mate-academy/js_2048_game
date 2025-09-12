@@ -3,6 +3,7 @@
 import { resetScore, stopBgMusic } from '../scripts/main';
 
 const loseMsgEl = document.querySelector('.message.message-lose');
+const winMsgEl = document.querySelector('.message.message-win');
 const scoreColEls = [...document.querySelectorAll('.score-col')];
 const rows = [...document.querySelectorAll('.field-row')];
 
@@ -20,6 +21,7 @@ const swipeSound = document.getElementById('swipe-sound');
 const mergeSound = document.getElementById('merge-sound');
 const gameOverSound = document.getElementById('game-over-sound');
 const backgroundMusic = document.getElementById('background-music');
+const gameVictorySound = document.getElementById('game-victory-sound');
 
 const BOARD_SIZE = 4;
 const FOUR_SPAWN_CHANCE = 0.1;
@@ -44,10 +46,7 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
-
+  constructor() {
     // Generate an empty dash board
     this.dash = Array.from({ length: BOARD_SIZE }, () => {
       return Array(BOARD_SIZE).fill(0);
@@ -292,9 +291,36 @@ class Game {
       this.playGameOverSound();
     }
 
+    if (this.checkWin()) {
+      gameStatus = 'win';
+      this.showWinMsg();
+      stopBgMusic(backgroundMusic);
+      this.playGameVictorySound();
+    }
+
     return gameStatus;
   }
 
+  /**
+   * Checks for win
+   * @returns {boolean}
+   */
+  checkWin() {
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        if (this.dash[row][col] === 2048) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Checks if the game is still playable or returns true if it is lost.
+   * @returns {boolean}
+   */
   checkLose() {
     for (let row = 0; row < BOARD_SIZE; row++) {
       for (let col = 0; col < BOARD_SIZE; col++) {
@@ -463,6 +489,15 @@ class Game {
     }
   }
 
+  /**
+   * Shows the win message by removing the hidden class
+   */
+  showWinMsg() {
+    if (winMsgEl) {
+      winMsgEl.classList.remove('hidden');
+    }
+  }
+
   playMergeSound() {
     if (mergeSound) {
       mergeSound.play();
@@ -478,6 +513,12 @@ class Game {
   playGameOverSound() {
     if (gameOverSound) {
       gameOverSound.play();
+    }
+  }
+
+  playGameVictorySound() {
+    if (gameVictorySound) {
+      gameVictorySound.play();
     }
   }
 }
