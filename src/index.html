@@ -1,117 +1,53 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>2048 Game</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; }
-    .game-field {
-      display: grid;
-      grid-template-columns: repeat(4, 80px);
-      gap: 5px;
-      justify-content: center;
-      margin: 20px auto;
-    }
-    .field-cell {
-      width: 80px;
-      height: 80px;
-      line-height: 80px;
-      font-size: 24px;
-      background: #ccc;
-      border-radius: 5px;
-    }
-    .field-cell--2 { background: #eee4da; }
-    .field-cell--4 { background: #ede0c8; }
-    .field-cell--8 { background: #f2b179; }
-    .field-cell--16 { background: #f59563; }
-    .field-cell--32 { background: #f67c5f; }
-    .field-cell--64 { background: #f65e3b; }
-    .field-cell--128 { background: #edcf72; }
-    .field-cell--256 { background: #edcc61; }
-    .field-cell--512 { background: #edc850; }
-    .field-cell--1024 { background: #edc53f; }
-    .field-cell--2048 { background: #edc22e; }
-    .hidden { display: none; }
-  </style>
+  <link rel="stylesheet" href="./styles/main.css">
 </head>
 <body>
-  <h1>2048 Game</h1>
-  <button id="start-btn" class="start">Start</button>
-  <div id="status" class="hidden"></div>
-  <div class="game-field" id="game-field"></div>
-  <p>Score: <span id="score">0</span></p>
-  <script type="module" src="./main.js"></script>
-</body>
-=======
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>2048</title>
-    <link
-      rel="stylesheet"
-      href="./styles/main.scss"
-    />
-  </head>
-  <body>
-    <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score:
-            <span class="game-score">0</span>
-          </p>
-          <button class="button start">Start</button>
-        </div>
+  <header>
+    <h1>2048 Game</h1>
+    <button id="start-restart" class="start">Start</button>
+    <div id="score">Score: 0</div>
+  </header>
+
+  <main>
+    <div id="message" class="hidden">Welcome to 2048! Press Start to begin.</div>
+    <div id="game-board" class="board">
+      <!-- 4x4 grid cells -->
+      <div class="row">
+        <div class="cell" data-row="0" data-col="0"></div>
+        <div class="cell" data-row="0" data-col="1"></div>
+        <div class="cell" data-row="0" data-col="2"></div>
+        <div class="cell" data-row="0" data-col="3"></div>
       </div>
-
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">
-          Press "Start" to begin game. Good luck!
-        </p>
+      <div class="row">
+        <div class="cell" data-row="1" data-col="0"></div>
+        <div class="cell" data-row="1" data-col="1"></div>
+        <div class="cell" data-row="1" data-col="2"></div>
+        <div class="cell" data-row="1" data-col="3"></div>
+      </div>
+      <div class="row">
+        <div class="cell" data-row="2" data-col="0"></div>
+        <div class="cell" data-row="2" data-col="1"></div>
+        <div class="cell" data-row="2" data-col="2"></div>
+        <div class="cell" data-row="2" data-col="3"></div>
+      </div>
+      <div class="row">
+        <div class="cell" data-row="3" data-col="0"></div>
+        <div class="cell" data-row="3" data-col="1"></div>
+        <div class="cell" data-row="3" data-col="2"></div>
+        <div class="cell" data-row="3" data-col="3"></div>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
-  </body>
->>>>>>> be841f761f4f8df9864a9a3ed6bdee0f7e24056d
+  </main>
+
+  <footer>
+    <p>Use arrow keys to move tiles. Merge numbers to reach 2048!</p>
+  </footer>
+
+  <script type="module" src="./scripts/main.js"></script>
+</body>
 </html>
