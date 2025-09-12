@@ -1,3 +1,6 @@
+ HEAD
+DEMO LINK: https://Adamur97.github.io/js_2048_game
+=======
 # 2048 game
 
 Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
@@ -66,4 +69,5 @@ You can change the HTML/CSS layout if you need it.
     - Run `npm run test` command to test your code;
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
     - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+>>>>>>> be841f761f4f8df9864a9a3ed6bdee0f7e24056d
 

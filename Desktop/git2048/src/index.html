@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>2048 Game</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; }
+    .game-field {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      gap: 5px;
+      justify-content: center;
+      margin: 20px auto;
+    }
+    .field-cell {
+      width: 80px;
+      height: 80px;
+      line-height: 80px;
+      font-size: 24px;
+      background: #ccc;
+      border-radius: 5px;
+    }
+    .field-cell--2 { background: #eee4da; }
+    .field-cell--4 { background: #ede0c8; }
+    .field-cell--8 { background: #f2b179; }
+    .field-cell--16 { background: #f59563; }
+    .field-cell--32 { background: #f67c5f; }
+    .field-cell--64 { background: #f65e3b; }
+    .field-cell--128 { background: #edcf72; }
+    .field-cell--256 { background: #edcc61; }
+    .field-cell--512 { background: #edc850; }
+    .field-cell--1024 { background: #edc53f; }
+    .field-cell--2048 { background: #edc22e; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>2048 Game</h1>
+  <button id="start-btn" class="start">Start</button>
+  <div id="status" class="hidden"></div>
+  <div class="game-field" id="game-field"></div>
+  <p>Score: <span id="score">0</span></p>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
