@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+ HEAD
 DEMO LINK: https://Adamur97.github.io/js_2048_game
 =======
 # 2048 game
