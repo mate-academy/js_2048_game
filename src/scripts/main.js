@@ -10,7 +10,6 @@ window.addEventListener('load', () => {
   const startMsg = document.querySelector('.message.message-start');
   const backgroundMusic = document.getElementById('background-music');
   const clickSound = document.getElementById('click-sound');
-  const swipeSound = document.getElementById('swipe-sound');
 
   if (!startBtn) {
     throw new Error('Start button is not found!');
@@ -35,16 +34,16 @@ window.addEventListener('load', () => {
   document.addEventListener('keydown', (e) => {
     switch (e.key) {
       case 'ArrowUp':
-        game.move('up', swipeSound);
+        game.move('up');
         break;
       case 'ArrowDown':
-        game.move('down', swipeSound);
+        game.move('down');
         break;
       case 'ArrowLeft':
-        game.move('left', swipeSound);
+        game.move('left');
         break;
       case 'ArrowRight':
-        game.move('right', swipeSound);
+        game.move('right');
         break;
     }
   });

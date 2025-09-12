@@ -16,13 +16,60 @@
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score:
-            <span class="game-score">0</span>
-          </p>
-          <button class="button start">Start</button>
+        <div class="info">
+          Score:
+          <div class="score-wrapper">
+            <div class="score-col">
+              <span>0</span>
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>6</span>
+              <span>7</span>
+              <span>8</span>
+              <span>9</span>
+            </div>
+            <div class="score-col">
+              <span>0</span>
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>6</span>
+              <span>7</span>
+              <span>8</span>
+              <span>9</span>
+            </div>
+            <div class="score-col">
+              <span>0</span>
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>6</span>
+              <span>7</span>
+              <span>8</span>
+              <span>9</span>
+            </div>
+            <div class="score-col">
+              <span>0</span>
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>6</span>
+              <span>7</span>
+              <span>8</span>
+              <span>9</span>
+            </div>
+          </div>
         </div>
+        <button class="button start">Start</button>
       </div>
 
       <table class="game-field">
@@ -77,6 +124,10 @@
     <audio
       id="swipe-sound"
       src="./sounds/swipe.mp3"
+    ></audio>
+    <audio
+      id="merge-sound"
+      src="./sounds/merge.mp3"
     ></audio>
 
     <script
