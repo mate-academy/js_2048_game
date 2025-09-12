@@ -44,10 +44,195 @@ class Game {
     });
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  /**
+   * Moves cells based on the direction
+   * @param {string} direction
+   * @param {HTMLAudioElement} swipeAudio
+   */
+  move(direction, swipeAudio) {
+    let gameStatus = this.getStatus();
+
+    if (gameStatus !== 'playing') {
+      return;
+    }
+
+    swipeAudio.play();
+
+    switch (direction) {
+      case 'up':
+        this.moveUp();
+        break;
+      case 'down':
+        this.moveDown();
+        break;
+      case 'left':
+        this.moveLeft();
+        break;
+      case 'right':
+        this.moveRight();
+        break;
+    }
+
+    // Update HTML table state
+    this.updateHtmlTable();
+
+    gameStatus = this.getStatus();
+
+    // Spawn new cell if the game isn't finished yet
+    if (gameStatus === 'playing') {
+      this.spawnNumber();
+    }
+  }
+
+  moveLeft() {
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      // Extract the column values
+      let rowCells = [];
+
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        if (this.dash[row][col] !== 0) {
+          rowCells.push(this.dash[row][col]);
+        }
+      }
+
+      // Merge numbers
+      this.mergeRow(rowCells);
+
+      // Remove zeroes again after merge
+      rowCells = rowCells.filter((num) => num !== 0);
+
+      // Pad with zeroes at the end
+      while (rowCells.length < BOARD_SIZE) {
+        rowCells.push(0);
+      }
+
+      // Put the column back into the board
+      this.insertRow(row, rowCells);
+    }
+  }
+
+  moveRight() {
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      // Extract the column values
+      let rowCells = [];
+
+      for (let col = BOARD_SIZE - 1; col >= 0; col--) {
+        if (this.dash[row][col] !== 0) {
+          rowCells.push(this.dash[row][col]);
+        }
+      }
+
+      // Merge numbers
+      this.mergeRow(rowCells);
+
+      // Remove zeroes again after merge
+      rowCells = rowCells.filter((num) => num !== 0);
+
+      // Pad with zeroes at the end
+      while (rowCells.length < BOARD_SIZE) {
+        rowCells.unshift(0);
+      }
+
+      // Put the column back into the board
+      this.insertRow(row, rowCells);
+    }
+  }
+
+  moveUp() {
+    for (let col = 0; col < BOARD_SIZE; col++) {
+      // Extract the column values
+      let column = [];
+
+      for (let row = 0; row < BOARD_SIZE; row++) {
+        if (this.dash[row][col] !== 0) {
+          column.push(this.dash[row][col]);
+        }
+      }
+
+      // Merge numbers
+      this.mergeCol(column);
+
+      // Remove zeroes again after merge
+      column = column.filter((num) => num !== 0);
+
+      // Pad with zeroes at the end
+      while (column.length < BOARD_SIZE) {
+        column.push(0);
+      }
+
+      // Put the column back into the board
+      this.insertCol(col, column);
+    }
+  }
+
+  moveDown() {
+    for (let col = 0; col < BOARD_SIZE; col++) {
+      // Extract the column values
+      let column = [];
+
+      for (let row = BOARD_SIZE - 1; row >= 0; row--) {
+        if (this.dash[row][col] !== 0) {
+          column.push(this.dash[row][col]);
+        }
+      }
+
+      // Merge numbers
+      this.mergeCol(column);
+
+      // Remove zeroes again after merge
+      column = column.filter((num) => num !== 0);
+
+      // Pad with zeroes at the end
+      while (column.length < BOARD_SIZE) {
+        column.unshift(0);
+      }
+
+      // Put the column back into the board
+      this.insertCol(col, column);
+    }
+  }
+
+  /**
+   * Inserts merged column into the dash
+   */
+  insertCol(col, column) {
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      this.dash[row][col] = column[row];
+    }
+  }
+
+  /**
+   * Inserts merged row into the dash
+   */
+  insertRow(row, rowCells) {
+    for (let col = 0; col < BOARD_SIZE; col++) {
+      this.dash[row][col] = rowCells[col];
+    }
+  }
+
+  /**
+   * Merges columns of the dash board
+   */
+  mergeCol(column) {
+    for (let i = 0; i < column.length - 1; i++) {
+      if (column[i] === column[i + 1]) {
+        column[i] *= 2;
+        column[i + 1] = 0;
+      }
+    }
+  }
+
+  /**
+   * Merges rows ofthe dash board
+   */
+  mergeRow(row) {
+    for (let i = 0; i < row.length - 1; i++) {
+      if (row[i] === row[i + 1]) {
+        row[i] *= 2;
+        row[i + 1] = 0;
+      }
+    }
+  }
 
   /**
    * @returns {number}
@@ -69,7 +254,54 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    let gameStatus = 'playing';
+
+    if (this.checkLose()) {
+      gameStatus = 'lose';
+    }
+
+    return gameStatus;
+  }
+
+  checkLose() {
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        // If there's an empty cell, the game isn't lost yet
+        if (this.dash[row][col] === 0) {
+          return false;
+        }
+
+        // Check down (next row, same column)
+        if (
+          row < BOARD_SIZE - 1 &&
+          this.dash[row][col] === this.dash[row + 1][col]
+        ) {
+          return false;
+        }
+
+        // Check right (same row, next column)
+        if (
+          col < BOARD_SIZE - 1 &&
+          this.dash[row][col] === this.dash[row][col + 1]
+        ) {
+          return false;
+        }
+
+        // Check up (previous row, same column)
+        if (row > 0 && this.dash[row][col] === this.dash[row - 1][col]) {
+          return false;
+        }
+
+        // Check left (same row, previous column)
+        if (col > 0 && this.dash[row][col] === this.dash[row][col - 1]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
 
   /**
    * Starts the game.
@@ -122,18 +354,37 @@ class Game {
    * Updates HTML table cells
    */
   updateHtmlTable() {
-    for (let i = 0; i < BOARD_SIZE; i++) {
-      for (let j = 0; j < BOARD_SIZE; j++) {
-        const num = this.dash[i][j];
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        const num = this.dash[row][col];
+        const cell = cells[row][col];
+
+        // Clear the cell before updating it's state
+        this.clearHtmlCell(cell);
 
         if (num !== 0) {
-          const cell = cells[i][j];
-
           cell.textContent = num;
           cell.classList.add(`field-cell--${num}`);
         }
       }
     }
+  }
+
+  /**
+   * Clears the cell before inserting updated cell into HTML
+   */
+  clearHtmlCell(cell) {
+    // Remove any class that matches the pattern 'field-cell--<num>'
+    const classes = Array.from(cell.classList);
+
+    classes.forEach((cls) => {
+      if (cls.startsWith('field-cell--')) {
+        cell.classList.remove(cls);
+      }
+    });
+
+    // Clear the text content of the cell
+    cell.textContent = '';
   }
 }
 
