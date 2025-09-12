@@ -1,9 +1,8 @@
 'use strict';
 
-import { resetScore } from '../scripts/main';
+import { resetScore, stopBgMusic } from '../scripts/main';
 
-const BOARD_SIZE = 4;
-const FOUR_SPAWN_CHANCE = 0.1;
+const loseMsgEl = document.querySelector('.message.message-lose');
 const scoreColEls = [...document.querySelectorAll('.score-col')];
 const rows = [...document.querySelectorAll('.field-row')];
 
@@ -19,6 +18,11 @@ if (!cells.length) {
 
 const swipeSound = document.getElementById('swipe-sound');
 const mergeSound = document.getElementById('merge-sound');
+const gameOverSound = document.getElementById('game-over-sound');
+const backgroundMusic = document.getElementById('background-music');
+
+const BOARD_SIZE = 4;
+const FOUR_SPAWN_CHANCE = 0.1;
 
 /**
  * This class represents the game.
@@ -283,6 +287,9 @@ class Game {
 
     if (this.checkLose()) {
       gameStatus = 'lose';
+      this.showLoseMsg();
+      stopBgMusic(backgroundMusic);
+      this.playGameOverSound();
     }
 
     return gameStatus;
@@ -346,6 +353,10 @@ class Game {
    * Spawn 2 or 4 in a random available position
    */
   spawnNumber() {
+    if (!this.availableCellsExists()) {
+      return;
+    }
+
     const newNum = Math.random() < FOUR_SPAWN_CHANCE ? 4 : 2;
 
     let randomRowPos;
@@ -363,6 +374,22 @@ class Game {
 
     // Update game dash
     this.dash[randomRowPos][randomColPos] = newNum;
+  }
+
+  /**
+   * Checks if there are any available slots in the dash
+   * @returns {boolean}
+   */
+  availableCellsExists() {
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        if (this.dash[row][col] === 0) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -427,6 +454,15 @@ class Game {
     }
   }
 
+  /**
+   * Shows the lose message by removing the hidden class
+   */
+  showLoseMsg() {
+    if (loseMsgEl) {
+      loseMsgEl.classList.remove('hidden');
+    }
+  }
+
   playMergeSound() {
     if (mergeSound) {
       mergeSound.play();
@@ -436,6 +472,12 @@ class Game {
   playMoveSound() {
     if (swipeSound) {
       swipeSound.play();
+    }
+  }
+
+  playGameOverSound() {
+    if (gameOverSound) {
+      gameOverSound.play();
     }
   }
 }

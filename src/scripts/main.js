@@ -3,6 +3,8 @@
 const Game = require('../modules/Game.class');
 
 const scoreColEls = [...document.querySelectorAll('.score-col')];
+const loseMsgEl = document.querySelector('.message.message-lose');
+const winMsgEl = document.querySelector('.message.message-win');
 
 export function resetScore() {
   if (scoreColEls.length) {
@@ -19,11 +21,30 @@ export function resetScore() {
   }
 }
 
+export function resetMsgs() {
+  if (loseMsgEl) {
+    loseMsgEl.classList.add('hidden');
+  }
+
+  if (winMsgEl) {
+    winMsgEl.classList.add('hidden');
+  }
+}
+
+export function stopBgMusic(bgMusic) {
+  if (bgMusic && !bgMusic.paused) {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+  }
+}
+
 window.addEventListener('load', () => {
   const startBtn = document.querySelector('.button.start');
   const startMsg = document.querySelector('.message.message-start');
-  const backgroundMusic = document.getElementById('background-music');
   const clickSound = document.getElementById('click-sound');
+  const backgroundMusic = document.getElementById('background-music');
+
+  let keydownEventHandler;
 
   if (!startBtn) {
     throw new Error('Start button is not found!');
@@ -41,7 +62,7 @@ window.addEventListener('load', () => {
       backgroundMusic.play();
     }
 
-    document.addEventListener('keydown', (e) => {
+    keydownEventHandler = (e) => {
       switch (e.key) {
         case 'ArrowUp':
           game.move('up');
@@ -56,7 +77,9 @@ window.addEventListener('load', () => {
           game.move('right');
           break;
       }
-    });
+    };
+
+    document.addEventListener('keydown', keydownEventHandler);
   }
 
   startBtn.addEventListener('click', () => {
@@ -65,7 +88,12 @@ window.addEventListener('load', () => {
       clickSound.play();
     }
 
+    if (keydownEventHandler) {
+      document.removeEventListener('keydown', keydownEventHandler);
+    }
+
     resetScore();
+    resetMsgs();
     initializeGame();
 
     startBtn.classList.add('restart');
