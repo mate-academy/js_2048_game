@@ -1,3 +1,7 @@
+$container-width: 350px;
+$score-num-heigh: 18.5px;
+$score-num-gap: 10px;
+
 body {
   margin: 0;
   display: flex;
@@ -89,7 +93,6 @@ body {
   width: 100%;
   justify-content: space-between;
   margin-bottom: 24px;
-  padding: 10px;
   box-sizing: border-box;
 }
 
@@ -109,7 +112,7 @@ h1 {
 
 .info {
   display: flex;
-  flex-direction: column;
+  flex-grow: 2;
   align-items: center;
   justify-content: center;
   background: #d6cdc4;
@@ -119,11 +122,28 @@ h1 {
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
-  margin: 0 8px 0 0;
+  margin: 0 8px;
 }
 
-.controls {
+.score-wrapper {
   display: flex;
+  gap: 5px;
+  margin-left: 8px;
+  max-height: $score-num-heigh;
+  overflow: hidden;
+}
+
+.score-col {
+  display: flex;
+  gap: $score-num-gap;
+  flex-direction: column;
+  transition: all 300ms ease;
+
+  @for $i from 0 through 9 {
+    &--#{$i} {
+      transform: translateY(calc(($score-num-heigh + $score-num-gap) * -#{$i}));
+    }
+  }
 }
 
 .button {
@@ -176,7 +196,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
+  width: $container-width;
 }
 
 .message-win {

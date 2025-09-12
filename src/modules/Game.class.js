@@ -2,6 +2,7 @@
 
 const BOARD_SIZE = 4;
 const FOUR_SPAWN_CHANCE = 0.1;
+const scoreColEls = [...document.querySelectorAll('.score-col')];
 const rows = [...document.querySelectorAll('.field-row')];
 
 if (!rows.length) {
@@ -13,6 +14,9 @@ const cells = rows.map((row) => [...row.querySelectorAll('.field-cell')]);
 if (!cells.length) {
   throw new Error('Cells are not found!');
 }
+
+const swipeSound = document.getElementById('swipe-sound');
+const mergeSound = document.getElementById('merge-sound');
 
 /**
  * This class represents the game.
@@ -42,6 +46,8 @@ class Game {
     this.dash = Array.from({ length: BOARD_SIZE }, () => {
       return Array(BOARD_SIZE).fill(0);
     });
+
+    this.score = 0;
   }
 
   /**
@@ -49,14 +55,15 @@ class Game {
    * @param {string} direction
    * @param {HTMLAudioElement} swipeAudio
    */
-  move(direction, swipeAudio) {
+  move(direction) {
     let gameStatus = this.getStatus();
 
     if (gameStatus !== 'playing') {
       return;
     }
 
-    swipeAudio.play();
+    // Play move sound
+    this.playMoveSound();
 
     switch (direction) {
       case 'up':
@@ -73,15 +80,18 @@ class Game {
         break;
     }
 
-    // Update HTML table state
-    this.updateHtmlTable();
-
     gameStatus = this.getStatus();
 
     // Spawn new cell if the game isn't finished yet
     if (gameStatus === 'playing') {
       this.spawnNumber();
     }
+
+    // Update HTML table state
+    this.updateHtmlTable();
+
+    // Update HTML score count
+    this.updateHtmlScore();
   }
 
   moveLeft() {
@@ -218,6 +228,12 @@ class Game {
       if (column[i] === column[i + 1]) {
         column[i] *= 2;
         column[i + 1] = 0;
+
+        // Update score count
+        this.score += column[i];
+
+        // Play merge sound
+        this.playMergeSound();
       }
     }
   }
@@ -230,6 +246,12 @@ class Game {
       if (row[i] === row[i + 1]) {
         row[i] *= 2;
         row[i + 1] = 0;
+
+        // Update score count
+        this.score += row[i];
+
+        // Play merge sound
+        this.playMergeSound();
       }
     }
   }
@@ -385,6 +407,43 @@ class Game {
 
     // Clear the text content of the cell
     cell.textContent = '';
+  }
+
+  /**
+   * Updates HTML score count
+   */
+  updateHtmlScore() {
+    if (scoreColEls.length) {
+      const score = String(this.score).padStart(4, '0');
+
+      for (let i = 0; i < scoreColEls.length; i++) {
+        // Remove class that starts with score-col-- if it exists
+        const classToRemove = [...scoreColEls[i].classList].find(
+          (className) => {
+            return className.startsWith('score-col--');
+          },
+        );
+
+        if (classToRemove) {
+          scoreColEls[i].classList.remove(classToRemove);
+        }
+
+        // Add new class score-col--<i>
+        scoreColEls[i].classList.add(`score-col--${score[i]}`);
+      }
+    }
+  }
+
+  playMergeSound() {
+    if (mergeSound) {
+      mergeSound.play();
+    }
+  }
+
+  playMoveSound() {
+    if (swipeSound) {
+      swipeSound.play();
+    }
   }
 }
 
