@@ -262,16 +262,6 @@ class Game {
   }
 
   /**
-   * @returns {number}
-   */
-  getScore() {}
-
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
-
-  /**
    * Returns the current game status.
    *
    * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
@@ -369,11 +359,6 @@ class Game {
     this.spawnNumber();
     this.updateHtmlTable();
   }
-
-  /**
-   * Resets the game.
-   */
-  restart() {}
 
   /**
    * Spawn 2 or 4 in a random available position
