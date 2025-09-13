@@ -29,9 +29,9 @@ import { preenche, hideMessages, showMessage } from '../functions/functions.js';
   });
 
 
-  document.addEventListener('keydown', (event) => {
+  document.addEventListener('keydown', (evt) => {
     if (start) {
-      switch(event.key) {
+      switch(evt.key) {
         case 'ArrowUp':
             if (game.moveUpCheck()) {
               game.moveUp();
