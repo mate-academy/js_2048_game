@@ -186,7 +186,7 @@ export class Game {
       }
     }
 
-    let temp44 = vetTemp4_4.length;
+    let temp44 = vetTemp44.length;
 
     for (let i = 1; i <= 4 - temp44; i++) { // Adjusting Row4
       vetTemp44.unshift(0);
@@ -379,11 +379,6 @@ export class Game {
 
   moveUp() {
 
-    let row1 = [];
-    let row2 = [];
-    let row3 = [];
-    let row4 = [];
-
     let vetTemp1 = [];
     let vetTemp2 = [];
     let vetTemp3 = [];
@@ -562,11 +557,6 @@ export class Game {
   }
 
   moveDown() {
-
-    let row1 = [];
-    let row2 = [];
-    let row3 = [];
-    let row4 = [];
 
     let vetTemp1 = [];
     let vetTemp2 = [];
