@@ -5,7 +5,7 @@ import { preenche, changeScore, randomPosition, randomNumber } from "../function
 export class Game {
 
   state = 'idle';
-  score = 0;
+  score = '';
 
   constructor(initialState) {
     if (initialState === undefined) {
@@ -101,6 +101,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate row1
       if (vetTemp1[i] === vetTemp1[i + 1]) {
         vetTemp1[i] += vetTemp1[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp1[i];
         changeScore(this.score);
         vetTemp1[i + 1] = 0;
@@ -125,6 +130,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate row2
       if (vetTemp2[i] === vetTemp2[i + 1]) {
         vetTemp2[i] += vetTemp2[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp2[i];
         changeScore(this.score);
         vetTemp2[i + 1] = 0;
@@ -149,6 +159,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate row3
       if (vetTemp3[i] === vetTemp3[i + 1]) {
         vetTemp3[i] += vetTemp3[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp3[i];
         changeScore(this.score);
         vetTemp3[i + 1] = 0;
@@ -173,6 +188,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate row4
       if (vetTemp4[i] === vetTemp4[i + 1]) {
         vetTemp4[i] += vetTemp4[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp4[i];
         changeScore(this.score);
         vetTemp4[i + 1] = 0;
@@ -279,6 +299,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate row1
       if (vetTemp1[i] === vetTemp1[i + 1]) {
         vetTemp1[i] += vetTemp1[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp1[i];
         changeScore(this.score);
         vetTemp1[i + 1] = 0;
@@ -303,6 +328,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate row2
       if (vetTemp2[i] === vetTemp2[i + 1]) {
         vetTemp2[i] += vetTemp2[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp2[i];
         changeScore(this.score);
         vetTemp2[i + 1] = 0;
@@ -327,6 +357,12 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate row3
       if (vetTemp3[i] === vetTemp3[i + 1]) {
         vetTemp3[i] += vetTemp3[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
+        this.score += vetTemp3[i];
         changeScore(this.score);
         vetTemp3[i + 1] = 0;
         i++;
@@ -350,6 +386,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate row4
       if (vetTemp4[i] === vetTemp4[i + 1]) {
         vetTemp4[i] += vetTemp4[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp4[i];
         changeScore(this.score);
         vetTemp4[i + 1] = 0;
@@ -446,6 +487,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate column1
       if (vetTemp1[i] === vetTemp1[i + 1]) {
         vetTemp1[i] += vetTemp1[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp1[i];
         changeScore(this.score);
         vetTemp1[i + 1] = 0;
@@ -470,6 +516,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate column2
       if (vetTemp2[i] === vetTemp2[i + 1]) {
         vetTemp2[i] += vetTemp2[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp2[i];
         changeScore(this.score);
         vetTemp2[i + 1] = 0;
@@ -494,6 +545,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate column3
       if (vetTemp3[i] === vetTemp3[i + 1]) {
         vetTemp3[i] += vetTemp3[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp3[i];
         changeScore(this.score);
         vetTemp3[i + 1] = 0;
@@ -518,6 +574,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate column4
       if (vetTemp4[i] === vetTemp4[i + 1]) {
         vetTemp4[i] += vetTemp4[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp4[i];
         changeScore(this.score);
         vetTemp4[i + 1] = 0;
@@ -625,6 +686,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate column1
       if (vetTemp1[i] === vetTemp1[i + 1]) {
         vetTemp1[i] += vetTemp1[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp1[i];
         changeScore(this.score);
         vetTemp1[i + 1] = 0;
@@ -649,6 +715,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate column2
       if (vetTemp2[i] === vetTemp2[i + 1]) {
         vetTemp2[i] += vetTemp2[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp2[i];
         changeScore(this.score);
         vetTemp2[i + 1] = 0;
@@ -673,6 +744,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate column3
       if (vetTemp3[i] === vetTemp3[i + 1]) {
         vetTemp3[i] += vetTemp3[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp3[i];
         changeScore(this.score);
         vetTemp3[i + 1] = 0;
@@ -697,6 +773,11 @@ export class Game {
     for (let i = 0; i < 3; i++) { // Evaluate column4
       if (vetTemp4[i] === vetTemp4[i + 1]) {
         vetTemp4[i] += vetTemp4[i + 1];
+
+        if (this.score === '') {
+          this.score = 0;
+        }
+
         this.score += vetTemp4[i]
         changeScore(this.score);
         vetTemp4[i + 1] = 0;
