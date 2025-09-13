@@ -37,10 +37,10 @@ export class Game {
     let vetTemp3 = [];
     let vetTemp4 = [];
 
-    let vetTemp1_1 = [];
-    let vetTemp2_2 = [];
-    let vetTemp3_3 = [];
-    let vetTemp4_4 = [];
+    let vetTemp11 = [];
+    let vetTemp22 = [];
+    let vetTemp33 = [];
+    let vetTemp44 = [];
 
     for (let i = 0; i < 4; i++) { // Row1
       if (row1[i] !== 0) {
@@ -110,14 +110,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating Row1
       if (vetTemp1[i] !== 0) {
-        vetTemp1_1.push(vetTemp1[i]);
+        vetTemp11.push(vetTemp1[i]);
       }
     }
 
-    let temp1_1 = vetTemp1_1.length;
+    let temp11 = vetTemp11.length;
 
-    for (let i = 1; i <= 4 - temp1_1; i++) { // Adjusting Row1
-      vetTemp1_1.unshift(0);
+    for (let i = 1; i <= 4 - temp11; i++) { // Adjusting Row1
+      vetTemp11.unshift(0);
     }
 
     //
@@ -134,14 +134,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating Row2
       if (vetTemp2[i] !== 0) {
-        vetTemp2_2.push(vetTemp2[i]);
+        vetTemp22.push(vetTemp2[i]);
       }
     }
 
-    let temp2_2 = vetTemp2_2.length;
+    let temp22 = vetTemp22.length;
 
-    for (let i = 1; i <= 4 - temp2_2; i++) { // Adjusting Row2
-      vetTemp2_2.unshift(0);
+    for (let i = 1; i <= 4 - temp22; i++) { // Adjusting Row2
+      vetTemp22.unshift(0);
     }
 
     //
@@ -158,14 +158,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating Row3
       if (vetTemp3[i] !== 0) {
-        vetTemp3_3.push(vetTemp3[i]);
+        vetTemp33.push(vetTemp3[i]);
       }
     }
 
-    let temp3_3 = vetTemp3_3.length;
+    let temp33 = vetTemp33.length;
 
-    for (let i = 1; i <= 4 - temp3_3; i++) { // Adjusting Row3
-      vetTemp3_3.unshift(0);
+    for (let i = 1; i <= 4 - temp33; i++) { // Adjusting Row3
+      vetTemp33.unshift(0);
     }
 
     //
@@ -182,20 +182,20 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating Row4
       if (vetTemp4[i] !== 0) {
-        vetTemp4_4.push(vetTemp4[i]);
+        vetTemp44.push(vetTemp4[i]);
       }
     }
 
-    let temp4_4 = vetTemp4_4.length;
+    let temp44 = vetTemp4_4.length;
 
-    for (let i = 1; i <= 4 - temp4_4; i++) { // Adjusting Row4
-      vetTemp4_4.unshift(0);
+    for (let i = 1; i <= 4 - temp44; i++) { // Adjusting Row4
+      vetTemp44.unshift(0);
     }
 
-    this.table[0] = vetTemp1_1;
-    this.table[1] = vetTemp2_2;
-    this.table[2] = vetTemp3_3;
-    this.table[3] = vetTemp4_4;
+    this.table[0] = vetTemp11;
+    this.table[1] = vetTemp22;
+    this.table[2] = vetTemp33;
+    this.table[3] = vetTemp44;
   }
 
   moveLeft() {
@@ -215,10 +215,10 @@ export class Game {
     let vetTemp3 = [];
     let vetTemp4 = [];
 
-    let vetTemp1_1 = [];
-    let vetTemp2_2 = [];
-    let vetTemp3_3 = [];
-    let vetTemp4_4 = [];
+    let vetTemp11 = [];
+    let vetTemp22 = [];
+    let vetTemp33 = [];
+    let vetTemp44 = [];
 
     for (let i = 0; i < 4; i++) { // Row1
       if (row1[i] !== 0) {
@@ -288,14 +288,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating Row1
       if (vetTemp1[i] !== 0) {
-        vetTemp1_1.push(vetTemp1[i]);
+        vetTemp11.push(vetTemp1[i]);
       }
     }
 
-    let temp1_1 = vetTemp1_1.length;
+    let temp11 = vetTemp11.length;
 
-    for (let i = 1; i <= 4 - temp1_1; i++) { // Aadjusting Row1
-      vetTemp1_1.push(0);
+    for (let i = 1; i <= 4 - temp11; i++) { // Aadjusting Row1
+      vetTemp11.push(0);
     }
 
     //
@@ -312,14 +312,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating Row2
       if (vetTemp2[i] !== 0) {
-        vetTemp2_2.push(vetTemp2[i]);
+        vetTemp22.push(vetTemp2[i]);
       }
     }
 
-    let temp2_2 = vetTemp2_2.length;
+    let temp22 = vetTemp22.length;
 
-    for (let i = 1; i <= 4 - temp2_2; i++) { // Adjusting Row2
-      vetTemp2_2.push(0);
+    for (let i = 1; i <= 4 - temp22; i++) { // Adjusting Row2
+      vetTemp22.push(0);
     }
 
     //
@@ -335,14 +335,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating Row3
       if (vetTemp3[i] !== 0) {
-        vetTemp3_3.push(vetTemp3[i]);
+        vetTemp33.push(vetTemp3[i]);
       }
     }
 
-    let temp3_3 = vetTemp3_3.length;
+    let temp33 = vetTemp33.length;
 
-    for (let i = 1; i <= 4 - temp3_3; i++) { // Adjusting Row3
-      vetTemp3_3.push(0);
+    for (let i = 1; i <= 4 - temp33; i++) { // Adjusting Row3
+      vetTemp33.push(0);
     }
 
     //
@@ -359,22 +359,22 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating Row4
       if (vetTemp4[i] !== 0) {
-        vetTemp4_4.push(vetTemp4[i]);
+        vetTemp44.push(vetTemp4[i]);
       }
     }
 
-    let temp4_4 = vetTemp4_4.length;
+    let temp44 = vetTemp44.length;
 
-    for (let i = 1; i <= 4 - temp4_4; i++) { // Adjusting Row4
-      vetTemp4_4.push(0);
+    for (let i = 1; i <= 4 - temp44; i++) { // Adjusting Row4
+      vetTemp44.push(0);
     }
 
     //
 
-    this.table[0] = vetTemp1_1;
-    this.table[1] = vetTemp2_2;
-    this.table[2] = vetTemp3_3;
-    this.table[3] = vetTemp4_4;
+    this.table[0] = vetTemp11;
+    this.table[1] = vetTemp22;
+    this.table[2] = vetTemp33;
+    this.table[3] = vetTemp44;
   }
 
   moveUp() {
@@ -389,10 +389,10 @@ export class Game {
     let vetTemp3 = [];
     let vetTemp4 = [];
 
-    let vetTemp1_1 = [];
-    let vetTemp2_2 = [];
-    let vetTemp3_3 = [];
-    let vetTemp4_4 = [];
+    let vetTemp11 = [];
+    let vetTemp22 = [];
+    let vetTemp33 = [];
+    let vetTemp44 = [];
 
     let temp;
 
@@ -460,14 +460,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating column1
       if (vetTemp1[i] !== 0) {
-        vetTemp1_1.push(vetTemp1[i]);
+        vetTemp11.push(vetTemp1[i]);
       }
     }
 
-    let temp1_1 = vetTemp1_1.length;
+    let temp11 = vetTemp11.length;
 
-    for (let i = 1; i <= 4 - temp1_1; i++) { // Adjusting column1
-      vetTemp1_1.push(0);
+    for (let i = 1; i <= 4 - temp11; i++) { // Adjusting column1
+      vetTemp11.push(0);
     }
 
     //
@@ -484,14 +484,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating column2
       if (vetTemp2[i] !== 0) {
-        vetTemp2_2.push(vetTemp2[i]);
+        vetTemp22.push(vetTemp2[i]);
       }
     }
 
-    let temp2_2 = vetTemp2_2.length;
+    let temp22 = vetTemp22.length;
 
-    for (let i = 1; i <= 4 - temp2_2; i++) { // Adjusting column2
-      vetTemp2_2.push(0);
+    for (let i = 1; i <= 4 - temp22; i++) { // Adjusting column2
+      vetTemp22.push(0);
     }
 
     //
@@ -508,14 +508,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating column3
       if (vetTemp3[i] !== 0) {
-        vetTemp3_3.push(vetTemp3[i]);
+        vetTemp33.push(vetTemp3[i]);
       }
     }
 
-    let temp3_3 = vetTemp3_3.length;
+    let temp33 = vetTemp33.length;
 
-    for (let i = 1; i <= 4 - temp3_3; i++) { // Adjusting column3
-      vetTemp3_3.push(0);
+    for (let i = 1; i <= 4 - temp33; i++) { // Adjusting column3
+      vetTemp33.push(0);
     }
 
     //
@@ -532,32 +532,32 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating column4
       if (vetTemp4[i] !== 0) {
-        vetTemp4_4.push(vetTemp4[i]);
+        vetTemp44.push(vetTemp4[i]);
       }
     }
 
-    let temp4_4 = vetTemp4_4.length;
+    let temp44 = vetTemp44.length;
 
-    for (let i = 1; i <= 4 - temp4_4; i++) { // Adjusting column4
-      vetTemp4_4.push(0);
+    for (let i = 1; i <= 4 - temp44; i++) { // Adjusting column4
+      vetTemp44.push(0);
     }
 
     //
 
     for (let i = 0; i < 4; i++) { // Fill table column1
-      this.table[i][0] = vetTemp1_1[i];
+      this.table[i][0] = vetTemp11[i];
     }
 
     for (let i = 0; i < 4; i++) { // Fill table column2
-      this.table[i][1] = vetTemp2_2[i];
+      this.table[i][1] = vetTemp22[i];
     }
 
     for (let i = 0; i < 4; i++) { // Fill table column3
-      this.table[i][2] = vetTemp3_3[i];
+      this.table[i][2] = vetTemp33[i];
     }
 
     for (let i = 0; i < 4; i++) { // Fill table column4
-      this.table[i][3] = vetTemp4_4[i];
+      this.table[i][3] = vetTemp44[i];
     }
   }
 
@@ -573,10 +573,10 @@ export class Game {
     let vetTemp3 = [];
     let vetTemp4 = [];
 
-    let vetTemp1_1 = [];
-    let vetTemp2_2 = [];
-    let vetTemp3_3 = [];
-    let vetTemp4_4 = [];
+    let vetTemp11 = [];
+    let vetTemp22 = [];
+    let vetTemp33 = [];
+    let vetTemp44 = [];
 
     let temp;
 
@@ -644,14 +644,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating column1
       if (vetTemp1[i] !== 0) {
-        vetTemp1_1.push(vetTemp1[i]);
+        vetTemp11.push(vetTemp1[i]);
       }
     }
 
-    let temp1_1 = vetTemp1_1.length;
+    let temp11 = vetTemp11.length;
 
-    for (let i = 1; i <= 4 - temp1_1; i++) { // Adjusting column1
-      vetTemp1_1.unshift(0);
+    for (let i = 1; i <= 4 - temp11; i++) { // Adjusting column1
+      vetTemp11.unshift(0);
     }
 
     //
@@ -668,14 +668,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating column2
       if (vetTemp2[i] !== 0) {
-        vetTemp2_2.push(vetTemp2[i]);
+        vetTemp22.push(vetTemp2[i]);
       }
     }
 
-    let temp2_2 = vetTemp2_2.length;
+    let temp22 = vetTemp22.length;
 
-    for (let i = 1; i <= 4 - temp2_2; i++) { // Adjusting column2
-      vetTemp2_2.unshift(0);
+    for (let i = 1; i <= 4 - temp22; i++) { // Adjusting column2
+      vetTemp22.unshift(0);
     }
 
     //
@@ -692,14 +692,14 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating column3
       if (vetTemp3[i] !== 0) {
-        vetTemp3_3.push(vetTemp3[i]);
+        vetTemp33.push(vetTemp3[i]);
       }
     }
 
-    let temp3_3 = vetTemp3_3.length;
+    let temp33 = vetTemp33.length;
 
-    for (let i = 1; i <= 4 - temp3_3; i++) { // Adjusting column3
-      vetTemp3_3.unshift(0);
+    for (let i = 1; i <= 4 - temp33; i++) { // Adjusting column3
+      vetTemp33.unshift(0);
     }
 
     //
@@ -716,32 +716,32 @@ export class Game {
 
     for (let i = 0; i < 4; i++) { // Enumerating column4
       if (vetTemp4[i] !== 0) {
-        vetTemp4_4.push(vetTemp4[i]);
+        vetTemp44.push(vetTemp4[i]);
       }
     }
 
-    let temp4_4 = vetTemp4_4.length;
+    let temp44 = vetTemp44.length;
 
-    for (let i = 1; i <= 4 - temp4_4; i++) { // Adjusting column4
-      vetTemp4_4.unshift(0);
+    for (let i = 1; i <= 4 - temp44; i++) { // Adjusting column4
+      vetTemp44.unshift(0);
     }
 
     //
 
     for (let i = 0; i < 4; i++) { // Fill table column1
-      this.table[i][0] = vetTemp1_1[i];
+      this.table[i][0] = vetTemp11[i];
     }
 
     for (let i = 0; i < 4; i++) { // Fill table column2
-      this.table[i][1] = vetTemp2_2[i];
+      this.table[i][1] = vetTemp22[i];
     }
 
     for (let i = 0; i < 4; i++) { // Fill table column3
-      this.table[i][2] = vetTemp3_3[i];
+      this.table[i][2] = vetTemp33[i];
     }
 
     for (let i = 0; i < 4; i++) { // Fill table column4
-      this.table[i][3] = vetTemp4_4[i];
+      this.table[i][3] = vetTemp44[i];
     }
 
   }
@@ -762,11 +762,6 @@ export class Game {
     let vetTemp2 = [];
     let vetTemp3 = [];
     let vetTemp4 = [];
-
-    let vetTemp1_1 = [];
-    let vetTemp2_2 = [];
-    let vetTemp3_3 = [];
-    let vetTemp4_4 = [];
 
     for (let i = 0; i < 4; i++) { // Row1
       if (row1[i] !== 0) {
@@ -868,11 +863,6 @@ export class Game {
     let vetTemp3 = [];
     let vetTemp4 = [];
 
-    let vetTemp1_1 = [];
-    let vetTemp2_2 = [];
-    let vetTemp3_3 = [];
-    let vetTemp4_4 = [];
-
     for (let i = 0; i < 4; i++) { // Row1
       if (row1[i] !== 0) {
         vetTemp1.push(row1[i]);
@@ -958,20 +948,10 @@ export class Game {
 
   moveUpCheck() {
 
-    let row1 = [];
-    let row2 = [];
-    let row3 = [];
-    let row4 = [];
-
     let vetTemp1 = [];
     let vetTemp2 = [];
     let vetTemp3 = [];
     let vetTemp4 = [];
-
-    let vetTemp1_1 = [];
-    let vetTemp2_2 = [];
-    let vetTemp3_3 = [];
-    let vetTemp4_4 = [];
 
     let temp;
 
@@ -1056,20 +1036,10 @@ export class Game {
 
   moveDownCheck() {
 
-    let row1 = [];
-    let row2 = [];
-    let row3 = [];
-    let row4 = [];
-
     let vetTemp1 = [];
     let vetTemp2 = [];
     let vetTemp3 = [];
     let vetTemp4 = [];
-
-    let vetTemp1_1 = [];
-    let vetTemp2_2 = [];
-    let vetTemp3_3 = [];
-    let vetTemp4_4 = [];
 
     let temp;
 
