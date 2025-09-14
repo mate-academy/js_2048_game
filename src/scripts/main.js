@@ -3,68 +3,83 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-document.addEventListener('DOMContentLoaded', () => {
-  // start button
-  const startBtn = document.querySelector('#start-btn');
-
-  if (startBtn) {
-    startBtn.addEventListener('click', () => {
-      if (game.getStatus() === 'idle') {
-        game.start();
-      } else {
-        game.restart();
-      }
-      render();
-    });
-  }
-
-  // keyboard moves
-  document.addEventListener('keydown', (ev) => {
-    switch (ev.key) {
-      case 'ArrowLeft':
-        game.moveLeft();
-        break;
-      case 'ArrowRight':
-        game.moveRight();
-        break;
-      case 'ArrowUp':
-        game.moveUp();
-        break;
-      case 'ArrowDown':
-        game.moveDown();
-        break;
-    }
-    render();
-  });
-
-  render();
-});
+const startBtn = document.querySelector('.button--start');
 
 function render() {
-  const board = game.getState();
-  const score = game.getScore();
-  const stat = game.getStatus();
+  const cells = document.querySelector('.field-cell');
 
-  for (let r = 0; r < 4; r++) {
-    for (let c = 0; c < 4; c++) {
-      const cell = document.querySelector(`#cell-${r}-${c}`);
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      const index = row * 4 + col;
+      const value = game.board[row][col];
+      const cell = cells[index];
 
-      if (cell) {
-        cell.textContent = board[r][c] || '';
-        cell.className = `field-cell ${board[r][c] ? 'field-cell--' + board[r][c] : ''}`;
+      cell.textContent = value === 0 ? '' : value;
+      cell.className = 'field-cell';
+
+      if (value !== 0) {
+        cell.classList.add(`field-cell--${value}`);
       }
     }
   }
+}
 
-  const scoreEl = document.querySelector('#score');
+function lose() {
+  if (game.checkLose()) {
+    const loseMessage = document.querySelector('.message-lose');
 
-  if (scoreEl) {
-    scoreEl.textContent = score;
-  }
-
-  const statusEl = document.querySelector('#status');
-
-  if (statusEl) {
-    statusEl.textContent = stat;
+    loseMessage.classList.remove('hidden');
   }
 }
+
+function win() {
+  if (game.checkWin()) {
+    const winMessage = document.querySelector('.message-win');
+
+    winMessage.classList.remove('hidden');
+  }
+}
+
+startBtn.addEventListener('click', () => {
+  if (startBtn.classList.contains('restart')) {
+    game.restart();
+  } else {
+    game.start();
+  }
+  render();
+  game.updateScore();
+});
+
+document.addEventListener('keydown', (ev) => {
+  if (ev.key === 'ArrowLeft') {
+    game.moveLeft();
+    render();
+    game.updateScore();
+    lose();
+    win();
+  }
+
+  if (ev.key === 'ArrowRight') {
+    game.moveRight();
+    render();
+    game.updateScore();
+    lose();
+    win();
+  }
+
+  if (ev.key === 'ArrowUp') {
+    game.moveUp();
+    render();
+    game.updateScore();
+    lose();
+    win();
+  }
+
+  if (ev.key === 'ArrowDown') {
+    game.moveDown();
+    render();
+    game.updateScore();
+    lose();
+    win();
+  }
+});
