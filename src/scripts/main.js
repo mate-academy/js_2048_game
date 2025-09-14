@@ -3,10 +3,10 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-const startBtn = document.querySelector('.button--start');
+const startBtn = document.querySelector('.button.start');
 
 function render() {
-  const cells = document.querySelector('.field-cell');
+  const cells = document.querySelectorAll('.field-cell');
 
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {

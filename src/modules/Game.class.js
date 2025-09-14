@@ -4,11 +4,11 @@ class Game {
   constructor(initialState) {
     this.SIZE = 4;
     this.score = 0;
-    this.status = 'playing'; // idle | playing | win | lose
+    this.status = 'playing';
 
-    this.board =
-      this.initialState.map((row) => [...row]) ||
-      Array.from({ length: this.SIZE }, () => Array(this.SIZE).fill(0));
+    this.board = Array.from({ length: this.SIZE }, () => {
+      return Array(this.SIZE).fill(0);
+    });
   }
 
   _addRandomTile() {
