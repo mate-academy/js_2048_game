@@ -10,6 +10,16 @@ body {
   font-weight: 900;
 }
 
+.animations-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -20,6 +30,9 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transform: scale(1);
+  opacity: 1;
+  transition: 0.2;
 
   &--2 {
     background: #eee4da;
@@ -72,6 +85,10 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+  }
+
+  &--new {
+    transform: scale(1.2);
   }
 }
 
@@ -173,6 +190,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
   width: 350px;
 }
 
