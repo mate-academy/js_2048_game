@@ -18,8 +18,9 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
+  border: 2px solid #f59563;
 
   &--2 {
     background: #eee4da;
