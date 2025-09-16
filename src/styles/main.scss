@@ -1,8 +1,10 @@
 body {
   margin: 0;
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   min-height: 100vh;
   background: #fbf8ef;
   font-family: sans-serif;
@@ -16,6 +18,7 @@ body {
   height: 75px;
   border-radius: 5px;
   color: #776e65;
+
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
@@ -60,18 +63,21 @@ body {
   }
 
   &--512 {
-    background: #edc850;
+    background: #edcc61;
     color: #f9f6f2;
+    font-size: 20px; // Reduz o tamanho da fonte para números maiores
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #edc850;
     color: #f9f6f2;
+    font-size: 18px;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    font-size: 18px;
   }
 }
 
@@ -163,25 +169,29 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+  display: block; // Adicionado para garantir visibilidade
+  margin-bottom: 10px; // Espaçamento entre mensagens
 }
 
 .hidden {
-  display: none;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
+  display: none !important; // Adicionado !important para garantir que sobrescreva outros estilos
 }
 
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
+  display: block; // Adicionado para garantir visibilidade quando necessário
+}
+
+.message-lose {
+  background: #f65e3b;
+  color: #f9f6f2;
+  display: block; // Adicionado para garantir visibilidade quando necessário
 }
 
 .message-container {
   width: 100%;
-  height: 150px;
+  height: auto; // Alterado de 150px fixo para auto
+  min-height: 100px;
+  margin-top: 20px;
 }
