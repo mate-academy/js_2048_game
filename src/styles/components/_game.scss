@@ -1,0 +1,183 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+.game-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+}
+
+.game-field {
+  background: #bbada0;
+  border-spacing: 10px;
+  border-radius: 5px;
+}
+
+.field-cell {
+  background-color: #d6cdc4;
+
+  @include cell;
+
+  &--2 {
+    --cell-bg: #eee4da;
+    --cell-content: '2';
+  }
+
+  &--4 {
+    --cell-bg: #ede0c8;
+    --cell-content: '4';
+  }
+
+  &--8 {
+    --cell-bg: #f2b179;
+    --cell-color: #f9f6f2;
+    --cell-content: '8';
+  }
+
+  &--16 {
+    --cell-bg: #f59563;
+    --cell-color: #f9f6f2;
+    --cell-content: '16';
+  }
+
+  &--32 {
+    --cell-bg: #f67c5f;
+    --cell-color: #f9f6f2;
+    --cell-content: '32';
+  }
+
+  &--64 {
+    --cell-bg: #f65e3b;
+    --cell-color: #f9f6f2;
+    --cell-content: '64';
+  }
+
+  &--128 {
+    --cell-bg: #edcf72;
+    --cell-color: #f9f6f2;
+    --cell-content: '128';
+  }
+
+  &--256 {
+    --cell-bg: #edcc61;
+    --cell-color: #f9f6f2;
+    --cell-content: '256';
+  }
+
+  &--512 {
+    --cell-bg: #edc850;
+    --cell-color: #f9f6f2;
+    --cell-content: '512';
+  }
+
+  &--1024 {
+    --cell-bg: #edc53f;
+    --cell-color: #f9f6f2;
+    --cell-content: '1024';
+  }
+
+  &--2048 {
+    --cell-bg: #edc22e;
+    --cell-color: #f9f6f2;
+    --cell-content: '2048';
+  }
+
+  &::after {
+    @include cell;
+
+    content: var(--cell-content);
+
+    background: var(--cell-bg);
+    color: var(--cell-color);
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+// Loop for generating row move classes
+@for $old-row from 1 through $grid-size {
+  @for $new-row from 1 through $grid-size {
+    .move-horizontally-#{$old-row}-#{$new-row}::after {
+      transition: transform $transition-duration $transition-timing;
+      z-index: 2;
+
+      @if $old-row != $new-row {
+        // Vertical movement: translateY
+        transform: translateX(
+          calc(
+            #{$cell-size} * ($new-row - $old-row) + #{$spacing} * ($new-row - $old-row)
+          )
+        );
+      }
+    }
+  }
+}
+
+// Loop for generating column move classes
+@for $old-col from 1 through $grid-size {
+  @for $new-col from 1 through $grid-size {
+    .move-vertically-#{$old-col}-#{$new-col}::after {
+      transition: transform $transition-duration $transition-timing;
+      z-index: 2;
+
+      @if $old-col != $new-col {
+        // Horizontal movement: translateX
+        transform: translateY(
+          calc(
+            #{$cell-size} * ($new-col - $old-col) + #{$spacing} * ($new-col - $old-col)
+          )
+        );
+      }
+    }
+  }
+}
+
+// Loop for generating row merge classes
+@for $old-row from 1 through $grid-size {
+  @for $new-row from 1 through $grid-size {
+    .merge-horizontally-#{$old-row}-#{$new-row}::after {
+      transition: transform $transition-duration $transition-timing;
+      z-index: 2;
+
+      @if $old-row != $new-row {
+        // Combine movement with slight scale (jump)
+        transform: translateX(
+            calc(
+              #{$cell-size} * ($new-row - $old-row) + #{$spacing} * ($new-row - $old-row)
+            )
+          )
+          scale(1.15);
+      }
+    }
+  }
+}
+
+// Loop for generating column merge classes
+@for $old-col from 1 through $grid-size {
+  @for $new-col from 1 through $grid-size {
+    .merge-vertically-#{$old-col}-#{$new-col}::after {
+      transition: transform $transition-duration $transition-timing;
+      z-index: 2;
+
+      @if $old-col != $new-col {
+        // Combine movement with slight scale (jump)
+        transform: translateY(
+            calc(
+              #{$cell-size} * ($new-col - $old-col) + #{$spacing} * ($new-col - $old-col)
+            )
+          )
+          scale(1.15);
+      }
+    }
+  }
+}

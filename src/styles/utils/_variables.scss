@@ -1,0 +1,14 @@
+:root {
+  --cell-bg: transparent;
+  --cell-color: #776e65;
+  --cell-content: '';
+}
+
+$container-width: 350px;
+$score-num-heigh: 18.5px;
+$score-num-gap: 10px;
+$cell-size: 75px;
+$spacing: 10px;
+$grid-size: 4;
+$transition-duration: 200ms;
+$transition-timing: cubic-bezier(0.68, -0.55, 0.27, 1.25);
