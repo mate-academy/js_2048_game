@@ -1,0 +1,10 @@
+@use './variables' as *;
+
+@mixin cell {
+  position: relative;
+  width: $cell-size;
+  height: $cell-size;
+  border-radius: 5px;
+  box-sizing: border-box;
+  user-select: none;
+}

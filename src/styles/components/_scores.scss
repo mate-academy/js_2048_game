@@ -1,0 +1,22 @@
+@use '../utils/variables' as *;
+
+.score-wrapper {
+  display: flex;
+  gap: 1px;
+  margin-left: 5px;
+  max-height: $score-num-heigh;
+  overflow: hidden;
+}
+
+.score-col {
+  display: flex;
+  gap: $score-num-gap;
+  flex-direction: column;
+  transition: all 300ms ease;
+
+  @for $i from 0 through 9 {
+    &--#{$i} {
+      transform: translateY(calc(($score-num-heigh + $score-num-gap) * -#{$i}));
+    }
+  }
+}
