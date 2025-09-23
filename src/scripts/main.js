@@ -18,11 +18,15 @@ function render() {
   state.forEach((row, r) => {
     row.forEach((cell, c) => {
       const td = boardRows[r].children[c];
+
       td.textContent = cell === 0 ? '' : cell;
 
       // Reset klas
       td.className = 'field-cell';
-      if (cell !== 0) td.classList.add(`field-cell--${cell}`);
+
+      if (cell !== 0) {
+        td.classList.add(`field-cell--${cell}`);
+      }
     });
   });
 
@@ -61,8 +65,9 @@ startBtn.addEventListener('click', () => {
 });
 
 // Obsługa strzałek
-document.addEventListener('keydown', e => {
+document.addEventListener('keydown', (e) => {
   let moved = false;
+
   switch (e.key) {
     case 'ArrowLeft':
       moved = game.moveLeft();
@@ -77,7 +82,10 @@ document.addEventListener('keydown', e => {
       moved = game.moveDown();
       break;
   }
-  if (moved) render();
+
+  if (moved) {
+    render();
+  }
 });
 
 // Render początkowy
