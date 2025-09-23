@@ -5,14 +5,14 @@ class Game {
     this.size = 4;
     this.score = 0;
     this.status = 'idle'; // idle | playing | win | lose
-    this.board = this.createEmptyBoard();
 
-    if (initialState) {
-      this.board = initialState.map((row) => [...row]);
-    } else {
-      this.addRandomTile();
-      this.addRandomTile();
-    }
+    // Zapisz początkowy stan jako głęboką kopię
+    this._initialState = initialState
+      ? initialState.map((row) => [...row])
+      : null;
+
+    // Plansza jest pusta, start() ją inicjalizuje
+    this.board = this.createEmptyBoard();
   }
 
   createEmptyBoard() {
@@ -34,15 +34,26 @@ class Game {
   start() {
     if (this.status === 'idle') {
       this.status = 'playing';
+
+      if (!this._initialState) {
+        this.board = this.createEmptyBoard();
+      } else {
+        this.board = this._initialState.map((row) => [...row]);
+      }
+      this.addRandomTile();
+      this.addRandomTile();
     }
   }
 
   restart() {
     this.score = 0;
-    this.status = 'playing';
-    this.board = this.createEmptyBoard();
-    this.addRandomTile();
-    this.addRandomTile();
+    this.status = 'idle';
+
+    if (this._initialState) {
+      this.board = this._initialState.map((row) => [...row]);
+    } else {
+      this.board = this.createEmptyBoard();
+    }
   }
 
   addRandomTile() {
@@ -160,8 +171,12 @@ unrotated = rotate180(unrotated);
     if (moved) {
       this.board = unrotated;
       this.score += scoreAdd;
-      this.addRandomTile();
+
       this.checkGameStatus();
+
+      if (this.status === 'playing') {
+        this.addRandomTile();
+      }
     }
 
     return moved;

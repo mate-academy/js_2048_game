@@ -1,6 +1,6 @@
 'use strict';
 
-const Game = require('../modules/Game.class.js'); // dostosuj ścieżkę
+const Game = require('../modules/Game.class.js');
 const game = new Game();
 
 // Pobranie elementów
@@ -14,14 +14,12 @@ const msgLose = document.querySelector('.message-lose');
 function render() {
   const state = game.getState();
 
-  // Aktualizacja planszy
   state.forEach((row, r) => {
     row.forEach((cell, c) => {
       const td = boardRows[r].children[c];
 
       td.textContent = cell === 0 ? '' : cell;
 
-      // Reset klas
       td.className = 'field-cell';
 
       if (cell !== 0) {
@@ -30,10 +28,8 @@ function render() {
     });
   });
 
-  // Wynik
   scoreEl.textContent = game.getScore();
 
-  // Komunikaty
   if (game.getStatus() === 'win') {
     msgWin.classList.remove('hidden');
     msgLose.classList.add('hidden');
@@ -53,7 +49,6 @@ function render() {
   }
 }
 
-// Obsługa Start / Restart
 startBtn.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
@@ -64,7 +59,6 @@ startBtn.addEventListener('click', () => {
   render();
 });
 
-// Obsługa strzałek
 document.addEventListener('keydown', (e) => {
   let moved = false;
 
@@ -88,5 +82,4 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Render początkowy
 render();
