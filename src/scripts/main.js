@@ -42,11 +42,10 @@ function render() {
     msgStart.classList.remove('hidden');
     msgWin.classList.add('hidden');
     msgLose.classList.add('hidden');
-  } else {
-    // playing
+  } else if (game.getStatus() === 'playing') {
+    msgStart.classList.add('hidden');
     msgWin.classList.add('hidden');
     msgLose.classList.add('hidden');
-    msgStart.classList.add('hidden');
   }
 }
 
