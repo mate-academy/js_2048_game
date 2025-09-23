@@ -16,13 +16,16 @@
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score:
-            <span class="game-score">0</span>
-          </p>
-          <button class="button start">Start</button>
+        <div class="info">
+          Score:
+          <div class="score-wrapper">
+            <div class="score-col"></div>
+            <div class="score-col"></div>
+            <div class="score-col"></div>
+            <div class="score-col"></div>
+          </div>
         </div>
+        <button class="button start">Start</button>
       </div>
 
       <table class="game-field">
@@ -65,6 +68,35 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+
+    <audio
+      id="background-music"
+      src="./sounds/music.mp3"
+    ></audio>
+    <audio
+      id="click-sound"
+      src="./sounds/click.mp3"
+    ></audio>
+    <audio
+      id="swipe-sound"
+      src="./sounds/swipe.mp3"
+    ></audio>
+    <audio
+      id="merge-sound"
+      src="./sounds/merge.mp3"
+    ></audio>
+    <audio
+      id="game-over-sound"
+      src="./sounds/game-over.mp3"
+    ></audio>
+    <audio
+      id="game-victory-sound"
+      src="./sounds/victory.mp3"
+    ></audio>
+
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
