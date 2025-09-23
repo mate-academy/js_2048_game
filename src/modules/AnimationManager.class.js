@@ -9,9 +9,6 @@ class AnimationManager {
     this.isMoving = false;
   }
 
-  /**
-   * Calculate actions
-   */
   calculateAction(prevDash, newDash, direction) {
     const size = 4;
 
