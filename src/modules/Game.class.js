@@ -312,6 +312,8 @@ class Game {
     this.startButton.classList.add('start');
     this.startButton.classList.remove('restart');
     this.startMessage.classList.remove('hidden');
+    this.wonMessage.classList.add('hidden');
+    this.loseMessage.classList.add('hidden');
     this.renderBoard();
   }
 
