@@ -16,9 +16,9 @@ body {
   height: 75px;
   border-radius: 5px;
   color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   user-select: none;
 
   &--2 {
@@ -75,10 +75,18 @@ body {
   }
 }
 
-.game-field {
+.game-container {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(4, 75px);
+  grid-template-rows: repeat(4, 75px);
+  gap: 10px;
+  margin: 10px;
 }
 
 .game-header {
