@@ -6,20 +6,28 @@ body {
   min-height: 100vh;
   background: #fbf8ef;
   font-family: sans-serif;
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 900;
 }
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: color 0.3s ease;
+
+  &.spawn {
+    animation: pop 0.3s ease;
+  }
+  &.merge {
+    animation: merge 0.3s ease;
+  }
 
   &--2 {
     background: #eee4da;
@@ -75,10 +83,34 @@ body {
   }
 }
 
+@keyframes pop {
+  0% {
+    transform: scale(0.85);
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 12px;
 }
 
 .game-header {
@@ -93,10 +125,10 @@ body {
 h1 {
   background: #edc22e;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
+  width: 100px;
+  height: 100px;
+  font-size: 32px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,12 +142,12 @@ h1 {
   align-items: center;
   justify-content: center;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
   color: #776e65;
   box-sizing: border-box;
-  font-size: 16px;
+  font-size: 20px;
   margin: 0 8px 0 0;
 }
 
@@ -125,14 +157,14 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 12px;
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;
   font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
+  font-size: 20px;
+  width: 100px;
+  height: 100px;
 
   transition: 0.25s ease background;
 }
@@ -161,7 +193,7 @@ h1 {
   color: #776e65;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 12px;
   font-size: 20px;
 }
 
@@ -173,7 +205,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
+  width: 450px;
 }
 
 .message-win {
