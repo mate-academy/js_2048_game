@@ -117,7 +117,7 @@ class Game {
   moveDown() {
     const transposedReversed = this.transpose(this.board).map((row) =>
       row.slice().reverse(),
-     );
+    );
 
     const moved = this.move(transposedReversed);
 

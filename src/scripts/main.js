@@ -36,11 +36,11 @@ function renderBoard() {
 
   scoreEl.textContent = game.getScore();
 
-  const status = game.getStatus();
+  const statusS = game.getStatus();
 
   statusEl.textContent =
-    status === 'win' ? 'You win!' : status === 'lose' ? 'Game over' : '';
-  statusEl.classList.toggle('hidden', status === 'playing');
+    statusS === 'win' ? 'You win!' : statusS === 'lose' ? 'Game over' : '';
+  statusEl.classList.toggle('hidden', statusS === 'playing');
 }
 
 function handleMove(direction) {
@@ -64,9 +64,9 @@ function handleMove(direction) {
   }
 }
 
-document.addEventListener('keydown', (event) => {
-  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-    handleMove(event.key);
+document.addEventListener('keydown', (e) => {
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+    handleMove(e.key);
   }
 });
 
