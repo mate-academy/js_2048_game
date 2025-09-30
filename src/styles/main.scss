@@ -20,55 +20,46 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  will-change: transform;
 
   &--2 {
     background: #eee4da;
   }
-
   &--4 {
     background: #ede0c8;
   }
-
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
   }
-
   &--16 {
     background: #f59563;
     color: #f9f6f2;
   }
-
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
   }
-
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
   }
-
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
   }
-
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
   }
-
   &--512 {
     background: #edc850;
     color: #f9f6f2;
   }
-
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
   }
-
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
@@ -79,6 +70,7 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  position: relative;
 }
 
 .game-header {
@@ -133,7 +125,6 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-
   transition: 0.25s ease background;
 }
 
@@ -184,4 +175,39 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes tile-spawn {
+  0% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.field-cell.spawn {
+  animation: tile-spawn 300ms ease;
+}
+
+.field-cell.bump {
+  animation: tile-spawn 300ms ease;
+}
+
+.anim-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.ghost {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transform: translate(0, 0) scale(0.9);
+  transition: transform 300ms ease;
+  will-change: transform;
 }
