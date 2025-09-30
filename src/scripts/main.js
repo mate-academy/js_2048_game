@@ -61,7 +61,7 @@ function renderMessages(gameStatus) {
 function animateChanges(prev, next) {
   if (IS_TEST) {
     return;
-  } 
+  }
 
   let idx = 0;
 
@@ -303,7 +303,7 @@ function doMove(dir) {
 
   if (!IS_TEST && isAnimating) {
     return;
-  } // блокування тільки поза тестами
+  } 
 
   if (!IS_TEST) {
     isAnimating = true;
