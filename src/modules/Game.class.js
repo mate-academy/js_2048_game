@@ -50,7 +50,7 @@ class Game {
     let changes = false;
 
     for (let indexOfRow = 0; indexOfRow < this.state.length; indexOfRow++) {
-      const res = this.sortRow(this.state[indexOfRow]);
+      const res = this.sortRow(this.state[indexOfRow], mode);
 
       changes = changes ? true : res[1];
 
@@ -59,13 +59,13 @@ class Game {
       }
     }
 
-    if (mode === 1) {
-      this.updateInfo();
-    }
-
     if (changes && mode === 1) {
       this.getFreeCellwithRandomValue();
       this.changeCell();
+    }
+
+    if (mode === 1) {
+      this.updateInfo();
     }
 
     return changes;
@@ -75,7 +75,7 @@ class Game {
     let changes = false;
 
     for (let indexOfRow = 0; indexOfRow < this.state.length; indexOfRow++) {
-      const res = this.sortRow([...this.state[indexOfRow]].reverse());
+      const res = this.sortRow([...this.state[indexOfRow]].reverse(), mode);
 
       if (mode === 1) {
         this.state[indexOfRow] = [...res[0].reverse()];
@@ -83,13 +83,13 @@ class Game {
       changes = changes ? true : res[1];
     }
 
-    if (mode === 1) {
-      this.updateInfo();
-    }
-
     if (changes && mode === 1) {
       this.getFreeCellwithRandomValue();
       this.changeCell();
+    }
+
+    if (mode === 1) {
+      this.updateInfo();
     }
 
     return changes;
@@ -105,7 +105,7 @@ class Game {
         arrToSort.push(this.state[indexOfRow][indexOfElem]);
       }
 
-      const res = this.sortRow(arrToSort);
+      const res = this.sortRow(arrToSort, mode);
 
       changes = changes ? true : res[1];
 
@@ -116,13 +116,13 @@ class Game {
       }
     }
 
-    if (mode === 1) {
-      this.updateInfo();
-    }
-
     if (changes && mode === 1) {
       this.getFreeCellwithRandomValue();
       this.changeCell();
+    }
+
+    if (mode === 1) {
+      this.updateInfo();
     }
 
     return changes;
@@ -130,6 +130,7 @@ class Game {
 
   moveDown(mode) {
     let changes = false;
+    let res;
 
     for (let indexOfElem = 0; indexOfElem < this.state.length; indexOfElem++) {
       const arrToSort = [];
@@ -138,7 +139,7 @@ class Game {
         arrToSort.unshift(this.state[indexOfRow][indexOfElem]);
       }
 
-      const res = this.sortRow(arrToSort);
+      res = this.sortRow(arrToSort, mode);
 
       changes = changes ? true : res[1];
 
@@ -149,13 +150,13 @@ class Game {
       }
     }
 
-    if (mode === 1) {
-      this.updateInfo();
-    }
-
     if (changes && mode === 1) {
       this.getFreeCellwithRandomValue();
       this.changeCell();
+    }
+
+    if (mode === 1) {
+      this.updateInfo();
     }
 
     return changes;
@@ -209,8 +210,8 @@ class Game {
     ) {
       return 'win';
     } else if (
-      this.state.every((num) => {
-        if (num === 0) {
+      this.state.every((row) => {
+        if (row.every((num) => num === 0)) {
           return true;
         }
 
@@ -360,7 +361,7 @@ class Game {
     }
   }
 
-  sortRow(row) {
+  sortRow(row, mode) {
     let changes = false;
 
     if (
@@ -387,10 +388,14 @@ class Game {
       const firstNum = arr[indexOfElem];
       const secondNum = arr[indexOfElem + 1];
 
-      if (firstNum === secondNum) {
-        arr[indexOfElem] = firstNum * 2;
+      if (firstNum === secondNum && firstNum !== 0) {
+        arr[indexOfElem] = firstNum + secondNum;
         arr[indexOfElem + 1] = 0;
-        this.score += firstNum * 2;
+
+        if (mode) {
+          this.score += firstNum + secondNum;
+        }
+
         changes = true;
       } else if (firstNum === 0 && secondNum !== 0) {
         arr[indexOfElem] = secondNum;

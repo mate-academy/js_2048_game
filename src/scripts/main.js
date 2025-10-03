@@ -17,13 +17,27 @@ button.addEventListener('click', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') {
-    game.moveLeft(1);
-  } else if (e.key === 'ArrowRight') {
-    game.moveRight(1);
-  } else if (e.key === 'ArrowUp') {
-    game.moveUp(1);
-  } else if (e.key === 'ArrowDown') {
-    game.moveDown(1);
+  if (/Arrow/.test(e.key) && game.getStatus() === 'idle') {
+    game.start();
+
+    return;
+  }
+
+  switch (e.key) {
+    case 'ArrowLeft':
+      game.moveLeft(1);
+      break;
+
+    case 'ArrowRight':
+      game.moveRight(1);
+      break;
+
+    case 'ArrowUp':
+      game.moveUp(1);
+      break;
+
+    case 'ArrowDown':
+      game.moveDown(1);
+      break;
   }
 });
