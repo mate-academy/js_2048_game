@@ -85,9 +85,11 @@ class Game {
       const newRow = [];
 
       let i = 0;
+
       while (i < row.length) {
         if (i + 1 < row.length && row[i] === row[i + 1]) {
           const merged = row[i] * 2;
+
           this.score += merged;
           newRow.push(merged);
           i += 2;

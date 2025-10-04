@@ -41,9 +41,9 @@ function renderBoard() {
 }
 
 function updateButtonLabel() {
-  const status = game.getStatus();
+  const getStatus = game.getStatus();
 
-  if (status === 'idle') {
+  if (getStatus === 'idle') {
     startBtn.classList.add('start');
     startBtn.classList.remove('restart');
     startBtn.textContent = 'Start';
