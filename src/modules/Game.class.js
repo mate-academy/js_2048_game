@@ -22,14 +22,13 @@ class Game {
    */
   constructor(initialState) {
     this.size = 4;
+    this.score = 0;
+    this.status = 'idle';
 
     this.state =
       initialState ||
       Array.from({ length: this.size }, () => Array(this.size).fill(0));
 
-    this.score = 0;
-
-    this.status = 'idle';
     // // eslint-disable-next-line no-console
     // console.log(initialState);
   }
@@ -88,31 +87,23 @@ class Game {
     this.state[row][col] = Math.random() < 0.9 ? 2 : 4;
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
-    if (this.status !== 'idle') {
-      throw new Error('Game has already started');
-    }
+    // if (this.status !== 'idle') {
+    //   throw new Error('Game has already started');
+    // }
 
-    this.state = Array.from({ length: this.size }, () => {
-      Array(this.size).fill(0);
-    });
-
-    this.score = 0;
+    // this.state = Array.from({ length: this.size }, () => {
+    //   Array(this.size).fill(0);
+    // });
     this.status = 'playing';
+    this.score = 0;
 
     this._addRandomTile();
     this._addRandomTile();
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {}
-
-  // Add your own methods here
 }
 
-module.exports = Game;
+// module.exports = Game;
+export default Game;

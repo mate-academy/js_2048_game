@@ -6,9 +6,11 @@
 
 // Write your code here
 
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+import Game from '../modules/Game.class.js';
 
-// game.start();
-// console.table(game.getState());
+const game = new Game();
+
+game.start();
+// eslint-disable-next-line no-console
+console.table(game.getState());
 // console.log(game.getScore(), game.getStatus());
