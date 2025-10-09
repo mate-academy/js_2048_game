@@ -231,7 +231,6 @@ class Game {
 
       return true;
     }
-    this.#status = 'lose';
 
     return false;
   }
