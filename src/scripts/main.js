@@ -2,15 +2,90 @@
 
 // Uncomment the next lines to use your game instance in the browser
 // const Game = require('../modules/Game.class');
-// const game = new Game();
-
-// Write your code here
-
 import Game from '../modules/Game.class.js';
 
 const game = new Game();
 
-game.start();
-// eslint-disable-next-line no-console
-console.table(game.getState());
-// console.log(game.getScore(), game.getStatus());
+// --- DOM Elements ---
+const startBtn = document.querySelector('.button');
+const scoreEl = document.querySelector('.game-score');
+const cells = document.querySelectorAll('.field-cell');
+
+const messageStart = document.querySelector('.message-start');
+const messageWin = document.querySelector('.message-win');
+const messageLose = document.querySelector('.message-lose');
+
+// --- Game Instance ---
+// let game = new Game();
+
+// --- Helper to render the board ---
+function renderBoard() {
+  const state = game.getState();
+
+  state.flat().forEach((value, index) => {
+    const cell = cells[index];
+
+    cell.textContent = value === 0 ? '' : value;
+    cell.className = 'field-cell'; // reset
+
+    if (value) {
+      cell.classList.add(`field-cell--${value}`);
+    }
+  });
+
+  scoreEl.textContent = game.getScore();
+}
+
+document.addEventListener('keydown', (e) => {
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
+  switch (e.key) {
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+    default:
+      return;
+  }
+
+  renderBoard();
+  updateMessages();
+});
+
+startBtn.addEventListener('click', () => {
+  if (game.getStatus() === 'idle') {
+    game.start();
+    startBtn.textContent = 'Restart';
+    startBtn.classList.remove('start');
+    startBtn.classList.add('restart');
+  } else {
+    game.restart();
+  }
+
+  renderBoard();
+  updateMessages();
+});
+
+function updateMessages() {
+  const statusOfGame = game.getStatus();
+
+  messageStart.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
+
+  if (statusOfGame === 'win') {
+    messageWin.classList.remove('hidden');
+  } else if (statusOfGame === 'lose') {
+    messageLose.classList.remove('hidden');
+  }
+}

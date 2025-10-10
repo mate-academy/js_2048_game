@@ -26,17 +26,106 @@ class Game {
     this.status = 'idle';
 
     this.state =
-      initialState ||
-      Array.from({ length: this.size }, () => Array(this.size).fill(0));
+      initialState && Array.isArray(initialState)
+        ? initialState.map((row) => [...row])
+        : Array.from({ length: this.size }, () => Array(this.size).fill(0));
 
     // // eslint-disable-next-line no-console
     // console.log(initialState);
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const oldState = JSON.stringify(this.state);
+    let gainedPoints = 0;
+
+    for (let r = 0; r < this.size; r++) {
+      const { newMergedRow, points } = this._slideAndMergeRow(this.state[r]);
+
+      this.state[r] = newMergedRow;
+      gainedPoints += points;
+    }
+
+    if (JSON.stringify(this.state) !== oldState) {
+      this.score += gainedPoints;
+      this._addRandomTile();
+    }
+    this._checkStatus();
+  }
+  moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const oldState = JSON.stringify(this.state);
+    let gainedPoints = 0;
+
+    for (let r = 0; r < this.size; r++) {
+      const reversedRow = [...this.state[r]].reverse();
+      const { newMergedRow, points } = this._slideAndMergeRow(reversedRow);
+
+      this.state[r] = newMergedRow.reverse();
+      gainedPoints += points;
+    }
+
+    if (JSON.stringify(this.state) !== oldState) {
+      this.score += gainedPoints;
+      this._addRandomTile();
+    }
+    this._checkStatus();
+  }
+  moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const oldState = JSON.stringify(this.state);
+    let gainedPoints = 0;
+
+    for (let c = 0; c < this.size; c++) {
+      const column = this.state.map((row) => row[c]);
+      const { newMergedRow, points } = this._slideAndMergeRow(column);
+
+      for (let r = 0; r < this.size; r++) {
+        this.state[r][c] = newMergedRow[r];
+      }
+      gainedPoints += points;
+    }
+
+    if (JSON.stringify(this.state) !== oldState) {
+      this.score += gainedPoints;
+      this._addRandomTile();
+    }
+    this._checkStatus();
+  }
+  moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const oldState = JSON.stringify(this.state);
+    let gainedPoints = 0;
+
+    for (let c = 0; c < this.size; c++) {
+      const column = this.state.map((row) => row[c]).reverse();
+      const { newMergedRow, points } = this._slideAndMergeRow(column);
+      const mergedReversed = newMergedRow.reverse();
+
+      for (let r = 0; r < this.size; r++) {
+        this.state[r][c] = mergedReversed[r];
+      }
+      gainedPoints += points;
+    }
+
+    if (JSON.stringify(this.state) !== oldState) {
+      this.score += gainedPoints;
+      this._addRandomTile();
+    }
+    this._checkStatus();
+  }
 
   /**
    * @returns {number}
@@ -49,7 +138,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.state;
+    return this.state.map((row) => [...row]);
   }
 
   /**
@@ -87,23 +176,95 @@ class Game {
     this.state[row][col] = Math.random() < 0.9 ? 2 : 4;
   }
 
-  start() {
-    // if (this.status !== 'idle') {
-    //   throw new Error('Game has already started');
-    // }
+  _slideAndMergeRow(row) {
+    const numbers = row.filter((num) => num !== 0);
 
-    // this.state = Array.from({ length: this.size }, () => {
-    //   Array(this.size).fill(0);
-    // });
-    this.status = 'playing';
+    const mergedRow = [];
+    let points = 0;
+
+    for (let i = 0; i < numbers.length; i++) {
+      if (numbers[i] === numbers[i + 1]) {
+        const mergedValue = numbers[i] * 2;
+
+        mergedRow.push(mergedValue);
+        points += mergedValue;
+        i++;
+      } else {
+        mergedRow.push(numbers[i]);
+      }
+    }
+
+    while (mergedRow.length < this.size) {
+      mergedRow.push(0);
+    }
+
+    return { newMergedRow: mergedRow, points };
+  }
+
+  _checkStatus() {
+    for (let r = 0; r < this.size; r++) {
+      for (let c = 0; c < this.size; c++) {
+        if (this.state[r][c] === 2048) {
+          this.status = 'win';
+
+          return;
+        }
+      }
+    }
+
+    for (let r = 0; r < this.size; r++) {
+      for (let c = 0; c < this.size; c++) {
+        if (this.state[r][c] === 0) {
+          this.status = 'playing';
+
+          return;
+        }
+      }
+    }
+
+    for (let r = 0; r < this.size; r++) {
+      for (let c = 0; c < this.size - 1; c++) {
+        const current = this.state[r][c];
+
+        if (current === this.state[r][c + 1] && c < this.size - 1) {
+          this.status = 'playing';
+
+          return;
+        }
+
+        if (r < this.size - 1 && current === this.state[r + 1][c]) {
+          this.status = 'playing';
+
+          return;
+        }
+      }
+    }
+
+    this.status = 'lose';
+  }
+  /**
+   * Starts the game.
+   */
+  start() {
     this.score = 0;
+    this.status = 'playing';
+
+    this.state = Array.from({ length: this.size }, () => {
+      return Array(this.size).fill(0);
+    });
 
     this._addRandomTile();
     this._addRandomTile();
   }
 
-  restart() {}
+  /**
+   * Resets the game.
+   */
+  restart() {
+    this.start();
+  }
+
+  // Add your own methods here
 }
 
-// module.exports = Game;
-export default Game;
+module.exports = Game;
