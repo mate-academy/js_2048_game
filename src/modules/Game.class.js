@@ -25,10 +25,11 @@ class Game {
     this.score = 0;
     this.status = 'idle';
 
-    this.state =
-      initialState && Array.isArray(initialState)
-        ? initialState.map((row) => [...row])
-        : Array.from({ length: this.size }, () => Array(this.size).fill(0));
+    this._initialState = initialState
+      ? initialState.map((row) => [...row])
+      : Array.from({ length: this.size }, () => Array(this.size).fill(0));
+
+    this.state = this._initialState.map((row) => [...row]);
 
     // // eslint-disable-next-line no-console
     // console.log(initialState);
@@ -249,10 +250,15 @@ class Game {
     this.score = 0;
     this.status = 'playing';
 
-    this.state = Array.from({ length: this.size }, () => {
-      return Array(this.size).fill(0);
-    });
-
+    if (
+      !this.state ||
+      this.state.every((row) => row.every((cell) => cell === 0))
+    ) {
+      this.state = Array.from(
+        { length: this.size },
+        () => Array(this.size).fill(0), // <- no trailing comma here
+      );
+    }
     this._addRandomTile();
     this._addRandomTile();
   }
@@ -261,7 +267,10 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.start();
+    this.score = 0;
+    this.status = 'idle';
+
+    this.state = this._initialState.map((row) => [...row]);
   }
 
   // Add your own methods here
