@@ -63,6 +63,9 @@ startBtn.addEventListener('click', () => {
     startBtn.classList.add('restart');
   } else {
     game.restart();
+    startBtn.textContent = 'Start';
+    startBtn.classList.remove('restart');
+    startBtn.classList.add('start');
   }
 
   renderBoard();
@@ -80,5 +83,7 @@ function updateMessages() {
     messageWin.classList.remove('hidden');
   } else if (statusOfGame === 'lose') {
     messageLose.classList.remove('hidden');
+  } else if (statusOfGame === 'idle') {
+    messageStart.classList.remove('hidden');
   }
 }
