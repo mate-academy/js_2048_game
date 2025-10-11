@@ -1,25 +1,6 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
   constructor(initialState) {
     this.size = 4;
     this.score = 0;
@@ -30,9 +11,6 @@ class Game {
       : Array.from({ length: this.size }, () => Array(this.size).fill(0));
 
     this.state = this._initialState.map((row) => [...row]);
-
-    // // eslint-disable-next-line no-console
-    // console.log(initialState);
   }
 
   moveLeft() {
@@ -56,6 +34,7 @@ class Game {
     }
     this._checkStatus();
   }
+
   moveRight() {
     if (this.status !== 'playing') {
       return;
@@ -78,6 +57,7 @@ class Game {
     }
     this._checkStatus();
   }
+
   moveUp() {
     if (this.status !== 'playing') {
       return;
@@ -102,6 +82,7 @@ class Game {
     }
     this._checkStatus();
   }
+
   moveDown() {
     if (this.status !== 'playing') {
       return;
@@ -128,30 +109,14 @@ class Game {
     this._checkStatus();
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
     return this.score;
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.state.map((row) => [...row]);
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     return this.status;
   }
@@ -179,7 +144,6 @@ class Game {
 
   _slideAndMergeRow(row) {
     const numbers = row.filter((num) => num !== 0);
-
     const mergedRow = [];
     let points = 0;
 
@@ -243,9 +207,7 @@ class Game {
 
     this.status = 'lose';
   }
-  /**
-   * Starts the game.
-   */
+
   start() {
     this.score = 0;
     this.status = 'playing';
@@ -256,24 +218,19 @@ class Game {
     ) {
       this.state = Array.from(
         { length: this.size },
-        () => Array(this.size).fill(0), // <- no trailing comma here
+        () => Array(this.size).fill(0), // trailing comma
       );
     }
+
     this._addRandomTile();
     this._addRandomTile();
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     this.score = 0;
     this.status = 'idle';
-
     this.state = this._initialState.map((row) => [...row]);
   }
-
-  // Add your own methods here
 }
 
 module.exports = Game;

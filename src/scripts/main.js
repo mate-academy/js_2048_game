@@ -1,12 +1,9 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
 import Game from '../modules/Game.class.js';
 
 const game = new Game();
 
-// --- DOM Elements ---
 const startBtn = document.querySelector('.button');
 const scoreEl = document.querySelector('.game-score');
 const cells = document.querySelectorAll('.field-cell');
@@ -15,10 +12,6 @@ const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
 
-// --- Game Instance ---
-// let game = new Game();
-
-// --- Helper to render the board ---
 function renderBoard() {
   const state = game.getState();
 
@@ -26,7 +19,7 @@ function renderBoard() {
     const cell = cells[index];
 
     cell.textContent = value === 0 ? '' : value;
-    cell.className = 'field-cell'; // reset
+    cell.className = 'field-cell';
 
     if (value) {
       cell.classList.add(`field-cell--${value}`);
