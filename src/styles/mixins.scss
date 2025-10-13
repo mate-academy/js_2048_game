@@ -1,0 +1,14 @@
+@mixin pop-animation($duration: 0.15s, $scale: 0.8, $ease: ease-out) {
+  animation: pop $duration $ease;
+
+  @keyframes pop {
+    0% {
+      transform: scale($scale);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}

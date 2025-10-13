@@ -1,3 +1,5 @@
+@import 'mixins';
+
 body {
   margin: 0;
   display: flex;
@@ -6,79 +8,93 @@ body {
   min-height: 100vh;
   background: #fbf8ef;
   font-family: sans-serif;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #bdac97;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  border-radius: 12px;
+  color: #756452;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+
+  &--2,
+  &--4,
+  &--8,
+  &--16,
+  &--32,
+  &--64,
+  &--128,
+  &--256,
+  &--512,
+  &--1024,
+  &--2048 {
+    @include pop-animation(0.2s, 0.9);
+  }
 
   &--2 {
     background: #eee4da;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #ebd8b6;
   }
 
   &--8 {
-    background: #f2b179;
+    background: #f1ad71;
     color: #f9f6f2;
   }
 
   &--16 {
-    background: #f59563;
+    background: #f58f59;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #f57455;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
+    background: #f55a36;
     color: #f9f6f2;
   }
 
   &--128 {
-    background: #edcf72;
+    background: #f2ce51;
     color: #f9f6f2;
   }
 
   &--256 {
-    background: #edcc61;
+    background: #f2d260;
     color: #f9f6f2;
   }
 
   &--512 {
-    background: #edc850;
+    background: #f6d24b;
     color: #f9f6f2;
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #f9c32d;
     color: #f9f6f2;
   }
 
   &--2048 {
-    background: #edc22e;
+    background: #fb0;
     color: #f9f6f2;
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: #9c8a7b;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 16px;
 }
 
 .game-header {
@@ -96,7 +112,7 @@ h1 {
   width: 75px;
   height: 75px;
   font-size: 24px;
-  border-radius: 5px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,11 +125,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #eae7d9;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  border-radius: 12px;
+  color: #988876;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -125,7 +141,7 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 12px;
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;
@@ -133,7 +149,6 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-
   transition: 0.25s ease background;
 }
 
@@ -161,7 +176,7 @@ h1 {
   color: #776e65;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 12px;
   font-size: 20px;
 }
 
@@ -176,8 +191,13 @@ h1 {
   width: 350px;
 }
 
+.message-lose {
+  background: #d14b4b;
+  color: #f9f6f2;
+}
+
 .message-win {
-  background: #edc22e;
+  background: #4db934;
   color: #f9f6f2;
 }
 
