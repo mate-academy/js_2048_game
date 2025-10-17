@@ -19,13 +19,25 @@ function getRandomNumber() {
 const button = document.querySelector('.button.start');
 
 button.addEventListener('click', () => {
+  // set button state
   button.classList.remove('start');
   button.classList.add('restart');
   button.textContent = 'Restart';
 
+  // reset internal state
+  score = 0;
+
+  board = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
   const starter = document.querySelectorAll('td');
   const start = [...starter];
 
+  // clear board DOM
   start.forEach((square) => {
     const classes = [...square.classList];
 
@@ -38,22 +50,38 @@ button.addEventListener('click', () => {
     square.textContent = '';
   });
 
-  // randomiser
-  const emptyCell1 = start.filter((cell) => cell.textContent === '');
-  const randomIndex1 = getRandomTd(emptyCell1.length);
+  // randomiser - place two initial tiles and sync to `board`
+  const emptyCells = start.filter((cell) => cell.textContent === '');
+  const randomIndex1 = getRandomTd(emptyCells.length);
   const randomValue1 = getRandomNumber();
-  const randomValue2 = getRandomNumber();
+  // place first
+  const firstCell = emptyCells[randomIndex1];
 
-  emptyCell1[randomIndex1].textContent = randomValue1.toString();
-  emptyCell1[randomIndex1].classList.add(`field-cell--${randomValue1}`);
+  firstCell.textContent = randomValue1.toString();
+  firstCell.classList.add(`field-cell--${randomValue1}`);
 
-  const emptyCell2 = start.filter((cell) => cell.textContent === '');
+  const firstIndex = start.indexOf(firstCell);
+  const firstRow = Math.floor(firstIndex / 4);
+  const firstCol = firstIndex % 4;
 
-  if (emptyCell2.length > 0) {
-    const randomIndex2 = getRandomTd(emptyCell2.length);
+  board[firstRow][firstCol] = randomValue1;
 
-    emptyCell2[randomIndex2].textContent = randomValue2.toString();
-    emptyCell2[randomIndex2].classList.add(`field-cell--${randomValue2}`);
+  // place second
+  const emptyAfterFirst = start.filter((cell) => cell.textContent === '');
+
+  if (emptyAfterFirst.length > 0) {
+    const randomIndex2 = getRandomTd(emptyAfterFirst.length);
+    const secondCell = emptyAfterFirst[randomIndex2];
+    const randomValue2 = getRandomNumber();
+
+    secondCell.textContent = randomValue2.toString();
+    secondCell.classList.add(`field-cell--${randomValue2}`);
+
+    const secondIndex = start.indexOf(secondCell);
+    const secondRow = Math.floor(secondIndex / 4);
+    const secondCol = secondIndex % 4;
+
+    board[secondRow][secondCol] = randomValue2;
   }
 
   const startText = document.querySelector('.message.message-start');
@@ -77,7 +105,7 @@ button.addEventListener('click', () => {
   const scoreRestart = document.querySelector('.game-score');
 
   if (scoreRestart) {
-    scoreRestart.textContent = '0';
+    scoreRestart.textContent = score.toString();
   }
 });
 
@@ -111,6 +139,12 @@ document.addEventListener('keydown', (move) => {
       moveDown();
     }
     move.preventDefault();
+
+    // Always check win/lose after the user attempts a move. Some moves
+    // might not change the board (moved === false), but the game can still
+    // be in a lose state after repeated attempts.
+    checkWin();
+    checkLose();
   }
 });
 
@@ -118,6 +152,7 @@ function moveRight() {
   let moved = false;
 
   for (let i = 0; i < 4; i++) {
+    const originalRow = [...board[i]];
     let row = board[i].filter((val) => val !== 0);
 
     while (row.length < 4) {
@@ -128,10 +163,10 @@ function moveRight() {
       if (row[j] === row[j - 1] && row[j] !== 0) {
         row[j] *= 2;
         row[j - 1] = 0;
-        moved = true;
         score += row[j];
       }
     }
+
     row = row.filter((val) => val !== 0);
 
     while (row.length < 4) {
@@ -139,11 +174,19 @@ function moveRight() {
     }
 
     board[i] = row;
+
+    if (JSON.stringify(originalRow) !== JSON.stringify(row)) {
+      moved = true;
+    }
   }
 
   if (moved) {
     addNewTile();
     updateBoard();
+
+    // check for win/lose after board update
+    checkWin();
+    checkLose();
 
     const scoreElement = document.querySelector('.game-score');
 
@@ -157,6 +200,7 @@ function moveLeft() {
   let moved = false;
 
   for (let i = 0; i < 4; i++) {
+    const originalRow = [...board[i]];
     let row = board[i].filter((val) => val !== 0);
 
     while (row.length < 4) {
@@ -167,7 +211,6 @@ function moveLeft() {
       if (row[j] === row[j + 1] && row[j] !== 0) {
         row[j] *= 2;
         row[j + 1] = 0;
-        moved = true;
         score += row[j];
       }
     }
@@ -178,11 +221,19 @@ function moveLeft() {
     }
 
     board[i] = row;
+
+    if (JSON.stringify(originalRow) !== JSON.stringify(row)) {
+      moved = true;
+    }
   }
 
   if (moved) {
     addNewTile();
     updateBoard();
+
+    // check for win/lose after board update
+    checkWin();
+    checkLose();
 
     const scoreElement = document.querySelector('.game-score');
 
@@ -213,6 +264,7 @@ function moveUp() {
   board = transpose(board);
 
   for (let i = 0; i < 4; i++) {
+    const originalRow = [...board[i]];
     let row = board[i].filter((val) => val !== 0);
 
     while (row.length < 4) {
@@ -223,7 +275,6 @@ function moveUp() {
       if (row[j] === row[j + 1] && row[j] !== 0) {
         row[j] *= 2;
         row[j + 1] = 0;
-        moved = true;
         score += row[j];
       }
     }
@@ -234,12 +285,20 @@ function moveUp() {
     }
 
     board[i] = row;
+
+    if (JSON.stringify(originalRow) !== JSON.stringify(row)) {
+      moved = true;
+    }
   }
   board = transpose(board);
 
   if (moved) {
     addNewTile();
     updateBoard();
+
+    // check for win/lose after board update
+    checkWin();
+    checkLose();
 
     const scoreElement = document.querySelector('.game-score');
 
@@ -255,32 +314,40 @@ function moveDown() {
   board = transpose(board);
 
   for (let i = 0; i < 4; i++) {
+    const originalRow = [...board[i]];
     let row = board[i].filter((val) => val !== 0);
 
     while (row.length < 4) {
-      row.push(0);
+      row.unshift(0);
     }
 
     for (let j = 3; j > 0; j--) {
       if (row[j] === row[j - 1] && row[j] !== 0) {
         row[j] *= 2;
         row[j - 1] = 0;
-        moved = true;
         score += row[j];
       }
     }
     row = row.filter((val) => val !== 0);
 
     while (row.length < 4) {
-      row.push(0);
+      row.unshift(0);
     }
     board[i] = row;
+
+    if (JSON.stringify(originalRow) !== JSON.stringify(row)) {
+      moved = true;
+    }
   }
   board = transpose(board);
 
   if (moved) {
     addNewTile();
     updateBoard();
+
+    // check for win/lose after board update
+    checkWin();
+    checkLose();
 
     const scoreElement = document.querySelector('.game-score');
 
@@ -317,6 +384,11 @@ function addNewTile() {
   const newTile = [...newTilePlace];
 
   const freSpace = newTile.filter((tile) => tile.textContent === '');
+
+  if (freSpace.length === 0) {
+    return;
+  }
+
   const randomInd = getRandomTd(freSpace.length);
   const randomVal1 = Math.random() < 0.9 ? 2 : 4;
 
@@ -334,3 +406,55 @@ function addNewTile() {
 const scoreVal = document.querySelector('.game-score');
 
 scoreVal.textContent = score;
+
+function checkWin() {
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (board[i][j] === 2048) {
+        const winnerText = document.querySelector('.message.message-win');
+
+        if (winnerText) {
+          winnerText.classList.remove('hidden');
+        }
+
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function checkLose() {
+  // if there is any empty cell - not lose
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (board[i][j] === 0) {
+        return false;
+      }
+    }
+  }
+
+  // no empty cells - check if any merge possible
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      const cur = board[i][j];
+
+      if (i < 3 && board[i + 1][j] === cur) {
+        return false;
+      }
+
+      if (j < 3 && board[i][j + 1] === cur) {
+        return false;
+      }
+    }
+  }
+
+  const loserText = document.querySelector('.message.message-lose');
+
+  if (loserText) {
+    loserText.classList.remove('hidden');
+  }
+
+  return true;
+}
