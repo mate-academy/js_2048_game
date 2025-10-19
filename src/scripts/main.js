@@ -50,7 +50,7 @@ button.addEventListener('click', () => {
     square.textContent = '';
   });
 
-  // randomiser - place two initial tiles and sync to `board`
+  // randomiser
   const emptyCells = start.filter((cell) => cell.textContent === '');
   const randomIndex1 = getRandomTd(emptyCells.length);
   const randomValue1 = getRandomNumber();
@@ -139,10 +139,6 @@ document.addEventListener('keydown', (move) => {
       moveDown();
     }
     move.preventDefault();
-
-    // Always check win/lose after the user attempts a move. Some moves
-    // might not change the board (moved === false), but the game can still
-    // be in a lose state after repeated attempts.
     checkWin();
     checkLose();
   }
@@ -183,8 +179,6 @@ function moveRight() {
   if (moved) {
     addNewTile();
     updateBoard();
-
-    // check for win/lose after board update
     checkWin();
     checkLose();
 
@@ -230,8 +224,6 @@ function moveLeft() {
   if (moved) {
     addNewTile();
     updateBoard();
-
-    // check for win/lose after board update
     checkWin();
     checkLose();
 
@@ -241,21 +233,6 @@ function moveLeft() {
       scoreElement.textContent = score.toString();
     }
   }
-}
-
-function transpose(matrix) {
-  const reverse = [];
-
-  for (let j = 0; j < 4; j++) {
-    const newRow = [];
-
-    for (let i = 0; i < 4; i++) {
-      newRow.push(matrix[i][j]);
-    }
-    reverse.push(newRow);
-  }
-
-  return reverse;
 }
 
 function moveUp() {
@@ -295,8 +272,6 @@ function moveUp() {
   if (moved) {
     addNewTile();
     updateBoard();
-
-    // check for win/lose after board update
     checkWin();
     checkLose();
 
@@ -344,8 +319,6 @@ function moveDown() {
   if (moved) {
     addNewTile();
     updateBoard();
-
-    // check for win/lose after board update
     checkWin();
     checkLose();
 
@@ -379,27 +352,42 @@ function updateBoard() {
   }
 }
 
-function addNewTile() {
-  const newTilePlace = document.querySelectorAll('td');
-  const newTile = [...newTilePlace];
+function transpose(matrix) {
+  const reverse = [];
 
-  const freSpace = newTile.filter((tile) => tile.textContent === '');
+  for (let j = 0; j < 4; j++) {
+    const newRow = [];
+
+    for (let i = 0; i < 4; i++) {
+      newRow.push(matrix[i][j]);
+    }
+    reverse.push(newRow);
+  }
+
+  return reverse;
+}
+
+function addNewTile() {
+  const freSpace = [];
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (board[i][j] === 0) {
+        freSpace.push({ row: i, col: j });
+      }
+    }
+  }
 
   if (freSpace.length === 0) {
     return;
   }
 
   const randomInd = getRandomTd(freSpace.length);
+  const { row, col } = freSpace[randomInd];
   const randomVal1 = Math.random() < 0.9 ? 2 : 4;
 
-  freSpace[randomInd].textContent = randomVal1.toString();
-  freSpace[randomInd].classList.add(`field-cell--${randomVal1}`);
-
-  const tdIndex = newTile.indexOf(freSpace[randomInd]); // ai порадив додати
-  const row = Math.floor(tdIndex / 4);
-  const col = tdIndex % 4;
-
   board[row][col] = randomVal1;
+  updateBoard();
 }
 
 // #region data //
@@ -426,7 +414,6 @@ function checkWin() {
 }
 
 function checkLose() {
-  // if there is any empty cell - not lose
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
       if (board[i][j] === 0) {
@@ -435,7 +422,6 @@ function checkLose() {
     }
   }
 
-  // no empty cells - check if any merge possible
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
       const cur = board[i][j];
