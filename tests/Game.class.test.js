@@ -16,11 +16,14 @@ function sum(game) {
 }
 
 function count(game) {
-  return game.getState().flat().filter(n => n).length;
+  return game
+    .getState()
+    .flat()
+    .filter((n) => n).length;
 }
 
 function copyState(state) {
-  return state.map(row => [...row]);
+  return state.map((row) => [...row]);
 }
 
 function transposeState(state) {
@@ -139,7 +142,10 @@ describe('Game', () => {
 
         game2048.start();
 
-        const [first, second] = game2048.getState().flat().flatMap((n, i) => n > 0 ? [i] : []);
+        const [first, second] = game2048
+          .getState()
+          .flat()
+          .flatMap((n, i) => (n > 0 ? [i] : []));
 
         positions.add(first);
         positions.add(second);
@@ -224,8 +230,7 @@ describe('Game', () => {
       for (let i = 0; i < 4; i++) {
         const nonEmptyCells = rowsBefore[i].filter(Boolean);
 
-        expect(rows[i].slice(0, nonEmptyCells.length))
-          .toEqual(nonEmptyCells);
+        expect(rows[i].slice(0, nonEmptyCells.length)).toEqual(nonEmptyCells);
       }
     });
 
@@ -240,7 +245,7 @@ describe('Game', () => {
       game2048.start();
       game2048.moveLeft();
 
-      game2048.getState().forEach(row => {
+      game2048.getState().forEach((row) => {
         expect(row).toContain(16);
       });
     });
@@ -384,8 +389,7 @@ describe('Game', () => {
       for (let i = 0; i < 4; i++) {
         const nonEmptyCells = rowsBefore[i].filter(Boolean);
 
-        expect(rows[i].slice(4 - nonEmptyCells.length))
-          .toEqual(nonEmptyCells);
+        expect(rows[i].slice(4 - nonEmptyCells.length)).toEqual(nonEmptyCells);
       }
     });
 
@@ -400,7 +404,7 @@ describe('Game', () => {
       game2048.start();
       game2048.moveRight();
 
-      game2048.getState().forEach(row => {
+      game2048.getState().forEach((row) => {
         expect(row).toContain(16);
       });
     });
@@ -544,8 +548,7 @@ describe('Game', () => {
       for (let i = 0; i < 4; i++) {
         const nonEmptyCells = colsBefore[i].filter(Boolean);
 
-        expect(cols[i].slice(0, nonEmptyCells.length))
-          .toEqual(nonEmptyCells);
+        expect(cols[i].slice(0, nonEmptyCells.length)).toEqual(nonEmptyCells);
       }
     });
 
@@ -560,7 +563,7 @@ describe('Game', () => {
       game2048.start();
       game2048.moveUp();
 
-      transposeState(game2048.getState()).forEach(col => {
+      transposeState(game2048.getState()).forEach((col) => {
         expect(col).toContain(16);
       });
     });
@@ -704,8 +707,7 @@ describe('Game', () => {
       for (let i = 0; i < 4; i++) {
         const nonEmptyCells = colsBefore[i].filter(Boolean);
 
-        expect(cols[i].slice(4 - nonEmptyCells.length))
-          .toEqual(nonEmptyCells);
+        expect(cols[i].slice(4 - nonEmptyCells.length)).toEqual(nonEmptyCells);
       }
     });
 
@@ -720,7 +722,7 @@ describe('Game', () => {
       game2048.start();
       game2048.moveDown();
 
-      transposeState(game2048.getState()).forEach(col => {
+      transposeState(game2048.getState()).forEach((col) => {
         expect(col).toContain(16);
       });
     });
