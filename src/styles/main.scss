@@ -133,6 +133,7 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
+  outline: none;
 
   transition: 0.25s ease background;
 }
@@ -174,6 +175,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
+  user-select: none;
 }
 
 .message-win {
