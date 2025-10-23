@@ -53,12 +53,13 @@ function updateMessage() {
 function handleButton() {
   const gameStatus = game.getStatus();
 
-  if (gameStatus === 'playing') {
-    startButton.classList.replace('start', 'restart');
-    startButton.textContent = 'Restart';
-  } else {
-    startButton.classList.replace('restart', 'start');
+  if (gameStatus === 'idle') {
+    startButton.classList.add('start');
     startButton.textContent = 'Start';
+  } else {
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
+    startButton.textContent = 'Restart';
   }
 }
 
