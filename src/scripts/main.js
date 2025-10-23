@@ -1,7 +1,107 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+import Game from '../modules/Game.class';
 
-// Write your code here
+const size = 4;
+
+const field = document.querySelector('tbody');
+const scoreEl = document.querySelector('.game-score');
+const statusEl = document.querySelector('.message-container');
+const button = document.querySelector('.start');
+
+const game = new Game();
+
+function renderBoard() {
+  const state = game.getState();
+
+  field.innerHTML = '';
+
+  for (let row = 0; row < size; row++) {
+    const rowEl = document.createElement('tr');
+
+    for (let col = 0; col < size; col++) {
+      const cell = document.createElement('td');
+      const value = state[row][col];
+
+      cell.classList.add('field-cell');
+
+      if (value) {
+        cell.classList.add(`field-cell--${value}`);
+        cell.textContent = value;
+      }
+      rowEl.appendChild(cell);
+    }
+    field.appendChild(rowEl);
+  }
+
+  scoreEl.textContent = game.getScore();
+
+  const statusS = game.getStatus();
+
+  statusEl.querySelector('.message-win').textContent =
+    'Winner! Congrats! You did it!';
+
+  statusEl.querySelector('.message-lose').textContent =
+    'You lose! Restart the game?';
+
+
+  statusEl.querySelector('.message-start').classList.toggle('hidden', started);
+
+  statusEl
+    .querySelector('.message-win')
+    .classList.toggle('hidden', statusS !== 'win');
+
+  statusEl
+    .querySelector('.message-lose')
+    .classList.toggle('hidden', statusS !== 'lose');
+
+
+  statusEl.classList.toggle('hidden', statusS === 'playing');
+}
+
+function handleMove(direction) {
+  if (game.getStatus() !== 'playing' || !started) {
+    return;
+  }
+
+  const moved = {
+    ArrowUp: () => game.moveUp(),
+    ArrowDown: () => game.moveDown(),
+    ArrowLeft: () => game.moveLeft(),
+    ArrowRight: () => game.moveRight(),
+  }[direction];
+
+  if (moved) {
+    moved();
+    renderBoard();
+    button.classList.remove('start');
+    button.classList.add('restart');
+    button.textContent = 'Restart';
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+    handleMove(e.key);
+  }
+});
+
+let started = false;
+
+button.addEventListener('click', () => {
+  if (!started) {
+    game.start();
+    started = true;
+
+    statusEl.querySelector('.message-start').classList.add('hidden');
+  } else {
+    game.restart();
+    started = true;
+  }
+
+  renderBoard();
+
+  button.classList.remove('start');
+  button.classList.add('restart');
+  button.textContent = 'Restart';
+});
