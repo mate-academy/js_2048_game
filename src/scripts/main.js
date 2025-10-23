@@ -38,8 +38,16 @@ function renderBoard() {
 
   const statusS = game.getStatus();
 
-  statusEl.textContent =
-    statusS === 'win' ? 'You win!' : statusS === 'lose' ? 'Game over' : '';
+  // Оновлюємо текст повідомлення
+  statusEl.querySelector('.message-win').textContent = 'Winner! Congrats! You did it!';
+  statusEl.querySelector('.message-lose').textContent = 'You lose! Restart the game?';
+  
+  // Показуємо/ховаємо відповідні повідомлення
+  statusEl.querySelector('.message-start').classList.toggle('hidden', started);
+  statusEl.querySelector('.message-win').classList.toggle('hidden', statusS !== 'win');
+  statusEl.querySelector('.message-lose').classList.toggle('hidden', statusS !== 'lose');
+  
+  // Показуємо/ховаємо весь контейнер в залежності від статусу
   statusEl.classList.toggle('hidden', statusS === 'playing');
 }
 
@@ -76,8 +84,11 @@ button.addEventListener('click', () => {
   if (!started) {
     game.start();
     started = true;
+    // Одразу ховаємо стартове повідомлення при натисканні Start
+    statusEl.querySelector('.message-start').classList.add('hidden');
   } else {
     game.restart();
+    started = true;
   }
 
   renderBoard();
