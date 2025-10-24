@@ -11,8 +11,8 @@ Cypress.Commands.add('shuffleBoxes', (arrow1, arrow2, times) => {
 
 describe('2048 game UI', () => {
   beforeEach(() => {
-    cy.visit('/');
-  });
+  cy.visit('http://127.0.0.1:5500/src/index.html');
+});
 
   it('should show the initial score', () => {
     cy.get('.button.start').click();
