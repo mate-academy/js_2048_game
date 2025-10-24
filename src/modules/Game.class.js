@@ -38,8 +38,8 @@ class Game {
     }
   }
 
-  restart() {
-    this.start();
+  restart(initialState) {
+    this.start(initialState);
   }
 
   addStartTiles() {
