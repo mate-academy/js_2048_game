@@ -1,68 +1,334 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ) {
+    this.state = initialState.map((row) => row.slice());
+    this.score = 0;
+    this.status = 'idle';
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  getState() {
+    return this.state.map((row) => row.slice());
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  start() {
+    if (this.status === 'idle') {
+      this.addRandomTile();
+      this.addRandomTile();
+      this.status = 'playing';
+    }
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  restart() {
+    this.state = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.score = 0;
+    this.status = 'idle';
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
 
-  // Add your own methods here
+    const oldState = this.getState();
+    // console.log(oldState);
+
+    let moved = false;
+
+    for (let i = 0; i < 4; i++) {
+      const row = this.state[i].filter((val) => val !== 0);
+      // console.log(row);
+
+      const newRow = [];
+      const merged = new Set(); // обьект в к.т храним все неповтор. данные
+
+      for (let j = 0; j < row.length; j++) {
+        if (
+          j < row.length - 1 && // чтоб j не была последней
+          row[j] === row[j + 1] &&
+          // клетка с индексом j ещё не была объединена в этом ходе.
+          !merged.has(j) &&
+          !merged.has(j + 1)
+        ) {
+          const mergedValue = row[j] * 2;
+
+          newRow.push(mergedValue);
+          this.score += mergedValue;
+          merged.add(j);
+          merged.add(j + 1);
+          j++;
+        } else {
+          newRow.push(row[j]);
+        }
+      }
+
+      while (newRow.length < 4) {
+        newRow.push(0);
+        this.state[i] = newRow;
+      }
+
+      if (newRow.join() !== oldState[i].join()) {
+        moved = true;
+      }
+    }
+
+    if (moved) {
+      this.addRandomTile();
+      // this.updateStatus();
+    }
+  }
+
+  moveRight() {
+    // debugger
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    const oldState = this.getState();
+
+    let moved = false;
+
+    for (let i = 0; i < 4; i++) {
+      const row = this.state[i].filter((val) => val !== 0).reverse();
+
+      const newRow = [];
+      const merged = new Set();
+
+      for (let j = 0; j < row.length; j++) {
+        if (
+          j < row.length - 1 &&
+          row[j] === row[j + 1] &&
+          !merged.has(j) &&
+          !merged.has(j + 1)
+        ) {
+          const mergedValue = row[j] * 2;
+
+          newRow.push(mergedValue);
+          // console.log(newRow);
+
+          this.score += mergedValue;
+          merged.add(j);
+          merged.add(j + 1);
+          j++;
+        } else {
+          newRow.push(row[j]);
+        }
+      }
+
+      while (newRow.length < 4) {
+        newRow.push(0);
+      }
+      this.state[i] = newRow.reverse();
+
+      if (this.state[i].join() !== oldState[i].join()) {
+        moved = true;
+      }
+    }
+
+    if (moved) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
+  }
+
+  moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    let moved = false;
+
+    for (let j = 0; j < 4; j++) {
+      const col = [
+        this.state[0][j],
+        this.state[1][j],
+        this.state[2][j],
+        this.state[3][j],
+      ].filter((val) => val !== 0);
+      const newCol = [];
+      const merged = new Set(); // исключаем дублирование
+
+      for (let i = 0; i < col.length; i++) {
+        if (
+          i < col.length - 1 &&
+          col[i] === col[i + 1] &&
+          !merged.has(i) &&
+          !merged.has(i + 1)
+        ) {
+          const mergedValue = col[i] * 2;
+
+          newCol.push(mergedValue);
+          this.score += mergedValue;
+          merged.add(i);
+          merged.add(i + 1);
+          i++;
+        } else {
+          newCol.push(col[i]);
+        }
+      }
+
+      while (newCol.length < 4) {
+        newCol.push(0);
+      }
+
+      for (let i = 0; i < 4; i++) {
+        if (this.state[i][j] !== newCol[i]) {
+          moved = true;
+        }
+        this.state[i][j] = newCol[i];
+      }
+    }
+
+    if (moved) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
+  }
+
+  moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    let moved = false;
+
+    for (let j = 0; j < 4; j++) {
+      const col = [
+        this.state[0][j],
+        this.state[1][j],
+        this.state[2][j],
+        this.state[3][j],
+      ]
+        .filter((val) => val !== 0)
+        .reverse();
+      let newCol = [];
+      const merged = new Set();
+
+      for (let i = 0; i < col.length; i++) {
+        if (
+          i < col.length - 1 &&
+          col[i] === col[i + 1] &&
+          !merged.has(i) &&
+          !merged.has(i + 1)
+        ) {
+          const mergedValue = col[i] * 2;
+
+          newCol.push(mergedValue);
+          this.score += mergedValue;
+          merged.add(i);
+          merged.add(i + 1);
+          i++;
+        } else {
+          newCol.push(col[i]);
+        }
+      }
+
+      while (newCol.length < 4) {
+        newCol.push(0);
+      }
+      newCol = newCol.reverse();
+
+      for (let i = 0; i < 4; i++) {
+        if (this.state[i][j] !== newCol[i]) {
+          moved = true;
+        }
+
+        this.state[i][j] = newCol[i];
+      }
+    }
+
+    if (moved) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
+  }
+
+  addRandomTile() {
+    const emptyCells = [];
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state[i][j] === 0) {
+          emptyCells.push({ i, j });
+        }
+      }
+    }
+
+    if (emptyCells.length > 0) {
+      // const x = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      // console.log(x);
+
+      // const z = x.i;
+      // console.log(z);
+      // const d = x.j;
+      // console.log(d);
+
+      const { i, j } =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+      this.state[i][j] = Math.random() < 0.9 ? 2 : 4;
+    }
+  }
+
+  updateStatus() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state[i][j] === 2048) {
+          this.status = 'win';
+
+          return;
+        }
+      }
+    }
+
+    if (!this.canMove()) {
+      this.status = 'lose';
+    }
+  }
+
+  canMove() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state[i][j] === 0) {
+          return true;
+        }
+      }
+    }
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (i < 3 && this.state[i][j] === this.state[i + 1][j]) {
+          return true;
+        }
+
+        if (j < 3 && this.state[i][j] === this.state[i][j + 1]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }
 
 module.exports = Game;
