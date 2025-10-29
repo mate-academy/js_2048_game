@@ -147,7 +147,7 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #c20404;
 
   &:hover {
     background: #f87474;
@@ -177,8 +177,14 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
+  background: #04eb2a;
   color: #f9f6f2;
+}
+
+.message-lose {
+  background-color: rgb(237, 39, 39);
+  color: black;
+  cursor: pointer;
 }
 
 .message-container {
