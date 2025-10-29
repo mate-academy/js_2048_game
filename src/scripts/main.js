@@ -4,7 +4,8 @@ import Game from '../modules/Game.class.js';
 
 const game = new Game();
 
-// ---- DOM ----
+let hasMoved = false;
+
 const cells = Array.from(document.querySelectorAll('.field-cell'));
 const scoreEl = document.querySelector('.game-score');
 const btn = document.querySelector('.button');
@@ -12,11 +13,10 @@ const msgStart = document.querySelector('.message-start');
 const msgWin = document.querySelector('.message-win');
 const msgLose = document.querySelector('.message-lose');
 
-// ---- Render ----
 function render() {
   const state = game.getState();
   const score = game.getScore();
-  const gameStatus = game.getStatus(); // renomeado para evitar conflito
+  const gameStatus = game.getStatus();
 
   scoreEl.textContent = score;
 
@@ -40,7 +40,7 @@ function render() {
   msgWin.classList.toggle('hidden', gameStatus !== 'won');
   msgLose.classList.toggle('hidden', gameStatus !== 'over');
 
-  if (gameStatus === 'start') {
+  if (!hasMoved) {
     btn.textContent = 'Start';
     btn.classList.add('start');
     btn.classList.remove('restart');
@@ -51,14 +51,22 @@ function render() {
   }
 }
 
-// ---- Events ----
 btn.addEventListener('click', () => {
-  if (game.getStatus() === 'start') {
+  if (!hasMoved) {
     game.start();
   } else {
     game.restart();
+    hasMoved = false;
   }
   render();
+});
+
+msgLose.addEventListener('click', () => {
+  if (game.getStatus() === 'over') {
+    game.restart();
+    hasMoved = false;
+    render();
+  }
 });
 
 document.addEventListener('keydown', (e) => {
@@ -80,9 +88,9 @@ document.addEventListener('keydown', (e) => {
   }
 
   if (moved) {
+    hasMoved = true;
     render();
   }
 });
 
-// ---- Init ----
 render();
