@@ -192,4 +192,3 @@ class Game {
 const game = new Game();
 
 window.game = game;
-module.exports = Game;
