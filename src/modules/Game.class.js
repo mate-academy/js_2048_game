@@ -1,8 +1,5 @@
 'use strict';
 
-/**
- * 2048 Game core logic
- */
 class Game {
   static SIZE = 4;
 

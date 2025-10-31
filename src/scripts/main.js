@@ -1,8 +1,6 @@
 'use strict';
 
 import Game from '../modules/Game.class.js';
-// Если у тебя CommonJS-среда — замени на:
-// const Game = require('../modules/Game.class');
 
 const game = new Game();
 
@@ -44,7 +42,6 @@ function render() {
   btn.textContent = gameStatus === 'idle' ? 'Start' : 'Restart';
 }
 
-// === Обработка кнопки ===
 btn.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
@@ -56,7 +53,6 @@ btn.addEventListener('click', () => {
   render();
 });
 
-// === Обработка клавиш ===
 document.addEventListener('keydown', (e) => {
   let moved = false;
 
