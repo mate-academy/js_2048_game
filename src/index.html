@@ -9,19 +9,27 @@
     <title>2048</title>
     <link
       rel="stylesheet"
-      href="./styles/main.scss"
+      href="main.scss"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="images/favicon.svg"
     />
   </head>
   <body>
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
+        <div class="game-description">
+          ⓘ
+        </div>
         <div class="controls">
           <p class="info">
             Score:
             <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button class="button game-control start">Start</button>
         </div>
       </div>
 
@@ -65,6 +73,9 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="main.js"
+    ></script>
   </body>
 </html>
