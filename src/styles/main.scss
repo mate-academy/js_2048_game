@@ -4,81 +4,83 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
+  background: #e8f5e9;
+  font-family: 'Segoe UI', sans-serif;
   font-size: 24px;
   font-weight: 900;
+  color: #1b5e20;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #c8e6c9;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #1b5e20;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
+}
 
-  &--2 {
-    background: #eee4da;
-  }
+.field-cell--2 {
+  background: #e8f5e9;
+}
 
-  &--4 {
-    background: #ede0c8;
-  }
+.field-cell--4 {
+  background: #c8e6c9;
+}
 
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
+.field-cell--8 {
+  background: #a5d6a7;
+  color: #f9f6f2;
+}
 
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
+.field-cell--16 {
+  background: #81c784;
+  color: #f9f6f2;
+}
 
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
+.field-cell--32 {
+  background: #66bb6a;
+  color: #f9f6f2;
+}
 
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
+.field-cell--64 {
+  background: #4caf50;
+  color: #f9f6f2;
+}
 
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
+.field-cell--128 {
+  background: #43a047;
+  color: #f9f6f2;
+}
 
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
+.field-cell--256 {
+  background: #388e3c;
+  color: #f9f6f2;
+}
 
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
+.field-cell--512 {
+  background: #2e7d32;
+  color: #f9f6f2;
+}
 
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
+.field-cell--1024 {
+  background: #1b5e20;
+  color: #f9f6f2;
+}
 
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
+.field-cell--2048 {
+  background: #00c853;
+  color: #f9f6f2;
 }
 
 .game-field {
-  background: #bbada0;
+  background: #a5d6a7;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(27, 94, 32, 0.3);
 }
 
 .game-header {
@@ -91,17 +93,17 @@ body {
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: #43a047;
+  color: #f1f8e9;
   width: 75px;
   height: 75px;
   font-size: 24px;
-  border-radius: 5px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
   margin: 0;
+  box-shadow: 0 3px 6px rgba(27, 94, 32, 0.3);
 }
 
 .info {
@@ -109,14 +111,14 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #c8e6c9;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
+  border-radius: 8px;
+  color: #1b5e20;
   font-size: 16px;
   margin: 0 8px 0 0;
+  box-shadow: inset 0 2px 4px rgba(27, 94, 32, 0.2);
 }
 
 .controls {
@@ -125,44 +127,54 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  color: #f9f6f2;
-  font-family: sans-serif;
+  color: #f1f8e9;
+  font-family: 'Segoe UI', sans-serif;
   font-weight: 700;
   font-size: 16px;
   width: 75px;
   height: 75px;
-
-  transition: 0.25s ease background;
+  transition:
+    0.25s ease background,
+    0.25s ease transform;
 }
 
 .start {
-  background: #1dae28;
+  background: #43a047;
   font-size: 20px;
+}
 
-  &:hover {
-    background: #179921;
-  }
+.start:hover {
+  background: #2e7d32;
+  transform: scale(1.05);
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #a5d6a7;
+  color: #1b5e20;
+}
 
-  &:hover {
-    background: #f87474;
-  }
+.restart:hover {
+  background: #81c784;
+  transform: scale(1.05);
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #c8e6c9;
+  color: #1b5e20;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 20px;
+  box-shadow: 0 2px 6px rgba(27, 94, 32, 0.2);
+}
+
+.message-win {
+  background: #4caf50;
+  color: #f1f8e9;
 }
 
 .hidden {
@@ -174,11 +186,6 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
-}
-
-.message-win {
-  background: #edc22e;
-  color: #f9f6f2;
 }
 
 .message-container {
