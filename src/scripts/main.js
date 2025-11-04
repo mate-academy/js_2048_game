@@ -93,14 +93,58 @@ document.addEventListener('keydown', (e) => {
 
   let moved = false;
 
-  if (key === 'ArrowLeft') {
-    moved = game.moveLeft();
-  } else if (key === 'ArrowRight') {
-    moved = game.moveRight();
-  } else if (key === 'ArrowUp') {
-    moved = game.moveUp();
-  } else if (key === 'ArrowDown') {
-    moved = game.moveDown();
+  switch (key) {
+    case 'ArrowLeft':
+      moved = game.moveLeft();
+      break;
+
+    case 'ArrowRight':
+      moved = game.moveRight();
+      break;
+
+    case 'ArrowUp':
+      moved = game.moveUp();
+      break;
+
+    case 'ArrowDown':
+      moved = game.moveDown();
+      break;
+
+    default:
+      break;
+  }
+
+  if (moved) {
+    render();
+  }
+});
+
+let startX = 0;
+let startY = 0;
+
+const field = document.querySelector('.game-field');
+
+field.addEventListener('mousedown', (e) => {
+  startX = e.clientX;
+  startY = e.clientY;
+});
+
+field.addEventListener('mouseup', (e) => {
+  const dx = e.clientX - startX;
+  const dy = e.clientY - startY;
+
+  if (Math.abs(dx) < 30 && Math.abs(dy) < 30) {
+    return;
+  }
+
+  ensurePlaying();
+
+  let moved = false;
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    moved = dx > 0 ? game.moveRight() : game.moveLeft();
+  } else {
+    moved = dy > 0 ? game.moveDown() : game.moveUp();
   }
 
   if (moved) {
