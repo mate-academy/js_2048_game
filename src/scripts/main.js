@@ -3,7 +3,6 @@
 // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const game = new Game();
-
 const startBtn = document.querySelector('.button');
 const scoreField = document.querySelector('.game-score');
 const messageLose = document.querySelector('.message-lose');
