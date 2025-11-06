@@ -16,6 +16,8 @@ document.querySelector('.start').addEventListener('click', (e) => {
   document.querySelector('.restart').addEventListener('click', () => {
     game.restart();
     rerender();
+    document.querySelector('.message-win').classList.add('hidden');
+    document.querySelector('.message-lose').classList.add('hidden');
   });
 });
 

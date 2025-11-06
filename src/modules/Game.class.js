@@ -28,13 +28,16 @@ class Game {
     this.score = 0;
     this.status = 'idle';
 
-    this.state =
-      initialState ||
-      Array.from({ length: this.size }, () => Array(this.size).fill(0));
+    if (initialState !== undefined) {
+      this.state = initialState.map((row) => [...row]);
+    } else {
+      this.state = Array.from({ length: 4 }, () => Array(this.size).fill(0));
+    }
   }
 
-  baseMove(diraction, needTranspose = false) {
+  baseMove(direction, needTranspose = false) {
     let matrix = [...this.state];
+    let moved = false;
 
     if (needTranspose) {
       matrix = this.transpose(matrix);
@@ -44,7 +47,7 @@ class Game {
       let filteredArr = arr.filter((x) => x !== 0);
       let newArr = [];
 
-      if (diraction === Game.LEFT) {
+      if (direction === Game.LEFT) {
         filteredArr = filteredArr.reverse();
       }
 
@@ -67,7 +70,11 @@ class Game {
         newArr.unshift(0);
       }
 
-      if (diraction === Game.LEFT) {
+      if (arr.toString() !== newArr.toString()) {
+        moved = true;
+      }
+
+      if (direction === Game.LEFT) {
         newArr = newArr.reverse();
       }
 
@@ -77,10 +84,12 @@ class Game {
     if (needTranspose) {
       matrix = this.transpose(matrix);
     }
-    this.state = matrix;
 
-    this.addNewItem();
-    this.checkGameStatus();
+    if (moved) {
+      this.state = matrix;
+      this.addNewItem();
+      this.checkGameStatus();
+    }
   }
 
   checkGameStatus() {
@@ -149,9 +158,11 @@ class Game {
       }
     }
 
-    const [k, l] = freeCords[Math.floor(Math.random() * freeCords.length)];
+    if (freeCords.length > 0) {
+      const [k, l] = freeCords[Math.floor(Math.random() * freeCords.length)];
 
-    this.state[k][l] = Math.random() < 0.9 ? 2 : 4;
+      this.state[k][l] = Math.random() < 0.9 ? 2 : 4;
+    }
   }
 
   /**
