@@ -37,7 +37,6 @@ class Game {
 
   baseMove(direction, needTranspose = false) {
     let matrix = [...this.state];
-    let moved = false;
 
     if (needTranspose) {
       matrix = this.transpose(matrix);
@@ -70,10 +69,6 @@ class Game {
         newArr.unshift(0);
       }
 
-      if (arr.toString() !== newArr.toString()) {
-        moved = true;
-      }
-
       if (direction === Game.LEFT) {
         newArr = newArr.reverse();
       }
@@ -85,7 +80,7 @@ class Game {
       matrix = this.transpose(matrix);
     }
 
-    if (moved) {
+    if (JSON.stringify(this.state) !== JSON.stringify(matrix)) {
       this.state = matrix;
       this.addNewItem();
       this.checkGameStatus();
