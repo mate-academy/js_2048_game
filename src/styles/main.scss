@@ -1,4 +1,33 @@
-body {
+$color-transition: 0.2s;
+$transform-transition: 0.16s;
+$background-dark: #0e0e0e;
+$field-cell-dark: #333;
+$text-gold: #e5c07b;
+$border-color: 1px solid rgba(192, 162, 105, 0.42);
+$text-dark-color: rgba(0, 0, 0, 0.81);
+$field-dark: #242424;
+$info-color-dark: #1c1414;
+$info-background-dark: #d6c9a2;
+$button-color: #f9f6f2;
+$button-start: #b80027;
+$start-hover: #b80028da;
+$button-restart: #6a028a;
+$restart-hover: #490060;
+$message-color: #cf9a38d8;
+$message-background: #2c2c2c;
+$dark--2: #3a3a3a;
+$dark--4: #4b4b4b;
+$dark--8: #5c5c5c;
+$dark--16: #6e6e6e;
+$dark--32: #8a6f30;
+$dark--64: #b3873e;
+$dark--128: #c9a43f;
+$dark--256: #d9b650;
+$dark--512: #e6c46e;
+$dark--1024: #f1d37e;
+$dark--2048: #ffd700;
+
+.body {
   margin: 0;
   display: flex;
   align-items: center;
@@ -8,70 +37,177 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  transition: background 0.2s ease;
+
+  &--dark {
+    background: $background-dark;
+  }
+}
+
+.color-mode {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+  margin: 7px;
+  cursor: pointer;
+  background-image: url(../images/moon-icon.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  body.body--dark & {
+    background-image: url(../images/sun-icon.svg);
+  }
 }
 
 .field-cell {
+  position: relative;
+  background: #d6cdc4;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  user-select: none;
+  transition: background $color-transition ease;
+
+  body.body--dark & {
+    background: $field-cell-dark;
+  }
+}
+
+.field-tile {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
+  justify-content: center;
+  align-items: center;
   user-select: none;
+  z-index: 1;
+  transition:
+    transform $transform-transition ease,
+    background $color-transition ease;
+
+  body.body--dark & {
+    background: $field-cell-dark;
+    color: $text-gold;
+  }
 
   &--2 {
     background: #eee4da;
+
+    body.body--dark & {
+      background: $dark--2;
+      border: $border-color;
+    }
   }
 
   &--4 {
     background: #ede0c8;
+
+    body.body--dark & {
+      background: $dark--4;
+      border: $border-color;
+    }
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
+
+    body.body--dark & {
+      background: $dark--8;
+      border: $border-color;
+    }
   }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+
+    body.body--dark & {
+      background: $dark--16;
+    }
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+
+    body.body--dark & {
+      background: $dark--32;
+    }
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+
+    body.body--dark & {
+      background: $dark--64;
+      color: $text-dark-color;
+    }
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+
+    body.body--dark & {
+      background: $dark--128;
+      color: $text-dark-color;
+    }
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+
+    body.body--dark & {
+      background: $dark--256;
+      color: $text-dark-color;
+    }
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+
+    body.body--dark & {
+      background: $dark--512;
+      color: $text-dark-color;
+    }
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+
+    body.body--dark & {
+      background: $dark--1024;
+      color: $text-dark-color;
+    }
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+
+    body.body--dark & {
+      background: $dark--2048;
+      color: $text-dark-color;
+    }
   }
 }
 
@@ -79,6 +215,11 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  transition: background $color-transition ease;
+
+  body.body--dark & {
+    background: $field-dark;
+  }
 }
 
 .game-header {
@@ -102,6 +243,12 @@ h1 {
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  transition: background $color-transition ease;
+
+  body.body--dark & {
+    background: $dark--2;
+    color: $text-gold;
+  }
 }
 
 .info {
@@ -117,6 +264,11 @@ h1 {
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+
+  body.body--dark & {
+    background: $info-background-dark;
+    color: $info-color-dark;
+  }
 }
 
 .controls {
@@ -135,6 +287,10 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+
+  body.body--dark & {
+    color: $button-color;
+  }
 }
 
 .start {
@@ -144,6 +300,14 @@ h1 {
   &:hover {
     background: #179921;
   }
+
+  .body.body--dark & {
+    background: $button-start;
+
+    &:hover {
+      background: $start-hover;
+    }
+  }
 }
 
 .restart {
@@ -151,6 +315,14 @@ h1 {
 
   &:hover {
     background: #f87474;
+  }
+
+  .body.body--dark & {
+    background: $button-restart;
+
+    &:hover {
+      background: $restart-hover;
+    }
   }
 }
 
@@ -163,6 +335,12 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
+  transition: $color-transition ease;
+
+  body.body--dark & {
+    background: $message-background;
+    color: $message-color;
+  }
 }
 
 .hidden {
@@ -179,6 +357,11 @@ h1 {
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
+
+  body.body--dark & {
+    background: $dark--2048;
+    color: $text-dark-color;
+  }
 }
 
 .message-container {
