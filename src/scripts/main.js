@@ -18,27 +18,17 @@ mainButton.addEventListener('click', () => {
   if (game.getStatus() === 'menu') {
     game.start();
     mainButton.textContent = 'Restart';
+    mainButton.classList.remove('start');
+    mainButton.classList.add('restart');
     messageStart.classList.add('hidden');
-    updateUI();
+    updateBoard();
   } else {
     game.restart();
     messageLose.classList.add('hidden');
     messageWin.classList.add('hidden');
-    updateUI();
+    updateBoard();
   }
 });
-
-function updateUI() {
-  scoreDisplay.textContent = game.getScore();
-
-  const stat = game.getStatus();
-
-  if (stat === 'playing') {
-    document.body.baxkgroundColor = '#faf8ef';
-  } else if (stat === 'menu') {
-    document.body.backgroundColor = '#ccc';
-  }
-}
 
 document.addEventListener('keydown', (ev) => {
   if (game.getStatus() !== 'playing') {
