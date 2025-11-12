@@ -1,3 +1,5 @@
+// src/modules/Game.class.js
+
 class Game {
   constructor(initialState = []) {
     this.boardSize = 4;
@@ -9,15 +11,17 @@ class Game {
     this.board = [];
 
     if (this.initialState.length === this.boardSize) {
+      // Deep copy do estado inicial se fornecido
       this.board = this.initialState.map((row) => [...row]);
     } else {
+      // Criar tabuleiro vazio 4x4
       for (let i = 0; i < this.boardSize; i++) {
         this.board.push(new Array(this.boardSize).fill(0));
       }
     }
 
     this.score = 0;
-    this.status = 'initial';
+    this.status = 'initial'; // 'initial', 'playing', 'win', 'gameOver'
     this.hasWon = false;
     this.isStarted = false;
     this.isBoardChangedThisTurn = false;
@@ -26,6 +30,8 @@ class Game {
       .fill(0)
       .map(() => Array(this.boardSize).fill(false));
   }
+
+  // --- Métodos Obrigatórios ---
 
   start() {
     if (
@@ -50,6 +56,7 @@ class Game {
   }
 
   getState() {
+    // Retorna uma cópia profunda do tabuleiro
     return this.board.map((row) => [...row]);
   }
 
@@ -77,6 +84,8 @@ class Game {
     return this._performMove('down');
   }
 
+  // --- Lógica Interna do Jogo ---
+
   _performMove(direction) {
     if (this.status !== 'playing') {
       return false;
@@ -92,6 +101,7 @@ class Game {
 
     let board = this.board;
 
+    // Transpor para movimentos verticais
     if (direction === 'up' || direction === 'down') {
       board = this._transpose(board);
     }
@@ -103,9 +113,11 @@ class Game {
         rowOrCol.reverse();
       }
 
+      // 1. Deslizar células não-zero para o início
       const filteredRow = rowOrCol.filter((tile) => tile !== 0);
       let newRow = [...filteredRow];
 
+      // 2. Mesclar células adjacentes iguais
       for (let j = 0; j < newRow.length - 1; j++) {
         if (
           newRow[j] !== 0 &&
@@ -119,8 +131,10 @@ class Game {
         }
       }
 
+      // 3. Deslizar novamente após mesclagem
       newRow = newRow.filter((tile) => tile !== 0);
 
+      // 4. Preencher com zeros
       while (newRow.length < this.boardSize) {
         newRow.push(0);
       }
@@ -137,6 +151,7 @@ class Game {
       this.board = board;
     }
 
+    // Verificar se o tabuleiro mudou
     this.isBoardChangedThisTurn = !this._boardsAreEqual(
       initialBoard,
       this.board,
@@ -161,6 +176,7 @@ class Game {
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
     const [row, col] = emptyCells[randomIndex];
 
+    // 10% chance para 4, 90% para 2
     this.board[row][col] = Math.random() < 0.1 ? 4 : 2;
   }
 
@@ -200,10 +216,12 @@ class Game {
       return;
     }
 
+    // Se há células vazias, o jogo não acabou
     if (this._getEmptyCells().length > 0) {
       return;
     }
 
+    // Verificar mesclagens possíveis horizontalmente
     for (let r = 0; r < this.boardSize; r++) {
       for (let c = 0; c < this.boardSize - 1; c++) {
         if (
@@ -215,6 +233,7 @@ class Game {
       }
     }
 
+    // Verificar mesclagens possíveis verticalmente
     for (let c = 0; c < this.boardSize; c++) {
       for (let r = 0; r < this.boardSize - 1; r++) {
         if (
@@ -226,6 +245,7 @@ class Game {
       }
     }
 
+    // Se não há células vazias nem mesclagens possíveis
     this.status = 'gameOver';
   }
 

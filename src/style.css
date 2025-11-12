@@ -1,4 +1,4 @@
-
+/* src/style.css */
 
 :root {
     --bg-color: #faf8ef;
@@ -149,6 +149,7 @@ body {
     transition: all 0.15s ease-in-out;
 }
 
+/* Estilos específicos para cada valor de célula */
 .field-cell--2 { background-color: #eee4da; color: var(--text-color-dark); }
 .field-cell--4 { background-color: #ede0c8; color: var(--text-color-dark); }
 .field-cell--8 { background-color: #f2b179; color: var(--text-color-light); }
@@ -161,12 +162,12 @@ body {
 .field-cell--1024 { background-color: #edc53f; color: var(--text-color-light); font-size: 35px; }
 .field-cell--2048 { background-color: #edc22e; color: var(--text-color-light); font-size: 35px; }
 
-
+/* Classe helper para esconder elementos */
 .hidden {
     display: none !important;
 }
 
-
+/* Responsividade para telas menores */
 @media (max-width: 600px) {
     .game-container {
         padding: 10px;

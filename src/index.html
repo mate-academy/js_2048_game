@@ -1,42 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2048 Game</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2048 Game</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-container">
-        <header class="game-header">
-            <h1 class="game-title">2048</h1>
-            <div class="score-container">
-                <div class="score-label">SCORE</div>
-                <div class="score-value" id="score">0</div>
-            </div>
-            <button id="gameButton" class="game-button start">Start</button>
-        </header>
+  <div class="game-container">
+    <header class="game-header">
+      <h1 class="game-title">2048</h1>
+      <div class="score-container">
+        <div class="score-label">SCORE</div>
+        <div class="score-value" id="score">0</div>
+      </div>
+      <button id="gameButton" class="game-button start">Start</button>
+    </header>
 
-        <div class="message-container">
-            <div id="startMessage" class="game-message start-message">
-                <p><strong>HOW TO PLAY:</strong> Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!</p>
-            </div>
-            <div id="winMessage" class="game-message win-message hidden">
-                <p><strong>You win!</strong></p>
-                <button id="tryAgainWin" class="try-again-button">Try Again</button>
-            </div>
-            <div id="gameOverMessage" class="game-message game-over-message hidden">
-                <p><strong>Game Over!</strong></p>
-                <button id="tryAgainGameOver" class="try-again-button">Try Again</button>
-            </div>
-        </div>
+    <div class="message-container">
+      <div id="startMessage" class="game-message start-message">
+        <p>
+          <strong>HOW TO PLAY:</strong>
+          Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!
+        </p>
+      </div>
 
-        <div id="gameBoard" class="game-board">
-            
-        </div>
+      <div id="winMessage" class="game-message win-message hidden">
+        <p><strong>You win!</strong></p>
+        <button id="tryAgainWin" class="try-again-button">Try Again</button>
+      </div>
+
+      <div id="gameOverMessage" class="game-message game-over-message hidden">
+        <p><strong>Game Over!</strong></p>
+        <button id="tryAgainGameOver" class="try-again-button">Try Again</button>
+      </div>
     </div>
 
-    
-    <script src="main.js"></script>
+    <div id="gameBoard" class="game-board">
+      <!-- As células serão inseridas dinamicamente pelo JavaScript -->
+    </div>
+  </div>
+
+  <!-- Agora o main.js é carregado como módulo -->
+  <script type="module" src="main.js"></script>
 </body>
 </html>
