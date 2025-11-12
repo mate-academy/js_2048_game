@@ -1,7 +1,7 @@
 // main.js - Versão completa sem módulos ES6
 
 // Classe Game incorporada diretamente
-import Game from './modules/Game.class';
+import Game from './modules/Game.class.js';
 
 // Interface do Usuário
 let game;
