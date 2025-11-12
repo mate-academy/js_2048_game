@@ -1,0 +1,200 @@
+
+
+:root {
+    --bg-color: #faf8ef;
+    --board-bg: #bbada0;
+    --cell-empty: rgba(238, 228, 218, 0.35);
+    --text-color-light: #f9f6f2;
+    --text-color-dark: #776e65;
+    --button-bg: #8f7a66;
+    --win-bg: #edc22e;
+    --game-over-bg: #edc22e;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 20px;
+    color: var(--text-color-dark);
+}
+
+.game-container {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.game-title {
+    font-size: 80px;
+    font-weight: bold;
+    color: var(--text-color-dark);
+    margin: 0;
+}
+
+.score-container {
+    background-color: var(--board-bg);
+    padding: 10px 20px;
+    border-radius: 3px;
+    color: white;
+    min-width: 70px;
+}
+
+.score-label {
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.score-value {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.game-button {
+    background-color: var(--button-bg);
+    color: var(--text-color-light);
+    border: none;
+    border-radius: 3px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.game-button:hover {
+    opacity: 0.9;
+}
+
+.game-button.restart {
+    background-color: #f67c5f;
+}
+
+.message-container {
+    margin-bottom: 20px;
+    min-height: 60px;
+}
+
+.game-message {
+    background-color: var(--win-bg);
+    color: white;
+    padding: 15px;
+    border-radius: 3px;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.start-message {
+    background-color: var(--button-bg);
+}
+
+.win-message {
+    background-color: var(--win-bg);
+}
+
+.game-over-message {
+    background-color: var(--game-over-bg);
+}
+
+.try-again-button {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 8px 15px;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.try-again-button:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
+    background-color: var(--board-bg);
+    padding: 10px;
+    border-radius: 6px;
+    width: 500px;
+    height: 500px;
+    margin: 0 auto;
+}
+
+.field-cell {
+    background-color: var(--cell-empty);
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 55px;
+    font-weight: bold;
+    transition: all 0.15s ease-in-out;
+}
+
+.field-cell--2 { background-color: #eee4da; color: var(--text-color-dark); }
+.field-cell--4 { background-color: #ede0c8; color: var(--text-color-dark); }
+.field-cell--8 { background-color: #f2b179; color: var(--text-color-light); }
+.field-cell--16 { background-color: #f59563; color: var(--text-color-light); }
+.field-cell--32 { background-color: #f67c5f; color: var(--text-color-light); }
+.field-cell--64 { background-color: #f65e3b; color: var(--text-color-light); }
+.field-cell--128 { background-color: #edcf72; color: var(--text-color-light); font-size: 45px; }
+.field-cell--256 { background-color: #edcc61; color: var(--text-color-light); font-size: 45px; }
+.field-cell--512 { background-color: #edc850; color: var(--text-color-light); font-size: 45px; }
+.field-cell--1024 { background-color: #edc53f; color: var(--text-color-light); font-size: 35px; }
+.field-cell--2048 { background-color: #edc22e; color: var(--text-color-light); font-size: 35px; }
+
+
+.hidden {
+    display: none !important;
+}
+
+
+@media (max-width: 600px) {
+    .game-container {
+        padding: 10px;
+    }
+    
+    .game-title {
+        font-size: 60px;
+    }
+    
+    .game-board {
+        width: 90vw;
+        height: 90vw;
+        max-width: 400px;
+        max-height: 400px;
+    }
+    
+    .field-cell {
+        font-size: 8vw;
+    }
+    
+    .field-cell--128,
+    .field-cell--256,
+    .field-cell--512 {
+        font-size: 6vw;
+    }
+    
+    .field-cell--1024,
+    .field-cell--2048 {
+        font-size: 5vw;
+    }
+}
