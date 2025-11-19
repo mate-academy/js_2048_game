@@ -20,8 +20,13 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
+  static SIZE = 4;
+  static WIN_TILE = 2048;
+
   constructor(initialState) {
     // eslint-disable-next-line no-console
+    const size = Game.SIZE;
+
     this.initialState = initialState
       ? initialState.map((row) => [...row])
       : null;
@@ -30,7 +35,7 @@ class Game {
       initialState ??
       Array(4)
         .fill()
-        .map(() => Array(4).fill(0))
+        .map(() => Array(size).fill(0))
         .map((row) => [...row]);
 
     this.score = 0;
@@ -49,7 +54,7 @@ class Game {
     }
     nonEmpty = nonEmpty.filter((cell) => cell !== 0);
 
-    while (nonEmpty.length < 4) {
+    while (nonEmpty.length < Game.SIZE) {
       nonEmpty.push(0);
     }
 
@@ -66,6 +71,31 @@ class Game {
     return nonEmpty;
   }
 
+  processColumn(j, reverse = false) {
+    let column = this.board.map((row) => row[j]);
+    const originalColumn = [...column];
+
+    if (reverse) {
+      column.reverse();
+    }
+
+    column = this.slideAndMerge(column);
+
+    if (reverse) {
+      column.reverse();
+    }
+
+    const isChanged = !column.every(
+      (cell, index) => cell === originalColumn[index],
+    );
+
+    for (let i = 0; i < this.board.length; i++) {
+      this.board[i][j] = column[i];
+    }
+
+    return isChanged;
+  }
+
   moveLeft() {
     if (this.status !== 'playing') {
       return;
@@ -78,7 +108,6 @@ class Game {
       let newRow = this.stackLine(originalRow);
 
       newRow = this.slideAndMerge(newRow);
-      newRow = this.stackLine(newRow);
 
       const isRowChanged = !newRow.every(
         (cell, index) => cell === originalRow[index],
@@ -140,19 +169,8 @@ class Game {
     let hasChanged = false;
 
     for (let j = 0; j < this.board.length; j++) {
-      const column = this.board.map((row) => row[j]);
-      const originalColumn = [...column];
-      const newColumn = this.slideAndMerge(column);
-      const isColumnChanged = !newColumn.every(
-        (cell, index) => cell === originalColumn[index],
-      );
-
-      if (!hasChanged && isColumnChanged) {
+      if (this.processColumn(j)) {
         hasChanged = true;
-      }
-
-      for (let i = 0; i < this.board.length; i++) {
-        this.board[i][j] = newColumn[i];
       }
     }
 
@@ -172,23 +190,8 @@ class Game {
     let hasChanged = false;
 
     for (let j = 0; j < this.board.length; j++) {
-      let column = this.board.map((row) => row[j]);
-      const originalColumn = [...column];
-
-      column = column.reverse();
-      column = this.slideAndMerge(column);
-      column = column.reverse();
-
-      const isColumnChanged = !column.every(
-        (cell, index) => cell === originalColumn[index],
-      );
-
-      if (!hasChanged && isColumnChanged) {
+      if (this.processColumn(j, true)) {
         hasChanged = true;
-      }
-
-      for (let i = 0; i < this.board.length; i++) {
-        this.board[i][j] = column[i];
       }
     }
 
@@ -204,7 +207,7 @@ class Game {
   checkWin() {
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board.length; j++) {
-        if (this.board[i][j] === 2048) {
+        if (this.board[i][j] === Game.WIN_TILE) {
           this.status = 'win';
 
           return;
@@ -318,7 +321,7 @@ class Game {
       this.initialState ??
       Array(4)
         .fill()
-        .map(() => Array(4).fill(0))
+        .map(() => Array(Game.SIZE).fill(0))
         .map((row) => [...row]);
 
     this.score = 0;
