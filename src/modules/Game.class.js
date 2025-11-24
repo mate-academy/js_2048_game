@@ -286,7 +286,7 @@ class Game {
         }
 
         if (
-          col < this.state[row].lenth - 1 &&
+          col < this.state[row].length - 1 &&
           this.state[row][col] === this.state[row][col + 1]
         ) {
           return false;
