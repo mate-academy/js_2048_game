@@ -3,7 +3,7 @@
 import Game from '../modules/Game.class.js';
 
 const game = new Game();
-const startButton = document.querySelector('.button.start');
+const button = document.querySelector('.button');
 
 function renderGame() {
   const cells = document.querySelectorAll('.field-cell');
@@ -25,30 +25,39 @@ function renderGame() {
 
   document.querySelector('.game-score').textContent = game.getScore();
 
-  if (game.getStatus() === 'win') {
-    document.querySelector('.message-win').classList.remove('hidden');
-  } else {
-    document.querySelector('.message-win').classList.add('hidden');
+  const gameStatus = game.getStatus();
+
+  const startMessage = document.querySelector('.message-start');
+  const loseMessage = document.querySelector('.message-lose');
+  const overMessage = document.querySelector('.message-over');
+
+  if (startMessage) {
+    startMessage.classList.toggle('hidden', gameStatus !== 'idle');
   }
 
-  if (game.getStatus() === 'lose') {
-    document.querySelector('.message-lose').classList.remove('hidden');
-  } else {
-    document.querySelector('.message-lose').classList.add('hidden');
+  if (loseMessage) {
+    loseMessage.classList.toggle('hidden', gameStatus !== 'lose');
   }
 
-  if (game.getStatus() === 'playing' || game.getStatus() === 'idle') {
-    startButton.textContent = 'Restart';
-  } else {
-    startButton.textContent = 'Start';
+  if (overMessage) {
+    overMessage.classList.toggle('hidden', gameStatus !== 'lose');
   }
 }
 
-startButton.addEventListener('click', () => {
-  if (game.getStatus() === 'idle' || game.getStatus() === 'lose') {
+button.addEventListener('click', () => {
+  if (game.getStatus() === 'idle') {
     game.start();
-  } else if (game.getStatus() === 'playing') {
+  } else {
     game.restart();
+  }
+
+  // if (game.getStatus() !== 'idle') {
+  //   document.querySelector('.message-start').classList.add('hidden');
+  // }
+
+  if (game.getStatus() === 'playing') {
+    button.textContent = 'Restart';
+    button.classList.add('restart');
   }
   renderGame();
 });
