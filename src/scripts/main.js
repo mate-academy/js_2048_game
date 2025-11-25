@@ -29,7 +29,7 @@ function renderGame() {
 
   const startMessage = document.querySelector('.message-start');
   const loseMessage = document.querySelector('.message-lose');
-  const overMessage = document.querySelector('.message-over');
+  const winMessage = document.querySelector('.message-win');
 
   if (startMessage) {
     startMessage.classList.toggle('hidden', gameStatus !== 'idle');
@@ -39,8 +39,8 @@ function renderGame() {
     loseMessage.classList.toggle('hidden', gameStatus !== 'lose');
   }
 
-  if (overMessage) {
-    overMessage.classList.toggle('hidden', gameStatus !== 'lose');
+  if (winMessage) {
+    winMessage.classList.toggle('hidden', gameStatus !== 'win');
   }
 }
 
@@ -50,10 +50,6 @@ button.addEventListener('click', () => {
   } else {
     game.restart();
   }
-
-  // if (game.getStatus() !== 'idle') {
-  //   document.querySelector('.message-start').classList.add('hidden');
-  // }
 
   if (game.getStatus() === 'playing') {
     button.textContent = 'Restart';
