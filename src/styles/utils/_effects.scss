@@ -1,0 +1,17 @@
+/* Base style for logo distortion */
+.digit-distorted {
+  display: inline-block;
+
+  /* Смена оттенка (наследует --hue-rot-deg от корня, который дергает JS) */
+  filter: hue-rotate(var(--hue-rot-deg, 0deg));
+
+  /* Дрожание: значения приходят через CSS-переменные от JS */
+  transform: translate(var(--jitter-translate, 0))
+    rotate(var(--jitter-rot, 0deg));
+  will-change: filter, transform;
+
+  /* Плавность синхронизирована с параметром interval */
+  transition:
+    transform var(--fx-interval, 120ms) linear,
+    filter var(--fx-interval, 120ms) linear;
+}

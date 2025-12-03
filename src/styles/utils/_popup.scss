@@ -1,0 +1,195 @@
+.initials-backdrop {
+  z-index: 9999;
+  background: #000000b3;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  display: flex;
+}
+
+.initials-popup {
+  width: 320px;
+  overflow: hidden;
+}
+
+.initials-popup-container {
+  background: #a44;
+  padding: 20px 30px;
+  border-radius: 10px;
+  text-align: center;
+  color: #fff;
+  font-family: monospace;
+}
+
+.initials-letters {
+  display: flex;
+
+  gap: 18px;
+  align-items: center;
+  margin: 10px 0;
+  font-size: 2rem;
+
+  div {
+    display: inline-block;
+  }
+}
+
+.initials-letters span.active {
+  border: 2px solid yellow;
+}
+
+.initials-letters .letter {
+  display: inline-block;
+  text-align: center;
+
+  /* 2 chard width just in case */
+  width: 2ch;
+  min-width: 1ch;
+  border-bottom: 2px solid transparent;
+  font-family: monospace;
+}
+
+.initials-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.initials-letters .letter-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  min-width: 2ch;
+}
+
+.initials-letters .letter.is-active {
+  border: 2px solid yellow;
+  animation: initials-weak-blink 2s ease-in-out infinite;
+}
+
+@keyframes initials-weak-blink {
+  0%,
+  100% {
+    opacity: 1;
+    color: #fff;
+  }
+  50% {
+    opacity: 0.65;
+    color: #ff0;
+  }
+}
+
+.tri-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  width: 36px;
+  height: 36px;
+  position: relative;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  /* Triangle shapes via borders */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+  }
+
+  &::before:hover {
+    transform: scale(1.05);
+    color: #ff0;
+  }
+}
+
+.tri-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.tri-up::before {
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 18px solid #fff;
+}
+
+.tri-up:hover::before {
+  border-bottom-color: #ff0;
+}
+
+.tri-down::before {
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 18px solid #fff;
+}
+
+.tri-down:hover::before {
+  border-top-color: #ff0;
+}
+
+.tri-left::before {
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-right: 18px solid #fff;
+}
+
+.tri-left:hover::before {
+  border-right-color: #ff0;
+}
+
+.tri-right::before {
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 18px solid #fff;
+}
+
+.tri-right:hover::before {
+  border-left-color: #ff0;
+}
+
+/* Bigger side arrows for easier tapping */
+.tri-side {
+  width: 44px;
+  height: 44px;
+}
+
+.enter-btn {
+  display: inline-block;
+  margin-top: 15px;
+  margin-left: auto;
+  margin-right: 0;
+  padding: 8px 16px;
+  background: #ff0;
+  color: #000;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.enter-btn:hover {
+  background: #ffc107;
+  transform: scale(1.05);
+}
+
+.initials-letters .letter:focus {
+  outline: none;
+  outline-offset: 4px;
+}

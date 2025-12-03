@@ -1,0 +1,8 @@
+:root {
+  --arrow-thickness: 50%;
+  --field-width: 4;
+  --field-height: 4;
+  --field-border-spacing: 8px;
+  --field-cell-size: 80px;
+  --arrow-offset: calc(100% - var(--arrow-thickness));
+}

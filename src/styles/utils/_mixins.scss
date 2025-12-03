@@ -1,0 +1,14 @@
+@use '../vars/breakpoints';
+
+@mixin on-mobile {
+  @media screen and (max-width: #{(breakpoints.$breakpoint-s)}) {
+    @content;
+  }
+}
+
+@mixin not-supported {
+  @media screen and (max-width: #{(breakpoints.$breakpoint-xs)}),
+  screen and (max-height: #{(breakpoints.$breakpoint-height)}) {
+    @content;
+  }
+}

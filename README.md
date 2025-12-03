@@ -1,3 +1,7 @@
+# author
+I want to just check what I know what I can achieve with all my knowledge and how it will be comfortable for me to
+work on something that requires a challenge
+
 # 2048 game
 
 Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
@@ -32,13 +36,13 @@ Okay, okay. Also, we have some rules:
    - 2 equal cells should be merged into a doubled number
    - The merged cell can’t be merged twice during one move
 5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
+6) After move 2 or 4 appears in a random empty cell. 4 probabilities are 10%
+7) When the 2048 value is displayed in any cell, a win message should be shown.
 8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
+9) Hide the start message when the game starts.
 10) Change the `Start` button to `Restart` after the first move.
 11) `Restart` button should reset the game to the initial state.
-12) Increase score with each move. The score should be increased by the sum of all merged cells.
+12) Increase the score with each move. The score should be increased by the sum of all merged cells.
 13) The game consists of 2 main parts:
   - game logic written in `src/modules/Game.class.js` module that exports `Game` class
   - game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
@@ -61,9 +65,10 @@ You can change the HTML/CSS layout if you need it.
 ## Deploy and Pull Request
 
 1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
+    - [DEMO LINK](https://cooper85.github.io/js_2048_game/)
+2. Follow [this instruction](https://mate-academy.github.io/layout_task-guideline/)
     - Run `npm run test` command to test your code;
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
     - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+
 
