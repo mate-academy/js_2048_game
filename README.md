@@ -1,27 +1,29 @@
-🌟 2048 Game 🌟
-About the project
-This is a browser-based 2048 game implemented using JavaScript, HTML, and SCSS. The game allows players to combine tiles with the same numbers to reach the 2048 tile.
+2048 Game – Classic Puzzle (Vanilla JavaScript)
+Live Demo → [DEMO LINK](https://Nabeyko.github.io/js_2048_game/)
 
-Features of the game:
+Overview
+Fully functional implementation of the classic 2048 puzzle game built with pure vanilla JavaScript (ES6+) and DOM manipulation — no frameworks, no libraries.
 
-Merge tiles by sliding them up, down, left, or right.
-The score is automatically calculated as you combine tiles.
-You can restart the game at any time.
-Responsive design for different screen sizes.
-Note: The game has a simple, functional design without advanced animations.
-
-Technologies Used
-JavaScript
+Features
+Tile movement with arrow keys (↑ ↓ ← →)
+Merging of identical tiles (2 + 2 → 4 → 8 → …)
+Random spawning of new tiles (2 or 4) after every move
+Score tracking and display
+Win condition (reach 2048 tile)
+Game Over detection (no valid moves left)
+“New Game / Restart” button
+Smooth tile appearance animations
+Fully responsive design (desktop + mobile)
+Tech Stack
 HTML5
-SCSS/CSS
-Installation / How to run
-Clone the repository:
-git clone https://github.com/Nabeyko/js_2048_game.git
-Navigate to the project folder:
-cd 2048
-Install dependencies:
-npm install
-Start the local development server:
-npm start
-🌟 [DEMO LINK](https://Nabeyko.github.io/js_2048_game/) 🌟
+CSS3 (Flexbox, Grid, CSS variables, animations)
+Vanilla JavaScript (ES6+): classes, arrow functions, destructuring
+DOM manipulation & Keyboard events
+Key Implementation Details
+OOP approach using Game2048 class
+Optimized move/merge logic (single pass per column/row)
+Clean UI update via dedicated updateUI() method
+Random tile generation only on empty cells
+Game state checks after every move
+
 
