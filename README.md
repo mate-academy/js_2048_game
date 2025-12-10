@@ -1,73 +1,45 @@
-# 2048 game
+# 2048 Game Clone (Vanilla JS)
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+![Game Preview](./Preview.png)
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+## 🔗 Live Demo
+### [👉 Click here to play the game](https://kanezoor.github.io/js_2048_game/)
 
-Okay, what do we have?
+## 📝 Description
+A fully functional implementation of the classic "2048" sliding tile puzzle game, built entirely with **Vanilla JavaScript**.
 
-1. HTML and CSS are already written. You can use it, or implement your own design if you want.
-2. Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
+The goal of this project was to strengthen my understanding of **Algorithms**, **Data Structures (Arrays/Grids)**, and complex **DOM Manipulation** without relying on any external frameworks or libraries.
 
-- constructor with `initialState` parameter (value is optional, defaults to the empty board)
-- `getState()`
-- `getScore()`
-- `getStatus()`
-- `moveLeft()`
-- `moveRight()`
-- `moveUp()`
-- `moveDown()`
-- `start()`
-- `restart()`
+## 🛠 Technologies Used
+* **Core Logic:** Vanilla JavaScript (ES6+)
+* **Structure:** HTML5
+* **Styling:** CSS3 (Animations & Layout)
 
-3. Reference.
+## ✨ Key Features
+* **🎮 Game Logic:** Complete implementation of the sliding and merging algorithm (Up, Down, Left, Right).
+* **🔢 Score Tracking:** Dynamic score updates as tiles merge.
+* **🏁 Win/Loss States:** detects when the player reaches 2048 (Win) or when no moves are possible (Game Over).
+* **⌨️ Keyboard Support:** Smooth gameplay using arrow keys.
+* **Responsive Design:** Playable on different screen sizes.
 
-That's it!
+## 🚀 How to Run Locally
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/Kanezoor/js_2048_game/tree/develop]
+Navigate to the folder:
 
-Okay, okay. Also, we have some rules:
+Bash
 
-1. The game field is 4 x 4
-2. Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3. The player can move cells with keyboard arrows
-4. All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5. The move is possible if at least one cell is changed after the move
-6. After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7. When 2048 value is displayed in any cell, win message should be shown.
-8. The `game over` message should be shown if there are no more available moves.
-9. Hide start message when game starts.
-10. Change the `Start` button to `Restart` after the first move.
-11. `Restart` button should reset the game to the initial state.
-12. Increase score with each move. The score should be increased by the sum of all merged cells.
-13. The game consists of 2 main parts:
+cd [YOUR FOLDER NAME]
+Open index.html in your browser.
 
-- game logic written in `src/modules/Game.class.js` module that exports `Game` class
-- game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
+🧠 What I Learned
+Array Manipulation: I learned how to treat the game board as a 2D grid (matrix) and wrote algorithms to traverse rows and columns to merge identical numbers.
 
-Hints:
+DOM Updates: I practiced separating the "Game State" (variables in JS) from the "UI" (HTML updates), ensuring the screen always matches the internal data.
 
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
-- Use `keydown` event and `event.key` property to handle arrow buttons presses
-  ```js
-  document.addEventListener('keydown', (event) => console.log(event.key));
-  ```
-- Adding animation to the game is optional. It is a bit tricky, but you can try it if you want. Probably, you will need to extend the Game class with additional methods and create a separate board storage with Tile entities to operate their corresponding DOM elements' positions.
+Event Listeners: Managed keyboard input events to trigger specific game functions.
 
-You can change the HTML/CSS layout if you need it.
+Problem Solving: Handling edge cases, such as preventing a tile from merging twice in a single move.
 
-![Preview](./src/images/reference.png)
-
-## Deploy and Pull Request
-
-1. Replace `<your_account>` with your Github username in the link
-   - [DEMO LINK](https://Kanezoor.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-   - Run `npm run test` command to test your code;
-   - Run `npm run test:only -- -n` to run fast test ignoring linter;
-   - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+<div align="center"> Created by <a href="https://github.com/Kanezoor">Vladyslav Kostiuk</a> </div>
