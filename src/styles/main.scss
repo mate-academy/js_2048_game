@@ -22,54 +22,65 @@ body {
   user-select: none;
 
   &--2 {
+    animation: merge 0.5s ease;
     background: #eee4da;
   }
 
   &--4 {
+    animation: merge 0.5s ease;
     background: #ede0c8;
   }
 
   &--8 {
+    animation: merge 0.5s ease;
     background: #f2b179;
     color: #f9f6f2;
   }
 
   &--16 {
+    animation: merge 0.5s ease;
     background: #f59563;
     color: #f9f6f2;
   }
 
   &--32 {
+    animation: merge 0.5s ease;
     background: #f67c5f;
     color: #f9f6f2;
   }
 
   &--64 {
+    animation: merge 0.5s ease;
     background: #f65e3b;
     color: #f9f6f2;
   }
 
   &--128 {
+    animation: merge 0.5s ease;
     background: #edcf72;
     color: #f9f6f2;
   }
 
   &--256 {
+    animation: merge 0.5s ease;
     background: #edcc61;
     color: #f9f6f2;
   }
 
   &--512 {
+    animation: merge 0.5s ease;
     background: #edc850;
     color: #f9f6f2;
   }
 
   &--1024 {
+    animation: merge 0.5s ease;
     background: #edc53f;
     color: #f9f6f2;
   }
 
   &--2048 {
+    animation: merge 0.5s ease;
     background: #edc22e;
     color: #f9f6f2;
   }
@@ -185,3 +196,14 @@ h1 {
   width: 100%;
   height: 150px;
 }
+
+@keyframes merge {
+  from {
+    transform: scale(1.2);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+
