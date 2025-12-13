@@ -1,0 +1,157 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 100vh;
+  margin: 0;
+
+  font-family: Arial, sans-serif;
+
+  background: #f4f4f4;
+}
+
+.game {
+  width: 360px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.button {
+  cursor: pointer;
+
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+
+  font-weight: 600;
+}
+
+.button.start {
+  color: white;
+  background: #2ecc71;
+}
+
+.button.restart {
+  color: white;
+  background: #e74c3c;
+}
+
+.score {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  background: #eee;
+}
+
+.messages {
+  min-height: 24px;
+  margin: 8px 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+
+  padding: 10px;
+  border-radius: 6px;
+
+  background: #bbada0;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 70px;
+  height: 70px;
+  border-radius: 4px;
+
+  font-size: 20px;
+  font-weight: 700;
+  color: #776e65;
+
+  background: rgba(238, 228, 218, 0.35);
+}
+
+.message {
+  display: inline-block;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.field-cell--2 {
+  background: #eee4da;
+}
+
+.field-cell--4 {
+  background: #ede0c8;
+}
+
+.field-cell--8 {
+  color: white;
+  background: #f2b179;
+}
+
+.field-cell--16 {
+  color: white;
+  background: #f59563;
+}
+
+.field-cell--32 {
+  color: white;
+  background: #f67c5f;
+}
+
+.field-cell--64 {
+  color: white;
+  background: #f65e3b;
+}
+
+.field-cell--128 {
+  font-size: 18px;
+  color: white;
+  background: #edcf72;
+}
+
+.field-cell--256 {
+  font-size: 18px;
+  color: white;
+  background: #edcc61;
+}
+
+.field-cell--512 {
+  font-size: 18px;
+  color: white;
+  background: #edc850;
+}
+
+.field-cell--1024 {
+  font-size: 16px;
+  color: white;
+  background: #edc53f;
+}
+
+.field-cell--2048 {
+  font-size: 16px;
+  color: white;
+  background: #edc22e;
+}
+
+.hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #888;
+}
