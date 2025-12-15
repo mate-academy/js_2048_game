@@ -26,8 +26,12 @@ function updateUI() {
       const cellIndex = rowIndex * 4 + colIndex;
       const cell = cells[cellIndex];
 
-      // Remove all value classes
-      cell.className = 'field-cell';
+      // Remove only field-cell--* classes, preserve other classes
+      Array.from(cell.classList).forEach((className) => {
+        if (className.startsWith('field-cell--')) {
+          cell.classList.remove(className);
+        }
+      });
 
       // Update cell content and class
       if (value !== 0) {
