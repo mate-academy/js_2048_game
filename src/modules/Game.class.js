@@ -71,7 +71,6 @@ class Game {
     array[row][col] = value;
   }
 
-  // ====================================================================
   moveLeft(array) {
     const resArr = [];
     let score = 0;
@@ -99,7 +98,6 @@ class Game {
 
     return resArr;
   }
-  // ====================================================================
   moveRight(array) {
     const resArr = [];
     let score = 0;
@@ -124,11 +122,9 @@ class Game {
 
     this.score += score;
     this.board = resArr;
-    // this.addNumbers(this.board);
 
     return resArr;
   }
-  // ====================================================================
   moveUp(array) {
     const resArr = Array.from({ length: 4 }, () => Array(4).fill(0));
     let score = 0;
@@ -161,11 +157,10 @@ class Game {
 
     this.score += score;
     this.board = resArr;
-    // this.addNumbers(this.board);
 
     return resArr;
   }
-  // ====================================================================
+
   moveDown(array) {
     const resArr = Array.from({ length: 4 }, () => Array(4).fill(0));
 
@@ -198,7 +193,6 @@ class Game {
     }
     this.score += score;
     this.board = resArr;
-    // this.addNumbers(this.board);
 
     return resArr;
   }

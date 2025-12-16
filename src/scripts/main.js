@@ -1,13 +1,7 @@
-/* eslint-disable padding-line-between-statements */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const game = new Game();
-
-// eslint-disable-next-line no-console
 
 const rows = Array.from(document.querySelectorAll('.field-row'));
 
@@ -34,6 +28,7 @@ buttonStart.addEventListener('click', (e) => {
     game.status = 'playing';
     actualise(game.board);
     updateMessages();
+
     return;
   }
 
@@ -92,14 +87,15 @@ function actualise(board) {
   game.hasOtherMoves(game.board);
 }
 
-function isBoardChanged(before, after) {
+function isBoardChanged(beforeArr, afterArr) {
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
-      if (before[i][j] !== after[i][j]) {
+      if (beforeArr[i][j] !== afterArr[i][j]) {
         return true;
       }
     }
   }
+
   return false;
 }
 
@@ -131,10 +127,5 @@ document.addEventListener('keydown', (e) => {
     game.addNumbers(game.board);
   }
 
-  console.log(game.status);
   actualise(game.board);
 });
-
-// window.setInterval(() => {
-//   console.log(game.status);
-// }, '2000');
