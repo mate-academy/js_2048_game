@@ -68,14 +68,17 @@ function actualise(board) {
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
       Array.from(rows[row].children)[col].textContent = board[row][col];
+
       if (board[row][col] !== 0) {
         Array.from(rows[row].children)[col].className =
           `field-cell field-cell--${board[row][col]}`;
       }
+
       if (board[row][col] === 0) {
         Array.from(rows[row].children)[col].textContent = '';
         Array.from(rows[row].children)[col].className = 'field-cell';
       }
+
       if (board[row][col] === 2048) {
         game.status = 'win';
       }
