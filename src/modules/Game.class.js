@@ -43,6 +43,10 @@ class Game {
   }
 
   startNumbers() {
+    const randomValue = Math.random() < 0.9 ? 2 : 4;
+
+    this.board[this.getRandomNumber(0, 4)][this.getRandomNumber(0, 4)] =
+      randomValue;
     this.board[this.getRandomNumber(0, 4)][this.getRandomNumber(0, 4)] = 2;
   }
 
@@ -66,6 +70,7 @@ class Game {
 
     array[row][col] = value;
   }
+
   // ====================================================================
   moveLeft(array) {
     const resArr = [];
@@ -91,7 +96,6 @@ class Game {
 
     this.score += score;
     this.board = resArr;
-    this.addNumbers(this.board);
 
     return resArr;
   }
@@ -120,7 +124,7 @@ class Game {
 
     this.score += score;
     this.board = resArr;
-    this.addNumbers(this.board);
+    // this.addNumbers(this.board);
 
     return resArr;
   }
@@ -157,7 +161,7 @@ class Game {
 
     this.score += score;
     this.board = resArr;
-    this.addNumbers(this.board);
+    // this.addNumbers(this.board);
 
     return resArr;
   }
@@ -194,7 +198,7 @@ class Game {
     }
     this.score += score;
     this.board = resArr;
-    this.addNumbers(this.board);
+    // this.addNumbers(this.board);
 
     return resArr;
   }
@@ -209,7 +213,9 @@ class Game {
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.board.map((row) => [...row]);
+  }
 
   /**
    * Returns the current game status.
@@ -221,7 +227,51 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
+  hasWon(array) {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (array[row][col] === 2048) {
+          return true;
+        }
+      }
+    }
+  }
+
+  hasOtherMoves(array) {
+    const everyNumIsNull = array.every((row) =>
+      row.every((cell) => cell !== 0),
+    );
+
+    if (!everyNumIsNull) {
+      return true;
+    }
+
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 3; col++) {
+        if (array[row][col] === array[row][col + 1]) {
+          return true;
+        }
+      }
+    }
+
+    for (let j = 0; j < 4; j++) {
+      for (let i = 0; i < 3; i++) {
+        if (array[i][j] === array[i + 1][j]) {
+          return true;
+        }
+      }
+    }
+
+    // console.log('no moves');
+
+    return false;
+  }
+
   getStatus() {
+    if (this.hasOtherMoves(this.board) === false) {
+      this.status = 'lose';
+    }
+
     return this.status;
   }
 

@@ -9,19 +9,20 @@ const game = new Game();
 
 // eslint-disable-next-line no-console
 
-const fieldRows = document.querySelectorAll('.field-row');
-
-const rows = Array.from(fieldRows);
+const rows = Array.from(document.querySelectorAll('.field-row'));
 
 const buttonStart = document.querySelector('button');
 
 const score = document.querySelector('.game-score');
 
-const counter = game.getRandomNumber(1, 3);
-
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
+
+window.addEventListener('load', () => {
+  game.startNumbers();
+  actualise(game.board);
+});
 
 buttonStart.addEventListener('click', (e) => {
   e.target.textContent = 'Restart';
@@ -44,12 +45,19 @@ buttonStart.addEventListener('click', (e) => {
     actualise(game.board);
   }
 });
+
 function updateMessages() {
   const stat = game.getStatus();
 
   messageStart.classList.add('hidden');
   messageWin.classList.add('hidden');
   messageLose.classList.add('hidden');
+
+  if (game.hasOtherMoves(game.board) === false) {
+    game.status = 'lose';
+    buttonStart.className = 'button restart';
+    buttonStart.textContent = 'Restart';
+  }
 
   if (stat === 'idle') {
     messageStart.classList.remove('hidden');
@@ -79,28 +87,29 @@ function actualise(board) {
     }
   }
   score.textContent = game.score;
+  game.status = game.getStatus();
+  updateMessages();
+  game.hasOtherMoves(game.board);
 }
 
-function canMove(board) {
+function isBoardChanged(before, after) {
   for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 3; j++) {
-      if (board[i][j] === 0 || board[i][j] === board[i][j + 1]) {
+    for (let j = 0; j < 4; j++) {
+      if (before[i][j] !== after[i][j]) {
         return true;
       }
     }
   }
-  for (let j = 0; j < 4; j++) {
-    for (let i = 0; i < 3; i++) {
-      if (board[i][j] === 0 || board[i][j] === board[i + 1][j]) {
-        return true;
-      }
-    }
-  }
-
   return false;
 }
 
 document.addEventListener('keydown', (e) => {
+  if (game.status !== 'playing') {
+    return;
+  }
+
+  const boardBefore = game.getState();
+
   switch (e.key) {
     case 'ArrowLeft':
       game.moveLeft(game.board);
@@ -114,13 +123,18 @@ document.addEventListener('keydown', (e) => {
     case 'ArrowDown':
       game.moveDown(game.board);
       break;
+    default:
+      return;
   }
 
-  if (!canMove(game.board)) {
-    game.status = 'lose';
-    console.log(game.status);
+  if (isBoardChanged(boardBefore, game.board)) {
+    game.addNumbers(game.board);
   }
 
-  updateMessages();
+  console.log(game.status);
   actualise(game.board);
 });
+
+// window.setInterval(() => {
+//   console.log(game.status);
+// }, '2000');
