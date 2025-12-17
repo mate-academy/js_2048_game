@@ -1,84 +1,107 @@
+// $cell-size: 75px;
+// $gap: 10px;
+// $radius: 5px;
+// $background-color: #fbf8ef;
+// $fiel-cell-color: #d6cdc4;
+// $tile-font-size: 28px;
+// $font-weight: 900;
+// $second-font-color: #f9f6f2;
+// $general-font-size: 24px;
+// $game-field-bg-color: #bbada0;
+// $accent-color: #edc22e;
+// $info-bg-color: #d6cdc4;
+// $info-font-color: #776e65;
+
+// $start-btn-bg-color: #1dae28;
+// $start-btn-hover-bg-color: #179921;
+// $restart-btn-bg-color: #f1b2b2;
+// $restart-btn-hover-bg-color: #f87474;
+
+// $btn-width: 75px;
+// $btn-height: 75px;
+
+@use 'variables';
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: variables.$background-color;
   font-family: sans-serif;
-  font-size: 24px;
-  font-weight: 900;
+  font-size: variables.$general-font-size;
+  font-weight: variables.$font-weight;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 350px;
+}
+
+.field-wrapper {
+  position: relative;
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  background: variables.$field-cell-color;
+  width: variables.$cell-size;
+  height: variables.$cell-size;
+  border-radius: variables.$radius;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
+  user-select: none;
+}
+
+.tile {
+  position: absolute;
+  width: variables.$cell-size;
+  height: variables.$cell-size;
+  border-radius: variables.$radius;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: variables.$tile-font-size;
+
   user-select: none;
 
-  &--2 {
-    background: #eee4da;
-  }
+  transition: transform 150ms ease-in-out;
 
-  &--4 {
-    background: #ede0c8;
-  }
+  @each $value, $color in variables.$tile-colors {
+    &--#{$value} {
+      background: $color;
 
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+      @if $value >= 8 {
+        color: variables.$second-font-color;
+      }
+    }
   }
+}
+.tile-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: variables.$radius;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
+.tiles-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: variables.$gap;
+  box-sizing: border-box;
+  pointer-events: none;
 }
 
 .game-field {
-  background: #bbada0;
+  background: variables.$game-field-bg-color;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: variables.$radius;
 }
 
 .game-header {
@@ -91,12 +114,12 @@ body {
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: variables.$accent-color;
+  color: variables.$second-font-color;
   width: 75px;
   height: 75px;
   font-size: 24px;
-  border-radius: 5px;
+  border-radius: variables.$radius;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,11 +132,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: variables.$info-bg-color;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  border-radius: variables.$radius;
+  color: variables.$info-font-color;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -125,43 +148,43 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: variables.$radius;
   cursor: pointer;
-  color: #f9f6f2;
+  color: variables.$second-font-color;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
+  width: variables.$btn-width;
+  height: variables.$btn-height;
 
   transition: 0.25s ease background;
 }
 
 .start {
-  background: #1dae28;
+  background: variables.$start-btn-bg-color;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: variables.$start-btn-hover-bg-color;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: variables.$restart-btn-bg-color;
 
   &:hover {
-    background: #f87474;
+    background: variables.$restart-btn-hover-bg-color;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: variables.$info-bg-color;
+  color: variables.$info-font-color;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: variables.$radius;
   font-size: 20px;
 }
 
@@ -169,16 +192,9 @@ h1 {
   display: none;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
-}
-
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: variables.$accent-color;
+  color: variables.$info-font-color;
 }
 
 .message-container {
