@@ -1,13 +1,11 @@
 'use strict';
 
-const Game = require('./modules/Game.class');
+import Game from './modules/Game.class.js';
 
 const game = new Game();
-
 const cells = document.querySelectorAll('.field-cell');
 const scoreElement = document.querySelector('.game-score');
 const button = document.querySelector('.button');
-
 const messageStart = document.querySelector('.message-start');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
@@ -31,29 +29,29 @@ function render() {
 
   scoreElement.textContent = game.getScore();
 
-  const gameStatus = game.getStatus();
+  const gamestatus = game.getStatus();
 
   messageStart.classList.add('hidden');
   messageWin.classList.add('hidden');
   messageLose.classList.add('hidden');
 
-  if (gameStatus === 'idle') {
+  if (gamestatus === 'idle') {
     messageStart.classList.remove('hidden');
   }
 
-  if (gameStatus === 'win') {
+  if (gamestatus === 'win') {
     messageWin.classList.remove('hidden');
   }
 
-  if (gameStatus === 'lose') {
+  if (gamestatus === 'lose') {
     messageLose.classList.remove('hidden');
   }
 }
 
 button.addEventListener('click', () => {
-  const gameStatus = game.getStatus();
+  const newstatus = game.getStatus();
 
-  if (gameStatus === 'idle') {
+  if (newstatus === 'idle') {
     game.start();
     button.textContent = 'Restart';
     button.classList.remove('start');
@@ -72,9 +70,9 @@ button.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  const gameStatus = game.getStatus();
+  const newstatus = game.getStatus();
 
-  if (gameStatus !== 'playing') {
+  if (newstatus !== 'playing') {
     return;
   }
 
@@ -82,19 +80,15 @@ document.addEventListener('keydown', (e) => {
     case 'ArrowLeft':
       game.moveLeft();
       break;
-
     case 'ArrowRight':
       game.moveRight();
       break;
-
     case 'ArrowUp':
       game.moveUp();
       break;
-
     case 'ArrowDown':
       game.moveDown();
       break;
-
     default:
       return;
   }

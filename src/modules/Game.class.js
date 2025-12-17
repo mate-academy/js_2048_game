@@ -5,7 +5,6 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
-
 class Game {
   constructor(initialState) {
     this.score = 0;
@@ -68,9 +67,7 @@ class Game {
   restart() {
     this.score = 0;
     this.status = 'playing';
-
     this.state = Array.from({ length: 4 }, () => Array(4).fill(0));
-
     this.addRandomTile();
     this.addRandomTile();
   }
@@ -137,10 +134,9 @@ class Game {
 
       const processed = this.processLine(column);
 
-      this.state[0][col] = processed[0];
-      this.state[1][col] = processed[1];
-      this.state[2][col] = processed[2];
-      this.state[3][col] = processed[3];
+      for (let row = 0; row < 4; row++) {
+        this.state[row][col] = processed[row];
+      }
     }
 
     if (JSON.stringify(prev) !== JSON.stringify(this.state)) {
@@ -163,10 +159,9 @@ class Game {
       const reversed = [...column].reverse();
       const processed = this.processLine(reversed).reverse();
 
-      this.state[0][col] = processed[0];
-      this.state[1][col] = processed[1];
-      this.state[2][col] = processed[2];
-      this.state[3][col] = processed[3];
+      for (let row = 0; row < 4; row++) {
+        this.state[row][col] = processed[row];
+      }
     }
 
     if (JSON.stringify(prev) !== JSON.stringify(this.state)) {
@@ -206,11 +201,11 @@ class Game {
       for (let col = 0; col < 4; col++) {
         const val = this.state[row][col];
 
-        if (row < 3 && this.state[row + 1][col] === val) {
+        if (col < 3 && this.state[row][col + 1] === val) {
           return true;
         }
 
-        if (col < 3 && this.state[row][col + 1] === val) {
+        if (row < 3 && this.state[row + 1][col] === val) {
           return true;
         }
       }
@@ -234,4 +229,4 @@ class Game {
   }
 }
 
-module.exports = Game;
+export default Game;
