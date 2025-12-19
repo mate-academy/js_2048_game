@@ -7,15 +7,18 @@
       content="width=device-width, initial-scale=1.0"
     />
     <title>2048</title>
+
     <link
       rel="stylesheet"
       href="./styles/main.scss"
     />
   </head>
+
   <body>
     <div class="container">
       <div class="game-header">
         <h1>2048</h1>
+
         <div class="controls">
           <p class="info">
             Score:
@@ -33,21 +36,18 @@
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
-
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
-
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
-
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
@@ -63,8 +63,21 @@
         <p class="message message-start">
           Press "Start" to begin game. Good luck!
         </p>
+        <p class="message message-playing hidden">
+          <span class="command command-right">Comands:</span>
+          <br />
+          <span class="command command-up">↑</span>
+          <br />
+          <span class="command command-left-right">← ARROWS →</span>
+          <br />
+          <span class="command command-down">↓</span>
+          <br />
+        </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="./scripts/main.js"
+    ></script>
   </body>
 </html>

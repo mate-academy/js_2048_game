@@ -1,69 +1,117 @@
-# 2048 game
+🎮 Jogo 2048 — JavaScript
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+Implementação completa do clássico jogo 2048, desenvolvida do zero utilizando JavaScript puro, com foco em lógica de jogo, organização de código e boas práticas de frontend.
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+[Jogue aqui](https://igor-hrm.github.io/js_2048_game/)
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
-  - constructor with `initialState` parameter (value is optional, defaults to the empty board)
-  - `getState()`
-  - `getScore()`
-  - `getStatus()`
-  - `moveLeft()`
-  - `moveRight()`
-  - `moveUp()`
-  - `moveDown()`
-  - `start()`
-  - `restart()`
+Sobre o Projeto:
 
-3) Reference.
+Este projeto recria fielmente a mecânica do jogo 2048, incluindo movimentação das peças, regras de fusão, cálculo de pontuação, detecção de vitória e derrota, além de controle via teclado.
 
-That's it!
+O principal objetivo foi praticar JavaScript moderno, Programação Orientada a Objetos (OOP) e a separação entre lógica de negócio e interface do usuário.
 
-Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) `Restart` button should reset the game to the initial state.
-12) Increase score with each move. The score should be increased by the sum of all merged cells.
-13) The game consists of 2 main parts:
-  - game logic written in `src/modules/Game.class.js` module that exports `Game` class
-  - game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
+Funcionalidades:
 
-Hints:
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
-- Use `keydown` event and `event.key` property to handle arrow buttons presses
-    ```js
-    document.addEventListener('keydown', event => console.log(event.key));
-    ```
-- Adding animation to the game is optional. It is a bit tricky, but you can try it if you want. Probably, you will need to extend the Game class with additional methods and create a separate board storage with Tile entities to operate their corresponding DOM elements' positions.
+ - Gameplay clássico em tabuleiro 4×4
+ - Controle por teclado (setas direcionais)
+ - Movimentação e fusão correta das peças
+ - Sistema de pontuação baseado nas fusões
+ - Detecção de vitória ao alcançar o valor 2048
+ - Detecção de Game Over quando não há mais movimentos possíveis
+ - Botão de iniciar
+ - Botão de reiniciar o jogo
+ - Geração aleatória de peças (90% chance de 2, 10% chance de 4)
+ - Separação clara entre lógica do jogo e interface
 
-You can change the HTML/CSS layout if you need it.
+Tecnologias Utilizadas:
 
-![Preview](./src/images/reference.png)
+JavaScript (ES6+)
+  - HTML5
+  - SCSS
+  - ES Modules
+  - Programação Orientada a Objetos (Classes)
+  - ESLint + Prettier
+  - GitHub Pages (deploy)
 
-## Deploy and Pull Request
+Arquitetura do Projeto:
 
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+O projeto é dividido em duas partes principais:
 
+1️- Lógica do Jogo
+Localizada em:
+
+src/modules/Game.class.js
+
+Responsabilidades:
+
+Gerenciar o estado do jogo
+Controlar os movimentos (moveLeft, moveRight, moveUp, moveDown)
+Aplicar as regras de fusão das peças
+Controlar a pontuação
+Detectar estados de vitória e fim de jogo
+
+2️- Interface do Usuário
+
+Localizada em:
+
+src/index.html
+src/scripts/main.js
+
+Responsabilidades:
+
+Renderizar o tabuleiro
+Escutar eventos do teclado
+Atualizar o DOM conforme o estado do jogo
+Controlar botões e mensagens da interface
+
+Regras do Jogo:
+
+O tabuleiro possui tamanho 4 × 4
+Cada célula pode conter:
+0 (vazia)
+ou uma potência de 2 (2, 4, 8, 16, ...)
+A cada movimento:
+As peças deslizam na direção escolhida
+Peças iguais se fundem
+Uma peça só pode se fundir uma vez por movimento
+Após cada movimento válido:
+Uma nova peça (2 ou 4) aparece em uma célula vazia aleatória
+
+O jogo termina quando:
+
+🏆 Vitória: uma peça atinge o valor 2048
+💀 Game Over: não há mais movimentos possíveis
+
+Instalação e Execução Local
+# Clone o repositório
+git clone https://github.com/Igor-hrm/js_2048_game.git
+# Instale as dependências
+npm install
+# Execute o projeto
+npm start
+
+Testes
+# Executar todos os testes
+npm run test
+
+# Executar testes sem o linter
+npm run test:only -- -n
+
+# Executar testes com saída detalhada
+npm run test:only -- -l
+
+📌 O que foi praticado neste projeto
+
+Lógica em JavaScript
+Manipulação de arrays
+Gerenciamento de estado
+Programação Orientada a Objetos
+Código limpo e organizado
+Padronização com ESLint e Prettier
+Deploy de aplicações frontend
+
+Autor:
+
+Igor Rocha
+Desenvolvedor Frontend
+GitHub: https://github.com/Igor-hrm
