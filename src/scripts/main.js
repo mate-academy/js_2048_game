@@ -54,7 +54,7 @@ document.addEventListener('keydown', (keyboardEvent) => {
     return;
   }
 
-  // CORREÇÃO: Captura se o movimento realmente ocorreu
+  // Captura se o movimento realmente ocorreu
   let moved = false;
 
   if (keyboardEvent.key === 'ArrowLeft') {
@@ -73,7 +73,7 @@ document.addEventListener('keydown', (keyboardEvent) => {
     moved = game.moveDown();
   }
 
-  // CORREÇÃO: Só atualiza o estado inicial se houve movimento
+  // Só atualiza o estado inicial se houve movimento (Requisito do Mentor)
   if (moved) {
     startMessage.classList.add('hidden');
     mainButton.textContent = 'Restart';
@@ -89,9 +89,8 @@ mainButton.addEventListener('click', () => {
   winMessage.classList.add('hidden');
   loseMessage.classList.add('hidden');
   startMessage.classList.add('hidden');
-  mainButton.textContent = 'Restart';
-  mainButton.classList.remove('start');
-  mainButton.classList.add('restart');
+
+  // CORREÇÃO: Removidas as linhas que alteravam o botão prematuramente aqui
   updateUI();
 });
 
