@@ -5,6 +5,10 @@ export class Game {
       : this.generateEmptyGrid();
     this.score = 0;
     this.status = 'playing';
+
+    if (initialState) {
+      this.checkStatus();
+    }
   }
 
   generateEmptyGrid() {
@@ -16,9 +20,11 @@ export class Game {
   getState() {
     return this.grid;
   }
+
   getScore() {
     return this.score;
   }
+
   getStatus() {
     return this.status;
   }
@@ -51,7 +57,8 @@ export class Game {
     const previousState = JSON.stringify(this.grid);
 
     this.grid = this.grid.map((row) => this.slide(row));
-    this.afterMove(previousState);
+
+    return this.afterMove(previousState);
   }
 
   moveRight() {
@@ -62,7 +69,8 @@ export class Game {
 
       return this.slide(reversed).reverse();
     });
-    this.afterMove(previousState);
+
+    return this.afterMove(previousState);
   }
 
   moveUp() {
@@ -71,7 +79,8 @@ export class Game {
     this.grid = this.transpose(this.grid);
     this.grid = this.grid.map((row) => this.slide(row));
     this.grid = this.transpose(this.grid);
-    this.afterMove(previousState);
+
+    return this.afterMove(previousState);
   }
 
   moveDown() {
@@ -85,14 +94,19 @@ export class Game {
       return this.slide(reversed).reverse();
     });
     this.grid = this.transpose(this.grid);
-    this.afterMove(previousState);
+
+    return this.afterMove(previousState);
   }
 
   afterMove(previousState) {
-    if (previousState !== JSON.stringify(this.grid)) {
+    const isChanged = previousState !== JSON.stringify(this.grid);
+
+    if (isChanged) {
       this.addRandomTile();
       this.checkStatus();
     }
+
+    return isChanged;
   }
 
   addRandomTile() {

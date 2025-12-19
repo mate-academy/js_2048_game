@@ -39,7 +39,6 @@ function updateUI() {
   if (gameStatus === 'won') {
     winMessage.classList.remove('hidden');
   } else if (gameStatus === 'lost') {
-    // CORRIGIDO: gameStatus em vez de status
     loseMessage.classList.remove('hidden');
   }
 }
@@ -51,32 +50,36 @@ document.addEventListener('keydown', (keyboardEvent) => {
 
   const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
 
-  // CORRIGIDO: keyboardEvent em vez de event
   if (!keys.includes(keyboardEvent.key)) {
     return;
   }
 
+  // CORREÇÃO: Captura se o movimento realmente ocorreu
+  let moved = false;
+
   if (keyboardEvent.key === 'ArrowLeft') {
-    game.moveLeft();
+    moved = game.moveLeft();
   }
 
   if (keyboardEvent.key === 'ArrowRight') {
-    game.moveRight();
+    moved = game.moveRight();
   }
 
   if (keyboardEvent.key === 'ArrowUp') {
-    game.moveUp();
+    moved = game.moveUp();
   }
 
   if (keyboardEvent.key === 'ArrowDown') {
-    game.moveDown();
+    moved = game.moveDown();
   }
 
-  // Esconder mensagem inicial e mudar botão no primeiro movimento
-  startMessage.classList.add('hidden');
-  mainButton.textContent = 'Restart';
-  mainButton.classList.remove('start');
-  mainButton.classList.add('restart');
+  // CORREÇÃO: Só atualiza o estado inicial se houve movimento
+  if (moved) {
+    startMessage.classList.add('hidden');
+    mainButton.textContent = 'Restart';
+    mainButton.classList.remove('start');
+    mainButton.classList.add('restart');
+  }
 
   updateUI();
 });
