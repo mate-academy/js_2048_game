@@ -1,68 +1,158 @@
-'use strict';
-
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
-class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
+export class Game {
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.grid = initialState
+      ? JSON.parse(JSON.stringify(initialState))
+      : this.generateEmptyGrid();
+    this.score = 0;
+    this.status = 'playing';
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  generateEmptyGrid() {
+    return Array(4)
+      .fill(null)
+      .map(() => Array(4).fill(0));
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getState() {
+    return this.grid;
+  }
+  getScore() {
+    return this.score;
+  }
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  slide(row) {
+    let filteredRow = row.filter((val) => val !== 0);
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+    for (let i = 0; i < filteredRow.length - 1; i++) {
+      if (filteredRow[i] === filteredRow[i + 1]) {
+        filteredRow[i] = filteredRow[i] * 2;
+        this.score += filteredRow[i];
+        filteredRow[i + 1] = 0;
+        i++;
+      }
+    }
+    filteredRow = filteredRow.filter((val) => val !== 0);
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+    while (filteredRow.length < 4) {
+      filteredRow.push(0);
+    }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    return filteredRow;
+  }
 
-  // Add your own methods here
+  transpose(matrix) {
+    return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
+  }
+
+  moveLeft() {
+    const previousState = JSON.stringify(this.grid);
+
+    this.grid = this.grid.map((row) => this.slide(row));
+    this.afterMove(previousState);
+  }
+
+  moveRight() {
+    const previousState = JSON.stringify(this.grid);
+
+    this.grid = this.grid.map((row) => {
+      const reversed = [...row].reverse();
+
+      return this.slide(reversed).reverse();
+    });
+    this.afterMove(previousState);
+  }
+
+  moveUp() {
+    const previousState = JSON.stringify(this.grid);
+
+    this.grid = this.transpose(this.grid);
+    this.grid = this.grid.map((row) => this.slide(row));
+    this.grid = this.transpose(this.grid);
+    this.afterMove(previousState);
+  }
+
+  moveDown() {
+    const previousState = JSON.stringify(this.grid);
+
+    this.grid = this.transpose(this.grid);
+
+    this.grid = this.grid.map((row) => {
+      const reversed = [...row].reverse();
+
+      return this.slide(reversed).reverse();
+    });
+    this.grid = this.transpose(this.grid);
+    this.afterMove(previousState);
+  }
+
+  afterMove(previousState) {
+    if (previousState !== JSON.stringify(this.grid)) {
+      this.addRandomTile();
+      this.checkStatus();
+    }
+  }
+
+  addRandomTile() {
+    const emptyCells = [];
+
+    this.grid.forEach((row, r) => {
+      row.forEach((cell, c) => {
+        if (cell === 0) {
+          emptyCells.push({ r, c });
+        }
+      });
+    });
+
+    if (emptyCells.length > 0) {
+      const { r, c } =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+      this.grid[r][c] = Math.random() < 0.9 ? 2 : 4;
+    }
+  }
+
+  canMove() {
+    if (this.grid.flat().includes(0)) {
+      return true;
+    }
+
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        const current = this.grid[r][c];
+
+        if (c < 3 && current === this.grid[r][c + 1]) {
+          return true;
+        }
+
+        if (r < 3 && current === this.grid[r + 1][c]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  checkStatus() {
+    if (this.grid.flat().includes(2048)) {
+      this.status = 'won';
+    } else if (!this.canMove()) {
+      this.status = 'lost';
+    }
+  }
+
+  start() {
+    this.addRandomTile();
+    this.addRandomTile();
+  }
+
+  restart() {
+    this.grid = this.generateEmptyGrid();
+    this.score = 0;
+    this.status = 'playing';
+    this.start();
+  }
 }
-
-module.exports = Game;
