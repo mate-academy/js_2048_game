@@ -1,0 +1,110 @@
+
+> 2048@1.0.0 test:only
+> mate-scripts test
+
+[?25l/-\
+
+|
+DevTools listening on ws://127.0.0.1:51470/devtools/browser/be8c892d-6951-448a-8efc-fe24f396ea29
+
+/-\|
+
+====================================================================================================
+
+
+  (Run Starting)
+
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        13.13.1                                                                        │
+  │ Browser:        Electron 118 (headless)                                                        │
+  │ Node Version:   v22.17.1 (C:\Program Files\nodejs\node.exe)                                    │
+  │ Specs:          1 found (js2048Game.spec.js)                                                   │
+  │ Searched:       cypress/integration/**/*.spec.{js,ts,jsx,tsx}                                  │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  js2048Game.spec.js                                                              (1 of 1)
+
+/-\|Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+/
+
+
+
+  2048 game UI
+
+-    √ should show the initial score
+
+\    √ should show the score shuffling to the left and up only
+
+|    √ should show the score shuffling to the right and up only
+
+/    √ should show the score shuffling to the right and down only
+
+-    √ should show the score shuffling to the left and down only
+
+\    √ should reset the score
+
+|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|    √ should show message in case of the loss (26979ms)
+
+
+
+
+
+  7 passing (30s)
+
+
+[mochawesome] Report JSON saved to C:\Mate_academy\js_2048_game\raw_reports\mochawesome.json
+
+
+/-
+  (Results)
+
+
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        7                                                                                │
+  │ Passing:      7                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     30 seconds                                                                       │
+  │ Spec Ran:     js2048Game.spec.js                                                               │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+
+
+
+  (Video)
+
+  -  Video output: C:\Mate_academy\js_2048_game\cypress\videos\js2048Game.spec.js.mp4
+
+
+
+
+====================================================================================================
+
+
+  (Run Finished)
+
+
+
+
+       Spec                                              Tests  Passing  Failing  Pending  Skipped  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ ✔  js2048Game.spec.js                       00:30        7        7        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    ✔  All specs passed!                        00:30        7        7        -        -        -  
+
+
+
+\ [?25h
