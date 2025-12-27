@@ -32,10 +32,10 @@ class Game {
     ];
 
     if (initialState) {
-      this.field = initialState.map((r) => r.slice());
-    } else {
-      this.field = this.initialState.map((r) => r.slice());
+      this.initialState = initialState.map((r) => r.slice());
     }
+
+    this.field = this.initialState.map((r) => r.slice());
 
     // eslint-disable-next-line no-console
     console.log(initialState);
