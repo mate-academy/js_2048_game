@@ -42,6 +42,10 @@ class Game {
   }
 
   moveLeft() {
+    if (!(this.status === 'playing')) {
+      return false;
+    }
+
     if (this.status === 'win' || this.status === 'lose') {
       return false;
     }
@@ -85,6 +89,10 @@ class Game {
   }
 
   moveRight() {
+    if (!(this.status === 'playing')) {
+      return false;
+    }
+
     if (this.status === 'win' || this.status === 'lose') {
       return false;
     }
@@ -134,6 +142,10 @@ class Game {
   moveUp() {
     const t = this.transpose(this.field);
 
+    if (!(this.status === 'playing')) {
+      return false;
+    }
+
     if (this.status === 'win' || this.status === 'lose') {
       return false;
     }
@@ -178,6 +190,10 @@ class Game {
 
   moveDown() {
     const t = this.transpose(this.field);
+
+    if (!(this.status === 'playing')) {
+      return false;
+    }
 
     if (this.status === 'win' || this.status === 'lose') {
       return false;
@@ -257,12 +273,17 @@ class Game {
    * Starts the game.
    */
   start() {
-    this.status = 'playing';
+    if (this.field.flat().some((v) => v === 0)) {
+      // or just call this.addRandomTile(); two times in this if
+      const free = this.field.flat().filter((v) => v === 0).length;
+      const times = Math.min(2, free);
 
-    if (this.field.flat().every((v) => v === 0)) {
-      this.addRandomTile();
-      this.addRandomTile();
+      for (let i = 0; i < times; i++) {
+        this.addRandomTile();
+      }
     }
+
+    this.status = 'playing';
   }
 
   /**
