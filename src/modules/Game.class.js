@@ -75,13 +75,9 @@ export default class Game {
 
     if (this.field.flat().includes(2048)) {
       this.status = 'win';
-    } else {
-      if (!this.canMove()) {
-        this.status = 'lose';
-      }
-    }
-
-    if (this.status === 'idle') {
+    } else if (!this.canMove()) {
+      this.status = 'lose';
+    } else if (this.status === 'idle') {
       this.status = 'playing';
     }
 
@@ -126,13 +122,9 @@ export default class Game {
 
     if (this.field.flat().includes(2048)) {
       this.status = 'win';
-    } else {
-      if (!this.canMove()) {
-        this.status = 'lose';
-      }
-    }
-
-    if (this.status === 'idle') {
+    } else if (!this.canMove()) {
+      this.status = 'lose';
+    } else if (this.status === 'idle') {
       this.status = 'playing';
     }
 
@@ -140,7 +132,7 @@ export default class Game {
   }
 
   moveUp() {
-    const t = this.transpose();
+    const t = this.transpose(this.field);
 
     if (this.status === 'win' || this.status === 'lose') {
       return false;
@@ -169,19 +161,15 @@ export default class Game {
       return false;
     }
 
-    this.field = this._transpose(newField);
+    this.field = this.transpose(newField);
     this.score += totalGainedScore;
     this.addRandomTile();
 
     if (this.field.flat().includes(2048)) {
       this.status = 'win';
-    } else {
-      if (!this.canMove()) {
-        this.status = 'lose';
-      }
-    }
-
-    if (this.status === 'idle') {
+    } else if (!this.canMove()) {
+      this.status = 'lose';
+    } else if (this.status === 'idle') {
       this.status = 'playing';
     }
 
@@ -189,7 +177,7 @@ export default class Game {
   }
 
   moveDown() {
-    const t = this.transpose();
+    const t = this.transpose(this.field);
 
     if (this.status === 'win' || this.status === 'lose') {
       return false;
@@ -222,19 +210,15 @@ export default class Game {
       return false;
     }
 
-    this.field = this._transpose(newField);
+    this.field = this.transpose(newField);
     this.score += totalGainedScore;
     this.addRandomTile();
 
     if (this.field.flat().includes(2048)) {
       this.status = 'win';
-    } else {
-      if (!this.canMove()) {
-        this.status = 'lose';
-      }
-    }
-
-    if (this.status === 'idle') {
+    } else if (!this.canMove()) {
+      this.status = 'lose';
+    } else if (this.status === 'idle') {
       this.status = 'playing';
     }
 
@@ -333,13 +317,13 @@ export default class Game {
     return false;
   }
 
-  transpose() {
-    const n = this.field.length;
+  transpose(field) {
+    const n = field.length;
     const result = new Array(n).fill(null).map(() => new Array(n));
 
     for (let r = 0; r < n; r++) {
       for (let c = 0; c < n; c++) {
-        result[c][r] = this.field[r][c];
+        result[c][r] = field[r][c];
       }
     }
 

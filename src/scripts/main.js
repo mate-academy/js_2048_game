@@ -1,14 +1,18 @@
 'use strict';
 
 import Game from '../modules/Game.class.js';
-// const Game = require('../modules/Game.class');
 
 const game = new Game();
 
+const cells = Array.from(document.querySelectorAll('.field-cell'));
+
+const msgStart = document.querySelector('.message-start');
+const msgWin = document.querySelector('.message-win');
+const msgLose = document.querySelector('.message-lose');
+const msgButton = document.querySelector('.start');
+
 render();
 updateUI();
-
-const cells = Array.from(document.querySelectorAll('.field-cell'));
 
 function render() {
   const state = game.getState();
@@ -44,11 +48,6 @@ function render() {
 
   score.textContent = game.getScore();
 }
-
-const msgStart = document.querySelector('.message-start');
-const msgWin = document.querySelector('.message-win');
-const msgLose = document.querySelector('.message-lose');
-const msgButton = document.querySelector('.start');
 
 function updateUI() {
   const gameStatus = game.getStatus();
