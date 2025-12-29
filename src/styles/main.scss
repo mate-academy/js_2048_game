@@ -14,7 +14,7 @@ body {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
+  border-radius: 10px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
@@ -78,7 +78,7 @@ body {
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 15px;
 }
 
 .game-header {
@@ -96,7 +96,7 @@ h1 {
   width: 75px;
   height: 75px;
   font-size: 24px;
-  border-radius: 5px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -112,7 +112,7 @@ h1 {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
+  border-radius: 10px;
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
@@ -125,7 +125,7 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;
@@ -161,7 +161,7 @@ h1 {
   color: #776e65;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 15px;
   font-size: 20px;
 }
 
