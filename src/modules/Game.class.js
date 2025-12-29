@@ -5,7 +5,7 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
-class Game {
+export default class Game {
   /**
    * Creates a new game instance.
    *
