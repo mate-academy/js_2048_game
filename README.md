@@ -8,7 +8,7 @@ Don't play for too long! We need you to write the code!
 
 Okay, what do we have?
 1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
+2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):   |j
   - constructor with `initialState` parameter (value is optional, defaults to the empty board)
   - `getState()`
   - `getScore()`
@@ -61,7 +61,7 @@ You can change the HTML/CSS layout if you need it.
 ## Deploy and Pull Request
 
 1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
+    - [DEMO LINK](https://eg598.github.io/js_2048_game/)
 2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
     - Run `npm run test` command to test your code;
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
