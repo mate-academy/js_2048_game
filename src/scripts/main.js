@@ -336,12 +336,12 @@ class Game {
 
 // Получаем DOM элементыю.
 const cells = [...document.querySelectorAll('.field-cell')];
-// Для обновления счета на экране
 const scoreEL = document.querySelector('.game-score');
-// копка старт, для того чтобы повесить обработчик клика
 const startBtn = document.querySelector('.start');
 const win = document.querySelector('.message-win');
 const lose = document.querySelector('.message-lose');
+const mesStart = document.querySelector('.message-start');
+
 // Создаем игру
 const newGame = new Game();
 
@@ -358,39 +358,33 @@ function render() {
     const value = stateRes[i];
     //Отоббражения
     const cell = cells[i];
+    //  Полная очистка клетки
+    cell.textContent = '';
+    cell.className = 'field-cell';
 
-    if (value === 0) {
-      // Очищаем клеткую
-      cell.textContent = '';
-    } else {
+    if (value !== 0) {
       cell.textContent = value;
+      cell.classList.add(`field-cell--${value}`);
     }
   }
-
-  lose.classList.add('hidden');
-  win.classList.add('hidden');
+  mesStart.classList.toggle('hidden', newStatus !== 'ready');
+  win.classList.toggle('hidden', newStatus !== 'win');
+  lose.classList.toggle('hidden', newStatus !== 'lose');
   scoreEL.textContent = newScore;
   if (newStatus === 'win') {
-    win.classList.remove('hidden');
     startBtn.textContent = 'New game';
-    startBtn.disabled = false;
     startBtn.classList.remove('start');
     startBtn.classList.add('restart');
   } else if (newStatus === 'lose') {
-    lose.classList.remove('hidden');
     startBtn.textContent = 'Restart';
-    startBtn.disabled = false;
     startBtn.classList.remove('start');
     startBtn.classList.add('restart');
   } else if (newStatus === 'ready') {
     startBtn.textContent = 'Start';
-    startBtn.disabled = false;
   } else if (newStatus === 'playing') {
     startBtn.textContent = 'Restart';
-    startBtn.disabled = false;
     startBtn.classList.remove('start');
     startBtn.classList.add('restart');
-    
   }
 }
 // Работаем с кликами
