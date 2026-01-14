@@ -24,152 +24,104 @@ class Game {
     // eslint-disable-next-line no-console
     this.numbers = [
       [0, 0, 0, 0],
-      [0, 1024, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 1024, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
     ];
-    this.cells = [];
     this.status = 'idle';
-    // console.log(initialState);
+    this.score = 0;
+    this.cells = [];
+    this.rows = [...document.querySelectorAll('.field-row')];
+
+    for (const cell of this.rows) {
+      this.cells.push([...cell.children]);
+    }
+  }
+
+  moveForwardNumbers(dir) {
+    if (dir === 'down' || dir === 'right') {
+      for (let i = 0; i < 4; i++) {
+        for (let j = 2; j >= 0; ) {
+          const direction = this.setDirection(dir, i, j);
+
+          // merge
+          if (this.merge(direction)) {
+            j--;
+            continue;
+          }
+
+          // swap
+          if (this.swap(direction)) {
+            if (j < 2) {
+              j++;
+            }
+          } else {
+            j--;
+          }
+        }
+      }
+
+      this.checkStatus();
+      this.createCell();
+      this.setViewNumbers();
+    }
+  }
+
+  moveBackNumbers(dir) {
+    if (dir === 'up' || dir === 'left') {
+      for (let i = 0; i < 4; i++) {
+        for (let j = 1; j <= 3; ) {
+          const direction = this.setDirection(dir, i, j);
+
+          // merge
+          if (this.merge(direction)) {
+            j++;
+            continue;
+          }
+
+          // swap
+          if (this.swap(direction)) {
+            if (j > 1) {
+              j--;
+            }
+          } else {
+            j++;
+          }
+        }
+      }
+
+      this.checkStatus();
+      this.createCell();
+      this.setViewNumbers();
+    }
   }
 
   moveLeft() {
-    for (let i = 0; i < 4; i++) {
-      for (let j = 1; j <= 3; ) {
-        // merge
-        if (this.merge('left', i, j)) {
-          j++;
-          continue;
-        }
-
-        // swap
-        if (this.swap('left', i, j)) {
-          if (j > 1) {
-            j--;
-          }
-        } else {
-          j++;
-        }
-      }
-    }
-
-    this.createCell();
-    this.setViewNumbers();
+    this.moveBackNumbers('left');
   }
 
   moveRight() {
-    for (let i = 0; i < 4; i++) {
-      for (let j = 2; j >= 0; ) {
-        // merge
-        if (this.merge('right', i, j)) {
-          j--;
-          continue;
-        }
-
-        // swap
-        if (this.swap('right', i, j)) {
-          if (j < 2) {
-            j++;
-          }
-        } else {
-          j--;
-        }
-      }
-    }
-
-    this.createCell();
-    this.setViewNumbers();
+    this.moveForwardNumbers('right');
   }
 
   moveUp() {
-    for (let i = 0; i < 4; i++) {
-      for (let j = 1; j <= 3; ) {
-        // merge
-        if (this.merge('up', i, j)) {
-          j++;
-          continue;
-        }
-
-        // swap
-        if (this.swap('up', i, j)) {
-          if (j > 1) {
-            j--;
-          }
-        } else {
-          j++;
-        }
-      }
-    }
-
-    this.createCell();
-    this.setViewNumbers();
+    this.moveBackNumbers('up');
   }
 
   moveDown() {
-    for (let i = 0; i < 4; i++) {
-      for (let j = 2; j >= 0; ) {
-        // merge
-        if (this.merge('down', i, j)) {
-          j--;
-          continue;
-        }
-
-        // swap
-        if (this.swap('down', i, j)) {
-          if (j < 2) {
-            j++;
-          }
-        } else {
-          j--;
-        }
-      }
-    }
-
-    this.createCell();
-    this.setViewNumbers();
+    this.moveForwardNumbers('down');
   }
 
-  merge(direction, i, j) {
+  merge(direction) {
     // numbers[row][col]
-    let nextRow;
-    let nextCol;
-    let curRow;
-    let curCol;
-
-    if (direction === 'down') {
-      nextRow = j + 1;
-      nextCol = i;
-      curRow = j;
-      curCol = i;
-    }
-
-    if (direction === 'up') {
-      nextRow = j - 1;
-      nextCol = i;
-      curRow = j;
-      curCol = i;
-    }
-
-    if (direction === 'right') {
-      nextRow = i;
-      nextCol = j + 1;
-      curRow = i;
-      curCol = j;
-    }
-
-    if (direction === 'left') {
-      nextRow = i;
-      nextCol = j - 1;
-      curRow = i;
-      curCol = j;
-    }
-
     if (
-      this.numbers[curRow][curCol] > 0 &&
-      this.numbers[nextRow][nextCol] === this.numbers[curRow][curCol]
+      this.numbers[direction.curRow][direction.curCol] > 0 &&
+      this.numbers[direction.nextRow][direction.nextCol] ===
+        this.numbers[direction.curRow][direction.curCol]
     ) {
-      this.numbers[nextRow][nextCol] *= 2;
-      this.numbers[curRow][curCol] = 0;
+      this.numbers[direction.nextRow][direction.nextCol] *= 2;
+      this.numbers[direction.curRow][direction.curCol] = 0;
+      this.score += this.numbers[direction.nextRow][direction.nextCol];
 
       return true;
     }
@@ -177,54 +129,57 @@ class Game {
     return false;
   }
 
-  swap(direction, i, j) {
-    // numbers[row][col]
-    let nextRow;
-    let nextCol;
-    let curRow;
-    let curCol;
-
-    if (direction === 'down') {
-      nextRow = j + 1;
-      nextCol = i;
-      curRow = j;
-      curCol = i;
-    }
-
-    if (direction === 'up') {
-      nextRow = j - 1;
-      nextCol = i;
-      curRow = j;
-      curCol = i;
-    }
-
-    if (direction === 'right') {
-      nextRow = i;
-      nextCol = j + 1;
-      curRow = i;
-      curCol = j;
-    }
-
-    if (direction === 'left') {
-      nextRow = i;
-      nextCol = j - 1;
-      curRow = i;
-      curCol = j;
-    }
-
+  swap(direction) {
     if (
-      this.numbers[nextRow][nextCol] === 0 &&
-      this.numbers[curRow][curCol] > 0
+      this.numbers[direction.nextRow][direction.nextCol] === 0 &&
+      this.numbers[direction.curRow][direction.curCol] > 0
     ) {
-      const item = this.numbers[nextRow][nextCol];
+      const item = this.numbers[direction.nextRow][direction.nextCol];
 
-      this.numbers[nextRow][nextCol] = this.numbers[curRow][curCol];
-      this.numbers[curRow][curCol] = item;
+      this.numbers[direction.nextRow][direction.nextCol] =
+        this.numbers[direction.curRow][direction.curCol];
+      this.numbers[direction.curRow][direction.curCol] = item;
 
       return true;
     }
 
     return false;
+  }
+
+  setDirection(dir, i, j) {
+    // numbers[row][col]
+    const direction = {
+      curRow: i,
+      curCol: j,
+    };
+
+    switch (dir) {
+      case 'down':
+        direction.nextRow = j + 1;
+        direction.nextCol = i;
+        direction.curRow = j;
+        direction.curCol = i;
+        break;
+
+      case 'up':
+        direction.nextRow = j - 1;
+        direction.nextCol = i;
+        direction.curRow = j;
+        direction.curCol = i;
+        break;
+
+      case 'right':
+        direction.nextRow = i;
+        direction.nextCol = j + 1;
+        break;
+
+      case 'left':
+        direction.nextRow = i;
+        direction.nextCol = j - 1;
+        break;
+    }
+
+    return direction;
   }
 
   setViewNumbers() {
@@ -247,35 +202,66 @@ class Game {
     // console.log(this.numbers);
   }
 
-  createCell() {
-    let i;
-    let j;
+  checkStatus() {
+    let isLose = true;
 
-    while (true) {
-      i = Math.floor(Math.random() * 4);
-      j = Math.floor(Math.random() * 4);
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        const currentNumber = this.numbers[i][j];
 
-      if (this.numbers[i][j]) {
-        continue;
+        if (currentNumber === 2048) {
+          this.status = 'win';
+          this.showMessage(this.status);
+
+          return;
+        }
+
+        if (currentNumber === 0) {
+          isLose = false;
+        }
       }
-
-      this.numbers[i][j] = 2;
-      // console.log(this.numbers[i][j]);
-      break;
     }
 
-    // console.log(i, j);
+    if (isLose) {
+      this.status = 'lose';
+      this.showMessage(this.status);
+    }
+  }
+
+  createCell() {
+    if (this.status === 'playing') {
+      let i;
+      let j;
+      let digit;
+
+      while (true) {
+        i = Math.floor(Math.random() * 4);
+        j = Math.floor(Math.random() * 4);
+
+        if (this.numbers[i][j]) {
+          continue;
+        }
+
+        digit = Math.random() < 0.1 ? 4 : 2;
+        this.numbers[i][j] = digit;
+        break;
+      }
+    }
   }
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.score;
+  }
 
   /**
    * Returns the current game status.
@@ -287,7 +273,26 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
+
+  hideMessages() {
+    const messages = document.querySelectorAll(`.message`);
+
+    for (const msg of messages) {
+      if (!msg.classList.contains(`hidden`)) {
+        msg.classList.add('hidden');
+      }
+    }
+  }
+
+  showMessage(type) {
+    const message = document.querySelector(`.message-${type}`);
+
+    this.hideMessages();
+    message.classList.remove('hidden');
+  }
 
   /**
    * Starts the game.
@@ -297,12 +302,7 @@ class Game {
     button.innerText = 'Restart';
     this.status = 'playing';
 
-    const rows = [...document.querySelectorAll('.field-row')];
-
-    for (const cell of rows) {
-      this.cells.push([...cell.children]);
-    }
-
+    this.hideMessages();
     this.createCell();
     this.setViewNumbers();
   }
@@ -310,9 +310,21 @@ class Game {
   /**
    * Resets the game.
    */
-  restart() {}
+  restart(button) {
+    button.classList.replace('restart', 'start');
+    button.innerText = 'Start';
 
-  // Add your own methods here
+    this.numbers = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.status = 'idle';
+    this.score = 0;
+    this.showMessage('start');
+    this.setViewNumbers();
+  }
 }
 
 module.exports = Game;

@@ -4,27 +4,37 @@
 const Game = require('../modules/Game.class');
 const game = new Game();
 const button = document.querySelector('.button');
+const score = document.querySelector('.game-score');
 
 button.addEventListener('click', (ev) => {
-  game.start(button);
+  if (button.classList.contains('start')) {
+    game.start(button);
+  } else {
+    game.restart(button);
+    score.innerHTML = game.getScore();
+  }
 });
 
 document.addEventListener('keydown', (evnt) => {
-  if (evnt.key === 'ArrowDown') {
-    game.moveDown();
+  if (game.getStatus() === 'playing') {
+    switch (evnt.key) {
+      case 'ArrowDown':
+        game.moveDown();
+        break;
+
+      case 'ArrowUp':
+        game.moveUp();
+        break;
+
+      case 'ArrowLeft':
+        game.moveLeft();
+        break;
+
+      case 'ArrowRight':
+        game.moveRight();
+        break;
+    }
   }
 
-  if (evnt.key === 'ArrowUp') {
-    game.moveUp();
-  }
-
-  if (evnt.key === 'ArrowLeft') {
-    game.moveLeft();
-  }
-
-  if (evnt.key === 'ArrowRight') {
-    game.moveRight();
-  }
+  score.innerHTML = game.getScore();
 });
-
-// Write your code here
