@@ -40,6 +40,8 @@ class Game {
 
   moveForwardNumbers(dir) {
     if (dir === 'down' || dir === 'right') {
+      let isMove = false;
+
       for (let i = 0; i < 4; i++) {
         for (let j = 2; j >= 0; ) {
           const direction = this.setDirection(dir, i, j);
@@ -47,11 +49,14 @@ class Game {
           // merge
           if (this.merge(direction)) {
             j--;
+            isMove = true;
             continue;
           }
 
           // swap
           if (this.swap(direction)) {
+            isMove = true;
+
             if (j < 2) {
               j++;
             }
@@ -62,13 +67,18 @@ class Game {
       }
 
       this.checkStatus();
-      this.createCell();
+
+      if (isMove) {
+        this.createCell();
+      }
       this.setViewNumbers();
     }
   }
 
   moveBackNumbers(dir) {
     if (dir === 'up' || dir === 'left') {
+      let isMove = false;
+
       for (let i = 0; i < 4; i++) {
         for (let j = 1; j <= 3; ) {
           const direction = this.setDirection(dir, i, j);
@@ -76,11 +86,14 @@ class Game {
           // merge
           if (this.merge(direction)) {
             j++;
+            isMove = true;
             continue;
           }
 
           // swap
           if (this.swap(direction)) {
+            isMove = true;
+
             if (j > 1) {
               j--;
             }
@@ -91,7 +104,10 @@ class Game {
       }
 
       this.checkStatus();
-      this.createCell();
+
+      if (isMove) {
+        this.createCell();
+      }
       this.setViewNumbers();
     }
   }
@@ -303,6 +319,7 @@ class Game {
     this.status = 'playing';
 
     this.hideMessages();
+    this.createCell();
     this.createCell();
     this.setViewNumbers();
   }
