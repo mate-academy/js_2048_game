@@ -3,128 +3,113 @@
 // Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
 const game = new Game();
+const startBtn = document.querySelector('.start');
+const scoreBlock = document.querySelector('.game-score');
+const allCells = document.querySelectorAll('.field-cell');
+let clicked = false;
 
-const startButton = document.querySelector('.start.button');
-const gameScore = document.querySelector('.game-score');
-const startMessage = document.querySelector('.message-start');
-const loseMessage = document.querySelector('.message-lose');
-const winMessage = document.querySelector('.message-win');
-let startX = 0;
-let startY = 0;
+function render() {
+  const gameField = game.getState();
+  const gamescore = game.getScore();
 
-startButton.addEventListener('click', () => {
-  if (game.getStatus() === 'playing') {
-    game.restart();
+  scoreBlock.textContent = String(gamescore);
 
-    loseMessage.classList.add('hidden');
-    winMessage.classList.add('hidden');
-  } else {
-    game.start();
+  gameField.forEach((row, rowIndex) => {
+    row.forEach((cellValue, colIndex) => {
+      const cellIndex = rowIndex * 4 + colIndex;
 
-    startButton.textContent = 'Restart';
-    startButton.classList.replace('start', 'restart');
-    startMessage.classList.add('hidden');
-  }
+      const cellElement = allCells[cellIndex];
 
-  updateGameField();
-});
+      cellElement.textContent = '';
+      cellElement.className = 'field-cell';
 
-const gameField = document.querySelector('.game-field');
-
-function updateGameField() {
-  const state = game.getState();
-
-  for (let i = 0; i < state.length; i++) {
-    for (let j = 0; j < state[i].length; j++) {
-      const cell = gameField.rows[i].cells[j];
-      const value = state[i][j];
-
-      cell.textContent = value === 0 ? '' : value;
-
-      cell.className = 'field-cell';
-
-      if (value !== 0) {
-        cell.classList.add(`field-cell--${value}`);
+      if (cellValue > 0) {
+        cellElement.textContent = cellValue;
+        cellElement.classList.add(`field-cell--${cellValue}`);
       }
-    }
-  }
-
-  gameScore.textContent = game.getScore();
-
-  if (game.getStatus() === 'win') {
-    winMessage.classList.remove('hidden');
-  }
-
-  if (game.getStatus() === 'lose') {
-    loseMessage.classList.remove('hidden');
-  }
+    });
+  });
 }
 
-document.addEventListener('keydown', (e) => {
+startBtn.addEventListener('click', () => {
+  removeMessage();
+
+  if (game.getStatus() === 'idle') {
+    game.start();
+
+    if (!clicked) {
+      startBtn.classList.remove('start');
+      startBtn.classList.add('restart');
+      startBtn.textContent = 'Restart';
+      clicked = true;
+    }
+  } else {
+    game.restart();
+    game.start();
+    render();
+  }
+  render();
+});
+
+document.addEventListener('keydown', handler);
+
+function handler(e) {
   if (game.getStatus() !== 'playing') {
     return;
   }
 
-  let moved = false;
+  let madeMove = false;
 
   switch (e.key) {
     case 'ArrowLeft':
-      moved = game.moveLeft();
+      game.moveLeft();
+      madeMove = true;
       break;
     case 'ArrowRight':
-      moved = game.moveRight();
+      game.moveRight();
+      madeMove = true;
       break;
     case 'ArrowUp':
-      moved = game.moveUp();
+      game.moveUp();
+      madeMove = true;
       break;
     case 'ArrowDown':
-      moved = game.moveDown();
+      game.moveDown();
+      madeMove = true;
       break;
+    default:
+      return;
   }
 
-  if (moved) {
-    updateGameField();
+  if (madeMove) {
+    render();
+    updateScore();
+    checkStatus();
   }
-});
+}
 
-document.addEventListener('touchstart', (e) => {
-  const touch = e.touches[0];
+function updateScore() {
+  const score = game.getScore();
 
-  startX = touch.clientX;
-  startY = touch.clientY;
-});
+  scoreBlock.textContent = score;
+}
 
-document.addEventListener('touchend', (e) => {
-  if (game.getStatus() !== 'playing') {
+function checkStatus() {
+  const gameStatus = game.getStatus();
+
+  if (gameStatus === 'playing' || gameStatus === 'idle') {
     return;
   }
 
-  const touch = e.changedTouches[0];
-  const endX = touch.clientX;
-  const endY = touch.clientY;
+  removeMessage();
 
-  const diffX = endX - startX;
-  const diffY = endY - startY;
+  const messageEl = document.querySelector(`.message-${gameStatus}`);
 
-  const absX = Math.abs(diffX);
-  const absY = Math.abs(diffY);
+  messageEl.classList.remove('hidden');
+}
 
-  // мінімальна довжина свайпу
-  if (Math.max(absX, absY) < 30) {
-    return;
-  }
+function removeMessage() {
+  const allMesseges = document.querySelectorAll('.message');
 
-  let moved = false;
-
-  if (absX > absY) {
-    // горизонтальний свайп
-    moved = diffX > 0 ? game.moveRight() : game.moveLeft();
-  } else {
-    // вертикальний свайп
-    moved = diffY > 0 ? game.moveDown() : game.moveUp();
-  }
-
-  if (moved) {
-    updateGameField();
-  }
-});
+  allMesseges.forEach((message) => message.classList.add('hidden'));
+}
