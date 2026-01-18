@@ -20,6 +20,7 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: transform 120ms ease;
 
   &--2 {
     background: #eee4da;
@@ -140,17 +141,21 @@ h1 {
 .start {
   background: #1dae28;
   font-size: 20px;
+  transition: transform 300ms;
 
   &:hover {
     background: #179921;
+    transform: scale(1.05);
   }
 }
 
 .restart {
   background: #f1b2b2;
+  transition: transform 300ms;
 
   &:hover {
     background: #f87474;
+    transform: scale(1.05);
   }
 }
 
@@ -184,4 +189,119 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.field-cell--pop {
+  transform: scale(1.1);
+}
+
+.theme-switcher {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  background-color: #f3e096;
+  font-size: 30px;
+  margin-block: 5px;
+
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #f9f6f2;
+  font-family: sans-serif;
+  font-weight: 700;
+  width: 75px;
+  height: 75px;
+
+  transition: 0.25s ease background, transform 300ms;
+
+  &:hover {
+    background-color: #e7b800;
+    transform: scale(1.1);
+  }
+
+  &__lightmode {
+    background-color: #f3e096;
+  }
+
+  &__nightmode {
+    background-color: #21366fff;
+
+    &:hover {
+      background-color: rgb(74, 94, 148);
+    }
+  }
+}
+
+.body__nightmode {
+  background-color: #0c1735;
+}
+
+.game-field__nightmode {
+  background-color: #636977ff;
+}
+
+.field-cell__nightmode {
+  background-color: rgb(168, 173, 186);
+}
+
+.field-cell--2__nightmode {
+  background: #cac6c3;
+}
+
+.field-cell--4__nightmode {
+  background: #c1a167;
+}
+
+.field-cell--8__nightmode {
+  background: #d37827;
+}
+
+.field-cell--16__nightmode {
+  background: #e46f30;
+}
+
+.field-cell--32__nightmode {
+  background: #d55130;
+}
+
+.field-cell--64__nightmode {
+  background: #3056be;
+}
+
+.field-cell--128__nightmode {
+  background: #e3bd4a;
+}
+
+.field-cell--258__nightmode {
+  background: #ecc243;
+}
+
+.field-cell--516__nightmode {
+  background: #ecba23;
+}
+
+.field-cell--1024__nightmode {
+  background: #e2b617;
+}
+
+.field-cell--2048__nightmode {
+  background: #eaba1a;
+}
+
+.info__nightmode {
+  background-color: rgb(168, 173, 186);
+}
+
+.message__nightmode {
+  background-color: rgb(168, 173, 186);
+}
+
+@media (max-width: 400px) {
+  .theme-switcher {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    top: 5px;
+    right: 5px;
+  }
 }
