@@ -6,10 +6,10 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <title>2048</title>
+    <title>2048 Game</title>
     <link
       rel="stylesheet"
-      href="./styles/main.scss"
+      href="styles/main.scss"
     />
   </head>
   <body>
@@ -27,27 +27,25 @@
 
       <table class="game-field">
         <tbody>
+          <!-- 4x4 grid -->
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
-
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
-
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
-
           <tr class="field-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
@@ -65,6 +63,9 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="./scripts/main.js"
+    ></script>
   </body>
 </html>

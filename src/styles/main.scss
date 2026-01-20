@@ -18,8 +18,12 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
+
+  transition:
+    background-color 0.15s ease-in-out,
+    color 0.15s ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -100,8 +104,8 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
   margin: 0;
+  box-sizing: border-box;
 }
 
 .info {
@@ -133,24 +137,23 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-
   transition: 0.25s ease background;
-}
 
-.start {
-  background: #1dae28;
-  font-size: 20px;
+  &.start {
+    background: #1dae28;
+    font-size: 20px;
 
-  &:hover {
-    background: #179921;
+    &:hover {
+      background: #179921;
+    }
   }
-}
 
-.restart {
-  background: #f1b2b2;
+  &.restart {
+    background: #f1b2b2;
 
-  &:hover {
-    background: #f87474;
+    &:hover {
+      background: #f87474;
+    }
   }
 }
 
