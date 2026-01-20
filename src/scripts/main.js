@@ -1,7 +1,6 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+import Game from '../modules/Game.class.js';
 
-// Write your code here
+/* eslint-disable no-unused-vars */
+const myGame = new Game();
