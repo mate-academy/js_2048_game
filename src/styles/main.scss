@@ -21,6 +21,10 @@ body {
   vertical-align: center;
   user-select: none;
 
+  transition: background-color 0.6s;
+  transform-origin: center;
+  will-change: transform, opacity; 
+
   &--2 {
     background: #eee4da;
   }

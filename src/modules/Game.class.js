@@ -4,28 +4,45 @@ class Game {
   constructor(initialState) {
     this.cells = Array.from(document.querySelectorAll('td'));
     this.container = document.querySelector('.container');
+    this.messageStart = document.querySelector('.message-start');
 
     this.scoreElem = this.container.querySelector('.game-score');
     this.scoreValue = 0;
 
-    this.gameField = initialState || [
+    this.initialState = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
-    this.createField();
-    this.getState();
-    this.updateScore();
-    this.getStatus();
-    this.getStart();
+
+    this.gameField = this.initialState.map((row) => [...row]);
+
+    this.button = this.container.querySelector('button');
+
+    this.button.addEventListener('click', () => {
+      if (this.button.classList.contains('restart')) {
+        this.getReset();
+        this.getStart();
+      } else {
+        this.checkTheButton();
+        this.updateScore();
+        this.getStatus();
+        this.createField();
+      }
+    });
 
     window.addEventListener('keydown', (e) => {
-      this.controlArrow(e);
+      const success = this.controlArrow(e);
+
+      if (success) {
+        this.checkTheButton();
+      }
     });
+
+    this.getStart();
   }
 
-  // Create field
   createField() {
     const flatField = this.gameField.flat();
 
@@ -35,30 +52,64 @@ class Game {
       // Очищуємо всі старі класи кольорів
       cell.className = 'field-cell';
 
-      // Відображаємо число (або пусту клітинку, якщо 0)
       cell.textContent = value === 0 ? '' : value;
 
       if (value > 0) {
         cell.classList.add(`field-cell--${value}`);
       }
     });
-
-    this.generateNumber();
-    this.getStatus();
   }
-  // Generate Number
-  generateNumber() {
-    const emptyCells = this.cells.filter((cell) => {
-      return !Number(cell.textContent.trim());
+
+  checkTheButton() {
+    if (this.button.classList.contains('start')) {
+      this.button.textContent = 'Restart';
+      this.button.classList.remove('start');
+      this.button.classList.add('restart');
+      this.messageStart.classList.add('hidden');
+    }
+  }
+
+  getReset() {
+    this.scoreValue = 0;
+    this.updateScore();
+    this.gameField = this.initialState.map((row) => [...row]);
+
+    this.cells.forEach((cell) => {
+      cell.textContent = '';
+      cell.className = 'field-cell';
     });
 
-    if (emptyCells.length === 0) {
-      return;
+    this.createField();
+  }
+
+  getStart() {
+    this.generateNumber();
+    this.generateNumber();
+    this.createField();
+  }
+
+  generateNumber() {
+    const emptyCoords = [];
+
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.gameField[r][c] === 0) {
+          emptyCoords.push({ r, c });
+        }
+      }
     }
 
-    const randomNumber = Math.floor(Math.random() * emptyCells.length);
+    if (emptyCoords.length === 0) {
+      return null;
+    }
 
-    emptyCells[randomNumber].textContent = Math.random() < 0.9 ? 2 : 4;
+    const randomCoord =
+      emptyCoords[Math.floor(Math.random() * emptyCoords.length)];
+
+    this.gameField[randomCoord.r][randomCoord.c] = Math.random() < 0.9 ? 2 : 4;
+
+    // ПОВЕРТАЄМО об'єкт {r, c}, щоб controlArrow знав, де з'явилася плитка
+    return randomCoord;
   }
 
   // Get State (refresh data)
@@ -73,12 +124,11 @@ class Game {
       data.slice(8, 12),
       data.slice(12, 16),
     ];
-    this.getStatus();
+    // this.getStatus();
   }
-  // Control Arrow
+
   controlArrow(e) {
-    this.getState();
-    this.updateScore();
+    const previousState = JSON.stringify(this.gameField);
 
     if (e.key === 'ArrowRight') {
       this.moveRight();
@@ -89,8 +139,22 @@ class Game {
     } else if (e.key === 'ArrowDown') {
       this.moveDown();
     }
+
+    // ПЕРЕВІРКА: Якщо масив змінився, значить хід відбувся
+    if (previousState !== JSON.stringify(this.gameField)) {
+      const newTileCoord = this.generateNumber();
+
+      this.checkTheButton();
+      this.updateScore();
+      this.createField();
+      this.getStatus();
+
+      if (newTileCoord) {
+        this.animateNewTile(newTileCoord.r, newTileCoord.c);
+      }
+    }
   }
-  // Move Right
+
   moveRight() {
     this.gameField.forEach((row, index) => {
       const filterZero = row.filter((num) => num !== 0);
@@ -112,11 +176,8 @@ class Game {
 
       this.gameField[index] = concatRow;
     });
-    this.updateScore();
-    this.createField();
-    this.getState();
   }
-  // Move Left
+
   moveLeft() {
     this.gameField.forEach((row, index) => {
       const filterZero = row.filter((num) => num !== 0);
@@ -138,11 +199,8 @@ class Game {
 
       this.gameField[index] = concatRow;
     });
-    this.updateScore();
-    this.createField();
-    this.getState();
   }
-  // Move Up
+
   moveUp() {
     const newVerticalField = [];
 
@@ -179,11 +237,8 @@ class Game {
         this.gameField[rows][index] = value;
       });
     });
-    this.updateScore();
-    this.createField();
-    this.getState();
   }
-  // Move Down
+
   moveDown() {
     const newVerticalField = [];
 
@@ -220,87 +275,99 @@ class Game {
         this.gameField[rows][index] = value;
       });
     });
-
-    this.createField();
-    this.getState();
-    this.updateScore();
   }
-  // Update score
+
   updateScore() {
     if (this.scoreElem) {
       this.scoreElem.textContent = this.scoreValue;
-      // eslint-disable-next-line no-console
-      console.log(this.scoreValue);
     }
   }
-  // Get status
+
   getStatus() {
     const messageStart = document.querySelector('.message-start');
     const messageWin = document.querySelector('.message-win');
     const messageLose = document.querySelector('.message-lose');
 
-    const isOccupied = this.gameField.flat().every((value) => {
-      return value !== 0;
-    });
+    if (this.gameField.flat().includes(2048)) {
+      messageStart.classList.add('hidden');
+      messageWin.classList.remove('hidden');
 
-    if (this.scoreValue >= 2048) {
+      return;
+    }
+
+    const hasEmptyCells = this.gameField.flat().includes(0);
+
+    if (hasEmptyCells) {
+      return;
+    }
+
+    let canMerge = false;
+
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        const current = this.gameField[r][c];
+
+        if (c < 3 && current === this.gameField[r][c + 1]) {
+          canMerge = true;
+          break;
+        }
+
+        if (r < 3 && current === this.gameField[r + 1][c]) {
+          canMerge = true;
+          break;
+        }
+      }
+
+      if (canMerge) {
+        break;
+      }
+    }
+
+    if (!canMerge) {
       messageStart.classList.add('hidden');
-      messageWin.className = 'message message-win';
-    } else if (isOccupied) {
-      messageStart.classList.add('hidden');
-      messageLose.className = 'message message-lose';
+      messageLose.classList.remove('hidden');
     }
   }
-  // Get Start
-  getStart() {
-    const buttonStart = this.container.querySelector('.start');
-    const buttonRestart = this.container.querySelector('.restart');
-    const messageStart = document.querySelector('.message-start');
 
-    buttonStart.addEventListener('click', (e) => {
-      if (e.target === buttonStart) {
-        buttonStart.textContent = 'Restart';
-        buttonStart.classList.remove('start');
-        buttonStart.classList.add('restart');
-        messageStart.classList.add('hidden');
-        this.createField();
-      } else if (e.target === buttonRestart) {
-        buttonStart.classList.remove('restart');
-        buttonStart.classList.add('start');
-        // eslint-disable-next-line no-console
-        console.log('after else if', buttonStart);
+  animate({ duration, draw, timing }) {
+    const start = performance.now();
+
+    const step = (time) => {
+      let timeFraction = (time - start) / duration;
+
+      if (timeFraction > 1) {
+        timeFraction = 1;
       }
+
+      const progress = timing(timeFraction);
+
+      draw(progress);
+
+      if (timeFraction < 1) {
+        requestAnimationFrame(step);
+      }
+    };
+
+    requestAnimationFrame(step);
+  }
+
+  animateNewTile(row, col) {
+    const index = row * 4 + col;
+    const cell = this.cells[index];
+
+    if (!cell) {
+      return;
+    }
+
+    this.animate({
+      duration: 200,
+      timing: (tf) => tf,
+      draw: (progress) => {
+        cell.style.transform = `scale(${progress})`;
+        cell.style.opacity = progress;
+      },
     });
   }
 }
-
-//   /**
-//    * @returns {number[][]}
-//    */
-//   getState() {}
-
-//   /**
-//    * Returns the current game status.
-//    *
-//    * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-//    } *
-//    * `idle` - the game has not started yet (the initial state);
-//    * `playing` - the game is in progress;
-//    * `win` - the game is won;
-//    * `lose` - the game is lost
-//    */
-
-//   /**
-//    * Starts the game.
-//    */
-//   start() {}
-
-//   /**
-//    * Resets the game.
-//    */
-//   restart() {}
-
-//   // Add your own methods here
-// }
 
 module.exports = Game;
