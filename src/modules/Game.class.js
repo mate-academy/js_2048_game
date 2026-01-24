@@ -25,6 +25,7 @@ class Game {
         this.getReset();
         this.getStart();
       } else {
+        this.getStart();
         this.checkTheButton();
         this.updateScore();
         this.getStatus();
@@ -39,8 +40,6 @@ class Game {
         this.checkTheButton();
       }
     });
-
-    this.getStart();
   }
 
   createField() {
