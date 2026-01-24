@@ -1,28 +1,29 @@
+/* eslint-disable curly */
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
+const CellService = require('./Cell.class');
+const BoardService = require('./Board.class');
+
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  static gameLoseStatus = 'lose';
+  static gameWinStatus = 'win';
+  static gamePlayingStatus = 'playing';
+  static gameIdleStatus = 'idle';
+
+  constructor(
+    initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    initialGameStatus = 'idle',
+    initialScore = 0,
+  ) {
+    this.gameStatus = initialGameStatus;
+    this.gameScore = initialScore;
+    this.boardService = new BoardService(initialState);
+    this.cellService = new CellService();
   }
 
   moveLeft() {}
@@ -33,12 +34,16 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.gameScore;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.boardService.board;
+  }
 
   /**
    * Returns the current game status.
@@ -50,17 +55,31 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.gameStatus;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.boardService.resetBoard();
+    this.gameScore = 0;
+    this.gameStatus = Game.gamePlayingStatus;
+
+    // logic for adding score
+
+    this.cellService.addRandomCell(this.boardService.board);
+
+    return this.boardService.board;
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.start();
+  }
 
   // Add your own methods here
 }
