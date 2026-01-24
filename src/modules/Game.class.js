@@ -5,6 +5,8 @@ class Game {
     this.cells = Array.from(document.querySelectorAll('td'));
     this.container = document.querySelector('.container');
     this.messageStart = document.querySelector('.message-start');
+    this.messageWin = document.querySelector('.message-win');
+    this.messageLose = document.querySelector('.message-lose');
 
     this.scoreElem = this.container.querySelector('.game-score');
     this.scoreValue = 0;
@@ -72,6 +74,14 @@ class Game {
     this.scoreValue = 0;
     this.updateScore();
     this.gameField = this.initialState.map((row) => [...row]);
+
+    if (this.messageLose) {
+      this.messageLose.classList.add('hidden');
+    }
+
+    if (this.messageWin) {
+      this.messageWin.classList.add('hidden');
+    }
 
     this.cells.forEach((cell) => {
       cell.textContent = '';
