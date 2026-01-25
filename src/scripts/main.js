@@ -81,7 +81,7 @@ function renderScore(score) {
 function updateGameStatus() {
   const gameStatus = game.getStatus();
 
-  messageStart.classList.toggle('hidden', gameStatus === 'playing');
+  messageStart.classList.toggle('hidden', gameStatus !== 'idle');
   messageLose.classList.toggle('hidden', gameStatus !== 'lose');
 
   if (messageWin) {
