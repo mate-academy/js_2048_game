@@ -32,10 +32,41 @@ class Game {
     this.gameFunctions.onStart();
   }
 
-  moveLeft() {}
-  moveRight() {}
   moveUp() {}
   moveDown() {}
+  moveLeft() {
+    const board = this.boardService.get();
+
+    // TODO: make a reusable function
+    const filteredRows = board.map((v) => v.filter((dv) => dv !== 0));
+
+    for (let i = 0; i < filteredRows.length; i++) {
+      this.slide(filteredRows[i]);
+    }
+
+    this.boardService.set(filteredRows);
+
+    return filteredRows;
+  }
+
+  slide(filteredRow) {
+    for (let i = 0; i < filteredRow.length - 1; i++) {
+      if (filteredRow[i] === filteredRow[i + 1]) {
+        filteredRow[i] *= 2;
+        filteredRow[i + 1] = 0;
+      }
+    }
+    filteredRow.filter((v) => v !== 0);
+    // TODO: make constant for row length or find the way to extract it
+
+    while (filteredRow.length < 4) {
+      filteredRow.push(0);
+    }
+
+    return filteredRow;
+  }
+
+  moveRight() {}
 
   /**
    * @returns {number}
@@ -71,8 +102,6 @@ class Game {
 
   // won the game
   win() {}
-
-  // Add your own methods here
 
   getCellsCoordinates() {
     return this.boardService.get();

@@ -5,18 +5,18 @@ import { tableBody, startButton, startMessage } from './dom.elements';
 const Game = require('../modules/Game.class');
 const game = new Game();
 
-function clearCells(boardCoords, className = 'field-cell', text = '') {
+// function clearCells(boardCoords, ) {
+//   for (let i = 0; i < boardCoords.length; i++) {
+//     for (let j = 0; j < boardCoords[i].length; j++) {}
+//   }
+// }
+
+function setCells(boardCoords, className = 'field-cell', text = '') {
   for (let i = 0; i < boardCoords.length; i++) {
     for (let j = 0; j < boardCoords[i].length; j++) {
       tableBody.rows[i].cells[j].classList = className;
       tableBody.rows[i].cells[j].textContent = text;
-    }
-  }
-}
 
-function setCells(boardCoords) {
-  for (let i = 0; i < boardCoords.length; i++) {
-    for (let j = 0; j < boardCoords[i].length; j++) {
       if (boardCoords[i][j] !== 0) {
         tableBody.rows[i].cells[j].textContent = boardCoords[i][j].toString();
 
@@ -36,15 +36,21 @@ startButton.addEventListener('click', (e) => {
 
   const boardCoords = game.getCellsCoordinates();
 
-  clearCells(boardCoords);
   setCells(boardCoords);
 });
 
-// document.addEventListener('keyup', (e) => {
-//   if (e.code === 'ArrowUp') {
-//     game.moveUp();
-//   }
-//   if (e.code === 'ArrowDown') {}
-//   if (e.code === 'ArrowRight') {}
-//   if (e.code === 'ArrowLeft') {}
-// });
+document.addEventListener('keyup', (e) => {
+  if (e.key === 'ArrowUp') {
+    const coords = game.moveUp();
+
+    setCells(coords);
+  }
+  // if (e.code === 'ArrowDown') {}
+  // if (e.code === 'ArrowRight') {}
+
+  if (e.code === 'ArrowLeft') {
+    const coords = game.moveLeft();
+
+    setCells(coords);
+  }
+});
