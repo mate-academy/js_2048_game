@@ -40,13 +40,20 @@ startButton.addEventListener('click', (e) => {
 });
 
 document.addEventListener('keyup', (e) => {
-  if (e.key === 'ArrowUp') {
-    const coords = game.moveUp();
+  // if (e.key === 'ArrowUp') {
+  //   const coords = game.moveUp();
+
+  //   setCells(coords);
+  // }
+  // if (e.code === 'ArrowDown') {
+  //   game.moveDown();
+  // }
+
+  if (e.code === 'ArrowRight') {
+    const coords = game.moveRight();
 
     setCells(coords);
   }
-  // if (e.code === 'ArrowDown') {}
-  // if (e.code === 'ArrowRight') {}
 
   if (e.code === 'ArrowLeft') {
     const coords = game.moveLeft();

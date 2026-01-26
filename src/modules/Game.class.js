@@ -33,7 +33,30 @@ class Game {
   }
 
   moveUp() {}
-  moveDown() {}
+  // moveDown() {
+  //   const board = this.boardService.get();
+
+  //   const rowsList = [];
+
+  //   for (let i = 0; i < board.length; i++) {
+  //     rowsList.push([]);
+
+  //     for (let j = 0; j < board[i].length; j++) {
+  //       rowsList[i][j] = board[j][i];
+  //     }
+  //   }
+
+  //   const filteredRows = rowsList.map((v) => v.filter((dv) => dv !== 0));
+
+  //   for (let i = 0; i < filteredRows.length; i++) {
+  //     this.slide(filteredRows[i]);
+  //   }
+
+  //   this.boardService.set(filteredRows);
+
+  //   return filteredRows;
+
+  // }
   moveLeft() {
     const board = this.boardService.get();
 
@@ -57,8 +80,8 @@ class Game {
       }
     }
     filteredRow.filter((v) => v !== 0);
-    // TODO: make constant for row length or find the way to extract it
 
+    // TODO: make constant for row length or find the way to extract it
     while (filteredRow.length < 4) {
       filteredRow.push(0);
     }
@@ -66,7 +89,21 @@ class Game {
     return filteredRow;
   }
 
-  moveRight() {}
+  moveRight() {
+    const board = this.boardService.get();
+
+    // TODO: make a reusable function
+    const filteredRows = board.map((v) => v.filter((dv) => dv !== 0).reverse());
+
+    for (let i = 0; i < filteredRows.length; i++) {
+      this.slide(filteredRows[i]);
+      filteredRows[i] = filteredRows[i].reverse();
+    }
+
+    this.boardService.set(filteredRows);
+
+    return filteredRows;
+  }
 
   /**
    * @returns {number}
