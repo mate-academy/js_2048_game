@@ -12,9 +12,8 @@ class CellService {
       }
     }
 
-    // TODO: add logic when there no place for cell
     if (emptyCells.length === 0) {
-      throw new Error('No place for cell');
+      return;
     }
 
     const cords = emptyCells[Math.floor(Math.random() * emptyCells.length)];

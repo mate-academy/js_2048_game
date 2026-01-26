@@ -1,12 +1,17 @@
+/* eslint-disable prettier/prettier */
 'use strict';
 
 class BoardService {
+  constructor(initialBoardState) {
+    this.initialBoardState = initialBoardState;
+  }
   set(boardState) {
     this.board = boardState;
   }
 
-  reset(initialState) {
-    this.board = initialState.map((v) => v.map((deepValue) => deepValue));
+  reset() {
+    this.board = this.initialBoardState.map((v) =>
+      v.map((deepValue) => deepValue));
   }
 
   get() {
