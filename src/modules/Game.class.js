@@ -1,7 +1,12 @@
 /* eslint-disable curly */
 'use strict';
 
-import { filterBoard, filterBoardReverse, slide, turnBoard } from './constraints';
+import {
+  filterBoard,
+  filterBoardReverse,
+  slide,
+  turnBoard,
+} from './utils/modules.constraints';
 
 const CellService = require('./Cell.class');
 const BoardService = require('./Board.class');
@@ -31,75 +36,83 @@ class Game {
 
   // TODO: separate all function from this file
 
-  moveUp() {
-    const board = this.boardService.get();
-    const rowsList = turnBoard(board);
+  #checkGameStatus(board) {
+    let win = false;
+    let playing = false;
 
-    const filteredRows = filterBoard(rowsList);
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        if (board[i][j] === 2048) {
+          win = true;
+        }
+
+        if (
+          board[i][j] === board[i][j + 1] ||
+          board[i][j] === board[i + 1]?.[j] ||
+          board[i][j] === 0
+        ) {
+          playing = true;
+        }
+      }
+    }
+
+    if (win) return 'win';
+    if (playing) return 'playing';
+
+    return 'loose';
+  }
+
+  #checkIfCanAddCell(board, comparativeBoard) {
+    if (JSON.stringify(board) !== JSON.stringify(comparativeBoard)) {
+      this.cellService.addRandomCell(comparativeBoard);
+    }
+  }
+
+  moveUp() {
+    if (this.gameStatus === 'win') return;
+
+    const board = this.boardService.get();
+    const rotatedRowsList = turnBoard(board);
+    const filteredRows = filterBoard(rotatedRowsList);
 
     for (let i = 0; i < filteredRows.length; i++) {
       filteredRows[i] = slide(filteredRows[i]);
     }
 
-    // TODO: create function for this, DRY
-    const result = [];
+    const normalizedRowsList = turnBoard(filteredRows);
 
-    for (let i = 0; i < filteredRows.length; i++) {
-      result.push([]);
+    this.#checkIfCanAddCell(board, normalizedRowsList);
+    this.boardService.set(normalizedRowsList);
+    this.gameStatus = this.#checkGameStatus(normalizedRowsList);
 
-      for (let j = 0; j < filteredRows[i].length; j++) {
-        result[i][j] = filteredRows[j][i];
-      }
-    }
-
-    // create function
-    if (JSON.stringify(board) !== JSON.stringify(result)) {
-      this.cellService.addRandomCell(result);
-    }
-    this.boardService.set(result);
-
-    return result;
+    return normalizedRowsList;
   }
 
-  // break your head to find the way to fix issue with adding cell
-  // if there no move
-  // maybe logic to copy matrix(not detaching the origin matrix to variable)
-  // and at the end compare it and if it equals, do not add cell
-  // and check if im not implement this logic by the way
-  // IMPLEMENTED: check at the morning how it implemented
-  // all of the code, fix dirty code!!
+  // fix dirty code!!
   // add score service, won and loose events and its ready!
   moveDown() {
+    if (this.gameStatus === 'win') return;
+
     const board = this.boardService.get();
-    const rowsList = turnBoard(board);
-    const filteredRows = filterBoardReverse(rowsList);
+    const rotatedRowsList = turnBoard(board);
+    const filteredRows = filterBoardReverse(rotatedRowsList);
 
     for (let i = 0; i < filteredRows.length; i++) {
       filteredRows[i] = slide(filteredRows[i]).reverse();
     }
 
-    // TODO: create function for this, DRY
-    const result = [];
+    const normalizedRowsList = turnBoard(filteredRows);
 
-    for (let i = 0; i < filteredRows.length; i++) {
-      result.push([]);
+    this.#checkIfCanAddCell(board, normalizedRowsList);
+    this.boardService.set(normalizedRowsList);
+    this.gameStatus = this.#checkGameStatus(normalizedRowsList);
 
-      for (let j = 0; j < filteredRows[i].length; j++) {
-        result[i][j] = filteredRows[j][i];
-      }
-    }
-
-    // issue when there no steps to play its add cell anyway
-    // check comment at the top
-    if (JSON.stringify(board) !== JSON.stringify(result)) {
-      this.cellService.addRandomCell(result);
-    }
-
-    this.boardService.set(result);
-
-    return result;
+    return normalizedRowsList;
   }
+
   moveLeft() {
+    if (this.gameStatus === 'win') return;
+
     const board = this.boardService.get();
     const filteredRows = filterBoard(board);
 
@@ -107,16 +120,16 @@ class Game {
       filteredRows[i] = slide(filteredRows[i]);
     }
 
-    if (JSON.stringify(board) !== JSON.stringify(filteredRows)) {
-      this.cellService.addRandomCell(filteredRows);
-    }
-
+    this.#checkIfCanAddCell(board, filteredRows);
     this.boardService.set(filteredRows);
+    this.gameStatus = this.#checkGameStatus(filteredRows);
 
     return filteredRows;
   }
 
   moveRight() {
+    if (this.gameStatus === 'win') return;
+
     const board = this.boardService.get();
     const filteredRows = filterBoardReverse(board);
 
@@ -124,11 +137,9 @@ class Game {
       filteredRows[i] = slide(filteredRows[i]).reverse();
     }
 
-    if (JSON.stringify(board) !== JSON.stringify(filteredRows)) {
-      this.cellService.addRandomCell(filteredRows);
-    }
-
+    this.#checkIfCanAddCell(board, filteredRows);
     this.boardService.set(filteredRows);
+    this.gameStatus = this.#checkGameStatus(filteredRows);
 
     return filteredRows;
   }
@@ -144,7 +155,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.boardService.getBoard();
+    return this.boardService.get();
   }
 
   // @returns {string} One of: 'idle', 'playing', 'win', 'lose'
@@ -164,9 +175,6 @@ class Game {
   // restart() {
   //   this.start();
   // }
-
-  // won the game
-  win() {}
 
   getCellsCoordinates() {
     return this.boardService.get();

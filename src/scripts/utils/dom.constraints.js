@@ -1,6 +1,8 @@
 export const startButton = document.querySelector('.button.start');
 export const startMessage = document.querySelector('.message-start');
 export const tableBody = document.querySelector('tbody');
+export const looseMessage = document.querySelector('.message-lose');
+export const winMessage = document.querySelector('.message-win');
 
 export function setCells(boardCoords, className = 'field-cell', text = '') {
   for (let i = 0; i < boardCoords.length; i++) {

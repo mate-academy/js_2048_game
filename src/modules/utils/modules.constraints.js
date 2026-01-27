@@ -1,3 +1,5 @@
+export const amountOfRows = 4;
+
 export function slide(filteredRow) {
   for (let i = 0; i < filteredRow.length - 1; i++) {
     if (filteredRow[i] === filteredRow[i + 1]) {
@@ -8,8 +10,7 @@ export function slide(filteredRow) {
 
   const result = filteredRow.filter((v) => v !== 0);
 
-  // TODO: make constant for row length or find the way to extract it
-  while (result.length < 4) {
+  while (result.length < amountOfRows) {
     result.push(0);
   }
 
