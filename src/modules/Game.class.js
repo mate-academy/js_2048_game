@@ -1,6 +1,8 @@
 /* eslint-disable curly */
 'use strict';
 
+import { filterBoard, filterBoardReverse, slide, turnBoard } from './constraints';
+
 const CellService = require('./Cell.class');
 const BoardService = require('./Board.class');
 const ScoreService = require('./Score.class');
@@ -27,44 +29,86 @@ class Game {
     this.cellService = new CellService();
   }
 
-  eventHandler() {
-    // there will be logic for event handler
-    this.gameFunctions.onStart();
-  }
+  // TODO: separate all function from this file
 
-  moveUp() {}
-  // moveDown() {
-  //   const board = this.boardService.get();
-
-  //   const rowsList = [];
-
-  //   for (let i = 0; i < board.length; i++) {
-  //     rowsList.push([]);
-
-  //     for (let j = 0; j < board[i].length; j++) {
-  //       rowsList[i][j] = board[j][i];
-  //     }
-  //   }
-
-  //   const filteredRows = rowsList.map((v) => v.filter((dv) => dv !== 0));
-
-  //   for (let i = 0; i < filteredRows.length; i++) {
-  //     this.slide(filteredRows[i]);
-  //   }
-
-  //   this.boardService.set(filteredRows);
-
-  //   return filteredRows;
-
-  // }
-  moveLeft() {
+  moveUp() {
     const board = this.boardService.get();
+    const rowsList = turnBoard(board);
 
-    // TODO: make a reusable function
-    const filteredRows = board.map((v) => v.filter((dv) => dv !== 0));
+    const filteredRows = filterBoard(rowsList);
 
     for (let i = 0; i < filteredRows.length; i++) {
-      this.slide(filteredRows[i]);
+      filteredRows[i] = slide(filteredRows[i]);
+    }
+
+    // TODO: create function for this, DRY
+    const result = [];
+
+    for (let i = 0; i < filteredRows.length; i++) {
+      result.push([]);
+
+      for (let j = 0; j < filteredRows[i].length; j++) {
+        result[i][j] = filteredRows[j][i];
+      }
+    }
+
+    // create function
+    if (JSON.stringify(board) !== JSON.stringify(result)) {
+      this.cellService.addRandomCell(result);
+    }
+    this.boardService.set(result);
+
+    return result;
+  }
+
+  // break your head to find the way to fix issue with adding cell
+  // if there no move
+  // maybe logic to copy matrix(not detaching the origin matrix to variable)
+  // and at the end compare it and if it equals, do not add cell
+  // and check if im not implement this logic by the way
+  // IMPLEMENTED: check at the morning how it implemented
+  // all of the code, fix dirty code!!
+  // add score service, won and loose events and its ready!
+  moveDown() {
+    const board = this.boardService.get();
+    const rowsList = turnBoard(board);
+    const filteredRows = filterBoardReverse(rowsList);
+
+    for (let i = 0; i < filteredRows.length; i++) {
+      filteredRows[i] = slide(filteredRows[i]).reverse();
+    }
+
+    // TODO: create function for this, DRY
+    const result = [];
+
+    for (let i = 0; i < filteredRows.length; i++) {
+      result.push([]);
+
+      for (let j = 0; j < filteredRows[i].length; j++) {
+        result[i][j] = filteredRows[j][i];
+      }
+    }
+
+    // issue when there no steps to play its add cell anyway
+    // check comment at the top
+    if (JSON.stringify(board) !== JSON.stringify(result)) {
+      this.cellService.addRandomCell(result);
+    }
+
+    this.boardService.set(result);
+
+    return result;
+  }
+  moveLeft() {
+    const board = this.boardService.get();
+    const filteredRows = filterBoard(board);
+
+    for (let i = 0; i < filteredRows.length; i++) {
+      filteredRows[i] = slide(filteredRows[i]);
+    }
+
+    if (JSON.stringify(board) !== JSON.stringify(filteredRows)) {
+      this.cellService.addRandomCell(filteredRows);
     }
 
     this.boardService.set(filteredRows);
@@ -72,32 +116,16 @@ class Game {
     return filteredRows;
   }
 
-  slide(filteredRow) {
-    for (let i = 0; i < filteredRow.length - 1; i++) {
-      if (filteredRow[i] === filteredRow[i + 1]) {
-        filteredRow[i] *= 2;
-        filteredRow[i + 1] = 0;
-      }
-    }
-    filteredRow.filter((v) => v !== 0);
-
-    // TODO: make constant for row length or find the way to extract it
-    while (filteredRow.length < 4) {
-      filteredRow.push(0);
-    }
-
-    return filteredRow;
-  }
-
   moveRight() {
     const board = this.boardService.get();
-
-    // TODO: make a reusable function
-    const filteredRows = board.map((v) => v.filter((dv) => dv !== 0).reverse());
+    const filteredRows = filterBoardReverse(board);
 
     for (let i = 0; i < filteredRows.length; i++) {
-      this.slide(filteredRows[i]);
-      filteredRows[i] = filteredRows[i].reverse();
+      filteredRows[i] = slide(filteredRows[i]).reverse();
+    }
+
+    if (JSON.stringify(board) !== JSON.stringify(filteredRows)) {
+      this.cellService.addRandomCell(filteredRows);
     }
 
     this.boardService.set(filteredRows);
