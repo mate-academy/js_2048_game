@@ -164,9 +164,11 @@ class Game {
    * Starts the game.
    */
   start() {
+    this.board = copyBoard(this.initialState);
     this.status = 'playing';
     this.addRandomTile();
     this.addRandomTile();
+    this.score = 0;
   }
 
   /**

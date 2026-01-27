@@ -40,8 +40,11 @@ start.addEventListener('click', (e) => {
 
   if (start.classList.contains('start')) {
     game.start();
+    start.classList.replace('start', 'restart');
+    start.textContent = 'Restart';
   } else {
     game.restart();
+    game.start();
   }
 
   drawGame(cells);
