@@ -3,6 +3,7 @@ export const startMessage = document.querySelector('.message-start');
 export const tableBody = document.querySelector('tbody');
 export const looseMessage = document.querySelector('.message-lose');
 export const winMessage = document.querySelector('.message-win');
+export const gameScore = document.querySelector('.game-score');
 
 export function setCells(boardCoords, className = 'field-cell', text = '') {
   for (let i = 0; i < boardCoords.length; i++) {

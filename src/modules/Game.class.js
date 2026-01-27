@@ -4,8 +4,8 @@
 import {
   filterBoard,
   filterBoardReverse,
-  slide,
   turnBoard,
+  amountOfRows,
 } from './utils/modules.constraints';
 
 const CellService = require('./Cell.class');
@@ -29,12 +29,30 @@ class Game {
   ) {
     this.initialState = initialState;
     this.gameStatus = initialGameStatus;
-    this.gameScore = new ScoreService(); // TODO: create score service
+    this.scoreService = new ScoreService(); // TODO: create score service
     this.boardService = new BoardService(initialState);
     this.cellService = new CellService();
   }
 
   // TODO: separate all function from this file
+
+  #slide(filteredRow) {
+    for (let i = 0; i < filteredRow.length - 1; i++) {
+      if (filteredRow[i] === filteredRow[i + 1]) {
+        filteredRow[i] *= 2;
+        this.scoreService.add(filteredRow[i]);
+        filteredRow[i + 1] = 0;
+      }
+    }
+
+    const result = filteredRow.filter((v) => v !== 0);
+
+    while (result.length < amountOfRows) {
+      result.push(0);
+    }
+
+    return result;
+  }
 
   #checkGameStatus(board) {
     let win = false;
@@ -76,7 +94,7 @@ class Game {
     const filteredRows = filterBoard(rotatedRowsList);
 
     for (let i = 0; i < filteredRows.length; i++) {
-      filteredRows[i] = slide(filteredRows[i]);
+      filteredRows[i] = this.#slide(filteredRows[i]);
     }
 
     const normalizedRowsList = turnBoard(filteredRows);
@@ -98,7 +116,7 @@ class Game {
     const filteredRows = filterBoardReverse(rotatedRowsList);
 
     for (let i = 0; i < filteredRows.length; i++) {
-      filteredRows[i] = slide(filteredRows[i]).reverse();
+      filteredRows[i] = this.#slide(filteredRows[i]).reverse();
     }
 
     const normalizedRowsList = turnBoard(filteredRows);
@@ -117,7 +135,7 @@ class Game {
     const filteredRows = filterBoard(board);
 
     for (let i = 0; i < filteredRows.length; i++) {
-      filteredRows[i] = slide(filteredRows[i]);
+      filteredRows[i] = this.#slide(filteredRows[i]);
     }
 
     this.#checkIfCanAddCell(board, filteredRows);
@@ -134,7 +152,7 @@ class Game {
     const filteredRows = filterBoardReverse(board);
 
     for (let i = 0; i < filteredRows.length; i++) {
-      filteredRows[i] = slide(filteredRows[i]).reverse();
+      filteredRows[i] = this.#slide(filteredRows[i]).reverse();
     }
 
     this.#checkIfCanAddCell(board, filteredRows);
@@ -148,7 +166,11 @@ class Game {
    * @returns {number}
    */
   getScore() {
-    // return this.scoreService.getScore();
+    return this.scoreService.get();
+  }
+
+  resetScore() {
+    this.scoreService.reset();
   }
 
   /**

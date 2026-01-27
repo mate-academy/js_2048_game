@@ -1,22 +1,5 @@
 export const amountOfRows = 4;
 
-export function slide(filteredRow) {
-  for (let i = 0; i < filteredRow.length - 1; i++) {
-    if (filteredRow[i] === filteredRow[i + 1]) {
-      filteredRow[i] *= 2;
-      filteredRow[i + 1] = 0;
-    }
-  }
-
-  const result = filteredRow.filter((v) => v !== 0);
-
-  while (result.length < amountOfRows) {
-    result.push(0);
-  }
-
-  return result;
-}
-
 export function turnBoard(board) {
   const rowsList = [];
 
