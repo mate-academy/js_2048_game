@@ -22,6 +22,13 @@ function showMessage() {
   }
 }
 
+function gameEvents(coords) {
+  showMessage();
+  gameScore.textContent = game.getScore();
+
+  setCells(coords);
+}
+
 startButton.addEventListener('click', (e) => {
   startButton.classList = 'button restart';
   startButton.textContent = 'Reset';
@@ -41,36 +48,24 @@ document.addEventListener('keyup', (e) => {
   if (e.key === 'ArrowUp') {
     const coords = game.moveUp();
 
-    showMessage();
-    gameScore.textContent = game.getScore();
-
-    setCells(coords);
+    gameEvents(coords);
   }
 
   if (e.code === 'ArrowDown') {
     const coords = game.moveDown();
 
-    showMessage();
-    gameScore.textContent = game.getScore();
-
-    setCells(coords);
+    gameEvents(coords);
   }
 
   if (e.code === 'ArrowRight') {
     const coords = game.moveRight();
 
-    showMessage();
-    gameScore.textContent = game.getScore();
-
-    setCells(coords);
+    gameEvents(coords);
   }
 
   if (e.code === 'ArrowLeft') {
     const coords = game.moveLeft();
 
-    showMessage();
-    gameScore.textContent = game.getScore();
-
-    setCells(coords);
+    gameEvents(coords);
   }
 });

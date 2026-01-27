@@ -1,8 +1,8 @@
 'use strict';
 
 class ScoreService {
-  constructor() {
-    this.score = 0;
+  constructor(score) {
+    this.score = score;
   }
 
   reset() {

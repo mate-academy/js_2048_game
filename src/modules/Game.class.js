@@ -6,6 +6,7 @@ import {
   filterBoardReverse,
   turnBoard,
   amountOfRows,
+  checkGameStatus,
 } from './utils/modules.constraints';
 
 const CellService = require('./Cell.class');
@@ -20,21 +21,20 @@ class Game {
 
   constructor(
     initialState = [
-      [0, 0, 0, 0],
+      [1024, 1024, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ],
     initialGameStatus = 'idle',
+    score = 0,
   ) {
     this.initialState = initialState;
     this.gameStatus = initialGameStatus;
-    this.scoreService = new ScoreService(); // TODO: create score service
+    this.scoreService = new ScoreService(score);
     this.boardService = new BoardService(initialState);
     this.cellService = new CellService();
   }
-
-  // TODO: separate all function from this file
 
   #slide(filteredRow) {
     for (let i = 0; i < filteredRow.length - 1; i++) {
@@ -52,32 +52,6 @@ class Game {
     }
 
     return result;
-  }
-
-  #checkGameStatus(board) {
-    let win = false;
-    let playing = false;
-
-    for (let i = 0; i < board.length; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        if (board[i][j] === 2048) {
-          win = true;
-        }
-
-        if (
-          board[i][j] === board[i][j + 1] ||
-          board[i][j] === board[i + 1]?.[j] ||
-          board[i][j] === 0
-        ) {
-          playing = true;
-        }
-      }
-    }
-
-    if (win) return 'win';
-    if (playing) return 'playing';
-
-    return 'loose';
   }
 
   #checkIfCanAddCell(board, comparativeBoard) {
@@ -101,13 +75,11 @@ class Game {
 
     this.#checkIfCanAddCell(board, normalizedRowsList);
     this.boardService.set(normalizedRowsList);
-    this.gameStatus = this.#checkGameStatus(normalizedRowsList);
+    this.gameStatus = checkGameStatus(normalizedRowsList);
 
     return normalizedRowsList;
   }
 
-  // fix dirty code!!
-  // add score service, won and loose events and its ready!
   moveDown() {
     if (this.gameStatus === 'win') return;
 
@@ -123,7 +95,7 @@ class Game {
 
     this.#checkIfCanAddCell(board, normalizedRowsList);
     this.boardService.set(normalizedRowsList);
-    this.gameStatus = this.#checkGameStatus(normalizedRowsList);
+    this.gameStatus = checkGameStatus(normalizedRowsList);
 
     return normalizedRowsList;
   }
@@ -140,7 +112,7 @@ class Game {
 
     this.#checkIfCanAddCell(board, filteredRows);
     this.boardService.set(filteredRows);
-    this.gameStatus = this.#checkGameStatus(filteredRows);
+    this.gameStatus = checkGameStatus(filteredRows);
 
     return filteredRows;
   }
@@ -157,7 +129,7 @@ class Game {
 
     this.#checkIfCanAddCell(board, filteredRows);
     this.boardService.set(filteredRows);
-    this.gameStatus = this.#checkGameStatus(filteredRows);
+    this.gameStatus = checkGameStatus(filteredRows);
 
     return filteredRows;
   }
@@ -182,7 +154,6 @@ class Game {
 
   // @returns {string} One of: 'idle', 'playing', 'win', 'lose'
   getStatus() {
-    // logic for checking status
     return this.gameStatus;
   }
 
@@ -193,10 +164,6 @@ class Game {
 
     this.cellService.addRandomCell(this.boardService.get(), 2);
   }
-
-  // restart() {
-  //   this.start();
-  // }
 
   getCellsCoordinates() {
     return this.boardService.get();
