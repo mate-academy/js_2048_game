@@ -1,7 +1,17 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../src/modules/Game.class');
+const game = new Game();
 
-// Write your code here
+document.addEventListener('keydown', (e) => game.handleKeyPress(e));
+
+document.querySelector('.start').addEventListener('click', () => {
+  if (game.getStatus() === 'idle' || game.getStatus() === 'lose') {
+    game.start();
+  } else {
+    game.restart();
+  }
+  game.render();
+});
+
+game.render();
