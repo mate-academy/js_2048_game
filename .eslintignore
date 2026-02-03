@@ -1,1 +1,5 @@
-/dist
+
+
+# ignore build artifacts
+src/scripts/dist
+**/dist
