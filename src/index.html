@@ -7,9 +7,10 @@
       content="width=device-width, initial-scale=1.0"
     />
     <title>2048</title>
+    <!-- przeglądarka nie potrafi czytać SCSS — podmień na skompilowany CSS -->
     <link
       rel="stylesheet"
-      href="./styles/main.scss"
+      href="./styles/main.css"
     />
   </head>
   <body>
@@ -19,7 +20,7 @@
         <div class="controls">
           <p class="info">
             Score:
-            <span class="game-score">0</span>
+            <span class="game-score"></span>
           </p>
           <button class="button start">Start</button>
         </div>
@@ -65,7 +66,10 @@
         </p>
       </div>
     </div>
+
+    <!-- najpierw klasa Game (powinna wystawiać window.Game albo być UMD-safe) -->
+    <script src="modules/Game.class.js"></script>
+    <!-- potem skrypt UI który używa window.Game -->
     <script src="scripts/main.js"></script>
   </body>
 </html>
->

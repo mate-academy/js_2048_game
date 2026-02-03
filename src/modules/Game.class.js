@@ -282,13 +282,12 @@ class Game {
   }
 
   start() {
-    // Use the initialState as the starting board (don't reset to empty)
+    // Use the initialState as the starting board
     this.state = copyState(this.initialState);
     this.score = 0;
     this.status = 'playing';
     this.addNewTile();
     this.addNewTile();
-    // refresh status in case of immediate win (edge cases)
     this.status = this.getStatus();
   }
 
@@ -299,4 +298,12 @@ class Game {
   }
 }
 
-module.exports = Game;
+/* Export for Node and expose for browser without breaking tests */
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Game;
+}
+
+if (typeof window !== 'undefined') {
+  // expose to browser environment for Cypress / manual testing
+  window.Game = Game;
+}

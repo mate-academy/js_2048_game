@@ -1,4 +1,5 @@
+
+
 # ignore build artifacts
-src/modules/dist
-# or to ignore all dist folders:
-# **/dist
+src/scripts/dist
+**/dist

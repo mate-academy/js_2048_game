@@ -16,7 +16,10 @@
     "deploy": "mate-scripts deploy",
     "update": "mate-scripts update",
     "postinstall": "npm run update",
-    "test": "npm run lint && npm run test:only"
+    "test": "npm run lint && npm run test:only",
+     "serve": "npx http-server src -p 3000",
+  "cypress:run:chrome": "npx cypress run --spec \"cypress/integration/js2048Game.spec.js\" --browser chrome --headless",
+  "test:e2e": "start-server-and-test \"npm:serve\" http://localhost:3000 \"npm: cypress:run:chrome\""
   },
   "devDependencies": {
     "@linthtml/linthtml": "^0.9.6",
