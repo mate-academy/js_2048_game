@@ -21,6 +21,10 @@
             Score:
             <span class="game-score">0</span>
           </p>
+          <p class="info">
+            Best:
+            <span class="best-score">0</span>
+          </p>
           <button class="button start">Start</button>
         </div>
       </div>
@@ -64,7 +68,18 @@
           Press "Start" to begin game. Good luck!
         </p>
       </div>
+      <div class="mobile-controls">
+        <button data-move="up">⬆️</button>
+        <div class="row">
+          <button data-move="left">⬅️</button>
+          <button data-move="down">⬇️</button>
+          <button data-move="right">➡️</button>
+        </div>
+      </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
