@@ -21,6 +21,12 @@ body {
   vertical-align: center;
   user-select: none;
 
+  transition: all 0.15s ease-in-out;
+
+  &:not(:empty) {
+    animation: pop 0.15s ease-in-out;
+  }
+
   &--2 {
     background: #eee4da;
   }
@@ -176,7 +182,7 @@ h1 {
   width: 350px;
 }
 
-//#region Mobile controls
+// #region Mobile controls
 
 .message-win {
   background: #edc22e;
@@ -218,14 +224,7 @@ h1 {
 
 // #endregion
 
-//#region Animations
-.field-cell {
-  transition: all 0.15s ease-in-out;
-}
-
-.field-cell:not(:empty) {
-  animation: pop 0.15s ease-in-out;
-}
+// #region Animations
 
 @keyframes pop {
   0% {
@@ -237,5 +236,7 @@ h1 {
     transform: scale(1);
     opacity: 1;
   }
+
 }
-//#endregion
+
+// #endregion

@@ -13,6 +13,7 @@ const messageStart = document.querySelector('.message-start');
 
 const bestScoreEl = document.querySelector('.best-score');
 let bestScore = Number(localStorage.getItem('bestScore')) || 0;
+
 bestScoreEl.textContent = bestScore;
 
 btnStart.addEventListener('click', () => {
