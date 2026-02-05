@@ -1,68 +1,71 @@
-'use strict';
+export class Game {
+    constructor(size = 4) {
+        this.size = size;
+        this.grid = [];
+        this.score = 0;
+        this.init();
+    }
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
-class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
-  }
+    init() {
+        // Inicializa o grid com zeros
+        this.grid = Array(this.size).fill().map(() => Array(this.size).fill(0));
+        this.score = 0;
+        this.addRandomTile();
+        this.addRandomTile();
+    }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+    addRandomTile() {
+        const emptyCells = [];
+        for (let r = 0; r < this.size; r++) {
+            for (let c = 0; c < this.size; c++) {
+                if (this.grid[r][c] === 0) {
+                    emptyCells.push({ r, c });
+                }
+            }
+        }
+        if (emptyCells.length > 0) {
+            const { r, c } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            this.grid[r][c] = Math.random() < 0.9 ? 2 : 4;
+        }
+    }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+    move(direction) {
+        const oldGrid = JSON.stringify(this.grid);
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+        // Rotaciona o board para tratar todos os movimentos como "para a esquerda"
+        const rotations = { 'ArrowLeft': 0, 'ArrowUp': 3, 'ArrowRight': 2, 'ArrowDown': 1 };
+        const count = rotations[direction];
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+        for (let i = 0; i < count; i++) this.rotate();
+        this.processMove();
+        for (let i = 0; i < (4 - count) % 4; i++) this.rotate();
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+        // Retorna true se o grid mudou (para saber se deve adicionar novo tile e renderizar)
+        return oldGrid !== JSON.stringify(this.grid);
+    }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    processMove() {
+        for (let r = 0; r < this.size; r++) {
+            let row = this.grid[r].filter(val => val !== 0);
+            for (let i = 0; i < row.length - 1; i++) {
+                if (row[i] === row[i + 1]) {
+                    row[i] *= 2;
+                    this.score += row[i];
+                    row.splice(i + 1, 1);
+                }
+            }
+            while (row.length < this.size) row.push(0);
+            this.grid[r] = row;
+        }
+    }
 
-  // Add your own methods here
+    rotate() {
+        const newGrid = Array(this.size).fill().map(() => Array(this.size).fill(0));
+        for (let r = 0; r < this.size; r++) {
+            for (let c = 0; c < this.size; c++) {
+                newGrid[c][this.size - 1 - r] = this.grid[r][c];
+            }
+        }
+        this.grid = newGrid;
+    }
 }
-
-module.exports = Game;
