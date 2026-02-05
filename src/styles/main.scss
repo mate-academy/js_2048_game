@@ -10,6 +10,8 @@ body {
   font-weight: 900;
 }
 
+$values: 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048;
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -20,6 +22,31 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: background 0.15s;
+
+  @each $val in $values {
+    @keyframes merge-#{$val} {
+      0% {
+        transform: scale(0);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    &--#{$val} {
+      animation: merge-#{$val} 0.3s;
+    }
+  }
+
+  &--new {
+    animation: appear 0.5s !important;
+  }
 
   &--2 {
     background: #eee4da;
@@ -184,4 +211,14 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes appear {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
