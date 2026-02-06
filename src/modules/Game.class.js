@@ -31,8 +31,6 @@ class Game {
       : Array.from({ length: this.size }, () => Array(this.size).fill(0));
 
     this.board = this.initialState.map((row) => [...row]);
-
-    // this.status = initialState ? 'playing' : 'idle';
   }
 
   getState() {

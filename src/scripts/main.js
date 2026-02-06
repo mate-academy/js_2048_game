@@ -42,6 +42,7 @@ startButton.addEventListener('click', () => {
     startButton.classList.add('restart');
   } else {
     game.restart();
+    game.start();
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
   }
