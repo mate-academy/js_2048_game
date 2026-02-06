@@ -21,6 +21,12 @@ body {
   vertical-align: center;
   user-select: none;
 
+  transition: transform 120ms ease, background-color 120ms ease;
+
+  &.pop {
+    transform: scale(1.08);
+  }
+
   &--2 {
     background: #eee4da;
   }
