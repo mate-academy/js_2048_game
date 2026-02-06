@@ -48,9 +48,11 @@ function render() {
   game.getState().map((row) => {
     row.map((el) => {
       if (el !== 0) {
+        const cell = elementInCell[index];
+
         elementInCell[index].textContent = el;
         elementInCell[index].className = `field-cell field-cell--${el} pop`;
-        setTimeout(() => elementInCell[index].classList.remove('pop'), 120);
+        setTimeout(() => cell.classList.remove('pop'), 120);
         index++;
       } else {
         elementInCell[index].textContent = '';
