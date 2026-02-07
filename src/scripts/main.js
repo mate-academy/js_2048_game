@@ -3,7 +3,6 @@
 import Game from '../modules/Game.class.js';
 
 const game = new Game();
-
 const scoreElement = document.querySelector('.game-score');
 const startButton = document.querySelector('.button');
 const cells = document.querySelectorAll('.field-cell');
