@@ -4,74 +4,81 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #a1e5f7;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #ccccc7;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #050505;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #beeef5;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #86f4f8;
   }
 
   &--8 {
-    background: #f2b179;
+    background: #3ec9f3;
     color: #f9f6f2;
   }
 
   &--16 {
-    background: #f59563;
+    background: #5278f5;
     color: #f9f6f2;
   }
 
   &--32 {
-    background: #f67c5f;
+    background: #9062fa;
     color: #f9f6f2;
   }
 
   &--64 {
-    background: #f65e3b;
+    background: #9935f7;
     color: #f9f6f2;
   }
 
   &--128 {
-    background: #edcf72;
+    background: #b227f3;
     color: #f9f6f2;
   }
 
   &--256 {
-    background: #edcc61;
+    background: #de17f0;
     color: #f9f6f2;
   }
 
   &--512 {
-    background: #edc850;
+    background: #f717b4;
     color: #f9f6f2;
   }
 
   &--1024 {
-    background: #edc53f;
+    background: #e91f4b;
     color: #f9f6f2;
   }
 
   &--2048 {
-    background: #edc22e;
+    background: #f50303;
     color: #f9f6f2;
+  }
+  &--new {
+    animation: appear 200ms ease-out;
+  }
+
+  &--merged {
+    animation: pop 200ms ease-in-out;
   }
 }
 
@@ -93,7 +100,7 @@ body {
 h1 {
   background: #edc22e;
   color: #f9f6f2;
-  width: 75px;
+  width: 100px;
   height: 75px;
   font-size: 24px;
   border-radius: 5px;
@@ -110,7 +117,7 @@ h1 {
   align-items: center;
   justify-content: center;
   background: #d6cdc4;
-  width: 75px;
+  width: 100px;
   height: 75px;
   border-radius: 5px;
   color: #776e65;
@@ -131,10 +138,10 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
+  width: 100px;
   height: 75px;
 
-  transition: 0.25s ease background;
+  transition: 0.5s ease background;
 }
 
 .start {
@@ -158,7 +165,7 @@ h1 {
   box-sizing: border-box;
   width: 100%;
   background: #d6cdc4;
-  color: #776e65;
+  color: #f80505;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
@@ -184,4 +191,27 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
