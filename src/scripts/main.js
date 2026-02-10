@@ -35,6 +35,7 @@ function boardView() {
   }
 
   scoreLabel.textContent = game.getScore();
+  statusView();
 }
 
 function statusView() {
@@ -77,27 +78,23 @@ button.addEventListener('click', () => {
 document.addEventListener('keydown', (e) => {
   e.preventDefault();
 
-  let moved = false;
-
   if (e.key === 'ArrowLeft') {
-    moved = game.moveLeft();
+    game.moveLeft();
   }
 
   if (e.key === 'ArrowRight') {
-    moved = game.moveRight();
+    game.moveRight();
   }
 
   if (e.key === 'ArrowUp') {
-    moved = game.moveUp();
+    game.moveUp();
   }
 
   if (e.key === 'ArrowDown') {
-    moved = game.moveDown();
+    game.moveDown();
   }
 
-  if (moved) {
-    game.checkWinOrLose();
-    boardView();
-    statusView();
-  }
+  game.checkWinOrLose();
+  boardView();
+  statusView();
 });
