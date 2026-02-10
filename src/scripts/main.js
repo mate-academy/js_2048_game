@@ -1,7 +1,100 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 // const Game = require('../modules/Game.class');
 // const game = new Game();
 
-// Write your code here
+import Game from '../modules/Game.class.js';
+
+const game = new Game();
+const button = document.querySelector('.button');
+const cells = Array.from(document.querySelectorAll('.field-cell'));
+const scoreLabel = document.querySelector('.game-score');
+const messageStart = document.querySelector('.message-start');
+const messageWin = document.querySelector('.message-win');
+const messageLose = document.querySelector('.message-lose');
+
+function boardView() {
+  const state = game.getState();
+  let cellIndex = 0;
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      const cell = cells[cellIndex];
+      const value = state[i][j];
+
+      cell.className = 'field-cell';
+
+      if (value > 0) {
+        cell.textContent = value;
+        cell.classList.add(`field-cell--${value}`);
+      } else {
+        cell.textContent = '';
+      }
+      cellIndex++;
+    }
+  }
+
+  scoreLabel.textContent = game.getScore();
+  statusView();
+}
+
+function statusView() {
+  const gameStatus = game.getStatus();
+
+  messageStart.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
+
+  if (gameStatus === 'start') {
+    button.classList.remove('restart');
+    button.classList.add('start');
+    button.textContent = 'Start';
+    messageStart.classList.remove('hidden');
+  } else if (gameStatus === 'playing') {
+    button.classList.remove('start');
+    button.classList.add('restart');
+    button.textContent = 'Restart';
+    messageStart.classList.add('hidden');
+  } else if (gameStatus === 'lose') {
+    messageLose.classList.remove('hidden');
+  } else if (gameStatus === 'win') {
+    messageWin.classList.remove('hidden');
+  }
+}
+
+button.addEventListener('click', () => {
+  const gameStatus = game.getStatus();
+
+  if (gameStatus === 'start') {
+    game.start();
+  } else {
+    game.restart();
+  }
+
+  boardView();
+  statusView();
+});
+
+document.addEventListener('keydown', (e) => {
+  e.preventDefault();
+
+  if (e.key === 'ArrowLeft') {
+    game.moveLeft();
+  }
+
+  if (e.key === 'ArrowRight') {
+    game.moveRight();
+  }
+
+  if (e.key === 'ArrowUp') {
+    game.moveUp();
+  }
+
+  if (e.key === 'ArrowDown') {
+    game.moveDown();
+  }
+
+  game.checkWinOrLose();
+  boardView();
+  statusView();
+});
