@@ -31,14 +31,14 @@ const CELL_STEP = CELL_SIZE + CELL_GAP;
 button.addEventListener('click', (e) => {
   if (game.getStatus() === 'idle') {
     game.start();
+
+    button.className = 'button restart';
+    button.textContent = 'Restart';
   } else {
     game.restart();
   }
 
   render();
-
-  button.className = 'button restart';
-  button.textContent = 'Restart';
 });
 
 document.addEventListener('keydown', (e) => {
@@ -187,6 +187,12 @@ function render() {
 
     button.className = 'button start';
     button.textContent = 'Start';
+  }
+
+  if (game.getStatus() === 'playing') {
+    messageStart.classList.add('hidden');
+    messageLose.classList.add('hidden');
+    messageWin.classList.add('hidden');
   }
 
   score.textContent = `${game.getScore()}`;
