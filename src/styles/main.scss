@@ -4,7 +4,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: linear-gradient(135deg, #1e1e2f, #2c3e50);
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
@@ -148,6 +148,8 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  font-size: 20px;
+  padding: 0;
 
   &:hover {
     background: #f87474;
