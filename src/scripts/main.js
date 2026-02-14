@@ -10,78 +10,87 @@ const startMsg = document.querySelector('.message-start');
 const winMsg = document.querySelector('.message-win');
 const loseMsg = document.querySelector('.message-lose');
 
-// Функція для малювання стану гри
 function drawGame() {
   const field = game.getState();
+  const gameStatus = game.getStatus();
 
   for (let i = 0; i < cells.length; i++) {
     const row = Math.floor(i / 4);
     const col = i % 4;
     const value = field[row][col];
 
-    // Очищуємо старі значення та класи
     cells[i].textContent = value === 0 ? '' : value;
     cells[i].className = 'field-cell';
 
-    // Додаємо клас для стилізації клітинок з числами
     if (value !== 0) {
       cells[i].classList.add(`field-cell--${value}`);
     }
   }
 
-  // Оновлюємо рахунок
   scoreEl.textContent = game.getScore();
 
-  // Відображення повідомлень про виграш / поразку
-  if (game.getStatus() === 'win') {
+  if (gameStatus === 'win') {
     winMsg.classList.remove('hidden');
   } else {
     winMsg.classList.add('hidden');
   }
 
-  if (game.getStatus() === 'lose') {
+  if (gameStatus === 'lose') {
     loseMsg.classList.remove('hidden');
   } else {
     loseMsg.classList.add('hidden');
   }
 }
 
-// Старт / Рестарт кнопка
 startBtn.addEventListener('click', () => {
-  game.restart(); // Скидаємо стан
-  game.start(); // Додаємо першу плитку
+  const gameStatus = game.getStatus();
 
-  // Ховаємо всі повідомлення
+  if (gameStatus === 'idle') {
+    game.start();
+  } else {
+    game.restart();
+  }
+
+  if (startBtn.textContent !== 'Restart') {
+    startBtn.textContent = 'Restart';
+    startBtn.classList.remove('start');
+    startBtn.classList.add('restart');
+  }
+
+  // Hide all messages
   startMsg.classList.add('hidden');
   winMsg.classList.add('hidden');
   loseMsg.classList.add('hidden');
 
-  // Змінюємо текст кнопки
-  startBtn.textContent = 'Restart';
-
   drawGame();
 });
 
-// Обробка клавіш
 document.addEventListener('keydown', (e) => {
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
   let moved = false;
 
   switch (e.key) {
     case 'ArrowLeft':
+      e.preventDefault();
       moved = game.moveLeft();
       break;
     case 'ArrowRight':
+      e.preventDefault();
       moved = game.moveRight();
       break;
     case 'ArrowUp':
+      e.preventDefault();
       moved = game.moveUp();
       break;
     case 'ArrowDown':
+      e.preventDefault();
       moved = game.moveDown();
       break;
   }
 
-  // Оновлюємо гру тільки якщо хід був можливий
   if (moved) {
     drawGame();
   }
