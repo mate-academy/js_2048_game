@@ -8,18 +8,30 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  background-image: url(../images/background.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
 }
 
 .field-cell {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
+  border-radius: 10px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+  box-shadow: 0 1px 2px 0 black;
 
   &--2 {
     background: #eee4da;
@@ -78,7 +90,8 @@ body {
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
+  box-shadow: 0 1px 10px 0 black;
 }
 
 .game-header {
@@ -96,12 +109,13 @@ h1 {
   width: 75px;
   height: 75px;
   font-size: 24px;
-  border-radius: 5px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  box-shadow: 0 1px 3px 0 black;
 }
 
 .info {
@@ -112,11 +126,12 @@ h1 {
   background: #d6cdc4;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
+  border-radius: 10px;
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+  box-shadow: 0 1px 3px 0 black;
 }
 
 .controls {
@@ -125,7 +140,7 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   color: #f9f6f2;
   font-family: sans-serif;
@@ -133,8 +148,7 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
-
-  transition: 0.25s ease background;
+  box-shadow: 0 1px 3px 0 black;
 }
 
 .start {
@@ -161,8 +175,9 @@ h1 {
   color: #776e65;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 10px;
   font-size: 20px;
+  box-shadow: 0 1px 3px 0 black;
 }
 
 .hidden {
