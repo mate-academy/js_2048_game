@@ -11,15 +11,21 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: #e7d8c9;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  border-radius: 10px;
+  color: #585450;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
+
+  font-weight: 700;
+  font-size: 22px;
+  transition:
+    transform 0.4s ease,
+    background-color 0.2s ease;
 
   &--2 {
     background: #eee4da;
@@ -76,9 +82,13 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: linear-gradient(145deg, #d4b99e, #e6caa5);
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 15px;
+  padding: 10px;
+  box-shadow:
+    inset 0 4px 8px rgba(255, 255, 255, 0.01),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .game-header {
