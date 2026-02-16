@@ -76,6 +76,7 @@ body {
 }
 
 .game-field {
+  position: relative;
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
@@ -184,4 +185,21 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.field-tile {
+  position: absolute;
+  transition:
+    top 0.2s ease,
+    left 0.2s ease;
+
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  user-select: none;
 }
