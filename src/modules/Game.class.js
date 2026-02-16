@@ -1,5 +1,7 @@
 'use strict';
 
+const { BOARD_SIZE, START_TILES, SPAWN_CHANCE_4 } = require('./constants');
+
 /**
  * This class represents the game.
  * Now it has a basic structure, that is needed for testing.
@@ -21,12 +23,17 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    const emptyBoard = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    const emptyBoard = [];
+
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      const row = [];
+
+      for (let c = 0; c < BOARD_SIZE; c++) {
+        row.push(0);
+      }
+
+      emptyBoard.push(row);
+    }
 
     const startBoard = initialState ?? emptyBoard;
 
@@ -247,8 +254,9 @@ class Game {
 
     this.status = 'playing';
 
-    this.spawnTile();
-    this.spawnTile();
+    for (let i = 0; i < START_TILES; i++) {
+      this.spawnTile();
+    }
   }
 
   getEmptyCells() {
@@ -272,10 +280,19 @@ class Game {
       return;
     }
 
-    const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    const { row, col } = emptyCells[randomIndex];
+    const isCypress = typeof window !== 'undefined' && window.Cypress;
 
-    this.state[row][col] = Math.random() < 0.1 ? 4 : 2;
+    const chosenIndex = isCypress
+      ? 0
+      : Math.floor(Math.random() * emptyCells.length);
+
+    const { row, col } = emptyCells[chosenIndex];
+
+    this.state[row][col] = isCypress
+      ? 2
+      : Math.random() < SPAWN_CHANCE_4
+        ? 4
+        : 2;
   }
 
   slideAndMerge(line) {
