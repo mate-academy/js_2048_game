@@ -20,6 +20,10 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
+  transform-origin: center center;
 
   &--2 {
     background: #eee4da;
@@ -76,9 +80,62 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: transparent;
   border-spacing: 10px;
   border-radius: 5px;
+}
+
+.board {
+  background: linear-gradient(180deg, #cbb9a8 0%, #b99f8e 100%);
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  margin-bottom: 16px;
+}
+
+.tile-appear {
+  animation: tile-appear 160ms ease;
+}
+
+@keyframes tile-appear {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.tile-merged {
+  animation: tile-merged 200ms ease;
+}
+
+@keyframes tile-merged {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.tile-move {
+  animation: tile-move 160ms ease;
+}
+
+@keyframes tile-move {
+  from {
+    transform: translateY(-8px);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 .game-header {
