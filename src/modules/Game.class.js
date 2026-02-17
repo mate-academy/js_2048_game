@@ -71,17 +71,17 @@ export class Game {
       while (result.length < this.matrixSize) {
         result.push(0);
       }
-
-      const changed = !this.equal(result, line);
-
-      return { line: result, gained, changed };
     }
+
+    const changed = !this.equal(result, line);
+
+    return { line: result, gained, changed };
   }
   hasMove() {
     // Перевіряє чи є куди рухатись, чи є ще можливість сполучити клітинки
     for (let row = 0; row < this.matrixSize; row++) {
       for (let col = 0; col < this.matrixSize; col++) {
-        const el = this.board[row][col];
+        const el = this.martix[row][col];
         // Якщо хоч одна клітинка пустує гра не завершена
 
         if (el === 0) {
@@ -137,7 +137,7 @@ export class Game {
     let move = false;
 
     for (let row = 0; row < this.matrixSize; row++) {
-      const reverse = this.board.map((col) => col[row]).reverse();
+      const reverse = this.martix.map((col) => col[row]).reverse();
       const { line, gained, changed } = this.processLine(reverse);
       const result = line.slice().reverse();
 
@@ -159,11 +159,11 @@ export class Game {
     let move = false;
 
     for (let col = 0; col < this.matrixSize; col++) {
-      const column = this.board.map((row) => row[col]);
+      const column = this.martix.map((row) => row[col]);
       const { line, gained, changed } = this.processLine(column);
 
       if (changed) {
-        for (let row = 0; row < this.size; row++) {
+        for (let row = 0; row < this.matrixSize; row++) {
           this.matrix[row][col] = line[row];
         }
         moveGained += gained;
@@ -182,12 +182,12 @@ export class Game {
     let move = false;
 
     for (let col = 0; col < this.matrixSize; col++) {
-      const column = this.board.map((row) => row[col]).reverse();
+      const column = this.martix.map((row) => row[col]).reverse();
       const { line, gained, changed } = this.processLine(column);
       const result = line.slice().reverse();
 
       if (changed) {
-        for (let row = 0; row < this.size; row++) {
+        for (let row = 0; row < this.matrixSize; row++) {
           this.matrix[row][col] = result[row];
         }
         moveGained += gained;

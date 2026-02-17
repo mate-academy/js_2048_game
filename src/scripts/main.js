@@ -11,7 +11,7 @@ const messageWin = document.querySelector('.message-win');
 const messageStart = document.querySelector('.message-start');
 
 document.addEventListener('keydown', (e) => {
-  if (game.getStatus() !== 'idle') {
+  if (game.getStatus() !== 'playing') {
     return;
   }
 
@@ -52,21 +52,21 @@ document.addEventListener('keydown', (e) => {
       return false;
     }
 
-    for (let i = 0; i < game.matrixSize - 1; i++) {
-      for (let j = 0; j < game.matrixSize - 1; j++) {
+    for (let i = 0; i < game.matrixSize; i++) {
+      for (let j = 0; j < game.matrixSize; j++) {
         if (openMatrix[i][j] !== closeMatrix[i][j]) {
-          return false;
+          return true;
         }
       }
     }
 
-    return true;
+    return false;
   }
 
   function renderMatrix(matrix) {
     const cells = document.querySelectorAll('.field-cell');
 
-    if (cells.length !== (game.matrixSize ^ 2)) {
+    if (cells.length !== Math.pow(game.matrixSize, 2)) {
       return;
     }
 
@@ -78,7 +78,7 @@ document.addEventListener('keydown', (e) => {
       }
 
       cell.textContent = value || '';
-      cell.className = `field-cell--${value}`;
+      cell.className.add(`field-cell--${value}`);
     });
     renderScore(game.getScore());
   }
