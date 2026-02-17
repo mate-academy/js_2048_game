@@ -1,68 +1,228 @@
+// @ts-nocheck
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
-class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+export class Game {
+  constructor(initialState = null) {
+    this.matrixSize = 4;
+    this.score = 0;
+    this.status = 'playing';
+
+    this.initialState = initialState ? this.copy(initialState) : null;
+
+    if (this.initialState) {
+      this.matrix = this.copy(this.initialState);
+    } else {
+      this.matrix = this.createEmptyMatrix();
+    }
   }
+  copy(matrix) {
+    return matrix.map((row) => row.slice());
+  }
+  createEmptyMatrix() {
+    return Array.from({ length: this.matrixSize }, () =>
+      // eslint-disable-next-line prettier/prettier
+      Array(this.matrixSize).fill(0));
+  }
+  addRandomNum() {
+    const emptyCells = [];
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+    for (let row = 0; row < this.matrixSize; row++) {
+      for (let collumn = 0; collumn < this.matrixSize; collumn++) {
+        if (this.matrix[row][collumn] === 0) {
+          emptyCells.push({ row, collumn });
+        }
+      }
+    }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+    if (emptyCells.length === 0) {
+      return false;
+    }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+    const { row: rowIndex, collumn: colIndex } =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+    this.matrix[rowIndex][colIndex] = Math.random() < 0.9 ? 2 : 4;
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+    return true;
+  }
+  equal(first, seccond) {
+    for (let i = 0; i < first.length; i++) {
+      if (first[i] !== seccond[i]) {
+        return false;
+      }
+    }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    return true;
+  }
+  processLine(line) {
+    const tiles = line.filter((el) => el !== 0);
+    const result = [];
+    let gained = 0;
 
-  // Add your own methods here
+    for (let i = 0; i < tiles.length - 1; i++) {
+      if (tiles[i] === tiles[i + 1]) {
+        result.push(tiles[i] * 2);
+        gained += tiles[i] * 2;
+        i++;
+      } else {
+        result.push(tiles[i]);
+      }
+
+      while (result.length < this.matrixSize) {
+        result.push(0);
+      }
+
+      const changed = !this.equal(result, line);
+
+      return { line: result, gained, changed };
+    }
+  }
+  hasMove() {
+    // Перевіряє чи є куди рухатись, чи є ще можливість сполучити клітинки
+    for (let row = 0; row < this.matrixSize; row++) {
+      for (let col = 0; col < this.matrixSize; col++) {
+        const el = this.board[row][col];
+        // Якщо хоч одна клітинка пустує гра не завершена
+
+        if (el === 0) {
+          return true;
+        }
+        // Якщо в колонці і даному ряді і наступний елемент
+        // колонки і даний ряд є однакові елементи гра продовжується
+
+        if (col < this.matrixSize - 1 && el === this.matrix[row][col + 1]) {
+          return true;
+        }
+        // Якщо в ряду і даному колонці і наступний елемент
+        // ряду і даний колонки є однакові елементи гра продовжується
+
+        if (row < this.matrixSize - 1 && el === this.matrix[row + 1][col]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+  updateStatus() {
+    if (this.matrix.some((row) => row.includes(2048))) {
+      this.status = 'win';
+
+      return;
+    }
+    this.status = this.hasMove() ? 'playing' : 'lose';
+  }
+  moveLeft() {
+    let moveGained = 0;
+    let move = false;
+
+    for (let row = 0; row < this.matrixSize; row++) {
+      const { line, gained, changed } = this.processLine(this.martix[row]);
+
+      if (changed) {
+        this.matrix[row] = line;
+        moveGained += gained;
+        move = true;
+      }
+    }
+
+    if (move) {
+      this.score += moveGained;
+      this.addRandomNum();
+      this.updateStatus();
+    }
+  }
+  moveRight() {
+    let moveGained = 0;
+    let move = false;
+
+    for (let row = 0; row < this.matrixSize; row++) {
+      const reverse = this.board.map((col) => col[row]).reverse();
+      const { line, gained, changed } = this.processLine(reverse);
+      const result = line.slice().reverse();
+
+      if (changed) {
+        this.matrix[row] = result;
+        moveGained += gained;
+        move = true;
+      }
+    }
+
+    if (move) {
+      this.score += moveGained;
+      this.addRandomNum();
+      this.updateStatus();
+    }
+  }
+  moveUp() {
+    let moveGained = 0;
+    let move = false;
+
+    for (let col = 0; col < this.matrixSize; col++) {
+      const column = this.board.map((row) => row[col]);
+      const { line, gained, changed } = this.processLine(column);
+
+      if (changed) {
+        for (let row = 0; row < this.size; row++) {
+          this.matrix[row][col] = line[row];
+        }
+        moveGained += gained;
+        move = true;
+      }
+    }
+
+    if (move) {
+      this.score += moveGained;
+      this.addRandomNum();
+      this.updateStatus();
+    }
+  }
+  moveDown() {
+    let moveGained = 0;
+    let move = false;
+
+    for (let col = 0; col < this.matrixSize; col++) {
+      const column = this.board.map((row) => row[col]).reverse();
+      const { line, gained, changed } = this.processLine(column);
+      const result = line.slice().reverse();
+
+      if (changed) {
+        for (let row = 0; row < this.size; row++) {
+          this.matrix[row][col] = result[row];
+        }
+        moveGained += gained;
+        move = true;
+      }
+    }
+
+    if (move) {
+      this.score += moveGained;
+      this.addRandomNum();
+      this.updateStatus();
+    }
+  }
+  getScore() {
+    return this.score;
+  }
+  getState() {
+    return this.copy(this.matrix);
+  }
+  getStatus() {
+    return this.status;
+  }
+  start() {
+    this.score = 0;
+    this.status = 'playing';
+
+    if (this.initialState) {
+      this.matrix = this.copy(this.initialState);
+    } else {
+      this.matrix = this.createEmptyMatrix();
+    }
+    this.addRandomNum();
+    this.addRandomNum();
+  }
+  restart() {
+    this.start();
+  }
 }
-
-module.exports = Game;
