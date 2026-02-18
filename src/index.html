@@ -6,11 +6,22 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <title>2048</title>
+    <title>2048 Game</title>
+
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    />
+
     <link
       rel="stylesheet"
       href="./styles/main.scss"
     />
+
+    <script
+      type="module"
+      src="./scripts/main.js"
+    ></script>
   </head>
   <body>
     <div class="container">
@@ -19,7 +30,7 @@
         <div class="controls">
           <p class="info">
             Score:
-            <span class="game-score">0</span>
+            <span class="game-score"></span>
           </p>
           <button class="button start">Start</button>
         </div>
@@ -65,6 +76,5 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
   </body>
 </html>
