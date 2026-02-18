@@ -5,7 +5,7 @@ export class Game {
   constructor(initialState = null) {
     this.matrixSize = 4;
     this.score = 0;
-    this.status = 'playing';
+    this.status = 'idle';
 
     this.initialState = initialState ? this.copy(initialState) : null;
 
@@ -46,6 +46,10 @@ export class Game {
     return true;
   }
   equal(first, seccond) {
+    if (first.length !== seccond.length) {
+      return false;
+    }
+
     for (let i = 0; i < first.length; i++) {
       if (first[i] !== seccond[i]) {
         return false;
@@ -58,19 +62,21 @@ export class Game {
     const tiles = line.filter((el) => el !== 0);
     const result = [];
     let gained = 0;
+    let i = 0;
 
-    for (let i = 0; i < tiles.length - 1; i++) {
+    while (i < tiles.length) {
       if (tiles[i] === tiles[i + 1]) {
         result.push(tiles[i] * 2);
         gained += tiles[i] * 2;
-        i++;
+        i += 2;
       } else {
         result.push(tiles[i]);
+        i += 1;
       }
+    }
 
-      while (result.length < this.matrixSize) {
-        result.push(0);
-      }
+    while (result.length < this.matrixSize) {
+      result.push(0);
     }
 
     const changed = !this.equal(result, line);
@@ -81,7 +87,7 @@ export class Game {
     // Перевіряє чи є куди рухатись, чи є ще можливість сполучити клітинки
     for (let row = 0; row < this.matrixSize; row++) {
       for (let col = 0; col < this.matrixSize; col++) {
-        const el = this.martix[row][col];
+        const el = this.matrix[row][col];
         // Якщо хоч одна клітинка пустує гра не завершена
 
         if (el === 0) {
@@ -117,7 +123,7 @@ export class Game {
     let move = false;
 
     for (let row = 0; row < this.matrixSize; row++) {
-      const { line, gained, changed } = this.processLine(this.martix[row]);
+      const { line, gained, changed } = this.processLine(this.matrix[row]);
 
       if (changed) {
         this.matrix[row] = line;
@@ -137,7 +143,7 @@ export class Game {
     let move = false;
 
     for (let row = 0; row < this.matrixSize; row++) {
-      const reverse = this.martix.map((col) => col[row]).reverse();
+      const reverse = this.matrix[row].slice().reverse();
       const { line, gained, changed } = this.processLine(reverse);
       const result = line.slice().reverse();
 
@@ -159,7 +165,7 @@ export class Game {
     let move = false;
 
     for (let col = 0; col < this.matrixSize; col++) {
-      const column = this.martix.map((row) => row[col]);
+      const column = this.matrix.map((row) => row[col]);
       const { line, gained, changed } = this.processLine(column);
 
       if (changed) {
@@ -182,7 +188,7 @@ export class Game {
     let move = false;
 
     for (let col = 0; col < this.matrixSize; col++) {
-      const column = this.martix.map((row) => row[col]).reverse();
+      const column = this.matrix.map((row) => row[col]).reverse();
       const { line, gained, changed } = this.processLine(column);
       const result = line.slice().reverse();
 

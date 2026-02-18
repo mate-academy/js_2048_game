@@ -40,7 +40,7 @@ document.addEventListener('keydown', (e) => {
 
   const newState = game.getState();
 
-  const changed = matricesEqual(oldState, newState);
+  const changed = !matricesEqual(oldState, newState);
 
   if (changed) {
     renderMatrix(newState);
@@ -55,69 +55,69 @@ document.addEventListener('keydown', (e) => {
     for (let i = 0; i < game.matrixSize; i++) {
       for (let j = 0; j < game.matrixSize; j++) {
         if (openMatrix[i][j] !== closeMatrix[i][j]) {
-          return true;
+          return false;
         }
       }
     }
 
-    return false;
+    return true;
+  }
+});
+
+startButton.addEventListener('click', () => {
+  messegeLose?.classList.add('hidden');
+  messageStart?.classList.add('hidden');
+
+  if (game.getStatus() === 'playing') {
+    game.restart();
+  } else {
+    game.start();
   }
 
-  function renderMatrix(matrix) {
-    const cells = document.querySelectorAll('.field-cell');
+  startButton.textContent = 'Restart';
+  startButton.classList.remove('hidden');
+  startButton.classList.add('restart');
 
-    if (cells.length !== Math.pow(game.matrixSize, 2)) {
+  renderMatrix(game.getState());
+  updateGame();
+});
+
+function updateGame() {
+  const gameStatus = game.getStatus();
+
+  messageStart.classList.toggle('hidden', gameStatus !== 'idle');
+
+  messegeLose.classList.toggle('hidden', gameStatus !== 'lose');
+
+  if (messageWin) {
+    messageWin.classList.toggle('hidden', gameStatus !== 'win');
+  }
+}
+
+function renderMatrix(matrix) {
+  const cells = document.querySelectorAll('.field-cell');
+
+  if (cells.length !== Math.pow(game.matrixSize, 2)) {
+    return;
+  }
+
+  matrix.flat().forEach((value, index) => {
+    const cell = cells[index];
+
+    if (!cell) {
       return;
     }
 
-    matrix.flat().forEach((value, index) => {
-      const cell = cells[index];
-
-      if (!cell) {
-        return;
-      }
-
-      cell.textContent = value || '';
-      cell.className.add(`field-cell--${value}`);
-    });
-    renderScore(game.getScore());
-  }
-
-  function renderScore(score) {
-    const scoreElement = document.querySelector('.game-score');
-
-    if (scoreElement) {
-      scoreElement.textContent = score;
-    }
-  }
-
-  function updateGame() {
-    const gameStatus = game.getStatus();
-
-    messageStart.classList.toggle('hidden', gameStatus !== 'idle');
-
-    messegeLose.classList.toggle('hidden', gameStatus !== 'lose');
-
-    if (messageWin) {
-      messageWin.classList.toggle('hidden', gameStatus !== 'win');
-    }
-  }
-
-  startButton?.addEventListener('click', () => {
-    messegeLose?.classList.add('hidden');
-    messageStart?.classList.add('hidden');
-
-    if (game.getStatus() === 'playing') {
-      game.restart();
-    } else {
-      game.start();
-    }
-
-    startButton.textContent = 'Restart';
-    startButton.classList.remove('hidden');
-    startButton.classList.add('restart');
-
-    renderMatrix(game.getState());
-    updateGame();
+    cell.textContent = value || '';
+    cell.className = `field-cell ${value ? ' field-cell--' + value : ''}`;
   });
-});
+  renderScore(game.getScore());
+}
+
+function renderScore(score) {
+  const scoreElement = document.querySelector('.game-score');
+
+  if (scoreElement) {
+    scoreElement.textContent = score;
+  }
+}
