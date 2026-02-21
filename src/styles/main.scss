@@ -1,187 +1,238 @@
+html {
+  font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 10px;
+  text-align: center;
+  color: #776e65;
+
+  --cell-size: 75px;
+  --gap: 10px;
+
+  @media (min-width: 520px) {
+    --cell-size: 107px;
+    --gap: 15px;
+
+    font-size: 15px;
+  }
+
+  --field-size: calc(4 * var(--cell-size) + 5 * var(--gap));
+}
+
 body {
   margin: 0;
+  padding: 0;
+  background-color: #faf8ef;
+}
+
+.header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
-  font-size: 24px;
-  font-weight: 900;
-}
-
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
-}
-
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
-}
-
-.game-header {
-  display: flex;
-  width: 100%;
   justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
-  box-sizing: border-box;
+  width: 100vh;
+  margin-inline: auto;
+  margin-bottom: 96px;
 }
 
-h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
+.title {
+  font-size: 3rem;
+  margin: 2rem 0;
+}
+
+.scores {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  margin: 0;
+  gap: 8px;
 }
 
-.info {
+.score-box {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
+  background: #ede8df;
+  border-radius: 8px;
+  padding: 8px 16px;
+  min-width: 64px;
+  border: 1px solid #d6cdc4;
 }
 
-.controls {
-  display: flex;
-}
-
-.button {
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  color: #f9f6f2;
-  font-family: sans-serif;
+.score-label {
+  font-size: 12px;
   font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
-
-  transition: 0.25s ease background;
+  color: #9f8c7a;
+  letter-spacing: 1px;
 }
 
-.start {
-  background: #1dae28;
-  font-size: 20px;
-
-  &:hover {
-    background: #179921;
-  }
+.game-score,
+.game-best {
+  font-size: 22px;
+  font-weight: 900;
+  color: #776e65;
 }
 
-.restart {
-  background: #f1b2b2;
-
-  &:hover {
-    background: #f87474;
-  }
+.game {
+  position: relative;
+  width: var(--field-size);
+  height: var(--field-size);
+  margin: 2em auto;
 }
 
 .message {
-  box-sizing: border-box;
-  width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
-  padding: 10px;
-  text-align: center;
-  border-radius: 5px;
-  font-size: 20px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  font-weight: bold;
+  font-size: 4rem;
+  background-color: rgba(238, 228, 218, 0.73);
+
+  transition: opacity 1s ease-in-out;
+
+  p {
+    margin: 0;
+  }
 }
 
 .hidden {
-  display: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
-}
+.button {
+  display: inline-block;
+  padding: 10px 20px;
 
-.message-win {
-  background: #edc22e;
+  border: 0;
+  border-radius: 3px;
+  font-size: 18px;
+  font-weight: bold;
   color: #f9f6f2;
+  background-color: #8f7a66;
+  cursor: pointer;
 }
 
-.message-container {
-  width: 100%;
-  height: 150px;
+.field {
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--gap);
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap);
+  background: #bbada0;
+  border-radius: 6px;
+}
+
+.blank {
+  border-radius: 3px;
+  background: rgba(238, 228, 218, 0.35);
+}
+
+.tiles {
+  position: absolute;
+  left: var(--gap);
+  right: var(--gap);
+  top: var(--gap);
+  bottom: var(--gap);
+}
+
+$tiles:
+  2 #eee4da,
+  4 #eee1c9,
+  8 #f3b27a,
+  16 #f69664,
+  32 #f77c5f,
+  64 #f75f3b,
+  128 #edd073,
+  256 #edcc62,
+  512 #edc950,
+  1024 #edc53f,
+  2048 purple;
+
+.tile {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: transform 100ms ease-in-out;
+
+  &::before {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: var(--cell-size);
+    height: var(--cell-size);
+
+    font-size: calc(55 / 107 * var(--cell-size));
+    font-weight: bold;
+    border-radius: 3px;
+  }
+
+  @each $value, $bgColor in $tiles {
+    &-#{$value}::before {
+      content: '#{$value}';
+      background-color: $bgColor;
+
+      @if ($value > 4) {
+        color: #f9f6f2;
+      }
+
+      @if ($value > 64) {
+        font-size: calc(45 / 107 * var(--cell-size));
+      }
+
+      @if ($value > 512) {
+        font-size: calc(35 / 107 * var(--cell-size));
+      }
+    }
+  }
+
+  @for $x from 0 through 3 {
+    @for $y from 0 through 3 {
+      &-x#{$x}-y#{$y} {
+        transform: translate(
+          calc(#{$x} * (var(--cell-size) + var(--gap))),
+          calc(#{$y} * (var(--cell-size) + var(--gap)))
+        );
+      }
+    }
+  }
+
+  &-new::before {
+    animation: appear 200ms ease 100ms;
+    animation-fill-mode: backwards;
+  }
+
+  &-merged::before {
+    animation: pop 200ms ease 100ms;
+    animation-fill-mode: backwards;
+  }
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
