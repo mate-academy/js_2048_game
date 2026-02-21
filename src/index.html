@@ -13,58 +13,58 @@
     />
   </head>
   <body>
-    <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score:
-            <span class="game-score">0</span>
-          </p>
-          <button class="button start">Start</button>
+    <header class="header">
+      <h1 class="title">2048</h1>
+      <div class="scores">
+        <div class="score-box">
+          <span class="score-label">SCORE</span>
+          <span class="game-score">0</span>
+        </div>
+        <div class="score-box">
+          <span class="score-label">BEST</span>
+          <span class="game-best">0</span>
         </div>
       </div>
+      <div>
+        <button class="button button-retry">Restart</button>
+      </div>
+    </header>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+    <div class="game">
+      <div class="field">
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+        <div class="blank"></div>
+      </div>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+      <div class="tiles"></div>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+      <div class="message message-loss hidden">
+        <p>Game over!</p>
+        <button class="button button-retry">Try again</button>
+      </div>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">
-          Press "Start" to begin game. Good luck!
-        </p>
+      <div class="message message-win hidden">
+        <p>You won!!!!</p>
+        <button class="button button-continue">Continue</button>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
