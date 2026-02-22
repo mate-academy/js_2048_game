@@ -12,7 +12,9 @@ button.addEventListener('click', (e) => {
   game.start();
 
   if (button.classList.contains('start')) {
-    startMessage.classList.add('hidden');
+    if (!startMessage.classList.contains('.hidden')) {
+      startMessage.classList.add('hidden');
+    }
 
     button.classList.replace('start', 'restart');
     button.textContent = 'Restart';
