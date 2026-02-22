@@ -27,8 +27,6 @@ button.addEventListener('click', (e) => {
     if (!winMessage.classList.contains('hidden')) {
       winMessage.classList.add('hidden');
     }
-    button.classList.replace('restart', 'start');
-    button.textContent = 'Start';
   }
 
   renderTable();
