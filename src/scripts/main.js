@@ -8,18 +8,14 @@ const button = document.querySelector('.button');
 
 button.addEventListener('click', (e) => {
   const startMessage = document.querySelector('.message-start');
+  game.start();
 
   if (button.classList.contains('start')) {
     startMessage.classList.add('hidden');
 
     button.classList.replace('start', 'restart');
     button.textContent = 'Restart';
-
-    game.start();
   } else {
-    game.restart();
-
-    startMessage.remove('hidden');
     const loseMessage = document.querySelector('.message-lose');
     const winMessage = document.querySelector('.message-win');
 
