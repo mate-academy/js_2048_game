@@ -8,6 +8,7 @@ const button = document.querySelector('.button');
 
 button.addEventListener('click', (e) => {
   const startMessage = document.querySelector('.message-start');
+
   game.start();
 
   if (button.classList.contains('start')) {

@@ -41,6 +41,7 @@ class Game {
     const finalMatrix = this.#transformMatrix(this.board);
 
     const isChanged = this.#isMatrixChanged(finalMatrix);
+
     this.board = this.#putRandomNumber(1, finalMatrix, isChanged);
 
     this.#gameOver(this.board);
@@ -58,6 +59,7 @@ class Game {
     const finalMatrix = this.#reverseMatrix(transformedMatrix);
 
     const isChanged = this.#isMatrixChanged(finalMatrix);
+
     this.board = this.#putRandomNumber(1, finalMatrix, isChanged);
 
     return isChanged;
@@ -72,9 +74,11 @@ class Game {
     const finalMatrix = this.#transpose(transformedMatrix);
 
     const isChanged = this.#isMatrixChanged(finalMatrix);
+
     this.board = this.#putRandomNumber(1, finalMatrix, isChanged);
 
     this.#gameOver(this.board);
+
     return isChanged;
   }
   moveDown() {
@@ -89,9 +93,11 @@ class Game {
     const finalMatrix = this.#transpose(transformedReversedMatrix);
 
     const isChanged = this.#isMatrixChanged(finalMatrix);
+
     this.board = this.#putRandomNumber(1, finalMatrix, isChanged);
 
     this.#gameOver(this.board);
+
     return isChanged;
   }
 
