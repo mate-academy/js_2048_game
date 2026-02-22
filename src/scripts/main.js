@@ -7,10 +7,10 @@ const game = new Game();
 const button = document.querySelector('.button');
 
 button.addEventListener('click', (e) => {
-  if (button.classList.contains('start')) {
-    const startMessage = document.querySelector('.message-start');
+  const startMessage = document.querySelector('.message-start');
 
-    startMessage.hidden = true;
+  if (button.classList.contains('start')) {
+    startMessage.classList.add('hidden');
 
     button.classList.replace('start', 'restart');
     button.textContent = 'Restart';
@@ -19,9 +19,17 @@ button.addEventListener('click', (e) => {
   } else {
     game.restart();
 
-    const startMessage = document.querySelector('.message-start');
+    startMessage.remove('hidden');
+    const loseMessage = document.querySelector('.message-lose');
+    const winMessage = document.querySelector('.message-win');
 
-    startMessage.hidden = false;
+    if (!loseMessage.classList.contains('hidden')) {
+      loseMessage.classList.add('hidden');
+    }
+
+    if (!winMessage.classList.contains('hidden')) {
+      winMessage.classList.add('hidden');
+    }
 
     button.classList.replace('restart', 'start');
     button.textContent = 'Start';
