@@ -21,15 +21,12 @@ button.addEventListener('click', (e) => {
   } else {
     const loseMessage = document.querySelector('.message-lose');
     const winMessage = document.querySelector('.message-win');
-
     if (!loseMessage.classList.contains('hidden')) {
       loseMessage.classList.add('hidden');
     }
-
     if (!winMessage.classList.contains('hidden')) {
       winMessage.classList.add('hidden');
     }
-
     button.classList.replace('restart', 'start');
     button.textContent = 'Start';
   }
