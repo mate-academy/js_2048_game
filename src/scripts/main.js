@@ -1,14 +1,15 @@
 'use strict';
 
-const Game = require('../modules/Game.class');
+import Game from '../modules/Game.class.js';
+
 const game = new Game();
 
 const cells = document.querySelectorAll('.field-cell');
-const scoreElement = document.querySelector('.score');
+const scoreElement = document.querySelector('.game-score');
 const mainButton = document.querySelector('button');
-const startMessage = document.querySelector('.start-message');
-const winMessage = document.querySelector('.win-message');
-const gameOverMessage = document.querySelector('.game-over-message');
+const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const gameOverMessage = document.querySelector('.message-lose');
 
 function updateUI() {
   const state = game.getState();

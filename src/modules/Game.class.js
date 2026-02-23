@@ -2,10 +2,13 @@
 
 class Game {
   constructor(initialState) {
+    this.initialState = initialState
+      ? initialState.map((row) => [...row])
+      : null;
+
     if (initialState) {
       this.board = initialState.map((row) => [...row]);
     } else {
-      // Usando matriz explícita para o Prettier não reclamar dos espaços
       this.board = [
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -19,8 +22,9 @@ class Game {
   }
 
   getState() {
-    return this.board;
+    return this.board.map((row) => [...row]);
   }
+
   getScore() {
     return this.score;
   }
@@ -40,16 +44,22 @@ class Game {
   }
 
   restart() {
-    this.board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    this.score = 0;
-    this.status = 'playing';
-    this.addRandomTile();
-    this.addRandomTile();
+    if (this.initialState) {
+      this.board = this.initialState.map((row) => [...row]);
+      this.score = 0;
+      this.status = 'playing';
+    } else {
+      this.board = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
+      this.score = 0;
+      this.status = 'playing';
+      this.addRandomTile();
+      this.addRandomTile();
+    }
   }
 
   addRandomTile() {
@@ -183,4 +193,4 @@ class Game {
   }
 }
 
-module.exports = Game;
+export default Game;
