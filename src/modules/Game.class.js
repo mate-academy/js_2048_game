@@ -19,6 +19,8 @@ class Game {
 
     this.score = 0;
     this.status = 'idle';
+
+    this.hasMoved = false;
   }
 
   getState() {
@@ -31,10 +33,13 @@ class Game {
   getStatus() {
     return this.status;
   }
-
+  getHasMoved() {
+    return this.hasMoved;
+  }
   start() {
     if (this.status === 'idle') {
       this.status = 'playing';
+      this.hasMoved = false;
 
       if (this.board.flat().every((cell) => cell === 0)) {
         this.addRandomTile();
@@ -48,6 +53,7 @@ class Game {
       this.board = this.initialState.map((row) => [...row]);
       this.score = 0;
       this.status = 'playing';
+      this.hasMoved = false;
     } else {
       this.board = [
         [0, 0, 0, 0],
@@ -57,6 +63,7 @@ class Game {
       ];
       this.score = 0;
       this.status = 'playing';
+      this.hasMoved = false;
       this.addRandomTile();
       this.addRandomTile();
     }
@@ -83,6 +90,7 @@ class Game {
 
   slideAndMerge(row) {
     const newRow = row.filter((val) => val !== 0);
+
     let changed = false;
 
     for (let i = 0; i < newRow.length - 1; i++) {
@@ -143,6 +151,7 @@ class Game {
 
     if (boardChanged) {
       this.board = tempBoard;
+      this.hasMoved = true;
       this.addRandomTile();
       this.updateStatus();
     }

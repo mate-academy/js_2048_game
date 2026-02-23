@@ -15,6 +15,7 @@ function updateUI() {
   const state = game.getState();
   const gameStatus = game.getStatus();
   const score = game.getScore();
+  const hasMoved = game.getHasMoved();
 
   if (scoreElement) {
     scoreElement.textContent = score;
@@ -26,6 +27,10 @@ function updateUI() {
     for (let c = 0; c < 4; c++) {
       const value = state[r][c];
       const cell = cells[cellIndex];
+
+      if (!cell) {
+        continue;
+      }
 
       cell.className = 'field-cell';
 
@@ -39,9 +44,9 @@ function updateUI() {
     }
   }
 
-  const mensagens = [startMessage, winMessage, gameOverMessage];
+  const messages = [startMessage, winMessage, gameOverMessage];
 
-  mensagens.forEach((msg) => {
+  messages.forEach((msg) => {
     if (msg) {
       msg.classList.add('hidden');
     }
@@ -59,9 +64,15 @@ function updateUI() {
     }
   } else if (gameStatus === 'playing') {
     if (mainButton) {
-      mainButton.textContent = 'Restart';
-      mainButton.classList.add('restart');
-      mainButton.classList.remove('start');
+      if (hasMoved) {
+        mainButton.textContent = 'Restart';
+        mainButton.classList.add('restart');
+        mainButton.classList.remove('start');
+      } else {
+        mainButton.textContent = 'Start';
+        mainButton.classList.add('start');
+        mainButton.classList.remove('restart');
+      }
     }
   } else if (gameStatus === 'win') {
     if (winMessage) {
