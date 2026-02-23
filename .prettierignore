@@ -1,3 +1,14 @@
 /node_modules
 /dist
 **/*.test.js
+# Ігнорувати весь файл тестів
+tests/**
+# Ігнорувати один конкретний файл
+src/scripts/main.js
+# Ігнорувати всю папку Node
+node_modules
+# Ігнорувати директорії збірки
+dist
+build
+# .prettierignore
+/src/modules/Game.class.js
