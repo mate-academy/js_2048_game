@@ -135,7 +135,8 @@ class Game {
   start() {
     this.board = this.initialState;
     this.status = 'playing';
-
+    this.score = 0;
+    
     const newMatrix = this.#putRandomNumber(2, this.board);
 
     this.board = newMatrix;
