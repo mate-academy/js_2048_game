@@ -41,12 +41,18 @@ function updateGameField() {
 
       cell.textContent = value === 0 ? '' : value;
 
-      // Remove any previous value class, then add the new one
-      cell.classList.remove(`value-${cell.dataset.prevValue}`);
+      // 1. Removemos a classe antiga usando o novo padrão
+      if (cell.dataset.prevValue) {
+        cell.classList.remove(`field-cell--${cell.dataset.prevValue}`);
+      }
 
+      // 2. Adicionamos a nova classe se o valor não for zero
       if (value !== 0) {
-        cell.classList.add(`value-${value}`);
-        cell.dataset.prevValue = value;
+        cell.classList.add(`field-cell--${value}`);
+        cell.dataset.prevValue = value; // Armazena para a próxima limpeza
+      } else {
+        // Se o valor for 0, limpamos o dataset para não remover field-cell--0
+        delete cell.dataset.prevValue;
       }
     }
   }

@@ -223,34 +223,37 @@ class Game {
 
   // src/modules/Game.class.js
 
-checkGameOver() {
-  // 1. Se ainda houver zeros, o jogo não acabou
-  for (let row = 0; row < 4; row++) {
-    if (this.currentState[row].includes(0)) return false;
-  }
-
-  // 2. Verificação de movimentos horizontais (em todas as linhas)
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 3; col++) { // col vai até 2 para comparar com col + 1
-      if (this.currentState[row][col] === this.currentState[row][col + 1]) {
+  checkGameOver() {
+    // 1. Se ainda houver zeros, o jogo continua
+    for (let row = 0; row < 4; row++) {
+      if (this.currentState[row].includes(0)) {
         return false;
       }
     }
-  }
 
-  // 3. Verificação de movimentos verticais (em todas as colunas)
-  for (let row = 0; row < 3; row++) { // row vai até 2 para comparar com row + 1
-    for (let col = 0; col < 4; col++) {
-      if (this.currentState[row][col] === this.currentState[row + 1][col]) {
-        return false;
+    // 2. Verificação de movimentos horizontais
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 3; col++) {
+        if (this.currentState[row][col] === this.currentState[row][col + 1]) {
+          return false;
+        }
       }
     }
-  }
 
-  // Se chegou aqui, não há zeros nem movimentos possíveis
-  this.gameStatus = 'over';
-  return true;
-}
+    // 3. Verificação de movimentos verticais
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.currentState[row][col] === this.currentState[row + 1][col]) {
+          return false;
+        }
+      }
+    }
+
+    // Se o código chegar até aqui, não há mais jogadas
+    this.gameStatus = 'lose'; // Alterado de 'over' para 'lose'
+
+    return true;
+  }
 }
 
 module.exports = Game;
