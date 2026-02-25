@@ -41,10 +41,12 @@ function updateGameField() {
 
       cell.textContent = value === 0 ? '' : value;
 
-      cell.className = 'field-cell';
+      // Remove any previous value class, then add the new one
+      cell.classList.remove(`value-${cell.dataset.prevValue}`);
 
       if (value !== 0) {
-        cell.classList.add(`field-cell--${value}`);
+        cell.classList.add(`value-${value}`);
+        cell.dataset.prevValue = value;
       }
     }
   }
