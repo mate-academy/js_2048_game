@@ -19,7 +19,11 @@ const render = () => {
   cells.forEach((cellElement, index) => {
     const cellValue = board[index];
 
-    cellElement.className = 'field-cell';
+    Array.from(cellElement.classList).forEach((currentClass) => {
+      if (currentClass.startsWith('field-cell--')) {
+        cellElement.classList.remove(currentClass);
+      }
+    });
 
     if (cellValue > 0) {
       cellElement.textContent = cellValue;
