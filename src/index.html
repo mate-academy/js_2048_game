@@ -9,7 +9,7 @@
     <title>2048</title>
     <link
       rel="stylesheet"
-      href="./styles/main.scss"
+      href="./styles/main.css"
     />
   </head>
   <body>
@@ -21,7 +21,7 @@
             Score:
             <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button class="button start start-mode">Start</button>
         </div>
       </div>
 
@@ -59,12 +59,24 @@
 
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
+        <!doctype html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <title>title</title>
+          </head>
+          <body></body>
+        </html>
         <p class="message message-win hidden">Winner! Congrats! You did it!</p>
         <p class="message message-start">
           Press "Start" to begin game. Good luck!
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <!-- <script type="module" src="./src/scripts/main.js"></script> -->
+    <script
+      type="module"
+      src="./scripts/main-refactor.js"
+    ></script>
   </body>
 </html>
