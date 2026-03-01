@@ -23,6 +23,10 @@ class Game {
   constructor(initialState) {
     // eslint-disable-next-line no-console
     console.log(initialState);
+
+    this.isInitial = !!initialState;
+    this.initialState = initialState;
+    this.createEmptyField();
   }
 
   moveLeft() {}
@@ -33,12 +37,16 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.field;
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +58,73 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = 'playing';
+
+    if (!this.isInitial) {
+      this.addRandomTile();
+      this.addRandomTile();
+    }
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.createEmptyField();
+  }
 
-  // Add your own methods here
+  addRandomTile() {
+    const coordinates = this.getEmptyCellCoords();
+
+    if (coordinates.length === 0) {
+      return;
+    }
+
+    const cellIndex = Math.floor(Math.random() * coordinates.length);
+    const value = Math.random() < 0.9 ? 2 : 4;
+    const { r, c } = coordinates[cellIndex];
+
+    this.field[r][c] = value;
+  }
+
+  getEmptyCellCoords() {
+    const coordinates = [];
+
+    for (let rowIndex = 0; rowIndex < this.field.length; rowIndex++) {
+      for (
+        let colIndex = 0;
+        colIndex < this.field[rowIndex].length;
+        colIndex++
+      ) {
+        if (this.field[rowIndex][colIndex] === 0) {
+          coordinates.push({ r: rowIndex, c: colIndex });
+        }
+      }
+    }
+
+    return coordinates;
+  }
+
+  createEmptyField() {
+    this.field = this.initialState
+      ? JSON.parse(JSON.stringify(this.initialState))
+      : [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
+    this.score = 0;
+    this.status = 'idle';
+  }
 }
 
 module.exports = Game;
