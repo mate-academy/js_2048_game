@@ -1,5 +1,4 @@
 'use strict';
-// import { game } from '../scripts/main.js';
 
 const buttonStart = document.querySelector('button.start');
 const scoreEl = document.querySelector('.game-score');
@@ -47,6 +46,7 @@ class Game {
     this.addRandomTile();
     this.render();
     this.getScore();
+    this.updateMainButton();
   }
 
   hideAllMessages() {
@@ -77,18 +77,28 @@ class Game {
   render() {
     const rows = document.querySelectorAll('.field-row');
 
-    rows.forEach((row, indexRow) => {
-      const cells = row.querySelectorAll('.field-cell');
+    rows.forEach((rowEl, rowIndex) => {
+      const cells = rowEl.querySelectorAll('.field-cell');
 
-      cells.forEach((cell, indexCell) => {
-        cell.textContent =
-          this.board[indexRow][indexCell] === 0
-            ? ''
-            : this.board[indexRow][indexCell];
+      cells.forEach((cellEl, colIndex) => {
+        const value = this.board[rowIndex][colIndex];
+
+        cellEl.textContent = value === 0 ? '' : String(value);
+
+        cellEl.classList.forEach((cls) => {
+          if (cls.startsWith('field-cell--')) {
+            cellEl.classList.remove(cls);
+          }
+        });
+
+        if (value !== 0) {
+          cellEl.classList.add(`field-cell--${value}`);
+        }
       });
     });
 
     this.checkedWin();
+
   }
 
   checkedWin() {
@@ -112,6 +122,7 @@ class Game {
     loseText.classList.add('hidden');
     winText.classList.remove('hidden');
     startText.classList.add('hidden');
+    this.updateMainButton();
   }
 
   getScore() {
@@ -142,23 +153,23 @@ class Game {
         this.moveDown();
       }
 
-      const changedBoard =
+      const changedBoard = 
         JSON.stringify(prevBoard) !== JSON.stringify(this.board);
 
-      if (changedBoard) {
-        if (!this.firstMove) {
-          this.firstMove = true;
-          buttonStart.textContent = 'Restart';
-        }
-        this.addRandomTile();
-        this.render();
-        this.getScore();
-
-        if (this.getGameOver()) {
-          this.status = 'lose';
-          this.showLoseMessage();
-        }
+      if (!changedBoard) {
+        return;
       }
+
+      this.addRandomTile();
+      this.render();
+      this.getScore();
+
+      if (this.status !== 'win' && this.getGameOver()) {
+        this.status = 'lose';
+        this.showLoseMessage();
+      };
+
+      this.updateMainButton();
     });
   }
 
@@ -322,9 +333,19 @@ class Game {
     this.status = 'idle';
     this.firstMove = false;
     this.hideAllMessages();
-    buttonStart.textContent = 'Start';
+    startText.classList.remove('hidden');
     this.render();
     this.getScore();
+    this.updateMainButton();
+  }
+
+  updateMainButton() {
+    const isRestartMode = this.status !== 'idle';
+
+    buttonStart.classList.toggle('start', !isRestartMode);
+    buttonStart.classList.toggle('restart', isRestartMode);
+
+    buttonStart.textContent = isRestartMode ? 'Restart' : 'Start';
   }
 }
 
