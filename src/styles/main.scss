@@ -10,6 +10,11 @@ body {
   font-weight: 900;
 }
 
+@keyframes appear {
+  from {transform: scale(0);}
+  to {transform: scale(1);}
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -20,6 +25,11 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all 0.1s ease;
+
+  &--new {
+    animation: appear 0.3s ease;
+  }
 
   &--2 {
     background: #eee4da;
