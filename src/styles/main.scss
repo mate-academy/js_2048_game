@@ -10,6 +10,13 @@ body {
   font-weight: 900;
 }
 
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -20,6 +27,9 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+
+  transition: 100ms;
+  animation: show 200ms;
 
   &--2 {
     background: #eee4da;
