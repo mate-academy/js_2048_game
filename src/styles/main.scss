@@ -1,3 +1,42 @@
+@keyframes pulse-restart {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.7;
+    background-color: #d6cdc4;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 body {
   margin: 0;
   display: flex;
@@ -18,8 +57,17 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
+  transition: all 0.15s ease-in-out;
+
+  &.tile-new {
+    animation: appear 200ms ease-in-out;
+  }
+
+  &.tile-merged {
+    animation: pop 200ms ease-in-out;
+  }
 
   &--2 {
     background: #eee4da;
@@ -131,7 +179,7 @@ h1 {
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
+  width: 80px;
   height: 75px;
 
   transition: 0.25s ease background;
@@ -152,6 +200,11 @@ h1 {
   &:hover {
     background: #f87474;
   }
+}
+
+.highlight-restart {
+  animation: pulse-restart 1.5s infinite ease-in-out;
+  box-shadow: 0 0 15px rgba(143, 122, 102, 0.5);
 }
 
 .message {
