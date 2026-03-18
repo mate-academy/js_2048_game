@@ -11,64 +11,68 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
+  position: absolute;
   width: 75px;
   height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #786a58;
+
+  transition:
+    top 150ms ease-in-out,
+    left 150ms ease-in-out,
+    background-color 100ms;
+  z-index: 10;
+  will-change: top, left;
+
+  &.cell-appear {
+    animation: appear 200ms ease-out forwards;
+  }
+
+  &.cell-merge {
+    animation: merge 150ms ease-in-out forwards;
+  }
 
   &--2 {
     background: #eee4da;
   }
-
   &--4 {
-    background: #ede0c8;
+    background: #fdda9a;
   }
-
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
   }
-
   &--16 {
     background: #f59563;
     color: #f9f6f2;
   }
-
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
   }
-
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
   }
-
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
   }
-
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
   }
-
   &--512 {
     background: #edc850;
     color: #f9f6f2;
   }
-
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
   }
-
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
@@ -76,9 +80,26 @@ body {
 }
 
 .game-field {
+  position: relative;
+
+  width: 350px;
+  height: 350px;
+  padding: 10px;
   background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
+  box-sizing: border-box;
+
+  display: grid;
+  grid-template-columns: repeat(4, 75px);
+  grid-template-rows: repeat(4, 75px);
+  grid-gap: 10px;
+}
+
+.grid-cell {
+  width: 75px;
+  height: 75px;
+  background: rgba(238, 228, 218, 0.35);
+  border-radius: 10px;
 }
 
 .game-header {
@@ -91,11 +112,10 @@ body {
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
+  color: rgb(102, 89, 71);
   width: 75px;
   height: 75px;
-  font-size: 24px;
+  font-size: 50px;
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -109,11 +129,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #f59563;
+  color: #fdeeda;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -138,19 +158,24 @@ h1 {
 }
 
 .start {
-  background: #1dae28;
+  color: rgb(102, 89, 71);
+  background: #fbe9b0;
+  border: 2px solid rgb(203, 199, 193);
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background-color: #f7e085;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #fbe9b0;
+  color: #443623;
+  border: 2px solid rgb(231, 223, 214);
+  font-size: 20px;
 
   &:hover {
-    background: #f87474;
+    background-color: #f7e085;
   }
 }
 
@@ -184,4 +209,40 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.cell-appear {
+  animation: appear 200ms ease-out;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@for $r from 0 through 3 {
+  @for $c from 0 through 3 {
+    .pos-#{$r}-#{$c} {
+      top: 10px + ($r * 85px);
+      left: 10px + ($c * 85px);
+    }
+  }
 }
