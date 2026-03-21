@@ -1,7 +1,9 @@
 'use strict';
 
 // Uncomment the next lines to use your game instance in the browser
-const Game = require('../modules/Game.class');
+import Game from '../modules/Game.class.js';
+// const Game = require('../modules/Game.class');
+
 const game = new Game();
 
 const actionBtn = document.querySelector('.button');
@@ -39,6 +41,7 @@ function renderField() {
     fieldCells[i].textContent = '';
 
     const el = fieldCells[i];
+    const value = fieldValues[i];
 
     for (const cls of [...el.classList]) {
       if (cls.startsWith('field-cell--')) {
@@ -46,9 +49,9 @@ function renderField() {
       }
     }
 
-    if (el !== 0) {
-      el.textContent = fieldValues[i];
-      el.classList.add(`field-cell--${fieldValues[i]}`);
+    if (value !== 0) {
+      el.textContent = value;
+      el.classList.add(`field-cell--${value}`);
     }
   }
 }

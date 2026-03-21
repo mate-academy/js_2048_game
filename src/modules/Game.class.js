@@ -314,4 +314,8 @@ class Game {
   // Add your own methods here
 }
 
-module.exports = Game;
+export default Game;
+
+if (typeof module !== 'undefined') {
+  module.exports = Game;
+}
