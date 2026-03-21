@@ -316,6 +316,6 @@ class Game {
 
 export default Game;
 
-if (typeof module !== 'undefined') {
-  module.exports = Game;
-}
+// if (typeof module !== 'undefined') {
+//   module.exports = Game;
+// }
