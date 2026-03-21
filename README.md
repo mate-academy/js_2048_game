@@ -1,69 +1,118 @@
-# 2048 game
+# 2048 Game
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+A browser-based implementation of the classic [2048](https://play2048.co/) puzzle game, built with vanilla JavaScript using an object-oriented `Game` class for all game logic.
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+🎮 **[DEMO LINK](https://<your_account>.github.io/js_2048_game/)**
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
-  - constructor with `initialState` parameter (value is optional, defaults to the empty board)
-  - `getState()`
-  - `getScore()`
-  - `getStatus()`
-  - `moveLeft()`
-  - `moveRight()`
-  - `moveUp()`
-  - `moveDown()`
-  - `start()`
-  - `restart()`
+> Replace `<your_account>` with your GitHub username before publishing.
 
-3) Reference.
+---
 
-That's it!
+## About the Game
 
-Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) `Restart` button should reset the game to the initial state.
-12) Increase score with each move. The score should be increased by the sum of all merged cells.
-13) The game consists of 2 main parts:
-  - game logic written in `src/modules/Game.class.js` module that exports `Game` class
-  - game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
+Slide numbered tiles on a 4×4 grid to merge matching values. Reach the **2048** tile to win!
 
-Hints:
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
-- Use `keydown` event and `event.key` property to handle arrow buttons presses
-    ```js
-    document.addEventListener('keydown', event => console.log(event.key));
-    ```
-- Adding animation to the game is optional. It is a bit tricky, but you can try it if you want. Probably, you will need to extend the Game class with additional methods and create a separate board storage with Tile entities to operate their corresponding DOM elements' positions.
+**Rules:**
 
-You can change the HTML/CSS layout if you need it.
+- Use arrow keys to slide all tiles in a direction
+- Two equal adjacent tiles merge into their doubled value — but only once per move
+- After each valid move, a new tile (2 or 4) appears in a random empty cell (4 has a 10% probability)
+- The game ends when no moves are left
+- Your score increases by the sum of all merged tiles each move
 
-![Preview](./src/images/reference.png)
+---
+
+## Project Structure
+
+```
+src/
+├── index.html              # Game markup
+├── modules/
+│   └── Game.class.js       # Core game logic (state, moves, score, status)
+├── scripts/
+│   └── main.js             # UI layer — renders board, handles input
+└── styles/
+    └── main.scss           # Game styles
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) v14 or higher
+- npm (comes with Node.js)
+
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/<your_account>/js_2048_game.git
+
+# 2. Navigate into the project folder
+cd js_2048_game
+
+# 3. Install dependencies
+npm install
+```
+
+### Running Locally
+
+```bash
+npm start
+```
+
+Then open [http://localhost:3000](http://localhost:3000) in your browser (or whichever port your dev server uses).
+
+---
+
+## Running Tests
+
+```bash
+# Full test suite (includes linter)
+npm run test
+
+# Fast test, linter skipped
+npm run test:only -- -n
+
+# Fast test with extra console output, linter skipped
+npm run test:only -- -l
+```
+
+---
+
+## Implementation Details
+
+### `Game` class (`src/modules/Game.class.js`)
+
+| Method                       | Description                                             |
+| ---------------------------- | ------------------------------------------------------- |
+| `constructor(initialState?)` | Creates a new game; defaults to an empty 4×4 board      |
+| `start()`                    | Sets status to `'playing'` and spawns two initial tiles |
+| `restart()`                  | Resets board, score, and status; spawns two new tiles   |
+| `moveLeft()`                 | Slides all tiles left                                   |
+| `moveRight()`                | Slides all tiles right                                  |
+| `moveUp()`                   | Slides all tiles up                                     |
+| `moveDown()`                 | Slides all tiles down                                   |
+| `getState()`                 | Returns a copy of the current 4×4 board                 |
+| `getScore()`                 | Returns the current score                               |
+| `getStatus()`                | Returns `'idle'`, `'playing'`, `'win'`, or `'lose'`     |
+
+### UI (`src/scripts/main.js`)
+
+- Listens for `keydown` events on the four arrow keys
+- Calls the appropriate `Game` method and re-renders the board
+- Toggles `hidden` class on win/lose/start messages
+- Switches the button between `Start` and `Restart` styles
+
+---
 
 ## Deploy and Pull Request
 
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+1. Replace `<your_account>` with your GitHub username in the demo link at the top of this file.
+2. Follow the [task guidelines](https://mate-academy.github.io/layout_task-guideline/) for submitting a pull request.
 
+---
+
+[DEMO LINK](https://vovanchu.github.io/js_2048_game/)
