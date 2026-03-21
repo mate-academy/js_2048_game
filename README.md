@@ -115,4 +115,4 @@ npm run test:only -- -l
 
 ---
 
-![Preview](https://vovanchu.github.io/js_2048_game/)
+[DEMO LINK](https://vovanchu.github.io/js_2048_game/)
