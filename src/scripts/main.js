@@ -47,11 +47,18 @@ function fillBoard(state) {
 
     for (let colIndex = 0; colIndex <= LASTINDEX; colIndex++) {
       const cell = HTMLRow.children[colIndex];
-      const value = stateRow[colIndex];
+      let value = stateRow[colIndex];
 
-      // const prevValue = cell.innerText;
+      let className = `field-cell`;
+
+      if (value === 0) {
+        value = '';
+      } else {
+        className += ' ' + `field-cell--${value}`;
+      }
+
       cell.innerText = value;
-      cell.className = `field-cell field-cell--${value}`;
+      cell.className = className;
     }
   }
 }
@@ -114,7 +121,14 @@ const messageStart = document.querySelector('.message-start');
 
 // > Listeners
 
+// touch events turned out to be much harder than key events.
 document.addEventListener('keydown', (e) => {
+  const key = CONTROLS[e.code];
+
+  if (key === undefined) {
+    return;
+  }
+
   if (currentStatus === STATUSES.LOSE) {
     return;
   }
@@ -122,12 +136,6 @@ document.addEventListener('keydown', (e) => {
   if (currentStatus === STATUSES.IDLE) {
     startTheGame(game);
 
-    return;
-  }
-
-  const key = CONTROLS[e.code];
-
-  if (key === undefined) {
     return;
   }
 
