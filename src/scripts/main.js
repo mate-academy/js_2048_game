@@ -1,48 +1,52 @@
-'use strict';
-
-const Game = require('../modules/Game.class');
+import Game from '../modules/Game.class.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.querySelector('button');
+  const scoreEl = document.querySelector('.game-score');
 
   const game = new Game();
 
+  function renderScore() {
+    scoreEl.textContent = game.getScore();
+  }
+
   btn.addEventListener('click', () => {
-    game.start();
+    if (game.getStatus() === 'idle') {
+      game.start();
+    } else {
+      game.restart();
+    }
+
+    game.updateDOM();
   });
 
-  function control(e) {
+  document.addEventListener('keydown', (e) => {
+    if (game.getStatus() !== 'playing') {
+      return;
+    }
+
+    let moved = false;
+
     switch (e.key) {
       case 'ArrowLeft':
-        keyLeft();
+        moved = game.moveLeft();
         break;
       case 'ArrowRight':
-        keyRight();
+        moved = game.moveRight();
         break;
       case 'ArrowUp':
-        keyUp();
+        moved = game.moveUp();
         break;
       case 'ArrowDown':
-        keyDown();
+        moved = game.moveDown();
         break;
+      default:
+        return;
     }
-  }
 
-  document.addEventListener('keydown', control);
-
-  function keyLeft() {
-    game.moveLeft();
-  }
-
-  function keyRight() {
-    game.moveRight();
-  }
-
-  function keyUp() {
-    game.moveUp();
-  }
-
-  function keyDown() {
-    game.moveDown();
-  }
+    if (moved) {
+      game.updateDOM();
+      renderScore();
+    }
+  });
 });

@@ -2,7 +2,6 @@
 'use strict';
 
 const Game = require('../src/modules/Game.class');
-
 function sum(game) {
   let result = 0;
 

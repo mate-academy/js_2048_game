@@ -8,197 +8,18 @@ class Game {
     ],
   ) {
     this.initialState = initialState.map((row) => [...row]);
-    this.state = initialState;
+    this.state = this.initialState.map((row) => [...row]);
     this.score = 0;
     this.status = 'idle';
     this.messages = [...document.querySelectorAll('.message')];
   }
 
-  moveLeft() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    for (let i = 0; i < this.state.length; i++) {
-      let row = this.state[i];
-
-      row = row.filter((val) => val !== 0);
-
-      for (let j = 0; j < row.length - 1; j++) {
-        if (row[j] === row[j + 1]) {
-          row[j] *= 2;
-          this.score += row[j];
-          row[j + 1] = 0;
-          this.moved = true;
-        }
-      }
-
-      row = row.filter((val) => val !== 0);
-
-      while (row.length < 4) {
-        row.push(0);
-      }
-
-      if (row.toString() !== this.state[i].toString()) {
-        this.moved = true;
-      }
-
-      this.state[i] = row;
-    }
-
-    if (this.moved) {
-      this.addRandomTile();
-      this.getScore();
-      this.updateDOM();
-      this.getStatus();
-    }
-  }
-
-  moveRight() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    for (let i = 0; i < this.state.length; i++) {
-      let row = this.state[i];
-
-      row = row.filter((val) => val !== 0);
-      row.reverse();
-
-      for (let j = 0; j < row.length - 1; j++) {
-        if (row[j] === row[j + 1]) {
-          row[j] *= 2;
-          this.score += row[j];
-          row[j + 1] = 0;
-          this.moved = true;
-        }
-      }
-
-      row = row.filter((val) => val !== 0);
-
-      while (row.length < 4) {
-        row.push(0);
-      }
-
-      row.reverse();
-
-      if (row.toString() !== this.state[i].toString()) {
-        this.moved = true;
-      }
-
-      this.state[i] = row;
-    }
-
-    if (this.moved) {
-      this.addRandomTile();
-      this.getScore();
-      this.updateDOM();
-      this.getStatus();
-    }
-  }
-
-  moveUp() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    for (let col = 0; col < 4; col++) {
-      let column = [];
-
-      for (let row = 0; row < 4; row++) {
-        if (this.state[row][col] !== 0) {
-          column.push(this.state[row][col]);
-        }
-      }
-
-      for (let i = 0; i < column.length - 1; i++) {
-        if (column[i] === column[i + 1]) {
-          column[i] *= 2;
-          this.score += column[i];
-          column[i + 1] = 0;
-          this.moved = true;
-        }
-      }
-
-      column = column.filter((val) => val !== 0);
-
-      while (column.length < 4) {
-        column.push(0);
-      }
-
-      for (let row = 0; row < 4; row++) {
-        if (this.state[row][col] !== column[row]) {
-          this.state[row][col] = column[row];
-          this.moved = true;
-        }
-      }
-    }
-
-    if (this.moved) {
-      this.addRandomTile();
-      this.getScore();
-      this.updateDOM();
-      this.getStatus();
-    }
-  }
-
-  moveDown() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    for (let col = 0; col < 4; col++) {
-      let column = [];
-
-      for (let row = 0; row < 4; row++) {
-        if (this.state[row][col] !== 0) {
-          column.push(this.state[row][col]);
-        }
-      }
-
-      for (let i = column.length - 1; i > 0; i--) {
-        if (column[i] === column[i - 1]) {
-          column[i] *= 2;
-          this.score += column[i];
-          column[i - 1] = 0;
-          this.moved = true;
-        }
-      }
-
-      column = column.filter((val) => val !== 0);
-
-      while (column.length < 4) {
-        column.unshift(0);
-      }
-
-      for (let row = 0; row < 4; row++) {
-        if (this.state[row][col] !== column[row]) {
-          this.state[row][col] = column[row];
-          this.moved = true;
-        }
-      }
-    }
-
-    if (this.moved) {
-      this.addRandomTile();
-      this.getScore();
-      this.updateDOM();
-      this.getStatus();
-    }
+  getState() {
+    return this.state;
   }
 
   getScore() {
-    this.gameScore = document.querySelector('.game-score');
-
-    if (this.gameScore) {
-      this.gameScore.innerHTML = this.score;
-    }
-
     return this.score;
-  }
-
-  getState() {
-    return this.state;
   }
 
   getStatus() {
@@ -206,30 +27,16 @@ class Game {
       return 'idle';
     }
 
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (this.state[i][j] === 2048) {
-          this.status = 'win';
+    if (this.hasWinningTile()) {
+      this.status = 'win';
+      this.showMessage('win');
 
-          for (let k = 0; k < this.messages.length; k++) {
-            if (this.messages[k].classList.contains('message-win')) {
-              this.messages[k].classList.remove('hidden');
-            }
-          }
-
-          return 'win';
-        }
-      }
+      return 'win';
     }
 
     if (!this.canMove()) {
       this.status = 'lose';
-
-      for (let k = 0; k < this.messages.length; k++) {
-        if (this.messages[k].classList.contains('message-lose')) {
-          this.messages[k].classList.remove('hidden');
-        }
-      }
+      this.showMessage('lose');
 
       return 'lose';
     }
@@ -239,36 +46,205 @@ class Game {
     return 'playing';
   }
 
-  start() {
-    if (this.status === 'idle') {
-      for (let i = 0; i < this.messages.length; i++) {
-        if (this.messages[i].classList.contains('message-start')) {
-          this.messages[i].classList.add('hidden');
-        }
+  showMessage(type) {
+    for (let m = 0; m < this.messages.length; m++) {
+      if (this.messages[m].classList.contains(`message-${type}`)) {
+        this.messages[m].classList.remove('hidden');
       }
-
-      this.status = 'playing';
-      this.addRandomTile();
-      this.addRandomTile();
-      this.updateDOM();
-      this.updateButton();
-    } else if (this.status === 'playing') {
-      this.restart();
     }
   }
 
-  restart() {
-    this.state = this.initialState;
-    this.score = 0;
-    this.status = 'idle';
+  hiddenMessage(type) {
+    for (let m = 0; m < this.messages.length; m++) {
+      if (this.messages[m].classList.contains(`message-${type}`)) {
+        this.messages[m].classList.add('hidden');
+      }
+    }
+  }
 
-    for (let i = 0; i < this.messages.length; i++) {
-      if (this.messages[i].classList.contains('message-start')) {
-        this.messages[i].classList.remove('hidden');
+  hasWinningTile() {
+    for (let r = 0; r < this.state.length; r++) {
+      for (let c = 0; c < this.state[r].length; c++) {
+        if (this.state[r][c] === 2048) {
+          return true;
+        }
       }
     }
 
+    return false;
+  }
+
+  moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    this.moved = false;
+
+    for (let i = 0; i < this.state.length; i++) {
+      const newRow = this.mergeLine(this.state[i]);
+
+      if (newRow.toString() !== this.state[i].toString()) {
+        this.moved = true;
+      }
+
+      this.state[i] = newRow;
+    }
+
+    if (this.moved) {
+      this.updeteAfterMove();
+    }
+
+    return this.moved;
+  }
+
+  moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    this.moved = false;
+
+    for (let i = 0; i < this.state.length; i++) {
+      const reservedRow = [...this.state[i]].reverse();
+      const newRow = this.mergeLine(reservedRow).reverse();
+
+      if (newRow.toString() !== this.state[i].toString()) {
+        this.moved = true;
+      }
+
+      this.state[i] = newRow;
+    }
+
+    if (this.moved) {
+      this.updeteAfterMove();
+    }
+
+    return this.moved;
+  }
+
+  moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    this.moved = false;
+
+    for (let col = 0; col < 4; col++) {
+      const columns = [];
+
+      for (let row = 0; row < 4; row++) {
+        if (this.state[row][col] !== 0) {
+          columns.push(this.state[row][col]);
+        }
+      }
+
+      const newCol = this.mergeLine(columns);
+
+      for (let row = 0; row < 4; row++) {
+        if (this.state[row][col] !== newCol[row]) {
+          this.state[row][col] = newCol[row];
+          this.moved = true;
+        }
+      }
+    }
+
+    if (this.moved) {
+      this.updeteAfterMove();
+    }
+
+    return this.moved;
+  }
+
+  moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    this.moved = false;
+
+    for (let col = 0; col < 4; col++) {
+      const columns = [];
+
+      for (let row = 0; row < 4; row++) {
+        if (this.state[row][col] !== 0) {
+          columns.push(this.state[row][col]);
+        }
+      }
+
+      const newCol = this.mergeLine(columns.reverse()).reverse();
+
+      for (let row = 0; row < 4; row++) {
+        if (this.state[row][col] !== newCol[row]) {
+          this.state[row][col] = newCol[row];
+          this.moved = true;
+        }
+      }
+    }
+
+    if (this.moved) {
+      this.updeteAfterMove();
+    }
+
+    return this.moved;
+  }
+
+  mergeLine(line) {
+    let arr = line.filter((v) => v !== 0);
+
+    for (let i = 0; i < arr.length - 1; i++) {
+      if (arr[i] === arr[i + 1]) {
+        arr[i] *= 2;
+        this.score += arr[i];
+        arr[i + 1] = 0;
+      }
+    }
+
+    arr = arr.filter((v) => v !== 0);
+
+    while (arr.length < 4) {
+      arr.push(0);
+    }
+
+    return arr;
+  }
+
+  updeteAfterMove() {
+    this.addRandomTile();
     this.getScore();
+    this.updateDOM();
+    this.getStatus();
+
+    return true;
+  }
+
+  start() {
+    if (this.status === 'playing') {
+      return;
+    }
+
+    this.reset();
+    this.status = 'playing';
+
+    this.hiddenMessage('start');
+    this.addRandomTile();
+    this.addRandomTile();
+
+    this.updateDOM();
+    this.updateButton();
+  }
+
+  restart() {
+    this.hiddenMessage('lose');
+    this.reset();
+  }
+
+  reset() {
+    this.state = this.initialState.map((row) => [...row]);
+    this.score = 0;
+    this.status = 'idle';
+
+    this.showMessage('start');
     this.updateDOM();
     this.updateButton();
   }
