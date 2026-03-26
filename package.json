@@ -1,5 +1,6 @@
 {
   "name": "2048",
+  "homepage": "js_2048_game",
   "version": "1.0.0",
   "description": "2048 game",
   "keywords": [],
