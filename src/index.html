@@ -13,7 +13,7 @@
     />
   </head>
   <body>
-    <div class="container">
+    <div class="container" data-js="root">
       <div class="game-header">
         <h1>2048</h1>
         <div class="controls">
@@ -21,7 +21,7 @@
             Score:
             <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button class="button start" data-action="start">Start</button>
         </div>
       </div>
 
@@ -58,13 +58,13 @@
       </table>
 
       <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">
+        <p class="message message-lose hidden" data-message="lose">You lose! Restart the game?</p>
+        <p class="message message-win hidden" data-message="win">Winner! Congrats! You did it!</p>
+        <p class="message message-start" data-message="start">
           Press "Start" to begin game. Good luck!
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script src="scripts/main.js" type="module"></script>
   </body>
 </html>
