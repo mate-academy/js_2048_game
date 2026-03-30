@@ -10,6 +10,18 @@ body {
   font-weight: 900;
 }
 
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -20,6 +32,12 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition: all 0.15s ease-in-out;
+  transform: scale(1);
+
+  &[class*='field-cell--'] {
+    animation: appear 0.2s forwards;
+  }
 
   &--2 {
     background: #eee4da;
@@ -125,16 +143,19 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
-  font-family: sans-serif;
-  font-weight: 700;
-  font-size: 16px;
   width: 75px;
   height: 75px;
-
-  transition: 0.25s ease background;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 5px;
+  transition: background 0.2s ease;
+  color: #776e65;
 }
 
 .start {
@@ -148,6 +169,7 @@ h1 {
 
 .restart {
   background: #f1b2b2;
+  text-align: center;
 
   &:hover {
     background: #f87474;
