@@ -87,11 +87,13 @@ class Game {
     let changed = false;
 
     for (let row = 0; row < 4; row++) {
-      const line = this.state[row];
-      const newLine = this.processLine(line);
+      const oldLine = this.state[row];
+      const newLine = this.processLine(oldLine);
 
-      if (this.state[row] !== newLine[row]) {
-        changed = true;
+      for (let col = 0; col < 4; col++) {
+        if (oldLine[col] !== newLine[col]) {
+          changed = true;
+        }
       }
 
       this.state[row] = newLine;
@@ -108,13 +110,13 @@ class Game {
     let changed = false;
 
     for (let row = 0; row < 4; row++) {
-      const line = [...this.state[row]];
-      const reversed = line.reverse();
-      const processed = this.processLine(reversed);
-      const newLine = processed.reverse();
+      const oldLine = [...this.state[row]];
+      const newLine = this.processLine([...oldLine].reverse()).reverse();
 
-      if (this.state[row] !== newLine[row]) {
-        changed = true;
+      for (let col = 0; col < 4; col++) {
+        if (this.state[row][col] !== newLine[col]) {
+          changed = true;
+        }
       }
 
       this.state[row] = newLine;
