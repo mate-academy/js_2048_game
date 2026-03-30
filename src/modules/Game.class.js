@@ -58,22 +58,6 @@ class Game {
     return 'playing';
   }
 
-  updateStatus() {
-    if (this.checkWin()) {
-      this.status = 'win';
-
-      return;
-    }
-
-    if (this.checkLose()) {
-      this.status = 'lose';
-
-      return;
-    }
-
-    this.status = 'playing';
-  }
-
   processLine(line) {
     const filtered = line.filter((num) => num !== 0);
 
@@ -100,30 +84,52 @@ class Game {
   }
 
   moveLeft() {
+    let changed = false;
+
     for (let row = 0; row < 4; row++) {
       const line = this.state[row];
       const newLine = this.processLine(line);
 
+      if (this.state[row] !== newLine[row]) {
+        changed = true;
+      }
+
       this.state[row] = newLine;
     }
 
-    this.addRandomTile();
+    if (changed) {
+      this.addRandomTile();
+    }
+
+    return changed;
   }
 
   moveRight() {
+    let changed = false;
+
     for (let row = 0; row < 4; row++) {
       const line = [...this.state[row]];
       const reversed = line.reverse();
       const processed = this.processLine(reversed);
       const newLine = processed.reverse();
 
+      if (this.state[row] !== newLine[row]) {
+        changed = true;
+      }
+
       this.state[row] = newLine;
     }
 
-    this.addRandomTile();
+    if (changed) {
+      this.addRandomTile();
+    }
+
+    return changed;
   }
 
   moveUp() {
+    let changed = false;
+
     for (let col = 0; col < 4; col++) {
       const column = [];
 
@@ -134,14 +140,24 @@ class Game {
       const newColumn = this.processLine(column);
 
       for (let row = 0; row < 4; row++) {
+        if (this.state[row][col] !== newColumn[row]) {
+          changed = true;
+        }
+
         this.state[row][col] = newColumn[row];
       }
     }
 
-    this.addRandomTile();
+    if (changed) {
+      this.addRandomTile();
+    }
+
+    return changed;
   }
 
   moveDown() {
+    let changed = false;
+
     for (let col = 0; col < 4; col++) {
       const column = [];
 
@@ -149,18 +165,22 @@ class Game {
         column.push(this.state[row][col]);
       }
 
-      const reversed = column.reverse();
-
-      const processed = this.processLine(reversed);
-
-      const newColumn = processed.reverse();
+      const newColumn = this.processLine([...column].reverse()).reverse();
 
       for (let row = 0; row < 4; row++) {
+        if (this.state[row][col] !== newColumn[row]) {
+          changed = true;
+        }
+
         this.state[row][col] = newColumn[row];
       }
     }
 
-    this.addRandomTile();
+    if (changed) {
+      this.addRandomTile();
+    }
+
+    return changed;
   }
 
   getScore() {

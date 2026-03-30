@@ -67,27 +67,29 @@ startButtonElement.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') {
-    game.moveLeft();
-    game.updateStatus();
-    render();
-  }
+  if (game.status === 'playing') {
+    if (e.key === 'ArrowLeft') {
+      game.moveLeft();
+      game.getStatus();
+      render();
+    }
 
-  if (e.key === 'ArrowRight') {
-    game.moveRight();
-    game.updateStatus();
-    render();
-  }
+    if (e.key === 'ArrowRight') {
+      game.moveRight();
+      game.getStatus();
+      render();
+    }
 
-  if (e.key === 'ArrowDown') {
-    game.moveDown();
-    game.updateStatus();
-    render();
-  }
+    if (e.key === 'ArrowDown') {
+      game.moveDown();
+      game.getStatus();
+      render();
+    }
 
-  if (e.key === 'ArrowUp') {
-    game.moveUp();
-    game.updateStatus();
-    render();
+    if (e.key === 'ArrowUp') {
+      game.moveUp();
+      game.getStatus();
+      render();
+    }
   }
 });
