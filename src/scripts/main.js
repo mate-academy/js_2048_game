@@ -1,7 +1,7 @@
 'use strict';
 
 // Uncomment the next lines to use your game instance in the browser
-import Game from '../modules/Game.class.js';
+import { Game } from '../modules/Game.class.js';
 
 const game = new Game();
 
@@ -56,16 +56,19 @@ function updateMessage() {
 startButton.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
-    startButton.textContent = 'Restart';
-    startButton.classList.add('restart');
   } else {
     game.restart();
   }
+
+  startButton.classList.remove('start');
+  startButton.classList.add('restart');
+  startButton.textContent = 'Restart';
+
   updateUi();
 });
 
 document.addEventListener('keydown', (e) => {
-  if (game.getStatus() !== 'playing') {
+  if (game.getStatus() !== 'playing' && game.getStatus() !== 'win') {
     return;
   }
 
