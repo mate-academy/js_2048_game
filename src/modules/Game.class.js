@@ -159,23 +159,20 @@ class Game {
     const rows = this.board.length;
     const cols = this.board[0].length;
 
-    const isHorizontal = direction === 'left' || direction === 'right';
-    const limit = isHorizontal ? cols : rows;
-
-    for (let i = 0; i < limit; i++) {
-      if (direction === 'left') {
+    if (direction === 'left') {
+      for (let i = 0; i < cols; i++) {
         line.push(this.board[index][i]);
       }
-
-      if (direction === 'right') {
+    } else if (direction === 'right') {
+      for (let i = 0; i < cols; i++) {
         line.push(this.board[index][cols - 1 - i]);
       }
-
-      if (direction === 'up') {
+    } else if (direction === 'up') {
+      for (let i = 0; i < rows; i++) {
         line.push(this.board[i][index]);
       }
-
-      if (direction === 'down') {
+    } else if (direction === 'down') {
+      for (let i = 0; i < rows; i++) {
         line.push(this.board[rows - 1 - i][index]);
       }
     }
@@ -187,20 +184,20 @@ class Game {
     const rows = this.board.length;
     const cols = this.board[0].length;
 
-    for (let i = 0; i < newLine.length; i++) {
-      if (direction === 'left') {
+    if (direction === 'left') {
+      for (let i = 0; i < newLine.length; i++) {
         this.board[index][i] = newLine[i];
       }
-
-      if (direction === 'right') {
+    } else if (direction === 'right') {
+      for (let i = 0; i < newLine.length; i++) {
         this.board[index][cols - 1 - i] = newLine[i];
       }
-
-      if (direction === 'up') {
+    } else if (direction === 'up') {
+      for (let i = 0; i < newLine.length; i++) {
         this.board[i][index] = newLine[i];
       }
-
-      if (direction === 'down') {
+    } else if (direction === 'down') {
+      for (let i = 0; i < newLine.length; i++) {
         this.board[rows - 1 - i][index] = newLine[i];
       }
     }
