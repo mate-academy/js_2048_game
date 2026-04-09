@@ -261,12 +261,13 @@ class Game {
     this.state = this.initialState;
     this.score = 0;
     this.status = 'idle';
+
     for (let i = 0; i < this.messages.length; i++) {
       if (this.messages[i].classList.contains('message-start')) {
         this.messages[i].classList.remove('hidden');
       }
     }
-    
+
     this.getScore();
     this.updateDOM();
     this.updateButton();

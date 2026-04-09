@@ -12,20 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function control(e) {
-
     switch (e.key) {
       case 'ArrowLeft':
         keyLeft();
-      break;
+        break;
       case 'ArrowRight':
         keyRight();
-      break;
+        break;
       case 'ArrowUp':
         keyUp();
-      break;
+        break;
       case 'ArrowDown':
         keyDown();
-      break;
+        break;
     }
   }
 
