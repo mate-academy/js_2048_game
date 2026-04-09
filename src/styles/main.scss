@@ -1,24 +1,41 @@
+$tile-size: 96px;
+$tile-gap: 12px;
+$panel-size: 96px;
+$container-width: $tile-size * 4 + $tile-gap * 5;
+
+html {
+  touch-action: manipulation;
+}
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  padding: 24px;
   background: #fbf8ef;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
+body.no-scroll {
+  overflow: hidden;
+}
+
 .field-cell {
+  width: $tile-size;
+  height: $tile-size;
+  border-radius: 6px;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
   box-sizing: border-box;
+  color: #776e65;
+  font-size: 44px;
+  line-height: 1;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
+  touch-action: none;
   user-select: none;
 
   &--2 {
@@ -76,32 +93,39 @@ body {
 }
 
 .game-field {
+  margin-bottom: 22px;
+  border-spacing: $tile-gap;
+  border-radius: 8px;
   background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+  overscroll-behavior: contain;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .game-header {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
+  margin-bottom: 28px;
+  padding: 0 4px;
   box-sizing: border-box;
+  gap: 16px;
+  user-select: none;
 }
 
 h1 {
+  width: $panel-size;
+  height: $panel-size;
+  margin: 0;
+  border-radius: 6px;
   background: #edc22e;
+  box-sizing: border-box;
   color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
-  margin: 0;
+  font-size: 38px;
 }
 
 .info {
@@ -109,14 +133,15 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: $panel-size;
+  height: $panel-size;
+  margin: 0 10px 0 0;
+  border-radius: 6px;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
   box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
+  color: #776e65;
+  font-size: 20px;
+  line-height: 1.1;
 }
 
 .controls {
@@ -124,22 +149,22 @@ h1 {
 }
 
 .button {
+  width: $panel-size;
+  height: $panel-size;
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  border-radius: 6px;
   color: #f9f6f2;
+  cursor: pointer;
   font-family: sans-serif;
+  font-size: 22px;
   font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
-
+  touch-action: manipulation;
   transition: 0.25s ease background;
 }
 
 .start {
   background: #1dae28;
-  font-size: 20px;
+  font-size: 28px;
 
   &:hover {
     background: #179921;
@@ -155,14 +180,14 @@ h1 {
 }
 
 .message {
-  box-sizing: border-box;
   width: 100%;
+  padding: 14px 16px;
+  border-radius: 6px;
   background: #d6cdc4;
+  box-sizing: border-box;
   color: #776e65;
-  padding: 10px;
+  font-size: 28px;
   text-align: center;
-  border-radius: 5px;
-  font-size: 20px;
 }
 
 .hidden {
@@ -173,7 +198,11 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
+  width: $container-width;
+  overscroll-behavior: contain;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .message-win {
@@ -183,5 +212,65 @@ h1 {
 
 .message-container {
   width: 100%;
-  height: 150px;
+  min-height: 92px;
+}
+
+@media (max-width: 640px) {
+  $mobile-tile-size: 72px;
+  $mobile-gap: 8px;
+  $mobile-panel-size: 72px;
+
+  body {
+    padding: 16px;
+    align-items: flex-start;
+  }
+
+  .container {
+    width: 100%;
+    max-width: $mobile-tile-size * 4 + $mobile-gap * 5;
+  }
+
+  .game-header {
+    margin-bottom: 18px;
+    gap: 12px;
+  }
+
+  h1,
+  .info,
+  .button {
+    width: $mobile-panel-size;
+    height: $mobile-panel-size;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  .info {
+    margin-right: 8px;
+    font-size: 16px;
+  }
+
+  .button {
+    font-size: 18px;
+  }
+
+  .start {
+    font-size: 22px;
+  }
+
+  .game-field {
+    border-spacing: $mobile-gap;
+  }
+
+  .field-cell {
+    width: $mobile-tile-size;
+    height: $mobile-tile-size;
+    font-size: 36px;
+  }
+
+  .message {
+    padding: 12px;
+    font-size: 20px;
+  }
 }

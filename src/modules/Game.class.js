@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * This class represents the game.
  * Now it has a basic structure, that is needed for testing.
@@ -97,10 +95,8 @@ class Game {
     this.status = 'playing';
     this._won = false;
 
-    if (this._isEmptyBoard(this.board)) {
-      this._addRandomTile();
-      this._addRandomTile();
-    }
+    this._addRandomTile();
+    this._addRandomTile();
 
     this._updateStatus();
   }
@@ -284,4 +280,4 @@ class Game {
   }
 }
 
-export default Game;
+module.exports = Game;

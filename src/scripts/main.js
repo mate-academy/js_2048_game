@@ -1,5 +1,3 @@
-'use strict';
-
 // Uncomment the next lines to use your game instance in the browser
 // const Game = require('../modules/Game.class');
 // const game = new Game();
@@ -14,6 +12,7 @@ const btn = document.querySelector('.button');
 const msgStart = document.querySelector('.message-start');
 const msgWin = document.querySelector('.message-win');
 const msgLose = document.querySelector('.message-lose');
+const field = document.querySelector('.game-field');
 
 const cellIndex = (r, c) => r * 4 + c;
 
@@ -66,12 +65,6 @@ function render() {
   }
 }
 
-function ensurePlaying() {
-  if (game.getStatus() === 'idle') {
-    game.start();
-  }
-}
-
 btn.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
@@ -89,7 +82,11 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
-  ensurePlaying();
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
+  e.preventDefault();
 
   let moved = false;
 
@@ -122,7 +119,13 @@ document.addEventListener('keydown', (e) => {
 let startX = 0;
 let startY = 0;
 
-const field = document.querySelector('.game-field');
+function lockPageScroll() {
+  document.body.classList.add('no-scroll');
+}
+
+function unlockPageScroll() {
+  document.body.classList.remove('no-scroll');
+}
 
 field.addEventListener('mousedown', (e) => {
   startX = e.clientX;
@@ -130,14 +133,54 @@ field.addEventListener('mousedown', (e) => {
 });
 
 field.addEventListener('mouseup', (e) => {
-  const dx = e.clientX - startX;
-  const dy = e.clientY - startY;
+  handleSwipe(e.clientX - startX, e.clientY - startY);
+});
+
+field.addEventListener(
+  'touchstart',
+  (e) => {
+    const touch = e.changedTouches[0];
+
+    e.preventDefault();
+    startX = touch.clientX;
+    startY = touch.clientY;
+    lockPageScroll();
+  },
+  { passive: false },
+);
+
+field.addEventListener(
+  'touchmove',
+  (e) => {
+    e.preventDefault();
+  },
+  { passive: false },
+);
+
+field.addEventListener(
+  'touchend',
+  (e) => {
+    const touch = e.changedTouches[0];
+
+    e.preventDefault();
+    handleSwipe(touch.clientX - startX, touch.clientY - startY);
+    unlockPageScroll();
+  },
+  { passive: false },
+);
+
+field.addEventListener('touchcancel', () => {
+  unlockPageScroll();
+});
+
+function handleSwipe(dx, dy) {
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
 
   if (Math.abs(dx) < 30 && Math.abs(dy) < 30) {
     return;
   }
-
-  ensurePlaying();
 
   let moved = false;
 
@@ -150,6 +193,6 @@ field.addEventListener('mouseup', (e) => {
   if (moved) {
     render();
   }
-});
+}
 
 render();

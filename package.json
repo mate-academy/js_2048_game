@@ -8,7 +8,7 @@
   "scripts": {
     "jest": "mate-scripts test",
     "init": "mate-scripts init",
-    "start": "mate-scripts start",
+    "start": "parcel serve src/index.html --dist-dir dist --open",
     "style-format": "npx stylelint 'src/**/*.scss' --fix --allow-empty-input",
     "format": "prettier --ignore-path .prettierignore --write './src/**/*.{html,css,scss}'",
     "lint": "npm run style-format && npm run format && mate-scripts lint",
@@ -24,7 +24,7 @@
     "@mate-academy/eslint-config": "latest",
     "@mate-academy/jest-mochawesome-reporter": "^1.0.0",
     "@mate-academy/linthtml-config": "latest",
-    "@mate-academy/scripts": "^2.1.2",
+    "@mate-academy/scripts": "^2.1.3",
     "@mate-academy/stylelint-config": "latest",
     "@parcel/transformer-sass": "^2.12.0",
     "cypress": "^13.13.0",
