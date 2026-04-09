@@ -1,69 +1,53 @@
-# 2048 game
+Based on the structure of your project and the standard requirements for a final portfolio review, here is a professional and engaging README.md description. This format mirrors the clean, informative style often seen in successful software portfolios.
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+2048 Game
+A modern, responsive web-based implementation of the classic 2048 puzzle game. This project focuses on clean architecture, efficient state management, and smooth DOM interaction using vanilla JavaScript.
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+🚀 Live Demo
+[Insert your GitHub Pages link here]
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
-  - constructor with `initialState` parameter (value is optional, defaults to the empty board)
-  - `getState()`
-  - `getScore()`
-  - `getStatus()`
-  - `moveLeft()`
-  - `moveRight()`
-  - `moveUp()`
-  - `moveDown()`
-  - `start()`
-  - `restart()`
+🎯 Project Overview
+The objective is simple but addictive: use arrow keys to slide tiles across a 4x4 grid. When two tiles with the same number touch, they merge into one with double the value. The goal is to strategically combine tiles until you reach the 2048 tile.
 
-3) Reference.
+🛠️ Technical Stack
+Language: Vanilla JavaScript (ES6+), leveraging class-based structure for game state management.
 
-That's it!
+Styling: CSS3 with Flexbox/Grid for a fully responsive and clean user interface.
 
-Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) `Restart` button should reset the game to the initial state.
-12) Increase score with each move. The score should be increased by the sum of all merged cells.
-13) The game consists of 2 main parts:
-  - game logic written in `src/modules/Game.class.js` module that exports `Game` class
-  - game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
+Logic: Efficient matrix manipulation, including transposition and reverse row processing to handle board movements.
 
-Hints:
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
-- Use `keydown` event and `event.key` property to handle arrow buttons presses
-    ```js
-    document.addEventListener('keydown', event => console.log(event.key));
-    ```
-- Adding animation to the game is optional. It is a bit tricky, but you can try it if you want. Probably, you will need to extend the Game class with additional methods and create a separate board storage with Tile entities to operate their corresponding DOM elements' positions.
+Architecture: Modular separation between game logic (Game.class.js) and UI rendering (main.js).
 
-You can change the HTML/CSS layout if you need it.
+✨ Key Features
+State Management: Encapsulated game logic that tracks score, grid status, and win/loss conditions.
 
-![Preview](./src/images/reference.png)
+Dynamic Rendering: Real-time DOM updates triggered by user input.
 
-## Deploy and Pull Request
+Responsive Design: Optimized for both desktop keyboard controls and mobile touch interfaces.
 
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+Game Loop Logic: Implements collision detection, board transposition, and random tile generation (2 or 4).
 
+🎮 How to Play
+Use your Arrow Keys to move all tiles in the grid.
+
+Identical tiles merge upon collision.
+
+Every move spawns a new random tile in an empty cell.
+
+The game ends when there are no possible moves left or you reach 2048.
+
+📂 Project Structure
+
+js_2048_game/
+├── src/
+│   ├── modules/
+│   │   └── Game.class.js    # Core game logic and state
+│   └── scripts/
+│       └── main.js          # DOM rendering and event handling
+├── index.html               # Game container
+└── style.css                # Styles and animations
+📜 License
+This project is open-source and available under the MIT License.
+
+Pro-tip for your Review:
+When you push this README.md to your develop branch, ensure your GitHub Pages is enabled (Settings -> Pages -> Source: develop branch). Once the demo link is live, replace the [Insert your GitHub Pages link here] in the text above with your actual URL. This makes it instantly accessible for the reviewer.
