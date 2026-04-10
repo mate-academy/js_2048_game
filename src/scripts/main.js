@@ -45,14 +45,25 @@ export class Game {
   // ---------------- MOVE LOGIC ----------------
 
   moveLeft() {
-    return this.move(this.board);
+    const moved = this.move(this.board);
+
+    if (moved) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
+
+    return moved;
   }
 
   moveRight() {
     const reversed = this.board.map((row) => [...row].reverse());
     const moved = this.move(reversed);
 
-    this.board = reversed.map((row) => row.reverse());
+    if (moved) {
+      this.board = reversed.map((row) => row.reverse());
+      this.addRandomTile();
+      this.updateStatus();
+    }
 
     return moved;
   }
@@ -61,7 +72,11 @@ export class Game {
     const transposed = this.transpose(this.board);
     const moved = this.move(transposed);
 
-    this.board = this.transpose(transposed);
+    if (moved) {
+      this.board = this.transpose(transposed);
+      this.addRandomTile();
+      this.updateStatus();
+    }
 
     return moved;
   }
@@ -70,7 +85,11 @@ export class Game {
     const transposed = this.transpose(this.board).map((row) => row.reverse());
     const moved = this.move(transposed);
 
-    this.board = this.transpose(transposed.map((row) => row.reverse()));
+    if (moved) {
+      this.board = this.transpose(transposed.map((row) => row.reverse()));
+      this.addRandomTile();
+      this.updateStatus();
+    }
 
     return moved;
   }
@@ -94,12 +113,7 @@ export class Game {
       }
     }
 
-    if (moved) {
-      this.addRandomTile();
-      this.updateStatus();
-    }
-
-    return moved;
+    return moved; // ✅ no side effects
   }
 
   processRow(row) {
