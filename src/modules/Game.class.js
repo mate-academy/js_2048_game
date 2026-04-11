@@ -2,36 +2,21 @@
 'use strict';
 
 /**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
+ * Classe que representa o jogo 2048.
  */
-export default class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
+class Game {
   constructor(initialState) {
-    this.state =
-      initialState !== undefined
-        ? initialState
-        : Array.from({ length: 4 }, () => Array.from({ length: 4 }, () => 0));
+    const defaultBoard = Array.from({ length: 4 }, () =>
+      Array.from({ length: 4 }, () => 0),
+    );
 
+    this.initialState = JSON.parse(
+      JSON.stringify(initialState !== undefined ? initialState : defaultBoard),
+    );
+
+    this.state = JSON.parse(JSON.stringify(this.initialState));
     this.score = 0;
     this.status = 'idle';
-
-    // eslint-disable-next-line no-console
-    console.log(initialState);
   }
 
   moveLeft() {
@@ -40,29 +25,29 @@ export default class Game {
     }
 
     let changed = false;
+    let gainedScore = 0;
 
-    // Percorre cada linha do tabuleiro
     this.state.forEach((row, rowIndex, board) => {
-      // chama mergeLine para juntar números iguais
-      const newRow = this.mergeLine(row);
+      const { newLine, mergedScore } = this.mergeLine(row);
 
-      // completa com zeros até o tamanho 4
-      while (newRow.length < 4) {
-        newRow.push(0);
+      gainedScore += mergedScore;
+
+      while (newLine.length < 4) {
+        newLine.push(0);
       }
 
-      // compara linha antiga com nova para detectar mudança
       for (let i = 0; i < 4; i++) {
-        if (board[rowIndex][i] !== newRow[i]) {
+        if (board[rowIndex][i] !== newLine[i]) {
           changed = true;
-          break; // detectou mudança ai para
+          break;
         }
       }
 
-      board[rowIndex] = newRow;
+      board[rowIndex] = newLine;
     });
 
     if (changed) {
+      this.score += gainedScore;
       this.addRandomTile();
     }
 
@@ -75,36 +60,32 @@ export default class Game {
     }
 
     let changed = false;
+    let gainedScore = 0;
 
     this.state.forEach((row, rowIndex, board) => {
-      // inverte a linha para processar como se fosse "esquerda"
       const reversedRow = [...row].reverse();
+      const { newLine, mergedScore } = this.mergeLine(reversedRow);
 
-      // aplica mergeLine
-      let newRow = this.mergeLine(reversedRow);
+      gainedScore += mergedScore;
 
-      // completa com zeros
-      while (newRow.length < 4) {
-        newRow.push(0);
+      while (newLine.length < 4) {
+        newLine.push(0);
       }
 
-      // inverte de volta para a ordem correta
-      newRow = newRow.reverse();
+      const reversedLine = newLine.reverse();
 
-      // detecta se mudou
       for (let i = 0; i < 4; i++) {
-        if (board[rowIndex][i] !== newRow[i]) {
+        if (board[rowIndex][i] !== reversedLine[i]) {
           changed = true;
           break;
         }
       }
 
-      // ubstitui a linha antiga pela nova
-      board[rowIndex] = newRow;
+      board[rowIndex] = reversedLine;
     });
 
-    // adiciona um novo tile se algo mudou
     if (changed) {
+      this.score += gainedScore;
       this.addRandomTile();
     }
 
@@ -117,39 +98,35 @@ export default class Game {
     }
 
     let changed = false;
+    let gainedScore = 0;
 
     for (let col = 0; col < 4; col++) {
-      // pega os elementos da coluna
       const column = this.state.map((row) => row[col]);
+      const { newLine, mergedScore } = this.mergeLine(column);
 
-      // aplica o mergeLine
-      const newColumn = this.mergeLine(column);
+      gainedScore += mergedScore;
 
-      // completa os zeros
-      while (newColumn.length < 4) {
-        newColumn.push(0);
+      while (newLine.length < 4) {
+        newLine.push(0);
       }
 
-      // detecta mudança
       for (let row = 0; row < 4; row++) {
-        if (this.state[row][col] !== newColumn[row]) {
+        if (this.state[row][col] !== newLine[row]) {
           changed = true;
           break;
         }
       }
 
-      // coloca de volta na coluna
       for (let row = 0; row < 4; row++) {
-        this.state[row][col] = newColumn[row];
+        this.state[row][col] = newLine[row];
       }
     }
 
-    // adiciona novo tile se algo mudou
     if (changed) {
+      this.score += gainedScore;
       this.addRandomTile();
     }
 
-    //  atualiza status
     this.updateStatus();
   }
 
@@ -159,86 +136,58 @@ export default class Game {
     }
 
     let changed = false;
+    let gainedScore = 0;
 
     for (let col = 0; col < 4; col++) {
-      // pega a coluna
       const column = this.state.map((row) => row[col]);
-
-      // inverte p enviar como mergeUp
       const reversedCol = [...column].reverse();
+      const { newLine, mergedScore } = this.mergeLine(reversedCol);
 
-      // aplica mergeLine
-      let newCol = this.mergeLine(reversedCol);
+      gainedScore += mergedScore;
 
-      // completa com zeros
-      while (newCol.length < 4) {
-        newCol.push(0);
+      while (newLine.length < 4) {
+        newLine.push(0);
       }
 
-      // inverte de volta
-      newCol = newCol.reverse();
+      const reversedLine = newLine.reverse();
 
-      // detecta mudança
       for (let row = 0; row < 4; row++) {
-        if (this.state[row][col] !== newCol[row]) {
+        if (this.state[row][col] !== reversedLine[row]) {
           changed = true;
           break;
         }
       }
 
-      // coloca de volta na coluna
       for (let row = 0; row < 4; row++) {
-        this.state[row][col] = newCol[row];
+        this.state[row][col] = reversedLine[row];
       }
     }
 
     if (changed) {
+      this.score += gainedScore;
       this.addRandomTile();
     }
 
     this.updateStatus();
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
     return this.score;
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.state;
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     return this.status;
   }
 
-  /**
-   * Starts the game.
-   */
-
   start() {
-    // Cria a matriz do jogo
     const isBoardEmpty = this.state.flat().every((cell) => cell === 0);
-    // AQui vai zerar os pontos e mudar o status
 
     this.status = 'playing';
     this.score = 0;
-    // Adiciona os primeiros 2 digitos
 
     if (isBoardEmpty) {
       this.addRandomTile();
@@ -247,30 +196,17 @@ export default class Game {
   }
 
   restart() {
-    // Cria a matriz zerada
-    this.state = Array.from({ length: 4 }, () =>
-      Array.from({ length: 4 }, () => 0),
-    );
-    // Reseta a pontuação
+    this.state = JSON.parse(JSON.stringify(this.initialState));
     this.score = 0;
-
-    // Muda status para jogando
-    this.status = 'playing';
-
-    // Adiciona os dois primeiros tiles
-    this.addRandomTile();
-    this.addRandomTile();
+    this.status = 'idle';
   }
 
   addRandomTile() {
     const emptyCells = [];
 
     this.state.forEach((row, rowIndex) => {
-      // percorre as linhas
       row.forEach((cell, colIndex) => {
-        // percorre as colulas
         if (cell === 0) {
-          // se o que tiver na celula for 0 vai colocar no empty cells
           emptyCells.push({ row: rowIndex, col: colIndex });
         }
       });
@@ -280,14 +216,8 @@ export default class Game {
       return;
     }
 
-    // cria um numero aleatório ate 1.0 multiplica
-    // pelo length das celulas vazias
-    // (so pega celulas que podem receber)
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    // aqui de fato escolhe a celula vazia
     const randomCell = emptyCells[randomIndex];
-
-    // caso gere N < 0.9 (90%) vai voltar um 2, 10% de ser 4
     const randomNumber = Math.random() < 0.9 ? 2 : 4;
 
     this.state[randomCell.row][randomCell.col] = randomNumber;
@@ -296,15 +226,15 @@ export default class Game {
   mergeLine(arr) {
     const nonZeroArr = arr.filter((n) => n > 0);
     const result = [];
+    let mergedScore = 0;
 
     for (let i = 0; i < nonZeroArr.length; i++) {
       if (nonZeroArr[i] === nonZeroArr[i + 1]) {
         const merged = nonZeroArr[i] * 2;
 
         result.push(merged);
-
-        this.score += merged; // Atualiza a pontuação
-        i++; // pula o próximo
+        mergedScore += merged;
+        i++;
       } else {
         result.push(nonZeroArr[i]);
       }
@@ -314,11 +244,10 @@ export default class Game {
       result.push(0);
     }
 
-    return result;
+    return { newLine: result, mergedScore };
   }
 
   updateStatus() {
-    // Verifica se ganhou (algum tile = 2048)
     for (const row of this.state) {
       if (row.includes(2048)) {
         this.status = 'win';
@@ -327,18 +256,21 @@ export default class Game {
       }
     }
 
-    // Verifica se perdeu (nenhum movimento possível)
     const canMove = this.state.some((row, i) =>
       row.some((cell, j) => {
         if (cell === 0) {
-          return true; // espaço vazio
-        } else if (j < 3 && cell === row[j + 1]) {
-          return true; // igual à direita
-        } else if (i < 3 && cell === this.state[i + 1][j]) {
-          return true; // igual abaixo
-        } else {
-          return false;
+          return true;
         }
+
+        if (j < 3 && cell === row[j + 1]) {
+          return true;
+        }
+
+        if (i < 3 && cell === this.state[i + 1][j]) {
+          return true;
+        }
+
+        return false;
       }),
     );
 
@@ -348,7 +280,9 @@ export default class Game {
       return;
     }
 
-    // Se não ganhou nem perdeu, continua jogando
     this.status = 'playing';
   }
 }
+
+export default Game;
+export { Game };
