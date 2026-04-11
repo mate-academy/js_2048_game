@@ -23,7 +23,14 @@ export class Controller {
   };
 
   handleKeydown = (e) => {
-    if (this.game.isLost) {
+    if (this.game.isLost || this.game.isWon) {
+      return;
+    }
+
+    if (!this.game.hasContent) {
+      // eslint-disable-next-line no-console
+      console.warn('Game has no tiles. Please press Start first.');
+
       return;
     }
 

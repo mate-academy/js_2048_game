@@ -24,6 +24,10 @@ export class Game {
     this.status = GAME_STATUS.IDLE;
   }
 
+  get hasContent() {
+    return matrix.hasTiles(this.state);
+  }
+
   get isPlaying() {
     return this.status === GAME_STATUS.PLAYING;
   }
@@ -40,6 +44,10 @@ export class Game {
 
   get isLost() {
     return this.status === GAME_STATUS.LOST;
+  }
+
+  get isWon() {
+    return this.status === GAME_STATUS.WON;
   }
 
   restart() {

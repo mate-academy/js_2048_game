@@ -49,3 +49,7 @@ export const forEachCell = (matrix, cb) => {
 };
 
 export const flatten = (matrix) => [].concat(...matrix.filter(Array.isArray));
+
+export const hasTiles = (matrix) => {
+  return matrix.flat().some((value) => value > 0);
+};
