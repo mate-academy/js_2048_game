@@ -1,4 +1,4 @@
-import { GAME_STATUS, CSS_CLASSES } from '../constants';
+import { CSS_CLASSES } from '../constants';
 
 export class Controller {
   constructor(game, view, startBtn) {
@@ -13,17 +13,17 @@ export class Controller {
   }
 
   handleButtonClick = () => {
-    if (this.game.isStarted) {
+    if (this.game.isPlaying || this.game.isLost) {
       this.game.restart();
+      this.updateStartButton();
     } else {
       this.game.start();
-      this.updateStartButton();
     }
     this.syncUI();
   };
 
   handleKeydown = (e) => {
-    if (this.game.getStatus() !== GAME_STATUS.PLAYING) {
+    if (this.game.isLost) {
       return;
     }
 
@@ -35,6 +35,10 @@ export class Controller {
     };
 
     if (moves[e.key]) {
+      if (!this.game.isPlaying) {
+        this.updateStartButton();
+      }
+
       moves[e.key]();
       this.syncUI();
     }
@@ -49,7 +53,12 @@ export class Controller {
   }
 
   updateStartButton() {
-    this.startBtn.classList.replace(CSS_CLASSES.START, CSS_CLASSES.RESTART);
-    this.startBtn.textContent = 'Restart';
+    if (this.startBtn.classList.contains(CSS_CLASSES.START)) {
+      this.startBtn.classList.replace(CSS_CLASSES.START, CSS_CLASSES.RESTART);
+      this.startBtn.textContent = 'Restart';
+    } else {
+      this.startBtn.classList.replace(CSS_CLASSES.RESTART, CSS_CLASSES.START);
+      this.startBtn.textContent = 'Start';
+    }
   }
 }

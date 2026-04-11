@@ -24,18 +24,35 @@ export class Game {
     this.status = GAME_STATUS.IDLE;
   }
 
-  get isStarted() {
+  get isPlaying() {
     return this.status === GAME_STATUS.PLAYING;
   }
 
+  get isReady() {
+    return (
+      this.status !== GAME_STATUS.PLAYING && this.status !== GAME_STATUS.IDLE
+    );
+  }
+
+  get isIdle() {
+    return this.status === GAME_STATUS.IDLE;
+  }
+
+  get isLost() {
+    return this.status === GAME_STATUS.LOST;
+  }
+
   restart() {
+    this.status = GAME_STATUS.IDLE;
     this.state = matrix.cloneMatrix(this.initialState);
     this.score = 0;
-    this.start();
   }
 
   start() {
-    this.status = GAME_STATUS.PLAYING;
+    if (this.isIdle) {
+      this.restart();
+    }
+
     this.addRandomTile();
     this.addRandomTile();
   }
@@ -61,8 +78,12 @@ export class Game {
   }
 
   makeMove(moveFn) {
-    if (this.status !== GAME_STATUS.PLAYING) {
+    if (this.isLost || (!this.isPlaying && !this.isIdle)) {
       return;
+    }
+
+    if (!this.isPlaying) {
+      this.status = GAME_STATUS.PLAYING;
     }
 
     const oldState = this.state;

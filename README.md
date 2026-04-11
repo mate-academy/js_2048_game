@@ -18,3 +18,7 @@ Some rules:
 10. Change the `Start` button to `Restart` after the first move.
 11. `Restart` button should reset the game to the initial state.
 12. Increase score with each move. The score should be increased by the sum of all merged cells.
+13. The game consists of 2 main parts:
+
+- game logic written in `Game.class.js` module that exports `Game` class
+- game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
