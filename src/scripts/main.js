@@ -71,8 +71,9 @@ startBtn.addEventListener('click', () => {
 logo.addEventListener('click', () => {
   document.body.style.transition = '0.1s';
   document.body.style.filter = 'invert(1)';
+  alert('БУУУУУУУУУ, ИСПУГАЛСЯ?');
 
-  const shake = setInterval(() => {
+  setInterval(() => {
     document.body.style.transform = `translate(${Math.random() * 10}px, ${Math.random() * 10}px)`;
   }, 50);
 });
