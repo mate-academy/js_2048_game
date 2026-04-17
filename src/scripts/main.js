@@ -51,6 +51,9 @@ startBtn.addEventListener('click', () => {
     game.start();
   } else {
     game.restart();
+    startBtn.textContent = 'Start';
+    startBtn.classList.remove('restart');
+    startBtn.classList.add('start');
   }
   render();
 });

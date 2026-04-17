@@ -25,8 +25,10 @@ class Game {
     this.score = 0;
     this.status = 'idle';
 
-    this.board = initialState
-      ? initialState.map((row) => [...row])
+    this.startState = initialState ? initialState.map((row) => [...row]) : null;
+
+    this.board = this.startState
+      ? this.startState.map((row) => [...row])
       : this.createEmptyBoard();
   }
 
@@ -66,7 +68,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.board;
+    return this.board.map((row) => [...row]);
   }
 
   /**
@@ -97,10 +99,11 @@ class Game {
    */
   restart() {
     this.score = 0;
-    this.status = 'playing';
-    this.board = this.createEmptyBoard();
-    this.addRandomTile();
-    this.addRandomTile();
+    this.status = 'idle';
+
+    this.board = this.startState
+      ? this.startState.map((row) => [...row])
+      : this.createEmptyBoard();
   }
 
   createEmptyBoard() {
@@ -220,4 +223,4 @@ class Game {
   }
 }
 
-module.exports = Game;
+export default Game;
