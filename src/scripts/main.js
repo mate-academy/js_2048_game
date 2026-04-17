@@ -1,7 +1,7 @@
 'use strict';
 
 // Uncomment the next lines to use your game instance in the browser
-import Game from '../modules/Game.class';
+import Game from '../modules/Game.class.js';
 
 const game = new Game();
 
@@ -30,23 +30,25 @@ function render() {
     }
   });
 
-  msgStart.classList.add('hidden');
   msgWin.classList.add('hidden');
   msgLose.classList.add('hidden');
 
-  if (game.getStatus() === 'win') {
-    msgWin.classList.remove('hidden');
-  } else if (game.getStatus() === 'lose') {
-    msgLose.classList.remove('hidden');
+  if (game.getStatus() === 'idle') {
+    msgStart.classList.remove('hidden');
+  } else {
+    msgStart.classList.add('hidden');
+
+    if (game.getStatus() === 'win') {
+      msgWin.classList.remove('hidden');
+    } else if (game.getStatus() === 'lose') {
+      msgLose.classList.remove('hidden');
+    }
   }
 }
 
 startBtn.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
-    startBtn.textContent = 'Restart';
-    startBtn.classList.remove('start');
-    startBtn.classList.add('restart');
   } else {
     game.restart();
   }
@@ -58,19 +60,28 @@ document.addEventListener('keydown', (ev) => {
     return;
   }
 
+  let moved = false;
+
   switch (ev.key) {
     case 'ArrowLeft':
-      game.moveLeft();
+      moved = game.moveLeft();
       break;
     case 'ArrowRight':
-      game.moveRight();
+      moved = game.moveRight();
       break;
     case 'ArrowUp':
-      game.moveUp();
+      moved = game.moveUp();
       break;
     case 'ArrowDown':
-      game.moveDown();
+      moved = game.moveDown();
       break;
   }
+
+  if (moved && startBtn.classList.contains('start')) {
+    startBtn.textContent = 'Restart';
+    startBtn.classList.remove('start');
+    startBtn.classList.add('restart');
+  }
+
   render();
 });

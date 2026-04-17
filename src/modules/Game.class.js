@@ -24,24 +24,35 @@ class Game {
     this.size = 4;
     this.score = 0;
     this.status = 'idle';
-    this.board = initialState || this.createEmptyBoard();
+
+    this.board = initialState
+      ? initialState.map((row) => [...row])
+      : this.createEmptyBoard();
   }
 
   moveLeft() {
-    this.move((row) => row);
+    return this.move((row) => row);
   }
   moveRight() {
-    this.move((row) => row.reverse(), true);
+    return this.move((row) => row.reverse(), true);
   }
   moveUp() {
     this.transpose();
-    this.moveLeft();
+
+    const moved = this.moveLeft();
+
     this.transpose();
+
+    return moved;
   }
   moveDown() {
     this.transpose();
-    this.moveRight();
+
+    const moved = this.moveRight();
+
     this.transpose();
+
+    return moved;
   }
 
   /**
@@ -144,6 +155,8 @@ class Game {
       this.addRandomTile();
       this.checkGameStatus();
     }
+
+    return moved;
   }
 
   compress(row) {
