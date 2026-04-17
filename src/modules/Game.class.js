@@ -21,24 +21,55 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.size = 4;
+    this.score = 0;
+    this.status = 'idle';
+
+    this.startState = initialState ? initialState.map((row) => [...row]) : null;
+
+    this.board = this.startState
+      ? this.startState.map((row) => [...row])
+      : this.createEmptyBoard();
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    return this.move((row) => row);
+  }
+  moveRight() {
+    return this.move((row) => row.reverse(), true);
+  }
+  moveUp() {
+    this.transpose();
+
+    const moved = this.moveLeft();
+
+    this.transpose();
+
+    return moved;
+  }
+  moveDown() {
+    this.transpose();
+
+    const moved = this.moveRight();
+
+    this.transpose();
+
+    return moved;
+  }
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.board.map((row) => [...row]);
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +81,146 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = 'playing';
+    this.addRandomTile();
+    this.addRandomTile();
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.score = 0;
+    this.status = 'idle';
 
-  // Add your own methods here
+    this.board = this.startState
+      ? this.startState.map((row) => [...row])
+      : this.createEmptyBoard();
+  }
+
+  createEmptyBoard() {
+    return Array.from({ length: this.size }, () => Array(this.size).fill(0));
+  }
+
+  addRandomTile() {
+    const emptyCells = [];
+
+    for (let r = 0; r < this.size; r++) {
+      for (let c = 0; c < this.size; c++) {
+        if (this.board[r][c] === 0) {
+          emptyCells.push([r, c]);
+        }
+      }
+    }
+
+    if (emptyCells.length === 0) {
+      return;
+    }
+
+    const [row, col] =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+    this.board[row][col] = Math.random() < 0.1 ? 4 : 2;
+  }
+
+  move(transformRow, reverse = false) {
+    let moved = false;
+
+    for (let r = 0; r < this.size; r++) {
+      let row = [...this.board[r]];
+
+      if (transformRow) {
+        row = transformRow([...row]);
+      }
+
+      const newRow = this.compress(row);
+
+      // Add your own methods here
+      if (reverse) {
+        newRow.reverse();
+      }
+
+      if (JSON.stringify(newRow) !== JSON.stringify(this.board[r])) {
+        moved = true;
+        this.board[r] = newRow;
+      }
+    }
+
+    if (moved) {
+      this.addRandomTile();
+      this.checkGameStatus();
+    }
+
+    return moved;
+  }
+
+  compress(row) {
+    let filtered = row.filter((val) => val !== 0);
+
+    for (let i = 0; i < filtered.length - 1; i++) {
+      if (filtered[i] === filtered[i + 1]) {
+        filtered[i] *= 2;
+        this.score += filtered[i];
+        filtered[i + 1] = 0;
+      }
+    }
+
+    filtered = filtered.filter((val) => val !== 0);
+
+    while (filtered.length < this.size) {
+      filtered.push(0);
+    }
+
+    return filtered;
+  }
+
+  transpose() {
+    this.board = this.board[0].map((_, c) => this.board.map((row) => row[c]));
+  }
+
+  checkGameStatus() {
+    for (let r = 0; r < this.size; r++) {
+      for (let c = 0; c < this.size; c++) {
+        if (this.board[r][c] === 2048) {
+          this.status = 'win';
+
+          return;
+        }
+      }
+    }
+
+    if (!this.canMove()) {
+      this.status = 'lose';
+    }
+  }
+
+  canMove() {
+    for (let r = 0; r < this.size; r++) {
+      for (let c = 0; c < this.size; c++) {
+        if (this.board[r][c] === 0) {
+          return true;
+        }
+
+        if (c < this.size - 1 && this.board[r][c] === this.board[r][c + 1]) {
+          return true;
+        }
+
+        if (r < this.size - 1 && this.board[r][c] === this.board[r + 1][c]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }
 
-module.exports = Game;
+export default Game;
