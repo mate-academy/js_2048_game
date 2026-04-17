@@ -37,23 +37,7 @@ class Game {
     const prevState = JSON.stringify(this.board);
 
     for (let r = 0; r < 4; r++) {
-      let row = this.board[r].filter((val) => val !== 0);
-
-      for (let c = 0; c < row.length - 1; c++) {
-        if (row[c] === row[c + 1]) {
-          row[c] *= 2;
-          row[c + 1] = 0;
-          this.score += row[c];
-        }
-      }
-
-      row = row.filter((val) => val !== 0);
-
-      while (row.length < 4) {
-        row.push(0);
-      }
-
-      this.board[r] = row;
+      this.board[r] = this.compressAndMerge(this.board[r]);
     }
 
     if (prevState !== JSON.stringify(this.board)) {
@@ -70,25 +54,9 @@ class Game {
     const prevState = JSON.stringify(this.board);
 
     for (let r = 0; r < 4; r++) {
-      let row = [...this.board[r]].reverse();
-
-      row = row.filter((val) => val !== 0);
-
-      for (let c = 0; c < row.length - 1; c++) {
-        if (row[c] === row[c + 1]) {
-          row[c] *= 2;
-          row[c + 1] = 0;
-          this.score += row[c];
-        }
-      }
-
-      row = row.filter((val) => val !== 0);
-
-      while (row.length < 4) {
-        row.push(0);
-      }
-
-      this.board[r] = row.reverse();
+      this.board[r] = this.compressAndMerge(
+        [...this.board[r]].reverse(),
+      ).reverse();
     }
 
     if (prevState !== JSON.stringify(this.board)) {
@@ -107,23 +75,7 @@ class Game {
     const transposed = this.transpose();
 
     for (let r = 0; r < 4; r++) {
-      let row = transposed[r].filter((val) => val !== 0);
-
-      for (let c = 0; c < row.length - 1; c++) {
-        if (row[c] === row[c + 1]) {
-          row[c] *= 2;
-          row[c + 1] = 0;
-          this.score += row[c];
-        }
-      }
-
-      row = row.filter((val) => val !== 0);
-
-      while (row.length < 4) {
-        row.push(0);
-      }
-
-      transposed[r] = row;
+      transposed[r] = this.compressAndMerge(transposed[r]);
     }
 
     const newBoard = this.transpose(transposed);
@@ -145,25 +97,9 @@ class Game {
     const transposed = this.transpose();
 
     for (let r = 0; r < 4; r++) {
-      let row = [...transposed[r]].reverse();
-
-      row = row.filter((val) => val !== 0);
-
-      for (let c = 0; c < row.length - 1; c++) {
-        if (row[c] === row[c + 1]) {
-          row[c] *= 2;
-          row[c + 1] = 0;
-          this.score += row[c];
-        }
-      }
-
-      row = row.filter((val) => val !== 0);
-
-      while (row.length < 4) {
-        row.push(0);
-      }
-
-      transposed[r] = row.reverse();
+      transposed[r] = this.compressAndMerge(
+        [...transposed[r]].reverse(),
+      ).reverse();
     }
 
     const newBoard = this.transpose(transposed);
@@ -186,7 +122,11 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.board;
+    return {
+      board: this.board,
+      score: this.getScore(),
+      status: this.getStatus(),
+    };
   }
 
   /**
@@ -200,6 +140,20 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
+    if (this.doesBoardHas2048()) {
+      this.status = 'win';
+
+      return this.status;
+    }
+
+    if (!this.hasMoves() && this.isBoardFull()) {
+      this.status = 'lose';
+
+      return this.status;
+    }
+
+    this.status = 'playing';
+
     return this.status;
   }
 
@@ -261,6 +215,69 @@ class Game {
     }
 
     return board[0].map((_, cInd) => board.map((row) => row[cInd]));
+  }
+
+  hasMoves() {
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        const current = this.board[r][c];
+
+        if (c + 1 < 4 && this.board[r][c + 1] === current) {
+          return true;
+        }
+
+        if (r + 1 < 4 && this.board[r + 1][c] === current) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  compressAndMerge(row) {
+    let filtered = row.filter((val) => val !== 0);
+
+    for (let i = 0; i < filtered.length - 1; i++) {
+      if (filtered[i] === filtered[i + 1]) {
+        filtered[i] *= 2;
+        filtered[i + 1] = 0;
+
+        this.score += filtered[i];
+      }
+    }
+
+    filtered = filtered.filter((val) => val !== 0);
+
+    while (filtered.length < 4) {
+      filtered.push(0);
+    }
+
+    return filtered;
+  }
+
+  doesBoardHas2048() {
+    for (let row = 0; row < 4; row++) {
+      for (let column = 0; column < 4; column++) {
+        if (this.board[row][column] === 2048) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  isBoardFull() {
+    for (let row = 0; row < 4; row++) {
+      for (let column = 0; column < 4; column++) {
+        if (this.board[row][column] === 0) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 }
 

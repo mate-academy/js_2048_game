@@ -17,7 +17,7 @@ mainButton.addEventListener('click', function () {
   const currentState = game.getState();
 
   updateButtonUI();
-  renderGame(currentState);
+  renderGame(currentState.board);
 });
 
 function renderGame(state) {
@@ -70,20 +70,25 @@ window.addEventListener('keydown', function (pressEvent) {
       game.moveLeft();
       renderGame(game.board);
       score.textContent = game.getScore();
+      updateButtonUI();
       break;
     case 'ArrowRight':
       game.moveRight();
       renderGame(game.board);
       score.textContent = game.getScore();
+      updateButtonUI();
       break;
     case 'ArrowUp':
       game.moveUp();
       renderGame(game.board);
       score.textContent = game.getScore();
+      updateButtonUI();
       break;
     case 'ArrowDown':
       game.moveDown();
       renderGame(game.board);
       score.textContent = game.getScore();
+      updateButtonUI();
+      break;
   }
 });
