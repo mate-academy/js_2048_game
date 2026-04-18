@@ -36,7 +36,6 @@ function render() {
 
   scoreEl.textContent = game.getScore();
 
-  startMsg.classList.add('hidden');
   winMsg.classList.add('hidden');
   loseMsg.classList.add('hidden');
 
@@ -56,6 +55,7 @@ button.addEventListener('click', () => {
     button.textContent = 'Restart';
     button.classList.remove('start');
     button.classList.add('restart');
+    startMsg.classList.add('hidden');
   } else {
     game.restart();
 
