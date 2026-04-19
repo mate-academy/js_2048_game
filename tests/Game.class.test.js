@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 'use strict';
 
-const Game = require('../src/modules/Game.class');
+import Game from '../src/modules/Game.class.js';
 
 function sum(game) {
   let result = 0;
