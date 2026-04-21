@@ -1,101 +1,66 @@
+$textColor: #f9f6f2;
+$backgroundColor: #5b919c;
+$hoverColor: #49757e;
+
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: linear-gradient(45deg, #269ded 0%, #65e9b3 100%);
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  --hue: 210;
+  --exponent: 0;
+
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
+
   user-select: none;
+  background-color: hsl(
+    var(--hue),
+    calc(30% + var(--exponent) * 10%),
+    calc(95% - var(--exponent) * 7%)
+  );
+  color: hsl(var(--hue), 10%, clamp(30%, (var(--exponent) - 3.5) * 1000%, 95%));
 
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
+  transition:
+    transform 0.15s ease-in-out,
+    background-color 0.1s;
 }
 
 .game-field {
-  background: #bbada0;
+  position: relative;
+  background: $backgroundColor;
   border-spacing: 10px;
   border-radius: 5px;
+  touch-action: none;
 }
 
 .game-header {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   justify-content: space-between;
-  margin-bottom: 24px;
+  gap: 15px;
+  margin-bottom: 15px;
   padding: 10px;
   box-sizing: border-box;
 }
 
-h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
+.game-title {
+  color: $textColor;
+  font-size: 64px;
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -109,11 +74,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  background: $backgroundColor;
+  min-width: 100px;
+  height: 45px;
   border-radius: 5px;
-  color: #776e65;
+  color: $textColor;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
@@ -127,30 +92,38 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: $textColor;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
-  width: 75px;
-  height: 75px;
-
   transition: 0.25s ease background;
 }
 
 .start {
-  background: #1dae28;
-  font-size: 20px;
+  background: $backgroundColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  width: 100px;
+  font-size: 24px;
 
   &:hover {
-    background: #179921;
+    background: $hoverColor;
+  }
+
+  &:disabled {
+    background: #c9c9c9;
+    color: #6d6d6d;
+    cursor: default;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: $backgroundColor;
 
   &:hover {
-    background: #f87474;
+    background: $hoverColor;
   }
 }
 
@@ -163,10 +136,6 @@ h1 {
   text-align: center;
   border-radius: 5px;
   font-size: 20px;
-}
-
-.hidden {
-  display: none;
 }
 
 .container {
@@ -184,4 +153,63 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &-content {
+    background: $textColor;
+    padding: 0;
+    text-align: center;
+    width: 300px;
+    box-sizing: border-box;
+    border-radius: 15px;
+  }
+
+  &-title {
+    margin: 10px;
+    font-size: 30px;
+    color: $backgroundColor;
+  }
+
+  &-message {
+    margin: 10px;
+    font-size: 18px;
+    color: $backgroundColor;
+  }
+
+  &-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px;
+  }
+
+  &-btn {
+    background: $backgroundColor;
+    color: $textColor;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      background: $hoverColor;
+    }
+  }
+}
+
+.hidden {
+  display: none;
 }
