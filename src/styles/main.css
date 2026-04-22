@@ -1,0 +1,262 @@
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  background: #3b1f14;
+  font-family: sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  overflow: hidden;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+@media (max-width: 500px) {
+  body::before {
+    display: none;
+  }
+  body {
+    min-height: 100vh;
+    height: 100%;
+    background: #b39f86;
+  }
+  .container {
+    width: 92vw;
+  }
+}
+body::before {
+  content: "";
+  position: absolute;
+  inset: 3vh 12vw 5vh;
+  background: #d6cbbc;
+  border-radius: 100px;
+  z-index: -1;
+}
+
+.field-cell {
+  background: #734431;
+  width: 100%;
+  border-radius: 5px;
+  color: #3b1f14;
+  box-sizing: border-box;
+  text-align: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  aspect-ratio: 1/1;
+  line-height: 1;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+.field-cell--2 {
+  background: #ffcc2e;
+  color: #fff;
+}
+.field-cell--4 {
+  background: #fb9021;
+  color: #fff;
+}
+.field-cell--8 {
+  background: #29a120;
+  color: #fff;
+}
+.field-cell--16 {
+  background: #1d399d;
+  color: #fff;
+}
+.field-cell--32 {
+  background: #54097a;
+  color: #fff;
+}
+.field-cell--64 {
+  background: #098000;
+  color: #fff;
+}
+.field-cell--128 {
+  background: #0c247b;
+  color: #fff;
+}
+.field-cell--256 {
+  background: #f44336;
+  color: #fff;
+}
+.field-cell--512 {
+  background: #ffcc2e;
+  color: #fff;
+}
+.field-cell--1024 {
+  background: #54097a;
+  color: #fff;
+}
+.field-cell--2048 {
+  background: #ffcc2e;
+  color: #fff;
+}
+
+.field-cell.new {
+  animation: appear 0.25s ease-out;
+}
+
+@keyframes appear {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.game-field {
+  background: #3b1f14;
+  border-spacing: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: min(90vw, 320px);
+  height: min(90vw, 320px);
+  border-radius: 5px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.game-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+h1 {
+  background: #edc22e;
+  color: #f9f6f2;
+  width: 75px;
+  height: 75px;
+  font-size: 24px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #c3b4a5;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  color: #4a2b1c;
+  box-sizing: border-box;
+  font-size: 16px;
+  margin: 0 8px 0 0;
+}
+
+.best {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #c3b4a5;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
+  color: #4a2b1c;
+  box-sizing: border-box;
+  font-size: 16px;
+  margin: 0 8px 0 0;
+}
+
+.controls {
+  display: flex;
+}
+
+.button {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #f9f6f2;
+  font-family: sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  width: 74px;
+  height: 75px;
+  transition: 0.25s ease background;
+}
+
+.start {
+  background: #1dae28;
+  font-size: 20px;
+}
+.start:hover {
+  background: #179921;
+}
+
+.restart {
+  background: #f44336;
+  color: #fff;
+}
+.restart:hover {
+  background: #c03930;
+}
+
+.message {
+  box-sizing: border-box;
+  width: 100%;
+  background: #d8c2a8;
+  color: #3b1f14;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  font-size: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(90vw, 340px);
+}
+
+.message-win {
+  background: #d1a12e;
+  color: #3b1f14;
+}
+
+.message-container {
+  width: 100%;
+  height: 150px;
+}/*# sourceMappingURL=main.css.map */

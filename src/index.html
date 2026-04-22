@@ -9,7 +9,12 @@
     <title>2048</title>
     <link
       rel="stylesheet"
-      href="./styles/main.scss"
+      href="./styles/main.css"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="./images/2048_logo.png"
     />
   </head>
   <body>
@@ -21,41 +26,35 @@
             Score:
             <span class="game-score">0</span>
           </p>
+          <p class="best">
+            Best:
+            <span class="best-score">0</span>
+          </p>
           <button class="button start">Start</button>
         </div>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+      <div class="game-field">
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
+        <div class="field-cell"></div>
+      </div>
 
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
@@ -65,6 +64,9 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
