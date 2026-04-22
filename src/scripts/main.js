@@ -6,173 +6,120 @@ const game = new Game();
 
 const cells = document.querySelectorAll('.field-cell');
 const score = document.querySelector('.game-score');
+const bestScoreEl = document.querySelector('.best-score');
 const button = document.querySelector('.start');
+
+function getBest() {
+  return Number(localStorage.getItem('bestScore')) || 0;
+}
+
+function setBest(value) {
+  localStorage.setItem('bestScore', value);
+}
 
 function render(prevState = null) {
   const state = game.getState();
 
   score.textContent = game.getScore();
 
+  bestScoreEl.textContent = getBest();
+
   cells.forEach((cell, index) => {
-    const row = Math.floor(index / 4);
-    const col = index % 4;
+    const r = Math.floor(index / 4);
+    const c = index % 4;
 
-    const value = state[row][col];
-    const prevValue = prevState?.[row]?.[col] ?? 0;
+    const value = state[r][c];
+    const prevValue = prevState?.[r]?.[c] ?? 0;
 
-    cell.textContent = value === 0 ? '' : value;
+    cell.textContent = value || '';
     cell.className = 'field-cell';
-    cell.classList.add(`field-cell--${value}`);
+    if (value) {
+      cell.classList.add(`field-cell--${value}`);
+    }
 
-    if (prevValue === 0 && value !== 0) {
+    if (prevValue === 0 && value) {
       cell.classList.add('new');
     }
 
-    if (value !== 0 && value === prevValue * 2) {
+    if (value && value === prevValue * 2) {
       cell.classList.add('merge');
     }
 
     setTimeout(() => {
-      cell.classList.remove('new');
-      cell.classList.remove('merge');
+      cell.classList.remove('new', 'merge');
     }, 200);
   });
 
-  showMessage();
+  updateMessage();
 }
 
-let previousState = game.getState();
+function updateMessage() {
+  const status = game.getStatus();
 
-function handleMove(moveFn) {
-  previousState = game.getState();
-  moveFn();
-  render(previousState);
-}
+  document.querySelector('.message-start').classList.add('hidden');
+  document.querySelector('.message-win').classList.add('hidden');
+  document.querySelector('.message-lose').classList.add('hidden');
 
-function showMessage() {
-  const gameStatus = game.getStatus();
-  const startMessage = document.querySelector('.message-start');
-  const winMessage = document.querySelector('.message-win');
-  const loseMessage = document.querySelector('.message-lose');
-
-  startMessage.classList.add('hidden');
-  winMessage.classList.add('hidden');
-  loseMessage.classList.add('hidden');
-
-  if (gameStatus === 'idle') {
-    startMessage.classList.remove('hidden');
+  if (status === 'idle') {
+    document.querySelector('.message-start').classList.remove('hidden');
   }
 
-  if (gameStatus === 'win') {
-    winMessage.classList.remove('hidden');
+  if (status === 'win') {
+    document.querySelector('.message-win').classList.remove('hidden');
   }
 
-  if (gameStatus === 'lose') {
-    loseMessage.classList.remove('hidden');
+  if (status === 'lose') {
+    document.querySelector('.message-lose').classList.remove('hidden');
   }
 
-  if (gameStatus !== 'idle') {
+  if (status !== 'idle') {
     button.textContent = 'Restart';
     button.classList.remove('start');
     button.classList.add('restart');
   }
 }
 
-function updateBestScore() {
-  const savedBest = localStorage.getItem('bestScore');
-  let bestScore = Number(savedBest);
-
-  if (Number.isNaN(bestScore)) {
-    bestScore = 0;
-  }
-
-  const updatedBest = Math.max(game.getScore(), bestScore);
-
-  localStorage.setItem('bestScore', updatedBest);
-
-  const bestScoreElement = document.querySelector('.best-score');
-
-  bestScoreElement.textContent = updatedBest;
+function handleMove(fn) {
+  const prev = game.getState();
+  fn();
+  render(prev);
+  updateBest();
 }
 
-document.querySelector('.start').addEventListener('click', () => {
-  game.start();
-  render();
-});
+function updateBest() {
+  const best = getBest();
+  const current = game.getScore();
 
-document.addEventListener('keydown', (e) => {
-  let moved = false;
-
-  if (e.key === 'ArrowLeft') {
-    handleMove(() => game.moveLeft());
-    moved = true;
+  if (current > best) {
+    setBest(current);
+    bestScoreEl.textContent = current;
   }
+}
 
-  if (e.key === 'ArrowRight') {
-    handleMove(() => game.moveRight());
-    moved = true;
-  }
-
-  if (e.key === 'ArrowUp') {
-    handleMove(() => game.moveUp());
-    moved = true;
-  }
-
-  if (e.key === 'ArrowDown') {
-    handleMove(() => game.moveDown());
-    moved = true;
-  }
-
-  if (!moved) {
-    return;
-  }
-
-  const gameStatus = game.getStatus();
-
-  if (gameStatus === 'win' || gameStatus === 'lose') {
-    updateBestScore();
-  }
-});
-
-let startX = 0;
-let startY = 0;
-
-document.addEventListener('touchstart', (e) => {
-  startX = e.touches[0].clientX;
-  startY = e.touches[0].clientY;
-});
-
-document.addEventListener('touchend', (e) => {
-  const endX = e.changedTouches[0].clientX;
-  const endY = e.changedTouches[0].clientY;
-
-  const diffX = endX - startX;
-  const diffY = endY - startY;
-
-  const absX = Math.abs(diffX);
-  const absY = Math.abs(diffY);
-
-  if (Math.max(absX, absY) < 20) {
-    return;
-  }
-
-  if (absX > absY) {
-    if (diffX > 0) {
-      handleMove(() => game.moveRight());
-    } else {
-      handleMove(() => game.moveLeft());
-    }
+/* START / RESTART */
+button.addEventListener('click', () => {
+  if (game.getStatus() === 'idle') {
+    game.start();
   } else {
-    if (diffY > 0) {
-      handleMove(() => game.moveDown());
-    } else {
-      handleMove(() => game.moveUp());
-    }
+    game.restart();
   }
 
-  const gameStatus = game.getStatus();
-
-  if (gameStatus === 'win' || gameStatus === 'lose') {
-    updateBestScore();
-  }
+  render();
+  updateBest();
 });
+
+/* KEYBOARD */
+document.addEventListener('keydown', (e) => {
+  const actions = {
+    ArrowLeft: () => handleMove(() => game.moveLeft()),
+    ArrowRight: () => handleMove(() => game.moveRight()),
+    ArrowUp: () => handleMove(() => game.moveUp()),
+    ArrowDown: () => handleMove(() => game.moveDown()),
+  };
+
+  if (actions[e.key]) actions[e.key]();
+});
+
+/* INITIAL */
+render();
+bestScoreEl.textContent = getBest();

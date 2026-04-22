@@ -10,6 +10,10 @@ export default class Game {
     this.status = 'idle';
   }
 
+  isPlaying() {
+    return this.status === 'playing';
+  }
+
   processRow(row) {
     const newRow = row.filter((num) => num !== 0);
     const result = [];
@@ -34,118 +38,90 @@ export default class Game {
   }
 
   checkWin() {
-    const winCell = this.board.some((row) => row.includes(2048));
-
-    if (winCell) {
+    if (this.board.some(row => row.includes(2048))) {
       this.status = 'win';
     }
   }
 
   checkLose() {
-    const hasEmpty = this.board.some((row) => row.includes(0));
+    const hasEmpty = this.board.some(row => row.includes(0));
 
-    if (hasEmpty) {
-      return;
-    }
+    if (hasEmpty) return;
 
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         const current = this.board[row][col];
 
-        if (col < 3 && current === this.board[row][col + 1]) {
-          return;
-        }
-
-        if (row < 3 && current === this.board[row + 1][col]) {
-          return;
-        }
+        if (col < 3 && current === this.board[row][col + 1]) return;
+        if (row < 3 && current === this.board[row + 1][col]) return;
       }
     }
+
     this.status = 'lose';
   }
 
   applyMove(newBoard) {
     const changed = JSON.stringify(newBoard) !== JSON.stringify(this.board);
 
-    if (changed) {
-      this.board = newBoard;
-      this.addRandomTile();
-      this.checkWin();
-      this.checkLose();
-    }
+    if (!changed) return;
+
+    this.board = newBoard;
+    this.addRandomTile();
+    this.checkWin();
+    this.checkLose();
   }
 
   moveLeft() {
-    const newBoard = [];
+    if (!this.isPlaying()) return;
 
-    for (const row of this.board) {
-      const processedRow = this.processRow(row);
-
-      newBoard.push(processedRow);
-    }
-
+    const newBoard = this.board.map(row => this.processRow(row));
     this.applyMove(newBoard);
   }
 
   moveRight() {
-    const newBoard = [];
+    if (!this.isPlaying()) return;
 
-    this.board.forEach((row) => {
-      const copyRow = [...row];
-      const reversed = copyRow.reverse();
-      const processed = this.processRow(reversed);
-      const final = processed.reverse();
-
-      newBoard.push(final);
+    const newBoard = this.board.map(row => {
+      const reversed = [...row].reverse();
+      return this.processRow(reversed).reverse();
     });
 
     this.applyMove(newBoard);
   }
 
   transpose(matrix) {
-    const newBoard = [];
+    const result = [];
 
-    for (let col = 0; col < matrix[0].length; col++) {
-      newBoard[col] = [];
-
-      for (let row = 0; row < matrix.length; row++) {
-        newBoard[col][row] = matrix[row][col];
+    for (let col = 0; col < 4; col++) {
+      result[col] = [];
+      for (let row = 0; row < 4; row++) {
+        result[col][row] = matrix[row][col];
       }
     }
 
-    return newBoard;
+    return result;
   }
 
   moveUp() {
-    const transposedBoard = this.transpose(this.board);
-    const newBoard = [];
+    if (!this.isPlaying()) return;
 
-    transposedBoard.forEach((row) => {
-      const newRow = this.processRow(row);
+    const transposed = this.transpose(this.board);
+    const moved = transposed.map(row => this.processRow(row));
 
-      newBoard.push(newRow);
-    });
-
-    const finalBoard = this.transpose(newBoard);
-
-    this.applyMove(finalBoard);
+    this.applyMove(this.transpose(moved));
   }
 
   moveDown() {
-    const transposedBoard = this.transpose(this.board);
-    const newBoard = [];
+    if (!this.isPlaying()) return;
 
-    transposedBoard.forEach((row) => {
-      const reversedRow = [...row].reverse();
-      const processed = this.processRow(reversedRow);
-      const finalRow = processed.reverse();
+    const transposed = this.transpose(this.board);
 
-      newBoard.push(finalRow);
+    const moved = transposed.map(row => {
+      const reversed = [...row].reverse();
+      return this.processRow(reversed).reverse();
     });
 
-    const finalBoard = this.transpose(newBoard);
-
-    this.applyMove(finalBoard);
+    this.applyMove(this.transpose(moved));
   }
 
   getScore() {
@@ -153,7 +129,7 @@ export default class Game {
   }
 
   getState() {
-    return this.board.map((row) => [...row]);
+    return this.board.map(row => [...row]);
   }
 
   getStatus() {
@@ -161,22 +137,20 @@ export default class Game {
   }
 
   addRandomTile() {
-    const emptyCells = [];
+    const empty = [];
 
-    // eslint-disable-next-line no-shadow
-    for (let row = 0; row < this.board.length; row++) {
-      // eslint-disable-next-line no-shadow
-      for (let col = 0; col < this.board[row].length; col++) {
-        if (this.board[row][col] === 0) {
-          emptyCells.push({ row: row, col: col });
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.board[r][c] === 0) {
+          empty.push({ r, c });
         }
       }
     }
 
-    const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    const { row, col } = emptyCells[randomIndex];
+    if (!empty.length) return;
 
-    this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
+    const { r, c } = empty[Math.floor(Math.random() * empty.length)];
+    this.board[r][c] = Math.random() < 0.9 ? 2 : 4;
   }
 
   start() {
@@ -191,4 +165,4 @@ export default class Game {
   restart() {
     this.start();
   }
-}
+} 
