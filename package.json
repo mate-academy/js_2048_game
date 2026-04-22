@@ -12,8 +12,9 @@
     "format": "prettier --ignore-path .prettierignore --write './src/**/*.{html,css,scss}'",
     "lint": "npm run style-format && npm run format && mate-scripts lint",
     "test:only": "mate-scripts test",
-    "build": "mate-scripts build",
-    "deploy": "mate-scripts deploy",
+    "build": "parcel build src/index.html --dist-dir dist",
+    "build:deploy": "parcel build src/index.html --dist-dir dist --public-url /js_2048_game/",
+    "deploy": "npm run build:deploy && gh-pages -d dist",
     "update": "mate-scripts update",
     "postinstall": "npm run update",
     "test": "npm run lint && npm run test:only"
