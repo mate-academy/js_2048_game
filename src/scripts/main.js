@@ -16,7 +16,7 @@ const game = new Game();
 startBtn.addEventListener('click', async () => {
   startBtn.blur();
 
-  if (startBtn.classList.contains('restart')) {
+  if (startBtn.classList.contains('realRestart')) {
     if (!(await restartGameOverlay())) {
       // console.log('Game restart cancelled');
 
@@ -28,9 +28,9 @@ startBtn.addEventListener('click', async () => {
   game.restart();
   game.RadomGeneration();
   game.RadomGeneration();
-  drawBoard();
-  startBtn.classList.add('restart');
+  startBtn.classList.add('realRestart');
   startBtn.textContent = 'Restart';
+  drawBoard();
 });
 
 function drawBoard() {
@@ -128,7 +128,7 @@ function restartGameOverlay() {
     overlayTitle.textContent = 'Are you sure?';
 
     const cancelBtn = document.querySelector('.overlay-btn.cancel');
-    const restartBtn = document.querySelector('.overlay-btn.restart');
+    const restartBtn = document.querySelector('.overlay-btn.realRestart');
 
     cancelBtn.addEventListener('click', () => {
       overlay.classList.add('hidden');
@@ -151,7 +151,8 @@ function gameOverOverlay() {
 
   const overlayTitle = document.querySelector('.overlay-title');
 
-  overlayTitle.textContent = 'Game Over!';
+  overlayTitle.classList.add('message-lose');
+  overlayTitle.textContent = 'You lose! Restart the game?';
 
   const currentScore = document.createElement('div');
 
@@ -160,7 +161,7 @@ function gameOverOverlay() {
   overlayTitle.after(currentScore);
 
   const cancelBtn = document.querySelector('.overlay-btn.cancel');
-  const restartBtn = document.querySelector('.overlay-btn.restart');
+  const restartBtn = document.querySelector('.overlay-btn.realRestart');
 
   cancelBtn.style.display = 'none';
   restartBtn.textContent = 'Restart';
@@ -168,7 +169,7 @@ function gameOverOverlay() {
   restartBtn.addEventListener('click', () => {
     overlay.classList.add('hidden');
     cancelBtn.style.display = 'inline-block';
-    startBtn.classList.remove('restart');
+    startBtn.classList.remove('realRestart');
     currentScore.remove();
     startBtn.click();
   });
@@ -204,7 +205,7 @@ function winOverlay() {
   overlayTitle.after(currentScore);
 
   const cancelBtn = document.querySelector('.overlay-btn.cancel');
-  const restartBtn = document.querySelector('.overlay-btn.restart');
+  const restartBtn = document.querySelector('.overlay-btn.realRestart');
 
   cancelBtn.style.display = 'none';
   restartBtn.textContent = 'Oh shit, here we go again!';
@@ -213,7 +214,7 @@ function winOverlay() {
     overlay.classList.add('hidden');
     cancelBtn.style.display = 'inline-block';
     restartBtn.textContent = 'Restart';
-    startBtn.classList.remove('restart');
+    startBtn.classList.remove('realRestart');
     currentScore.remove();
     startBtn.click();
   });
@@ -243,3 +244,9 @@ function move(directionFunc) {
     gameOverOverlay();
   }
 }
+
+const testRestartBtn = document.querySelector('.test-restart');
+
+testRestartBtn.addEventListener('click', () => {
+  game.restart();
+});
