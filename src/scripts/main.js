@@ -1,11 +1,5 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
-
-// Write your code here
-'use strict';
 import Game from '../modules/Game.class.js';
 
 const game = new Game();
@@ -68,11 +62,17 @@ function render() {
 button.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
+
+    button.textContent = 'Restart';
+    button.classList.remove('start');
+    button.classList.add('restart');
   } else {
     game.restart();
-    button.textContent = 'Start';
-    button.classList.remove('restart');
-    button.classList.add('start');
+    game.start();
+
+    button.textContent = 'Restart';
+    button.classList.remove('start');
+    button.classList.add('restart');
   }
 
   render();
