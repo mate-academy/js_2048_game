@@ -1,0 +1,27 @@
+{
+  "extends": [
+    "development"
+  ],
+  "hints": {
+    "compat-api/css": [
+      "default",
+      {
+        "ignore": [
+          "flex-direction",
+          "user-select",
+          "justify-content",
+          "align-items",
+          "text-align: center"
+        ]
+      }
+    ],
+    "compat-api/html": [
+      "default",
+      {
+        "ignore": [
+          "script[type=module]"
+        ]
+      }
+    ]
+  }
+}
