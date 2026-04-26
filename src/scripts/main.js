@@ -6,95 +6,109 @@
 
 // Write your code here
 'use strict';
+import Game from '../modules/Game.class.js';
 
-const Game = require('../modules/Game.class');
+const game = new Game();
 
-const startButton = document.querySelector('.button.start');
+const button = document.querySelector('.button');
 const scoreElement = document.querySelector('.game-score');
+const cells = document.querySelectorAll('.field-cell');
 
-const messageStart = document.querySelector('.message-start');
-const messageWin = document.querySelector('.message-win');
-const messageLose = document.querySelector('.message-lose');
+const startMessage = document.querySelector('.message-start');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
 
-let game = null;
+function updateBoard() {
+  const state = game.getState().flat();
 
-function render() {
-  const state = game.getState();
-  const cells = document.querySelectorAll('.field-cell');
+  cells.forEach((cell, index) => {
+    const value = state[index];
 
-  let index = 0;
+    cell.className = 'field-cell';
+    cell.textContent = '';
 
-  state.forEach((row) => {
-    row.forEach((value) => {
-      const cell = cells[index];
-
-      cell.textContent = value !== 0 ? value : '';
-      cell.className = 'field-cell';
-
-      if (value !== 0) {
-        cell.classList.add(`field-cell--${value}`);
-      }
-
-      index++;
-    });
+    if (value !== 0) {
+      cell.classList.add(`field-cell--${value}`);
+      cell.textContent = value;
+    }
   });
+}
 
+function updateScore() {
   scoreElement.textContent = game.getScore();
+}
 
-  const gameStatus = game.getStatus();
+function updateMessages() {
+  // eslint-disable-next-line no-shadow
+  const status = game.getStatus();
 
-  messageStart.classList.add('hidden');
+  startMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
 
-  if (gameStatus === 'playing') {
-    messageWin.classList.add('hidden');
-    messageLose.classList.add('hidden');
+  if (status === 'idle') {
+    startMessage.classList.remove('hidden');
   }
 
-  if (gameStatus === 'win') {
-    messageWin.classList.remove('hidden');
+  if (status === 'win') {
+    winMessage.classList.remove('hidden');
   }
 
-  if (gameStatus === 'lose') {
-    messageLose.classList.remove('hidden');
+  if (status === 'lose') {
+    loseMessage.classList.remove('hidden');
   }
 }
 
-startButton.addEventListener('click', () => {
-  if (!game || game.getStatus() === 'idle') {
-    game = new Game();
-    game.start();
+function render() {
+  updateBoard();
+  updateScore();
+  updateMessages();
+}
 
-    startButton.textContent = 'Restart';
-    startButton.classList.remove('start');
-    startButton.classList.add('restart');
+button.addEventListener('click', () => {
+  if (game.getStatus() === 'idle') {
+    game.start();
   } else {
     game.restart();
+    button.textContent = 'Start';
+    button.classList.remove('restart');
+    button.classList.add('start');
   }
 
   render();
 });
 
-document.addEventListener('keydown', (e) => {
-  if (!game) {
+// eslint-disable-next-line no-shadow
+document.addEventListener('keydown', (event) => {
+  if (game.getStatus() !== 'playing') {
     return;
   }
 
-  switch (e.key) {
+  let moved = false;
+
+  switch (event.key) {
     case 'ArrowLeft':
-      game.moveLeft();
+      moved = game.moveLeft();
       break;
     case 'ArrowRight':
-      game.moveRight();
+      moved = game.moveRight();
       break;
     case 'ArrowUp':
-      game.moveUp();
+      moved = game.moveUp();
       break;
     case 'ArrowDown':
-      game.moveDown();
+      moved = game.moveDown();
       break;
     default:
       return;
   }
 
-  render();
+  if (moved) {
+    button.textContent = 'Restart';
+    button.classList.remove('start');
+    button.classList.add('restart');
+    render();
+  }
 });
+
+render();
