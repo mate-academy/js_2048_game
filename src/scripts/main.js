@@ -1,6 +1,5 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 import Game from '../modules/Game.class.js';
 
 const game = new Game();
@@ -18,7 +17,6 @@ function getCells() {
 function renderBoard() {
   const state = game.getState();
   const cells = getCells();
-
   let i = 0;
 
   for (let r = 0; r < 4; r++) {
@@ -26,7 +24,6 @@ function renderBoard() {
       const cell = cells[i++];
       const val = state[r][c];
 
-      // Remove old value class
       cell.className = 'field-cell';
 
       if (val > 0) {

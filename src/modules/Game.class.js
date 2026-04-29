@@ -28,7 +28,6 @@ class Game {
     }
   }
 
-  // Полностью плоская структура без лишних уровней вложенности скобок
   isStateChanged(oldState) {
     return oldState.some((row, rIdx) => {
       return row.some((num, cIdx) => num !== this.state[rIdx][cIdx]);
