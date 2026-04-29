@@ -66,67 +66,79 @@ class Game {
   }
   moveRight() {
     const oldState = JSON.stringify(this.state);
-    const reversed = this.state.map((row) => [...row].reverse());
-    const processed = reversed.map((row) => this.processRow(row));
+  const reversed = this.state.map((row) => [...row].reverse());
+  const processed = reversed.map((row) => this.processRow(row));
 
-    this.state = processed.map((row) => [...row].reverse());
+  this.state = processed.map((row) => [...row].reverse());
 
-    if (JSON.stringify(this.state) !== oldState) {
-      this.addRandomTile();
+  if (JSON.stringify(this.state) !== oldState) {
+    this.addRandomTile();
 
-      if (this.checkWin()) {
-        this.status = 'win';
-      } else if (this.checkLose()) {
-        this.status = 'lose';
-      }
-
-      return true;
+    if (this.checkWin()) {
+      this.status = 'win';
+    } else if (this.checkLose()) {
+      this.status = 'lose';
     }
 
-    return false;
+    return true;
+  }
+
+  if (this.checkLose()) {
+    this.status = 'lose';
+  }
+
+  return false;
   }
   moveUp() {
     const oldState = JSON.stringify(this.state);
-    const transposed = this.transpose(this.state);
-    const processed = transposed.map((row) => this.processRow(row));
+  const transposed = this.transpose(this.state);
+  const processed = transposed.map((row) => this.processRow(row));
 
-    this.state = this.transpose(processed);
+  this.state = this.transpose(processed);
 
-    if (JSON.stringify(this.state) !== oldState) {
-      this.addRandomTile();
+  if (JSON.stringify(this.state) !== oldState) {
+    this.addRandomTile();
 
-      if (this.checkWin()) {
-        this.status = 'win';
-      } else if (this.checkLose()) {
-        this.status = 'lose';
-      }
-
-      return true;
+    if (this.checkWin()) {
+      this.status = 'win';
+    } else if (this.checkLose()) {
+      this.status = 'lose';
     }
 
-    return false;
+    return true;
+  }
+
+  if (this.checkLose()) {
+    this.status = 'lose';
+  }
+
+  return false;
   }
   moveDown() {
     const oldState = JSON.stringify(this.state);
-    const transposed = this.transpose(this.state);
-    const reversed = transposed.map((row) => [...row].reverse());
-    const processed = reversed.map((row) => this.processRow(row));
+  const transposed = this.transpose(this.state);
+  const reversed = transposed.map((row) => [...row].reverse());
+  const processed = reversed.map((row) => this.processRow(row));
 
-    this.state = this.transpose(processed.map((row) => [...row].reverse()));
+  this.state = this.transpose(processed.map((row) => [...row].reverse()));
 
-    if (JSON.stringify(this.state) !== oldState) {
-      this.addRandomTile();
+  if (JSON.stringify(this.state) !== oldState) {
+    this.addRandomTile();
 
-      if (this.checkWin()) {
-        this.status = 'win';
-      } else if (this.checkLose()) {
-        this.status = 'lose';
-      }
-
-      return true;
+    if (this.checkWin()) {
+      this.status = 'win';
+    } else if (this.checkLose()) {
+      this.status = 'lose';
     }
 
-    return false;
+    return true;
+  }
+
+  if (this.checkLose()) {
+    this.status = 'lose';
+  }
+
+  return false;
   }
   transpose(matrix) {
     return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
