@@ -20,7 +20,6 @@ class Game {
     ];
     this.status = 'idle';
 
-    // Убрали ветвление со сложными переносами
     if (initialState) {
       this.initialState = initialState.map((row) => [...row]);
     } else {
