@@ -102,10 +102,12 @@ h1 {
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  cursor: pointer;
 }
 
 .info {
   display: flex;
+  cursor: pointer;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -135,6 +137,10 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+
+  &:first-of-type {
+    margin-right: 8px;
+  }
 }
 
 .start {
