@@ -252,7 +252,7 @@ class Game {
 
     if (this.field.find((row) => row.includes(2048)) !== undefined) {
       this.status = 'win';
-    } else if (!this.hasAvailableMoves()) {
+    } else if (!this.hasAvailableMoves() && this.status !== 'win') {
       this.status = 'lose';
     } else {
       this.status = 'playing';
