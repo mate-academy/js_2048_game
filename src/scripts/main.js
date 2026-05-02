@@ -27,6 +27,7 @@ function renderField() {
     cell.textContent = value === 0 ? '' : value;
     cell.className = 'field-cell' + (value ? ` field-cell--${value}` : '');
   });
+  setTimeout(updateScore, 10);
 }
 
 // Atualizar o score na tela
