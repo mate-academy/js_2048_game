@@ -46,39 +46,40 @@ function updateUI() {
   if (game.getStatus() === 'playing') {
     messageStart.classList.add('hidden');
   }
+
+  if (game.getStatus() === 'idle') {
+    messageStart.classList.remove('hidden');
+  } else if (game.getStatus() === 'playing') {
+    messageStart.classList.add('hidden');
+  }
 }
 
 const button = document.querySelector('.button');
 
 button.addEventListener('click', () => {
   game.restart();
+  button.textContent = 'Restart';
+  button.classList.remove('start');
+  button.classList.add('restart');
   updateUI();
 });
 
 document.addEventListener('keydown', (e) => {
-  let moved = false;
-
   switch (e.key) {
     case 'ArrowLeft':
-      moved = game.moveLeft();
+      game.moveLeft();
       break;
     case 'ArrowRight':
-      moved = game.moveRight();
+      game.moveRight();
       break;
     case 'ArrowUp':
-      moved = game.moveUp();
+      game.moveUp();
       break;
     case 'ArrowDown':
-      moved = game.moveDown();
+      game.moveDown();
       break;
     default:
       return;
-  }
-
-  if (moved) {
-    button.textContent = 'Restart';
-    button.classList.remove('start');
-    button.classList.add('restart');
   }
 
   e.preventDefault();
