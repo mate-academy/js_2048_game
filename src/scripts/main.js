@@ -15,6 +15,7 @@ class Game {
 
     this.score = 0; // рахунок
     this.status = 'playing'; // статус гри
+    this.isStarted = false;
 
     if (!initialState) {
       this.setupRandom();
@@ -56,6 +57,7 @@ class Game {
 
   start() {
     this.status = 'playing';
+    this.isStarted = true;
   }
 
   restart() {
@@ -69,6 +71,7 @@ class Game {
     this.status = 'playing';
     this.setupRandom();
     this.setupRandom();
+    this.isStarted = true;
   }
 
   compactRow(row) {
@@ -101,10 +104,15 @@ class Game {
     if (stateBefore !== JSON.stringify(this.board)) {
       this.setupRandom();
       this.checkGameOver();
+      this.isStarted = true;
     }
   }
 
   checkGameOver() {
+    if (this.status === 'won') {
+      return false;
+    }
+
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 4; x++) {
         const current = this.board[y][x];
@@ -216,7 +224,7 @@ function updateStatusUI() {
   startMessage.classList.add('hidden');
 
   if (gameStatus === 'playing') {
-    if (game.getScore() === 0) {
+    if (!game.isStarted) {
       startMessage.classList.remove('hidden');
     }
   } else if (gameStatus === 'won') {
@@ -229,7 +237,7 @@ function updateStatusUI() {
 function updateButton() {
   const btn = document.querySelector('.button'); // або .start / .restart
 
-  if (game.getScore() > 0 || game.getStatus() !== 'playing') {
+  if (game.isStarted === true || game.getStatus() !== 'playing') {
     btn.textContent = 'Restart';
     btn.classList.remove('start');
     btn.classList.add('restart');
