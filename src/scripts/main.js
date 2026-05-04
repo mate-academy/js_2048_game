@@ -6,6 +6,10 @@
 
 class Game {
   constructor(initialState) {
+    this.initialState = initialState
+      ? JSON.parse(JSON.stringify(initialState))
+      : null;
+
     this.board = initialState || [
       [0, 0, 0, 0], // 0
       [0, 0, 0, 0], // 1
@@ -18,8 +22,12 @@ class Game {
     this.isStarted = false;
 
     if (!initialState) {
-      this.setupRandom();
-      this.setupRandom();
+    } else {
+      this.checkGameOver();
+
+      if (this.board.flat().includes(2048)) {
+        this.status = 'won';
+      }
     }
   }
 
@@ -58,36 +66,47 @@ class Game {
   start() {
     this.status = 'playing';
     this.isStarted = true;
+
+    if (this.board.flat().every((cell) => cell === 0)) {
+      this.setupRandom();
+      this.setupRandom();
+    }
   }
 
   restart() {
-    this.board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
     this.score = 0;
     this.status = 'playing';
-    this.setupRandom();
-    this.setupRandom();
-    this.isStarted = true;
+    this.isStarted = false;
+
+    if (this.initialState) {
+      this.board = JSON.parse(JSON.stringify(this.initialState));
+    } else {
+      this.board = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
+      // this.setupRandom();
+      // this.setupRandom();
+    }
   }
 
   compactRow(row) {
     const filteredRow = row.filter((num) => num !== 0);
+    const finalRow = [];
 
-    for (let i = 0; i < filteredRow.length - 1; i++) {
-      if (filteredRow[i] === filteredRow[i + 1]) {
-        filteredRow[i] *= 2;
+    for (let i = 0; i < filteredRow.length; i++) {
+      if (i < filteredRow.length - 1 && filteredRow[i] === filteredRow[i + 1]) {
+        const doubled = filteredRow[i] * 2;
 
-        this.score += filteredRow[i];
-
-        filteredRow[i + 1] = 0;
+        finalRow.push(doubled);
+        this.score += doubled;
+        i++;
+      } else {
+        finalRow.push(filteredRow[i]);
       }
     }
-
-    const finalRow = filteredRow.filter((num) => num !== 0);
 
     if (finalRow.includes(2048)) {
       this.status = 'won';
@@ -102,9 +121,13 @@ class Game {
 
   checkMoveSuccess(stateBefore) {
     if (stateBefore !== JSON.stringify(this.board)) {
-      this.setupRandom();
-      this.checkGameOver();
       this.isStarted = true;
+      this.setupRandom();
+
+      if (this.board.flat().includes(2048)) {
+        this.status = 'won';
+      }
+      this.checkGameOver();
     }
   }
 
@@ -219,32 +242,27 @@ function updateStatusUI() {
 
   scoreDisplay.textContent = game.getScore();
 
-  winMessage.classList.add('hidden');
-  loseMessage.classList.add('hidden');
-  startMessage.classList.add('hidden');
-
-  if (gameStatus === 'playing') {
-    if (!game.isStarted) {
-      startMessage.classList.remove('hidden');
-    }
-  } else if (gameStatus === 'won') {
-    winMessage.classList.remove('hidden');
-  } else if (gameStatus === 'lost') {
-    loseMessage.classList.remove('hidden');
+  if (game.isStarted) {
+    startMessage.classList.add('hidden');
+  } else {
+    startMessage.classList.remove('hidden');
   }
+
+  winMessage.classList.toggle('hidden', gameStatus !== 'won');
+  loseMessage.classList.toggle('hidden', gameStatus !== 'lost');
 }
 
 function updateButton() {
-  const btn = document.querySelector('.button'); // або .start / .restart
+  const btn = document.querySelector('.button');
 
-  if (game.isStarted === true || game.getStatus() !== 'playing') {
+  if (game.isStarted) {
     btn.textContent = 'Restart';
-    btn.classList.remove('start');
     btn.classList.add('restart');
+    btn.classList.remove('start');
   } else {
     btn.textContent = 'Start';
-    btn.classList.remove('restart');
     btn.classList.add('start');
+    btn.classList.remove('restart');
   }
 }
 
@@ -271,7 +289,11 @@ function draw() {
 }
 
 document.querySelector('.button').addEventListener('click', () => {
-  game.restart();
+  if (!game.isStarted) {
+    game.start();
+  } else {
+    game.restart();
+  }
   draw();
 });
 
