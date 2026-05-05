@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * This class represents the game.
