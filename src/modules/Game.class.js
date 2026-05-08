@@ -176,6 +176,7 @@ export default class Game {
         }
       }
 
+      // объединяем одинаковые
       for (let i = 0; i < column.length - 1; i++) {
         if (column[i] === column[i + 1]) {
           column[i] *= 2; // Удваиваем значение плитки
@@ -192,11 +193,11 @@ export default class Game {
         column.unshift(0); // добавляем нули в начало столбца
       }
 
-      for (let i = this.size - 1; i >= 0; i--) {
-        if (this.board[i][j] !== column[this.size - 1 - i]) {
+      for (let i = 0; i < this.size; i++) {
+        if (this.board[i][j] !== column[i]) {
           moved = true; // проверяем, изменился ли столбец
         }
-        this.board[i][j] = column[this.size - 1 - i];
+        this.board[i][j] = column[i];
         // обновляем ряд на игровом поле
       }
     }

@@ -83,16 +83,16 @@ document.addEventListener('keydown', (e) => {
 
   switch (e.key) {
     case 'ArrowUp':
-      game.moveUp('up');
+      game.moveUp();
       break;
     case 'ArrowDown':
-      game.moveDown('down');
+      game.moveDown();
       break;
     case 'ArrowLeft':
-      game.moveLeft('left');
+      game.moveLeft();
       break;
     case 'ArrowRight':
-      game.moveRight('right');
+      game.moveRight();
       break;
   }
   renderBoard();
