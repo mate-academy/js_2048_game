@@ -1,21 +1,21 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable padding-line-between-statements */
+/* eslint-disable no-dupe-class-members */
 'use strict';
 
+/**
+ * This class represents the game.
+ * Now it has a basic structure, that is needed for testing.
+ * Feel free to add more props and methods if needed.
+ */
 class Game {
   /**
    * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
    * initial state.
    */
   constructor(initialState) {
+    // eslint-disable-next-line no-console
+    console.log(initialState);
     this.initialState = initialState || [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -27,6 +27,10 @@ class Game {
     this.status = 'playing';
   }
 
+  moveLeft() {}
+  moveRight() {}
+  moveUp() {}
+  moveDown() {}
   compress(row) {
     const newRow = row.filter((num) => num !== 0);
 
@@ -198,14 +202,10 @@ class Game {
 
   /**
    * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
    * `win` - the game is won;
    * `lose` - the game is lost
    */
+  getStatus() {}
   getStatus() {
     return this.status;
   }
@@ -213,6 +213,7 @@ class Game {
   /**
    * Starts the game.
    */
+  start() {}
   start() {
     const emptyCells = [];
 
@@ -234,11 +235,12 @@ class Game {
   /**
    * Resets the game.
    */
+  restart() {}
+
+  // Add your own methods here
   restart() {
     this.board = this.initialState.map((row) => [...row]);
     this.score = 0;
     this.status = 'playing';
   }
 }
-
-module.exports = Game;
