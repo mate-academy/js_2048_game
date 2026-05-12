@@ -35,11 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (gameStatus === 'win') {
       messageWin.classList.remove('hidden');
       messageLose.classList.add('hidden');
+      messageStart.classList.add('hidden');
     } else if (gameStatus === 'lose') {
       messageLose.classList.remove('hidden');
       messageWin.classList.add('hidden');
-    } else {
       messageStart.classList.add('hidden');
+    } else if (gameStatus === 'playing') {
+      messageStart.classList.add('hidden');
+      messageWin.classList.add('hidden');
+      messageLose.classList.add('hidden');
+    } else {
+      messageStart.classList.remove('hidden');
+      messageWin.classList.add('hidden');
+      messageLose.classList.add('hidden');
     }
   }
 
