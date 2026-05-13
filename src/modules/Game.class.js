@@ -7,26 +7,40 @@ class Game {
     LOSE: 'lose',
   });
 
-  static getEmptyBoard() {
+  static getEmptyBoard = () => {
     return [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
-  }
+  };
+  // static countStep = 0;
 
-  static makeRandomNumberOnBoard() {
-    const board = this.getEmptyBoard();
+  static makeRandomNumberOnBoard(dataBoard, amountToAdd = 1) {
+    const board = dataBoard || this.getEmptyBoard();
+
+    // 1. Визначаємо кількість цифр для додавання:
+    // Якщо кроків 0 — додаємо 2 цифри (початок гри), інакше — лише 1 цифру.
+
+    // const amountToAdd = this.countStep === 0 ? 2 : 1;
+    // this.countStep++;
+
     let placedNumbers = 0;
-    const firstNumbers = 2;
+    // 2. Цикл працює, поки не поставимо потрібну кількість цифр
 
-    while (placedNumbers < 2) {
+    while (board.flat().includes(0) && placedNumbers < amountToAdd) {
       const row = Math.floor(Math.random() * 4);
       const col = Math.floor(Math.random() * 4);
 
+      // Перевіряємо, чи клітинка порожня
       if (board[row][col] === 0) {
-        board[row][col] = firstNumbers;
+        // 3. Логіка ймовірності:
+        // Math.random() дає число від 0 до 1.
+        // Якщо воно менше 0.1 (це і є 10%) — обираємо 4, інакше — 2.
+        const newValue = Math.random() < 0.1 ? 4 : 2;
+
+        board[row][col] = newValue;
         placedNumbers++;
       }
     }
@@ -48,6 +62,7 @@ class Game {
   calculateNextState(direction) {
     // 1. Створюємо копію поточного стану, щоб не змінювати оригінал одразу
     // (це важливо для порівняння: чи змінилося щось після ходу)
+
     let newState = JSON.parse(JSON.stringify(this.state));
 
     // 2. Допоміжна функція для обробки ОДНОГО рядка (логіка руху ВЛІВО)
@@ -143,6 +158,9 @@ class Game {
 
     // 6. ОНОВЛЮЄМО СТАН ГРИ
     this.state = newState;
+
+    // 7. Додаємо нове число (2 або 4) у випадкову порожню клітинку
+    this.state = Game.makeRandomNumberOnBoard(this.state, 1);
   }
 
   rotateMatrix(matrix) {
@@ -168,6 +186,8 @@ class Game {
 
     this.cells.forEach((cell, index) => {
       const value = flatState[index];
+
+      cell.className = 'field-cell';
 
       if (value > 0) {
         cell.textContent = value;
@@ -217,10 +237,7 @@ class Game {
   }
 
   start = () => {
-    // eslint-disable-next-line no-console
-    this.state = Game.makeRandomNumberOnBoard();
-    // eslint-disable-next-line no-console
-    console.log('Game started with state:', this.state);
+    this.state = Game.makeRandomNumberOnBoard(null, 2);
     this.updateView();
 
     if (this.status !== Game.StatusList.IDLE) {
@@ -238,8 +255,8 @@ class Game {
     this.state = Game.getEmptyBoard();
     this.score = 0;
     this.status = Game.StatusList.PLAYING;
-    // eslint-disable-next-line no-console
-    console.log('Game restarted');
+    // Game.countStep = 0;
+    this.state = Game.makeRandomNumberOnBoard(null, 2);
   }
 
   eventListenersSetup() {
@@ -262,8 +279,6 @@ class Game {
 
     this.buttonStart.addEventListener('click', this.start);
   }
-
-  // Add your own methods here
 }
 
 export default Game;
