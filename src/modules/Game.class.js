@@ -222,11 +222,13 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
-    if (this.matriz.includes(2048)) {
-      return 'win';
-    } else {
-      return this.isGameOver() ? 'lose' : 'playing';
+    for (let i = 0; i < 4; i++) {
+      if (this.matriz[i].includes(2048)) {
+        return 'win';
+      }
     }
+
+    return this.isGameOver() ? 'lose' : 'playing';
   }
 
   /**
