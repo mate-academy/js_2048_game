@@ -19,15 +19,17 @@ startButton.addEventListener('click', () => {
 
   const matriz = game.getState();
 
-  for (let i = 0; i < matriz.length; i++) {
-    cells[i].innerText = matriz[i];
+  const planMatriz = matriz.flat();
 
-    if (matriz[i] === 4) {
-      cells[i].classList.add('field-cell--4');
-    }
+  for (let a = 0; a < cells.length; a++) {
+    const valor = planMatriz[a];
 
-    if (matriz[i] === 0) {
-      cells[i].innerText = '';
+    cells[a].innerText = valor === 0 ? '' : valor;
+
+    if (valor === 4) {
+      cells[a].classList.add('field-cell--4');
+    } else {
+      cells[a].classList.remove('field-cell--4');
     }
   }
 
@@ -64,12 +66,14 @@ if (!game.init) {
   alert('you must start the game first');
 }
 */
-
 const update = () => {
-  const matriz = game.matriz;
+  const planMatriz = game.getState().flat();
 
-  for (let i = 0; i < matriz.length; i++) {
-    cells[i].innerText = matriz[i] === 0 ? '' : matriz[i];
+  for (let i = 0; i < planMatriz.length; i++) {
+    const valor = planMatriz[i];
+
+    cells[i].innerText = valor === 0 ? '' : valor;
+
     cells[i].classList.remove('field-cell--2');
     cells[i].classList.remove('field-cell--4');
     cells[i].classList.remove('field-cell--8');
@@ -81,8 +85,8 @@ const update = () => {
     cells[i].classList.remove('field-cell--512');
     cells[i].classList.remove('field-cell--1024');
 
-    if (matriz[i] !== 0) {
-      cells[i].classList.add(`field-cell--${matriz[i]}`);
+    if (valor !== 0) {
+      cells[i].classList.add(`field-cell--${valor}`);
     }
   }
 

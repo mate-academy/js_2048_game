@@ -39,33 +39,36 @@ class Game {
   */
 
   matriz = [
-    [0, 0, 0, 0], // row 0
-    [0, 0, 0, 0], // row 1
-    [4, 0, 0, 0], // row 2
-    [0, 0, 0, 0], // row 3
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [4, 0, 0, 0],
+    [0, 0, 0, 0],
   ];
 
   moveLeft() {
     // alert('left');
-    // this.matriz = [0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0];
-    for (let i = 0; i < this.matriz.length; i++) {
-      if (this.matriz[i] !== 0 && this.matriz[i - 1] === 0) {
-        // left corner indexes
-        if (i !== 3 && i !== 7 && i !== 11 && i !== 15) {
-          this.matriz[i - 1] = this.matriz[i];
-          this.matriz[i] = 0;
-        }
-      }
+    // this.matriz = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0];
+    for (let x = 0; x < 4; x++) {
+      for (let y = 1; y < 4; y++) {
+        if (this.matriz[x][y] !== 0) {
+          let column = y;
 
-      if (this.matriz[i] !== 0 && this.matriz[i] === this.matriz[i - 1]) {
-        // left corner indexes
-        if (i !== 3 && i !== 7 && i !== 11 && i !== 15) {
-          const value = this.matriz[i] * 2;
+          while (column > 0 && this.matriz[x][column - 1] === 0) {
+            this.matriz[x][column - 1] = this.matriz[x][column];
+            this.matriz[x][column] = 0;
+            column -= 1;
+          }
 
-          this.matriz[i - 1] = value;
-          this.matriz[i] = 0;
+          if (
+            column > 0 &&
+            this.matriz[x][column - 1] === this.matriz[x][column]
+          ) {
+            const sumValue = this.matriz[x][column] * 2;
 
-          this.score += value;
+            this.matriz[x][column - 1] = sumValue;
+            this.matriz[x][column] = 0;
+            this.score += sumValue;
+          }
         }
       }
     }
@@ -80,72 +83,80 @@ class Game {
     });
     */
 
-    for (let i = this.matriz.length - 2; i >= 0; i--) {
-      if (this.matriz[i] !== 0 && this.matriz[i + 1] === 0) {
-        // right corner indexes
-        if (i !== 3 && i !== 7 && i !== 11 && i !== 15) {
-          this.matriz[i + 1] = this.matriz[i];
-          this.matriz[i] = 0;
-        }
-      }
+    for (let x = 3; x >= 0; x--) {
+      for (let y = 3; y >= 0; y--) {
+        if (this.matriz[x][y] !== 0) {
+          let column = y;
 
-      if (this.matriz[i] !== 0 && this.matriz[i] === this.matriz[i + 1]) {
-        // right corner indexes
-        if (i !== 3 && i !== 7 && i !== 11 && i !== 15) {
-          const value = this.matriz[i] * 2;
+          while (column < 4 && this.matriz[x][column + 1] === 0) {
+            this.matriz[x][column + 1] = this.matriz[x][column];
+            this.matriz[x][column] = 0;
+            column += 1;
+          }
 
-          this.matriz[i + 1] = value;
-          this.matriz[i] = 0;
+          if (
+            column < 4 &&
+            this.matriz[x][column + 1] === this.matriz[x][column]
+          ) {
+            const sumValue = this.matriz[x][column] * 2;
 
-          this.score += value;
+            this.matriz[x][column + 1] = sumValue;
+            this.matriz[x][column] = 0;
+            this.score += sumValue;
+          }
         }
       }
     }
+
     this.refresh();
   }
   moveUp() {
     // alert('up');
     // this.matriz = [4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    for (let i = 0; i < this.matriz.length; i++) {
-      if (this.matriz[i] !== 0 && this.matriz[i - 4] === 0) {
-        if (i >= 4) {
-          this.matriz[i - 4] = this.matriz[i];
-          this.matriz[i] = 0;
-        }
-      }
+    for (let y = 0; y < 4; y++) {
+      for (let x = 1; x < 4; x++) {
+        if (this.matriz[x][y] !== 0) {
+          let row = x;
 
-      if (this.matriz[i] !== 0 && this.matriz[i] === this.matriz[i - 4]) {
-        if (i >= 4) {
-          const value = this.matriz[i] * 2;
+          while (row > 0 && this.matriz[row - 1][y] === 0) {
+            this.matriz[row - 1][y] = this.matriz[row][y];
+            this.matriz[row][y] = 0;
+            row--;
+          }
 
-          this.matriz[i - 4] = value;
-          this.matriz[i] = 0;
+          if (row > 0 && this.matriz[row - 1][y] === this.matriz[row][y]) {
+            const sumValue = this.matriz[row][y] * 2;
 
-          this.score += value;
+            this.matriz[row - 1][y] = sumValue;
+            this.matriz[row][y] = 0;
+            this.score += sumValue;
+          }
         }
       }
     }
-    this.isGameOver();
+    this.refresh();
   }
   moveDown() {
     // alert('down');
-    // this.matriz = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0];
-    for (let i = this.matriz.length - 2; i >= 0; i--) {
-      if (this.matriz[i] !== 0 && this.matriz[i + 4] === 0) {
-        if (i < 12) {
-          const value = this.matriz[i] * 2;
+    // this.matriz = [4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let y = 0; y < 4; y++) {
+      for (let x = 2; x >= 0; x--) {
+        if (this.matriz[x][y] !== 0) {
+          let row = x;
 
-          this.matriz[i + 4] = this.matriz[i];
-          this.matriz[i] = 0;
+          while (row < 3 && this.matriz[row + 1][y] === 0) {
+            this.matriz[row + 1][y] = this.matriz[row][y];
+            this.matriz[row][y] = 0;
+            row += 1;
+          }
 
-          this.score += value;
-        }
-      }
+          if (row < 3 && this.matriz[row + 1][y] === this.matriz[row][y]) {
+            const sumValue = this.matriz[row][y] * 2;
 
-      if (this.matriz[i] !== 0 && this.matriz[i] === this.matriz[i + 4]) {
-        if (i < 12) {
-          this.matriz[i + 4] = this.matriz[i] * 2;
-          this.matriz[i] = 0;
+            this.matriz[row + 1][y] = sumValue;
+            this.matriz[row][y] = 0;
+            this.score += sumValue;
+          }
         }
       }
     }
@@ -162,41 +173,40 @@ class Game {
   }
 
   isGameOver() {
-    const hasMoves = this.matriz.some((value, i) => {
+    const flatMatriz = this.matriz.flat();
+
+    const hasMoves = flatMatriz.some((value, i) => {
       return (
         value === 0 ||
-        (i % 4 !== 3 && value === this.matriz[i + 1]) ||
-        (i < 12 && value === this.matriz[i + 4])
+        (i % 4 !== 3 && value === flatMatriz[i + 1]) ||
+        (i < 12 && value === flatMatriz[i + 4])
       );
     });
 
-    if (!hasMoves) {
-      alert('Game Over');
-    }
-
-    return true;
+    return !hasMoves;
   }
 
   refresh() {
     const blank = [];
 
-    for (let i = 0; i < this.matriz.length; i++) {
-      if (this.matriz[i] === 0) {
-        blank.push(i);
+    for (let i = 0; i < 4; i++) {
+      for (let d = 0; d < 4; d++) {
+        if (this.matriz[i][d] === 0) {
+          blank.push({ linha: i, coluna: d });
+        }
       }
     }
 
     if (blank.length > 0) {
       const randomSlot = Math.floor(Math.random() * blank.length);
-      const choice = blank[randomSlot];
+      const localEscolhido = blank[randomSlot];
 
-      this.matriz[choice] = this.random42();
+      this.matriz[localEscolhido.linha][localEscolhido.coluna] =
+        this.random42();
     }
 
-    // console.log(this.matriz);
     this.isGameOver();
   }
-
   /**
    * @returns {number}
    */
@@ -223,8 +233,10 @@ class Game {
    */
   getStatus() {
     for (let i = 0; i < 4; i++) {
-      if (this.matriz[i].includes(2048)) {
-        return 'win';
+      for (let d = 0; d < 4; d++) {
+        if (this.matriz[i][d] === 2048) {
+          return 'win';
+        }
       }
     }
 
@@ -242,7 +254,13 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.matriz = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    this.matriz = [
+      [0, 0, 0, 0], // row 0
+      [0, 0, 0, 0], // row 1
+      [4, 0, 0, 0], // row 2
+      [0, 0, 0, 0], // row 3
+    ];
+    this.score = 0;
     this.refresh();
   }
 
