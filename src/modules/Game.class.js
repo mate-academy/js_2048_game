@@ -15,7 +15,7 @@ class Game {
       [0, 0, 0, 0],
     ];
   };
-  // static countStep = 0;
+  countStep = 0;
 
   static makeRandomNumberOnBoard(dataBoard, amountToAdd = 1) {
     const board = dataBoard || this.getEmptyBoard();
@@ -59,7 +59,36 @@ class Game {
     this.eventListenersSetup();
   }
 
+  hasAvailableMoves() {
+    const flatState = this.state.flat();
+    // Якщо є порожні клітинки — ходи є
+
+    if (flatState.includes(0)) {
+      return true;
+    }
+
+    // Перевіряємо можливість об'єднання по горизонталі та вертикалі
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        const current = this.state[r][c];
+
+        if (
+          (r < 3 && current === this.state[r + 1][c]) || // нижній сусід
+          (c < 3 && current === this.state[r][c + 1]) // правий сусід
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   calculateNextState(direction) {
+    if (this.status !== Game.StatusList.PLAYING) {
+      return;
+    }
+
     // 1. Створюємо копію поточного стану, щоб не змінювати оригінал одразу
     // (це важливо для порівняння: чи змінилося щось після ходу)
 
@@ -156,11 +185,35 @@ class Game {
       newState = this.rotateMatrix(newState);
     }
 
+    // Перевіряємо, чи змінилося поле після ходу
+    if (JSON.stringify(this.state) === JSON.stringify(newState)) {
+      return;
+    }
+
+    if (this.buttonStart.textContent !== 'Restart') {
+      this.buttonStart.textContent = 'Restart';
+      this.buttonStart.classList.replace('start', 'restart');
+    }
+
     // 6. ОНОВЛЮЄМО СТАН ГРИ
     this.state = newState;
 
     // 7. Додаємо нове число (2 або 4) у випадкову порожню клітинку
     this.state = Game.makeRandomNumberOnBoard(this.state, 1);
+
+    // 8
+    if (this.state.flat().includes(2048)) {
+      this.status = Game.StatusList.WIN;
+      alert('You win!');
+      // TODO: Додати виклик функції для показу повідомлення WIN
+    }
+
+    // 9
+    if (this.status !== Game.StatusList.WIN && !this.hasAvailableMoves()) {
+      this.status = Game.StatusList.LOSE;
+      alert('Game Over!');
+      // TODO: Додати виклик функції для показу повідомлення GAME OVER
+    }
   }
 
   rotateMatrix(matrix) {
@@ -247,8 +300,8 @@ class Game {
     }
 
     this.status = Game.StatusList.PLAYING;
-    this.buttonStart.textContent = 'Restart';
-    this.buttonStart.classList.replace('start', 'restart');
+    // this.buttonStart.textContent = 'Restart';
+    // this.buttonStart.classList.replace('start', 'restart');
   };
 
   restart() {
@@ -261,6 +314,12 @@ class Game {
 
   eventListenersSetup() {
     document.addEventListener('keydown', (events) => {
+      if (
+        ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(events.key)
+      ) {
+        events.preventDefault();
+      }
+
       switch (events.key) {
         case 'ArrowLeft':
           this.moveLeft();
