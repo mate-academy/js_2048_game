@@ -1,68 +1,160 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.initialState = initialState || [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.state = this.initialState.map((row) => [...row]);
+    this.score = 0;
+    this.status = 'idle';
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  getState() {
+    return this.state;
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  start() {
+    this.status = 'playing';
+    this.addRandomTile();
+    this.addRandomTile();
+  }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+  restart() {
+    this.state = this.initialState.map((row) => [...row]);
+    this.score = 0;
+    this.status = 'playing';
+    this.addRandomTile();
+    this.addRandomTile();
+  }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+  addRandomTile() {
+    const empty = [];
 
-  // Add your own methods here
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state[i][j] === 0) {
+          empty.push([i, j]);
+        }
+      }
+    }
+
+    if (empty.length === 0) {
+      return;
+    }
+
+    const [tileRow, tileCol] = empty[Math.floor(Math.random() * empty.length)];
+
+    this.state[tileRow][tileCol] = Math.random() < 0.9 ? 2 : 4;
+  }
+
+  slideRow(row) {
+    const nums = row.filter((n) => n !== 0);
+    const merged = [];
+    let i = 0;
+
+    while (i < nums.length) {
+      if (i + 1 < nums.length && nums[i] === nums[i + 1]) {
+        const val = nums[i] * 2;
+
+        merged.push(val);
+        this.score += val;
+        i += 2;
+      } else {
+        merged.push(nums[i]);
+        i++;
+      }
+    }
+
+    while (merged.length < 4) {
+      merged.push(0);
+    }
+
+    return merged;
+  }
+
+  moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+    this.move((row) => this.slideRow(row));
+  }
+
+  moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+    this.move((row) => this.slideRow([...row].reverse()).reverse());
+  }
+
+  moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+    this.transpose();
+    this.move((row) => this.slideRow(row));
+    this.transpose();
+  }
+
+  moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+    this.transpose();
+    this.move((row) => this.slideRow([...row].reverse()).reverse());
+    this.transpose();
+  }
+
+  move(transform) {
+    const prev = JSON.stringify(this.state);
+
+    this.state = this.state.map(transform);
+
+    if (JSON.stringify(this.state) !== prev) {
+      this.addRandomTile();
+    }
+
+    if (this.state.some((row) => row.includes(2048))) {
+      this.status = 'win';
+    } else if (!this.hasMovesLeft()) {
+      this.status = 'lose';
+    }
+  }
+
+  transpose() {
+    this.state = this.state[0].map((_, c) => this.state.map((row) => row[c]));
+  }
+
+  hasMovesLeft() {
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.state[r][c] === 0) {
+          return true;
+        }
+
+        if (c + 1 < 4 && this.state[r][c] === this.state[r][c + 1]) {
+          return true;
+        }
+
+        if (r + 1 < 4 && this.state[r][c] === this.state[r + 1][c]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }
 
-module.exports = Game;
+export default Game;
