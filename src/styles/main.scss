@@ -1,3 +1,6 @@
+$main-color: #a28366;
+$second-color: #8d6946;
+
 body {
   margin: 0;
   display: flex;
@@ -11,14 +14,14 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: rgb(182, 164, 142);
   width: 75px;
   height: 75px;
-  border-radius: 5px;
+  border-radius: 8px;
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
 
   &--2 {
@@ -76,9 +79,9 @@ body {
 }
 
 .game-field {
-  background: #bbada0;
+  background: $main-color;
   border-spacing: 10px;
-  border-radius: 5px;
+  border-radius: 20px;
 }
 
 .game-header {
@@ -87,20 +90,15 @@ body {
   justify-content: space-between;
   margin-bottom: 24px;
   padding: 10px;
+  height: 60px;
   box-sizing: border-box;
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
+  color: #5c452e;
+  font-size: 40px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
   margin: 0;
 }
 
@@ -109,14 +107,23 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #e4ddcf;
   width: 75px;
-  height: 75px;
-  border-radius: 5px;
+  border-radius: 10px;
   color: #776e65;
   box-sizing: border-box;
-  font-size: 16px;
+  font-size: 10px;
+  line-height: 100%;
+
+  font-weight: 600;
   margin: 0 8px 0 0;
+  text-transform: uppercase;
+}
+
+.game-score {
+  font-size: 16px;
+  line-height: 100%;
+  font-weight: 900;
 }
 
 .controls {
@@ -125,32 +132,30 @@ h1 {
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   color: #f9f6f2;
-  font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
   width: 75px;
-  height: 75px;
 
   transition: 0.25s ease background;
 }
 
+
 .start {
-  background: #1dae28;
-  font-size: 20px;
+  background: #a28366;
 
   &:hover {
-    background: #179921;
+    background: $second-color;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: $main-color;
 
   &:hover {
-    background: #f87474;
+    background: $second-color;
   }
 }
 
@@ -161,7 +166,7 @@ h1 {
   color: #776e65;
   padding: 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 10px;
   font-size: 20px;
 }
 
