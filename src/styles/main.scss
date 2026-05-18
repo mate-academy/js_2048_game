@@ -12,14 +12,67 @@ body {
 
 @keyframes pop {
   0% {
-    transform: scale(0.8);
-  }
-  50% {
-    transform: scale(1.1);
+    transform: scale(0.5);
   }
   100% {
     transform: scale(1);
   }
+}
+@keyframes slide-left {
+  0% {
+    transform: translateX(25px) scale(0.9);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes slide-right {
+  0% {
+    transform: translateX(-25px) scale(0.9);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes slide-up {
+  0% {
+    transform: translateY(25px) scale(0.9);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes slide-down {
+  0% {
+    transform: translateY(-25px) scale(0.9);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.slide-pop {
+  animation: pop 0.2s ease-out;
+}
+.slide-left {
+  animation: slide-left 0.15s ease-out;
+}
+.slide-right {
+  animation: slide-right 0.15s ease-out;
+}
+.slide-up {
+  animation: slide-up 0.15s ease-out;
+}
+.slide-down {
+  animation: slide-down 0.15s ease-out;
 }
 
 .field-cell {

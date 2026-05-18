@@ -220,6 +220,8 @@ class Game {
       return false;
     }
 
+    this.lastDirection = direction; // Зберігаємо напрямок руху
+
     const { matrix, moveScore } = this._applySlide(this.state, direction);
 
     if (!this._hasChanged(matrix)) {
@@ -268,7 +270,8 @@ class Game {
 
         if (value !== prevValue) {
           void cell.offsetWidth;
-          cell.classList.add('cell-pop');
+          // cell.classList.add('cell-pop');
+          cell.classList.add(`slide-${this.lastDirection || 'pop'}`);
         }
       } else {
         cell.textContent = '';
