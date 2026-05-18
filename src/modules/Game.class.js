@@ -157,9 +157,9 @@ class Game {
     if (direction === 'right') {
       matrix = matrix.map((row) => [...row].reverse());
     } else if (direction === 'up') {
-      matrix = this._rotateCW(matrix);
-    } else if (direction === 'down') {
       matrix = this._rotateCCW(matrix);
+    } else if (direction === 'down') {
+      matrix = this._rotateCW(matrix);
     }
 
     let moveScore = 0;
@@ -175,9 +175,9 @@ class Game {
     if (direction === 'right') {
       matrix = matrix.map((row) => [...row].reverse());
     } else if (direction === 'up') {
-      matrix = this._rotateCCW(matrix);
-    } else if (direction === 'down') {
       matrix = this._rotateCW(matrix);
+    } else if (direction === 'down') {
+      matrix = this._rotateCCW(matrix);
     }
 
     return { matrix, moveScore };
@@ -231,7 +231,6 @@ class Game {
 
     this.state = Game.makeRandomNumberOnBoard(this.state, 1);
 
-    // Перевірка перемоги (2048 може з'явитись тільки після злиття)
     if (this.state.flat().includes(2048)) {
       this.status = Game.StatusList.WIN;
       this._renderView();
