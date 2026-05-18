@@ -258,11 +258,18 @@ class Game {
     this.cells.forEach((cell, i) => {
       const value = flat[i];
 
+      const prevValue = Number(cell.textContent) || 0;
+
       cell.className = 'field-cell';
 
       if (value > 0) {
         cell.textContent = value;
         cell.classList.add(`field-cell--${value}`);
+
+        if (value !== prevValue) {
+          void cell.offsetWidth;
+          cell.classList.add('cell-pop');
+        }
       } else {
         cell.textContent = '';
       }
