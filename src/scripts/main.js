@@ -50,6 +50,7 @@ startButton.addEventListener('click', () => {
     startButton.classList.add('restart');
   } else {
     game.restart();
+    game.start();
   }
 
   updateUI();
