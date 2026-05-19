@@ -1,5 +1,40 @@
 'use strict';
 
+const BUCKET_ID = '5JGVQVX4yPRwAYL5V8n52V';
+const RECORD_KEY = 'world_record';
+
+/**
+ * Читає світовий рекорд.
+ * Повертає Promise із числом (або 0, якщо рекорду ще немає).
+ */
+function getRecord() {
+  return fetch(`https://kvdb.io/${BUCKET_ID}/${RECORD_KEY}`)
+    .then((response) => {
+      // Якщо ключ ще не створено, сервер поверне помилку 404
+      if (!response.ok) {
+        return 0;
+      }
+
+      return response.text();
+    })
+    .then((text) => Number(text));
+}
+
+/**
+ * Записує новий світовий рекорд.
+ * Повертає Promise з логічним значенням (true - успіх, false - помилка).
+ */
+function saveRecord(newScore) {
+  return fetch(`https://kvdb.io/${BUCKET_ID}/${RECORD_KEY}`, {
+    method: 'POST', // KVdb приймає POST для створення або оновлення
+    body: newScore.toString(),
+  })
+    .then((response) => response.ok)
+    .catch(() => {
+      return false;
+    });
+}
+
 class Game {
   static StatusList = Object.freeze({
     IDLE: 'idle',
@@ -43,6 +78,7 @@ class Game {
   }
 
   status = Game.StatusList.IDLE;
+  recordScore = 0;
   score = 0;
 
   constructor(initialState) {
@@ -53,9 +89,20 @@ class Game {
     this.buttonStart = document.querySelector('.button');
     this.cells = Array.from(document.querySelectorAll('.field-cell'));
     this.scoreEl = document.querySelector('.game-score');
+    this.recordEl = document.querySelector('.game-record');
     this.msgStart = document.querySelector('.message-start');
     this.msgWin = document.querySelector('.message-win');
     this.msgLose = document.querySelector('.message-lose');
+
+    getRecord()
+      .then((record) => {
+        this.recordEl.textContent = record;
+        this.recordScore = record;
+      })
+      .catch(() => {
+        this.recordEl.textContent = 0;
+        this.recordScore = 0;
+      });
 
     this._setupListeners();
   }
@@ -100,6 +147,11 @@ class Game {
   }
 
   restart() {
+    getRecord().then((record) => {
+      this.recordEl.textContent = record;
+      this.recordScore = record;
+    });
+
     this.status = Game.StatusList.PLAYING;
     this.score = 0;
     this.state = Game.makeRandomNumberOnBoard(Game.getEmptyBoard(), 2);
@@ -203,7 +255,11 @@ class Game {
     return false;
   }
 
-  _hasChanged(newState) {
+  /**
+   * Чи змінилося поле після зсуву
+   * (якщо ні — хід ігнорується, нова плитка не з'являється).
+   */
+  _isBoardChanged(newState) {
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
         if (this.state[r][c] !== newState[r][c]) {
@@ -220,17 +276,19 @@ class Game {
       return false;
     }
 
-    this.lastDirection = direction; // Зберігаємо напрямок руху
+    //  CSS в _renderView
+    this.lastDirection = direction;
 
     const { matrix, moveScore } = this._applySlide(this.state, direction);
 
-    if (!this._hasChanged(matrix)) {
+    if (!this._isBoardChanged(matrix)) {
       return false;
     }
 
     this.state = matrix;
     this.score += moveScore;
 
+    // Після кожного успішного ходу з'являється рівно одна нова плитка
     this.state = Game.makeRandomNumberOnBoard(this.state, 1);
 
     if (this.state.flat().includes(2048)) {
@@ -246,6 +304,10 @@ class Game {
       this._renderView();
       this.msgLose.classList.remove('hidden');
 
+      if (this.score > this.recordScore) {
+        saveRecord(this.score);
+      }
+
       return true;
     }
 
@@ -254,6 +316,13 @@ class Game {
     return true;
   }
 
+  /**
+   * Синхронізує DOM із this.state: текст клітинок,
+   * класи кольорів (field-cell--N),
+   * клас анімації slide-* для нових/змінених значень, оновлення блоку рахунку.
+   *
+   * Порядок клітинок у this.cells відповідає row-major обходу flat() поля.
+   */
   _renderView() {
     const flat = this.state.flat();
 
@@ -269,8 +338,8 @@ class Game {
         cell.classList.add(`field-cell--${value}`);
 
         if (value !== prevValue) {
+          // Примусовий reflow — браузер застосує CSS-перехід після зміни класу
           void cell.offsetWidth;
-          // cell.classList.add('cell-pop');
           cell.classList.add(`slide-${this.lastDirection || 'pop'}`);
         }
       } else {
@@ -281,6 +350,10 @@ class Game {
     if (this.scoreEl) {
       this.scoreEl.textContent = this.score;
     }
+
+    // if (this.recordEl) {
+    //   this.recordEl.textContent = this.record;
+    // }
   }
 
   _activateRestartButton() {
@@ -306,7 +379,7 @@ class Game {
 
     document.addEventListener('keydown', (e) => {
       if (e.key in keyMap) {
-        e.preventDefault();
+        e.preventDefault(); // no scroll
         keyMap[e.key]();
       }
     });
