@@ -3,14 +3,9 @@
 const BUCKET_ID = '5JGVQVX4yPRwAYL5V8n52V';
 const RECORD_KEY = 'world_record';
 
-/**
- * Читає світовий рекорд.
- * Повертає Promise із числом (або 0, якщо рекорду ще немає).
- */
 function getRecord() {
   return fetch(`https://kvdb.io/${BUCKET_ID}/${RECORD_KEY}`)
     .then((response) => {
-      // Якщо ключ ще не створено, сервер поверне помилку 404
       if (!response.ok) {
         return 0;
       }
@@ -20,13 +15,9 @@ function getRecord() {
     .then((text) => Number(text));
 }
 
-/**
- * Записує новий світовий рекорд.
- * Повертає Promise з логічним значенням (true - успіх, false - помилка).
- */
 function saveRecord(newScore) {
   return fetch(`https://kvdb.io/${BUCKET_ID}/${RECORD_KEY}`, {
-    method: 'POST', // KVdb приймає POST для створення або оновлення
+    method: 'POST',
     body: newScore.toString(),
   })
     .then((response) => response.ok)
@@ -255,10 +246,6 @@ class Game {
     return false;
   }
 
-  /**
-   * Чи змінилося поле після зсуву
-   * (якщо ні — хід ігнорується, нова плитка не з'являється).
-   */
   _isBoardChanged(newState) {
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
@@ -288,7 +275,6 @@ class Game {
     this.state = matrix;
     this.score += moveScore;
 
-    // Після кожного успішного ходу з'являється рівно одна нова плитка
     this.state = Game.makeRandomNumberOnBoard(this.state, 1);
 
     if (this.state.flat().includes(2048)) {
@@ -316,13 +302,6 @@ class Game {
     return true;
   }
 
-  /**
-   * Синхронізує DOM із this.state: текст клітинок,
-   * класи кольорів (field-cell--N),
-   * клас анімації slide-* для нових/змінених значень, оновлення блоку рахунку.
-   *
-   * Порядок клітинок у this.cells відповідає row-major обходу flat() поля.
-   */
   _renderView() {
     const flat = this.state.flat();
 
@@ -338,7 +317,6 @@ class Game {
         cell.classList.add(`field-cell--${value}`);
 
         if (value !== prevValue) {
-          // Примусовий reflow — браузер застосує CSS-перехід після зміни класу
           void cell.offsetWidth;
           cell.classList.add(`slide-${this.lastDirection || 'pop'}`);
         }
@@ -350,10 +328,6 @@ class Game {
     if (this.scoreEl) {
       this.scoreEl.textContent = this.score;
     }
-
-    // if (this.recordEl) {
-    //   this.recordEl.textContent = this.record;
-    // }
   }
 
   _activateRestartButton() {

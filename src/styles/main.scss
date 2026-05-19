@@ -1,278 +1,226 @@
-body {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: #cdc6b4;
-  font-family: sans-serif;
-  font-size: 24px;
-  font-weight: 900;
+@use 'sass:list';
+
+$bg-page: #cdc6b4;
+$bg-cell-empty: #d6cdc4;
+$bg-h1: #edc22e;
+$bg-record: #a195ec;
+$bg-info: #d6cdc4;
+$bg-start: #1dae28;
+$bg-start-hov: #179921;
+$bg-restart: #f1b2b2;
+$bg-restart-hov: #f87474;
+$bg-msg: #d6cdc4;
+$bg-msg-win: #edc22e;
+$text-dark: #776e65;
+$text-light: #f9f6f2;
+$text-record: #1d1e1b;
+$tile-colors: (
+  2: (
+    #eee4da,
+    $text-dark,
+  ),
+  4: (
+    #ede0c8,
+    $text-dark,
+  ),
+  8: (
+    #f2b179,
+    $text-light,
+  ),
+  16: (
+    #f59563,
+    $text-light,
+  ),
+  32: (
+    #f67c5f,
+    $text-light,
+  ),
+  64: (
+    #f65e3b,
+    $text-light,
+  ),
+  128: (
+    #edcf72,
+    $text-light,
+  ),
+  256: (
+    #edcc61,
+    $text-light,
+  ),
+  512: (
+    #edc850,
+    $text-light,
+  ),
+  1024: (
+    #edc53f,
+    $text-light,
+  ),
+  2048: (
+    #edc22e,
+    $text-light,
+  ),
+);
+
+:root {
+  --u: clamp(56px, 16vw, 75px);
+  --gap: clamp(5px, 1.5vw, 5px);
+  --wp: clamp(42px, 11.5vw, 60px);
 }
 
+$radius: 5px;
+$anim-fast: 0.15s;
+$anim-mid: 0.2s;
+$anim-btn: 0.25s;
+
 @keyframes pop {
-  0% {
+  from {
     transform: scale(0.5);
   }
-  100% {
+  to {
     transform: scale(1);
   }
 }
 
 @keyframes slide-left {
-  0% {
+  from {
     transform: translateX(25px) scale(0.9);
     opacity: 0.5;
   }
-  100% {
+  to {
     transform: translateX(0) scale(1);
     opacity: 1;
   }
 }
 
 @keyframes slide-right {
-  0% {
+  from {
     transform: translateX(-25px) scale(0.9);
     opacity: 0.5;
   }
-  100% {
+  to {
     transform: translateX(0) scale(1);
     opacity: 1;
   }
 }
 
 @keyframes slide-up {
-  0% {
+  from {
     transform: translateY(25px) scale(0.9);
     opacity: 0.5;
   }
-  100% {
+  to {
     transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
 
 @keyframes slide-down {
-  0% {
+  from {
     transform: translateY(-25px) scale(0.9);
     opacity: 0.5;
   }
-  100% {
+  to {
     transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
 
 .slide-pop {
-  animation: pop 0.2s ease-out;
+  animation: pop $anim-mid ease-out;
 }
 
 .slide-left {
-  animation: slide-left 0.15s ease-out;
+  animation: slide-left $anim-fast ease-out;
 }
 
 .slide-right {
-  animation: slide-right 0.15s ease-out;
+  animation: slide-right $anim-fast ease-out;
 }
 
 .slide-up {
-  animation: slide-up 0.15s ease-out;
+  animation: slide-up $anim-fast ease-out;
 }
 
 .slide-down {
-  animation: slide-down 0.15s ease-out;
-}
-
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
-
-  transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
+  animation: slide-down $anim-fast ease-out;
 }
 
 .cell-pop {
-  animation: pop 0.2s ease-in-out;
+  animation: pop $anim-mid ease-in-out;
 }
 
-// .game-field {
-//   background: #20201f;
-//   width: 350px;
-//   height: 350px;
-//   border-spacing: 10px;
-//   border-radius: 5px;
-//   position: relative;
-//   &::after {
-//     content: '';
-//     background-image: url(../images/bg-prev.png);
-//     position: absolute;
-//     background-size: cover;
-//     background-repeat: no-repeat;
-//     width: 370px;
-//     height: 370px;
-//     left: 0px;
-//     top: 0px;
-//   }
-// }
-.wrapper {
-  position: relative;
-  padding: 60px;
+// ============================================================
+// Reset / base
+// ============================================================
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: $bg-page;
+  font-family: sans-serif;
+  font-size: 24px;
+  font-weight: 900;
 }
 
-.wrapper-bg {
-  aspect-ratio: 1;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url(../images/bg-prev.png);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  z-index: 1;
-}
-
-.game-field {
-  aspect-ratio: 1;
-  width: 350px;
-  height: 350px;
-  border-spacing: 7px;
-  border-collapse: separate;
-  border-radius: 5px;
-  position: relative;
-
-  tbody {
-    position: relative;
-    z-index: 1;
-  }
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(4 * var(--u) + 6 * var(--gap) + 2 * var(--wp));
+  max-width: 100vw;
+  padding: 0 4px;
 }
 
 .game-header {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
-  box-sizing: border-box;
+  align-items: center;
+  margin-bottom: clamp(12px, 3vw, 24px);
+  padding: 0 clamp(4px, 1.5vw, 10px);
+}
+
+%header-box {
+  width: var(--u);
+  height: var(--u);
+  border-radius: $radius;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
+  @extend %header-box;
+
+  background: $bg-h1;
+  color: $text-light;
+  font-size: clamp(16px, 4.5vw, 24px);
   margin: 0;
 }
 
-.info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
-}
-
-.controls {
-  display: flex;
-}
-
 .record {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
+  @extend %header-box;
 
-  position: relative;
+  flex-direction: column;
+  font-size: clamp(11px, 3vw, 16px);
   font-weight: 400;
-  background: #a195ec;
-  color: #1d1e1b;
+  background: $bg-record;
+  color: $text-record;
+  position: relative;
 
   &::after {
     content: '';
     display: block;
-
-    // background-image: url('https://karpaty.love/uploads/posts/2017-12/1513153996_pidgoretskiy-zamok-1.jpg');
     background-image: url(../images/crown.png);
     background-size: contain;
     background-repeat: no-repeat;
@@ -280,70 +228,137 @@ h1 {
     top: -25%;
     right: -15%;
     transform: rotate(26deg);
-    width: 55px;
-    height: 35px;
+    width: clamp(36px, 10vw, 55px);
+    height: clamp(24px, 6.5vw, 35px);
   }
 }
 
+.controls {
+  display: flex;
+  gap: clamp(4px, 1.5vw, 8px);
+}
+
+.info {
+  @extend %header-box;
+
+  flex-direction: column;
+  background: $bg-info;
+  color: $text-dark;
+  font-size: clamp(11px, 3vw, 16px);
+  margin: 0;
+}
+
 .button {
+  @extend %header-box;
+
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: $text-light;
   font-family: sans-serif;
   font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
-
-  transition: 0.25s ease background;
+  font-size: clamp(11px, 3vw, 16px);
+  transition: background $anim-btn ease;
 }
 
 .start {
-  background: #1dae28;
-  font-size: 20px;
+  background: $bg-start;
+  font-size: clamp(13px, 4vw, 20px);
 
   &:hover {
-    background: #179921;
+    background: $bg-start-hov;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: $bg-restart;
 
   &:hover {
-    background: #f87474;
+    background: $bg-restart-hov;
   }
 }
 
-.message {
-  box-sizing: border-box;
-  width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
-  padding: 10px;
-  text-align: center;
-  border-radius: 5px;
-  font-size: 20px;
-}
-
-.hidden {
-  display: none;
-}
-
-.container {
+.wrapper {
+  position: relative;
+  padding: var(--wp);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  width: 350px;
+  justify-content: center;
 }
 
-.message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+.wrapper-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../images/bg-prev.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.game-field {
+  border-spacing: 2px;
+  border-collapse: separate;
+  border-radius: $radius;
+  position: relative;
+  table-layout: fixed;
+
+  tbody {
+    position: relative;
+  }
+}
+
+.field-cell {
+  background: $bg-cell-empty;
+  width: var(--u);
+  height: var(--u);
+  border-radius: $radius;
+  color: $text-dark;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  font-size: clamp(14px, 4vw, 24px);
+  transition:
+    background-color $anim-fast ease,
+    color $anim-fast ease;
+
+  @each $value, $pair in $tile-colors {
+    $bg: list.nth($pair, 1);
+    $color: list.nth($pair, 2);
+
+    &--#{$value} {
+      background: $bg;
+      color: $color;
+    }
+  }
 }
 
 .message-container {
   width: 100%;
-  height: 150px;
+  height: 60px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message {
+  width: 100%;
+  background: $bg-msg;
+  color: $text-dark;
+  padding: 10px;
+  text-align: center;
+  border-radius: $radius;
+  font-size: clamp(14px, 4vw, 20px);
+}
+
+.message-win {
+  background: $bg-msg-win;
+  color: $text-light;
+}
+
+.hidden {
+  visibility: hidden;
+  pointer-events: none;
 }
