@@ -8,9 +8,11 @@ export class Game {
 
   reset() {
     if (this.initialState) {
-      this.board = this.initialState.map(row => [...row]);
+      this.board = this.initialState.map((row) => [...row]);
     } else {
-      this.board = Array(4).fill(null).map(() => Array(4).fill(0));
+      this.board = Array(4)
+        .fill(null)
+        .map(() => Array(4).fill(0));
     }
     this.score = 0;
     this.status = 'playing';
@@ -29,7 +31,6 @@ export class Game {
   }
 
   start() {
-
     if (!this.initialState && this.isEmptyBoard()) {
       this.addRandomTile();
       this.addRandomTile();
@@ -42,11 +43,12 @@ export class Game {
   }
 
   isEmptyBoard() {
-    return this.board.every(row => row.every(cell => cell === 0));
+    return this.board.every((row) => row.every((cell) => cell === 0));
   }
 
   addRandomTile() {
     const emptyCells = [];
+
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
         if (this.board[r][c] === 0) {
@@ -56,13 +58,15 @@ export class Game {
     }
 
     if (emptyCells.length > 0) {
-      const { r, c } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      const { r, c } =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
       this.board[r][c] = Math.random() < 0.1 ? 4 : 2;
     }
   }
 
   slideAndMergeRow(row) {
-    let filtered = row.filter(val => val !== 0);
+    let filtered = row.filter((val) => val !== 0);
     let rowScore = 0;
 
     for (let i = 0; i < filtered.length - 1; i++) {
@@ -74,7 +78,8 @@ export class Game {
       }
     }
 
-    filtered = filtered.filter(val => val !== 0);
+    filtered = filtered.filter((val) => val !== 0);
+
     while (filtered.length < 4) {
       filtered.push(0);
     }
@@ -83,15 +88,20 @@ export class Game {
   }
 
   processMove(moveFunction) {
-    if (this.status !== 'playing') return false;
+    if (this.status !== 'playing') {
+      return false;
+    }
 
     const previousStateStr = JSON.stringify(this.board);
+
     moveFunction();
+
     const currentStateStr = JSON.stringify(this.board);
 
     if (previousStateStr !== currentStateStr) {
       this.addRandomTile();
       this.checkGameStatus();
+
       return true;
     }
 
@@ -102,6 +112,7 @@ export class Game {
     return this.processMove(() => {
       for (let r = 0; r < 4; r++) {
         const { newRow, rowScore } = this.slideAndMergeRow(this.board[r]);
+
         this.board[r] = newRow;
         this.score += rowScore;
       }
@@ -113,6 +124,7 @@ export class Game {
       for (let r = 0; r < 4; r++) {
         const reversed = [...this.board[r]].reverse();
         const { newRow, rowScore } = this.slideAndMergeRow(reversed);
+
         this.board[r] = newRow.reverse();
         this.score += rowScore;
       }
@@ -122,8 +134,14 @@ export class Game {
   moveUp() {
     return this.processMove(() => {
       for (let c = 0; c < 4; c++) {
-        const column = [this.board[0][c], this.board[1][c], this.board[2][c], this.board[3][c]];
+        const column = [
+          this.board[0][c],
+          this.board[1][c],
+          this.board[2][c],
+          this.board[3][c],
+        ];
         const { newRow, rowScore } = this.slideAndMergeRow(column);
+
         for (let r = 0; r < 4; r++) {
           this.board[r][c] = newRow[r];
         }
@@ -135,9 +153,15 @@ export class Game {
   moveDown() {
     return this.processMove(() => {
       for (let c = 0; c < 4; c++) {
-        const column = [this.board[0][c], this.board[1][c], this.board[2][c], this.board[3][c]].reverse();
+        const column = [
+          this.board[0][c],
+          this.board[1][c],
+          this.board[2][c],
+          this.board[3][c],
+        ].reverse();
         const { newRow, rowScore } = this.slideAndMergeRow(column);
         const finalColumn = newRow.reverse();
+
         for (let r = 0; r < 4; r++) {
           this.board[r][c] = finalColumn[r];
         }
@@ -151,6 +175,7 @@ export class Game {
       for (let c = 0; c < 4; c++) {
         if (this.board[r][c] === 2048) {
           this.status = 'win';
+
           return;
         }
       }
@@ -158,14 +183,21 @@ export class Game {
 
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
-        if (this.board[r][c] === 0) return;
+        if (this.board[r][c] === 0) {
+          return;
+        }
       }
     }
 
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
-        if (c < 3 && this.board[r][c] === this.board[r][c + 1]) return;
-        if (r < 3 && this.board[r][c] === this.board[r + 1][c]) return;
+        if (c < 3 && this.board[r][c] === this.board[r][c + 1]) {
+          return;
+        }
+
+        if (r < 3 && this.board[r][c] === this.board[r + 1][c]) {
+          return;
+        }
       }
     }
 

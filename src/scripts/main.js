@@ -2,9 +2,7 @@
 
 import { Game } from '../modules/Game.class.js';
 
-
 const game = new Game();
-
 
 document.addEventListener('DOMContentLoaded', () => {
   let isGameStarted = false;
@@ -19,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateUI() {
     const board = game.getState();
+
     scoreDisplay.textContent = game.getScore();
 
     cells.forEach((cell, index) => {
@@ -29,18 +28,20 @@ document.addEventListener('DOMContentLoaded', () => {
       cell.textContent = value > 0 ? value : '';
 
       cell.className = 'field-cell';
+
       if (value > 0) {
         cell.classList.add(`field-cell--${value}`);
       }
     });
 
-    const status = game.getStatus();
+    const gameStatus = game.getStatus();
+
     messageWin.classList.add('hidden');
     messageLose.classList.add('hidden');
 
     if (status === 'win') {
       messageWin.classList.remove('hidden');
-    } else if (status === 'lose') {
+    } else if (gameStatus === 'lose') {
       messageLose.classList.remove('hidden');
     }
   }
@@ -55,19 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
       mainButton.classList.remove('start');
       mainButton.classList.add('restart');
     } else {
-
       game.restart();
     }
     updateUI();
   });
 
-
-  document.addEventListener('keydown', (event) => {
-
-    if (!isGameStarted || game.getStatus() !== 'playing') return;
+  document.addEventListener('keydown', (pointerEvent) => {
+    if (!isGameStarted || game.getStatus() !== 'playing') {
+      return;
+    }
 
     let moved = false;
-    switch (event.key) {
+
+    switch (pointerEvent.key) {
       case 'ArrowLeft':
         moved = game.moveLeft();
         break;
@@ -84,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    event.preventDefault();
+    pointerEvent.preventDefault();
 
     if (moved) {
       updateUI();
