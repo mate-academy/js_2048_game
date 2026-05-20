@@ -4,12 +4,12 @@ $bg-page: #cdc6b4;
 $bg-cell-empty: #d6cdc4;
 $bg-h1: #edc22e;
 $bg-record: #a195ec;
-$bg-info: #d6cdc4;
+$bg-info: #fcb065;
 $bg-start: #1dae28;
 $bg-start-hov: #179921;
 $bg-restart: #f1b2b2;
 $bg-restart-hov: #f87474;
-$bg-msg: #d6cdc4;
+$bg-msg: #afbaa4;
 $bg-msg-win: #edc22e;
 $text-dark: #776e65;
 $text-light: #f9f6f2;
@@ -145,14 +145,6 @@ $anim-btn: 0.25s;
   animation: slide-down $anim-fast ease-out;
 }
 
-.cell-pop {
-  animation: pop $anim-mid ease-in-out;
-}
-
-// ============================================================
-// Reset / base
-// ============================================================
-
 *,
 *::before,
 *::after {
@@ -199,17 +191,20 @@ body {
   flex-shrink: 0;
 }
 
-h1 {
+.title {
   @extend %header-box;
 
   background: $bg-h1;
   color: $text-light;
   font-size: clamp(16px, 4.5vw, 24px);
   margin: 0;
+  box-shadow: 5px 7px 22px -3px $text-dark;
 }
 
 .record {
   @extend %header-box;
+
+  box-shadow: 5px 7px 22px -3px $text-dark;
 
   flex-direction: column;
   font-size: clamp(11px, 3vw, 16px);
@@ -246,6 +241,7 @@ h1 {
   color: $text-dark;
   font-size: clamp(11px, 3vw, 16px);
   margin: 0;
+  box-shadow: 5px 7px 22px -3px $text-dark;
 }
 
 .button {
@@ -258,6 +254,7 @@ h1 {
   font-weight: 700;
   font-size: clamp(11px, 3vw, 16px);
   transition: background $anim-btn ease;
+  box-shadow: 5px 7px 22px -3px $text-dark;
 }
 
 .start {
@@ -303,6 +300,7 @@ h1 {
   border-radius: $radius;
   position: relative;
   table-layout: fixed;
+  box-shadow: 2px 12px 45px 50px $text-dark;
 
   tbody {
     position: relative;
@@ -350,6 +348,8 @@ h1 {
   padding: 10px;
   text-align: center;
   border-radius: $radius;
+  border: 1px solid $text-dark;
+  box-shadow: 5px 7px 22px -3px $text-dark;
   font-size: clamp(14px, 4vw, 20px);
 }
 
@@ -359,6 +359,6 @@ h1 {
 }
 
 .hidden {
-  visibility: hidden;
+  display: none;
   pointer-events: none;
 }
