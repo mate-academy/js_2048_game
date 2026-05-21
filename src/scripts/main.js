@@ -10,11 +10,29 @@ const scoreElement = document.querySelector('.game-score');
 const userWin = document.querySelector('.message-win');
 const userLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
+const restartGame = document.querySelector('.restart');
 
 startGame.addEventListener('click', () => {
   game.start();
   game.render(cells);
+
+  startGame.classList.add('hidden');
+  restartGame.classList.remove('hidden');
 });
+
+restartGame.addEventListener('click', () => {
+  game.restart();
+  game.start();
+
+  game.render(cells);
+
+  scoreElement.textContent = 0;
+
+  userWin.classList.add('hidden');
+  userLose.classList.add('hidden');
+
+  messageStart.classList.remove('hidden');
+})
 
 document.addEventListener('keydown', (e) => {
   const keyActions = {
