@@ -31,15 +31,15 @@ class Game {
       ? initialState.map((row) => [...row])
       : Game.getEmptyBoard();
 
-    this._btn = document.querySelector('.button');
-    this._cells = Array.from(document.querySelectorAll('.field-cell'));
-    this._scoreEl = document.querySelector('.game-score');
-    this._recordEl = document.querySelector('.game-record');
-    this._msgStart = document.querySelector('.message-start');
-    this._msgWin = document.querySelector('.message-win');
-    this._msgLose = document.querySelector('.message-lose');
+    this.btn = document.querySelector('.button');
+    this.cells = Array.from(document.querySelectorAll('.field-cell'));
+    this.scoreEl = document.querySelector('.game-score');
+    this.recordEl = document.querySelector('.game-record');
+    this.msgStart = document.querySelector('.message-start');
+    this.msgWin = document.querySelector('.message-win');
+    this.msgLose = document.querySelector('.message-lose');
 
-    getRecord().then((r) => this._setRecord(r));
+    getRecord().then((r) => this.setRecord(r));
 
     this.setupListeners();
   }
@@ -72,7 +72,7 @@ class Game {
     return newBoard;
   }
 
-  static _slideRowLeft(row) {
+  static slideRowLeft(row) {
     const tiles = row.filter(Boolean);
     let rowScore = 0;
 
@@ -91,18 +91,18 @@ class Game {
     return { result: tiles, rowScore };
   }
 
-  static _transpose(matrix) {
+  static transpose(matrix) {
     return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
   }
 
-  static _applySlide(board, direction) {
+  static applySlide(board, direction) {
     const isVertical = direction === 'up' || direction === 'down';
     const isReversed = direction === 'right' || direction === 'down';
 
     let matrix = board.map((row) => [...row]);
 
     if (isVertical) {
-      matrix = Game._transpose(matrix);
+      matrix = Game.transpose(matrix);
     }
 
     if (isReversed) {
@@ -112,7 +112,7 @@ class Game {
     let moveScore = 0;
 
     matrix = matrix.map((row) => {
-      const { result, rowScore } = Game._slideRowLeft(row);
+      const { result, rowScore } = Game.slideRowLeft(row);
 
       moveScore += rowScore;
 
@@ -124,7 +124,7 @@ class Game {
     }
 
     if (isVertical) {
-      matrix = Game._transpose(matrix);
+      matrix = Game.transpose(matrix);
     }
 
     return { matrix, moveScore };
@@ -134,77 +134,77 @@ class Game {
   score = 0;
   recordScore = 0;
 
-  _lastDirection = null;
+  lastDirection = null;
 
   start() {
-    this._initNewGame();
-    this._msgStart.classList.add('hidden');
-    this._activateRestartButton();
+    this.initNewGame();
+    this.msgStart.classList.add('hidden');
+    this.activateRestartButton();
   }
 
   restart() {
-    this._initNewGame();
+    this.initNewGame();
   }
 
-  _initNewGame() {
+  initNewGame() {
     this.status = Game.StatusList.PLAYING;
     this.score = 0;
-    this._lastDirection = null;
+    this.lastDirection = null;
     this.state = Game.spawnTiles(Game.getEmptyBoard(), 2);
 
-    this._hideMessages();
-    this._renderView();
+    this.hideMessages();
+    this.renderView();
   }
 
-  _setRecord(value) {
+  setRecord(value) {
     this.recordScore = value;
-    this._recordEl.textContent = value;
+    this.recordEl.textContent = value;
   }
 
-  _tryUpdateRecord() {
+  tryUpdateRecord() {
     if (this.score > this.recordScore) {
-      this._setRecord(this.score);
+      this.setRecord(this.score);
       saveRecord(this.score);
     }
   }
 
-  _move(direction) {
+  move(direction) {
     if (this.status !== Game.StatusList.PLAYING) {
       return;
     }
 
-    const { matrix, moveScore } = Game._applySlide(this.state, direction);
+    const { matrix, moveScore } = Game.applySlide(this.state, direction);
 
-    if (!this._isBoardChanged(matrix)) {
+    if (!this.isBoardChanged(matrix)) {
       return;
     }
 
-    this._lastDirection = direction;
+    this.lastDirection = direction;
     this.state = Game.spawnTiles(matrix, 1);
     this.score += moveScore;
 
     if (this.state.some((row) => row.includes(2048))) {
       this.status = Game.StatusList.WIN;
-      this._tryUpdateRecord();
-      this._renderView();
-      this._msgWin.classList.remove('hidden');
+      this.tryUpdateRecord();
+      this.renderView();
+      this.msgWin.classList.remove('hidden');
 
       return;
     }
 
-    if (!this._hasAvailableMoves()) {
+    if (!this.hasAvailableMoves()) {
       this.status = Game.StatusList.LOSE;
-      this._tryUpdateRecord();
-      this._renderView();
-      this._msgLose.classList.remove('hidden');
+      this.tryUpdateRecord();
+      this.renderView();
+      this.msgLose.classList.remove('hidden');
 
       return;
     }
 
-    this._renderView();
+    this.renderView();
   }
 
-  _hasAvailableMoves() {
+  hasAvailableMoves() {
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         if (this.state[row][col] === 0) {
@@ -224,21 +224,21 @@ class Game {
     return false;
   }
 
-  _isBoardChanged(newState) {
+  isBoardChanged(newState) {
     const checkRow = (row, r) => row.some((v, c) => v !== newState[r][c]);
 
     return this.state.some(checkRow);
   }
 
-  _renderView() {
-    this._renderBoard();
-    this._scoreEl.textContent = this.score;
+  renderView() {
+    this.renderBoard();
+    this.scoreEl.textContent = this.score;
   }
 
-  _renderBoard() {
+  renderBoard() {
     const flatBoard = this.state.flat();
 
-    this._cells.forEach((cell, index) => {
+    this.cells.forEach((cell, index) => {
       const newValue = flatBoard[index];
       const prevValue = Number(cell.textContent) || 0;
 
@@ -256,21 +256,21 @@ class Game {
       if (newValue !== prevValue) {
         void cell.offsetWidth;
 
-        const animationClass = `slide-${this._lastDirection ?? 'pop'}`;
+        const animationClass = `slide-${this.lastDirection ?? 'pop'}`;
 
         cell.classList.add(animationClass);
       }
     });
   }
 
-  _activateRestartButton() {
-    this._btn.textContent = 'Restart';
-    this._btn.classList.replace('start', 'restart');
+  activateRestartButton() {
+    this.btn.textContent = 'Restart';
+    this.btn.classList.replace('start', 'restart');
   }
 
-  _hideMessages() {
-    this._msgWin.classList.add('hidden');
-    this._msgLose.classList.add('hidden');
+  hideMessages() {
+    this.msgWin.classList.add('hidden');
+    this.msgLose.classList.add('hidden');
   }
 
   setupListeners() {
@@ -278,24 +278,24 @@ class Game {
       switch (e.key) {
         case 'ArrowLeft':
           e.preventDefault();
-          this._move('left');
+          this.move('left');
           break;
         case 'ArrowRight':
           e.preventDefault();
-          this._move('right');
+          this.move('right');
           break;
         case 'ArrowUp':
           e.preventDefault();
-          this._move('up');
+          this.move('up');
           break;
         case 'ArrowDown':
           e.preventDefault();
-          this._move('down');
+          this.move('down');
           break;
       }
     });
 
-    this._btn.addEventListener('click', () => {
+    this.btn.addEventListener('click', () => {
       if (this.status === Game.StatusList.IDLE) {
         this.start();
       } else {
