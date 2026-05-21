@@ -12,17 +12,20 @@ const userLose = document.querySelector('.message-lose');
 const messageStart = document.querySelector('.message-start');
 const restartGame = document.querySelector('.restart');
 
+startGame.classList.remove('hidden');
+
 startGame.addEventListener('click', () => {
   game.start();
   game.render(cells);
 
   startGame.classList.add('hidden');
   restartGame.classList.remove('hidden');
+
+  messageStart.classList.add('hidden');
 });
 
 restartGame.addEventListener('click', () => {
   game.restart();
-  game.start();
 
   game.render(cells);
 
@@ -31,8 +34,11 @@ restartGame.addEventListener('click', () => {
   userWin.classList.add('hidden');
   userLose.classList.add('hidden');
 
+  startGame.classList.remove('hidden');
+  restartGame.classList.add('hidden');
+
   messageStart.classList.remove('hidden');
-})
+});
 
 document.addEventListener('keydown', (e) => {
   const keyActions = {
