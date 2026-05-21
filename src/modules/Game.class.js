@@ -1,13 +1,11 @@
 'use strict';
 
-// ─── KV-store helpers ────────────────────────────────────────────────────────
-
 const BUCKET_ID = '5JGVQVX4yPRwAYL5V8n52V';
 const RECORD_KEY = 'world_record';
 
 function getRecord() {
   return fetch(`https://kvdb.io/${BUCKET_ID}/${RECORD_KEY}`)
-    .then((res) => (res.ok ? res.text() : '0'))
+    .then((response) => (response.ok ? response.text() : '0'))
     .then(Number);
 }
 
@@ -16,60 +14,64 @@ function saveRecord(score) {
     method: 'POST',
     body: String(score),
   })
-    .then((res) => res.ok)
+    .then((response) => response.ok)
     .catch(() => false);
 }
 
-// ─── Game ────────────────────────────────────────────────────────────────────
-
 class Game {
-  static StatusList = Object.freeze({
+  static StatusList = {
     IDLE: 'idle',
     PLAYING: 'playing',
     WIN: 'win',
     LOSE: 'lose',
-  });
+  };
 
-  // ── Board helpers (static, pure) ──────────────────────────────────────────
+  constructor(initialState) {
+    this.state = initialState
+      ? initialState.map((row) => [...row])
+      : Game.getEmptyBoard();
+
+    this._btn = document.querySelector('.button');
+    this._cells = Array.from(document.querySelectorAll('.field-cell'));
+    this._scoreEl = document.querySelector('.game-score');
+    this._recordEl = document.querySelector('.game-record');
+    this._msgStart = document.querySelector('.message-start');
+    this._msgWin = document.querySelector('.message-win');
+    this._msgLose = document.querySelector('.message-lose');
+
+    getRecord().then((r) => this._setRecord(r));
+
+    this.setupListeners();
+  }
 
   static getEmptyBoard() {
     return Array.from({ length: 4 }, () => [0, 0, 0, 0]);
   }
 
-  /**
-   * Повертає копію дошки з `amountToAdd` новими тайлами (90% → 2, 10% → 4).
-   * Якщо вільних клітинок не вистачає — додає скільки може.
-   */
   static spawnTiles(board, amountToAdd = 1) {
-    const next = board.map((row) => [...row]);
+    const newBoard = board.map((row) => [...row]);
 
-    const empty = [];
+    const emptyCells = [];
 
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
-        if (next[r][c] === 0) {
-          empty.push({ r, c });
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (newBoard[row][col] === 0) {
+          emptyCells.push({ row, col });
         }
       }
     }
 
-    for (let i = 0; i < amountToAdd && empty.length > 0; i++) {
-      const idx = Math.floor(Math.random() * empty.length);
-      const { r, c } = empty.splice(idx, 1)[0];
+    for (let i = 0; i < amountToAdd && emptyCells.length > 0; i++) {
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
 
-      next[r][c] = Math.random() < 0.1 ? 4 : 2;
+      const { row, col } = emptyCells.splice(randomIndex, 1)[0];
+
+      newBoard[row][col] = Math.random() < 0.1 ? 4 : 2;
     }
 
-    return next;
+    return newBoard;
   }
 
-  // ── Slide / rotate helpers (static, pure) ─────────────────────────────────
-
-  /**
-   * Зсуває один рядок вліво: стискає нулі, об'єднує однакові сусіди,
-   * доповнює нулями справа.
-   * Повертає { result, rowScore }.
-   */
   static _slideRowLeft(row) {
     const tiles = row.filter(Boolean);
     let rowScore = 0;
@@ -89,29 +91,15 @@ class Game {
     return { result: tiles, rowScore };
   }
 
-  /**
-   * Транспонує матрицю 4×4.
-   * Використовується для перетворення up/down у left (без rotation trick).
-   */
   static _transpose(matrix) {
-    return matrix[0].map((_, c) => matrix.map((row) => row[c]));
+    return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
   }
 
-  /**
-   * Застосовує зсув у заданому напрямку.
-   * Повертає { matrix, moveScore }.
-   *
-   * Стратегія:
-   *  left  — зсуваємо рядки вліво напряму
-   *  right — реверсуємо рядки → left → реверсуємо назад
-   *  up    — транспонуємо → left → транспонуємо назад
-   *  down  — транспонуємо + реверс → left → реверс + транспонуємо назад
-   */
-  static _applySlide(state, direction) {
+  static _applySlide(board, direction) {
     const isVertical = direction === 'up' || direction === 'down';
     const isReversed = direction === 'right' || direction === 'down';
 
-    let matrix = state.map((row) => [...row]);
+    let matrix = board.map((row) => [...row]);
 
     if (isVertical) {
       matrix = Game._transpose(matrix);
@@ -142,65 +130,11 @@ class Game {
     return { matrix, moveScore };
   }
 
-  // ── Instance ───────────────────────────────────────────────────────────────
-
   status = Game.StatusList.IDLE;
   score = 0;
   recordScore = 0;
 
-  /** Напрямок останнього ходу — використовується для CSS-анімації */
   _lastDirection = null;
-
-  constructor(initialState) {
-    this.state = initialState
-      ? initialState.map((row) => [...row])
-      : Game.getEmptyBoard();
-
-    // DOM refs
-    this._btn = document.querySelector('.button');
-    this._cells = Array.from(document.querySelectorAll('.field-cell'));
-    this._scoreEl = document.querySelector('.game-score');
-    this._recordEl = document.querySelector('.game-record');
-    this._msgStart = document.querySelector('.message-start');
-    this._msgWin = document.querySelector('.message-win');
-    this._msgLose = document.querySelector('.message-lose');
-
-    getRecord()
-      .then((record) => this._setRecord(record))
-      .catch(() => this._setRecord(0));
-
-    this._setupListeners();
-  }
-
-  // ── Public API ─────────────────────────────────────────────────────────────
-
-  getScore() {
-    return this.score;
-  }
-
-  getState() {
-    return this.state;
-  }
-
-  getStatus() {
-    return this.status;
-  }
-
-  moveLeft() {
-    this._move('left');
-  }
-
-  moveRight() {
-    this._move('right');
-  }
-
-  moveUp() {
-    this._move('up');
-  }
-
-  moveDown() {
-    this._move('down');
-  }
 
   start() {
     this._initNewGame();
@@ -222,10 +156,6 @@ class Game {
     this._renderView();
   }
 
-  /**
-   * Оновлює локальний рекорд і DOM.
-   * Зберігає на сервер тільки якщо це дійсно новий рекорд.
-   */
   _setRecord(value) {
     this.recordScore = value;
     this._recordEl.textContent = value;
@@ -234,7 +164,7 @@ class Game {
   _tryUpdateRecord() {
     if (this.score > this.recordScore) {
       this._setRecord(this.score);
-      saveRecord(this.score); // fire-and-forget
+      saveRecord(this.score);
     }
   }
 
@@ -253,7 +183,7 @@ class Game {
     this.state = Game.spawnTiles(matrix, 1);
     this.score += moveScore;
 
-    if (this._hasWon()) {
+    if (this.state.some((row) => row.includes(2048))) {
       this.status = Game.StatusList.WIN;
       this._tryUpdateRecord();
       this._renderView();
@@ -274,22 +204,18 @@ class Game {
     this._renderView();
   }
 
-  _hasWon() {
-    return this.state.some((row) => row.includes(2048));
-  }
-
   _hasAvailableMoves() {
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
-        if (this.state[r][c] === 0) {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (this.state[row][col] === 0) {
           return true;
         }
 
-        if (r < 3 && this.state[r][c] === this.state[r + 1][c]) {
+        if (row < 3 && this.state[row][col] === this.state[row + 1][col]) {
           return true;
         }
 
-        if (c < 3 && this.state[r][c] === this.state[r][c + 1]) {
+        if (col < 3 && this.state[row][col] === this.state[row][col + 1]) {
           return true;
         }
       }
@@ -310,35 +236,32 @@ class Game {
   }
 
   _renderBoard() {
-    const flat = this.state.flat();
+    const flatBoard = this.state.flat();
 
-    this._cells.forEach((cell, i) => {
-      const value = flat[i];
+    this._cells.forEach((cell, index) => {
+      const newValue = flatBoard[index];
       const prevValue = Number(cell.textContent) || 0;
 
       cell.className = 'field-cell';
 
-      if (value === 0) {
+      if (newValue === 0) {
         cell.textContent = '';
 
         return;
       }
 
-      cell.textContent = value;
-      cell.classList.add(`field-cell--${value}`);
+      cell.textContent = newValue;
+      cell.classList.add(`field-cell--${newValue}`);
 
-      // Анімація тільки для тайлів що змінились
-      if (value !== prevValue) {
-        // void offsetWidth форсує reflow, щоб браузер "побачив" скинутий клас
-        // перед тим як додати анімаційний —
-        // без цього анімація не перезапускається
+      if (newValue !== prevValue) {
         void cell.offsetWidth;
-        cell.classList.add(`slide-${this._lastDirection ?? 'pop'}`);
+
+        const animationClass = `slide-${this._lastDirection ?? 'pop'}`;
+
+        cell.classList.add(animationClass);
       }
     });
   }
-
-  // ── UI helpers ─────────────────────────────────────────────────────────────
 
   _activateRestartButton() {
     this._btn.textContent = 'Restart';
@@ -350,24 +273,24 @@ class Game {
     this._msgLose.classList.add('hidden');
   }
 
-  _setupListeners() {
+  setupListeners() {
     document.addEventListener('keydown', (e) => {
       switch (e.key) {
         case 'ArrowLeft':
           e.preventDefault();
-          this.moveLeft();
+          this._move('left');
           break;
         case 'ArrowRight':
           e.preventDefault();
-          this.moveRight();
+          this._move('right');
           break;
         case 'ArrowUp':
           e.preventDefault();
-          this.moveUp();
+          this._move('up');
           break;
         case 'ArrowDown':
           e.preventDefault();
-          this.moveDown();
+          this._move('down');
           break;
       }
     });
