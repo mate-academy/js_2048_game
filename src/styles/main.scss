@@ -4,81 +4,213 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #38373b;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
+.game-board {
+  --gap: 10px;
+  --size-field: 75px;
+  --padding-board: 12px;
+
+  touch-action: none;
+  position: relative;
+  display: grid;
   user-select: none;
+  grid-template-columns: repeat(4, var(--size-field));
+  gap: var(--gap);
+  padding: var(--padding-board);
 
-  &--2 {
-    background: #eee4da;
+  border-radius: 22px;
+
+  background:
+    radial-gradient(
+      circle at 20% 15%,
+      rgba(59, 130, 246, 0.55),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(168, 85, 247, 0.5),
+      transparent 40%
+    ),
+    linear-gradient(135deg, #0f1020, #17172f);
+
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  &__field {
+    width: var(--size-field);
+    height: var(--size-field);
+    box-sizing: border-box;
+
+    border-radius: 16px;
+
+    display: grid;
+    place-items: center;
+
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    box-shadow:
+      inset 0 0 20px rgba(255, 255, 255, 0.06),
+      inset 0 -8px 18px rgba(0, 0, 0, 0.18);
+
+    font-size: 34px;
+    font-weight: 800;
+    color: white;
   }
 
-  &--4 {
-    background: #ede0c8;
+  &__cells {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    padding: var(--padding-board);
   }
 
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
+  &__cell {
+    --position-x: 0;
+    --position-y: 0;
 
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
+    position: absolute;
 
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
+    width: var(--size-field);
+    height: var(--size-field);
+    user-select: none;
+    z-index: 1;
 
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
+    border-radius: 16px;
 
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
+    font-size: 30px;
+    font-weight: 900;
+    color: white;
+    /* stylelint-disable scss/operator-no-newline-after */
+    left: calc(
+      (var(--size-field) + var(--gap)) * var(--position-x) +
+        var(--padding-board)
+    );
 
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
+    top: calc(
+      (var(--size-field) + var(--gap)) * var(--position-y) +
+        var(--padding-board)
+    );
+    /* stylelint-enable scss/operator-no-newline-after */
 
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
+    transition:
+      opacity 180ms,
+      left 180ms cubic-bezier(0.52, 0.01, 0.27, 1.38),
+      top 180ms cubic-bezier(0.52, 0.01, 0.27, 1.38),
+      transform 180ms cubic-bezier(0.52, 0.01, 0.27, 1.38),
+      box-shadow 180ms ease,
+      filter 180ms ease;
 
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    animation:
+      apeare-cell 0.3s cubic-bezier(0.52, 0.01, 0.27, 1.38),
+      apeare-cell-2 0.5s cubic-bezier(0.52, 0.01, 0.27, 1.38);
+
+    box-shadow:
+      0 10px 22px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.35),
+      inset 0 -10px 20px rgba(0, 0, 0, 0.18);
+
+    filter: brightness(1);
+
+    &--deactive {
+      z-index: 0;
+      opacity: 0.5;
+      box-shadow: 0 0 0 transparent;
+    }
+
+    &--merge {
+      animation: merge-cell 0.3s;
+    }
+
+    &--2 {
+      background: linear-gradient(135deg, #3e5b85, #80a5d8);
+    }
+
+    &--4 {
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+    }
+
+    &--8 {
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+    }
+
+    &--16 {
+      background: linear-gradient(135deg, #db2777, #fb7185);
+    }
+
+    &--32 {
+      background: linear-gradient(135deg, #ea580c, #facc15);
+    }
+
+    &--64 {
+      background: linear-gradient(135deg, #16a34a, #86efac);
+    }
+
+    &--128 {
+      background: linear-gradient(135deg, #0891b2, #67e8f9);
+    }
+
+    &--256 {
+      background: linear-gradient(135deg, #9333ea, #f0abfc);
+    }
+
+    &--512 {
+      background: linear-gradient(135deg, #be123c, #fb7185);
+    }
+
+    &--1024 {
+      font-size: 26px;
+      background: linear-gradient(135deg, #ca8a04, #fde047);
+    }
+
+    &--2048 {
+      font-size: 26px;
+      background: linear-gradient(135deg, #f59e0b, #fef3c7);
+
+      box-shadow:
+        0 0 28px rgba(251, 191, 36, 0.75),
+        0 14px 30px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65);
+    }
   }
 }
 
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+@keyframes apeare-cell {
+  0% {
+    filter: drop-shadow(0 0 20px rgb(15, 227, 235));
+    opacity: 0;
+    transform: scale(0.01);
+  }
+}
+
+@keyframes apeare-cell-2 {
+  0% {
+    filter: drop-shadow(0 0 20px rgb(15, 227, 235));
+  }
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+}
+
+@keyframes merge-cell {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .game-header {
@@ -91,12 +223,21 @@ body {
 }
 
 h1 {
-  background: #edc22e;
+  border-radius: 16px;
+
+  font-weight: 900;
+  font-size: 26px;
+  background: linear-gradient(135deg, #f59e0b, #cfc59e);
+
+  box-shadow:
+    0 0 28px rgba(251, 191, 36, 0.75),
+    0 14px 30px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+
   color: #f9f6f2;
   width: 75px;
   height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,10 +288,10 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #ff2828;
 
   &:hover {
-    background: #f87474;
+    background: #9b0505;
   }
 }
 
