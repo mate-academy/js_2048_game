@@ -135,6 +135,14 @@ h1 {
   height: 75px;
 
   transition: 0.25s ease background;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
 }
 
 .start {
