@@ -2,13 +2,13 @@
 
 $bg-page: #cdc6b4;
 $bg-cell-empty: #d6cdc4;
-$bg-h1: #edc22e;
+$bg-h1: #f1d169;
 $bg-record: #a195ec;
-$bg-info: #fcb065;
+$bg-info: #d4d7df;
 $bg-start: #1dae28;
 $bg-start-hov: #179921;
-$bg-restart: #f1b2b2;
-$bg-restart-hov: #f87474;
+$bg-restart: #96ab92;
+$bg-restart-hov: #767171;
 $bg-msg: #afbaa4;
 $bg-msg-win: #edc22e;
 $text-dark: #776e65;
@@ -60,17 +60,17 @@ $tile-colors: (
     $text-light,
   ),
 );
-
-:root {
-  --u: clamp(56px, 16vw, 75px);
-  --gap: 5px;
-  --wp: clamp(42px, 11.5vw, 60px);
-}
-
+$cell-size: 75px;
+$pad: 60px;
 $radius: 5px;
-$anim-fast: 0.15s;
-$anim-mid: 0.2s;
-$anim-btn: 0.25s;
+$anim: 0.15s;
+$shadow-box: 3px 4px 9px -1px $text-dark;
+$shadow-field: 4px 4px 17px 35px $text-dark;
+
+@media (max-width: 420px) {
+  $cell-size: 56px;
+  $pad: 42px;
+}
 
 @keyframes pop {
   from {
@@ -126,23 +126,23 @@ $anim-btn: 0.25s;
 }
 
 .slide-pop {
-  animation: pop $anim-mid ease-out;
+  animation: pop 0.2s ease-out;
 }
 
 .slide-left {
-  animation: slide-left $anim-fast ease-out;
+  animation: slide-left $anim ease-out;
 }
 
 .slide-right {
-  animation: slide-right $anim-fast ease-out;
+  animation: slide-right $anim ease-out;
 }
 
 .slide-up {
-  animation: slide-up $anim-fast ease-out;
+  animation: slide-up $anim ease-out;
 }
 
 .slide-down {
-  animation: slide-down $anim-fast ease-out;
+  animation: slide-down $anim ease-out;
 }
 
 *,
@@ -161,7 +161,6 @@ $anim-btn: 0.25s;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
-
   overflow: hidden;
   position: fixed;
   width: 100%;
@@ -187,13 +186,18 @@ $anim-btn: 0.25s;
 }
 
 %header-box {
-  width: var(--u);
-  height: var(--u);
+  width: $cell-size;
+  height: $cell-size;
   border-radius: $radius;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+
+  @media (max-width: 420px) {
+    width: 56px;
+    height: 56px;
+  }
 }
 
 .title {
@@ -201,22 +205,29 @@ $anim-btn: 0.25s;
 
   background: $bg-h1;
   color: $text-light;
-  font-size: clamp(16px, 4.5vw, 24px);
+  font-size: 24px;
   margin: 0;
-  box-shadow: 5px 7px 22px -3px $text-dark;
+  box-shadow: $shadow-box;
+
+  @media (max-width: 420px) {
+    font-size: 16px;
+  }
 }
 
 .record {
   @extend %header-box;
 
-  box-shadow: 5px 7px 22px -3px $text-dark;
-
+  box-shadow: $shadow-box;
   flex-direction: column;
-  font-size: clamp(11px, 3vw, 16px);
+  font-size: 16px;
   font-weight: 400;
   background: $bg-record;
   color: $text-record;
   position: relative;
+
+  @media (max-width: 420px) {
+    font-size: 11px;
+  }
 
   &::after {
     content: '';
@@ -228,14 +239,18 @@ $anim-btn: 0.25s;
     top: -25%;
     right: -15%;
     transform: rotate(26deg);
-    width: clamp(36px, 10vw, 55px);
-    height: clamp(24px, 6.5vw, 35px);
+    width: 55px;
+    height: 35px;
+
+    @media (max-width: 420px) {
+      width: 36px;
+      height: 24px;
+    }
   }
 }
 
 .controls {
   display: flex;
-  gap: clamp(4px, 1.5vw, 8px);
 }
 
 .info {
@@ -244,9 +259,13 @@ $anim-btn: 0.25s;
   flex-direction: column;
   background: $bg-info;
   color: $text-dark;
-  font-size: clamp(11px, 3vw, 16px);
+  font-size: 16px;
   margin: 0;
-  box-shadow: 5px 7px 22px -3px $text-dark;
+  box-shadow: $shadow-box;
+
+  @media (max-width: 420px) {
+    font-size: 11px;
+  }
 }
 
 .button {
@@ -257,14 +276,22 @@ $anim-btn: 0.25s;
   color: $text-light;
   font-family: sans-serif;
   font-weight: 700;
-  font-size: clamp(11px, 3vw, 16px);
-  transition: background $anim-btn ease;
-  box-shadow: 5px 7px 22px -3px $text-dark;
+  font-size: 16px;
+  transition: background 0.25s ease;
+  box-shadow: $shadow-box;
+
+  @media (max-width: 420px) {
+    font-size: 11px;
+  }
 }
 
 .start {
   background: $bg-start;
-  font-size: clamp(13px, 4vw, 20px);
+  font-size: 20px;
+
+  @media (max-width: 420px) {
+    font-size: 13px;
+  }
 
   &:hover {
     background: $bg-start-hov;
@@ -281,16 +308,18 @@ $anim-btn: 0.25s;
 
 .wrapper {
   position: relative;
-  padding: var(--wp);
+  padding: $pad;
   display: flex;
   align-items: center;
   justify-content: center;
-
   overflow: visible;
   isolation: isolate;
 
-  filter: drop-shadow(2px 8px 18px $text-dark); // сюди
-  will-change: transform; // вимикає перерахунок під час свайпу
+  // will-change: transform;
+
+  @media (max-width: 420px) {
+    padding: 42px;
+  }
 }
 
 .wrapper-bg {
@@ -301,7 +330,6 @@ $anim-btn: 0.25s;
   background-image: url(../images/bg-prev.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  z-index: 1;
   pointer-events: none;
 }
 
@@ -311,27 +339,28 @@ $anim-btn: 0.25s;
   border-radius: $radius;
   position: relative;
   table-layout: fixed;
-
-  // box-shadow: 2px 12px 45px 50px $text-dark;
-
-  tbody {
-    position: relative;
-  }
+  box-shadow: $shadow-field;
 }
 
 .field-cell {
   background: $bg-cell-empty;
-  width: var(--u);
-  height: var(--u);
+  width: $cell-size;
+  height: $cell-size;
   border-radius: $radius;
   color: $text-dark;
   text-align: center;
   vertical-align: middle;
   user-select: none;
-  font-size: clamp(14px, 4vw, 24px);
+  font-size: 24px;
   transition:
-    background-color $anim-fast ease,
-    color $anim-fast ease;
+    background-color $anim ease,
+    color $anim ease;
+
+  @media (max-width: 420px) {
+    width: 56px;
+    height: 56px;
+    font-size: 14px;
+  }
 
   @each $value, $pair in $tile-colors {
     $bg: list.nth($pair, 1);
@@ -361,8 +390,12 @@ $anim-btn: 0.25s;
   text-align: center;
   border-radius: $radius;
   border: 1px solid $text-dark;
-  box-shadow: 5px 7px 22px -3px $text-dark;
-  font-size: clamp(14px, 4vw, 20px);
+  box-shadow: $shadow-box;
+  font-size: 20px;
+
+  @media (max-width: 420px) {
+    font-size: 14px;
+  }
 }
 
 .message-win {
@@ -372,5 +405,4 @@ $anim-btn: 0.25s;
 
 .hidden {
   display: none;
-  pointer-events: none;
 }
