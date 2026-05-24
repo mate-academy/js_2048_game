@@ -12,50 +12,57 @@
       href="./styles/main.scss"
     />
   </head>
-  <body>
+  <body class="body">
     <div class="container">
       <div class="game-header">
-        <h1>2048</h1>
+        <h1 class="title">2048</h1>
+        <p class="record">
+          <span>World</span>
+          <span>record:</span>
+          <strong class="game-record">0</strong>
+        </p>
         <div class="controls">
           <p class="info">
             Score:
             <span class="game-score">0</span>
           </p>
-          <button class="button start">Start</button>
         </div>
+        <button class="button start">Start</button>
       </div>
+      <div class="wrapper">
+        <table class="game-field">
+          <tbody>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
 
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
+            <tr class="field-row">
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+              <td class="field-cell"></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="wrapper-bg"></div>
+      </div>
 
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
@@ -65,6 +72,10 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      src="scripts/main.js"
+      type="module"
+      defer
+    ></script>
   </body>
 </html>
