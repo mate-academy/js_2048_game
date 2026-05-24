@@ -237,7 +237,18 @@ class Game {
 
   renderView() {
     this.renderBoard();
+
+    const prevScore = Number(this.scoreEl.textContent);
+
     this.scoreEl.textContent = this.score;
+
+    if (this.score > prevScore) {
+      const infoEl = this.scoreEl.parentElement;
+
+      infoEl.classList.remove('pop');
+      void infoEl.offsetWidth;
+      infoEl.classList.add('pop');
+    }
   }
 
   renderBoard() {

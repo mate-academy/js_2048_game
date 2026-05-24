@@ -81,6 +81,24 @@ $shadow-field: 4px 4px 17px 35px $text-dark;
   }
 }
 
+@keyframes score-pop {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  75% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 @keyframes slide-left {
   from {
     transform: translateX(25px) scale(0.9);
@@ -266,6 +284,10 @@ $shadow-field: 4px 4px 17px 35px $text-dark;
   @media (max-width: 420px) {
     font-size: 11px;
   }
+}
+
+.info.pop {
+  animation: score-pop 0.3s ease;
 }
 
 .button {
