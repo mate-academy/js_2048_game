@@ -63,7 +63,7 @@ $tile-colors: (
 $cell-size: 75px;
 $pad: 60px;
 $radius: 5px;
-$anim: 0.15s;
+$anim: 0.2s;
 $shadow-box: 3px 4px 9px -1px $text-dark;
 $shadow-field: 4px 4px 17px 35px $text-dark;
 
@@ -84,9 +84,6 @@ $shadow-field: 4px 4px 17px 35px $text-dark;
 @keyframes score-pop {
   0% {
     transform: scale(1);
-  }
-  25% {
-    transform: scale(0.9);
   }
   50% {
     transform: scale(1.1);
@@ -191,7 +188,6 @@ $shadow-field: 4px 4px 17px 35px $text-dark;
   align-items: center;
   max-width: 100vw;
   padding: 0 4px;
-  overflow: visible;
 }
 
 .game-header {
@@ -304,6 +300,10 @@ $shadow-field: 4px 4px 17px 35px $text-dark;
 
   @media (max-width: 420px) {
     font-size: 11px;
+  }
+
+  &:focus {
+    outline: none;
   }
 }
 
