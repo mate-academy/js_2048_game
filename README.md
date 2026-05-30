@@ -1,69 +1,71 @@
-# 2048 game
+# 🧩 2048 Game 
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+A fully interactive, responsive, and pixel-perfect implementation of the famous **2048 puzzle game**. Built from scratch using modern Vanilla JavaScript (ES6+ Class architecture), object-oriented programming (OOP) principles, and semantic component design.
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+---
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
-  - constructor with `initialState` parameter (value is optional, defaults to the empty board)
-  - `getState()`
-  - `getScore()`
-  - `getStatus()`
-  - `moveLeft()`
-  - `moveRight()`
-  - `moveUp()`
-  - `moveDown()`
-  - `start()`
-  - `restart()`
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge)
+![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
+![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![SCSS](https://img.shields.io/badge/SASS-hotpink.svg?style=for-the-badge&logo=Sass&logoColor=white)
 
-3) Reference.
+---
 
-That's it!
+## DEMO
 
-Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) `Restart` button should reset the game to the initial state.
-12) Increase score with each move. The score should be increased by the sum of all merged cells.
-13) The game consists of 2 main parts:
-  - game logic written in `src/modules/Game.class.js` module that exports `Game` class
-  - game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
+<a href="https://<wolfymmm>.github.io/2048-game/" target="_blank">
+  <img src="https://img.shields.io/badge/Live_Demo-Play_2048-brightgreen?style=for-the-badge&logo=github&logoColor=white" alt="Live Demo" />
+</a>
 
-Hints:
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
-- Use `keydown` event and `event.key` property to handle arrow buttons presses
-    ```js
-    document.addEventListener('keydown', event => console.log(event.key));
-    ```
-- Adding animation to the game is optional. It is a bit tricky, but you can try it if you want. Probably, you will need to extend the Game class with additional methods and create a separate board storage with Tile entities to operate their corresponding DOM elements' positions.
+---
 
-You can change the HTML/CSS layout if you need it.
+## Game Rules & Mechanics
 
-![Preview](./src/images/reference.png)
+The game is played on a smooth **4 × 4 grid** using your keyboard arrow keys:
+* **Movement:** When a direction is chosen, all numbered tiles slide as far as they can in that direction.
+* **Merging:** Two tiles of the same number collide and merge into a single tile with a doubled value (e.g., $2 + 2 \rightarrow 4$).
+* **Mathematical Restriction:** A tile cannot be merged more than once during a single turn.
+* **Random Spawning:** After every successful move, a new tile randomly spawns in an empty cell. It has a $90\%$ chance of being a **2** and a $10\%$ chance of being a **4**.
+* **Scoring:** Your score increases dynamically by the exact sum of all combined tiles during that turn.
+* **Win Condition:** The game triggers a victory screen as soon as a **2048** tile is achieved.
+* **Game Over:** Triggers automatically when the board is completely full and no valid adjacent merges remain.
 
-## Deploy and Pull Request
+---
 
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://wolfymmm.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+## Architecture & Codebase Design
 
+The project is strictly separated into two distinct layers (following decoupled UI/Logic principles):
+
+1. **Core Logic Engine (`Game.class.js`):**
+   A stateful, framework-agnostic JavaScript class that completely handles data structures, board state array transformations, merge vectors, probability matrix calculation, and win/loss assertions.
+2. **UI & Event Management Layer (`main.js`):**
+   Directs raw DOM manipulation, keydown event handlers, dynamic class rendering (`field-cell--%value%`), screen state management (start, restart, modulations), and modal injections.
+
+### Obligatory API Specifications:
+* `constructor(initialState)` — Instantiates core properties with optional predefined matrix states.
+* `getState()` / `getScore()` / `getStatus()` — Public getter APIs ensuring decoupled data tracking.
+* `moveLeft()` / `moveRight()` / `moveUp()` / `moveDown()` — Structural grid translation algorithms.
+* `start()` / `restart()` — State reset configurations.
+
+---
+
+## Gameplay Preview
+
+<p align="center">
+  <img width="70%" height="1458" alt="image" src="https://github.com/user-attachments/assets/25acb590-c9df-49cd-a167-1bba2f82d9e4" />
+</p>
+
+---
+
+## Installation & Local Setup
+
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/](https://github.com/)<your_github_username>/2048-game.git
+   cd 2048-game
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
