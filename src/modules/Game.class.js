@@ -1,5 +1,9 @@
 'use strict';
 
+function copyGrid(grid) {
+  return grid.map((row) => [...row]);
+}
+
 class Game {
   // constants
 
@@ -17,23 +21,32 @@ class Game {
   #messageStartEl = document.querySelector('.message-start');
   #fieldEl = document.querySelector('.game-field tbody');
 
-  // private functions
+  // private methods
 
   #handleMove = (e) => {
     switch (e.key) {
       case 'ArrowLeft':
-        this.moveLeft();
+        if (this.moveLeft()) {
+          this.spawnNewTile();
+        }
         break;
       case 'ArrowRight':
-        this.moveRight();
+        if (this.moveRight()) {
+          this.spawnNewTile();
+        }
         break;
       case 'ArrowUp':
-        this.moveUp();
+        if (this.moveUp()) {
+          this.spawnNewTile();
+        }
         break;
       case 'ArrowDown':
-        this.moveDown();
+        if (this.moveDown()) {
+          this.spawnNewTile();
+        }
         break;
     }
+    this.updateGrid();
   };
 
   #handleButtonClick = () => {
@@ -54,19 +67,155 @@ class Game {
    *  [0, 0, 0, 0]]
    */
   constructor(initialState) {
-    this.#initialState = initialState.map((row) => [...row]);
-    this.state = initialState.map((row) => [...row]);
+    this.#initialState = copyGrid(initialState);
+    this.state = copyGrid(initialState);
     this.score = 0;
 
-    document
-      .querySelector('.button')
-      .addEventListener('click', this.#handleButtonClick);
+    this.#buttonEl.addEventListener('click', this.#handleButtonClick);
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  /**
+   * @returns {boolean}
+   * */
+  moveLeft() {
+    // shows if at least one tile was merged or moved
+    let actionFlag = false;
+
+    for (let row = 0; row < 4; row++) {
+      for (let col = 1; col < 4; col++) {
+        // if tile is empty => move on
+        if (!this.state[row][col]) {
+          continue;
+        }
+
+        // row, col - position where started
+        // currCol - current column of tile
+        let currCol = col;
+
+        // until left tile empty => move left
+        while (currCol > 0 && !this.state[row][currCol - 1]) {
+          this.state[row][currCol - 1] = this.state[row][currCol];
+          this.state[row][currCol] = 0;
+
+          currCol--;
+          actionFlag = true;
+        }
+
+        if (
+          currCol > 0 &&
+          this.state[row][currCol] === this.state[row][currCol - 1]
+        ) {
+          this.state[row][currCol - 1] *= 2;
+          this.state[row][currCol] = 0;
+
+          actionFlag = true;
+        }
+      }
+    }
+
+    return actionFlag;
+  }
+
+  moveRight() {
+    let actionFlag = false;
+
+    for (let row = 0; row < 4; row++) {
+      for (let col = 2; col >= 0; col--) {
+        // if tile is empty => move on
+        if (!this.state[row][col]) {
+          continue;
+        }
+
+        let currCol = col;
+
+        while (currCol < 3 && !this.state[row][currCol + 1]) {
+          this.state[row][currCol + 1] = this.state[row][currCol];
+          this.state[row][currCol] = 0;
+
+          currCol++;
+          actionFlag = true;
+        }
+
+        if (
+          currCol < 3 &&
+          this.state[row][currCol] === this.state[row][currCol + 1]
+        ) {
+          this.state[row][currCol + 1] *= 2;
+          this.state[row][currCol] = 0;
+
+          actionFlag = true;
+        }
+      }
+    }
+
+    return actionFlag;
+  }
+  moveUp() {
+    let actionFlag = false;
+
+    for (let col = 0; col < 4; col++) {
+      for (let row = 1; row < 4; row++) {
+        if (!this.state[row][col]) {
+          continue;
+        }
+
+        let currRow = row;
+
+        while (currRow > 0 && !this.state[currRow - 1][col]) {
+          this.state[currRow - 1][col] = this.state[currRow][col];
+          this.state[currRow][col] = 0;
+
+          currRow--;
+          actionFlag = true;
+        }
+
+        if (
+          currRow > 0 &&
+          this.state[currRow][col] === this.state[currRow - 1][col]
+        ) {
+          this.state[currRow - 1][col] *= 2;
+          this.state[currRow][col] = 0;
+
+          actionFlag = true;
+        }
+      }
+    }
+
+    return actionFlag;
+  }
+  moveDown() {
+    let actionFlag = false;
+
+    for (let col = 0; col < 4; col++) {
+      for (let row = 2; row >= 0; row--) {
+        if (!this.state[row][col]) {
+          continue;
+        }
+
+        let currRow = row;
+
+        while (currRow < 3 && !this.state[currRow + 1][col]) {
+          this.state[currRow + 1][col] = this.state[currRow][col];
+          this.state[currRow][col] = 0;
+
+          currRow++;
+          actionFlag = true;
+        }
+
+        if (
+          currRow < 3 &&
+          this.state[currRow][col] === this.state[currRow + 1][col]
+        ) {
+          this.state[currRow + 1][col] *= 2;
+          this.state[currRow][col] = 0;
+
+          actionFlag = true;
+        }
+      }
+    }
+
+    return actionFlag;
+  }
 
   getScore() {
     return this.score;
@@ -94,30 +243,28 @@ class Game {
   set status(value) {
     this.#status = value;
 
-    const button = document.querySelector('.button');
-
     if (value === 'idle') {
       document.removeEventListener('keydown', this.#handleMove);
-      button.className = 'button start';
-      button.textContent = 'Start';
+      this.#buttonEl.className = 'button start';
+      this.#buttonEl.textContent = 'Start';
     } else if (value === 'playing') {
       document.addEventListener('keydown', this.#handleMove);
-      button.className = 'button restart';
-      button.textContent = 'Restart';
+      this.#buttonEl.className = 'button restart';
+      this.#buttonEl.textContent = 'Restart';
     }
   }
 
   start() {
     this.status = 'playing';
-    document.querySelector('.message-start').classList.add('hidden');
+    this.#messageStartEl.classList.add('hidden');
     this.spawnNewTile();
   }
 
   restart() {
     this.status = 'idle';
-    this.state = this.#initialState.map((row) => [...row]);
-    document.querySelector('.message-start').classList.remove('hidden');
-    this.updateField();
+    this.state = copyGrid(this.#initialState);
+    this.#messageStartEl.classList.remove('hidden');
+    this.updateGrid();
   }
 
   spawnNewTile() {
@@ -136,17 +283,17 @@ class Game {
       emptyTileIndexes[Math.floor(Math.random() * emptyTileIndexes.length)];
 
     this.state[Math.floor(spawnIndex / 4)][spawnIndex % 4] = spawnValue;
-    this.updateField();
+    this.updateGrid();
   }
 
-  updateField() {
+  updateGrid() {
     [...this.#fieldEl.children].forEach((row, rowIndex) => {
       [...row.children].forEach((el, elIndex) => {
         const tileValue = this.state[rowIndex][elIndex];
 
         if (tileValue) {
           el.textContent = tileValue;
-          el.classList.add(`field-cell--${tileValue}`);
+          el.className = `field-cell field-cell--${tileValue}`;
         } else {
           el.textContent = '';
           el.className = 'field-cell';
