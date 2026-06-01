@@ -149,7 +149,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.state;
+    return this.state.map((row) => [...row]);
   }
 
   /**
