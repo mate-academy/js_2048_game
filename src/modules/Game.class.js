@@ -277,4 +277,4 @@ class Game {
   // Add your own methods here
 }
 
-module.exports = Game;
+export default Game;
