@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#bbada0" />
+  <rect x="8" y="8" width="48" height="48" rx="10" fill="#cdc1b4" />
+  <rect x="14" y="14" width="36" height="36" rx="8" fill="#f2b179" />
+  <text
+    x="32"
+    y="38"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="20"
+    font-weight="700"
+    text-anchor="middle"
+    fill="#f9f6f2"
+  >
+    2048
+  </text>
+</svg>

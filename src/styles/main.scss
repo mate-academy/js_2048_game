@@ -10,16 +10,16 @@ body {
   font-weight: 900;
 }
 
-.field-cell {
+.game-board {
+  position: relative;
+}
+
+.field-cell,
+.tile-content {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
 
   &--2 {
     background: #eee4da;
@@ -73,6 +73,47 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+}
+
+.field-cell {
+  width: 75px;
+  height: 75px;
+  text-align: center;
+  vertical-align: center;
+  user-select: none;
+}
+
+.tile-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition:
+    transform 120ms ease-in-out,
+    opacity 120ms ease-in-out;
+  will-change: transform, opacity;
+}
+
+.tile-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-content.tile--new {
+  animation: tile-appear 120ms ease-out;
+}
+
+.tile-content.tile--merge {
+  animation: tile-merge 120ms ease-out;
 }
 
 .game-field {
@@ -184,4 +225,30 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes tile-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes tile-merge {
+  0% {
+    transform: scale(0.9);
+  }
+
+  60% {
+    transform: scale(1.12);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
