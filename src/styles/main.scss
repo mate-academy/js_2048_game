@@ -18,8 +18,13 @@ body {
   color: #776e65;
   box-sizing: border-box;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   user-select: none;
+
+  /* Добавлена плавность смены цвета */
+  transition:
+    background-color 0.15s ease-in-out,
+    color 0.15s ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -134,7 +139,15 @@ h1 {
   width: 75px;
   height: 75px;
 
-  transition: 0.25s ease background;
+  /* Обновленный transition для цвета и эффекта нажатия */
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+
+  /* Эффект вдавливания при клике */
+  &:active {
+    transform: scale(0.92);
+  }
 }
 
 .start {
@@ -184,4 +197,40 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+/* --- АНИМАЦИИ ДЛЯ ПЛИТОК --- */
+
+.tile-new {
+  animation: appear 0.2s ease-out forwards;
+}
+
+.tile-merged {
+  animation: pop 0.2s ease-in-out forwards;
+}
+
+@keyframes appear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
