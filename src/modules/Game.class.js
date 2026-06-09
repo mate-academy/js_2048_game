@@ -1,68 +1,241 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    if (initialState) {
+      this.board = initialState.map((row) => [...row]);
+    } else {
+      this.board = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
+    }
+
+    this.score = 0;
+    this.status = 'idle';
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+  getState() {
+    return this.board;
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+  addRandomTile() {
+    const emptyCells = [];
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.board[r][c] === 0) {
+          emptyCells.push({ r, c });
+        }
+      }
+    }
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+    if (emptyCells.length === 0) {
+      return;
+    }
 
-  // Add your own methods here
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+    const randomCell = emptyCells[randomIndex];
+
+    const newValue = Math.random() < 0.9 ? 2 : 4;
+
+    this.board[randomCell.r][randomCell.c] = newValue;
+  }
+
+  checkStatus() {
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.board[r][c] === 2048) {
+          this.status = 'win';
+
+          return;
+        }
+      }
+    }
+
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.board[r][c] === 0) {
+          this.status = 'playing';
+
+          return;
+        }
+      }
+    }
+
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        const current = this.board[r][c];
+
+        if (
+          (c < 3 && current === this.board[r][c + 1]) ||
+          (r < 3 && current === this.board[r + 1][c])
+        ) {
+          this.status = 'playing';
+
+          return;
+        }
+      }
+    }
+
+    this.status = 'lose';
+  }
+
+  slideLine(line) {
+    let filtered = line.filter((val) => val !== 0);
+
+    for (let i = 0; i < filtered.length - 1; i++) {
+      if (filtered[i] !== 0 && filtered[i] === filtered[i + 1]) {
+        filtered[i] *= 2;
+        this.score += filtered[i];
+        filtered[i + 1] = 0;
+      }
+    }
+
+    filtered = filtered.filter((val) => val !== 0);
+
+    while (filtered.length < 4) {
+      filtered.push(0);
+    }
+
+    return filtered;
+  }
+
+  moveLeft() {
+    let hasChanged = false;
+
+    for (let r = 0; r < 4; r++) {
+      const currentRow = this.board[r];
+      const oldRow = [...currentRow];
+
+      this.board[r] = this.slideLine(currentRow);
+
+      if (oldRow.join(',') !== this.board[r].join(',')) {
+        hasChanged = true;
+      }
+    }
+
+    if (hasChanged) {
+      this.addRandomTile();
+    }
+
+    this.checkStatus();
+  }
+
+  moveRight() {
+    let hasChanged = false;
+
+    for (let r = 0; r < 4; r++) {
+      const currentRow = this.board[r];
+
+      const oldRow = [...currentRow];
+
+      const reversedRow = [...currentRow].reverse();
+
+      this.board[r] = this.slideLine(reversedRow).reverse();
+
+      if (oldRow.join(',') !== this.board[r].join(',')) {
+        hasChanged = true;
+      }
+    }
+
+    if (hasChanged) {
+      this.addRandomTile();
+    }
+
+    this.checkStatus();
+  }
+
+  moveUp() {
+    let hasChanged = false;
+
+    for (let c = 0; c < 4; c++) {
+      const currentCol = [
+        this.board[0][c],
+        this.board[1][c],
+        this.board[2][c],
+        this.board[3][c],
+      ];
+
+      const oldCol = [...currentCol];
+
+      const newCol = this.slideLine(currentCol);
+
+      for (let r = 0; r < 4; r++) {
+        this.board[r][c] = newCol[r];
+      }
+
+      if (oldCol.join(',') !== newCol.join(',')) {
+        hasChanged = true;
+      }
+    }
+
+    if (hasChanged) {
+      this.addRandomTile();
+    }
+
+    this.checkStatus();
+  }
+
+  moveDown() {
+    let hasChanged = false;
+
+    for (let c = 0; c < 4; c++) {
+      const currentCol = [
+        this.board[0][c],
+        this.board[1][c],
+        this.board[2][c],
+        this.board[3][c],
+      ];
+
+      const oldCol = [...currentCol];
+
+      const reversedCol = [...currentCol].reverse();
+
+      const newCol = this.slideLine(reversedCol).reverse();
+
+      for (let r = 0; r < 4; r++) {
+        this.board[r][c] = newCol[r];
+      }
+
+      if (oldCol.join(',') !== newCol.join(',')) {
+        hasChanged = true;
+      }
+    }
+
+    if (hasChanged) {
+      this.addRandomTile();
+    }
+
+    this.checkStatus();
+  }
+
+  start() {
+    this.status = 'playing';
+    this.addRandomTile();
+    this.addRandomTile();
+  }
+
+  restart() {
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.score = 0;
+    this.start();
+  }
 }
 
 module.exports = Game;
