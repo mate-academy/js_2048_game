@@ -4,79 +4,82 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: #fdf2fa;
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
 }
 
 .field-cell {
-  background: #d6cdc4;
+  background: rgba(243, 215, 242, 0.4);
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #4a154b;
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
   user-select: none;
 
   &--2 {
-    background: #eee4da;
+    background: #fce7f3;
+    color: #4a154b;
   }
 
   &--4 {
-    background: #ede0c8;
+    background: #f4cbff;
+    color: #4a154b;
   }
 
   &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
+    background: #ea9eff;
+    color: #4a154b;
   }
 
   &--16 {
-    background: #f59563;
-    color: #f9f6f2;
+    background: #d676ff;
+    color: #fff;
   }
 
   &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
+    background: #b546ff;
+    color: #fff;
   }
 
   &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
+    background: #8e1eff;
+    color: #fff;
   }
 
   &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
+    background: #ff7be5;
+    color: #fff;
   }
 
   &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
+    background: #ff41d5;
+    color: #fff;
   }
 
   &--512 {
-    background: #edc850;
-    color: #f9f6f2;
+    background: #e000aa;
+    color: #fff;
   }
 
   &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
+    background: #9d007a;
+    color: #fff;
   }
 
   &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
+    background: #63004d;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(224, 0, 170, 0.6);
   }
 }
 
 .game-field {
-  background: #bbada0;
+  background: #34223c;
   border-spacing: 10px;
   border-radius: 5px;
 }
@@ -91,8 +94,8 @@ body {
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: #b546ff;
+  color: #fff;
   width: 75px;
   height: 75px;
   font-size: 24px;
@@ -109,14 +112,18 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
+  background: #ebdcf0;
   width: 75px;
   height: 75px;
   border-radius: 5px;
-  color: #776e65;
+  color: #695270;
   box-sizing: border-box;
   font-size: 16px;
   margin: 0 8px 0 0;
+
+  &--big {
+    text-align: center;
+  }
 }
 
 .controls {
@@ -127,7 +134,7 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #f9f6f2;
+  color: #fff;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 16px;
@@ -138,27 +145,27 @@ h1 {
 }
 
 .start {
-  background: #1dae28;
+  background: #00c896;
   font-size: 20px;
 
   &:hover {
-    background: #179921;
+    background: #00a37b;
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #ff6b8b;
 
   &:hover {
-    background: #f87474;
+    background: #e84a6c;
   }
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
+  background: #ebdcf0;
+  color: #695270;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
@@ -177,8 +184,8 @@ h1 {
 }
 
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: #ff41d5;
+  color: #fff;
 }
 
 .message-container {
