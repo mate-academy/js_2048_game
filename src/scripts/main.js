@@ -1,6 +1,4 @@
-'use strict';
-
-const Game = require('./modules/Game.class');
+import Game from '../modules/Game.class.js';
 
 const game = new Game();
 

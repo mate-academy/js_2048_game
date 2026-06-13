@@ -1,6 +1,6 @@
 'use strict';
 
-class Game {
+export default class Game  {
   constructor(initialState = null) {
     this.initialState =
       initialState || Array.from({ length: 4 }, () => Array(4).fill(0));
@@ -199,5 +199,3 @@ class Game {
     return false;
   }
 }
-
-module.exports = Game;
