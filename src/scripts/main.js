@@ -260,12 +260,8 @@ function handleStart() {
     startMessage.classList.add('hidden');
   } else {
     game.restart();
+    game.start();
 
-    button.textContent = 'Start';
-    button.classList.remove('restart');
-    button.classList.add('start');
-
-    startMessage.classList.remove('hidden');
     winMessage.classList.add('hidden');
     loseMessage.classList.add('hidden');
   }
