@@ -20,6 +20,7 @@ class Game {
   #buttonEl = document.querySelector('.button');
   #messageStartEl = document.querySelector('.message-start');
   #fieldEl = document.querySelector('.game-field tbody');
+  #scoreEl = document.querySelector('.game-score');
 
   // private methods
 
@@ -57,6 +58,47 @@ class Game {
     }
   };
 
+  // moves every cell to the left if it is possible
+  #slideRow(row) {
+    let mutatedRow = row.filter((num) => num !== 0);
+
+    for (let i = 1; i < mutatedRow.length; i++) {
+      if (mutatedRow[i] === mutatedRow[i - 1]) {
+        this.score += mutatedRow[i - 1] * 2;
+
+        mutatedRow[i - 1] *= 2;
+        mutatedRow[i] = 0;
+      }
+    }
+
+    mutatedRow = mutatedRow.filter((n) => n !== 0);
+
+    while (mutatedRow.length < 4) {
+      mutatedRow.push(0);
+    }
+
+    const wasMoved = mutatedRow.some((num, index) => num !== row[index]);
+
+    return { mutatedRow, wasMoved };
+  }
+
+  #transpose(grid) {
+    const transposedGrid = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        transposedGrid[i][j] = grid[j][i];
+      }
+    }
+
+    return transposedGrid;
+  }
+
   /**
    * @param {number[][]} initialState
    * The initial state of the board.
@@ -78,154 +120,61 @@ class Game {
    * @returns {boolean}
    * */
   moveLeft() {
-    // shows if at least one tile was merged or moved
-    let actionFlag = false;
+    let wasAnyMoved = false;
 
-    for (let row = 0; row < 4; row++) {
-      for (let col = 1; col < 4; col++) {
-        // if tile is empty => move on
-        if (!this.state[row][col]) {
-          continue;
-        }
+    this.state.forEach((row, i) => {
+      const slided = this.#slideRow(row);
 
-        // row, col - position where started
-        // currCol - current column of tile
-        let currCol = col;
+      wasAnyMoved = wasAnyMoved || slided.wasMoved;
+      slided.mutatedRow.forEach((val, j) => (this.state[i][j] = val));
+    });
 
-        // until left tile empty => move left
-        while (currCol > 0 && !this.state[row][currCol - 1]) {
-          this.state[row][currCol - 1] = this.state[row][currCol];
-          this.state[row][currCol] = 0;
-
-          currCol--;
-          actionFlag = true;
-        }
-
-        if (
-          currCol > 0 &&
-          this.state[row][currCol] === this.state[row][currCol - 1]
-        ) {
-          this.state[row][currCol - 1] *= 2;
-          this.state[row][currCol] = 0;
-
-          actionFlag = true;
-        }
-      }
-    }
-
-    return actionFlag;
+    return wasAnyMoved;
   }
 
   moveRight() {
-    let actionFlag = false;
+    let wasAnyMoved = false;
 
-    for (let row = 0; row < 4; row++) {
-      for (let col = 2; col >= 0; col--) {
-        // if tile is empty => move on
-        if (!this.state[row][col]) {
-          continue;
-        }
+    this.state.forEach((row, i) => {
+      const reversedSlided = this.#slideRow(row.toReversed());
 
-        let currCol = col;
+      wasAnyMoved = wasAnyMoved || reversedSlided.wasMoved;
 
-        while (currCol < 3 && !this.state[row][currCol + 1]) {
-          this.state[row][currCol + 1] = this.state[row][currCol];
-          this.state[row][currCol] = 0;
+      reversedSlided.mutatedRow
+        .toReversed()
+        .forEach((val, j) => (this.state[i][j] = val));
+    });
 
-          currCol++;
-          actionFlag = true;
-        }
-
-        if (
-          currCol < 3 &&
-          this.state[row][currCol] === this.state[row][currCol + 1]
-        ) {
-          this.state[row][currCol + 1] *= 2;
-          this.state[row][currCol] = 0;
-
-          actionFlag = true;
-        }
-      }
-    }
-
-    return actionFlag;
+    return wasAnyMoved;
   }
+
   moveUp() {
-    let actionFlag = false;
+    let wasAnyMoved = false;
 
-    for (let col = 0; col < 4; col++) {
-      for (let row = 1; row < 4; row++) {
-        if (!this.state[row][col]) {
-          continue;
-        }
+    this.#transpose(this.state).forEach((row, i) => {
+      const slided = this.#slideRow(row);
 
-        let currRow = row;
+      wasAnyMoved = wasAnyMoved || slided.wasMoved;
+      slided.mutatedRow.forEach((val, j) => (this.state[j][i] = val));
+    });
 
-        while (currRow > 0 && !this.state[currRow - 1][col]) {
-          this.state[currRow - 1][col] = this.state[currRow][col];
-          this.state[currRow][col] = 0;
-
-          currRow--;
-          actionFlag = true;
-        }
-
-        if (
-          currRow > 0 &&
-          this.state[currRow][col] === this.state[currRow - 1][col]
-        ) {
-          this.state[currRow - 1][col] *= 2;
-          this.state[currRow][col] = 0;
-
-          actionFlag = true;
-        }
-      }
-    }
-
-    return actionFlag;
+    return wasAnyMoved;
   }
+
   moveDown() {
-    let actionFlag = false;
+    let wasAnyMoved = false;
 
-    for (let col = 0; col < 4; col++) {
-      for (let row = 2; row >= 0; row--) {
-        if (!this.state[row][col]) {
-          continue;
-        }
+    this.#transpose(this.state).forEach((row, i) => {
+      const reversedSlided = this.#slideRow(row.toReversed());
 
-        let currRow = row;
+      wasAnyMoved = wasAnyMoved || reversedSlided.wasMoved;
 
-        while (currRow < 3 && !this.state[currRow + 1][col]) {
-          this.state[currRow + 1][col] = this.state[currRow][col];
-          this.state[currRow][col] = 0;
+      reversedSlided.mutatedRow
+        .toReversed()
+        .forEach((val, j) => (this.state[j][i] = val));
+    });
 
-          currRow++;
-          actionFlag = true;
-        }
-
-        if (
-          currRow < 3 &&
-          this.state[currRow][col] === this.state[currRow + 1][col]
-        ) {
-          this.state[currRow + 1][col] *= 2;
-          this.state[currRow][col] = 0;
-
-          actionFlag = true;
-        }
-      }
-    }
-
-    return actionFlag;
-  }
-
-  getScore() {
-    return this.score;
-  }
-
-  /**
-   * @returns {number[][]}
-   */
-  getState() {
-    return this.#initialState;
+    return wasAnyMoved;
   }
 
   /**
@@ -251,6 +200,8 @@ class Game {
       document.addEventListener('keydown', this.#handleMove);
       this.#buttonEl.className = 'button restart';
       this.#buttonEl.textContent = 'Restart';
+    } else if (value === 'win') {
+    } else if (value === 'lose') {
     }
   }
 
@@ -264,6 +215,7 @@ class Game {
     this.status = 'idle';
     this.state = copyGrid(this.#initialState);
     this.#messageStartEl.classList.remove('hidden');
+    this.score = 0;
     this.updateGrid();
   }
 
@@ -300,6 +252,8 @@ class Game {
         }
       });
     });
+
+    this.#scoreEl.textContent = this.score;
   }
 }
 
