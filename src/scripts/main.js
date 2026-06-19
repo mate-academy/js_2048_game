@@ -7,5 +7,3 @@ const game = new Game([
   [0, 0, 0, 0],
   [0, 0, 0, 0],
 ]);
-
-game.getScore();

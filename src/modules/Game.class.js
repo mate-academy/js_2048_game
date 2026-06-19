@@ -12,13 +12,13 @@ class Game {
 
   // private values
 
-  #status = 'idle';
+  #status;
   #initialState;
 
   // DOM elements
 
   #buttonEl = document.querySelector('.button');
-  #messageStartEl = document.querySelector('.message-start');
+  #messageContainerEl = document.querySelector('.message-container');
   #fieldEl = document.querySelector('.game-field tbody');
   #scoreEl = document.querySelector('.game-score');
 
@@ -48,6 +48,14 @@ class Game {
         break;
     }
     this.updateGrid();
+
+    if (this.isWin()) {
+      this.status = 'win';
+    }
+
+    if (!this.isPossibleMove()) {
+      this.status = 'lose';
+    }
   };
 
   #handleButtonClick = () => {
@@ -99,6 +107,17 @@ class Game {
     return transposedGrid;
   }
 
+  // start, win, lose, *empty-param*
+  #showMessage(messageClass) {
+    [...this.#messageContainerEl.children].forEach((child) => {
+      if (child.classList.contains(`message-${messageClass}`)) {
+        child.classList.remove('hidden');
+      } else {
+        child.classList.add('hidden');
+      }
+    });
+  }
+
   /**
    * @param {number[][]} initialState
    * The initial state of the board.
@@ -112,6 +131,7 @@ class Game {
     this.#initialState = copyGrid(initialState);
     this.state = copyGrid(initialState);
     this.score = 0;
+    this.#status = 'idle';
 
     this.#buttonEl.addEventListener('click', this.#handleButtonClick);
   }
@@ -196,25 +216,29 @@ class Game {
       document.removeEventListener('keydown', this.#handleMove);
       this.#buttonEl.className = 'button start';
       this.#buttonEl.textContent = 'Start';
+
+      this.#showMessage('start');
     } else if (value === 'playing') {
       document.addEventListener('keydown', this.#handleMove);
       this.#buttonEl.className = 'button restart';
       this.#buttonEl.textContent = 'Restart';
+
+      this.#showMessage('');
     } else if (value === 'win') {
+      this.#showMessage('win');
     } else if (value === 'lose') {
+      this.#showMessage('lose');
     }
   }
 
   start() {
     this.status = 'playing';
-    this.#messageStartEl.classList.add('hidden');
     this.spawnNewTile();
   }
 
   restart() {
     this.status = 'idle';
     this.state = copyGrid(this.#initialState);
-    this.#messageStartEl.classList.remove('hidden');
     this.score = 0;
     this.updateGrid();
   }
@@ -235,7 +259,6 @@ class Game {
       emptyTileIndexes[Math.floor(Math.random() * emptyTileIndexes.length)];
 
     this.state[Math.floor(spawnIndex / 4)][spawnIndex % 4] = spawnValue;
-    this.updateGrid();
   }
 
   updateGrid() {
@@ -254,6 +277,40 @@ class Game {
     });
 
     this.#scoreEl.textContent = this.score;
+  }
+
+  isPossibleMove() {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state[i][j] === 0) {
+          return true;
+        }
+      }
+    }
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (j < 3 && this.state[i][j] === this.state[i][j + 1]) {
+          return true;
+        }
+
+        if (i < 3 && this.state[i][j] === this.state[i + 1][j]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  isWin() {
+    for (const row of this.state) {
+      if (row.includes(Game.#winValue)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
 
