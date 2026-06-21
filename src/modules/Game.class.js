@@ -1,4 +1,5 @@
 'use strict';
+import Tile from './Tile.class';
 
 function copyGrid(grid) {
   return grid.map((row) => [...row]);
@@ -19,7 +20,7 @@ class Game {
 
   #buttonEl = document.querySelector('.button');
   #messageContainerEl = document.querySelector('.message-container');
-  #fieldEl = document.querySelector('.game-field tbody');
+  #fieldEl = document.querySelector('.cell-container');
   #scoreEl = document.querySelector('.game-score');
 
   // private methods
@@ -67,14 +68,15 @@ class Game {
   };
 
   // moves every cell to the left if it is possible
-  #slideRow(row) {
+  #slideRow(row, toActualPos) {
     let mutatedRow = row.filter((num) => num !== 0);
 
     for (let i = 1; i < mutatedRow.length; i++) {
-      if (mutatedRow[i] === mutatedRow[i - 1]) {
-        this.score += mutatedRow[i - 1] * 2;
+      if (mutatedRow[i].value === mutatedRow[i - 1].value) {
+        this.score += mutatedRow[i - 1].value * 2;
 
-        mutatedRow[i - 1] *= 2;
+        mutatedRow[i - 1].value *= 2;
+        mutatedRow[i].ref?.remove();
         mutatedRow[i] = 0;
       }
     }
@@ -84,6 +86,16 @@ class Game {
     while (mutatedRow.length < 4) {
       mutatedRow.push(0);
     }
+
+    mutatedRow.forEach((cell, i) => {
+      if (cell instanceof Tile) {
+        const [newRow, newCol] = toActualPos(i);
+
+        if (cell.position[0] !== newRow || cell.position[1] !== newCol) {
+          cell.moveTo = [newRow, newCol];
+        }
+      }
+    });
 
     const wasMoved = mutatedRow.some((num, index) => num !== row[index]);
 
@@ -143,7 +155,7 @@ class Game {
     let wasAnyMoved = false;
 
     this.state.forEach((row, i) => {
-      const slided = this.#slideRow(row);
+      const slided = this.#slideRow(row, (j) => [i, j]);
 
       wasAnyMoved = wasAnyMoved || slided.wasMoved;
       slided.mutatedRow.forEach((val, j) => (this.state[i][j] = val));
@@ -156,7 +168,10 @@ class Game {
     let wasAnyMoved = false;
 
     this.state.forEach((row, i) => {
-      const reversedSlided = this.#slideRow(row.toReversed());
+      const reversedSlided = this.#slideRow(row.toReversed(), (j) => [
+        i,
+        3 - j,
+      ]);
 
       wasAnyMoved = wasAnyMoved || reversedSlided.wasMoved;
 
@@ -172,7 +187,7 @@ class Game {
     let wasAnyMoved = false;
 
     this.#transpose(this.state).forEach((row, i) => {
-      const slided = this.#slideRow(row);
+      const slided = this.#slideRow(row, (j) => [j, i]);
 
       wasAnyMoved = wasAnyMoved || slided.wasMoved;
       slided.mutatedRow.forEach((val, j) => (this.state[j][i] = val));
@@ -185,7 +200,10 @@ class Game {
     let wasAnyMoved = false;
 
     this.#transpose(this.state).forEach((row, i) => {
-      const reversedSlided = this.#slideRow(row.toReversed());
+      const reversedSlided = this.#slideRow(row.toReversed(), (j) => [
+        3 - j,
+        i,
+      ]);
 
       wasAnyMoved = wasAnyMoved || reversedSlided.wasMoved;
 
@@ -234,12 +252,14 @@ class Game {
   start() {
     this.status = 'playing';
     this.spawnNewTile();
+    this.updateGrid();
   }
 
   restart() {
     this.status = 'idle';
     this.state = copyGrid(this.#initialState);
     this.score = 0;
+    this.#fieldEl.innerHTML = '';
     this.updateGrid();
   }
 
@@ -258,20 +278,36 @@ class Game {
     const spawnIndex =
       emptyTileIndexes[Math.floor(Math.random() * emptyTileIndexes.length)];
 
-    this.state[Math.floor(spawnIndex / 4)][spawnIndex % 4] = spawnValue;
+    this.state[Math.floor(spawnIndex / 4)][spawnIndex % 4] = new Tile(
+      spawnValue,
+      [Math.floor(spawnIndex / 4), spawnIndex % 4],
+    );
   }
 
   updateGrid() {
-    [...this.#fieldEl.children].forEach((row, rowIndex) => {
-      [...row.children].forEach((el, elIndex) => {
-        const tileValue = this.state[rowIndex][elIndex];
+    this.state.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell instanceof Tile) {
+          if (cell.isNew) {
+            const child = document.createElement('td');
 
-        if (tileValue) {
-          el.textContent = tileValue;
-          el.className = `field-cell field-cell--${tileValue}`;
-        } else {
-          el.textContent = '';
-          el.className = 'field-cell';
+            child.textContent = cell.value;
+            child.className = `field-cell field-cell--${cell.value} field-cell--pos-${cell.position[0]}-${cell.position[1]}`;
+            this.#fieldEl.appendChild(child);
+
+            cell.ref = child;
+            cell.isNew = false;
+          } else {
+            const targetPos = cell.moveTo.length ? cell.moveTo : cell.position;
+
+            cell.ref.textContent = cell.value;
+            cell.ref.className = `field-cell field-cell--${cell.value} field-cell--pos-${targetPos[0]}-${targetPos[1]}`;
+
+            if (cell.moveTo.length) {
+              cell.position = cell.moveTo;
+              cell.moveTo = [];
+            }
+          }
         }
       });
     });
@@ -290,11 +326,11 @@ class Game {
 
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        if (j < 3 && this.state[i][j] === this.state[i][j + 1]) {
+        if (j < 3 && this.state[i][j].value === this.state[i][j + 1].value) {
           return true;
         }
 
-        if (i < 3 && this.state[i][j] === this.state[i + 1][j]) {
+        if (i < 3 && this.state[i][j].value === this.state[i + 1][j].value) {
           return true;
         }
       }
