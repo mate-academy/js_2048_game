@@ -1,7 +1,13 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
-// const Game = require('../modules/Game.class');
-// const game = new Game();
+const Game = require('../modules/Game.class');
 
-// Write your code here
+const initialGrid = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+
+// eslint-disable-next-line no-unused-vars
+const game = new Game(initialGrid);

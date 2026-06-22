@@ -11,15 +11,32 @@ body {
 }
 
 .field-cell {
+  $tile-size: 75px;
+  $gap: 10px;
+
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: $tile-size;
+  height: $tile-size;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
   user-select: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.2s,
+    color 0.5s;
+  animation: tile-appear 0.2s;
+
+  &--placeholder {
+    position: unset;
+    animation: none;
+    display: table-cell;
+  }
 
   &--2 {
     background: #eee4da;
@@ -73,12 +90,31 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  @for $row from 0 through 3 {
+    @for $col from 0 through 3 {
+      &--pos-#{$row}-#{$col} {
+        transform: translate(
+          $col * ($tile-size + $gap) + $gap,
+          $row * ($tile-size + $gap) + $gap
+        );
+      }
+    }
+  }
+}
+
+@keyframes tile-appear {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
 }
 
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  position: relative;
 }
 
 .game-header {
