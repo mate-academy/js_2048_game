@@ -27,8 +27,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform .2s, color .5s;
-  animation: tile-appear .2s;
+  transition:
+    transform 0.2s,
+    color 0.5s;
+  animation: tile-appear 0.2s;
 
   &--placeholder {
     position: unset;
@@ -94,7 +96,7 @@ body {
       &--pos-#{$row}-#{$col} {
         transform: translate(
           $col * ($tile-size + $gap) + $gap,
-          $row * ($tile-size + $gap) + $gap,
+          $row * ($tile-size + $gap) + $gap
         );
       }
     }

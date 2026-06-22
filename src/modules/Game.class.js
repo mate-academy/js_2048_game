@@ -252,6 +252,7 @@ class Game {
   start() {
     this.status = 'playing';
     this.spawnNewTile();
+    this.spawnNewTile();
     this.updateGrid();
   }
 
