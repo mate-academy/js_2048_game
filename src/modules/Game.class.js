@@ -1,68 +1,235 @@
-'use strict';
-
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
-  constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+  constructor(initialState = null) {
+    this.score = 0;
+    this.status = 'idle';
+
+    if (initialState) {
+      this.board = JSON.parse(JSON.stringify(initialState));
+      this.status = 'playing';
+    } else {
+      this.initEmptyBoard();
+    }
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  initEmptyBoard() {
+    this.board = [];
 
-  /**
-   * @returns {number}
-   */
-  getScore() {}
+    for (let r = 0; r < 4; r++) {
+      this.board.push([0, 0, 0, 0]);
+    }
+  }
 
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
+  addRandomTile() {
+    const emptyCells = [];
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
-  getStatus() {}
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.board[r][c] === 0) {
+          emptyCells.push({ r, c });
+        }
+      }
+    }
 
-  /**
-   * Starts the game.
-   */
-  start() {}
+    if (emptyCells.length > 0) {
+      const randIdx = Math.floor(Math.random() * emptyCells.length);
+      const { r, c } = emptyCells[randIdx];
 
-  /**
-   * Resets the game.
-   */
-  restart() {}
+      this.board[r][c] = Math.random() < 0.1 ? 4 : 2;
+    }
+  }
 
-  // Add your own methods here
+  slideAndMergeRow(row) {
+    const filtered = row.filter((val) => {
+      return val !== 0;
+    });
+
+    const mergedRow = [];
+    let scoreGain = 0;
+
+    for (let i = 0; i < filtered.length; i++) {
+      if (filtered[i] === filtered[i + 1] && filtered[i] !== 0) {
+        const newValue = filtered[i] * 2;
+
+        mergedRow.push(newValue);
+        scoreGain += newValue;
+        i++;
+      } else {
+        mergedRow.push(filtered[i]);
+      }
+    }
+
+    while (mergedRow.length < 4) {
+      mergedRow.push(0);
+    }
+
+    return { mergedRow, scoreGain };
+  }
+
+  handleMoveResult(moved) {
+    if (moved) {
+      this.addRandomTile();
+      this.checkStatus();
+    }
+  }
+
+  moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    let moved = false;
+
+    for (let r = 0; r < 4; r++) {
+      const { mergedRow, scoreGain } = this.slideAndMergeRow(this.board[r]);
+
+      if (JSON.stringify(this.board[r]) !== JSON.stringify(mergedRow)) {
+        moved = true;
+      }
+
+      this.board[r] = mergedRow;
+      this.score += scoreGain;
+    }
+
+    this.handleMoveResult(moved);
+  }
+
+  moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    let moved = false;
+
+    for (let r = 0; r < 4; r++) {
+      const reversed = [...this.board[r]].reverse();
+      const { mergedRow, scoreGain } = this.slideAndMergeRow(reversed);
+      const finalRow = mergedRow.reverse();
+
+      if (JSON.stringify(this.board[r]) !== JSON.stringify(finalRow)) {
+        moved = true;
+      }
+
+      this.board[r] = finalRow;
+      this.score += scoreGain;
+    }
+
+    this.handleMoveResult(moved);
+  }
+
+  moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    let moved = false;
+
+    for (let c = 0; c < 4; c++) {
+      const col = [
+        this.board[0][c],
+        this.board[1][c],
+        this.board[2][c],
+        this.board[3][c],
+      ];
+      const { mergedRow, scoreGain } = this.slideAndMergeRow(col);
+
+      for (let r = 0; r < 4; r++) {
+        if (this.board[r][c] !== mergedRow[r]) {
+          moved = true;
+        }
+        this.board[r][c] = mergedRow[r];
+      }
+      this.score += scoreGain;
+    }
+    this.handleMoveResult(moved);
+  }
+
+  moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    let moved = false;
+
+    for (let c = 0; c < 4; c++) {
+      const col = [
+        this.board[0][c],
+        this.board[1][c],
+        this.board[2][c],
+        this.board[3][c],
+      ].reverse();
+      const { mergedRow, scoreGain } = this.slideAndMergeRow(col);
+      const finalCol = mergedRow.reverse();
+
+      for (let r = 0; r < 4; r++) {
+        if (this.board[r][c] !== finalCol[r]) {
+          moved = true;
+        }
+        this.board[r][c] = finalCol[r];
+      }
+      this.score += scoreGain;
+    }
+
+    this.handleMoveResult(moved);
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  getState() {
+    return this.board;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
+  start() {
+    this.initEmptyBoard();
+    this.score = 0;
+    this.status = 'playing';
+
+    this.addRandomTile();
+    this.addRandomTile();
+  }
+
+  restart() {
+    this.start();
+  }
+
+  checkStatus() {
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.board[r][c] === 2048) {
+          this.status = 'win';
+
+          return;
+        }
+      }
+    }
+
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.board[r][c] === 0) {
+          return;
+        }
+      }
+    }
+
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (c < 3 && this.board[r][c] === this.board[r][c + 1]) {
+          return;
+        }
+
+        if (r < 3 && this.board[r][c] === this.board[r + 1][c]) {
+          return;
+        }
+      }
+    }
+
+    this.status = 'lose';
+  }
 }
 
-module.exports = Game;
+export default Game;
