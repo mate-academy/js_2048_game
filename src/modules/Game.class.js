@@ -16,51 +16,51 @@ class Game {
   }
 
   moveLeft() {
-    const prevState = JSON.stringify(this.state);
+    const prevState = this.state;
 
-    for (let i = 0; i < this.state.length; i++) {
-      const row = this.state[i];
+    for (let i = 0; i < prevState.length; i++) {
+      const row = [...this.state[i]];
 
-      this.state[i] = this.mergeRowLeft(row);
+      this.state[i] = this.toMerge(row);
     }
 
-    this.updateGameAfterMove(prevState);
+    this.newMove(prevState);
   }
 
   moveRight() {
-    const prevState = JSON.stringify(this.state);
+    const prevState = this.state;
 
-    for (let i = 0; i < this.state.length; i++) {
+    for (let i = 0; i < prevState.length; i++) {
       const row = [...this.state[i]].reverse();
 
-      this.state[i] = this.mergeRowLeft(row).reverse();
+      this.state[i] = this.toMerge(row).reverse();
     }
 
-    this.updateGameAfterMove(prevState);
+    this.newMove(prevState);
   }
   moveUp() {
-    const prevState = JSON.stringify(this.state);
+    const prevState = this.state;
 
-    for (let i = 0; i < this.state.length; i++) {
+    for (let i = 0; i < prevState.length; i++) {
       const column = this.getColumn(i);
-      const mergedColumn = this.mergeRowLeft(column);
+      const mergedColumn = this.toMerge(column);
 
       this.setColumn(i, mergedColumn);
     }
 
-    this.updateGameAfterMove(prevState);
+    this.newMove(prevState);
   }
 
   moveDown() {
-    const prevState = JSON.stringify(this.state);
+    const prevState = this.state;
 
-    for (let i = 0; i < this.state.length; i++) {
+    for (let i = 0; i < prevState.length; i++) {
       const column = [...this.getColumn(i)].reverse();
-      const mergedColumn = this.mergeRowLeft(column).reverse();
+      const mergedColumn = this.toMerge(column).reverse();
 
       this.setColumn(i, mergedColumn);
     }
-    this.updateGameAfterMove(prevState);
+    this.newMove(prevState);
   }
 
   getScore() {
@@ -87,7 +87,7 @@ class Game {
     this.status = 'idle';
   }
 
-  mergeRowLeft(row) {
+  toMerge(row) {
     const numbers = row.filter((el) => el > 0);
     const newNumbers = [];
 
@@ -95,7 +95,6 @@ class Game {
       if (numbers[i] === numbers[i + 1]) {
         newNumbers.push(numbers[i] + numbers[i + 1]);
         this.score += numbers[i] + numbers[i + 1];
-        i++;
       } else {
         newNumbers.push(numbers[i]);
       }
@@ -142,15 +141,15 @@ class Game {
 
     const randomCell = emptyCells[randomIndex];
 
-    let numberToCell;
+    let tileValue = 0;
 
     if (Math.random() > 0.9) {
-      numberToCell = 4;
+      tileValue = 4;
     } else {
-      numberToCell = 2;
+      tileValue = 2;
     }
 
-    this.state[randomCell.row][randomCell.col] = numberToCell;
+    this.state[randomCell.row][randomCell.col] = tileValue;
   }
 
   checkWin() {
@@ -192,7 +191,7 @@ class Game {
     this.status = 'lose';
   }
 
-  updateGameAfterMove(prevState) {
+  newMove(prevState) {
     if (prevState !== JSON.stringify(this.state)) {
       this.addRandomTile();
       this.checkWin();
