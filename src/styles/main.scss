@@ -11,6 +11,7 @@ body {
 }
 
 .field-cell {
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
   background: #d6cdc4;
   width: 75px;
   height: 75px;

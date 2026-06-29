@@ -41,7 +41,13 @@ export default class Game {
   }
 
   restart() {
-    this.board = this.initialBoard.map((row) => [...row]);
+    this.board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
     this.score = 0;
     this.status = 'playing';
 
