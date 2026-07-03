@@ -8,6 +8,7 @@ body {
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  overflow: hidden;
 }
 
 .field-cell {
@@ -147,10 +148,12 @@ h1 {
 }
 
 .restart {
-  background: #f1b2b2;
+  background: #ff6868;
+  font-size: 16px;
+  color: white;
 
   &:hover {
-    background: #f87474;
+    background: #ff6868b2;
   }
 }
 
