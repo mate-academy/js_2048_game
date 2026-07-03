@@ -18,6 +18,11 @@ startGame.addEventListener('click', () => {
   startGame.classList.remove('start');
   startGame.classList.add('restart');
 
+  if (game.getStatus() === 'playing') {
+    document.querySelector('.message.message-start').classList.add('hidden');
+    document.querySelector('.message.message-lose').classList.add('hidden');
+  }
+
   updateUi();
 });
 
