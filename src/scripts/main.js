@@ -81,9 +81,9 @@ document.addEventListener('keydown', (e) => {
     document.querySelector('.message.message-start').classList.add('hidden');
     document.querySelector('.message.message-win').classList.add('hidden');
 
-    startGame.textContent = 'Start';
-    startGame.classList.remove('restart');
-    startGame.classList.add('start');
+    startGame.textContent = 'Restart';
+    startGame.classList.remove('start');
+    startGame.classList.add('restart');
   }
 
   if (game.getStatus() === 'win') {
