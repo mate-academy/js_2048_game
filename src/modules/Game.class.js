@@ -1,5 +1,4 @@
 'use strict';
-
 class Game {
   constructor(initialState) {
     if (initialState) {
@@ -166,10 +165,11 @@ class Game {
   }
 
   afterMove(stateBefore) {
-    const stateAfter = this.state.some((row, i) =>
-      row.some((cell, j) => cell !== stateBefore[i][j]));
+    const moved = this.state.some((row, i) => {
+      return row.some((cell, j) => cell !== stateBefore[i][j]);
+    });
 
-    if (stateAfter) {
+    if (moved) {
       this.addRandomTile();
     }
 
@@ -179,10 +179,9 @@ class Game {
       this.status = 'win';
     }
 
-    const hasEmptyCell = this.state.some((row) =>
-      row.some((cell) => cell === 0));
+    const hasEmpty = this.state.some((row) => row.some((cell) => cell === 0));
 
-    if (!hasEmptyCell && !this.canMerge()) {
+    if (!hasEmpty && !this.canMerge()) {
       this.status = 'lose';
     }
   }
@@ -190,11 +189,13 @@ class Game {
   canMerge() {
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
-        if (
-          (c + 1 < 4 && this.state[r][c] === this.state[r][c + 1]) ||
-          (r + 1 < 4 && this.state[r][c] === this.state[r + 1][c])
-        ) {
-          return true;
+        if (this.state[r][c] !== 0) {
+          if (
+            (c + 1 < 4 && this.state[r][c] === this.state[r][c + 1]) ||
+            (r + 1 < 4 && this.state[r][c] === this.state[r + 1][c])
+          ) {
+            return true;
+          }
         }
       }
     }
@@ -204,3 +205,4 @@ class Game {
 }
 
 export default Game;
+
