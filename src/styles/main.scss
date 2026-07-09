@@ -19,59 +19,105 @@ body {
   box-sizing: border-box;
   text-align: center;
   vertical-align: center;
-  user-select: none;
+  transition: all 0.3s ease;
+
+  //  user-select: none;
 
   &--2 {
     background: #eee4da;
+    width: 70px;
+    height: 73px;
+    border-radius: 5px;
+    text-align: center;
   }
 
   &--4 {
     background: #ede0c8;
+    width: 70px;
+    height: 73px;
+    text-align: center;
+    border-radius: 5px;
   }
 
   &--8 {
     background: #f2b179;
     color: #f9f6f2;
+    width: 70px;
+    height: 73px;
+    text-align: center;
+    border-radius: 5px;
   }
 
   &--16 {
     background: #f59563;
     color: #f9f6f2;
+    width: 70px;
+    height: 73px;
+    text-align: center;
+    border-radius: 5px;
   }
 
   &--32 {
     background: #f67c5f;
     color: #f9f6f2;
+    width: 70px;
+    height: 73px;
+    text-align: center;
+    border-radius: 5px;
   }
 
   &--64 {
     background: #f65e3b;
     color: #f9f6f2;
+    width: 70px;
+    height: 73px;
+    text-align: center;
+    border-radius: 5px;
   }
 
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    width: 70px;
+    height: 73px;
+    text-align: center;
+    border-radius: 5px;
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    width: 70px;
+    height: 73px;
+    text-align: center;
+    border-radius: 5px;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    width: 70px;
+    height: 73px;
+    text-align: center;
+    border-radius: 5px;
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+    width: 70px;
+    height: 73px;
+    text-align: center;
+    border-radius: 5px;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    width: 70px;
+    height: 73px;
+    text-align: center;
+    border-radius: 5px;
   }
 }
 
