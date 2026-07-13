@@ -28,8 +28,10 @@ class Game {
       [0, 0, 0, 0],
     ];
 
-    this.initialState = initialState || emptyBoard;
-    this.state = initialState || emptyBoard;
+    const source = initialState || emptyBoard;
+
+    this.initialState = source.map((row) => [...row]);
+    this.state = source.map((row) => [...row]);
 
     this.score = 0;
     this.status = 'idle';

@@ -34,22 +34,24 @@ function render() {
   }
 
   updateMessages();
+  updateButtons();
+}
+
+function updateButtons() {
+  const isIdle = game.getStatus() === 'idle';
+
+  startButton.classList.toggle('hidden', !isIdle);
+  restartButton.classList.toggle('hidden', isIdle);
 }
 
 startButton.addEventListener('click', () => {
   game.start();
-
-  startMessage.classList.add('hidden');
 
   render();
 });
 
 restartButton.addEventListener('click', () => {
   game.restart();
-
-  loseMessage.classList.add('hidden');
-  winMessage.classList.add('hidden');
-  startMessage.classList.remove('hidden');
 
   render();
 });
@@ -84,11 +86,25 @@ document.addEventListener('keydown', (e) => {
 });
 
 function updateMessages() {
-  if (game.getStatus() === 'win') {
+  const gameStatus = game.getStatus();
+
+  if (gameStatus === 'win') {
     winMessage.classList.remove('hidden');
+  } else {
+    winMessage.classList.add('hidden');
   }
 
-  if (game.getStatus() === 'lose') {
+  if (gameStatus === 'lose') {
     loseMessage.classList.remove('hidden');
+  } else {
+    loseMessage.classList.add('hidden');
+  }
+
+  if (gameStatus === 'idle') {
+    startMessage.classList.remove('hidden');
+  } else {
+    startMessage.classList.add('hidden');
   }
 }
+
+render();
