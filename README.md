@@ -1,69 +1,133 @@
-# 2048 game
+# 🎮 2048 Game
 
-Hey! Are you ready for a real hard check of your JavaScript skills, ninja?
-If you are still here, let's do it.
+A modern, responsive web implementation of the classic **2048** puzzle game, built using vanilla JavaScript, Semantic HTML5, and Sass.
 
-In this task, you need to implement the 2048 game like in [this reference](https://play2048.co/)
-Don't play for too long! We need you to write the code!
+[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://xapg6acc.github.io/js_2048_game/)
+[![License: GPL--3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
+[![JavaScript](https://img.shields.io/badge/ES6-JavaScript-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Sass](https://img.shields.io/badge/Sass-Compiled-pink.svg)](https://sass-lang.com/)
 
-Okay, what do we have?
-1) HTML and CSS are already written. You can use it, or implement your own design if you want.
-2) Base `Game` class structure is already written too. Extend it with your own methods. Obligatory methods (used in tests):
-  - constructor with `initialState` parameter (value is optional, defaults to the empty board)
-  - `getState()`
-  - `getScore()`
-  - `getStatus()`
-  - `moveLeft()`
-  - `moveRight()`
-  - `moveUp()`
-  - `moveDown()`
-  - `start()`
-  - `restart()`
+---
 
-3) Reference.
+## 🚀 Live Demo
 
-That's it!
+Play the game directly in your browser: **[Interactive Live Demo](https://xapg6acc.github.io/js_2048_game/)**
 
-Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
-   - 2 equal cells should be merged into a doubled number
-   - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) `Restart` button should reset the game to the initial state.
-12) Increase score with each move. The score should be increased by the sum of all merged cells.
-13) The game consists of 2 main parts:
-  - game logic written in `src/modules/Game.class.js` module that exports `Game` class
-  - game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
+---
 
-Hints:
-- You have class `field-cell--%cell_value%`, for styling cell in the game.
-- Use `hidden` class for hiding elements on page.
-- Use `start`, `restart` classes for the main button for different styles.
-- Use `field-cell--%cell_value%` class like additional class, don't replace the main class.
-- Use `keydown` event and `event.key` property to handle arrow buttons presses
-    ```js
-    document.addEventListener('keydown', event => console.log(event.key));
-    ```
-- Adding animation to the game is optional. It is a bit tricky, but you can try it if you want. Probably, you will need to extend the Game class with additional methods and create a separate board storage with Tile entities to operate their corresponding DOM elements' positions.
+## ✨ Features
 
-You can change the HTML/CSS layout if you need it.
+- **Responsive Design**: Optimized for desktop and mobile viewing.
+- **Core Game Loop**: Smooth sliding and merging of tiles.
+- **Dynamic Score Tracking**: Tracks scores in real-time, incrementing based on the value of merged tiles.
+- **Game State Modals**: Clear visual overlay prompts for start, victory, and game-over states.
+- **Automated Tests**: Comprehensive Cypress E2E testing.
 
-![Preview](./src/images/reference.png)
+---
 
-## Deploy and Pull Request
+## 📜 Game Rules
 
-1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
-2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
-    - Run `npm run test` command to test your code;
-    - Run `npm run test:only -- -n` to run fast test ignoring linter;
-    - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
+1. **The Grid**: The game is played on a standard **4x4** grid.
+2. **Movement**: Use the **Arrow Keys** (Up, Down, Left, Right) to slide all tiles in that direction.
+3. **Merging**: When two tiles with the same number touch, they **merge into one** with a value equal to their sum (e.g., two `2` tiles merge into a `4`).
+4. **Tile Spawning**: After every valid move, a new tile (either `2` or `4`) randomly spawns in an empty spot. The probability of spawning a `4` is 10%.
+5. **Winning**: The game is won when a tile with a value of **2048** appears on the board.
+6. **Game Over**: The game ends when there are no empty spaces and no valid moves remaining.
 
+---
+
+## 🛠️ Tech Stack & Tools
+
+- **Core**: Vanilla JavaScript (ES6+), HTML5, CSS3 / Sass.
+- **Bundler**: [Parcel](https://parceljs.org/) for compilation and asset bundling.
+- **Linting & Formatting**: ESLint, Prettier, Stylelint, LintHTML.
+- **Testing**: Cypress for E2E testing, Jest for unit testing.
+
+---
+
+## 📂 Project Structure
+
+```text
+├── src/
+│   ├── images/          # Assets and images
+│   ├── modules/
+│   │   └── Game.class.js # Game engine class & logic
+│   ├── scripts/
+│   │   └── main.js      # UI rendering & DOM event handlers
+│   ├── styles/
+│   │   └── main.scss    # Styled layout and responsiveness
+│   └── index.html       # Primary HTML structure
+├── cypress/             # E2E Cypress tests
+├── package.json         # Scripts and project dependencies
+└── README.md            # Project documentation
+```
+
+---
+
+## 💻 Getting Started
+
+Follow these steps to set up and run the project locally.
+
+### Prerequisites
+
+Make sure you have [Node.js](https://nodejs.org/) installed (recommended version `20.x`).
+
+### 1. Installation
+
+Clone the repository and install the dependencies:
+
+```bash
+git clone https://github.com/xapg6acc/js_2048_game.git
+cd js_2048_game
+npm install
+```
+
+### 2. Run the Development Server
+
+To launch the project locally with live-reloading:
+
+```bash
+npm start
+```
+This command runs the local dev server. Open your browser and navigate to the address shown in your console.
+
+### 3. Build for Production
+
+To build optimized production assets in the `dist` directory:
+
+```bash
+npm run build
+```
+
+### 4. Deploy to GitHub Pages
+
+To publish the build output to your GitHub Pages:
+
+```bash
+npm run deploy
+```
+
+### 5. Running Tests & Linters
+
+Ensure your code is clean and passes all validation checks:
+
+- Run linters:
+  ```bash
+  npm run lint
+  ```
+- Run tests:
+  ```bash
+  npm test
+  ```
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/xapg6acc/js_2048_game/issues) if you want to contribute.
+
+---
+
+## 📄 License
+
+This project is licensed under the GPL-3.0 License. See the [LICENSE](LICENSE) file for details.

@@ -4,10 +4,36 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
+  background: linear-gradient(135deg, #fdfbf7 0%, #eee4da 100%);
   font-family: sans-serif;
   font-size: 24px;
   font-weight: 900;
+  position: relative;
+  overflow: hidden;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    opacity: 0.15;
+  }
+
+  &::before {
+    background: #f59563;
+    top: -10%;
+    left: -10%;
+  }
+
+  &::after {
+    background: #edc22e;
+    bottom: -10%;
+    right: -10%;
+  }
 }
 
 .field-cell {
@@ -184,4 +210,35 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.field-cell--new {
+  animation: appear 200ms ease-in-out;
+}
+
+.field-cell--pop {
+  animation: pop 200ms ease-in-out;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
