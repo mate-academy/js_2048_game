@@ -62,7 +62,6 @@ class Game {
     this.status = 'idle';
   }
 
-  // Slides every row of the given board to the left using slide().
   slideBoardLeft(board) {
     let totalScoreGained = 0;
     const newBoard = board.map((row) => {
@@ -76,7 +75,6 @@ class Game {
     return { board: newBoard, scoreGained: totalScoreGained };
   }
 
-  // Commits a move: only counts if the board actually changed.
   applyMove(newBoard, scoreGained) {
     if (boardsEqual(newBoard, this.board)) {
       return;
@@ -216,31 +214,6 @@ class Game {
 }
 
 module.exports = Game;
-
-/*
-Довідка (перенесено з коментарів вище, щоб не заважали):
-
-constructor(initialState)
-  @param {number[][]} initialState - початковий стан дошки.
-  @default дошка 4x4 з нулів, якщо нічого не передали.
-  Якщо передано - дошка ініціалізується цим значенням.
-
-getScore()
-  @returns {number}
-
-getState()
-  @returns {number[][]}
-
-getStatus()
-  @returns {string} одне з: 'idle', 'playing', 'win', 'lose'
-  'idle'    - гра ще не почалась (початковий стан)
-  'playing' - гра триває
-  'win'     - гра виграна
-  'lose'    - гра програна
-
-start()    - запускає гру
-restart()  - скидає гру до початкового стану
-*/
 
 // 'use strict';
 
