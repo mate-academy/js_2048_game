@@ -1,6 +1,6 @@
 'use strict';
 
-export default class Game {
+class Game {
   constructor(initialState) {
     this._initialState = initialState ? this._copy(initialState) : null;
 
@@ -230,3 +230,5 @@ export default class Game {
     return a.every((row, r) => row.every((v, c) => v === b[r][c]));
   }
 }
+
+module.exports = Game;
