@@ -20,6 +20,9 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
 
   &--2 {
     background: #eee4da;
@@ -72,6 +75,13 @@ body {
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+  }
+
+  &--4096,
+  &--8192 {
+    background: #3c3a32;
+    color: #f9f6f2;
+    font-size: 20px;
   }
 }
 
@@ -174,6 +184,28 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
+}
+
+@media (max-width: 420px) {
+  body {
+    font-size: 20px;
+  }
+
+  .container {
+    width: 94vw;
+    max-width: 350px;
+  }
+
+  .field-cell {
+    width: 20vw;
+    height: 20vw;
+    max-width: 75px;
+    max-height: 75px;
+  }
+
+  .game-field {
+    border-spacing: 7px;
+  }
 }
 
 .message-win {
