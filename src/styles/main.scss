@@ -21,6 +21,18 @@ body {
   vertical-align: center;
   user-select: none;
 
+  transition:
+    transform 150ms ease,
+    opacity 150ms ease;
+
+  &--new {
+    animation: appear 180ms ease;
+  }
+
+  &--merged {
+    animation: merge 180ms ease;
+  }
+
   &--2 {
     background: #eee4da;
   }
@@ -184,4 +196,27 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.no-scroll {
+  overflow: hidden;
+  touch-action: none;
+}
+
+@keyframes appear {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes merge {
+  50% {
+    transform: scale(1.15);
+  }
 }
