@@ -21,8 +21,44 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    const emptyBoard = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    this.initialState = initialState
+      ? initialState.map((row) => [...row])
+      : emptyBoard;
+
+    this.state = this.initialState.map((row) => [...row]);
+    this.score = 0;
+    this.status = 'idle';
+  }
+
+  transformRow(row) {
+    let filtered = row.filter((n) => n !== 0);
+
+    for (let i = 0; i < filtered.length - 1; i++) {
+      if (filtered[i] === filtered[i + 1]) {
+        filtered[i] *= 2;
+        this.score += filtered[i];
+
+        if (filtered[i] === 2048) {
+          this.status = 'win';
+        }
+
+        filtered[i + 1] = 0;
+      }
+    }
+    filtered = filtered.filter((n) => n !== 0);
+
+    while (filtered.length < 4) {
+      filtered.push(0);
+    }
+
+    return filtered;
   }
 
   moveLeft() {}
@@ -33,12 +69,16 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.state;
+  }
 
   /**
    * Returns the current game status.
@@ -50,19 +90,37 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = 'playing';
+    this.addTile();
+    this.addTile();
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.status = 'idle';
+    this.score = 0;
+    this.state = this.initialState.map((row) => [...row]);
+  }
 
   // Add your own methods here
+  addTile() {}
 }
+
+const game = new Game();
+
+// eslint-disable-next-line no-console
+console.log(game.transformRow([2, 2, 2, 2]));
+// eslint-disable-next-line no-console
+console.log(game.transformRow([0, 0, 0, 2]));
 
 module.exports = Game;
