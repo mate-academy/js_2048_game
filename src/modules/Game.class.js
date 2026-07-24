@@ -73,8 +73,42 @@ class Game {
       return transformed.reverse();
     });
   }
-  moveUp() {}
-  moveDown() {}
+
+  transpose(matrix) {
+    const result = [];
+
+    for (let i = 0; i < 4; i++) {
+      const newRow = [];
+
+      for (let j = 0; j < 4; j++) {
+        newRow.push(matrix[j][i]);
+      }
+
+      result.push(newRow);
+    }
+
+    return result;
+  }
+
+  moveUp() {
+    const transposed = this.transpose(this.state);
+
+    this.state = transposed.map((row) => this.transformRow(row));
+    this.state = this.transpose(this.state);
+  }
+
+  moveDown() {
+    const transposed = this.transpose(this.state);
+
+    this.state = transposed.map((row) => {
+      const reversed = [...row].reverse();
+      const transformed = this.transformRow(reversed);
+
+      return transformed.reverse();
+    });
+
+    this.state = this.transpose(this.state);
+  }
 
   /**
    * @returns {number}
@@ -127,21 +161,19 @@ class Game {
 }
 
 const game = new Game([
-  [2, 2, 4, 0],
-  [8, 8, 2, 2],
+  [2, 8, 2, 0],
+  [2, 8, 2, 2],
   [0, 0, 0, 2],
-  [0, 2, 0, 2],
+  [0, 0, 0, 2],
 ]);
 
-game.moveLeft();
-game.moveRight();
+// game.moveLeft();
+// game.moveRight();
+// game.moveUp();
+game.moveDown();
+// game.moveRight();
 
 // eslint-disable-next-line no-console
 console.log(game.getState());
-
-// eslint-disable-next-line no-console
-console.log(game.transformRow([2, 2, 2, 2]));
-// eslint-disable-next-line no-console
-console.log(game.transformRow([0, 0, 0, 2]));
 
 module.exports = Game;
