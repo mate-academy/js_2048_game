@@ -61,8 +61,18 @@ class Game {
     return filtered;
   }
 
-  moveLeft() {}
-  moveRight() {}
+  moveLeft() {
+    this.state = this.state.map((row) => this.transformRow(row));
+  }
+
+  moveRight() {
+    this.state = this.state.map((row) => {
+      const reversed = [...row].reverse();
+      const transformed = this.transformRow(reversed);
+
+      return transformed.reverse();
+    });
+  }
   moveUp() {}
   moveDown() {}
 
@@ -116,7 +126,18 @@ class Game {
   addTile() {}
 }
 
-const game = new Game();
+const game = new Game([
+  [2, 2, 4, 0],
+  [8, 8, 2, 2],
+  [0, 0, 0, 2],
+  [0, 2, 0, 2],
+]);
+
+game.moveLeft();
+game.moveRight();
+
+// eslint-disable-next-line no-console
+console.log(game.getState());
 
 // eslint-disable-next-line no-console
 console.log(game.transformRow([2, 2, 2, 2]));
