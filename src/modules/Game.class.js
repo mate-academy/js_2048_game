@@ -111,6 +111,12 @@ class Game {
   checkForLose() {
     const originalBoard = JSON.parse(JSON.stringify(this.board));
     const originalScore = this.score;
+    const basicBoard = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
 
     this.moveLeft();
 
@@ -141,6 +147,13 @@ class Game {
     this.score = originalScore;
 
     if (
+      JSON.stringify(basicBoard) === afterLeft &&
+      JSON.stringify(basicBoard) === afterRight &&
+      JSON.stringify(basicBoard) === afterUp &&
+      JSON.stringify(basicBoard) === afterbottom
+    ) {
+      this.status = 'idle';
+    } else if (
       JSON.stringify(this.board) === afterLeft &&
       JSON.stringify(this.board) === afterRight &&
       JSON.stringify(this.board) === afterUp &&

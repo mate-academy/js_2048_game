@@ -65,6 +65,7 @@ buttonStart.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
     messageStart.classList.add('hidden');
+    messageLose.classList.add('hidden');
   } else {
     game.restart();
     messageLose.classList.add('hidden');
