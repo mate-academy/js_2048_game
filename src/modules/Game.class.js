@@ -1,25 +1,5 @@
 'use strict';
-
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
   constructor(initialState) {
     const emptyBoard = [
       [0, 0, 0, 0],
@@ -61,17 +41,41 @@ class Game {
     return filtered;
   }
 
+  boardsCompare(old, current) {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (old[i][j] !== current[i][j]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   moveLeft() {
+    const oldState = this.state.map((row) => [...row]);
+
     this.state = this.state.map((row) => this.transformRow(row));
+
+    if (!this.boardsCompare(oldState, this.state)) {
+      this.addTile();
+    }
   }
 
   moveRight() {
+    const oldState = this.state.map((row) => [...row]);
+
     this.state = this.state.map((row) => {
       const reversed = [...row].reverse();
       const transformed = this.transformRow(reversed);
 
       return transformed.reverse();
     });
+
+    if (!this.boardsCompare(oldState, this.state)) {
+      this.addTile();
+    }
   }
 
   transpose(matrix) {
@@ -91,13 +95,19 @@ class Game {
   }
 
   moveUp() {
+    const oldState = this.state.map((row) => [...row]);
     const transposed = this.transpose(this.state);
 
     this.state = transposed.map((row) => this.transformRow(row));
     this.state = this.transpose(this.state);
+
+    if (!this.boardsCompare(oldState, this.state)) {
+      this.addTile();
+    }
   }
 
   moveDown() {
+    const oldState = this.state.map((row) => [...row]);
     const transposed = this.transpose(this.state);
 
     this.state = transposed.map((row) => {
@@ -108,18 +118,16 @@ class Game {
     });
 
     this.state = this.transpose(this.state);
+
+    if (!this.boardsCompare(oldState, this.state)) {
+      this.addTile();
+    }
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
     return this.score;
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return this.state;
   }
@@ -138,42 +146,48 @@ class Game {
     return this.status;
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
     this.status = 'playing';
     this.addTile();
     this.addTile();
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     this.status = 'idle';
     this.score = 0;
     this.state = this.initialState.map((row) => [...row]);
   }
 
-  // Add your own methods here
-  addTile() {}
+  addTile() {
+    const emptyCells = [];
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state[i][j] === 0) {
+          emptyCells.push([i, j]);
+        }
+      }
+    }
+
+    if (emptyCells.length === 0) {
+      return;
+    }
+
+    const randomCell =
+      emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    const value = Math.random() < 0.1 ? 4 : 2;
+
+    this.state[randomCell[0]][randomCell[1]] = value;
+  }
 }
 
-const game = new Game([
-  [2, 8, 2, 0],
-  [2, 8, 2, 2],
-  [0, 0, 0, 2],
-  [0, 0, 0, 2],
-]);
+// const game = new Game([
+//   [0, 0, 0, 0],
+//   [0, 0, 0, 0],
+//   [0, 0, 0, 0],
+//   [0, 0, 0, 0],
+// ]);
 
-// game.moveLeft();
-// game.moveRight();
-// game.moveUp();
-game.moveDown();
-// game.moveRight();
-
-// eslint-disable-next-line no-console
-console.log(game.getState());
-
+// console.log(game.getState());
+// console.log(game.getScore());
 module.exports = Game;
