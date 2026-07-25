@@ -67,9 +67,6 @@ document.addEventListener('keydown', (keydownEvent) => {
 
   if (gameStatus === 'lose') {
     document.querySelector('.message-lose').classList.remove('hidden');
-    startButton.classList.remove('restart');
-    startButton.classList.add('start');
-    startButton.innerHTML = 'Start';
   }
 
   document.querySelector('.game-score').innerHTML = game.getScore();

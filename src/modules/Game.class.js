@@ -216,28 +216,25 @@ class Game {
    */
   getStatus() {
     const { field, equalMatrix } = this;
-    const checkField = [...field];
 
-    const isIdle = field.every((element) => {
-      element.every((cell) => {
-        return cell === 0;
-      });
-    });
+    const isIdle = field.every((row) => row.every((cell) => cell === 0));
 
     if (isIdle) {
       return 'idle';
     }
 
-    if (field.some((element) => element.includes(2048))) {
+    if (field.some((row) => row.includes(2048))) {
       return 'win';
     }
 
-    if (
-      equalMatrix(this.moveDown(checkField), field) &&
-      equalMatrix(this.moveUp(checkField), field) &&
-      equalMatrix(this.moveRight(checkField), field) &&
-      equalMatrix(this.moveLeft(checkField), field)
-    ) {
+    const getFieldCopy = () => field.map((row) => [...row]);
+
+    const cannotMoveDown = equalMatrix(this.moveDown(getFieldCopy()), field);
+    const cannotMoveUp = equalMatrix(this.moveUp(getFieldCopy()), field);
+    const cannotMoveRight = equalMatrix(this.moveRight(getFieldCopy()), field);
+    const cannotMoveLeft = equalMatrix(this.moveLeft(getFieldCopy()), field);
+
+    if (cannotMoveDown && cannotMoveUp && cannotMoveRight && cannotMoveLeft) {
       return 'lose';
     }
 
