@@ -7,8 +7,8 @@ const game = new Game();
 const scoreEl = document.querySelector('.game-score');
 const messageWin = document.querySelector('.message-win');
 const messageLose = document.querySelector('.message-lose');
-const startBtn = document.querySelector('.button.start');
-const restartBtn = document.querySelector('.button.restart');
+const messageStart = document.querySelector('.message-start');
+const startBtn = document.querySelector('.button');
 
 function render() {
   const state = game.getState();
@@ -42,15 +42,26 @@ function updateMessages() {
 
   messageWin.classList.toggle('hidden', gameStatus !== 'win');
   messageLose.classList.toggle('hidden', gameStatus !== 'lose');
+  messageStart.classList.toggle('hidden', gameStatus !== 'idle');
 }
 
 function startGame() {
   game.start();
+
+  startBtn.textContent = 'Restart';
+  startBtn.classList.remove('start');
+  startBtn.classList.add('restart');
+
   render();
 }
 
 function restartGame() {
   game.restart();
+
+  startBtn.textContent = 'Start';
+  startBtn.classList.remove('restart');
+  startBtn.classList.add('start');
+
   render();
 }
 
@@ -60,6 +71,10 @@ function handleMove(moveFn) {
 }
 
 document.addEventListener('keydown', (e) => {
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
   if (e.key === 'ArrowLeft') {
     handleMove(() => game.moveLeft());
   }
@@ -77,7 +92,12 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-startBtn.addEventListener('click', startGame);
-restartBtn.addEventListener('click', restartGame);
+startBtn.addEventListener('click', () => {
+  if (game.getStatus() === 'idle') {
+    startGame();
+  } else {
+    restartGame();
+  }
+});
 
 render();
