@@ -54,16 +54,28 @@ class Game {
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const oldState = this.state.map((row) => [...row]);
 
     this.state = this.state.map((row) => this.transformRow(row));
 
     if (!this.boardsCompare(oldState, this.state)) {
       this.addTile();
+
+      if (!this.canMove()) {
+        this.status = 'lose';
+      }
     }
   }
 
   moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const oldState = this.state.map((row) => [...row]);
 
     this.state = this.state.map((row) => {
@@ -75,6 +87,10 @@ class Game {
 
     if (!this.boardsCompare(oldState, this.state)) {
       this.addTile();
+
+      if (!this.canMove()) {
+        this.status = 'lose';
+      }
     }
   }
 
@@ -95,6 +111,10 @@ class Game {
   }
 
   moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const oldState = this.state.map((row) => [...row]);
     const transposed = this.transpose(this.state);
 
@@ -103,10 +123,18 @@ class Game {
 
     if (!this.boardsCompare(oldState, this.state)) {
       this.addTile();
+
+      if (!this.canMove()) {
+        this.status = 'lose';
+      }
     }
   }
 
   moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     const oldState = this.state.map((row) => [...row]);
     const transposed = this.transpose(this.state);
 
@@ -121,6 +149,10 @@ class Game {
 
     if (!this.boardsCompare(oldState, this.state)) {
       this.addTile();
+
+      if (!this.canMove()) {
+        this.status = 'lose';
+      }
     }
   }
 
@@ -132,16 +164,32 @@ class Game {
     return this.state;
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
+  canMove() {
+    const emptyCell = this.state.some((row) => row.includes(0));
+
+    if (emptyCell) {
+      return true;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (this.state[i][j] === this.state[i][j + 1]) {
+          return true;
+        }
+      }
+    }
+
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state[i][j] === this.state[i + 1][j]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   getStatus() {
     return this.status;
   }
@@ -181,13 +229,4 @@ class Game {
   }
 }
 
-// const game = new Game([
-//   [0, 0, 0, 0],
-//   [0, 0, 0, 0],
-//   [0, 0, 0, 0],
-//   [0, 0, 0, 0],
-// ]);
-
-// console.log(game.getState());
-// console.log(game.getScore());
 module.exports = Game;
