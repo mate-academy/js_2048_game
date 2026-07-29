@@ -65,9 +65,9 @@ class Game {
       return;
     }
 
-    this.applyMoveVertical((column) => {
-      this.transformRow([...column].reverse()).reverse();
-    });
+    this.applyMoveVertical((column) =>
+      this.transformRow([...column].reverse()).reverse(),
+    );
   }
 
   /**
