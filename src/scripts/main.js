@@ -71,7 +71,7 @@ function handleMove(moveFn) {
 }
 
 startButton.addEventListener('click', () => {
-  if (game.getStatus() === 'playing') {
+  if (game.getStatus() !== 'idle') {
     game.restart();
     startButton.classList.remove('restart');
     startButton.classList.add('start');
