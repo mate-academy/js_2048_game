@@ -21,7 +21,9 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    this.initialState = initialState;
+    this.initialState = initialState
+      ? initialState.map((row) => [...row])
+      : null;
 
     this.board =
       initialState ||
@@ -136,7 +138,7 @@ class Game {
     let moved = false;
 
     for (let row = 0; row < 4; row++) {
-      const reversed = this.board[row].reverse();
+      const reversed = [...this.board[row].reverse()];
       const result = this.moveLine(reversed);
 
       if (
@@ -233,23 +235,14 @@ class Game {
 
     const result = [];
     let score = 0;
-    let skipCell = false;
 
     for (let index = 0; index < filterLine.length; index++) {
-      if (skipCell) {
-        result.push(filterLine[index]);
-        skipCell = false;
-
-        continue;
-      }
-
       if (
         index < filterLine.length - 1 &&
         filterLine[index] === filterLine[index + 1]
       ) {
         result.push(filterLine[index] * 2);
         score += filterLine[index] * 2;
-        skipCell = true;
         index++;
       } else {
         result.push(filterLine[index]);
@@ -294,29 +287,23 @@ class Game {
     return this.status;
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
     this.status = 'playing';
     this.addRandomCell();
     this.addRandomCell();
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
-    this.board =
-      this.initialState ||
-      Array(4)
+    if (this.initialState) {
+      this.board = this.initialState.map((row) => [...row]);
+    } else {
+      this.board = Array(4)
         .fill(null)
         .map(() => Array(4).fill(0));
+    }
     this.score = 0;
     this.status = 'idle';
   }
-
-  // Add your own methods here
 }
 
 export default Game;
