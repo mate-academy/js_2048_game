@@ -21,15 +21,16 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    this.initialState = initialState
-      ? initialState.map((row) => [...row])
-      : null;
+    if (initialState) {
+      this.initialState = initialState.map((row) => [...row]);
+      this.board = initialState.map((row) => [...row]);
+    } else {
+      this.initialState = null;
 
-    this.board =
-      initialState ||
-      Array(4)
+      this.board = Array(4)
         .fill(null)
         .map(() => Array(4).fill(0));
+    }
     this.score = 0;
     this.status = 'idle';
   }
@@ -138,17 +139,16 @@ class Game {
     let moved = false;
 
     for (let row = 0; row < 4; row++) {
-      const reversed = [...this.board[row].reverse()];
+      const currentRow = this.board[row];
+      const reversed = [...currentRow].reverse();
       const result = this.moveLine(reversed);
+      const newRow = result.line.reverse();
 
-      if (
-        JSON.stringify(this.board[row]) !==
-        JSON.stringify(result.line.reverse())
-      ) {
+      if (JSON.stringify(currentRow) !== JSON.stringify(newRow)) {
         moved = true;
       }
 
-      this.board[row] = result.line.reverse();
+      this.board[row] = newRow;
       this.score += result.score;
     }
 
@@ -270,7 +270,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.board;
+    return this.board.map((row) => [...row]);
   }
 
   /**
