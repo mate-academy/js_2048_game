@@ -18,8 +18,10 @@ buttonStart.addEventListener('click', () => {
     messageLose.classList.add('hidden');
     game.restart();
   } else {
-    game.start();
-    messageStart.classList.add('hidden');
+    if (game.getStatus() === 'idle') {
+      game.start();
+      messageStart.classList.add('hidden');
+    }
   }
 });
 
