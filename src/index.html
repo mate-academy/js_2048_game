@@ -19,36 +19,36 @@
         <div class="controls">
           <p class="info">
             Score:
-            <span class="game-score">0</span>
+            <span class="game-score js-score">0</span>
           </p>
-          <button class="button start">Start</button>
+          <button class="button start restart js-start">Start</button>
         </div>
       </div>
 
       <table class="game-field">
         <tbody>
-          <tr class="field-row">
+          <tr class="field-row js-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
 
-          <tr class="field-row">
+          <tr class="field-row js-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
 
-          <tr class="field-row">
+          <tr class="field-row js-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
           </tr>
 
-          <tr class="field-row">
+          <tr class="field-row js-row">
             <td class="field-cell"></td>
             <td class="field-cell"></td>
             <td class="field-cell"></td>
@@ -57,7 +57,7 @@
         </tbody>
       </table>
 
-      <div class="message-container">
+      <div class="message-container js-alert">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
         <p class="message message-win hidden">Winner! Congrats! You did it!</p>
         <p class="message message-start">
@@ -65,6 +65,9 @@
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      src="scripts/main.js"
+      type="module"
+    ></script>
   </body>
 </html>
