@@ -1,6 +1,6 @@
 'use strict';
 
-const Game = require('../src/modules/Game.class');
+import Game from '../modules/Game.class';
 
 const currentScoreElem = document.querySelector('.game-score');
 const startResetElem = document.querySelector('.start');
