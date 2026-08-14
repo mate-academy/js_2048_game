@@ -84,13 +84,13 @@ class Game {
           // merge
           if (this.merge(direction)) {
             j++;
-            //isMove = true;
+            // isMove = true;
             continue;
           }
 
           // swap
           if (this.swap(direction)) {
-            //isMove = true;
+            // isMove = true;
             if (j > 1) {
               j--;
             }
