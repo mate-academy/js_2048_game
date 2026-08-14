@@ -40,7 +40,7 @@ class Game {
 
   moveForwardNumbers(dir) {
     if (dir === 'down' || dir === 'right') {
-      let isMove = false;
+      const previousState = JSON.stringify(this.numbers);
 
       for (let i = 0; i < 4; i++) {
         for (let j = 2; j >= 0; ) {
@@ -49,14 +49,11 @@ class Game {
           // merge
           if (this.merge(direction)) {
             j--;
-            isMove = true;
             continue;
           }
 
           // swap
           if (this.swap(direction)) {
-            isMove = true;
-
             if (j < 2) {
               j++;
             }
@@ -66,18 +63,19 @@ class Game {
         }
       }
 
-      this.checkStatus();
+      const isMove = JSON.stringify(this.numbers) !== previousState;
 
       if (isMove) {
         this.createCell();
       }
+      this.checkStatus();
       this.setViewNumbers();
     }
   }
 
   moveBackNumbers(dir) {
     if (dir === 'up' || dir === 'left') {
-      let isMove = false;
+      const previousState = JSON.stringify(this.numbers);
 
       for (let i = 0; i < 4; i++) {
         for (let j = 1; j <= 3; ) {
@@ -86,14 +84,13 @@ class Game {
           // merge
           if (this.merge(direction)) {
             j++;
-            isMove = true;
+            //isMove = true;
             continue;
           }
 
           // swap
           if (this.swap(direction)) {
-            isMove = true;
-
+            //isMove = true;
             if (j > 1) {
               j--;
             }
@@ -103,11 +100,12 @@ class Game {
         }
       }
 
-      this.checkStatus();
+      const isMove = JSON.stringify(this.numbers) !== previousState;
 
       if (isMove) {
         this.createCell();
       }
+      this.checkStatus();
       this.setViewNumbers();
     }
   }
@@ -219,8 +217,6 @@ class Game {
   }
 
   checkStatus() {
-    let isLose = true;
-
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         const currentNumber = this.numbers[i][j];
@@ -233,15 +229,21 @@ class Game {
         }
 
         if (currentNumber === 0) {
-          isLose = false;
+          return;
+        }
+
+        if (j < 3 && currentNumber === this.numbers[i][j + 1]) {
+          return;
+        }
+
+        if (i < 3 && currentNumber === this.numbers[i + 1][j]) {
+          return;
         }
       }
     }
 
-    if (isLose) {
-      this.status = 'lose';
-      this.showMessage(this.status);
-    }
+    this.status = 'lose';
+    this.showMessage(this.status);
   }
 
   createCell() {
@@ -276,7 +278,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.score;
+    return this.numbers;
   }
 
   /**
