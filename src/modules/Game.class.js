@@ -21,6 +21,8 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
+    this.status = 'idle';
+    this.score = 0;
     // eslint-disable-next-line no-console
     console.log(initialState);
   }
@@ -62,7 +64,11 @@ class Game {
    */
   restart() {}
 
-  // Add your own methods here
+  render() {}
+
+  spawnRandom() {}
+
+  checkGameStatus() {}
 }
 
-module.exports = Game;
+export default Game;
