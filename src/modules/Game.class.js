@@ -1,10 +1,5 @@
 'use strict';
 
-/**
- * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
- */
 class Game {
   #boardSize = 4;
   /**
@@ -60,6 +55,8 @@ class Game {
       const currentRow = this.state[i];
 
       for (let j = 0; j < this.#boardSize - 1; j++) {
+        // if the last non-empty cell in a row is reached
+        // no reason to go further through the row
         if (currentRow[j] === 0) {
           break;
         }
@@ -135,6 +132,8 @@ class Game {
       const currentRow = this.state[i];
 
       for (let j = this.#boardSize - 1; j > 0; j--) {
+        // if the last non-empty cell in a row is reached
+        // no reason to go further through the row
         if (currentRow[j] === 0) {
           break;
         }
@@ -344,7 +343,7 @@ class Game {
    * @returns {number[][]}
    */
   getState() {
-    return this.state;
+    return this.state.map((row) => [...row]);
   }
 
   /**
@@ -398,6 +397,10 @@ class Game {
           emptyCells.push([i, j]);
         }
       }
+    }
+
+    if (!emptyCells.length) {
+      return;
     }
 
     const newCellIndex =

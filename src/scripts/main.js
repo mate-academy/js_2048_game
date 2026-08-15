@@ -1,13 +1,7 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
-const game = new Game([
-  [128, 128, 0, 8],
-  [16, 8, 16, 32],
-  [8, 16, 32, 64],
-  [16, 32, 0, 128],
-]);
+const game = new Game();
 const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
@@ -62,7 +56,9 @@ document.body.addEventListener('keydown', (e) => {
       break;
   }
 
-  boardRefresh();
+  if (game.getStatus() !== 'idle') {
+    boardRefresh();
+  }
 });
 
 function boardRefresh() {
