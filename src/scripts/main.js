@@ -8,7 +8,7 @@ const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 
-const keyToMove = {
+const moves = {
   ArrowLeft: () => game.moveLeft(),
   ArrowRight: () => game.moveRight(),
   ArrowUp: () => game.moveUp(),
@@ -68,7 +68,7 @@ button.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (keyboardEvent) => {
-  const move = keyToMove[keyboardEvent.key];
+  const move = moves[keyboardEvent.key];
 
   if (!move || game.getStatus() !== 'playing') {
     return;

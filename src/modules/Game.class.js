@@ -28,11 +28,11 @@ class Game {
   }
 
   moveLeft() {
-    this.move((state) => state.map((row) => this.mergeLine(row)));
+    this.move((state) => this.mergeRows(state));
   }
 
   moveRight() {
-    this.move((state) => state.map((row) => this.mergeReversedLine(row)));
+    this.move((state) => this.mergeRows(state, true));
   }
 
   moveUp() {
@@ -78,32 +78,52 @@ class Game {
     }
 
     const previousState = copyState(this.state);
-    const nextState = transform(copyState(this.state));
+    const result = transform(copyState(this.state));
 
-    if (statesEqual(previousState, nextState)) {
+    if (statesEqual(previousState, result.state)) {
       this.updateStatus();
 
       return;
     }
 
-    this.state = nextState;
+    this.state = result.state;
+    this.score += result.score;
     this.addRandomTile();
     this.updateStatus();
+  }
+
+  mergeRows(state, reverse = false) {
+    let moveScore = 0;
+    const nextState = state.map((currentRow) => {
+      const result = reverse
+        ? this.mergeReversedLine(currentRow)
+        : this.mergeLine(currentRow);
+
+      moveScore += result.score;
+
+      return result.line;
+    });
+
+    return {
+      state: nextState,
+      score: moveScore,
+    };
   }
 
   mergeLine(line) {
     const values = line.filter(Boolean);
     const merged = [];
+    let lineScore = 0;
 
-    for (let i = 0; i < values.length; i += 1) {
-      if (values[i] === values[i + 1]) {
-        const mergedValue = values[i] * 2;
+    for (let index = 0; index < values.length; index += 1) {
+      if (values[index] === values[index + 1]) {
+        const mergedValue = values[index] * 2;
 
         merged.push(mergedValue);
-        this.score += mergedValue;
-        i += 1;
+        lineScore += mergedValue;
+        index += 1;
       } else {
-        merged.push(values[i]);
+        merged.push(values[index]);
       }
     }
 
@@ -111,25 +131,29 @@ class Game {
       merged.push(0);
     }
 
-    return merged;
+    return {
+      line: merged,
+      score: lineScore,
+    };
   }
 
   mergeReversedLine(line) {
-    return this.mergeLine([...line].reverse()).reverse();
+    const result = this.mergeLine([...line].reverse());
+
+    return {
+      line: result.line.reverse(),
+      score: result.score,
+    };
   }
 
   mergeColumns(state, reverse = false) {
     const columns = transpose(state);
+    const result = this.mergeRows(columns, reverse);
 
-    if (reverse) {
-      const merged = columns.map((column) => this.mergeReversedLine(column));
-
-      return transpose(merged);
-    }
-
-    const mergedColumns = columns.map((column) => this.mergeLine(column));
-
-    return transpose(mergedColumns);
+    return {
+      state: transpose(result.state),
+      score: result.score,
+    };
   }
 
   addRandomTile() {
