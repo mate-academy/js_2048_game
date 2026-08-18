@@ -67,3 +67,10 @@ You can change the HTML/CSS layout if you need it.
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
     - Run `npm run test:only -- -l` to run fast test with additional info in console ignoring linter.
 
+
+## Local runtime
+
+The game UI is served by a small Node.js static server (`npm start`). The test
+runner uses the same static server for Cypress, so tests do not depend on Parcel
+HMR/cache state. Run `npm test` to execute the original Game class unit tests and
+the original Cypress UI tests.
