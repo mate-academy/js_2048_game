@@ -20,79 +20,45 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
+
+  static SIZE = 4;
+  static INITIAL_TILES = 2;
+  static BEST_SCORE_KEY = '2048-best-score';
+
   constructor(initialState) {
     if (initialState) {
-      this.state = initialState;
+      this.board = initialState;
     } else {
-      this.state = this.createEmptyBoard();
+      this.board = this.createBoard();
     }
 
+    this.tiles = [];
+    this.nextTileId = 0;
+
     this.score = 0;
+    this.bestScore = Number(localStorage.getItem(Game.BEST_SCORE_KEY)) || 0;
     this.status = 'idle';
   }
 
+  createRow() {
+    return Array.from({ length: Game.SIZE }, () => 0);
+  }
+
+  createBoard() {
+    return Array.from({ length: Game.SIZE }, () => this.createRow());
+  }
+
   moveLeft() {
-    if (this.status !== 'playing') {
-      return false;
-    }
-
-    let moved = false;
-
-    const newState = this.state.map((row) => {
-      const newRow = this.compressRowLeft(row);
-
-      if (row.join(',') !== newRow.join(',')) {
-        moved = true;
-      }
-
-      return newRow;
-    });
-
-    if (moved) {
-      this.state = newState;
-      this.addRandomTile();
-
-      if (this.state.flat().includes(2048)) {
-        this.status = 'win';
-      }
-
-      if (!this.hasMoves()) {
-        this.status = 'lose';
-      }
-    }
-
-    return moved;
+    return this.applyMove('left');
   }
   moveRight() {
-    this.state = this.state.map((row) => [...row].reverse());
-
-    const moved = this.moveLeft();
-
-    this.state = this.state.map((row) => [...row].reverse());
-
-    return moved;
+    return this.applyMove('right');
   }
   moveUp() {
-    this.state = this.transpose(this.state);
-
-    const moved = this.moveLeft();
-
-    this.state = this.transpose(this.state);
-
-    return moved;
+    return this.applyMove('up');
   }
   moveDown() {
-    this.state = this.transpose(this.state);
-
-    this.state = this.state.map((row) => [...row].reverse());
-
-    const moved = this.moveLeft();
-
-    this.state = this.state.map((row) => [...row].reverse());
-
-    this.state = this.transpose(this.state);
-
-    return moved;
+    return this.applyMove('down');
   }
 
   /**
@@ -102,11 +68,21 @@ class Game {
     return this.score;
   }
 
+  getBestScore() {
+    return this.bestScore;
+  }
+
   /**
    * @returns {number[][]}
    */
   getState() {
-    return this.state;
+    const board = this.createBoard();
+
+    this.tiles.forEach((tile) => {
+      board[tile.row][tile.col] = tile.value;
+    });
+
+    return board;
   }
 
   /**
@@ -127,11 +103,16 @@ class Game {
    * Starts the game.
    */
   start() {
-    this.state = this.createEmptyBoard();
+    this.board = this.createBoard();
+    this.tiles = [];
+    this.nextTileId = 0;
+
     this.score = 0;
     this.status = 'playing';
-    this.addRandomTile();
-    this.addRandomTile();
+
+    for (let i = 0; i < Game.INITIAL_TILES; i++) {
+      this.addRandomTile();
+    }
   }
 
   /**
@@ -141,10 +122,22 @@ class Game {
     this.start();
   }
 
-  createEmptyBoard() {
-    return Array(4)
-      .fill()
-      .map(() => Array(4).fill(0));
+  getTiles() {
+    return this.tiles;
+  }
+
+  getEmptyCells() {
+    const emptyCells = [];
+
+    for (let row = 0; row < this.board.length; row++) {
+      for (let col = 0; col < this.board.length; col++) {
+        if (this.board[row][col] === 0) {
+          emptyCells.push([row, col]);
+        }
+      }
+    }
+
+    return emptyCells;
   }
 
   addRandomTile() {
@@ -155,41 +148,34 @@ class Game {
     }
 
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
+
     const [row, col] = emptyCells[randomIndex];
 
-    this.state[row][col] = Math.random() < 0.1 ? 4 : 2;
+    const value = Math.random() < 0.9 ? 2 : 4;
+
+    this.board[row][col] = value;
+
+    this.tiles.push({
+      id: this.nextTileId++,
+      value,
+      row,
+      col,
+      previousRow: row,
+      previousCol: col,
+    });
   }
 
-  getEmptyCells() {
-    const empty = [];
-
-    for (let row = 0; row < this.state.length; row++) {
-      for (let col = 0; col < this.state[row].length; col++) {
-        if (this.state[row][col] === 0) {
-          empty.push([row, col]);
-        }
-      }
-    }
-
-    return empty;
+  saveTilePositions() {
+    this.tiles.forEach((tile) => {
+      tile.previousRow = tile.row;
+      tile.previousCol = tile.col;
+    });
   }
 
-  hasMoves() {
-    if (this.getEmptyCells().length > 0) {
-      return true;
-    }
-
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 3; col++) {
-        if (this.state[row][col] === this.state[row][col + 1]) {
-          return true;
-        }
-      }
-    }
-
-    for (let col = 0; col < 4; col++) {
-      for (let row = 0; row < 3; row++) {
-        if (this.state[row][col] === this.state[row + 1][col]) {
+  hasChanged(oldBoard, newBoard) {
+    for (let row = 0; row < Game.SIZE; row++) {
+      for (let col = 0; col < Game.SIZE; col++) {
+        if (oldBoard[row][col] !== newBoard[row][col]) {
           return true;
         }
       }
@@ -198,32 +184,164 @@ class Game {
     return false;
   }
 
-  compressRowLeft(row = []) {
-    const nonZero = row.filter((value) => value !== 0);
+  updateStatus() {
+    if (this.board.some((row) => row.includes(2048))) {
+      return (this.status = 'win');
+    }
 
-    for (let i = 0; i < nonZero.length; i++) {
-      if (nonZero[i] === nonZero[i + 1]) {
-        nonZero[i] *= 2;
-        this.score += nonZero[i];
-        nonZero[i + 1] = 0;
+    const hasEmpty = this.getEmptyCells().length > 0;
+    const hasMoves = this.canMerge();
+
+    if (!hasEmpty && !hasMoves) {
+      return (this.status = 'lose');
+    }
+  }
+
+  canMerge() {
+    for (let row = 0; row < Game.SIZE; row++) {
+      for (let col = 0; col < Game.SIZE; col++) {
+        const value = this.board[row][col];
+
+        if (
+          (col < Game.SIZE - 1 && value === this.board[row][col + 1]) ||
+          (row < Game.SIZE - 1 && value === this.board[row + 1][col])
+        ) {
+          return true;
+        }
       }
     }
 
-    const merged = nonZero.filter((value) => value !== 0);
-
-    while (merged.length < 4) {
-      merged.push(0);
-    }
-
-    return merged;
+    return false;
   }
 
-  transpose(matrix = []) {
-    if (!matrix.length) {
+  processRow(tiles = []) {
+    const nonZeroTiles = tiles.filter(Boolean);
+
+    const merged = [];
+    let scoreGained = 0;
+
+    for (let i = 0; i < nonZeroTiles.length; i++) {
+      const currentTile = nonZeroTiles[i];
+      const nextTile = nonZeroTiles[i + 1];
+
+      if (nextTile && currentTile.value === nextTile.value) {
+        const mergedTile = {
+          id: this.nextTileId++,
+          value: currentTile.value * 2,
+          mergedFrom: [currentTile.id, nextTile.id],
+          previousRow: currentTile.row,
+          previousCol: currentTile.col,
+        };
+
+        merged.push(mergedTile);
+
+        scoreGained += mergedTile.value;
+
+        i++;
+      } else {
+        merged.push(currentTile);
+      }
+    }
+
+    while (merged.length < Game.SIZE) {
+      merged.push(null);
+    }
+
+    return { row: merged, score: scoreGained };
+  }
+
+  getTileBoard() {
+    const tileBoard = Array.from({ length: Game.SIZE }, () => {
+      return Array(Game.SIZE).fill(null);
+    });
+
+    this.tiles.forEach((tile) => {
+      tileBoard[tile.row][tile.col] = tile;
+    });
+
+    return tileBoard;
+  }
+
+  applyMove(direction) {
+    if (this.status !== 'playing') {
+      return false;
+    }
+
+    this.saveTilePositions();
+
+    const isVertical = direction === 'up' || direction === 'down';
+    const isReversed = direction === 'right' || direction === 'down';
+
+    const tileBoard = this.getTileBoard();
+
+    const orientedTiles = isVertical ? this.transpose(tileBoard) : tileBoard;
+
+    const preparedTiles = isReversed
+      ? orientedTiles.map((row) => [...row].reverse())
+      : orientedTiles;
+
+    let totalScore = 0;
+
+    const mergedTiles = preparedTiles.map((row) => {
+      const { row: newRow, score } = this.processRow(row);
+
+      totalScore += score;
+
+      return newRow;
+    });
+
+    const unreversedTiles = isReversed
+      ? mergedTiles.map((row) => [...row].reverse())
+      : mergedTiles;
+
+    const finalTiles = isVertical
+      ? this.transpose(unreversedTiles)
+      : unreversedTiles;
+
+    finalTiles.forEach((row, rowIndex) => {
+      row.forEach((tile, colIndex) => {
+        if (tile) {
+          tile.row = rowIndex;
+          tile.col = colIndex;
+        }
+      });
+    });
+
+    const finalBoard = this.createBoardFromTiles(finalTiles);
+
+    const moved = this.hasChanged(this.board, finalBoard);
+
+    if (!moved) {
+      return false;
+    }
+
+    this.tiles = finalTiles.flat().filter(Boolean);
+
+    this.board = finalBoard;
+    this.score += totalScore;
+
+    this.bestScore = Math.max(this.score, this.bestScore);
+
+    localStorage.setItem(Game.BEST_SCORE_KEY, this.bestScore);
+
+    this.addRandomTile();
+    this.updateStatus();
+
+    return true;
+  }
+
+  createBoardFromTiles(tilesBoard) {
+    return tilesBoard.map((row) => {
+      return row.map((tile) => (tile ? tile.value : 0));
+    });
+  }
+
+  transpose(board) {
+    if (board.length === 0) {
       return [];
     }
 
-    return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
+    return board[0].map((_, colIndex) => board.map((row) => row[colIndex]));
   }
 }
 
