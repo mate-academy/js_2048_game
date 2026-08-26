@@ -1,13 +1,10 @@
 'use strict';
 
-// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
-// import Game from '../modules/Game.class';
 
 const game = new Game();
 const tableRows = [...document.querySelectorAll('tr')];
 
-// Write your code here
 const buttonStart = document.querySelector('.start');
 
 buttonStart.addEventListener('click', (e) => {
@@ -17,10 +14,9 @@ buttonStart.addEventListener('click', (e) => {
 
     buttonStart.textContent = 'Restart';
     buttonStart.classList.replace('start', 'restart');
-  }
-
-  if (buttonStart.textContent === 'Restart') {
+  } else if (buttonStart.textContent === 'Restart') {
     game.restart();
+    game.start();
     renderScore();
     clearAllFields();
     document.querySelector('.message-lose').classList.add('hidden');
@@ -30,6 +26,54 @@ buttonStart.addEventListener('click', (e) => {
 
   renderMatrix();
 });
+
+const handleKeyPresses = (e) => {
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
+  switch (e.key) {
+    case 'ArrowUp':
+      game.moveUp();
+      clearAllFields();
+      renderMatrix();
+      break;
+
+    case 'ArrowDown':
+      game.moveDown();
+      clearAllFields();
+      renderMatrix();
+      break;
+
+    case 'ArrowRight':
+      game.moveRight();
+      clearAllFields();
+      renderMatrix();
+      break;
+
+    case 'ArrowLeft':
+      game.moveLeft();
+      clearAllFields();
+      renderMatrix();
+      break;
+
+    default:
+      break;
+  }
+
+  renderScore();
+
+  if (game.gameWon) {
+    document.removeEventListener('keydown', handleKeyPresses);
+    showHiddenMessage('.message-win');
+  }
+
+  if (!game.checkAvailableMoves()) {
+    showHiddenMessage('.message-lose');
+  }
+};
+
+document.addEventListener('keydown', handleKeyPresses);
 
 function renderMatrix() {
   const gameState = game.getState();
@@ -67,47 +111,6 @@ function clearAllFields() {
   });
 }
 
-const handleKeyPresses = (e) => {
-  switch (e.key) {
-    case 'ArrowUp':
-      game.moveUp();
-      renderMatrix();
-      break;
-
-    case 'ArrowDown':
-      game.moveDown();
-      break;
-
-    case 'ArrowRight':
-      game.moveRight();
-      clearAllFields();
-      game.addRandomNumbers();
-      renderMatrix();
-      break;
-
-    case 'ArrowLeft':
-      game.moveLeft();
-      clearAllFields();
-      game.addRandomNumbers();
-      renderMatrix();
-      break;
-
-    default:
-      break;
-  }
-
-  renderScore();
-
-  if (game.gameWon) {
-    document.removeEventListener('keydown', handleKeyPresses);
-    showHiddenMessage('.message-win');
-  }
-
-  if (!game.checkAvailableMoves()) {
-    showHiddenMessage('.message-lose');
-  }
-};
-
 function showHiddenMessage(messageClass) {
   const classesOfMessage = [...document.querySelector(messageClass).classList];
 
@@ -117,5 +120,3 @@ function showHiddenMessage(messageClass) {
 
   document.querySelector(messageClass).classList = classesOfMessage.join(' ');
 }
-
-document.addEventListener('keydown', handleKeyPresses);
