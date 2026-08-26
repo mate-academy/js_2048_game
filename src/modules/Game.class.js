@@ -6,6 +6,14 @@
  * Feel free to add more props and methods if needed.
  */
 class Game {
+  static initialState = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
+  static numbersToAppear = [2, 2, 2, 2, 4];
   /**
    * Creates a new game instance.
    *
@@ -20,9 +28,10 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
+  constructor() {
     // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.board = Game.initialState;
+    this.score = 0;
   }
 
   moveLeft() {}
@@ -38,7 +47,9 @@ class Game {
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.board;
+  }
 
   /**
    * Returns the current game status.
@@ -55,12 +66,69 @@ class Game {
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.insertNumberOnBoard();
+    this.insertNumberOnBoard();
+  }
+
+  insertNumberOnBoard() {
+    const emptySpacesOnBoard = this.getFreeSpaces();
+    const randomNumber = this.getRandomNumber(1, emptySpacesOnBoard);
+
+    let countIndex = 0;
+
+    this.board = this.board.map((row) => {
+      return row.map((element) => {
+        if (element === 0) {
+          if (countIndex === randomNumber - 1) {
+            countIndex++;
+
+            return Game.numbersToAppear[
+              Math.floor(Math.random() * Game.numbersToAppear.length)
+            ];
+          }
+          countIndex++;
+
+          return element;
+        }
+
+        return element;
+      });
+    });
+  }
+
+  getFreeSpaces() {
+    let freeSpacesCount = 0;
+
+    this.board.forEach((row) => {
+      return row.forEach((element) => {
+        if (element === 0) {
+          freeSpacesCount++;
+        }
+      });
+    });
+
+    return freeSpacesCount;
+  }
+
+  getRandomNumber(min, max) {
+    const minCeiled = Math.ceil(min);
+
+    return Math.floor(
+      Math.random() * (Math.floor(max) - minCeiled + 1) + minCeiled,
+    );
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.board = Game.initialState;
+    this.score = 0;
+
+    this.insertNumberOnBoard();
+    this.insertNumberOnBoard();
+  }
 
   // Add your own methods here
 }
