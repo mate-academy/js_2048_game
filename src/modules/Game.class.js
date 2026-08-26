@@ -32,17 +32,46 @@ class Game {
     // eslint-disable-next-line no-console
     this.board = Game.initialState;
     this.score = 0;
+    this.gameWon = false;
   }
 
-  moveLeft() {}
-  moveRight() {}
+  moveLeft(checkingMoves = false) {
+    if (checkingMoves) {
+      const result = this.board.map((row) => {
+        return this.getElementsToTheLeft(row, true);
+      });
+
+      return result.some((value) => value[0] === true);
+    }
+
+    this.board = this.board.map((row) => {
+      return this.getElementsToTheLeft(row);
+    });
+  }
+
+  moveRight(checkingMoves = false) {
+    if (checkingMoves) {
+      const result = this.board.map((row) => {
+        return this.getElementsToTheRight(row, true);
+      });
+
+      return result.some((value) => value[0] === true);
+    }
+
+    this.board = this.board.map((row) => {
+      return this.getElementsToTheRight(row);
+    });
+  }
+
   moveUp() {}
   moveDown() {}
 
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
@@ -67,6 +96,10 @@ class Game {
    * Starts the game.
    */
   start() {
+    this.addRandomNumbers();
+  }
+
+  addRandomNumbers() {
     this.insertNumberOnBoard();
     this.insertNumberOnBoard();
   }
@@ -125,9 +158,112 @@ class Game {
   restart() {
     this.board = Game.initialState;
     this.score = 0;
+    this.gameWon = false;
 
     this.insertNumberOnBoard();
     this.insertNumberOnBoard();
+  }
+
+  getElementsToTheLeft(values, checkMoves = false) {
+    const onlyValues = [];
+
+    for (let i = 0; i < values.length; i++) {
+      if (values[i] !== 0) {
+        onlyValues.push(values[i]);
+      }
+    }
+
+    for (let i = 1; i < onlyValues.length; i++) {
+      if (onlyValues[i - 1] === onlyValues[i] && onlyValues[i] !== 0) {
+        onlyValues[i - 1] *= 2;
+
+        if (!checkMoves) {
+          this.score += onlyValues[i - 1];
+        }
+
+        if (onlyValues[i - 1] === 2048) {
+          this.gameWon = true;
+        }
+        onlyValues[i] = 0;
+
+        i++;
+      }
+    }
+
+    const finalValues = [];
+
+    for (const number of onlyValues) {
+      if (number !== 0) {
+        finalValues.push(number);
+      }
+    }
+
+    while (values.length > finalValues.length) {
+      finalValues.push(0);
+    }
+
+    if (checkMoves) {
+      if (values.every((value, index) => value === finalValues[index])) {
+        return [false];
+      }
+
+      return [true];
+    }
+
+    return finalValues;
+  }
+
+  checkAvailableMoves() {
+    return this.moveLeft(true) && this.moveRight(true);
+  }
+
+  getElementsToTheRight(values, checkMoves = false) {
+    const onlyValues = [];
+
+    for (let i = values.length - 1; i >= 0; i--) {
+      if (values[i] !== 0) {
+        onlyValues.push(values[i]);
+      }
+    }
+
+    for (let i = 1; i < onlyValues.length; i++) {
+      if (onlyValues[i - 1] === onlyValues[i] && onlyValues[i] !== 0) {
+        onlyValues[i - 1] *= 2;
+
+        if (!checkMoves) {
+          this.score += onlyValues[i - 1];
+        }
+
+        if (onlyValues[i - 1] === 2048) {
+          this.gameWon = true;
+        }
+        onlyValues[i] = 0;
+
+        i++;
+      }
+    }
+
+    const finalValues = [];
+
+    for (const number of onlyValues) {
+      if (number !== 0) {
+        finalValues.push(number);
+      }
+    }
+
+    while (values.length > finalValues.length) {
+      finalValues.push(0);
+    }
+
+    if (checkMoves) {
+      if (values.every((value, index) => value === finalValues[index])) {
+        return [false];
+      }
+
+      return [true];
+    }
+
+    return finalValues.reverse();
   }
 
   // Add your own methods here

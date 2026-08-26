@@ -21,9 +21,17 @@ buttonStart.addEventListener('click', (e) => {
 
   if (buttonStart.textContent === 'Restart') {
     game.restart();
+    renderScore();
     clearAllFields();
+    document.querySelector('.message-lose').classList.add('hidden');
+    document.querySelector('.message-win').classList.add('hidden');
+    document.addEventListener('keydown', handleKeyPresses);
   }
 
+  renderMatrix();
+});
+
+function renderMatrix() {
   const gameState = game.getState();
 
   tableRows.map((row, rowIndex) => {
@@ -41,7 +49,11 @@ buttonStart.addEventListener('click', (e) => {
       return element;
     });
   });
-});
+}
+
+function renderScore() {
+  document.querySelector('.game-score').textContent = game.getScore();
+}
 
 function clearAllFields() {
   tableRows.map((row, rowIndex) => {
@@ -55,10 +67,11 @@ function clearAllFields() {
   });
 }
 
-document.addEventListener('keydown', (e) => {
+const handleKeyPresses = (e) => {
   switch (e.key) {
     case 'ArrowUp':
       game.moveUp();
+      renderMatrix();
       break;
 
     case 'ArrowDown':
@@ -67,13 +80,42 @@ document.addEventListener('keydown', (e) => {
 
     case 'ArrowRight':
       game.moveRight();
+      clearAllFields();
+      game.addRandomNumbers();
+      renderMatrix();
       break;
 
     case 'ArrowLeft':
       game.moveLeft();
+      clearAllFields();
+      game.addRandomNumbers();
+      renderMatrix();
       break;
 
     default:
       break;
   }
-});
+
+  renderScore();
+
+  if (game.gameWon) {
+    document.removeEventListener('keydown', handleKeyPresses);
+    showHiddenMessage('.message-win');
+  }
+
+  if (!game.checkAvailableMoves()) {
+    showHiddenMessage('.message-lose');
+  }
+};
+
+function showHiddenMessage(messageClass) {
+  const classesOfMessage = [...document.querySelector(messageClass).classList];
+
+  if (classesOfMessage.includes('hidden')) {
+    classesOfMessage.pop();
+  }
+
+  document.querySelector(messageClass).classList = classesOfMessage.join(' ');
+}
+
+document.addEventListener('keydown', handleKeyPresses);
