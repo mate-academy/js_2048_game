@@ -2,8 +2,6 @@
 
 /**
  * This class represents the game.
- * Now it has a basic structure, that is needed for testing.
- * Feel free to add more props and methods if needed.
  */
 class Game {
   static initialState = [
@@ -258,41 +256,20 @@ class Game {
     return freeSpacesCount;
   }
 
-  transposeMatrix() {
-    const transposedMatrix = [[], [], [], []];
-
-    this.board.forEach((row, rowIndex) => {
-      row.forEach((element, elementIndex) => {
-        transposedMatrix[elementIndex][rowIndex] = element;
-      });
-    });
-
-    return transposedMatrix;
-  }
-
-  checkState() {
-    return Game.initialState.every((row, rowIndex) => {
-      row.every((element, elementIndex) => {
-        return element === this.board[rowIndex][elementIndex];
-      });
-    });
-  }
-
-  checkChange(boardBefore, boardAfter) {
-    return boardBefore.every((row, rowIndex) => {
-      return row.every((element, elementIndex) => {
-        return element === boardAfter[rowIndex][elementIndex];
-      });
-    });
-  }
-
-
-
   getRandomNumber(min, max) {
     const minCeiled = Math.ceil(min);
 
     return Math.floor(
       Math.random() * (Math.floor(max) - minCeiled + 1) + minCeiled,
+    );
+  }
+
+  checkAvailableMoves() {
+    return (
+      this.moveLeft(true) ||
+      this.moveRight(true) ||
+      this.moveUp(true) ||
+      this.moveDown(true)
     );
   }
 
@@ -345,13 +322,32 @@ class Game {
     return finalValues;
   }
 
-  checkAvailableMoves() {
-    return (
-      this.moveLeft(true) ||
-      this.moveRight(true) ||
-      this.moveUp(true) ||
-      this.moveDown(true)
-    );
+  transposeMatrix() {
+    const transposedMatrix = [[], [], [], []];
+
+    this.board.forEach((row, rowIndex) => {
+      row.forEach((element, elementIndex) => {
+        transposedMatrix[elementIndex][rowIndex] = element;
+      });
+    });
+
+    return transposedMatrix;
+  }
+
+  checkState() {
+    return Game.initialState.every((row, rowIndex) => {
+      row.every((element, elementIndex) => {
+        return element === this.board[rowIndex][elementIndex];
+      });
+    });
+  }
+
+  checkChange(boardBefore, boardAfter) {
+    return boardBefore.every((row, rowIndex) => {
+      return row.every((element, elementIndex) => {
+        return element === boardAfter[rowIndex][elementIndex];
+      });
+    });
   }
 }
 

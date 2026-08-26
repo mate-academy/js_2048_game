@@ -87,6 +87,9 @@ function renderMatrix() {
       if (element.textContent !== gameElementValue) {
         if (gameElementValue !== '0') {
           element.textContent = gameElementValue;
+          element.classList = `field-cell field-cell--${gameElementValue}`;
+        } else {
+          element.classList = 'field-cell';
         }
       }
 
