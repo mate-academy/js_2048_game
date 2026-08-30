@@ -21,8 +21,26 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
+    this.initialState = initialState
+      ? this.cloneBoard(initialState)
+      : this.createEmptyBoard();
+
+    this.board = this.cloneBoard(this.initialState);
+    this.score = 0;
+    this.status = 'idle';
+  }
+
+  createEmptyBoard() {
+    return [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+  }
+
+  cloneBoard(board) {
+    return board.map((row) => [...row]);
   }
 
   moveLeft() {}
@@ -33,12 +51,16 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.cloneBoard(this.board);
+  }
 
   /**
    * Returns the current game status.
@@ -50,7 +72,9 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
