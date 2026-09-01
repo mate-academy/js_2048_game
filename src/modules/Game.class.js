@@ -41,7 +41,7 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStats() {
+  getStatus() {
     return this.stats;
   }
 
@@ -97,7 +97,7 @@ class Game {
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
         if (this.board[r][c] === 2048) {
-          this.stats = 'win';
+          this.stats = 'won';
 
           return;
         }
@@ -129,7 +129,7 @@ class Game {
     }
 
     // If no zeros and no merges are possible, the game is lost
-    this.stats = 'lose';
+    this.stats = 'game over';
   }
 
   // Core merging logic applied to a single row / column array

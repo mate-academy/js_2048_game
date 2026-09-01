@@ -18,7 +18,7 @@ let isGameStarted = false;
 
 function updateUI() {
   const state = game.getState().flat();
-  const stats = game.getStats();
+  const stats = game.getStatus();
 
   // 1. Update Score
   if (scoreValue) {
@@ -70,7 +70,7 @@ function handleFirstMove() {
 // Listen  for keyword arrows
 document.addEventListener('keydown', (e) => {
   // Prevent moving if the game is over hasn't started
-  if (game.getStats() !== 'playing') {
+  if (game.getStatus() !== 'playing') {
     return;
   }
 
