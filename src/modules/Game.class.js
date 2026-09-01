@@ -16,7 +16,7 @@ class Game {
 
     this.board = this._copyGrid(this.initialState);
     this.score = 0;
-    this.stats = 'idle';
+    this.status = 'idle';
   }
 
   _copyGrid(grid) {
@@ -32,25 +32,25 @@ class Game {
   }
 
   /**
-   * Returns the current game stats.
+   * Returns the current game status.
    *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
+   * @returns {string} One of: 'idle', 'playing', 'won', 'game over'
    *
    * `idle` - the game has not started yet (the initial state);
    * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
+   * `won` - the game is won;
+   * `game over` - the game is lost
    */
   getStatus() {
-    return this.stats;
+    return this.status;
   }
 
   /**
    * Starts the game.
    */
   start() {
-    if (this.stats === 'idle') {
-      this.stats = 'playing';
+    if (this.status === 'idle') {
+      this.status = 'playing';
 
       // Only spawn initial tiles if the board is completely empty
       // (prevents breaking tests that pass a populated initial state)
@@ -69,7 +69,7 @@ class Game {
   restart() {
     this.board = this._copyGrid(this.initialState);
     this.score = 0;
-    this.stats = 'idle';
+    this.status = 'idle';
   }
 
   // Add your own methods here
@@ -92,12 +92,12 @@ class Game {
     }
   }
 
-  _checkGameStats() {
-    // Check for Win
+  _checkGameStatus() {
+    // Check for won
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
         if (this.board[r][c] === 2048) {
-          this.stats = 'won';
+          this.status = 'won';
 
           return;
         }
@@ -129,7 +129,7 @@ class Game {
     }
 
     // If no zeros and no merges are possible, the game is lost
-    this.stats = 'game over';
+    this.status = 'game over';
   }
 
   // Core merging logic applied to a single row / column array
@@ -154,7 +154,7 @@ class Game {
   }
 
   _processMove(processBoardCallback) {
-    if (this.stats !== 'playing') {
+    if (this.status !== 'playing') {
       return;
     }
 
@@ -165,7 +165,7 @@ class Game {
     // If the board actually changed, process the end-of0turn steps
     if (JSON.stringify(this.board) !== prevBoard) {
       this._addRandomTile();
-      this._checkGameStats();
+      this._checkGameStatus();
     }
   }
 

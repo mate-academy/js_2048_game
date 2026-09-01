@@ -18,7 +18,7 @@ let isGameStarted = false;
 
 function updateUI() {
   const state = game.getState().flat();
-  const stats = game.getStatus();
+  const gameStatus = game.getStatus();
 
   // 1. Update Score
   if (scoreValue) {
@@ -42,9 +42,9 @@ function updateUI() {
   });
 
   // 3. Handle End Game Messages
-  if (stats === 'win' && winMessage) {
+  if (gameStatus === 'won' && winMessage) {
     winMessage.classList.remove('hidden');
-  } else if (stats === 'lose' && loseMessage) {
+  } else if (gameStatus === 'game over' && loseMessage) {
     loseMessage.classList.remove('hidden');
   }
 }
@@ -110,7 +110,7 @@ if (actionButton) {
       game.restart();
       game.start(); // Auto-start immediately after restarting
 
-      // Hide win / lose messages on restart
+      // Hide won / game over messages on restart
       if (winMessage) {
         winMessage.classList.add('hidden');
       }
