@@ -1,18 +1,12 @@
 'use strict';
 
-const Game = require('../modules/Game.class');
+import Game from '../modules/Game.class.js';
 
 const game = new Game();
 
 // DOM Elements
 const cells = document.querySelectorAll('.field-cell');
-
-const scoreValue =
-  document.querySelector('.score-value') ||
-  document.querySelector('.score') ||
-  document.querySelector('#score') ||
-  document.querySelector('.current-score');
-
+const scoreValue = document.querySelector('.game-score');
 const actionButton = document.querySelector('.button');
 const startMessage =
   document.querySelector('.message-start') ||
