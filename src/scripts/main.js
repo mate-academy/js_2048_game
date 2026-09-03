@@ -57,6 +57,56 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+let startX = 0;
+let startY = 0;
+
+const gameField = document.querySelector('.game-field');
+
+gameField.addEventListener('touchstart', (touchEvent) => {
+  startX = touchEvent.touches[0].clientX;
+  startY = touchEvent.touches[0].clientY;
+});
+
+gameField.addEventListener('touchend', (touchEvent) => {
+  const endX = touchEvent.changedTouches[0].clientX;
+  const endY = touchEvent.changedTouches[0].clientY;
+
+  const dx = endX - startX;
+  const dy = endY - startY;
+
+  const minSwipeDistance = 30;
+
+  if (Math.abs(dx) < minSwipeDistance && Math.abs(dy) < minSwipeDistance) {
+    return;
+  }
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    if (dx > 0) {
+      game.moveRight();
+    } else {
+      game.moveLeft();
+    }
+  } else {
+    if (dy > 0) {
+      game.moveDown();
+    } else {
+      game.moveUp();
+    }
+  }
+
+  render();
+
+  if (game.getStatus() === 'lose') {
+    loseMessage.classList.remove('hidden');
+    winMessage.classList.add('hidden');
+    startMessage.classList.add('hidden');
+  } else if (game.getStatus() === 'win') {
+    winMessage.classList.remove('hidden');
+    loseMessage.classList.add('hidden');
+    startMessage.classList.add('hidden');
+  }
+});
+
 function render() {
   const state = game.getState();
 
