@@ -1,13 +1,13 @@
 'use strict';
 
-/**
- * This class represents the game.
+/* This class represents the game.
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
+const cells = [...document.querySelectorAll('.field-cell')];
+
 class Game {
-  /**
-   * Creates a new game instance.
+  /* Creates a new game instance.
    *
    * @param {number[][]} initialState
    * The initial state of the board.
@@ -20,28 +20,64 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
+  constructor(initialState = null) {
     // eslint-disable-next-line no-console
-    console.log(initialState);
+    // console.log(initialState);
+
+    this.initialState = initialState || [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    this.score = 0;
+    this.status = 'idle';
+    this.isMoved = false;
   }
 
-  moveLeft() {}
-  moveRight() {}
-  moveUp() {}
-  moveDown() {}
+  moveLeft() {
+    this.initialState = this.move(this.initialState, true);
 
-  /**
-   * @returns {number}
+    return this.isMoved;
+  }
+
+  moveRight() {
+    this.initialState = this.move(this.initialState, false);
+
+    return this.isMoved;
+  }
+
+  moveUp() {
+    const change = this.change(this.initialState);
+    const moveUp = this.move(change, true);
+
+    this.initialState = this.change(moveUp);
+
+    return this.isMoved;
+  }
+  moveDown() {
+    const change = this.change(this.initialState);
+    const moveDown = this.move(change, false);
+
+    this.initialState = this.change(moveDown);
+
+    return this.isMoved;
+  }
+
+  /* @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
-  /**
-   * @returns {number[][]}
+  /* @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.initialState;
+  }
 
-  /**
-   * Returns the current game status.
+  /* Returns the current game status.
    *
    * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
    *
@@ -50,19 +86,168 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
-  /**
-   * Starts the game.
+  /* Starts the game.
    */
-  start() {}
+  start() {
+    const rRow1 = Math.floor(Math.random() * this.initialState[0].length);
+    const rRow2 = Math.floor(Math.random() * this.initialState[0].length);
+    const rCol1 = Math.floor(Math.random() * this.initialState.length);
+    const rCol2 = Math.floor(Math.random() * this.initialState.length);
 
+    this.status = 'playing';
+    this.initialState[rRow1][rCol1] = 2;
+    this.initialState[rRow2][rCol2] = 2;
+
+    this.reload();
+  }
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.initialState = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    this.score = 0;
+    this.status = 'idle';
 
-  // Add your own methods here
+    this.reload();
+  }
+
+  move(array, zeroToStart) {
+    let addScore = 0;
+    let moved = false;
+    const result = array.map((item) => {
+      const numbers = item.filter((i) => i !== 0);
+      const addings = [];
+
+      for (let i = 1; i <= numbers.length; i++) {
+        if (numbers[i] === numbers[i - 1] && numbers[i]) {
+          const newScore = numbers[i] + numbers[i - 1];
+
+          addScore += newScore;
+          addings.push(newScore);
+          i++;
+        } else {
+          addings.push(numbers[i - 1]);
+        }
+      }
+
+      while (addings.length < item.length) {
+        if (zeroToStart) {
+          addings.push(0);
+        } else {
+          addings.unshift(0);
+        }
+      }
+
+      for (let i = 0; i < item.length; i++) {
+        if (item[i] !== addings[i]) {
+          moved = true;
+        }
+      }
+
+      return addings;
+    });
+
+    this.score += addScore;
+
+    this.isMoved = moved;
+
+    return result;
+  }
+
+  change(array) {
+    const changed = [[], [], [], []];
+
+    array.forEach((item) => {
+      item.forEach((number, i) => {
+        changed[i].push(item[i]);
+      });
+    });
+
+    return changed;
+  }
+
+  reload() {
+    const state = this.getState();
+
+    state.forEach((item, index) => {
+      item.forEach((ite, i) => {
+        const cell = cells[index * this.initialState.length + i];
+
+        if (ite !== 0) {
+          cell.textContent = ite;
+        } else {
+          cell.textContent = '';
+        }
+
+        cell.className = 'field-cell';
+        cell.classList.add('field-cell--' + ite);
+      });
+    });
+  }
+
+  addTile() {
+    const emptyCells = this.initialState.some((item) => item.includes(0));
+
+    if (!emptyCells) {
+      return;
+    }
+
+    const random = Math.random();
+    const rRow = Math.floor(Math.random() * this.initialState[0].length);
+    const rCol = Math.floor(Math.random() * this.initialState.length);
+
+    if (this.initialState[rRow][rCol] === 0) {
+      if (random < 0.1) {
+        this.initialState[rRow][rCol] = 4;
+      } else {
+        this.initialState[rRow][rCol] = 2;
+      }
+    } else {
+      this.addTile();
+    }
+  }
+
+  checkWin() {
+    const isWin = this.initialState.some((item) => item.includes(2048));
+
+    if (isWin) {
+      this.status = 'win';
+    }
+
+    return isWin;
+  }
+
+  checkLose() {
+    if (this.initialState.some((item) => item.includes(0))) {
+      return false;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        const current = this.initialState[i][j];
+
+        if (j < 3 && current === this.initialState[i][j + 1]) {
+          return false;
+        }
+
+        if (i < 3 && current === this.initialState[i + 1][j]) {
+          return false;
+        }
+      }
+    }
+    this.status = 'lose';
+
+    return true;
+  }
 }
 
 module.exports = Game;
