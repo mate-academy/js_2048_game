@@ -41,36 +41,42 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
+  let moved = false;
+
   switch (e.key) {
     case 'ArrowRight':
-      game.moveRight();
+      moved = game.moveRight();
       break;
 
     case 'ArrowLeft':
-      game.moveLeft();
+      moved = game.moveLeft();
       break;
 
     case 'ArrowUp':
-      game.moveUp();
+      moved = game.moveUp();
       break;
 
     case 'ArrowDown':
-      game.moveDown();
+      moved = game.moveDown();
       break;
+
+    default:
+      return;
   }
 
-  score.textContent = game.getScore();
+  if (moved) {
+    game.addTile();
+    score.textContent = game.getScore();
+    game.reload();
 
-  game.addTile();
-  game.reload();
+    if (game.checkWin()) {
+      mesWin.classList.remove('hidden');
 
-  if (game.checkWin()) {
-    mesWin.classList.remove('hidden');
+      return;
+    }
 
-    return;
-  }
-
-  if (game.checkLose()) {
-    mesLose.classList.remove('hidden');
+    if (game.checkLose()) {
+      mesLose.classList.remove('hidden');
+    }
   }
 });

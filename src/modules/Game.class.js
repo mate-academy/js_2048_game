@@ -33,14 +33,19 @@ class Game {
 
     this.score = 0;
     this.status = 'idle';
+    this.isMoved = false;
   }
 
   moveLeft() {
     this.initialState = this.move(this.initialState, true);
+
+    return this.isMoved;
   }
 
   moveRight() {
     this.initialState = this.move(this.initialState, false);
+
+    return this.isMoved;
   }
 
   moveUp() {
@@ -48,12 +53,16 @@ class Game {
     const moveUp = this.move(change, true);
 
     this.initialState = this.change(moveUp);
+
+    return this.isMoved;
   }
   moveDown() {
     const change = this.change(this.initialState);
     const moveDown = this.move(change, false);
 
     this.initialState = this.change(moveDown);
+
+    return this.isMoved;
   }
 
   /* @returns {number}
@@ -113,6 +122,7 @@ class Game {
 
   move(array, zeroToStart) {
     let addScore = 0;
+    let moved = false;
     const result = array.map((item) => {
       const numbers = item.filter((i) => i !== 0);
       const addings = [];
@@ -137,10 +147,18 @@ class Game {
         }
       }
 
+      for (let i = 0; i < item.length; i++) {
+        if (item[i] !== addings[i]) {
+          moved = true;
+        }
+      }
+
       return addings;
     });
 
     this.score += addScore;
+
+    this.isMoved = moved;
 
     return result;
   }
