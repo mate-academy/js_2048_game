@@ -147,7 +147,11 @@ class Game {
   }
 
   isChanged(oldState) {
-    return oldState.join('') !== this.state.join('');
+    return oldState.some((row, rowIndex) => {
+      return row.some((cell, columnIndex) => {
+        return cell !== this.state[rowIndex][columnIndex];
+      });
+    });
   }
 
   getEmptyCells() {
@@ -166,6 +170,10 @@ class Game {
 
   addRandomTile() {
     const emptyCells = this.getEmptyCells();
+
+    if (emptyCells.length === 0) {
+      return;
+    }
 
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
 
@@ -249,7 +257,8 @@ function mergeRow(row) {
     if (row[i] === row[i + 1]) {
       row[i] += row[i + 1];
       score += row[i];
-      row.splice(i + 1, 1);
+      i++;
+      row.splice(i, 1);
     }
   }
 
@@ -259,4 +268,4 @@ function mergeRow(row) {
   };
 }
 
-module.exports = Game;
+export default Game;
