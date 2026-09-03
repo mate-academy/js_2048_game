@@ -215,11 +215,11 @@ class Game {
       }
     }
 
-    if (emptyCells.length === 0) {
-      this.status = 'lose';
-    } else {
+    if (emptyCells.length > 0) {
       return true;
     }
+
+    this.status = 'lose';
 
     return false;
   }
@@ -251,19 +251,23 @@ function moveRow(row) {
 }
 
 function mergeRow(row) {
+  const mergedRow = [];
   let score = 0;
 
   for (let i = 0; i < row.length; i++) {
     if (row[i] === row[i + 1]) {
-      row[i] += row[i + 1];
-      score += row[i];
+      const mergedValue = row[i] * 2;
+
+      mergedRow.push(mergedValue);
+      score += mergedValue;
       i++;
-      row.splice(i, 1);
+    } else {
+      mergedRow.push(row[i]);
     }
   }
 
   return {
-    row,
+    row: mergedRow,
     score,
   };
 }
