@@ -11,15 +11,17 @@ body {
 }
 
 .field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 2.2rem;
   color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
+  background-color: #eee4da;
   user-select: none;
+  transition: transform 100ms ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -52,33 +54,59 @@ body {
   &--128 {
     background: #edcf72;
     color: #f9f6f2;
+    font-size: 1.8rem;
   }
 
   &--256 {
     background: #edcc61;
     color: #f9f6f2;
+    font-size: 1.8rem;
   }
 
   &--512 {
     background: #edc850;
     color: #f9f6f2;
+    font-size: 1.8rem;
   }
 
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
+    font-size: 1.4rem;
   }
 
   &--2048 {
     background: #edc22e;
     color: #f9f6f2;
+    font-size: 1.4rem;
   }
 }
 
+// TODO: select direction/tile (UX)
+.field-cell--spawn {
+  animation: pop-in 200ms ease-out forwards;
+}
+
 .game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 1 / 1;
+  background-color: #bbada0;
+  border-radius: 6px;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 15px;
+  box-sizing: border-box;
+
+  // border-spacing: 10px;
+  // border-collapse: separate;
+
+  tbody,
+  tr {
+    display: contents; // cell shape fix
+  }
 }
 
 .game-header {
@@ -173,7 +201,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
+  width: 500px;
 }
 
 .message-win {
@@ -184,4 +212,20 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
