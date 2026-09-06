@@ -256,4 +256,4 @@ class Game {
     }
   }
 }
-module.exports = Game;
+export default Game;
