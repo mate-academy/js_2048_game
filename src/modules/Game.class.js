@@ -204,18 +204,9 @@ class Game {
     });
 
     const firstNum = Math.floor(Math.random() * emptyCells.length);
-    let secondNum = Math.floor(Math.random() * emptyCells.length);
-
-    if (emptyCells.length === 1) {
-      secondNum = firstNum;
-    } else {
-      while (secondNum === firstNum) {
-        secondNum = Math.floor(Math.random() * emptyCells.length);
-      }
-    }
 
     for (let i = 0; i < 16; i++) {
-      if (i === emptyCells[firstNum] || i === emptyCells[secondNum]) {
+      if (i === emptyCells[firstNum]) {
         const row = Math.floor(i / 4);
         const cell = i % 4;
         const newNum = Math.random() > 0.9 ? 4 : 2;
