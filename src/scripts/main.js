@@ -65,9 +65,10 @@ function render() {
 startBtn.addEventListener('click', () => {
   const gameStatus = game.getStatus();
 
-  if (gameStatus === 'playing') {
-    game.restart();
+  if (gameStatus === 'idle') {
+    game.start();
   } else {
+    game.restart();
     game.start();
   }
 
