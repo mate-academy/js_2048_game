@@ -162,7 +162,6 @@ class Game {
     this.addRandomTile();
   }
 
-  // Adds one random tile (2 or 4) into a random empty cell, if any exist.
   addRandomTile() {
     let hasEmpty = false;
 
