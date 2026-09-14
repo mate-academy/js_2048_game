@@ -10,6 +10,37 @@ body {
   font-weight: 900;
 }
 
+@keyframes pop-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes merge-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.field-cell--new {
+  animation: popIn 0.2s ease-in-out forwards;
+}
+
+.field-cell--merged {
+  animation: mergePop 0.15s ease-in-out forwards;
+}
+
 .field-cell {
   background: #d6cdc4;
   width: 75px;
@@ -20,6 +51,9 @@ body {
   text-align: center;
   vertical-align: center;
   user-select: none;
+  transition:
+    background-color 0.15s ease-in-out,
+    color 0.15s ease-in-out;
 
   &--2 {
     background: #eee4da;
@@ -79,6 +113,7 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  touch-action: none;
 }
 
 .game-header {
