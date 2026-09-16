@@ -13,58 +13,98 @@
     />
   </head>
   <body>
-    <div class="container">
-      <div class="game-header">
-        <h1>2048</h1>
-        <div class="controls">
-          <p class="info">
-            Score:
-            <span class="game-score">0</span>
+    <div class="game-layout">
+      <div class="container">
+        <div class="game-header">
+          <h1>2048</h1>
+          <div class="controls">
+            <button
+              class="undo-button"
+              type="button"
+              aria-label="Undo the last move"
+              title="Undo the last move"
+            >
+              <svg
+                class="undo-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M9 7 4 12l5 5" />
+                <path d="M5 12h8a6 6 0 0 1 6 6" />
+              </svg>
+            </button>
+            <p class="info">
+              Score:
+              <span class="game-score">0</span>
+            </p>
+            <button class="button start">Start</button>
+          </div>
+        </div>
+
+        <div class="game-board-row">
+          <table class="game-field">
+            <tbody>
+              <tr class="field-row">
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+              </tr>
+
+              <tr class="field-row">
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+              </tr>
+
+              <tr class="field-row">
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+              </tr>
+
+              <tr class="field-row">
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+                <td class="field-cell"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="message-container">
+          <p class="message message-lose hidden">You lose! Restart the game?</p>
+          <p class="message message-win hidden">
+            Winner! Congrats! You did it!
           </p>
-          <button class="button start">Start</button>
+          <p class="message message-start">
+            Press "Start" to begin game. Good luck!
+          </p>
         </div>
       </div>
 
-      <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">
-          Press "Start" to begin game. Good luck!
+      <aside class="how-to-play">
+        <h2>How to play</h2>
+        <p>
+          <strong>Start</strong>
+          the game and use the arrow keys.
         </p>
-      </div>
+        <p>Move the tiles and match two equal numbers to merge them.</p>
+        <p>
+          Reach
+          <strong>2048</strong>
+          before the board is full.
+        </p>
+        <p>Use Undo to go back one move. It can be used once per turn.</p>
+      </aside>
     </div>
-    <script src="scripts/main.js"></script>
+
+    <script
+      type="module"
+      src="scripts/main.js"
+    ></script>
   </body>
 </html>
