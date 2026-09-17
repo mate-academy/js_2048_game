@@ -15,7 +15,7 @@
   <body>
     <div class="container">
       <div class="game-header">
-        <h1>2048</h1>
+        <h1 class="title">2048</h1>
         <div class="controls">
           <p class="info">
             Score:
@@ -26,45 +26,37 @@
       </div>
 
       <table class="game-field">
-        <tbody>
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-
-          <tr class="field-row">
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-            <td class="field-cell"></td>
-          </tr>
-        </tbody>
+        <tbody></tbody>
       </table>
 
-      <div class="message-container">
-        <p class="message message-lose hidden">You lose! Restart the game?</p>
-        <p class="message message-win hidden">Winner! Congrats! You did it!</p>
-        <p class="message message-start">
-          Press "Start" to begin game. Good luck!
-        </p>
+      <div class="footer">
+        <div class="message-container">
+          <p class="message message-lose hidden">You lose! Restart the game?</p>
+          <p class="message message-win hidden">
+            Winner! Congrats! You did it!
+          </p>
+          <p class="message message-start">
+            Press "Start" to begin game. Good luck!
+          </p>
+        </div>
+        <div class="message-container">
+          <p class="message message-start">
+            Choose field size
+            <input
+              type="number"
+              class="message input"
+              value="4"
+              min="4"
+              max="9"
+              step="1"
+            />
+          </p>
+        </div>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      src="scripts/main.js"
+      type="module"
+    ></script>
   </body>
 </html>
