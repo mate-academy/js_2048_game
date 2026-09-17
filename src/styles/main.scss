@@ -11,16 +11,13 @@ body {
 }
 
 .field-cell {
+  text-align: center;
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
   border-radius: 5px;
   color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
   user-select: none;
-
+  height: 75px;
+  width: 75px;
   &--2 {
     background: #eee4da;
   }
@@ -73,27 +70,90 @@ body {
     background: #edc22e;
     color: #f9f6f2;
   }
+
+  &--4096 {
+    background: #94ed2e;
+    color: #f9f6f2;
+  }
+
+  &--8192 {
+    background: #54851d;
+    color: #f9f6f2;
+  }
+
+  &--16384 {
+    background: #1d856b;
+    color: #f9f6f2;
+  }
+
+  &--32768 {
+    background: #b347aa;
+    color: #f9f6f2;
+  }
+
+  &--65536 {
+    background: #b39a47;
+    color: #f9f6f2;
+  }
+
+  &--131072 {
+    background: #69d6b2;
+    color: #f9f6f2;
+  }
+
+  &--262144 {
+    background: #030a68;
+    color: #f9f6f2;
+  }
+
+  &--524288 {
+    background: #ca0202;
+    color: #f9f6f2;
+  }
+
+  &--1048576 {
+    background: #b39a2b;
+    color: #f9f6f2;
+  }
+
+  &--2097152 {
+    background: #36352d;
+    color: #f9f6f2;
+  }
+
+  &--4194304 {
+    background: #0e0c05;
+    color: #f9f6f2;
+  }
+
+  &--8388608 {
+    background: #1b1b1b;
+    color: #f9f6f2;
+  }
 }
 
 .game-field {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+
+  tbody {
+    max-height: 50vh;
+  }
 }
 
 .game-header {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
+  align-items: center;
   box-sizing: border-box;
 }
 
 h1 {
   background: #edc22e;
   color: #f9f6f2;
-  width: 75px;
+  min-width: 75px;
   height: 75px;
   font-size: 24px;
   border-radius: 5px;
@@ -116,14 +176,20 @@ h1 {
   color: #776e65;
   box-sizing: border-box;
   font-size: 16px;
-  margin: 0 8px 0 0;
 }
 
 .controls {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
 .button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -170,10 +236,14 @@ h1 {
 }
 
 .container {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 350px;
+  justify-content: space-between;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
 }
 
 .message-win {
@@ -181,7 +251,15 @@ h1 {
   color: #f9f6f2;
 }
 
-.message-container {
-  width: 100%;
-  height: 150px;
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 50%;
+}
+
+.input {
+  margin-top: 10px;
+  border: 2px solid #f9f6f2;
 }
