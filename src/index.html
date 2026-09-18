@@ -11,6 +11,19 @@
       rel="stylesheet"
       href="./styles/main.scss"
     />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="container">
@@ -60,11 +73,15 @@
       <div class="message-container">
         <p class="message message-lose hidden">You lose! Restart the game?</p>
         <p class="message message-win hidden">Winner! Congrats! You did it!</p>
+        <p class="message message-playing hidden">Keep going to reach 2048!</p>
         <p class="message message-start">
           Press "Start" to begin game. Good luck!
         </p>
       </div>
     </div>
-    <script src="scripts/main.js"></script>
+    <script
+      src="scripts/main.js"
+      type="module"
+    ></script>
   </body>
 </html>
