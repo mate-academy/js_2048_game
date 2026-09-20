@@ -10,7 +10,6 @@ const messageStart = document.querySelector('.message-start');
 const messageLose = document.querySelector('.message-lose');
 const messageWin = document.querySelector('.message-win');
 
-
 function updateUI() {
   const flatBoard = game.board.flat();
 
@@ -52,11 +51,11 @@ function updateUI() {
 
 startBtn.addEventListener('click', () => {
   game.restart();
-  
+
   messageStart.classList.add('hidden');
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
-  
+
   updateUI();
 });
 
@@ -81,7 +80,7 @@ window.addEventListener('keydown', (e) => {
       game.moveDown();
       break;
     default:
-      return; 
+      return;
   }
 
   if (oldBoard !== JSON.stringify(game.board)) {
