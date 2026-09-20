@@ -28,10 +28,14 @@ class Game {
    */
 
   constructor(initialState) {
-    // deep copy to avoid shared references
-    this.initialState = initialState
-      ? initialState.map((row) => [...row])
-      : this.createEmptyBoard();
+    if (initialState) {
+      this.validateInitialState(initialState);
+
+      // deep copy to avoid shared references
+      this.initialState = initialState.map((row) => [...row]);
+    } else {
+      this.initialState = this.createEmptyBoard();
+    }
 
     this.board = this.initialState.map((row) => [...row]);
 
@@ -54,6 +58,24 @@ class Game {
     }
 
     return transposed;
+  }
+
+  // check board size and cell values to guard against malformed inputs
+  validateInitialState(state) {
+    const isValidValue = (value) =>
+      value === 0 ||
+      (Number.isInteger(value) && value >= 2 && (value & (value - 1)) === 0);
+
+    const isValidRow = (row) =>
+      Array.isArray(row) && row.length === 4 && row.every(isValidValue);
+
+    if (
+      !Array.isArray(state) ||
+      state.length !== 4 ||
+      !state.every(isValidRow)
+    ) {
+      throw new Error('initialState must be a 4x4 array of 0 or powers of 2');
+    }
   }
   // #endregion
 
@@ -89,12 +111,14 @@ class Game {
     const cell = this.getRandomEmptyCell();
 
     if (!cell) {
-      return;
+      return false;
     }
 
     const value = this.getRandomValue();
 
     this.board[cell.row][cell.col] = value;
+
+    return true;
   }
   // #endregion
 
@@ -133,8 +157,21 @@ class Game {
   // #endregion
 
   // #region [MOVE METHODS] -------------------------------->
+  areBoardsEqual(boardA, boardB) {
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (boardA[row][col] !== boardB[row][col]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   applyMove(newBoard, totalScore) {
-    const hasChanged = JSON.stringify(this.board) !== JSON.stringify(newBoard);
+    // element-wise check instead of JSON.stringify
+    const hasChanged = !this.areBoardsEqual(this.board, newBoard);
 
     if (hasChanged) {
       this.board = newBoard;
@@ -291,6 +328,8 @@ class Game {
   /**
    * Starts the game.
    */
+  // adds tiles to the existing board — if it isn't empty,
+  // fewer than 2 tiles may be added (not enough empty cells)
   start() {
     this.status = Game.Status.PLAYING;
     this.addRandomTile();
