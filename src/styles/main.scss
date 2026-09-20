@@ -1,84 +1,150 @@
+@use 'sass:map';
+@import 'https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap';
+
+// #region [DESIGN TOKENS] -------------------------->
+
+// "soft lavender" theme — light, warm, low-glass base colors
+$glass-white: #fff; // .container .field-cell .info .message
+$shadow-black: #2b2750; // deep plum-navy, used for tinted shadows/borders instead of pure black
+
+// background
+$bg-deep: #f5f2ff; // soft lavender-white
+
+// accent colors
+$accent: #7c5cff; // h1 .field-cell--8 $border-glass
+$accent-pink: #ff5cb8; // h1 .field-cell--32
+$accent-2: #1fd1ae; // .start .field-cell--1024 .message-win
+$accent-2-dark: #139c81; // .start
+$accent-2-light: #8bffe0; // .field-cell--1024 .message-win
+
+$danger: #ff6b6b; // .restart
+$danger-light: #ff9494; // .field-cell--64 .message-lose
+$danger-dark: #e8425f; // .restart .message-lose
+$danger-text: #c23a52; // .message-lose (darkened so it reads on a light bg)
+
+$success: #14c17f; // .field-cell--2048; .message-win
+$success-light: #7defb8; // .field-cell--2048
+
+// text (inverted for a light theme: dark ink instead of near-white)
+$text-main: #2c2a4a; // .game-score .field-cell
+$text-dim: #736e93; // .info .message
+$text-on-accent: $glass-white; // .h1 .button .field-cell--#{$value}(8/16/32/64/128/256)
+
+// panel backgrounds — more opaque, less "see-through" than the glass version
+$bg-panel: rgba($glass-white, 0.72); // .container
+$bg-field: rgba($shadow-black, 0.05); // .game-field
+$bg-cell: rgba($shadow-black, 0.04); // empty .field-cell
+$bg-surface: rgba($shadow-black, 0.05); // .info .message
+
+// borders and shadows — tinted plum instead of black/white, softer & warmer
+$border-glass: rgba(
+  $shadow-black,
+  0.09
+); // .container .info .field-cell .game-field .message
+$shadow-soft: rgba($shadow-black, 0.16); // .container
+$shadow-inset: rgba($shadow-black, 0.1); // .game-field
+$highlight-inset: rgba($glass-white, 0.8); // .container
+// #endregion
+
+// #region [TILE PALETTE] --------------------------->
+// tile's keymap
+$tile-colors: (
+  2: (
+    from: #e4e8ff,
+    to: #c7d0ff,
+    text: #33355a,
+  ),
+  4: (
+    from: #c2ccff,
+    to: #9aa9ff,
+    text: #24245a,
+  ),
+  8: (
+    from: #9c8cff,
+    to: $accent,
+    text: $text-on-accent,
+  ),
+  16: (
+    from: #8a6cff,
+    to: #6440ea,
+    text: $text-on-accent,
+  ),
+  32: (
+    from: #ff8cd9,
+    to: $accent-pink,
+    text: $text-on-accent,
+  ),
+  64: (
+    from: $danger-light,
+    to: #ff2e63,
+    text: $text-on-accent,
+  ),
+  128: (
+    from: #ffb35c,
+    to: #ff8a00,
+    text: $text-on-accent,
+  ),
+  256: (
+    from: #ffd15c,
+    to: #ffb300,
+    text: $text-on-accent,
+  ),
+  512: (
+    from: #ffe45c,
+    to: #ffd200,
+    text: #3a2c00,
+  ),
+  1024: (
+    from: $accent-2-light,
+    to: $accent-2,
+    text: #063a30,
+  ),
+  2048: (
+    from: $success-light,
+    to: $success,
+    text: #063a2a,
+  ),
+);
+$tile-font-size-lg: 22px; // 128 / 256 / 512
+$tile-font-size-sm: 18px; // 1024 / 2048
+$tile-pop: tile-pop 0.22s cubic-bezier(0.35, 1.4, 0.5, 1);
+
+// #endregion
+
+// #region [LAYOUT] --------------------------------->
 body {
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
+  font-family: Poppins, sans-serif;
   font-size: 24px;
   font-weight: 900;
+  background: radial-gradient(
+      circle at 15% 20%,
+      rgba($accent, 0.14),
+      transparent 40%
+    ),
+    radial-gradient(circle at 85% 80%, rgba($accent-2, 0.12), transparent 45%),
+    $bg-deep;
+  background-attachment: fixed;
 }
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 380px;
+  padding: 20px;
   box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
-}
-
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
+  background: $bg-panel;
+  border: 1px solid $border-glass;
+  border-radius: 24px;
+  backdrop-filter: blur(8px);
+  box-shadow:
+    0 20px 60px $shadow-soft,
+    inset 0 1px 0 $highlight-inset;
 }
 
 .game-header {
@@ -91,17 +157,27 @@ body {
 }
 
 h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
+  background: linear-gradient(135deg, $accent, $accent-pink);
+  color: $text-on-accent;
+  width: 72px;
+  height: 72px;
+  font-size: 22px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  box-shadow: 0 8px 24px rgba($accent, 0.5);
+}
+
+// #endregion
+
+// #region [CONTROLS] ------------------------------->
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .info {
@@ -109,79 +185,206 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
+  background: $bg-surface;
+  width: 72px;
+  height: 72px;
+  margin: 0;
+  border-radius: 16px;
   box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
+  color: $text-dim;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 1px solid $border-glass;
 }
 
-.controls {
-  display: flex;
+.game-score {
+  margin-top: 4px;
+  font-size: 20px;
+  color: $text-main;
 }
 
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 16px;
   cursor: pointer;
-  color: #f9f6f2;
-  font-family: sans-serif;
+  color: $text-on-accent;
+  font-family: inherit;
   font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
+  font-size: 14px;
+  width: 72px;
+  height: 72px;
 
-  transition: 0.25s ease background;
+  transition:
+    0.25s ease transform,
+    0.25s ease box-shadow;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 3px solid $accent;
+    outline-offset: 3px;
+  }
 }
 
 .start {
-  background: #1dae28;
-  font-size: 20px;
+  background: linear-gradient(135deg, $accent-2, $accent-2-dark);
+  font-size: 16px;
+  box-shadow: 0 8px 20px rgba($accent-2, 0.35);
 
   &:hover {
-    background: #179921;
+    box-shadow: 0 10px 26px rgba($accent-2, 0.5);
   }
 }
 
 .restart {
-  background: #f1b2b2;
+  background: linear-gradient(135deg, $danger, $danger-dark);
+  box-shadow: 0 8px 20px rgba($danger-dark, 0.35);
 
   &:hover {
-    background: #f87474;
+    box-shadow: 0 10px 26px rgba($danger-dark, 0.5);
   }
+}
+
+// #endregion
+
+// #region [GAME FIELD] ----------------------------->
+.game-field {
+  background: $bg-field;
+  border-spacing: 10px;
+  border-radius: 20px;
+  padding: 12px;
+  border: 1px solid $border-glass;
+  box-shadow: inset 0 2px 12px $shadow-inset;
+}
+
+.field-cell {
+  background: $bg-cell;
+  width: 72px;
+  height: 72px;
+  border: 1px solid $border-glass;
+  border-radius: 14px;
+  color: $text-main;
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+
+  @each $value, $colors in $tile-colors {
+    &--#{$value} {
+      background: linear-gradient(
+        145deg,
+        map.get($colors, from),
+        map.get($colors, to)
+      );
+      color: map.get($colors, text);
+
+      @if $value >= 128 and $value <= 512 {
+        font-size: $tile-font-size-lg;
+      } @else if $value >= 1024 {
+        font-size: $tile-font-size-sm;
+      }
+
+      @if $value == 2048 {
+        animation:
+          $tile-pop,
+          win-glow 1.4s ease-in-out infinite;
+      } @else {
+        animation: $tile-pop;
+      }
+    }
+  }
+}
+
+// #endregion
+
+// #region [MESSAGES] ------------------------------->
+.message-container {
+  width: 100%;
+  height: 60px;
+  margin-top: 18px;
 }
 
 .message {
   box-sizing: border-box;
   width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
-  padding: 10px;
+  background: $bg-surface;
+  color: $text-dim;
+  padding: 14px 10px;
   text-align: center;
-  border-radius: 5px;
-  font-size: 20px;
+  border: 1px solid $border-glass;
+  border-radius: 14px;
+  font-size: 15px;
+  margin: 0;
+  animation: fade-in 0.3s ease;
 }
 
 .hidden {
   display: none;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
-}
-
 .message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+  background: linear-gradient(
+    135deg,
+    rgba($success, 0.25),
+    rgba($accent-2, 0.15)
+  );
+  border-color: rgba($accent-2, 0.4);
+  color: $accent-2-dark;
 }
 
-.message-container {
-  width: 100%;
-  height: 150px;
+.message-lose {
+  background: linear-gradient(
+    135deg,
+    rgba($danger-dark, 0.25),
+    rgba($danger-light, 0.15)
+  );
+  border-color: rgba($danger-dark, 0.4);
+  color: $danger-text;
 }
+
+// #endregion
+
+// #region [ANIMATIONS] ------------------------------->
+@keyframes tile-pop {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.6;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes win-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba($success, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba($success, 1);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// #endregion
