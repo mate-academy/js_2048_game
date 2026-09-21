@@ -20,9 +20,21 @@ class Game {
    * If passed, the board will be initialized with the provided
    * initial state.
    */
-  constructor(initialState) {
+
+  status = 'idle';
+  score = 0;
+  board = [];
+
+  constructor(initialState =
+    [[0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]]) {
     // eslint-disable-next-line no-console
     console.log(initialState);
+
+    this.board = structuredClone(initialState);
+    this.state = structuredClone(initialState);
   }
 
   moveLeft() {}
@@ -33,12 +45,16 @@ class Game {
   /**
    * @returns {number}
    */
-  getScore() {}
+  getScore() {
+    return this.score;
+  }
 
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    return this.state;
+  }
 
   /**
    * Returns the current game status.
@@ -50,17 +66,25 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus() {
+    return this.status;
+  }
 
   /**
    * Starts the game.
    */
-  start() {}
+  start() {
+    this.status = 'playing';
+  }
 
   /**
    * Resets the game.
    */
-  restart() {}
+  restart() {
+    this.status = 'idle';
+    this.score = 0;
+    this.state = structuredClone(this.board);
+  }
 
   // Add your own methods here
 }
