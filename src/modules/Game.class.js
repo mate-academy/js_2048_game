@@ -37,7 +37,9 @@ class Game {
     this.state = structuredClone(initialState);
   }
 
-  moveLeft() {}
+  moveLeft() {
+    
+  }
   moveRight() {}
   moveUp() {}
   moveDown() {}
