@@ -25,21 +25,21 @@ Okay, what do we have?
 That's it!
 
 Okay, okay. Also, we have some rules:
-1) The game field is 4 x 4
-2) Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
-3) The player can move cells with keyboard arrows
-4) All the numbers should be moved in the selected direction until all empty cells are filled in
+✔ The game field is 4 x 4
+✔ Each cell can be empty or contain one of the numbers: 2, 4, 8 ... 2^n
+✔ The player can move cells with keyboard arrows
+✔ All the numbers should be moved in the selected direction until all empty cells are filled in
    - 2 equal cells should be merged into a doubled number
    - The merged cell can’t be merged twice during one move
-5) The move is possible if at least one cell is changed after the move
-6) After move 2 or 4 appears in a random empty cell. 4 probability is 10%
-7) When 2048 value is displayed in any cell, win message should be shown.
-8) The `game over` message should be shown if there are no more available moves.
-9) Hide start message when game starts.
-10) Change the `Start` button to `Restart` after the first move.
-11) `Restart` button should reset the game to the initial state.
-12) Increase score with each move. The score should be increased by the sum of all merged cells.
-13) The game consists of 2 main parts:
+✔ The move is possible if at least one cell is changed after the move
+✔ After move 2 or 4 appears in a random empty cell. 4 probability is 10%
+✔ When 2048 value is displayed in any cell, win message should be shown.
+✔ The `game over` message should be shown if there are no more available moves.
+✔ Hide start message when game starts.
+✔ Change the `Start` button to `Restart` after the first move.
+✔ `Restart` button should reset the game to the initial state.
+✔ Increase score with each move. The score should be increased by the sum of all merged cells.
+✔ The game consists of 2 main parts:
   - game logic written in `src/modules/Game.class.js` module that exports `Game` class
   - game UI written in `src/index.html` with `main.js` script that need to use `Game` class instance
 
@@ -61,7 +61,7 @@ You can change the HTML/CSS layout if you need it.
 ## Deploy and Pull Request
 
 1. Replace `<your_account>` with your Github username in the link
-    - [DEMO LINK](https://<your_account>.github.io/js_2048_game/)
+    - [DEMO LINK](https://Handsome010.github.io/js_2048_game/)
 2. Follow [this instructions](https://mate-academy.github.io/layout_task-guideline/)
     - Run `npm run test` command to test your code;
     - Run `npm run test:only -- -n` to run fast test ignoring linter;
