@@ -79,6 +79,7 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+  touch-action: none;
 }
 
 .game-header {
@@ -184,4 +185,20 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.field-cell:not(:empty) {
+  animation: tile-appear 0.5s ease;
+}
+
+@keyframes tile-appear {
+  from {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
