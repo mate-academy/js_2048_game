@@ -37,8 +37,15 @@ class Game {
     this.board = JSON.parse(JSON.stringify(this.initialState));
     this.score = 0;
     this.status = 'playing';
-    this.addRandomTile();
-    this.addRandomTile();
+
+    const isEmptyBoard = this.board.every((row) => {
+      return row.every((cell) => cell === 0);
+    });
+
+    if (isEmptyBoard) {
+      this.addRandomTile();
+      this.addRandomTile();
+    }
   }
 
   restart() {
@@ -97,8 +104,6 @@ class Game {
     return { row: newRow, scoreGained };
   }
 
-  // Gira a matriz 90 graus no sentido horário para
-  // reutilizar a lógica de mover para a esquerda
   rotateBoard() {
     const newBoard = [
       [0, 0, 0, 0],
@@ -134,12 +139,11 @@ class Game {
   }
 
   move(direction) {
-    if (this.status !== 'playing' && this.status !== 'win') {
+    // CRÍTICO: Permite movimentação APENAS quando o estado for 'playing'
+    if (this.status !== 'playing') {
       return false;
     }
 
-    // Mapeia quantas rotações de 90° são necessárias
-    // para aplicar o movimento para a esquerda
     const rotations = {
       left: 0,
       up: 3,
