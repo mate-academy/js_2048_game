@@ -50,7 +50,6 @@ start.addEventListener('click', () => {
   }
 
   render();
-  restart();
   message();
 });
 
@@ -86,6 +85,9 @@ const container = document.querySelector('.message-container');
 
 function message() {
   const stat = game.getStatus();
+
+  statusWin.classList.add('hidden');
+  statusLose.classList.add('hidden');
 
   if (stat === 'idle') {
   } else if (stat === 'playing') {
