@@ -23,10 +23,12 @@ body {
 
   &--2 {
     background: #eee4da;
+    color: #776e65;
   }
 
   &--4 {
     background: #ede0c8;
+    color: #776e65;
   }
 
   &--8 {
@@ -138,11 +140,12 @@ h1 {
 }
 
 .start {
-  background: #1dae28;
+  background: #8f7a66;
   font-size: 20px;
+  transition: hover 1s;
 
   &:hover {
-    background: #179921;
+    background: #9f8a75;
   }
 }
 
