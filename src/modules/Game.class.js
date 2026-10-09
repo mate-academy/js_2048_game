@@ -169,4 +169,8 @@ class Game {
   }
 }
 
-module.exports = Game;
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Game;
+} else {
+  window.Game = Game;
+}
