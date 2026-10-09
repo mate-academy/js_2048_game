@@ -92,8 +92,8 @@ class Game {
 
     for (let row = 0; row < 4; row++) {
       const oldRow = [...this.board[row]];
-      const currentRow = this.board[row];
-      const filtered = currentRow.filter((x) => x !== 0);
+      const reversed = [...this.board[row]].reverse();
+      const filtered = reversed.filter((x) => x !== 0);
 
       const merged = [];
 
@@ -110,7 +110,7 @@ class Game {
       while (merged.length < 4) {
         merged.push(0);
       }
-      this.board[row] = merged;
+      this.board[row] = merged.reverse();
 
       for (let i = 0; i < 4; i++) {
         if (this.board[row][i] !== oldRow[i]) {
@@ -131,10 +131,10 @@ class Game {
 
       startButton.textContent = 'Restart';
     }
-    this.getScore();
     this.updateView();
     this.checkWin();
     this.checkLose();
+    this.getScore();
   }
 
   moveUp() {
@@ -200,46 +200,42 @@ class Game {
     this.checkWin();
     this.checkLose();
   }
+
   moveDown() {
     let moved = false;
 
     for (let col = 0; col < 4; col++) {
       const column = [];
-
-      const oldColumn = [
-        this.board[0][col],
-        this.board[1][col],
-        this.board[2][col],
-        this.board[3][col],
-      ];
+      const oldColumn = [];
 
       for (let row = 0; row < 4; row++) {
         column.push(this.board[row][col]);
+        oldColumn.push(this.board[row][col]);
       }
+
+      const reversed = column.reverse();
+      const filtered = reversed.filter((x) => x !== 0);
 
       const merged = [];
 
-      const filtered = column.filter((x) => x !== 0);
-
-      let i = filtered.length - 1;
-
-      while (i >= 0) {
-        if (i > 0 && filtered[i] === filtered[i - 1]) {
+      for (let i = 0; i < filtered.length; i++) {
+        if (i < filtered.length - 1 && filtered[i] === filtered[i + 1]) {
+          merged.push(filtered[i] * 2);
           this.score += filtered[i] * 2;
-          merged.unshift(filtered[i] * 2);
-          i -= 2;
+          i++;
         } else {
-          merged.unshift(filtered[i]);
-          i--;
+          merged.push(filtered[i]);
         }
       }
 
       while (merged.length < 4) {
-        merged.unshift(0);
+        merged.push(0);
       }
 
+      const finalColumn = merged.reverse();
+
       for (let row = 0; row < 4; row++) {
-        this.board[row][col] = merged[row];
+        this.board[row][col] = finalColumn[row];
 
         if (this.board[row][col] !== oldColumn[row]) {
           moved = true;
@@ -253,9 +249,7 @@ class Game {
       const startButton = document.querySelector('button');
 
       startButton.className = 'button';
-
       startButton.classList.add('restart');
-
       startButton.textContent = 'Restart';
     }
 
@@ -272,6 +266,8 @@ class Game {
     const score = document.querySelector('.game-score');
 
     score.textContent = this.score;
+
+    return this.score;
   }
 
   /**
@@ -295,6 +291,7 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
+
   getStatus() {
     return this.status;
   }
@@ -318,9 +315,6 @@ class Game {
     }
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     this.board = [
       [0, 0, 0, 0],
@@ -335,8 +329,11 @@ class Game {
     this.score = 0;
     this.status = 'playing';
 
-    this.updateView();
-    this.getScore();
+    const startMessage = document.querySelector('.message-start');
+
+    if (startMessage) {
+      startMessage.classList.add('hidden');
+    }
 
     const winMessage = document.querySelector('.message-win');
 
@@ -349,6 +346,9 @@ class Game {
     if (loseMessage) {
       loseMessage.className = 'message-lose hidden';
     }
+
+    this.updateView();
+    this.getScore();
   }
 
   addRandomTile() {
