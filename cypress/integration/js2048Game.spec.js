@@ -59,3 +59,131 @@ describe('2048 game UI', () => {
     cy.contains('You lose! Restart the game?').should('be.visible');
   });
 });
+
+describe('2048 game touch controls', () => {
+  const cellsText = () =>
+    cy
+      .get('.field-cell')
+      .then(($cells) => [...$cells].map((cell) => cell.textContent.trim()));
+
+  // Swipes on the board with real PointerEvents.
+  const swipe = (deltaX, deltaY, pointerType = 'touch') => {
+    cy.get('.game-field').then(($field) => {
+      const rect = $field[0].getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const options = {
+        eventConstructor: 'PointerEvent',
+        pointerId: 1,
+        pointerType,
+        isPrimary: true,
+        button: 0,
+      };
+
+      cy.wrap($field).trigger('pointerdown', {
+        ...options,
+        clientX: x,
+        clientY: y,
+      });
+
+      cy.wrap($field).trigger('pointerup', {
+        ...options,
+        clientX: x + deltaX,
+        clientY: y + deltaY,
+      });
+    });
+  };
+
+  // With Math.random stubbed to 0, new tiles are always a "2" placed in the
+  // first empty cell, so Start gives a board of [2, 2, _, _] in the top row.
+  beforeEach(() => {
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win.Math, 'random').returns(0);
+      },
+    });
+  });
+
+  const board = (...filled) => {
+    const cells = Array(16).fill('');
+
+    filled.forEach(([index, value]) => {
+      cells[index] = value;
+    });
+
+    return cells;
+  };
+
+  it('should not move before the game is started', () => {
+    swipe(-100, 0);
+    cellsText().should('deep.equal', board());
+    cy.get('.game-score').should('have.text', '0');
+  });
+
+  it('should move left on a left swipe', () => {
+    cy.get('.button.start').click();
+    swipe(-100, 0);
+    cellsText().should('deep.equal', board([0, '4'], [1, '2']));
+    cy.get('.game-score').should('have.text', '4');
+  });
+
+  it('should move right on a right swipe', () => {
+    cy.get('.button.start').click();
+    swipe(100, 0);
+    cellsText().should('deep.equal', board([0, '2'], [3, '4']));
+    cy.get('.game-score').should('have.text', '4');
+  });
+
+  it('should move down on a down swipe', () => {
+    cy.get('.button.start').click();
+    swipe(0, 100);
+    cellsText().should('deep.equal', board([0, '2'], [12, '2'], [13, '2']));
+  });
+
+  it('should move up on an up swipe', () => {
+    cy.get('.button.start').click();
+    swipe(0, 100);
+    swipe(0, -100);
+    cellsText().should('deep.equal', board([0, '4'], [1, '2'], [2, '2']));
+    cy.get('.game-score').should('have.text', '4');
+  });
+
+  it('should use the dominant axis of a diagonal swipe', () => {
+    cy.get('.button.start').click();
+    swipe(100, 40);
+    cellsText().should('deep.equal', board([0, '2'], [3, '4']));
+  });
+
+  it('should ignore a tap or a short drag', () => {
+    cy.get('.button.start').click();
+    swipe(0, 0);
+    swipe(-10, 8);
+    cellsText().should('deep.equal', board([0, '2'], [1, '2']));
+    cy.get('.game-score').should('have.text', '0');
+  });
+
+  it('should ignore mouse dragging on the board', () => {
+    cy.get('.button.start').click();
+    swipe(-100, 0, 'mouse');
+    swipe(100, 0, 'mouse');
+    cellsText().should('deep.equal', board([0, '2'], [1, '2']));
+    cy.get('.game-score').should('have.text', '0');
+  });
+
+  it('should keep keyboard controls working alongside swipes', () => {
+    cy.get('.button.start').click();
+    swipe(0, 100);
+    cy.get('body').type('{upArrow}');
+    cellsText().should('deep.equal', board([0, '4'], [1, '2'], [2, '2']));
+    cy.get('.game-score').should('have.text', '4');
+  });
+
+  it('should reset the board on Restart after swiping', () => {
+    cy.get('.button.start').click();
+    swipe(-100, 0);
+    cy.get('.button.restart').click();
+    cellsText().should('deep.equal', board());
+    cy.get('.game-score').should('have.text', '0');
+    cy.get('.button.start').should('exist');
+  });
+});
