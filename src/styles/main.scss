@@ -1,3 +1,7 @@
+// Tile size: 75px on desktop, shrinks only when the viewport is too narrow
+// for the 350px board (4 tiles + 5 x 10px spacing + 16px page gutters).
+$cell-size: min(75px, calc((100vw - 32px - 50px) / 4));
+
 body {
   margin: 0;
   display: flex;
@@ -12,8 +16,8 @@ body {
 
 .field-cell {
   background: #d6cdc4;
-  width: 75px;
-  height: 75px;
+  width: $cell-size;
+  height: $cell-size;
   border-radius: 5px;
   color: #776e65;
   box-sizing: border-box;
@@ -64,6 +68,13 @@ body {
     color: #f9f6f2;
   }
 
+  &--1024,
+  &--2048 {
+    @media (max-width: 380px) {
+      font-size: 20px;
+    }
+  }
+
   &--1024 {
     background: #edc53f;
     color: #f9f6f2;
@@ -79,6 +90,14 @@ body {
   background: #bbada0;
   border-spacing: 10px;
   border-radius: 5px;
+
+  // Swipes on the board drive the game, so the browser must not scroll,
+  // zoom or select here. The rest of the page scrolls normally.
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .game-header {
@@ -133,6 +152,7 @@ h1 {
   font-size: 16px;
   width: 75px;
   height: 75px;
+  touch-action: manipulation;
 
   transition: 0.25s ease background;
 }
@@ -141,16 +161,20 @@ h1 {
   background: #1dae28;
   font-size: 20px;
 
-  &:hover {
-    background: #179921;
+  @media (hover: hover) {
+    &:hover {
+      background: #179921;
+    }
   }
 }
 
 .restart {
   background: #f1b2b2;
 
-  &:hover {
-    background: #f87474;
+  @media (hover: hover) {
+    &:hover {
+      background: #f87474;
+    }
   }
 }
 
@@ -174,6 +198,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 350px;
+  max-width: calc(100% - 32px);
 }
 
 .message-win {
@@ -184,4 +209,17 @@ h1 {
 .message-container {
   width: 100%;
   height: 150px;
+}
+
+.swipe-hint {
+  display: none;
+  margin: 8px 0 0;
+  color: #776e65;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+
+  @media (pointer: coarse) {
+    display: block;
+  }
 }
