@@ -43,6 +43,7 @@ function setButton(mode) {
 button.addEventListener('click', () => {
   if (button.classList.contains('start')) {
     game.start();
+    setButton('restart');
   } else {
     game.restart();
     setButton('start');
