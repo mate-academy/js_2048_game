@@ -42,29 +42,75 @@ class Game {
     this.status = 'idle';
   }
 
+  removeZeros(row) {
+    return row.filter((number) => number !== 0);
+  }
+
+  mergeLine(line) {
+    for (let i = 0; i < line.length - 1; i++) {
+      if (line[i] === line[i + 1]) {
+        line[i] = line[i] + line[i + 1];
+        this.score += line[i];
+
+        line.splice(i + 1, 1);
+      }
+    }
+  }
+
+  moveRow(row, reverse) {
+    let processedRow = row;
+
+    if (reverse) {
+      processedRow = [...row].reverse();
+    }
+
+    processedRow = this.removeZeros(processedRow);
+
+    this.mergeLine(processedRow);
+
+    while (processedRow.length < 4) {
+      processedRow.push(0);
+    }
+
+    if (reverse) {
+      processedRow = [...processedRow].reverse();
+    }
+
+    return processedRow;
+  }
+
+  moveColumn(column, reverse) {
+    let processedColumn = column;
+
+    if (reverse) {
+      processedColumn = [...column].reverse();
+    }
+
+    processedColumn = this.removeZeros(processedColumn);
+
+    this.mergeLine(processedColumn);
+
+    while (processedColumn.length < 4) {
+      processedColumn.push(0);
+    }
+
+    if (reverse) {
+      processedColumn = [...processedColumn].reverse();
+    }
+
+    return processedColumn;
+  }
+
   moveLeft() {
     let moved = false;
 
     this.state.forEach((row, index) => {
-      const filteredRow = row.filter((number) => number !== 0);
+      const processedRow = this.moveRow(row, false);
 
-      for (let i = 0; i < filteredRow.length - 1; i++) {
-        if (filteredRow[i] === filteredRow[i + 1]) {
-          filteredRow[i] = filteredRow[i] + filteredRow[i + 1];
-          this.score += filteredRow[i];
-
-          filteredRow.splice(i + 1, 1);
-        }
-      }
-
-      while (filteredRow.length < 4) {
-        filteredRow.push(0);
-      }
-
-      if (JSON.stringify(row) !== JSON.stringify(filteredRow)) {
+      if (JSON.stringify(row) !== JSON.stringify(processedRow)) {
         moved = true;
 
-        this.state[index] = filteredRow;
+        this.state[index] = processedRow;
       }
     });
 
@@ -78,31 +124,13 @@ class Game {
     let moved = false;
 
     this.state.forEach((row, index) => {
-      const reversedRow = [...row].reverse();
+      const processedRow = this.moveRow(row, true);
 
-      const filteredRow = reversedRow.filter((number) => number !== 0);
-
-      for (let i = 0; i < filteredRow.length - 1; i++) {
-        if (filteredRow[i] === filteredRow[i + 1]) {
-          filteredRow[i] = filteredRow[i] + filteredRow[i + 1];
-
-          this.score += filteredRow[i];
-
-          filteredRow.splice(i + 1, 1);
-        }
-      }
-
-      while (filteredRow.length < 4) {
-        filteredRow.push(0);
-      }
-
-      filteredRow.reverse();
-
-      if (JSON.stringify(row) !== JSON.stringify(filteredRow)) {
+      if (JSON.stringify(row) !== JSON.stringify(processedRow)) {
         moved = true;
-      }
 
-      this.state[index] = filteredRow;
+        this.state[index] = processedRow;
+      }
     });
 
     if (moved) {
@@ -117,28 +145,14 @@ class Game {
     for (let i = 0; i < 4; i++) {
       const column = this.state.map((row) => row[i]);
 
-      const filteredColumn = column.filter((number) => number !== 0);
+      const processedColumn = this.moveColumn(column, false);
 
-      for (let j = 0; j < filteredColumn.length - 1; j++) {
-        if (filteredColumn[j] === filteredColumn[j + 1]) {
-          filteredColumn[j] = filteredColumn[j] + filteredColumn[j + 1];
-
-          this.score = this.score + filteredColumn[j];
-
-          filteredColumn.splice(j + 1, 1);
-        }
-      }
-
-      while (filteredColumn.length < 4) {
-        filteredColumn.push(0);
-      }
-
-      if (JSON.stringify(column) !== JSON.stringify(filteredColumn)) {
+      if (JSON.stringify(column) !== JSON.stringify(processedColumn)) {
         moved = true;
-      }
 
-      for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
-        this.state[rowIndex][i] = filteredColumn[rowIndex];
+        for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
+          this.state[rowIndex][i] = processedColumn[rowIndex];
+        }
       }
     }
 
@@ -154,32 +168,14 @@ class Game {
     for (let i = 0; i < 4; i++) {
       const column = this.state.map((row) => row[i]);
 
-      const reversedColumn = [...column].reverse();
+      const processedColumn = this.moveColumn(column, true);
 
-      const filteredColumn = reversedColumn.filter((number) => number !== 0);
-
-      for (let j = 0; j < filteredColumn.length - 1; j++) {
-        if (filteredColumn[j] === filteredColumn[j + 1]) {
-          filteredColumn[j] = filteredColumn[j] + filteredColumn[j + 1];
-
-          this.score = this.score + filteredColumn[j];
-
-          filteredColumn.splice(j + 1, 1);
-        }
-      }
-
-      while (filteredColumn.length < 4) {
-        filteredColumn.push(0);
-      }
-
-      filteredColumn.reverse();
-
-      if (JSON.stringify(column) !== JSON.stringify(filteredColumn)) {
+      if (JSON.stringify(column) !== JSON.stringify(processedColumn)) {
         moved = true;
-      }
 
-      for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
-        this.state[rowIndex][i] = filteredColumn[rowIndex];
+        for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
+          this.state[rowIndex][i] = processedColumn[rowIndex];
+        }
       }
     }
 
