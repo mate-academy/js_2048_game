@@ -26,16 +26,7 @@
   "indent-width-cont": true,
   "input-radio-req-name": true,
   "spec-char-escape": true,
-  "tag-bans": [
-    "b",
-    "i",
-    "u",
-    "center",
-    "style",
-    "marquee",
-    "font",
-    "s"
-  ],
+  "tag-bans": ["b", "i", "u", "center", "style", "marquee", "font", "s"],
   "tag-name-lowercase": true,
   "tag-name-match": true,
   "tag-self-close": false,
