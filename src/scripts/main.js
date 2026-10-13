@@ -2,19 +2,20 @@
 
 export default class Game {
   constructor(initialState) {
-    // Якщо initial state не передано, створюємо пусту дошку 4x4 (заповнену null або 0)
-    this.board = initialState || this.createEmptyBoard();
+    // Якщо initialState передано, робимо його глибоку копію, інакше створюємо пусту дошку
+    this.board = initialState ? initialState.map(row => [...row]) : this.createEmptyBoard();
     this.score = 0;
-    this.status = 'playing'; // 'playing', 'won', 'game_over'
+    this.status = 'playing';
   }
 
   createEmptyBoard() {
-    return Array.from({ length: 4 }, () => Array(4).fill(null));
+    return Array.from({ length: 4 }, () => Array(4).fill(0));
   }
 
   start() {
-    // Додаємо дві початкові плитки, якщо дошка пуста
-    if (!this.board.some(row => row.some(cell => cell !== null))) {
+    // Додаємо плитки тільки якщо дошка повністю пуста (складається з нулів)
+    const isEmpty = this.board.every(row => row.every(cell => cell === 0));
+    if (isEmpty) {
       this.addRandomTile();
       this.addRandomTile();
     }
@@ -41,13 +42,11 @@ export default class Game {
     return this.status;
   }
 
-  // --- Внутрішні методи логіки ---
-
   getEmptyCells() {
     const emptyCells = [];
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
-        if (!this.board[r][c]) { 
+        if (this.board[r][c] === 0) { 
           emptyCells.push({ r, c });
         }
       }
@@ -64,30 +63,28 @@ export default class Game {
     this.board[randomCell.r][randomCell.c] = Math.random() < 0.1 ? 4 : 2;
   }
 
-  // Зсув одного рядка вліво з об'єднанням однакових чисел
   slideAndMerge(row) {
-    // 1. Прибираємо пусті клітинки
-    let newRow = row.filter(val => val !== null);
+    // 1. Відкидаємо всі пусті клітинки (нулі)
+    let newRow = row.filter(val => val !== 0);
     let scoreIncrease = 0;
     
-    // 2. Об'єднуємо сусідні однакові плитки
+    // 2. Об'єднуємо сусідні однакові
     for (let i = 0; i < newRow.length - 1; i++) {
-      if (newRow[i] !== null && newRow[i] === newRow[i + 1]) {
+      if (newRow[i] === newRow[i + 1]) {
         newRow[i] *= 2;
         scoreIncrease += newRow[i];
-        newRow.splice(i + 1, 1); // Видаляємо елемент, який злився
+        newRow.splice(i + 1, 1);
       }
     }
     
-    // 3. Доповнюємо рядок пустими клітинками до довжини 4
+    // 3. Доповнюємо нулями до розміру 4
     while (newRow.length < 4) {
-      newRow.push(null);
+      newRow.push(0);
     }
     
     return { row: newRow, score: scoreIncrease };
   }
 
-  // Обертання матриці на 90 градусів проти годинникової стрілки
   rotateLeft(matrix) {
     const n = matrix.length;
     const res = this.createEmptyBoard();
@@ -99,20 +96,16 @@ export default class Game {
     return res;
   }
 
-  // Універсальний метод руху
   move(direction) {
     if (this.status !== 'playing') return;
 
-    // Створюємо глибоку копію дошки
-    let boardCopy = JSON.parse(JSON.stringify(this.board));
+    let boardCopy = this.board.map(row => [...row]);
     
-    // Визначаємо кількість обертів, щоб звести рух до "moveLeft"
     let rotations = 0;
     if (direction === 'Right') rotations = 2;
     else if (direction === 'Up') rotations = 3;
     else if (direction === 'Down') rotations = 1;
 
-    // Обертаємо дошку перед рухом
     for (let i = 0; i < rotations; i++) {
       boardCopy = this.rotateLeft(boardCopy);
     }
@@ -120,12 +113,10 @@ export default class Game {
     let moved = false;
     let totalScore = 0;
 
-    // Застосовуємо логіку руху вліво для кожного рядка
     for (let i = 0; i < 4; i++) {
       const { row, score } = this.slideAndMerge(boardCopy[i]);
       
-      // Перевіряємо, чи змінився рядок (чи був рух)
-      if (JSON.stringify(boardCopy[i]) !== JSON.stringify(row)) {
+      if (boardCopy[i].join(',') !== row.join(',')) {
         moved = true;
       }
       boardCopy[i] = row;
@@ -135,7 +126,6 @@ export default class Game {
     if (moved) {
       this.score += totalScore;
       
-      // Повертаємо дошку у вихідне положення
       for (let i = 0; i < (4 - rotations) % 4; i++) {
         boardCopy = this.rotateLeft(boardCopy);
       }
@@ -155,7 +145,6 @@ export default class Game {
         if (this.board[r][c] === 2048) {
           has2048 = true;
         }
-        // Якщо пустих клітинок немає, перевіряємо чи є можливі ходи (сусідні однакові клітинки)
         if (!hasMoves) {
           if (c < 3 && this.board[r][c] === this.board[r][c + 1]) hasMoves = true;
           if (r < 3 && this.board[r][c] === this.board[r + 1][c]) hasMoves = true;
@@ -170,7 +159,6 @@ export default class Game {
     }
   }
 
-  // --- Основні методи руху (використовуються в тестах) ---
   moveLeft() { this.move('Left'); }
   moveRight() { this.move('Right'); }
   moveUp() { this.move('Up'); }
