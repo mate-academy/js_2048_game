@@ -49,11 +49,7 @@ class Game {
     return this.status;
   }
 
-  moveLeft() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
+  slideLeft() {
     const oldBoard = JSON.stringify(this.board);
     let moveScore = 0;
 
@@ -81,11 +77,36 @@ class Game {
       this.board[row] = merged;
     }
 
-    if (JSON.stringify(this.board) !== oldBoard) {
-      this.score += moveScore;
-      this.addRandomTile();
-      this.checkWin();
-      this.checkLose();
+    if (JSON.stringify(this.board) === oldBoard) {
+      return false;
+    }
+
+    this.score += moveScore;
+
+    return true;
+  }
+
+  finishMove() {
+    this.addRandomTile();
+    this.checkWin();
+    this.checkLose();
+  }
+
+  reverseRows() {
+    this.board = this.board.map((row) => [...row].reverse());
+  }
+
+  transpose() {
+    this.board = this.board.map((_, i) => this.board.map((r) => r[i]));
+  }
+
+  moveLeft() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    if (this.slideLeft()) {
+      this.finishMove();
     }
   }
 
@@ -94,32 +115,51 @@ class Game {
       return;
     }
 
-    const reversedBoard = this.board.map((row) => [...row].reverse());
+    this.reverseRows();
 
-    this.board = reversedBoard;
-    this.moveLeft();
+    const moved = this.slideLeft();
 
-    this.board = this.board.map((row) => [...row].reverse());
+    this.reverseRows();
+
+    if (moved) {
+      this.finishMove();
+    }
   }
 
   moveUp() {
-    this.board = this.board.map((_, i) => this.board.map((r) => r[i]));
+    if (this.status !== 'playing') {
+      return;
+    }
 
-    this.moveLeft();
+    this.transpose();
 
-    this.board = this.board.map((_, i) => this.board.map((r) => r[i]));
+    const moved = this.slideLeft();
+
+    this.transpose();
+
+    if (moved) {
+      this.finishMove();
+    }
   }
 
   moveDown() {
-    this.board = this.board.map((_, i) => this.board.map((r) => r[i]));
+    if (this.status !== 'playing') {
+      return;
+    }
 
-    this.board = this.board.map((row) => [...row].reverse());
+    this.transpose();
 
-    this.moveLeft();
+    this.reverseRows();
 
-    this.board = this.board.map((row) => [...row].reverse());
+    const moved = this.slideLeft();
 
-    this.board = this.board.map((_, i) => this.board.map((r) => r[i]));
+    this.reverseRows();
+
+    this.transpose();
+
+    if (moved) {
+      this.finishMove();
+    }
   }
 
   start() {
