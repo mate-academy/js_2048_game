@@ -40,6 +40,16 @@ function render() {
   if (game.getStatus() === 'lose') {
     messageLose.classList.remove('hidden');
   }
+
+  if (game.getStatus() === 'playing') {
+    start.textContent = 'Restart';
+    start.classList.remove('start');
+    start.classList.add('restart');
+  } else {
+    start.textContent = 'Start';
+    start.classList.remove('restart');
+    start.classList.add('start');
+  }
 }
 
 start.addEventListener('click', () => {
@@ -49,7 +59,6 @@ start.addEventListener('click', () => {
 
   if (game.getStatus() === 'playing') {
     game.restart();
-    game.start();
   } else {
     game.start();
   }
@@ -58,8 +67,6 @@ start.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  const previousState = JSON.stringify(game.getState());
-
   if (e.key === 'ArrowLeft') {
     game.moveLeft();
   } else if (e.key === 'ArrowRight') {
@@ -77,10 +84,6 @@ document.addEventListener('keydown', (e) => {
     e.key === 'ArrowDown';
 
   if (isArrowKey) {
-    if (previousState !== JSON.stringify(game.getState())) {
-      start.textContent = 'Restart';
-      start.classList.add('restart');
-    }
     render();
   }
 });
