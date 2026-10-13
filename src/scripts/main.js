@@ -5,7 +5,7 @@ export default class Game {
     // Якщо initialState передано, робимо його глибоку копію, інакше створюємо пусту дошку
     this.board = initialState ? initialState.map(row => [...row]) : this.createEmptyBoard();
     this.score = 0;
-    this.status = 'playing';
+    this.status = 'idle';
   }
 
   createEmptyBoard() {
@@ -13,12 +13,16 @@ export default class Game {
   }
 
   start() {
-    // Додаємо плитки тільки якщо дошка повністю пуста (складається з нулів)
-    const isEmpty = this.board.every(row => row.every(cell => cell === 0));
-    if (isEmpty) {
+    if (this.status === 'playing') {
+      return;
+    }
+
+    // Додаємо випадкові плитки при запуску, навіть якщо дошка була передана як початковий стан
+    if (this.getEmptyCells().length > 0) {
       this.addRandomTile();
       this.addRandomTile();
     }
+
     this.status = 'playing';
   }
 
