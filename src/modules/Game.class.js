@@ -57,132 +57,84 @@ class Game {
     }
   }
 
-  moveRow(row, reverse) {
-    let processedRow = row;
+  moveLine(line, reverse) {
+    let processedLine = line;
 
     if (reverse) {
-      processedRow = [...row].reverse();
+      processedLine = [...line].reverse();
     }
 
-    processedRow = this.removeZeros(processedRow);
+    processedLine = this.removeZeros(processedLine);
 
-    this.mergeLine(processedRow);
+    this.mergeLine(processedLine);
 
-    while (processedRow.length < 4) {
-      processedRow.push(0);
+    while (processedLine.length < 4) {
+      processedLine.push(0);
     }
 
     if (reverse) {
-      processedRow = [...processedRow].reverse();
+      processedLine = [...processedLine].reverse();
     }
 
-    return processedRow;
+    return processedLine;
   }
 
-  moveColumn(column, reverse) {
-    let processedColumn = column;
+  moveHorizontally(reverse) {
+    let moved = false;
 
-    if (reverse) {
-      processedColumn = [...column].reverse();
+    this.state.forEach((row, index) => {
+      const processedLine = this.moveLine(row, reverse);
+
+      if (JSON.stringify(row) !== JSON.stringify(processedLine)) {
+        moved = true;
+
+        this.state[index] = processedLine;
+      }
+    });
+
+    if (moved) {
+      this.addRandomTile();
+      this.checkStatus();
+    }
+  }
+
+  moveVertically(reverse) {
+    let moved = false;
+
+    for (let i = 0; i < 4; i++) {
+      const column = this.state.map((row) => row[i]);
+
+      const processedColumn = this.moveLine(column, reverse);
+
+      if (JSON.stringify(column) !== JSON.stringify(processedColumn)) {
+        moved = true;
+
+        for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
+          this.state[rowIndex][i] = processedColumn[rowIndex];
+        }
+      }
     }
 
-    processedColumn = this.removeZeros(processedColumn);
-
-    this.mergeLine(processedColumn);
-
-    while (processedColumn.length < 4) {
-      processedColumn.push(0);
+    if (moved) {
+      this.addRandomTile();
+      this.checkStatus();
     }
-
-    if (reverse) {
-      processedColumn = [...processedColumn].reverse();
-    }
-
-    return processedColumn;
   }
 
   moveLeft() {
-    let moved = false;
-
-    this.state.forEach((row, index) => {
-      const processedRow = this.moveRow(row, false);
-
-      if (JSON.stringify(row) !== JSON.stringify(processedRow)) {
-        moved = true;
-
-        this.state[index] = processedRow;
-      }
-    });
-
-    if (moved) {
-      this.addRandomTile();
-      this.checkStatus();
-    }
+    this.moveHorizontally(false);
   }
 
   moveRight() {
-    let moved = false;
-
-    this.state.forEach((row, index) => {
-      const processedRow = this.moveRow(row, true);
-
-      if (JSON.stringify(row) !== JSON.stringify(processedRow)) {
-        moved = true;
-
-        this.state[index] = processedRow;
-      }
-    });
-
-    if (moved) {
-      this.addRandomTile();
-      this.checkStatus();
-    }
+    this.moveHorizontally(true);
   }
 
   moveUp() {
-    let moved = false;
-
-    for (let i = 0; i < 4; i++) {
-      const column = this.state.map((row) => row[i]);
-
-      const processedColumn = this.moveColumn(column, false);
-
-      if (JSON.stringify(column) !== JSON.stringify(processedColumn)) {
-        moved = true;
-
-        for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
-          this.state[rowIndex][i] = processedColumn[rowIndex];
-        }
-      }
-    }
-
-    if (moved) {
-      this.addRandomTile();
-      this.checkStatus();
-    }
+    this.moveVertically(false);
   }
 
   moveDown() {
-    let moved = false;
-
-    for (let i = 0; i < 4; i++) {
-      const column = this.state.map((row) => row[i]);
-
-      const processedColumn = this.moveColumn(column, true);
-
-      if (JSON.stringify(column) !== JSON.stringify(processedColumn)) {
-        moved = true;
-
-        for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
-          this.state[rowIndex][i] = processedColumn[rowIndex];
-        }
-      }
-    }
-
-    if (moved) {
-      this.addRandomTile();
-      this.checkStatus();
-    }
+    this.moveVertically(true);
   }
 
   addRandomTile() {
