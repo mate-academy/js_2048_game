@@ -1,7 +1,8 @@
 'use strict';
 
 // Uncomment the next lines to use your game instance in the browser
-const Game = require('../modules/Game.class');
+import { Game } from '../modules/Game.class.js';
+
 const game = new Game();
 
 // Write your code here
@@ -31,8 +32,8 @@ const renderField = () => {
 
 const updateButtonRestart = () => {
   button.textContent = 'Restart';
-  button.remove('start');
-  button.add('restart');
+  button.classList.remove('start');
+  button.classList.add('restart');
   startMsg.classList.add('hidden');
 };
 
@@ -65,6 +66,8 @@ document.addEventListener('keydown', (e) => {
   } else if (game.status === 'win') {
     winMsg.classList.remove('hidden');
   }
+
+  // console.table(game.getState());
 });
 
 button.addEventListener('click', () => {
