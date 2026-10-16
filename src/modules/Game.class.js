@@ -7,7 +7,7 @@ class Game {
   constructor(initialState) {
     this.initialState = initialState;
     this.score = 0;
-    this.status = 'idle'; // 'idle', 'playing', 'win', 'lose'
+    this.status = 'idle';
 
     if (initialState) {
       this.board = initialState.map((row) => [...row]);
@@ -236,4 +236,10 @@ class Game {
   }
 }
 
-module.exports = Game;
+export { Game };
+export default Game;
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { Game };
+  module.exports.default = Game;
+}
