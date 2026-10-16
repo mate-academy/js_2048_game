@@ -159,7 +159,8 @@ class Game {
     const x1 = this.getRandomInt(0, 3);
     const y1 = this.getRandomInt(0, 3);
 
-    let x2, y2;
+    let x2 = this.getRandomInt(0, 3);
+    let y2 = this.getRandomInt(0, 3);
 
     while (x1 === x2 && y1 === y2) {
       x2 = this.getRandomInt(0, 3);
@@ -233,16 +234,15 @@ class Game {
       return; // No empty cells, can't place
     }
 
-    const randomCell = this.getRandomInt(emptyCells.length);
+    const randomCell = this.getRandomInt(0, emptyCells.length);
 
     const possibilities = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4];
 
-    const randomNumber = this.getRandomInt(possibilities.length);
+    const randomNumber = this.getRandomInt(0, possibilities.length);
 
-    const x = emptyCells[randomCell].col;
-    const y = emptyCells[randomCell].row;
+    const { row, col } = emptyCells[randomCell];
 
-    this.field[x][y] = possibilities[randomNumber];
+    this.field[row][col] = possibilities[randomNumber];
   }
 
   getRandomInt(min, max) {
@@ -253,4 +253,4 @@ class Game {
   }
 }
 
-module.exports = Game;
+export { Game };
