@@ -14,27 +14,27 @@ const winMsg = document.querySelector('.message-win');
 
 const cells = document.querySelectorAll('.field-cell');
 const renderField = () => {
-    const state = game.getState();
+  const state = game.getState();
 
-    state.forEach((row, rowIndex) => {
-        row.forEach((value, colIndex) => {
-            const cell = cells[rowIndex * 4 + colIndex];
+  state.forEach((row, rowIndex) => {
+    row.forEach((value, colIndex) => {
+      const cell = cells[rowIndex * 4 + colIndex];
 
-            cell.textContent = value || '';
-            cell.className = 'field-cell'; // reset
+      cell.textContent = value || '';
+      cell.className = 'field-cell'; // reset
 
-            if (value) {
-                cell.classList.add(`field-cell--${value}`);
-            }
-        });
+      if (value) {
+        cell.classList.add(`field-cell--${value}`);
+      }
     });
+  });
 };
 
 const updateButtonRestart = () => {
-    button.textContent = 'Restart';
-    button.classList.remove('start');
-    button.classList.add('restart');
-    startMsg.classList.add('hidden');
+  button.textContent = 'Restart';
+  button.classList.remove('start');
+  button.classList.add('restart');
+  startMsg.classList.add('hidden');
 };
 
 game.start();
@@ -42,42 +42,42 @@ game.start();
 renderField();
 
 document.addEventListener('keydown', (e) => {
-    switch (e.key) {
-        case 'ArrowDown':
-            game.moveDown();
-            break;
-        case 'ArrowUp':
-            game.moveUp();
-            break;
-        case 'ArrowLeft':
-            game.moveLeft();
-            break;
-        case 'ArrowRight':
-            game.moveRight();
-            break;
-        default:
-            return;
-    }
+  switch (e.key) {
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    default:
+      return;
+  }
 
-    renderField();
-    score.textContent = game.getScore();
+  renderField();
+  score.textContent = game.getScore();
 
-    if (game.getStatus() === 'lose') {
-        loseMsg.classList.remove('hidden');
-    } else if (game.getStatus() === 'win') {
-        winMsg.classList.remove('hidden');
-    }
+  if (game.getStatus() === 'lose') {
+    loseMsg.classList.remove('hidden');
+  } else if (game.getStatus() === 'win') {
+    winMsg.classList.remove('hidden');
+  }
 
-    // console.table(game.getState());
+  // console.table(game.getState());
 
-    //console.log(game.getStatus());
+  // console.log(game.getStatus());
 });
 
 button.addEventListener('click', () => {
-    game.restart();
-    score.textContent = 0;
-    loseMsg.classList.add('hidden');
-    winMsg.classList.add('hidden');
+  game.restart();
+  score.textContent = 0;
+  loseMsg.classList.add('hidden');
+  winMsg.classList.add('hidden');
 });
 
 document.addEventListener('keydown', updateButtonRestart, { once: true });
