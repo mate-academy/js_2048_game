@@ -116,6 +116,9 @@ class Game {
    * @returns {number}
    */
   getScore() {
+
+    this.score = 0;
+
     this.field.forEach((row) => row.forEach((x) => (this.score += x)));
 
     return this.score;
@@ -139,7 +142,7 @@ class Game {
    * `lose` - the game is lost
    */
   getStatus() {
-    if (this.getEmptyCells().length === 0) {
+    if (this.getEmptyCells().length === 0 && this.noValidMove()) {
       this.status = 'lose';
     }
 
@@ -251,6 +254,36 @@ class Game {
 
     return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
   }
+
+  noValidMove() {
+
+    for (let row of this.field) {
+      if (row.includes(0)) {
+        return false;
+      }
+    }
+
+    for (let row of this.field) {
+      for (let i = 0; i < row.length; i++) {
+        if (row[i] === row[i + 1]) {
+          return false;
+        }
+      }
+    }
+
+    const arr = this.transposeArray(this.field);
+    for (let row of arr) {
+      for (let i = 0; i < row.length; i++) {
+        if (row[i] === row[i + 1]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+
+  }
+
 }
 
 export { Game };
