@@ -5,3 +5,73 @@ const Game = require('../modules/Game.class');
 const game = new Game();
 
 // Write your code here
+const button = document.querySelector('button');
+const score = document.querySelector('.game-score');
+const startMsg = document.querySelector('.message-start');
+const loseMsg = document.querySelector('.message-lose');
+const winMsg = document.querySelector('.message-win');
+
+const cells = document.querySelectorAll('.field-cell');
+const renderField = () => {
+  const state = game.getState();
+
+  state.forEach((row, rowIndex) => {
+    row.forEach((value, colIndex) => {
+      const cell = cells[rowIndex * 4 + colIndex];
+
+      cell.textContent = value || '';
+      cell.className = 'field-cell'; // reset
+
+      if (value) {
+        cell.classList.add(`field-cell--${value}`);
+      }
+    });
+  });
+};
+
+const updateButtonRestart = () => {
+  button.textContent = 'Restart';
+  button.remove('start');
+  button.add('restart');
+  startMsg.classList.add('hidden');
+};
+
+game.start();
+
+renderField();
+
+document.addEventListener('keydown', (e) => {
+  switch (e.key) {
+    case 'ArrowDown':
+      game.moveDown();
+      break;
+    case 'ArrowUp':
+      game.moveUp();
+      break;
+    case 'ArrowLeft':
+      game.moveLeft();
+      break;
+    case 'ArrowRight':
+      game.moveRight();
+      break;
+    default:
+      return;
+  }
+
+  score.textContent = game.getScore();
+
+  if (game.status === 'lose') {
+    loseMsg.classList.remove('hidden');
+  } else if (game.status === 'win') {
+    winMsg.classList.remove('hidden');
+  }
+});
+
+button.addEventListener('click', () => {
+  game.restart();
+  score.textContent = 0;
+  loseMsg.classList.add('hidden');
+  winMsg.classList.add('hidden');
+});
+
+document.addEventListener('keydown', updateButtonRestart, { once: true });
