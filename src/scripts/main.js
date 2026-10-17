@@ -115,6 +115,8 @@ startButton.addEventListener('click', (e) => {
     game.start();
   } else {
     game.restart();
+    startButton.classList.replace('restart', 'start');
+    startButton.textContent = 'Start';
     messageLost.classList.add('hidden');
     messageWin.classList.add('hidden');
   }
@@ -128,14 +130,76 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
   }
 
+  makeMove(e.key);  
+});
+
+let startX;
+let startY;
+
+document.addEventListener('touchstart', (event) => {
+  if (event.touches.length !== 1) {
+    startX = undefined;
+    startY = undefined;
+
+    return;
+  }
+
+  startX = event.touches[0].clientX;
+  startY = event.touches[0].clientY;
+});
+
+document.addEventListener('touchend', (event) => {
+  if (startX === undefined || startY === undefined) {
+    return;
+  }
+
+  const endX = event.changedTouches[0].clientX;
+  const endY = event.changedTouches[0].clientY;
+
+  const direction = handleSwipe(startX, endX, startY, endY);
+
+  startX = undefined;
+  startY = undefined;
+
+  if (direction) {
+    makeMove(direction);
+  }
+});
+
+document.addEventListener('touchcancel', () => {
+  startX = undefined;
+  startY = undefined;
+});
+
+function handleSwipe(startX, endX, startY, endY) {
+  const diffX = endX - startX;
+  const diffY = endY - startY;
+
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (Math.abs(diffX) < 30) {
+      return null;
+    }
+
+    return diffX > 0 ? 'right' : 'left';
+  }
+
+  if (Math.abs(diffY) < 30) {
+    return null;
+  }
+
+  return diffY > 0 ? 'down' : 'up';
+}
+
+function makeMove(direction) {
   if (game.getStatus() !== 'playing') {
     return;
   }
 
   const startStatePosition = game.getState();
 
-  switch (e.key) {
-    case 'ArrowLeft': {
+  switch (direction) {
+    case 'ArrowLeft':
+    case 'left': {
       game.moveLeft();
       stateReplacing(table);
 
@@ -151,7 +215,8 @@ document.addEventListener('keydown', (e) => {
       break;
     }
 
-    case 'ArrowRight': {
+    case 'ArrowRight':
+    case 'right': {
       game.moveRight();
       stateReplacing(table);
 
@@ -167,7 +232,8 @@ document.addEventListener('keydown', (e) => {
       break;
     }
 
-    case 'ArrowUp': {
+    case 'ArrowUp':
+    case 'up': {
       game.moveUp();
       stateReplacing(table);
 
@@ -183,7 +249,8 @@ document.addEventListener('keydown', (e) => {
       break;
     }
 
-    case 'ArrowDown': {
+    case 'ArrowDown':
+    case 'down': {
       game.moveDown();
       stateReplacing(table);
 
@@ -199,4 +266,4 @@ document.addEventListener('keydown', (e) => {
       break;
     }
   }
-});
+}
