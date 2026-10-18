@@ -249,20 +249,9 @@ class Game {
   restart() {
     this.apearCells.length = 0;
 
-    this.status = 'playing';
+    this.status = 'idle';
     this.score = 0;
     this.state = this.emptyState.map((row) => [...row]);
-
-    const coord1 = this.spawnTile();
-    const coord2 = this.spawnTile();
-
-    if (coord1) {
-      this.apearCells.push(coord1);
-    }
-
-    if (coord2) {
-      this.apearCells.push(coord2);
-    }
   }
 
   // Add your own methods here

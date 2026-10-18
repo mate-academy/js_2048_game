@@ -113,16 +113,21 @@ function hasWonOrLost() {
 startButton.addEventListener('click', (e) => {
   if (e.currentTarget.classList.contains('start')) {
     game.start();
-  } else {
+    startButton.classList.replace('start', 'restart');
+    startButton.textContent = 'Restart';
+    messageStart.classList.add('hidden');
+
+    stateReplacing(table);
+  } 
+  else {
     game.restart();
+    stateReplacing(table);
     startButton.classList.replace('restart', 'start');
     startButton.textContent = 'Start';
     messageLost.classList.add('hidden');
     messageWin.classList.add('hidden');
+    messageStart.classList.remove('hidden');
   }
-
-  stateReplacing(table);
-  messageStart.classList.add('hidden');
 });
 
 document.addEventListener('keydown', (e) => {
@@ -130,31 +135,31 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
   }
 
-  makeMove(e.key);  
+  makeMove(e.key);
 });
 
 let startX;
 let startY;
 
-document.addEventListener('touchstart', (event) => {
-  if (event.touches.length !== 1) {
+document.addEventListener('touchstart', (e) => {
+  if (e.touches.length !== 1) {
     startX = undefined;
     startY = undefined;
 
     return;
   }
 
-  startX = event.touches[0].clientX;
-  startY = event.touches[0].clientY;
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
 });
 
-document.addEventListener('touchend', (event) => {
+document.addEventListener('touchend', (e) => {
   if (startX === undefined || startY === undefined) {
     return;
   }
 
-  const endX = event.changedTouches[0].clientX;
-  const endY = event.changedTouches[0].clientY;
+  const endX = e.changedTouches[0].clientX;
+  const endY = e.changedTouches[0].clientY;
 
   const direction = handleSwipe(startX, endX, startY, endY);
 
@@ -171,9 +176,9 @@ document.addEventListener('touchcancel', () => {
   startY = undefined;
 });
 
-function handleSwipe(startX, endX, startY, endY) {
-  const diffX = endX - startX;
-  const diffY = endY - startY;
+function handleSwipe(startx, endX, starty, endY) {
+  const diffX = endX - startx;
+  const diffY = endY - starty;
 
   if (Math.abs(diffX) > Math.abs(diffY)) {
     if (Math.abs(diffX) < 30) {
@@ -195,22 +200,11 @@ function makeMove(direction) {
     return;
   }
 
-  const startStatePosition = game.getState();
-
   switch (direction) {
     case 'ArrowLeft':
     case 'left': {
       game.moveLeft();
       stateReplacing(table);
-
-      if (
-        game.hasChanged(startStatePosition) &&
-        startButton.classList.contains('start')
-      ) {
-        startButton.classList.replace('start', 'restart');
-        startButton.textContent = 'Restart';
-      }
-
       hasWonOrLost();
       break;
     }
@@ -219,15 +213,6 @@ function makeMove(direction) {
     case 'right': {
       game.moveRight();
       stateReplacing(table);
-
-      if (
-        game.hasChanged(startStatePosition) &&
-        startButton.classList.contains('start')
-      ) {
-        startButton.classList.replace('start', 'restart');
-        startButton.textContent = 'Restart';
-      }
-
       hasWonOrLost();
       break;
     }
@@ -236,15 +221,6 @@ function makeMove(direction) {
     case 'up': {
       game.moveUp();
       stateReplacing(table);
-
-      if (
-        game.hasChanged(startStatePosition) &&
-        startButton.classList.contains('start')
-      ) {
-        startButton.classList.replace('start', 'restart');
-        startButton.textContent = 'Restart';
-      }
-
       hasWonOrLost();
       break;
     }
@@ -253,15 +229,6 @@ function makeMove(direction) {
     case 'down': {
       game.moveDown();
       stateReplacing(table);
-
-      if (
-        game.hasChanged(startStatePosition) &&
-        startButton.classList.contains('start')
-      ) {
-        startButton.classList.replace('start', 'restart');
-        startButton.textContent = 'Restart';
-      }
-
       hasWonOrLost();
       break;
     }
