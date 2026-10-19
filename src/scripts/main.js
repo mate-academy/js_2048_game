@@ -25,6 +25,12 @@ restartButton.addEventListener('click', () => {
 
   messageLose.classList.add('hidden');
   messageWin.classList.add('hidden');
+  restartButton.classList.add('hidden');
+
+  startButton.classList.remove('hidden');
+  messageStart.classList.remove('hidden');
+
+  gameScore.textContent = game.getScore();
 });
 
 document.addEventListener('keydown', (ev) => {

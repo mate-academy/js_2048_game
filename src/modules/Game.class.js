@@ -179,6 +179,8 @@ class Game {
       }
     }
 
+    this.status = 'lose';
+
     return true;
   }
 
@@ -189,6 +191,8 @@ class Game {
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         if (this.field[r][c] >= 2048) {
+          this.status = 'win';
+
           return true;
         }
       }
@@ -218,7 +222,14 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.start();
+    this.status = 'idle';
+    this.score = 0;
+
+    this.field = Array(4)
+      .fill(null)
+      .map(() => Array(4).fill(0));
+
+    this.render();
   }
 
   render() {
