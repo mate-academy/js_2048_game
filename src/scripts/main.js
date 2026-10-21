@@ -12,9 +12,8 @@ const startMsg = document.querySelector('.message-start');
 const loseMsg = document.querySelector('.message-lose');
 const winMsg = document.querySelector('.message-win');
 
-loseMsg.style.display = "none";
-winMsg.style.display = "none";
-
+loseMsg.style.display = 'none';
+winMsg.style.display = 'none';
 
 const cells = document.querySelectorAll('.field-cell');
 
@@ -40,11 +39,11 @@ const updateButtonRestart = () => {
   button.classList.remove('start');
   button.classList.add('restart');
   startMsg.classList.add('hidden');
-  startMsg.style.display = "none";
+  startMsg.style.display = 'none';
 };
 
 const playMove = (move) => {
-  const prevState = game.getState();
+  const prevState = JSON.stringify(game.getState());
 
   if (move === 'down') {
     game.moveDown();
@@ -58,7 +57,7 @@ const playMove = (move) => {
     console.error('Invalid move');
   } */
 
-  if (prevState !== game.getState()) {
+  if (prevState !== JSON.stringify(game.getState())) {
     game.placeRandomNumber();
   }
 };
@@ -90,10 +89,10 @@ document.addEventListener('keydown', (e) => {
 
   if (game.getStatus() === 'lose') {
     loseMsg.classList.remove('hidden');
-    loseMsg.style.display = "flex";
+    loseMsg.style.display = 'flex';
   } else if (game.getStatus() === 'win') {
     winMsg.classList.remove('hidden');
-    winMsg.style.display = "flex";
+    winMsg.style.display = 'flex';
   }
 
   // console.table(game.getState());
@@ -106,10 +105,10 @@ button.addEventListener('click', () => {
   score.textContent = 0;
 
   loseMsg.classList.add('hidden');
-  loseMsg.style.display = "none";
+  loseMsg.style.display = 'none';
 
   winMsg.classList.add('hidden');
-  winMsg.style.display = "none";
+  winMsg.style.display = 'none';
 
   renderField();
 });

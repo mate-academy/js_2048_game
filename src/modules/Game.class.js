@@ -135,9 +135,10 @@ class Game {
     if (this.getEmptyCells().length === 0 && this.noValidMove()) {
       this.status = 'lose';
     }
-
-    if (this.field.some((row) => row.includes(2048))) {
+    else if (this.field.some((row) => row.includes(2048))) {
       this.status = 'win';
+    } else {
+      this.status = 'playing';
     }
 
     return this.status;
