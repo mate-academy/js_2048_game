@@ -12,6 +12,10 @@ const startMsg = document.querySelector('.message-start');
 const loseMsg = document.querySelector('.message-lose');
 const winMsg = document.querySelector('.message-win');
 
+loseMsg.style.display = "none";
+winMsg.style.display = "none";
+
+
 const cells = document.querySelectorAll('.field-cell');
 
 const renderField = () => {
@@ -36,6 +40,7 @@ const updateButtonRestart = () => {
   button.classList.remove('start');
   button.classList.add('restart');
   startMsg.classList.add('hidden');
+  startMsg.style.display = "none";
 };
 
 const playMove = (move) => {
@@ -85,8 +90,10 @@ document.addEventListener('keydown', (e) => {
 
   if (game.getStatus() === 'lose') {
     loseMsg.classList.remove('hidden');
+    loseMsg.style.display = "flex";
   } else if (game.getStatus() === 'win') {
     winMsg.classList.remove('hidden');
+    winMsg.style.display = "flex";
   }
 
   // console.table(game.getState());
@@ -97,8 +104,13 @@ document.addEventListener('keydown', (e) => {
 button.addEventListener('click', () => {
   game.restart();
   score.textContent = 0;
+
   loseMsg.classList.add('hidden');
+  loseMsg.style.display = "none";
+
   winMsg.classList.add('hidden');
+  winMsg.style.display = "none";
+
   renderField();
 });
 
