@@ -50,7 +50,6 @@ class Game {
       this.field[i] = newRow;
     }
 
-    this.placeRandomNumber();
   }
 
   moveRight() {
@@ -67,7 +66,6 @@ class Game {
 
       this.field[i] = newRow;
     }
-    this.placeRandomNumber();
   }
 
   moveUp() {
@@ -88,7 +86,6 @@ class Game {
     }
 
     this.field = this.transposeArray(arr);
-    this.placeRandomNumber();
   }
 
   moveDown() {
@@ -109,18 +106,12 @@ class Game {
     }
 
     this.field = this.transposeArray(arr);
-    this.placeRandomNumber();
   }
 
   /**
    * @returns {number}
    */
   getScore() {
-
-    this.score = 0;
-
-    this.field.forEach((row) => row.forEach((x) => (this.score += x)));
-
     return this.score;
   }
 
@@ -191,11 +182,11 @@ class Game {
   // Add your own methods here
 
   checkIsRowEmpty(row) {
-    return row.includes('0');
+    return row.includes(0);
   }
 
   checkIsColEmpty(col) {
-    return col.includes('0');
+    return col.includes(0);
   }
 
   transposeArray(arr) {
@@ -209,6 +200,9 @@ class Game {
       if (row[i] === row[i + 1]) {
         row[i] *= 2;
         row.splice(i + 1, 1);
+
+        // Increase score by the sum of merged cells
+        this.score += row[i];
         i++;
       }
     }
@@ -256,14 +250,13 @@ class Game {
   }
 
   noValidMove() {
-
-    for (let row of this.field) {
+    for (const row of this.field) {
       if (row.includes(0)) {
         return false;
       }
     }
 
-    for (let row of this.field) {
+    for (const row of this.field) {
       for (let i = 0; i < row.length; i++) {
         if (row[i] === row[i + 1]) {
           return false;
@@ -272,7 +265,8 @@ class Game {
     }
 
     const arr = this.transposeArray(this.field);
-    for (let row of arr) {
+
+    for (const row of arr) {
       for (let i = 0; i < row.length; i++) {
         if (row[i] === row[i + 1]) {
           return false;
@@ -281,9 +275,7 @@ class Game {
     }
 
     return true;
-
   }
-
 }
 
 export { Game };
