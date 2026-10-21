@@ -13,6 +13,7 @@ const loseMsg = document.querySelector('.message-lose');
 const winMsg = document.querySelector('.message-win');
 
 const cells = document.querySelectorAll('.field-cell');
+
 const renderField = () => {
   const state = game.getState();
 
@@ -35,6 +36,27 @@ const updateButtonRestart = () => {
   button.classList.remove('start');
   button.classList.add('restart');
   startMsg.classList.add('hidden');
+  renderField();
+};
+
+const playMove = (move) => {
+  const prevState = game.getState();
+
+  if (move === 'down') {
+    game.moveDown();
+  } else if (move === 'up') {
+    game.moveUp();
+  } else if (move === 'left') {
+    game.moveLeft();
+  } else if (move === 'right') {
+    game.moveRight();
+  } /* else {
+    console.error('Invalid move');
+  } */
+
+  if (prevState !== game.getState()) {
+    game.placeRandomNumber();
+  }
 };
 
 game.start();
@@ -44,16 +66,16 @@ renderField();
 document.addEventListener('keydown', (e) => {
   switch (e.key) {
     case 'ArrowDown':
-      game.moveDown();
+      playMove('down');
       break;
     case 'ArrowUp':
-      game.moveUp();
+      playMove('up');
       break;
     case 'ArrowLeft':
-      game.moveLeft();
+      playMove('left');
       break;
     case 'ArrowRight':
-      game.moveRight();
+      playMove('right');
       break;
     default:
       return;
