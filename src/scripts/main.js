@@ -36,7 +36,6 @@ const updateButtonRestart = () => {
   button.classList.remove('start');
   button.classList.add('restart');
   startMsg.classList.add('hidden');
-  renderField();
 };
 
 const playMove = (move) => {
@@ -100,6 +99,7 @@ button.addEventListener('click', () => {
   score.textContent = 0;
   loseMsg.classList.add('hidden');
   winMsg.classList.add('hidden');
+  renderField();
 });
 
 document.addEventListener('keydown', updateButtonRestart, { once: true });

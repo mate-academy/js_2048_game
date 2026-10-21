@@ -49,7 +49,6 @@ class Game {
 
       this.field[i] = newRow;
     }
-
   }
 
   moveRight() {
