@@ -14,12 +14,13 @@ const messageWin = document.querySelector('.message-win');
 function renderBoard() {
   const rows = document.querySelectorAll('.field-row');
   const score = document.querySelector('.game-score');
+  const state = game.getState();
 
   for (let i = 0; i < 4; i++) {
     const cells = rows[i].querySelectorAll('.field-cell');
 
     for (let j = 0; j < 4; j++) {
-      const value = game.getState()[i][j];
+      const value = state[i][j];
       const cell = cells[j];
 
       cell.className = 'field-cell';
@@ -70,25 +71,25 @@ button.addEventListener('click', () => {
 document.addEventListener('keydown', (keyboardEvent) => {
   if (keyboardEvent.key === 'ArrowUp') {
     game.moveUp();
-    game.spawnTitle();
+    game.spawnTile();
     renderBoard();
   }
 
   if (keyboardEvent.key === 'ArrowDown') {
     game.moveDown();
-    game.spawnTitle();
+    game.spawnTile();
     renderBoard();
   }
 
   if (keyboardEvent.key === 'ArrowLeft') {
     game.moveLeft();
-    game.spawnTitle();
+    game.spawnTile();
     renderBoard();
   }
 
   if (keyboardEvent.key === 'ArrowRight') {
     game.moveRight();
-    game.spawnTitle();
+    game.spawnTile();
     renderBoard();
   }
 });

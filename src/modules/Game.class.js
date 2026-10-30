@@ -22,12 +22,9 @@ export class Game {
    * initial state.
    */
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
-
     this.initialState = initialState;
 
-    this.state = initialState || [
+    this.state = initialState.map((row) => [...row]) || [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -46,7 +43,6 @@ export class Game {
           numbers[j] *= 2;
           this.score += numbers[j];
           numbers.splice(j + 1, 1);
-          continue;
         }
       }
 
@@ -66,7 +62,6 @@ export class Game {
           numbers[j] *= 2;
           this.score += numbers[j];
           numbers.splice(j - 1, 1);
-          continue;
         }
       }
 
@@ -92,7 +87,6 @@ export class Game {
           numbers[a] *= 2;
           this.score += numbers[a];
           numbers.splice(a + 1, 1);
-          continue;
         }
       }
 
@@ -115,12 +109,11 @@ export class Game {
 
       const numbers = column.filter((number) => number !== 0);
 
-      for (let a = numbers.length - 1; a > 0; a--) {
-        if (numbers[a] === numbers[a - 1]) {
+      for (let a = 0; a < numbers.length - 1; a++) {
+        if (numbers[a] === numbers[a + 1]) {
           numbers[a] *= 2;
           this.score += numbers[a];
-          numbers.splice(a - 1, 1);
-          continue;
+          numbers.splice(a + 1, 1);
         }
       }
 
@@ -148,7 +141,7 @@ export class Game {
     return this.state.map((row) => [...row]);
   }
 
-  spawnTitle() {
+  spawnTile() {
     const empty = [];
 
     for (let i = 0; i < this.state.length; i++) {
@@ -226,6 +219,8 @@ export class Game {
    * Starts the game.
    */
   clear() {
+    this.score = 0;
+
     for (let i = 0; i < this.state.length; i++) {
       for (let j = 0; j < this.state[i].length; j++) {
         this.state[i][j] = 0;
@@ -234,12 +229,10 @@ export class Game {
   }
 
   start() {
-    this.score = 0;
-
     this.clear();
 
-    this.spawnTitle();
-    this.spawnTitle();
+    this.spawnTile();
+    this.spawnTile();
     this.getStatus();
   }
 
