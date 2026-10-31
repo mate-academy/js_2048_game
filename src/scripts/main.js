@@ -130,6 +130,8 @@ startButton.addEventListener('click', () => {
     game.restart();
     isGameOver = true;
 
+    winMessage.classList.add('hidden');
+    loseMessage.classList.add('hidden');
     startMessage.classList.remove('hidden');
   }
 
