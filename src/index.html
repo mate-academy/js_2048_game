@@ -19,13 +19,21 @@
         <div class="controls">
           <p class="info">
             Score:
-            <span class="game-score">0</span>
+            <span
+              class="game-score"
+              aria-live="polite"
+            >
+              0
+            </span>
           </p>
           <button class="button start">Start</button>
         </div>
       </div>
 
-      <table class="game-field">
+      <table
+        class="game-field"
+        aria-label="2048 game board"
+      >
         <tbody>
           <tr class="field-row">
             <td class="field-cell"></td>
