@@ -40,11 +40,12 @@ function render() {
 }
 
 startButton.addEventListener('click', () => {
-  if (game.getStatus() !== 'idle') {
+  if (game.getStatus() === 'idle') {
+    game.start();
+  } else {
     game.restart();
   }
 
-  game.start();
   render();
 });
 
