@@ -44,6 +44,10 @@ startButton.addEventListener('click', () => {
   }
 
   game.start();
+
+  startButton.classList.replace('start', 'restart');
+  startButton.textContent = startButton.dataset.content;
+
   renderTable();
 });
 
@@ -67,11 +71,6 @@ document.addEventListener('keydown', (e) => {
   }
 
   e.preventDefault();
-
-  if (game.getStatus() !== 'idle') {
-    startButton.classList.replace('start', 'restart');
-    startButton.textContent = startButton.dataset.content;
-  }
 
   renderTable();
 });
