@@ -136,7 +136,7 @@ Shared values are stored as static properties on the class instead of raw string
 
 ### Installation and run
 
-```bash
+```bash / zsh
 git clone https://github.com/your-username/your-repo.git
 cd your-repo
 git checkout develop   # all development happens on the develop branch
@@ -146,9 +146,19 @@ npm start              # starts the dev server and opens the game in your browse
 
 Parcel serves the game with hot reload, so the page updates as you edit the code. If the browser doesn't open on its own, use the address printed in the terminal (usually `http://localhost:1234`).
 
+## Deployment
+
+The game is published with GitHub Pages. To deploy the latest version, run:
+
+```bash / zsh
+npm run deploy
+```
+
+The live demo is available at the link at the top of this README.
+
 ## Testing
 
-```bash
+```bash / zsh
 npm test
 ```
 
