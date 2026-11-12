@@ -23,6 +23,7 @@ function updateField() {
     const column = i % 4;
     const value = state[row][column];
 
+    cells[i].className = `field-cell field-cell--${value}`;
     cells[i].textContent = value === 0 ? '' : value;
   }
 }
@@ -43,6 +44,7 @@ startButton.addEventListener('click', () => {
   updateScore();
 
   startButton.textContent = 'Restart';
+  startButton.classList.remove('start');
   startButton.classList.add('restart');
   messageStart.classList.add('hidden');
   messageWin.classList.add('hidden');
