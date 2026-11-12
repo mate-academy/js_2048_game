@@ -33,19 +33,19 @@ function updateScore() {
 }
 
 startButton.addEventListener('click', () => {
-  if (game.getStatus() === 'idle') {
-    game.start();
-  } else {
+  if (game.getStatus() !== 'idle') {
     game.restart();
-    game.start();
   }
+
+  startButton.textContent = 'Start';
+  startButton.classList.remove('restart');
+  startButton.classList.add('start');
+
+  game.start();
 
   updateField();
   updateScore();
 
-  startButton.textContent = 'Restart';
-  startButton.classList.remove('start');
-  startButton.classList.add('restart');
   messageStart.classList.add('hidden');
   messageWin.classList.add('hidden');
   messageLose.classList.add('hidden');
@@ -81,6 +81,10 @@ document.addEventListener('keydown', (keyboardEvent) => {
 
   if (hasChanged && game.getStatus() === 'playing') {
     game.addRandomTile();
+
+    startButton.textContent = 'Restart';
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
   }
 
   updateField();

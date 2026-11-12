@@ -195,6 +195,8 @@ class Game {
         }
       }
 
+      mergedColumn.reverse();
+
       while (mergedColumn.length < this.state.length) {
         mergedColumn.unshift(0);
       }
@@ -305,6 +307,10 @@ class Game {
     const value = Math.random() < 0.9 ? 2 : 4;
 
     this.state[randomCell.row][randomCell.column] = value;
+
+    if (this.checkLose()) {
+      this.status = 'lose';
+    }
   }
 
   /**
