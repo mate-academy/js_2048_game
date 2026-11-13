@@ -1,15 +1,7 @@
 'use strict';
 
-const customGame = [
-  [128, 128, 0, 8],
-  [16, 8, 16, 32],
-  [8, 16, 32, 64],
-  [16, 32, 0, 128],
-];
-
-// Uncomment the next lines to use your game instance in the browser
 const Game = require('../modules/Game.class');
-const game = new Game(customGame);
+const game = new Game();
 
 const BOARD_SIZE = 4;
 const GOAL_OF_VICTORY = 2048;
