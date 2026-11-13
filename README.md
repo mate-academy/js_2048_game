@@ -2,7 +2,7 @@
 
 A browser version of the classic **2048** puzzle game, built from scratch with vanilla JavaScript. Slide the tiles, merge equal numbers, and try to create the **2048** tile before the board fills up.
 
-[**Live demo**](https://yJorJio-svg.github.io/your-repo/)
+[**Live demo**](https://JorJio-svg.github.io/js_2048_game/)
 
 ![Preview](./src/images/reference.png)
 
