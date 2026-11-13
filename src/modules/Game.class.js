@@ -1,55 +1,31 @@
 'use strict';
 
-function areStatesEqual(stateA, stateB) {
-  for (let rowIndex = 0; rowIndex < 4; rowIndex += 1) {
-    for (let colIndex = 0; colIndex < 4; colIndex += 1) {
-      if (stateA[rowIndex][colIndex] !== stateB[rowIndex][colIndex]) {
-        return false;
-      }
-    }
+function getLineCoords(direction, lineIndex, pos) {
+  if (direction === 'left') {
+    return {
+      row: lineIndex,
+      col: pos,
+    };
   }
 
-  return true;
-}
-
-function transpose(matrix) {
-  const result = [];
-
-  for (let colIndex = 0; colIndex < 4; colIndex += 1) {
-    result[colIndex] = [];
-
-    for (let rowIndex = 0; rowIndex < 4; rowIndex += 1) {
-      result[colIndex].push(matrix[rowIndex][colIndex]);
-    }
+  if (direction === 'right') {
+    return {
+      row: lineIndex,
+      col: 3 - pos,
+    };
   }
 
-  return result;
-}
-
-function slideRow(row) {
-  const nonZero = row.filter((val) => val !== 0);
-  const newRow = [];
-  let scoreGain = 0;
-  let i = 0;
-
-  while (i < nonZero.length) {
-    if (i + 1 < nonZero.length && nonZero[i] === nonZero[i + 1]) {
-      const merged = nonZero[i] * 2;
-
-      newRow.push(merged);
-      scoreGain += merged;
-      i += 2;
-    } else {
-      newRow.push(nonZero[i]);
-      i += 1;
-    }
+  if (direction === 'up') {
+    return {
+      row: pos,
+      col: lineIndex,
+    };
   }
 
-  while (newRow.length < 4) {
-    newRow.push(0);
-  }
-
-  return { row: newRow, scoreGain };
+  return {
+    row: 3 - pos,
+    col: lineIndex,
+  };
 }
 
 class Game {
@@ -65,13 +41,67 @@ class Game {
       ];
     }
 
+    this.nextTileId = 1;
     this.state = this.initialState.map((row) => [...row]);
+    this.tiles = [];
+    this.mergedGhosts = [];
     this.score = 0;
     this.status = 'idle';
+
+    this.initTilesFromState();
+  }
+
+  initTilesFromState() {
+    this.tiles = [];
+    this.mergedGhosts = [];
+
+    for (let rowIndex = 0; rowIndex < 4; rowIndex += 1) {
+      for (let colIndex = 0; colIndex < 4; colIndex += 1) {
+        const value = this.state[rowIndex][colIndex];
+
+        if (value !== 0) {
+          this.tiles.push({
+            id: this.nextTileId,
+            value,
+            row: rowIndex,
+            col: colIndex,
+            prevRow: null,
+            prevCol: null,
+            isNew: false,
+            isMerged: false,
+          });
+
+          this.nextTileId += 1;
+        }
+      }
+    }
+  }
+
+  syncStateFromTiles() {
+    const nextBoard = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    this.tiles.forEach((tile) => {
+      nextBoard[tile.row][tile.col] = tile.value;
+    });
+
+    this.state = nextBoard;
   }
 
   getState() {
     return this.state.map((row) => [...row]);
+  }
+
+  getTiles() {
+    return this.tiles.map((tile) => ({ ...tile }));
+  }
+
+  getMergedGhosts() {
+    return this.mergedGhosts.map((ghost) => ({ ...ghost }));
   }
 
   getScore() {
@@ -134,6 +164,18 @@ class Game {
     const targetCell = emptyCells[randomIndex];
     const value = Math.random() < 0.1 ? 4 : 2;
 
+    this.tiles.push({
+      id: this.nextTileId,
+      value,
+      row: targetCell.row,
+      col: targetCell.col,
+      prevRow: null,
+      prevCol: null,
+      isNew: true,
+      isMerged: false,
+    });
+
+    this.nextTileId += 1;
     this.state[targetCell.row][targetCell.col] = value;
   }
 
@@ -143,6 +185,16 @@ class Game {
     }
 
     this.status = 'playing';
+    this.mergedGhosts = [];
+
+    this.tiles = this.tiles.map((tile) => ({
+      ...tile,
+      prevRow: null,
+      prevCol: null,
+      isNew: false,
+      isMerged: false,
+    }));
+
     this.addRandomTile();
     this.addRandomTile();
 
@@ -157,6 +209,7 @@ class Game {
     this.state = this.initialState.map((row) => [...row]);
     this.score = 0;
     this.status = 'idle';
+    this.initTilesFromState();
   }
 
   makeMove(direction) {
@@ -164,56 +217,110 @@ class Game {
       return;
     }
 
+    const tileGrid = [
+      [null, null, null, null],
+      [null, null, null, null],
+      [null, null, null, null],
+      [null, null, null, null],
+    ];
+
+    this.tiles.forEach((tile) => {
+      tileGrid[tile.row][tile.col] = tile;
+    });
+
+    const nextTiles = [];
+    const nextGhosts = [];
     let totalScore = 0;
-    let nextState = [];
+    let hasMoved = false;
 
-    if (direction === 'left') {
-      for (let rowIndex = 0; rowIndex < 4; rowIndex += 1) {
-        const { row, scoreGain } = slideRow(this.state[rowIndex]);
+    for (let lineIndex = 0; lineIndex < 4; lineIndex += 1) {
+      const lineTiles = [];
 
-        nextState.push(row);
-        totalScore += scoreGain;
-      }
-    } else if (direction === 'right') {
-      for (let rowIndex = 0; rowIndex < 4; rowIndex += 1) {
-        const reversed = [...this.state[rowIndex]].reverse();
-        const { row, scoreGain } = slideRow(reversed);
+      for (let pos = 0; pos < 4; pos += 1) {
+        const coords = getLineCoords(direction, lineIndex, pos);
+        const currentTile = tileGrid[coords.row][coords.col];
 
-        nextState.push(row.reverse());
-        totalScore += scoreGain;
-      }
-    } else if (direction === 'up') {
-      const transposed = transpose(this.state);
-      const slid = [];
-
-      for (let rowIndex = 0; rowIndex < 4; rowIndex += 1) {
-        const { row, scoreGain } = slideRow(transposed[rowIndex]);
-
-        slid.push(row);
-        totalScore += scoreGain;
+        if (currentTile) {
+          lineTiles.push(currentTile);
+        }
       }
 
-      nextState = transpose(slid);
-    } else if (direction === 'down') {
-      const transposed = transpose(this.state);
-      const slid = [];
+      let index = 0;
+      let targetPos = 0;
 
-      for (let rowIndex = 0; rowIndex < 4; rowIndex += 1) {
-        const reversed = [...transposed[rowIndex]].reverse();
-        const { row, scoreGain } = slideRow(reversed);
+      while (index < lineTiles.length) {
+        const targetCoords = getLineCoords(direction, lineIndex, targetPos);
+        const firstTile = lineTiles[index];
+        const secondTile = lineTiles[index + 1];
 
-        slid.push(row.reverse());
-        totalScore += scoreGain;
+        if (secondTile && firstTile.value === secondTile.value) {
+          const mergedValue = firstTile.value * 2;
+
+          totalScore += mergedValue;
+          hasMoved = true;
+
+          nextGhosts.push({
+            value: firstTile.value,
+            row: targetCoords.row,
+            col: targetCoords.col,
+            prevRow: firstTile.row,
+            prevCol: firstTile.col,
+          });
+
+          nextGhosts.push({
+            value: secondTile.value,
+            row: targetCoords.row,
+            col: targetCoords.col,
+            prevRow: secondTile.row,
+            prevCol: secondTile.col,
+          });
+
+          nextTiles.push({
+            id: this.nextTileId,
+            value: mergedValue,
+            row: targetCoords.row,
+            col: targetCoords.col,
+            prevRow: null,
+            prevCol: null,
+            isNew: false,
+            isMerged: true,
+          });
+
+          this.nextTileId += 1;
+          index += 2;
+        } else {
+          if (
+            firstTile.row !== targetCoords.row ||
+            firstTile.col !== targetCoords.col
+          ) {
+            hasMoved = true;
+          }
+
+          nextTiles.push({
+            id: firstTile.id,
+            value: firstTile.value,
+            row: targetCoords.row,
+            col: targetCoords.col,
+            prevRow: firstTile.row,
+            prevCol: firstTile.col,
+            isNew: false,
+            isMerged: false,
+          });
+
+          index += 1;
+        }
+
+        targetPos += 1;
       }
-
-      nextState = transpose(slid);
     }
 
-    if (areStatesEqual(this.state, nextState)) {
+    if (!hasMoved) {
       return;
     }
 
-    this.state = nextState;
+    this.tiles = nextTiles;
+    this.mergedGhosts = nextGhosts;
+    this.syncStateFromTiles();
     this.score += totalScore;
     this.addRandomTile();
 
