@@ -234,10 +234,13 @@ h1 {
 .message-win {
   background: #edc22e;
   color: #f9f6f2;
+
+  &:not(.hidden) {
+    @include animate(fade-in 300ms ease-out);
+  }
 }
 
-.message-lose,
-.message-win {
+.message-lose {
   &:not(.hidden) {
     @include animate(fade-in 300ms ease-out);
   }
