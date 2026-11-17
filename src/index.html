@@ -1,46 +1,48 @@
 <!doctype html>
-<html lang="uk">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <title>2048 Game</title>
+    <title>2048</title>
     <link
       rel="stylesheet"
       href="./styles/main.scss"
     />
   </head>
   <body>
-    <div class="game-container">
-      <header>
+    <div class="container">
+      <header class="game-header">
         <h1>2048</h1>
-        <div class="score-container">
-          Рахунок:
-          <span id="score">0</span>
+
+        <div class="controls">
+          <div class="info">
+            <span>Score</span>
+            <span class="game-score">0</span>
+          </div>
+
+          <button
+            class="button start"
+            type="button"
+          >
+            Start
+          </button>
+          <button
+            class="button restart"
+            type="button"
+          >
+            Restart
+          </button>
         </div>
-        <!-- Додано клас button start, який шукають тести -->
-        <button
-          id="start-btn"
-          class="button start"
-        >
-          Start
-        </button>
       </header>
 
-      <!-- Додано класи message та message-lose, які перевіряють тести -->
-      <div
-        id="status-message"
-        class="message message-lose hidden"
-      >
-        Натисніть "Start", щоб почати гру!
-      </div>
+      <div class="message hidden"></div>
 
-      <div
-        id="board"
-        class="board"
-      ></div>
+      <table class="game-field">
+        <tbody id="board"></tbody>
+      </table>
     </div>
 
     <script

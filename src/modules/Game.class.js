@@ -1,13 +1,14 @@
 export class Game {
   constructor(initialState = null) {
-    this.board = initialState
-      ? JSON.parse(JSON.stringify(initialState))
-      : Array(4)
-        .fill(0)
-        .map(() => Array(4).fill(0));
+    if (initialState) {
+      this.board = JSON.parse(JSON.stringify(initialState));
+    } else {
+      // prettier-ignore
+      this.board = Array(4).fill(0).map(() => Array(4).fill(0));
+    }
 
     this.score = 0;
-    this.status = 'idle'; // 'idle', 'playing', 'win', 'lose'
+    this.status = 'idle';
     this.hasWon = false;
   }
 
@@ -27,9 +28,8 @@ export class Game {
     if (this.status === 'idle') {
       this.status = 'playing';
 
-      this.board = Array(4)
-        .fill(0)
-        .map(() => Array(4).fill(0));
+      // prettier-ignore
+      this.board = Array(4).fill(0).map(() => Array(4).fill(0));
       this.score = 0;
       this.hasWon = false;
       this.addRandomTile();
@@ -40,9 +40,8 @@ export class Game {
   restart() {
     this.status = 'playing';
 
-    this.board = Array(4)
-      .fill(0)
-      .map(() => Array(4).fill(0));
+    // prettier-ignore
+    this.board = Array(4).fill(0).map(() => Array(4).fill(0));
     this.score = 0;
     this.hasWon = false;
     this.addRandomTile();
@@ -64,12 +63,10 @@ export class Game {
       const { r, c } =
         emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-      // 90% ймовірність для 2, 10% для 4
       this.board[r][c] = Math.random() < 0.9 ? 2 : 4;
     }
   }
 
-  // Допоміжна функція для зсуву та злиття одного рядка вліво
   slideLeft(row) {
     const arr = row.filter((val) => val !== 0);
     let points = 0;
@@ -81,7 +78,7 @@ export class Game {
 
         newRow.push(mergedVal);
         points += mergedVal;
-        i++; // пропуск наступного, оскільки він злився
+        i++;
 
         if (mergedVal === 2048 && !this.hasWon) {
           this.hasWon = true;
@@ -99,11 +96,9 @@ export class Game {
     return { newRow, points };
   }
 
-  // Поворот матриці на 90 градусів за годинниковою стрілкою
   rotateClockwise(matrix) {
-    const res = Array(4)
-      .fill(0)
-      .map(() => Array(4).fill(0));
+    // prettier-ignore
+    const res = Array(4).fill(0).map(() => Array(4).fill(0));
 
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
@@ -114,7 +109,6 @@ export class Game {
     return res;
   }
 
-  // Перевірка чи змінилося поле після руху
   isBoardChanged(oldBoard, newBoard) {
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
@@ -127,7 +121,6 @@ export class Game {
     return false;
   }
 
-  // Загальна логіка виконання ходу
   makeMove(moveFunction) {
     if (this.status !== 'playing' && this.status !== 'win') {
       return;
@@ -181,6 +174,7 @@ export class Game {
         matrix[r] = newRow;
         this.score += points;
       }
+
       this.board = this.rotateClockwise(matrix);
     });
   }
@@ -203,7 +197,6 @@ export class Game {
   }
 
   checkGameOver() {
-    // Якщо є хоч одна нульова клітинка — гра не закінчена
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
         if (this.board[r][c] === 0) {
@@ -212,7 +205,6 @@ export class Game {
       }
     }
 
-    // Перевірка чи є сусідні однакові елементи по горизонталі та вертикалі
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
         const current = this.board[r][c];
