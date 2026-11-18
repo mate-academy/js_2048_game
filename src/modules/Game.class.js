@@ -1,6 +1,5 @@
 'use strict';
 
-// Номера клеток идут слева направо, как в HTML-таблице.
 const rows = [
   [0, 1, 2, 3],
   [4, 5, 6, 7],
@@ -88,7 +87,7 @@ class Game {
           value *= 2;
           this._score += value;
           slides.push({ from: neighbor, to });
-          i++; // Вторая плитка уже вошла в пару.
+          i++; 
         }
 
         nextCells[to] = value;
