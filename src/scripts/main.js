@@ -3,10 +3,9 @@
 import Game from '../modules/Game.class.js';
 
 const game = new Game();
-
+const board = document.querySelector('.game-field tbody');
 const button = document.querySelector('.button');
-const scroleElement = document.querySelector('.game-score');
-const cells = document.querySelector('.field-cell');
+const scoreElement = document.querySelector('.game-score');
 
 const startMessage = document.querySelector('.message-start');
 const loseMessage = document.querySelector('.message-lose');
@@ -15,19 +14,28 @@ const winMessage = document.querySelector('.message-win');
 function renderBoard() {
   const state = game.getState();
 
-  state.forEach((row, rowIndex) => {
-    row.forEach((value, columnIndex) => {
-      const cellIndex = rowIndex * 4 + columnIndex;
-      const cell = cells[cellIndex];
+  state.forEach((line, index) => {
+    const tr = document.createElement('tr');
 
-      cell.textContent = value === 0 ? '' : value;
-      cell.className = 'field-cell';
+    tr.classList.add('field-row');
 
-      if (value !== 0) {
-        cell.classList.add(`field-cell--${value}`);
+    line.forEach((item) => {
+      const td = document.createElement('td');
+
+      td.classList.add('field-cell');
+
+      if (item) {
+        td.classList.add(`field-cell--${item}`);
       }
+
+      td.textContent = item || '';
+
+      tr.appendChild(td);
     });
+
+    board.replaceChild(tr, board.rows[index]);
   });
+  scoreElement.textContent = game.getScore().toString();
 }
 
 const handleStart = () => {
@@ -39,6 +47,7 @@ const handleStart = () => {
     button.classList.add('restart');
     button.classList.remove('start');
     startMessage.classList.add('hidden');
+    renderBoard();
     // winMessage.classList.add('hidden');
     // loseMessage.classList.add('hidden');
   }
@@ -65,9 +74,10 @@ const handleStart = () => {
 
 button.addEventListener('click', handleStart);
 
-document.addEventListener('keydown', (event) => {
+document.addEventListener('keydown', (evt) => {
+  console.log(evt.key);
   // слухати подію keydown перевіряти event.key і викликати відповідний метод екземпляра
-  switch (event.key) {
+  switch (evt.key) {
     case 'ArrowLeft':
       game.moveLeft();
       break;
@@ -81,26 +91,7 @@ document.addEventListener('keydown', (event) => {
       game.moveDown();
       break;
   }
-
-  const cell = document.querySelector('.field-cell');
-  cell.classList.add('field-cell--2');
-
-  function renderBoard() {
-    const state = game.getState();
-    const cells = document.querySelectorAll('.field-cell');
-    state.forEach((row, rowIndex) => {
-      row.forEach((value, columnIndex) => {
-        const cellIndex = rowIndex * 4 + columnIndex;
-        const cell = cells[cellIndex];
-        cell.textContent = value === 0 ? '' : value;
-        cell.className = 'field-cell';
-
-        if (value !== 0) {
-          cell.classList.add(`field-cell--${value}`);
-        }
-      });
-    });
-  }
+  renderBoard();
 });
 
 export default Game;

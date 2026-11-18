@@ -30,6 +30,7 @@ class Game {
     this.initialState = startBoard.map((row) => [...row]);
     this.score = 0;
     this.status = 'idle';
+    this.board = this.initialState;
   }
 
   getScore() {
@@ -92,6 +93,7 @@ class Game {
 
       this.board[i] = newRow;
     }
+    this.addRandomTile();
   }
   moveRight() {
     for (let i = 0; i < this.board.length; i++) {
