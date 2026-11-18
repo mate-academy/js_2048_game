@@ -10,7 +10,16 @@ body {
   font-weight: 900;
 }
 
+.tile {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: inherit;
+}
+
 .field-cell {
+  position: relative;
   background: #d6cdc4;
   width: 75px;
   height: 75px;
