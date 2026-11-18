@@ -86,6 +86,40 @@ class Game {
     return tiles;
   }
 
+  hasMoves() {
+    for (let r = 0; r < this.board.length; r++) {
+      for (let c = 0; c < this.board.length; c++) {
+        if (this.board[r][c] === 0) {
+          return true;
+        }
+        if (c < 3 && this.board[r][c] === this.board[r][c + 1]) {
+          return true;
+        }
+        if (r < 3 && this.board[r][c] === this.board[r + 1][c]) {
+          return true;
+        }
+        return false;
+      }
+    }
+  }
+
+  updateStatus() {
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.board[r][c] === 2048) {
+          // eslint-disable-next-line no-unused-expressions
+          this.status = 'win';
+          return;
+        }
+      }
+    }
+    if (this.hasMoves()) {
+      this.status = 'playing';
+    } else {
+      this.status = 'lose';
+    }
+  }
+
   moveLeft() {
     for (let i = 0; i < this.board.length; i++) {
       const row = this.board[i];

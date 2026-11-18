@@ -48,8 +48,6 @@ const handleStart = () => {
     button.classList.remove('start');
     startMessage.classList.add('hidden');
     renderBoard();
-    // winMessage.classList.add('hidden');
-    // loseMessage.classList.add('hidden');
   }
 
   if (currentStatus === 'playing') {
@@ -75,8 +73,8 @@ const handleStart = () => {
 button.addEventListener('click', handleStart);
 
 document.addEventListener('keydown', (evt) => {
-  console.log(evt.key);
   // слухати подію keydown перевіряти event.key і викликати відповідний метод екземпляра
+
   switch (evt.key) {
     case 'ArrowLeft':
       game.moveLeft();
