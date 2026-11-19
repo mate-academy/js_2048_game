@@ -1,5 +1,42 @@
 'use strict';
 
+const WIN_VALUE = 2048;
+const FOUR_PROBABILITY = 0.1;
+
+function transpose(board) {
+  return board[0].map((_, col) => board.map((row) => row[col]));
+}
+
+function reverseRows(board) {
+  return board.map((row) => [...row].reverse());
+}
+
+function slideLine(line) {
+  const tiles = line.filter((value) => value !== 0);
+  const result = [];
+  let points = 0;
+  let i = 0;
+
+  while (i < tiles.length) {
+    if (tiles[i] === tiles[i + 1]) {
+      const value = tiles[i] * 2;
+
+      result.push(value);
+      points += value;
+      i += 2;
+    } else {
+      result.push(tiles[i]);
+      i += 1;
+    }
+  }
+
+  while (result.length < line.length) {
+    result.push(0);
+  }
+
+  return { line: result, points };
+}
+
 /**
  * This class represents the game.
  * Now it has a basic structure, that is needed for testing.
@@ -35,100 +72,25 @@ class Game {
   }
 
   moveLeft() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let moved = false;
-
-    for (let i = 0; i < this.board.length; i++) {
-      const row = this.slide(this.board[i]);
-
-      if (row.some((value, j) => value !== this.board[i][j])) {
-        moved = true;
-      }
-
-      this.board[i] = row;
-    }
-
-    this.finishMove(moved);
+    this.move(
+      (board) => board,
+      (board) => board,
+    );
   }
 
   moveRight() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let moved = false;
-
-    for (let i = 0; i < this.board.length; i++) {
-      const reversed = [...this.board[i]].reverse();
-      const row = this.slide(reversed).reverse();
-
-      if (row.some((value, j) => value !== this.board[i][j])) {
-        moved = true;
-      }
-
-      this.board[i] = row;
-    }
-
-    this.finishMove(moved);
+    this.move(reverseRows, reverseRows);
   }
 
   moveUp() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let moved = false;
-
-    for (let j = 0; j < this.board[0].length; j++) {
-      const column = [];
-
-      for (let i = 0; i < this.board.length; i++) {
-        column.push(this.board[i][j]);
-      }
-
-      const slid = this.slide(column);
-
-      for (let i = 0; i < slid.length; i++) {
-        if (slid[i] !== this.board[i][j]) {
-          moved = true;
-        }
-
-        this.board[i][j] = slid[i];
-      }
-    }
-
-    this.finishMove(moved);
+    this.move(transpose, transpose);
   }
 
   moveDown() {
-    if (this.status !== 'playing') {
-      return;
-    }
-
-    let moved = false;
-
-    for (let j = 0; j < this.board[0].length; j++) {
-      const column = [];
-
-      for (let i = this.board.length - 1; i >= 0; i--) {
-        column.push(this.board[i][j]);
-      }
-
-      const slid = this.slide(column).reverse();
-
-      for (let i = 0; i < slid.length; i++) {
-        if (slid[i] !== this.board[i][j]) {
-          moved = true;
-        }
-
-        this.board[i][j] = slid[i];
-      }
-    }
-
-    this.finishMove(moved);
+    this.move(
+      (board) => reverseRows(transpose(board)),
+      (board) => transpose(reverseRows(board)),
+    );
   }
 
   /**
@@ -166,6 +128,10 @@ class Game {
     this.status = 'playing';
     this.addRandomTile();
     this.addRandomTile();
+
+    if (!this.canMove()) {
+      this.status = 'lose';
+    }
   }
 
   /**
@@ -177,17 +143,57 @@ class Game {
     this.status = 'idle';
   }
 
-  // Add your own methods here
+  move(toLeft, fromLeft) {
+    if (this.status !== 'playing') {
+      return;
+    }
+
+    let moved = false;
+
+    const lines = toLeft(this.board).map((line) => {
+      const { line: slid, points } = slideLine(line);
+
+      this.score += points;
+
+      if (slid.some((value, i) => value !== line[i])) {
+        moved = true;
+      }
+
+      return slid;
+    });
+
+    this.board = fromLeft(lines);
+    this.finishMove(moved);
+  }
+
+  finishMove(moved) {
+    if (!moved) {
+      return;
+    }
+
+    if (this.board.some((row) => row.includes(WIN_VALUE))) {
+      this.status = 'win';
+
+      return;
+    }
+
+    this.addRandomTile();
+
+    if (!this.canMove()) {
+      this.status = 'lose';
+    }
+  }
+
   getEmptyCells() {
     const emptyCells = [];
 
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[i].length; j++) {
-        if (this.board[i][j] === 0) {
+    this.board.forEach((row, i) => {
+      row.forEach((value, j) => {
+        if (value === 0) {
           emptyCells.push([i, j]);
         }
-      }
-    }
+      });
+    });
 
     return emptyCells;
   }
@@ -195,73 +201,29 @@ class Game {
   addRandomTile() {
     const emptyCells = this.getEmptyCells();
 
-    if (emptyCells.length > 0) {
-      const [i, j] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-      this.board[i][j] = Math.random() < 0.9 ? 2 : 4;
-    }
-  }
-
-  slide(row) {
-    const withoutZeros = row.filter((value) => value !== 0);
-    const merged = [];
-
-    for (let i = 0; i < withoutZeros.length; i++) {
-      if (withoutZeros[i] === withoutZeros[i + 1]) {
-        const value = withoutZeros[i] * 2;
-
-        merged.push(value);
-        this.score += value;
-        i++;
-      } else {
-        merged.push(withoutZeros[i]);
-      }
-    }
-
-    while (merged.length < row.length) {
-      merged.push(0);
-    }
-
-    return merged;
-  }
-
-  finishMove(moved) {
-    if (this.board.some((row) => row.some((value) => value === 2048))) {
-      this.status = 'win';
-
+    if (emptyCells.length === 0) {
       return;
     }
 
-    if (moved) {
-      this.status = 'playing';
-      this.addRandomTile();
+    const [i, j] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-      if (!this.canMove()) {
-        this.status = 'lose';
-      }
-    } else if (!this.canMove() && this.status === 'playing') {
-      this.status = 'lose';
-    }
+    this.board[i][j] = Math.random() < FOUR_PROBABILITY ? 4 : 2;
   }
 
   canMove() {
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board[i].length; j++) {
-        if (this.board[i][j] === 0) {
+        const value = this.board[i][j];
+
+        if (value === 0) {
           return true;
         }
 
-        if (
-          j + 1 < this.board[i].length &&
-          this.board[i][j] === this.board[i][j + 1]
-        ) {
+        if (j + 1 < this.board[i].length && value === this.board[i][j + 1]) {
           return true;
         }
 
-        if (
-          i + 1 < this.board.length &&
-          this.board[i][j] === this.board[i + 1][j]
-        ) {
+        if (i + 1 < this.board.length && value === this.board[i + 1][j]) {
           return true;
         }
       }

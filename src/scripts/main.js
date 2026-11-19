@@ -34,17 +34,19 @@ function render() {
   messageLose.classList.toggle('hidden', gameStatus !== 'lose');
 }
 
+function setButton(isRestart) {
+  button.classList.toggle('start', !isRestart);
+  button.classList.toggle('restart', isRestart);
+  button.textContent = isRestart ? 'Restart' : 'Start';
+}
+
 button.addEventListener('click', () => {
-  if (button.classList.contains('restart')) {
+  if (game.getStatus() !== 'idle') {
     game.restart();
   }
 
   game.start();
-
-  button.classList.remove('start');
-  button.classList.add('restart');
-  button.textContent = 'Restart';
-
+  setButton(false);
   render();
 });
 
@@ -63,7 +65,15 @@ document.addEventListener('keydown', (e) => {
   }
 
   e.preventDefault();
+
+  const stateBefore = JSON.stringify(game.getState());
+
   move();
+
+  if (JSON.stringify(game.getState()) !== stateBefore) {
+    setButton(true);
+  }
+
   render();
 });
 
