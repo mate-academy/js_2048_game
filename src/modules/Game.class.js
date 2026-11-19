@@ -66,6 +66,14 @@ class Game {
     this.status = 'idle';
   }
 
+  isGameWon() {
+    return this.board.includes(2048);
+  }
+
+  isGameLost() {
+    return !this.hasMoves();
+  }
+
   processLine(line) {
     const tiles = line.filter((tile) => tile !== 0);
 
@@ -98,9 +106,9 @@ class Game {
         if (r < 3 && this.board[r][c] === this.board[r + 1][c]) {
           return true;
         }
-        return false;
       }
     }
+    return false;
   }
 
   updateStatus() {
@@ -128,6 +136,7 @@ class Game {
       this.board[i] = newRow;
     }
     this.addRandomTile();
+    this.updateStatus();
   }
   moveRight() {
     for (let i = 0; i < this.board.length; i++) {
@@ -136,6 +145,8 @@ class Game {
 
       this.board[i] = newRow.reverse();
     }
+    this.addRandomTile();
+    this.updateStatus();
   }
   moveUp() {
     for (let c = 0; c < this.board.length; c++) {
@@ -146,6 +157,8 @@ class Game {
         this.board[r][c] = newColumn[r];
       }
     }
+    this.addRandomTile();
+    this.updateStatus();
   }
   moveDown() {
     for (let c = 0; c < this.board.length; c++) {
@@ -156,6 +169,8 @@ class Game {
         this.board[r][c] = newColumn[r];
       }
     }
+    this.addRandomTile();
+    this.updateStatus();
   }
 
   addRandomTile() {
@@ -172,7 +187,7 @@ class Game {
     if (emptyCells.length > 0) {
       const [r, c] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
-      this.board[r][c] = Math.random() < 0.1 ? 2 : 4;
+      this.board[r][c] = Math.random() < 0.1 ? 4 : 2;
     }
   }
 }

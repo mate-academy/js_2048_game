@@ -54,8 +54,15 @@ const handleStart = () => {
     game.restart();
     winMessage.classList.add('hidden');
     loseMessage.classList.add('hidden');
+    button.classList.add('start');
+    button.classList.remove('restart');
+    button.textContent = 'Start';
+    startMessage.classList.toggle('hidden');
+    renderBoard();
   }
+};
 
+function updateMessages() {
   const newStatus = game.getStatus();
 
   winMessage.classList.add('hidden');
@@ -68,13 +75,12 @@ const handleStart = () => {
   if (newStatus === 'lose') {
     loseMessage.classList.remove('hidden');
   }
-};
+}
 
 button.addEventListener('click', handleStart);
 
 document.addEventListener('keydown', (evt) => {
   // слухати подію keydown перевіряти event.key і викликати відповідний метод екземпляра
-
   switch (evt.key) {
     case 'ArrowLeft':
       game.moveLeft();
@@ -88,8 +94,11 @@ document.addEventListener('keydown', (evt) => {
     case 'ArrowDown':
       game.moveDown();
       break;
+    default:
+      return;
   }
   renderBoard();
+  updateMessages();
 });
 
 export default Game;
