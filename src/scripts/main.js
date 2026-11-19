@@ -31,7 +31,7 @@ function render() {
     }
   });
 
-  scoreElement.textContent = game.getScore();
+  scoreElement.value = game.getScore() === 0 ? '' : game.getScore();
 
   if (hasMoved) {
     button.textContent = 'Restart';
