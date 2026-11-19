@@ -67,7 +67,7 @@ class Game {
   }
 
   isGameWon() {
-    return this.board.includes(2048);
+    return this.board.flat().includes(2048);
   }
 
   isGameLost() {
@@ -129,26 +129,44 @@ class Game {
   }
 
   moveLeft() {
-    for (let i = 0; i < this.board.length; i++) {
-      const row = this.board[i];
-      const newRow = this.processLine(row);
-
-      this.board[i] = newRow;
+    if (this.status !== 'playing') {
+      return;
     }
-    this.addRandomTile();
-    this.updateStatus();
+    const previousState = this.getState();
+    for (let i = 0; i < this.board.length; i++) {
+      this.board[i] = this.processLine(this.board[i]);
+    }
+    const changed =
+      JSON.stringify(previousState) !== JSON.stringify(this.board);
+    if (changed) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
   }
+
   moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+    const previousState = this.getState();
     for (let i = 0; i < this.board.length; i++) {
       const originalRow = [...this.board[i]].reverse(); //
       const newRow = this.processLine(originalRow);
 
       this.board[i] = newRow.reverse();
     }
-    this.addRandomTile();
-    this.updateStatus();
+    const changed =
+      JSON.stringify(previousState) !== JSON.stringify(this.board);
+    if (changed) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
   }
   moveUp() {
+    if (this.status !== 'playing') {
+      return;
+    }
+    const previousState = this.getState();
     for (let c = 0; c < this.board.length; c++) {
       const column = this.board.map((row) => row[c]);
       const newColumn = this.processLine(column);
@@ -157,10 +175,18 @@ class Game {
         this.board[r][c] = newColumn[r];
       }
     }
-    this.addRandomTile();
-    this.updateStatus();
+    const changed =
+      JSON.stringify(previousState) !== JSON.stringify(this.board);
+    if (changed) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
   }
   moveDown() {
+    if (this.status !== 'playing') {
+      return;
+    }
+    const previousState = this.getState();
     for (let c = 0; c < this.board.length; c++) {
       const column = this.board.map((row) => row[c]);
       const newColumn = this.processLine(column.reverse()).reverse();
@@ -169,8 +195,12 @@ class Game {
         this.board[r][c] = newColumn[r];
       }
     }
-    this.addRandomTile();
-    this.updateStatus();
+    const changed =
+      JSON.stringify(previousState) !== JSON.stringify(this.board);
+    if (changed) {
+      this.addRandomTile();
+      this.updateStatus();
+    }
   }
 
   addRandomTile() {
