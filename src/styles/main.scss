@@ -1,174 +1,128 @@
+@use 'sass:list';
+
+// ---------- Design tokens ----------
+$cell: 75px;
+$gap: 10px;
+$radius: 14px;
+$radius-sm: 10px;
+$ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+$bg: #0d0e1a;
+$surface: #171a2e;
+$surface-2: #20243d;
+$line: rgba(255, 255, 255, 0.06);
+$text: #eef0ff;
+$text-dim: #8d92b8;
+$accent: #ffc94d;
+$font-rounded: ui-rounded, 'SF Pro Rounded', 'Nunito';
+$font-system: system-ui, 'Segoe UI', Roboto, sans-serif;
+$font: $font-rounded, $font-system;
+
+// value: (background, text color, glow color)
+$tiles: (
+  2: (
+    #e9e6ff,
+    #2a2550,
+    transparent,
+  ),
+  4: (
+    #cdc5ff,
+    #2a2550,
+    transparent,
+  ),
+  8: (
+    #9d8cff,
+    #fff,
+    rgba(157, 140, 255, 0.45),
+  ),
+  16: (
+    #7a5cff,
+    #fff,
+    rgba(122, 92, 255, 0.5),
+  ),
+  32: (
+    #b14dff,
+    #fff,
+    rgba(177, 77, 255, 0.5),
+  ),
+  64: (
+    #ff4fc3,
+    #fff,
+    rgba(255, 79, 195, 0.55),
+  ),
+  128: (
+    #ff5e7e,
+    #fff,
+    rgba(255, 94, 126, 0.55),
+  ),
+  256: (
+    #ff7a45,
+    #fff,
+    rgba(255, 122, 69, 0.6),
+  ),
+  512: (
+    #ff9f1c,
+    #fff,
+    rgba(255, 159, 28, 0.6),
+  ),
+  1024: (
+    #ffbe2e,
+    #3b2600,
+    rgba(255, 190, 46, 0.7),
+  ),
+  2048: (
+    #ffd84d,
+    #3b2600,
+    rgba(255, 216, 77, 0.9),
+  ),
+);
+
+// ---------- Mixins ----------
+@mixin box($w: $cell, $h: $cell) {
+  width: $w;
+  height: $h;
+  box-sizing: border-box;
+}
+
+@mixin center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin panel {
+  background: $surface-2;
+  border: 1px solid $line;
+  border-radius: $radius-sm;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+// ---------- Base ----------
 body {
   margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+  @include center;
+
   min-height: 100vh;
-  background: #fbf8ef;
-  font-family: sans-serif;
+  font-family: $font;
   font-size: 24px;
   font-weight: 900;
+  color: $text;
+  background: radial-gradient(
+      900px 600px at 15% 10%,
+      rgba(122, 92, 255, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 500px at 85% 90%,
+      rgba(255, 79, 195, 0.14),
+      transparent 60%
+    ),
+    $bg;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
 }
 
-.field-cell {
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: center;
-  user-select: none;
-
-  &--2 {
-    background: #eee4da;
-  }
-
-  &--4 {
-    background: #ede0c8;
-  }
-
-  &--8 {
-    background: #f2b179;
-    color: #f9f6f2;
-  }
-
-  &--16 {
-    background: #f59563;
-    color: #f9f6f2;
-  }
-
-  &--32 {
-    background: #f67c5f;
-    color: #f9f6f2;
-  }
-
-  &--64 {
-    background: #f65e3b;
-    color: #f9f6f2;
-  }
-
-  &--128 {
-    background: #edcf72;
-    color: #f9f6f2;
-  }
-
-  &--256 {
-    background: #edcc61;
-    color: #f9f6f2;
-  }
-
-  &--512 {
-    background: #edc850;
-    color: #f9f6f2;
-  }
-
-  &--1024 {
-    background: #edc53f;
-    color: #f9f6f2;
-  }
-
-  &--2048 {
-    background: #edc22e;
-    color: #f9f6f2;
-  }
-}
-
-.game-field {
-  background: #bbada0;
-  border-spacing: 10px;
-  border-radius: 5px;
-}
-
-.game-header {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-h1 {
-  background: #edc22e;
-  color: #f9f6f2;
-  width: 75px;
-  height: 75px;
-  font-size: 24px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  margin: 0;
-}
-
-.info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #d6cdc4;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-  color: #776e65;
-  box-sizing: border-box;
-  font-size: 16px;
-  margin: 0 8px 0 0;
-}
-
-.controls {
-  display: flex;
-}
-
-.button {
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  color: #f9f6f2;
-  font-family: sans-serif;
-  font-weight: 700;
-  font-size: 16px;
-  width: 75px;
-  height: 75px;
-
-  transition: 0.25s ease background;
-}
-
-.start {
-  background: #1dae28;
-  font-size: 20px;
-
-  &:hover {
-    background: #179921;
-  }
-}
-
-.restart {
-  background: #f1b2b2;
-
-  &:hover {
-    background: #f87474;
-  }
-}
-
-.message {
-  box-sizing: border-box;
-  width: 100%;
-  background: #d6cdc4;
-  color: #776e65;
-  padding: 10px;
-  text-align: center;
-  border-radius: 5px;
-  font-size: 20px;
-}
-
-.hidden {
-  display: none;
-}
-
+// ---------- Layout ----------
 .container {
   display: flex;
   flex-direction: column;
@@ -176,12 +130,214 @@ h1 {
   width: 350px;
 }
 
-.message-win {
-  background: #edc22e;
-  color: #f9f6f2;
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 24px;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
+// ---------- Logo ----------
+h1 {
+  @include box;
+  @include center;
+
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: -0.5px;
+  color: #3b2600;
+  border-radius: $radius;
+  background: linear-gradient(145deg, #ffe27a, $accent 55%, #ff9f1c);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.25) inset,
+    0 10px 30px -6px rgba(255, 201, 77, 0.55);
+}
+
+// ---------- Score ----------
+.info {
+  @include box;
+  @include center;
+  @include panel;
+
+  flex-direction: column;
+  margin: 0 8px 0 0;
+  font-size: 16px;
+  line-height: 1.25;
+  color: $text-dim;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  // score number (any inner element) pops in white
+  > * {
+    color: $text;
+    font-size: 18px;
+    letter-spacing: 0;
+  }
+}
+
+.controls {
+  display: flex;
+}
+
+// ---------- Buttons ----------
+.button {
+  @include box;
+
+  border: none;
+  border-radius: $radius;
+  cursor: pointer;
+  color: #fff;
+  font-family: $font;
+  font-weight: 800;
+  font-size: 16px;
+  transition:
+    transform 0.2s $ease,
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+  }
+
+  &:active {
+    transform: translateY(1px) scale(0.97);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent;
+    outline-offset: 3px;
+  }
+}
+
+.start {
+  font-size: 20px;
+  background: linear-gradient(145deg, #3ef0a6, #12b981);
+  box-shadow: 0 10px 28px -8px rgba(18, 185, 129, 0.7);
+
+  &:hover {
+    box-shadow: 0 14px 34px -8px rgba(18, 185, 129, 0.9);
+  }
+}
+
+.restart {
+  background: linear-gradient(145deg, #ff7aa2, #ff4f6d);
+  box-shadow: 0 10px 28px -8px rgba(255, 79, 109, 0.65);
+
+  &:hover {
+    box-shadow: 0 14px 34px -8px rgba(255, 79, 109, 0.9);
+  }
+}
+
+// ---------- Board ----------
+.game-field {
+  border-spacing: $gap;
+  border-radius: $radius + 4;
+  background: $surface;
+  border: 1px solid $line;
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+}
+
+.field-cell {
+  @include box;
+
+  border-radius: $radius-sm;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+  color: $text;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.2s ease,
+    color 0.15s ease;
+
+  @each $value, $style in $tiles {
+    $tile-bg: list.nth($style, 1);
+    $tile-fg: list.nth($style, 2);
+    $glow: list.nth($style, 3);
+
+    &--#{$value} {
+      background: $tile-bg;
+      color: $tile-fg;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -3px 0 rgba(0, 0, 0, 0.12),
+        0 0 22px -2px $glow;
+
+      @if $value >= 1024 {
+        font-size: 20px;
+      }
+    }
+  }
+
+  &--2048 {
+    background: linear-gradient(145deg, #fff0a8, #ffd84d 50%, #ffb21e);
+    animation: champion 1.8s ease-in-out infinite;
+  }
+}
+
+@keyframes champion {
+  50% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 0 36px 4px rgba(255, 216, 77, 0.95);
+  }
+}
+
+// ---------- Messages ----------
 .message-container {
   width: 100%;
   height: 150px;
+  padding-top: 20px;
+  box-sizing: border-box;
+}
+
+.message {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 10px;
+
+  @include panel;
+
+  border-radius: $radius;
+  color: $text-dim;
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+  animation: rise 0.35s $ease both;
+}
+
+.message-win {
+  color: #3b2600;
+  background: linear-gradient(145deg, #ffe27a, $accent 55%, #ff9f1c);
+  border-color: transparent;
+  box-shadow: 0 12px 36px -8px rgba(255, 201, 77, 0.7);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+// ---------- Accessibility ----------
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
