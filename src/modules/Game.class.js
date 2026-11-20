@@ -31,6 +31,16 @@ class Game {
     this.status = 'playing';
     this.addRandomTile();
     this.addRandomTile();
+
+    if (this.board.some((row) => row.includes(2048))) {
+      this.status = 'win';
+
+      return;
+    }
+
+    if (!this.hasMoves()) {
+      this.status = 'lose';
+    }
   }
 
   restart() {
