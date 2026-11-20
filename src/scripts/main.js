@@ -1,6 +1,6 @@
 'use strict';
 
-const Game = require('../modules/Game.class');
+import Game from '../modules/Game.class';
 
 const game = new Game();
 
@@ -23,7 +23,6 @@ function render() {
     const value = state[row][col];
 
     cell.textContent = value === 0 ? '' : value;
-
     cell.className = 'field-cell';
 
     if (value !== 0) {
@@ -31,28 +30,22 @@ function render() {
     }
   });
 
-  scoreElement.value = game.getScore() === 0 ? '' : game.getScore();
+  scoreElement.textContent = game.getScore();
+
+  startMessage.classList.toggle('hidden', game.getStatus() !== 'idle');
+
+  winMessage.classList.toggle('hidden', game.getStatus() !== 'win');
+
+  loseMessage.classList.toggle('hidden', game.getStatus() !== 'lose');
 
   if (hasMoved) {
     button.textContent = 'Restart';
     button.classList.remove('start');
     button.classList.add('restart');
   }
-
-  startMessage.classList.add('hidden');
-  winMessage.classList.add('hidden');
-  loseMessage.classList.add('hidden');
-
-  if (game.getStatus() === 'win') {
-    winMessage.classList.remove('hidden');
-  }
-
-  if (game.getStatus() === 'lose') {
-    loseMessage.classList.remove('hidden');
-  }
 }
 
-button.addKeyborardEventListener('click', () => {
+button.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
     render();
@@ -68,13 +61,11 @@ button.addKeyborardEventListener('click', () => {
     button.classList.remove('restart');
     button.classList.add('start');
 
-    startMessage.classList.remove('hidden');
-
     render();
   }
 });
 
-document.addKeyborardEventListener('keydown', (KeyborardEvent) => {
+document.addEventListener('keydown', (keyboardEvent) => {
   const moves = {
     ArrowLeft: 'moveLeft',
     ArrowRight: 'moveRight',
@@ -82,13 +73,13 @@ document.addKeyborardEventListener('keydown', (KeyborardEvent) => {
     ArrowDown: 'moveDown',
   };
 
-  const move = moves[KeyborardEvent.key];
+  const move = moves[keyboardEvent.key];
 
   if (!move || game.getStatus() !== 'playing') {
     return;
   }
 
-  KeyborardEvent.prKeyborardEventDefault();
+  keyboardEvent.preventDefault();
 
   const previousState = JSON.stringify(game.getState());
 
