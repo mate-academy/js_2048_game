@@ -860,6 +860,7 @@ describe('Game', () => {
       it(`should detect a win after moving ${direction}`, () => {
         const game2048 = new Game(copyState(initialState));
 
+        game2048.start();
         game2048[move]();
 
         expect(game2048.getStatus()).toBe('win');

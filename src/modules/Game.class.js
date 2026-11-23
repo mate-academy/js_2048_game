@@ -32,6 +32,7 @@ class Game {
       ];
     }
 
+    this.initialField = this.field.map((row) => row.slice());
     this.score = 0;
     this.status = 'idle';
     // eslint-disable-next-line no-console
@@ -39,6 +40,10 @@ class Game {
   }
 
   moveLeft() {
+    if (this.status !== 'playing') {
+      return false;
+    }
+
     // Faz uma cópia profunda do campo antes de mexer
     const oldField = JSON.stringify(this.field);
 
@@ -74,6 +79,14 @@ class Game {
       this.field[row] = merged;
     }
 
+    const newField = JSON.stringify(this.field);
+
+    const changed = oldField !== newField;
+
+    if (changed) {
+      this.addRandomTile();
+    }
+
     this.checkWin();
 
     if (this.isGameOver() && this.status !== 'win') {
@@ -81,13 +94,15 @@ class Game {
     }
 
     // Compara com o que ficou depois
-    const newField = JSON.stringify(this.field);
-
-    return oldField !== newField;
+    return changed;
     // Retorna true se houve mudança, false caso contrário
   }
 
   moveRight() {
+    if (this.status !== 'playing') {
+      return false;
+    }
+
     const oldField = JSON.stringify(this.field);
 
     for (let row = 0; row < 4; row++) {
@@ -122,19 +137,28 @@ class Game {
       this.field[row] = merged.reverse();
     }
 
+    const newField = JSON.stringify(this.field);
+    const changed = oldField !== newField;
+
+    if (changed) {
+      this.addRandomTile();
+    }
+
     this.checkWin();
 
     if (this.isGameOver() && this.status !== 'win') {
       this.status = 'lose';
     }
 
-    const newField = JSON.stringify(this.field);
-
-    return oldField !== newField;
+    return changed;
     // Retorna true se houve mudança, false caso contrário
   }
 
   moveUp() {
+    if (this.status !== 'playing') {
+      return false;
+    }
+
     const oldField = JSON.stringify(this.field);
 
     for (let col = 0; col < 4; col++) {
@@ -176,19 +200,28 @@ class Game {
       }
     }
 
+    const newField = JSON.stringify(this.field);
+    const changed = oldField !== newField;
+
+    if (changed) {
+      this.addRandomTile();
+    }
+
     this.checkWin();
 
     if (this.isGameOver() && this.status !== 'win') {
       this.status = 'lose';
     }
 
-    const newField = JSON.stringify(this.field);
-
-    return oldField !== newField;
+    return changed;
     // Retorna true se houve mudança, false caso contrário
   }
 
   moveDown() {
+    if (this.status !== 'playing') {
+      return false;
+    }
+
     const oldField = JSON.stringify(this.field);
 
     for (let col = 0; col < 4; col++) {
@@ -234,15 +267,20 @@ class Game {
       }
     }
 
+    const newField = JSON.stringify(this.field);
+    const changed = oldField !== newField;
+
+    if (changed) {
+      this.addRandomTile();
+    }
+
     this.checkWin();
 
     if (this.isGameOver() && this.status !== 'win') {
       this.status = 'lose';
     }
 
-    const newField = JSON.stringify(this.field);
-
-    return oldField !== newField;
+    return changed;
     // Retorna true se houve mudança, false caso contrário
   }
 
@@ -322,12 +360,14 @@ class Game {
    */
 
   start() {
+    /*
     this.field = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
+    */
 
     this.score = 0;
     this.status = 'playing';
@@ -340,7 +380,9 @@ class Game {
    * Resets the game.
    */
   restart() {
-    this.start();
+    this.field = this.initialField.map((row) => [...row]);
+    this.score = 0;
+    this.status = 'idle';
   }
 
   addRandomTile() {

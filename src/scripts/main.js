@@ -43,11 +43,11 @@ const startButton = document.querySelector('.start');
 startButton.addEventListener('click', () => {
   if (game.getStatus() === 'idle') {
     game.start();
-    startButton.textContent = 'Restart';
-    startButton.classList.remove('start');
-    startButton.classList.add('restart');
   } else {
     game.restart();
+    startButton.textContent = 'Start';
+    startButton.classList.remove('restart');
+    startButton.classList.add('start');
   }
   render();
 });
@@ -57,8 +57,12 @@ function makeMove(move) {
     return;
   }
 
-  if (move()) {
-    game.addRandomTile();
+  const changed = move();
+
+  if (changed) {
+    startButton.textContent = 'Restart';
+    startButton.classList.remove('start');
+    startButton.classList.add('restart');
   }
   render();
 }
