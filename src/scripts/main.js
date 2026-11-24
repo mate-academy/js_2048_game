@@ -14,6 +14,13 @@ const loseMessage = document.querySelector('.message-lose');
 
 let isFirstMoveMade = false;
 
+function resetButtonToStart() {
+  isFirstMoveMade = false;
+  button.classList.remove('restart');
+  button.classList.add('start');
+  button.textContent = 'Start';
+}
+
 function render() {
   const state = game.getState();
 
@@ -46,8 +53,7 @@ button.addEventListener('click', () => {
     isFirstMoveMade = false;
   } else {
     game.restart();
-    game.start();
-    isFirstMoveMade = false;
+    resetButtonToStart();
   }
 
   render();
