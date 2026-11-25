@@ -41,6 +41,10 @@ function render() {
 const startButton = document.querySelector('.start');
 
 startButton.addEventListener('click', () => {
+  if (game.getStatus() === 'playing' && startButton.textContent === 'Start') {
+    return;
+  }
+
   if (game.getStatus() === 'idle') {
     game.start();
   } else {

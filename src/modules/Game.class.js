@@ -372,8 +372,18 @@ class Game {
     this.score = 0;
     this.status = 'playing';
 
+    this.checkWin();
+
+    if (this.status === 'win') {
+      return;
+    }
+
     this.addRandomTile();
     this.addRandomTile();
+
+    if (this.status !== 'win' && this.isGameOver()) {
+      this.status = 'lose';
+    }
   }
 
   /**
@@ -394,6 +404,14 @@ class Game {
           emptyCells.push({ row, col });
         }
       }
+    }
+
+    if (emptyCells.length === 0) {
+      if (this.isGameOver()) {
+        this.status = 'lose';
+      }
+
+      return;
     }
 
     const randomCell =
