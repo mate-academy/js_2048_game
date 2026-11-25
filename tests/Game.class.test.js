@@ -831,6 +831,42 @@ describe('Game', () => {
       expect(game2048.getStatus()).toBe('win');
     });
 
+    [
+      ['left', 'moveLeft', [
+        [1024, 1024, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ]],
+      ['right', 'moveRight', [
+        [0, 0, 1024, 1024],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ]],
+      ['up', 'moveUp', [
+        [1024, 0, 0, 0],
+        [1024, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ]],
+      ['down', 'moveDown', [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [1024, 0, 0, 0],
+        [1024, 0, 0, 0],
+      ]],
+    ].forEach(([direction, move, initialState]) => {
+      it(`should detect a win after moving ${direction}`, () => {
+        const game2048 = new Game(copyState(initialState));
+
+        game2048.start();
+        game2048[move]();
+
+        expect(game2048.getStatus()).toBe('win');
+      });
+    });
+
     it('should be a "lose" when no more moves are possible', () => {
       const game2048 = new Game([
         [128, 128, 0, 8],
